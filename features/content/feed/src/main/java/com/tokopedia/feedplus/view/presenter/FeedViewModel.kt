@@ -1,31 +1,21 @@
 package com.tokopedia.feedplus.view.presenter
 
 import android.content.Context
+import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_INTEREST
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXData
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.data.feedrevamp.reversed
+import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
-import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.SCREEN_NAME_UPDATE_TAB
-import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
+import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -38,24 +28,17 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_FOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_UNFOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.*
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
@@ -67,7 +50,6 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -97,8 +79,8 @@ class FeedViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val likeKolPostUseCase: LikeKolPostUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-    private val deletePostUseCase: DeletePostUseCase,
     private val sendTopAdsUseCase: SendTopAdsUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val shopRecomUseCase: ShopRecomUseCase,
@@ -535,12 +517,18 @@ class FeedViewModel @Inject constructor(
     fun doDeletePost(id: String, rowNumber: Int) {
         launchCatchError(
             block = {
-                val results = withContext(baseDispatcher.io) {
-                    deletePost(id, rowNumber)
-                }
-                deletePostResp.value = Success(results)
-            },
-        ) {
+                val response = withContext(baseDispatcher.io) {
+                    submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(id))
+                submitActionContentUseCase.executeOnBackground()
+            }
+            deletePostResp.value = Success(
+                DeletePostModel(
+                    id = id,
+                    rowNumber = rowNumber,
+                    isSuccess = TextUtils.isEmpty(response.content.error)
+                )
+            )
+        },) {
             deletePostResp.value = Fail(it)
         }
     }
@@ -722,20 +710,6 @@ class FeedViewModel @Inject constructor(
             val params =
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
             val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun deletePost(id: String, rowNumber: Int): DeletePostModel {
-        try {
-            val data = DeletePostModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            val params = DeletePostUseCase.createRequestParams(id)
-            val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             return data
         } catch (e: Throwable) {

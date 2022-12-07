@@ -2,6 +2,6 @@
 <resources>
     <color name="pure_transparent">#00ffffff</color>
     <color name="tkpd_main_green_70">#b342b549</color>
-    <color name="background_splash_screen">#00aa5b</color>
+    <color name="background_splash_screen">#0BAA4B</color>
     <color name="grey">#888888</color>
 </resources>
