@@ -24,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
-
 /**
  * @author okasurya on 10/25/18.
  */
@@ -48,15 +47,20 @@ class TrackingRepository(
         return firebaseRemoteConfig!!
     }
 
-    private fun getLineDBFlush()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_FLUSH, 5000)
+    private fun getLineDBFlush() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_FLUSH, 5000)
     private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND, 400)
-    private fun getBatchPerPeriod()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_BATCH_SEND, 5)
+    private fun getBatchPerPeriod() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_BATCH_SEND, 5)
 
     suspend fun saveEvent(data: String, session: Session) =
         withContext(Dispatchers.IO) {
             try {
-                val tracking = Tracking(data, userSession.userId, userSession.deviceId,
-                    Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME)
+                val tracking = Tracking(
+                    data,
+                    userSession.userId,
+                    userSession.deviceId,
+                    Calendar.getInstance().timeInMillis,
+                    GlobalConfig.VERSION_NAME
+                )
                 trackingDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
                 setRelicLog("getCount", "total count")
@@ -89,8 +93,7 @@ class TrackingRepository(
     }
 
     private fun setRelicLog(queryName: String, queryParam: String) {
-        if(getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING)?:false) {
-            Log.e("Hii", "Inside Relic")
+        if (getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING) ?: false) {
             val relicMap = mapOf(
                 "queryName" to queryName,
                 "detail" to queryParam
@@ -109,8 +112,12 @@ class TrackingRepository(
 
     suspend fun sendSingleEvent(data: String, session: Session, eventName: String?): Boolean {
         try {
-            val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
-                    userSession.userId, userSession.deviceId)
+            val dataRequest = TrackingMapper().transformSingleEvent(
+                data,
+                session.getSessionId(),
+                userSession.userId,
+                userSession.deviceId
+            )
             val requestBody = ApiService.parse(dataRequest)
             val response = apiService.sendSingleEventAsync(requestBody)
             val isSuccessFul = response.isSuccessful
@@ -120,15 +127,20 @@ class TrackingRepository(
             }
             return isSuccessFul
         } catch (e: Exception) {
-            ServerLogger.log(Priority.P1, "IRIS_REALTIME_ERROR", mapOf("type" to "exception",
+            ServerLogger.log(
+                Priority.P1, "IRIS_REALTIME_ERROR",
+                mapOf(
+                    "type" to "exception",
                     "data" to data.take(ERROR_MAX_LENGTH).trim(),
-                    "err" to Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()))
+                    "err" to Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
+                )
+            )
             saveRealTimeCmData(eventName, data, session)
             return false
         }
     }
 
-    private suspend fun saveRealTimeCmData(eventName: String?, data: String, session: Session){
+    private suspend fun saveRealTimeCmData(eventName: String?, data: String, session: Session) {
         try {
             eventName?.let {
                 if (CM_REALTIME_EVENT_LIST.contains(it)) {
@@ -136,13 +148,17 @@ class TrackingRepository(
                     saveEvent(transformedEvent, session)
                 }
             }
-        }catch (e:Exception){
-            ServerLogger.log(Priority.P1, "IRIS_REALTIME_ERROR", mapOf("type" to "transform_exception",
+        } catch (e: Exception) {
+            ServerLogger.log(
+                Priority.P1, "IRIS_REALTIME_ERROR",
+                mapOf(
+                    "type" to "transform_exception",
                     "data" to data.take(ERROR_MAX_LENGTH).trim(),
-                    "err" to Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()))
+                    "err" to Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
+                )
+            )
         }
     }
-
 
     /**
      * @return data size that has been successfully send to server
@@ -150,8 +166,9 @@ class TrackingRepository(
      * 0 if no data send because it is already empty
      */
     suspend fun sendRemainingEvent(maxRow: Int): Int {
-        if (!cache.isEnabled())
+        if (!cache.isEnabled()) {
             return -1
+        }
 
         var counterLoop = 0
         val maxLoop = getBatchPerPeriod()
@@ -185,8 +202,13 @@ class TrackingRepository(
                 }
             } else {
                 lastSuccessSent = false
-                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "failedSendData",
-                        "data" to request.take(ERROR_MAX_LENGTH).trim()))
+                ServerLogger.log(
+                    Priority.P1, "IRIS",
+                    mapOf(
+                        "type" to "failedSendData",
+                        "data" to request.take(ERROR_MAX_LENGTH).trim()
+                    )
+                )
                 break
             }
             counterLoop++
