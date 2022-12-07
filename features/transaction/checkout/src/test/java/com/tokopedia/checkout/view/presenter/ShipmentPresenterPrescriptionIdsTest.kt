@@ -171,7 +171,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
                 false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+                checkoutId = CHECKOUT_ID, arrayListOf()
             )
         )
 
@@ -260,7 +260,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
                 false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+                checkoutId = CHECKOUT_ID, arrayListOf()
             )
         )
 
@@ -284,7 +284,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
                 false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+                checkoutId = CHECKOUT_ID, arrayListOf()
             )
         )
 
@@ -626,7 +626,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = true,
-                rejectedWording = rejectedWording
+                rejectedWording = rejectedWording,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf("0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -637,7 +641,10 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
         assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
-        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage)
+        assertEquals(
+            rejectedWording,
+            presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage
+        )
         assertEquals(false, presenter.shipmentCartItemModelList[1].cartItemModels[1].isError)
     }
 
@@ -716,7 +723,11 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         // Then
         assertEquals(
-            UploadPrescriptionUiModel(rejectedWording = rejectedWording),
+            UploadPrescriptionUiModel(
+                rejectedWording = rejectedWording,
+                shopIds = listOf("6554231"),
+                cartIds = listOf("0")
+            ),
             presenter.uploadPrescriptionUiModel
         )
         assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
@@ -845,7 +856,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = false,
-                uploadedImageCount = 2
+                uploadedImageCount = 2,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554231", "6554232"),
+                cartIds = listOf("0", "0", "0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1156,7 +1171,19 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = true,
-                uploadedImageCount = 4
+                uploadedImageCount = 4,
+                epharmacyGroupIds = arrayListOf("123", "124", "125"),
+                enablerNames = listOf(""),
+                shopIds = listOf(
+                    "6554231",
+                    "6554231",
+                    "6554232",
+                    "6554233",
+                    "6554234",
+                    "6554235",
+                    "6554236"
+                ),
+                cartIds = listOf("0", "0", "0", "0", "0", "0", "0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1399,7 +1426,10 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         // Then
         assertEquals(
-            UploadPrescriptionUiModel(),
+            UploadPrescriptionUiModel(
+                shopIds = listOf("6554231", "6554231", "6554232"),
+                cartIds = listOf("0", "0", "0", "0", "0", "0")
+            ),
             presenter.uploadPrescriptionUiModel
         )
     }
@@ -1528,7 +1558,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = false,
-                uploadedImageCount = 2
+                uploadedImageCount = 2,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554231", "6554232", "6554233", "6554234"),
+                cartIds = listOf("0", "0", "0", "0", "0", "0", "0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1546,65 +1580,6 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals("", presenter.shipmentCartItemModelList[2].consultationDataString)
         assertEquals("", presenter.shipmentCartItemModelList[2].tokoConsultationId)
         assertEquals("", presenter.shipmentCartItemModelList[2].partnerConsultationId)
-    }
-
-    @Test
-    fun `GIVEN rejected consultation in the only order WHEN set mini consultation result THEN should set error`() {
-        // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
-        val result = arrayListOf(
-            EPharmacyMiniConsultationResult(
-                epharmacyGroupId = "123",
-                shopInfo = listOf(
-                    ProductsInfo(
-                        shopId = "6554231",
-                        products = listOf(
-                            ProductsInfo.Product(
-                                productId = 2150389388,
-                                isEthicalDrug = true,
-                                itemWeight = 0.0,
-                                name = "",
-                                productImage = "",
-                                productTotalWeightFmt = "",
-                                quantity = 1,
-                            )
-                        ),
-                        partnerLogoUrl = "",
-                        shopLocation = "",
-                        shopLogoUrl = "",
-                        shopName = "",
-                        shopType = "",
-                    )
-                ),
-                prescriptionImages = listOf(),
-                consultationStatus = 4,
-                consultationString = "",
-                tokoConsultationId = "123",
-                partnerConsultationId = "321",
-                prescription = listOf(),
-            )
-        )
-        presenter.shipmentCartItemModelList = arrayListOf(
-            ShipmentCartItemModel(
-                shopId = 6554231,
-                cartItemModels = listOf(
-                    CartItemModel(
-                        productId = 2150389388
-                    )
-                ),
-                hasEthicalProducts = true
-            )
-        )
-        val rejectedWording = "rejectedWording"
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
-
-        // When
-        presenter.setMiniConsultationResult(result)
-
-        // Then
-        verify {
-            view.onNoValidCheckoutItem()
-        }
     }
 
     @Test
@@ -1707,7 +1682,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 rejectedWording = rejectedWording,
-                hasInvalidPrescription = true
+                hasInvalidPrescription = true,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232", "6554233"),
+                cartIds = listOf("0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1718,7 +1697,10 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
         assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
-        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage)
+        assertEquals(
+            rejectedWording,
+            presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage
+        )
         assertEquals(false, presenter.shipmentCartItemModelList[1].cartItemModels[1].isError)
 
         assertEquals(false, presenter.shipmentCartItemModelList[2].isError)
@@ -1955,7 +1937,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = true,
-                uploadedImageCount = 4
+                uploadedImageCount = 4,
+                epharmacyGroupIds = arrayListOf("123", "124", "125"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554231", "6554232", "6554233", "6554234"),
+                cartIds = listOf("0", "0", "0", "0", "0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )

@@ -2444,52 +2444,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void fetchEpharmacyData() {
         epharmacyUseCase.getEPharmacyPrepareProductsGroup(ePharmacyPrepareProductsGroupResponse -> {
-//            ArrayList<GroupData.EpharmacyGroup> epharmacyGroups = new ArrayList<>();
-//            ArrayList<GroupData.EpharmacyGroup.ProductsInfo> shopInfo = new ArrayList<>();
-//            ArrayList<GroupData.EpharmacyGroup.ProductsInfo.Product> products = new ArrayList<>();
-//            products.add(new GroupData.EpharmacyGroup.ProductsInfo.Product(
-//                    true,
-//                    null,
-//                    null,
-//                    2150458249L,
-//                    null,
-//                    null,
-//                    null
-//            ));
-//            shopInfo.add(new GroupData.EpharmacyGroup.ProductsInfo(
-//                    null,
-//                    products,
-//                    "6554231",
-//                    null,
-//                    null,
-//                    null,
-//                    null
-//            ));
-//            epharmacyGroups.add(new GroupData.EpharmacyGroup(
-//                    new GroupData.EpharmacyGroup.ConsultationData(
-//                            4,
-//                            "",
-//                            null,
-//                            null,
-//                            null,
-//                            null, null,
-//                            null, null
-//                    ),
-//                    null,
-//                    "1",
-//                    null,
-//                    null,
-//                    null,
-//                    shopInfo
-//            ));
-//            EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse1 = new EPharmacyPrepareProductsGroupResponse(
-//                    new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-//                            new GroupData(
-//                                    "",
-//                                    epharmacyGroups
-//                            )
-//                    )
-//            );
             processEpharmacyData(ePharmacyPrepareProductsGroupResponse);
             return Unit.INSTANCE;
         }, throwable -> {
@@ -2647,17 +2601,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             ArrayList<String> shopIds = new ArrayList<>();
             ArrayList<String> cartIds = new ArrayList<>();
             boolean hasInvalidPrescription = false;
-            boolean hasNonEthicalProduct = false;
-            boolean hasValidEthicalProduct = false;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 shopIds.add(String.valueOf(shipmentCartItemModel.getShopId()));
                 for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                     cartIds.add(String.valueOf(cartItemModel.getCartId()));
                 }
                 if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
-                    if (shipmentCartItemModel.getHasNonEthicalProducts()) {
-                        hasNonEthicalProduct = true;
-                    }
                     boolean updated = false;
                     boolean shouldResetCourier = false;
                     int productErrorCount = 0;
@@ -2712,7 +2661,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                             shipmentCartItemModel.setConsultationDataString(result.getConsultationString());
                                                             mapPrescriptionCount.put(result.getEpharmacyGroupId(), result.getPrescription().size());
                                                             updated = true;
-                                                            hasValidEthicalProduct = true;
                                                             break;
                                                         } else if (result.getPrescriptionImages() != null && !result.getPrescriptionImages().isEmpty()) {
                                                             ArrayList<String> prescriptionIds = new ArrayList<>();
@@ -2724,7 +2672,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                             shipmentCartItemModel.setPrescriptionIds(prescriptionIds);
                                                             mapPrescriptionCount.put(result.getEpharmacyGroupId(), prescriptionIds.size());
                                                             updated = true;
-                                                            hasValidEthicalProduct = true;
                                                             break;
                                                         }
                                                     }
@@ -2745,31 +2692,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             shipmentCartItemModel.setUnblockingErrorMessage(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, productErrorCount));
                             shipmentCartItemModel.setSpId(0);
                             getView().resetCourier(shipmentCartItemModel);
-                        } else if (!updated) {
-                            hasValidEthicalProduct = true;
                         }
                     }
-                } else if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasNonEthicalProducts()) {
-                    hasNonEthicalProduct = true;
                 }
             }
 
-            if (!hasNonEthicalProduct && hasInvalidPrescription && !hasValidEthicalProduct) {
-                getView().onNoValidCheckoutItem();
-            } else {
-                int totalPrescription = 0;
-                for (Integer value : mapPrescriptionCount.values()) {
-                    totalPrescription += value;
-                }
-                uploadPrescriptionUiModel.setEpharmacyGroupIds(new ArrayList<>(epharmacyGroupIds));
-                uploadPrescriptionUiModel.setError(false);
-                uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
-                uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
-                uploadPrescriptionUiModel.setEnablerNames(new ArrayList<>(enablerNames));
-                uploadPrescriptionUiModel.setShopIds(shopIds);
-                uploadPrescriptionUiModel.setCartIds(cartIds);
-                getView().updateUploadPrescription(uploadPrescriptionUiModel);
+            int totalPrescription = 0;
+            for (Integer value : mapPrescriptionCount.values()) {
+                totalPrescription += value;
             }
+            uploadPrescriptionUiModel.setEpharmacyGroupIds(new ArrayList<>(epharmacyGroupIds));
+            uploadPrescriptionUiModel.setError(false);
+            uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
+            uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
+            uploadPrescriptionUiModel.setEnablerNames(new ArrayList<>(enablerNames));
+            uploadPrescriptionUiModel.setShopIds(shopIds);
+            uploadPrescriptionUiModel.setCartIds(cartIds);
+            getView().updateUploadPrescription(uploadPrescriptionUiModel);
         }
     }
 
