@@ -26,6 +26,7 @@ import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.utils.LoginSocmedTestHelper
 import com.tokopedia.test.application.annotations.CassavaTest
+import org.hamcrest.CoreMatchers
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -188,7 +189,7 @@ class LoginActivityTest: LoginBase() {
     }
 
     private fun clickRegisterBottom(){
-        Espresso.onView(Matchers.allOf(withId(R.id.register_button), ViewMatchers.withContentDescription(R.string.content_desc_register_button_phone)))
+        Espresso.onView(CoreMatchers.allOf(withId(R.id.register_button), ViewMatchers.withContentDescription(R.string.content_desc_register_button_phone)))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(click())
     }

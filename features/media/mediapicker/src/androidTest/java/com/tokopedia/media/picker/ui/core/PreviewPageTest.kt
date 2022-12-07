@@ -17,7 +17,9 @@ import com.tokopedia.media.preview.ui.activity.pagers.adapter.PreviewPagerAdapte
 import com.tokopedia.media.preview.ui.player.VideoControlView
 import com.tokopedia.media.preview.ui.widget.pager.PreviewViewPager
 import com.tokopedia.picker.common.PickerResult
-import org.junit.Assert.*
+import org.hamcrest.CoreMatchers
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 
 
 abstract class PreviewPageTest : PreviewTest() {
@@ -39,7 +41,7 @@ abstract class PreviewPageTest : PreviewTest() {
 
         fun clickPlayerPauseButton() {
             onView(
-                Matchers.allOf(
+                CoreMatchers.allOf(
                     ViewMatchers.withId(R.id.exo_pause),
                     ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
                 )
@@ -50,7 +52,7 @@ abstract class PreviewPageTest : PreviewTest() {
 
         fun clickPlayerPlayButton() {
             onView(
-                Matchers.allOf(
+                CoreMatchers.allOf(
                     ViewMatchers.withId(R.id.exo_play),
                     ViewMatchers.isDisplayed()
                 )
@@ -61,7 +63,7 @@ abstract class PreviewPageTest : PreviewTest() {
 
         fun clickPreviewView() {
             onView(
-                Matchers.allOf(
+                CoreMatchers.allOf(
                     ViewMatchers.withId(R.id.video_control),
                     ViewMatchers.isDisplayed()
                 )
@@ -81,7 +83,7 @@ abstract class PreviewPageTest : PreviewTest() {
             }
 
             onView(
-                Matchers.allOf(
+                CoreMatchers.allOf(
                     ViewMatchers.withId(R.id.exo_progress),
                     ViewMatchers.isDisplayed()
                 )
@@ -168,7 +170,7 @@ abstract class PreviewPageTest : PreviewTest() {
 
         fun assertVideoControllerShow() {
             onView(
-                Matchers.allOf(
+                CoreMatchers.allOf(
                     ViewMatchers.withId(R.id.nav_container),
                     ViewMatchers.isDisplayed()
                 )

@@ -31,6 +31,7 @@ import com.tokopedia.deals.test.R
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Assert
@@ -134,9 +135,9 @@ class DealsPDPActivityTest {
 
     inner class NestedScrollViewExtension(scrolltoAction: ViewAction = ViewActions.scrollTo()) : ViewAction by scrolltoAction {
         override fun getConstraints(): Matcher<View> {
-            return Matchers.allOf(
+            return CoreMatchers.allOf(
                 ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
-                ViewMatchers.isDescendantOfA(Matchers.anyOf(ViewMatchers.isAssignableFrom(NestedScrollView::class.java),
+                ViewMatchers.isDescendantOfA(CoreMatchers.anyOf(ViewMatchers.isAssignableFrom(NestedScrollView::class.java),
                     ViewMatchers.isAssignableFrom(ScrollView::class.java),
                     ViewMatchers.isAssignableFrom(HorizontalScrollView::class.java),
                     ViewMatchers.isAssignableFrom(ListView::class.java))))

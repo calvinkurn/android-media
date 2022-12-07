@@ -802,7 +802,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertToolbarTitle(expectedTitle: String) {
         onView(
-            Matchers.allOf(
+            allOf(
                 withId(com.tokopedia.chat_common.R.id.title),
                 isDescendantOfA(withId(R.id.toolbar))
             )
@@ -854,7 +854,7 @@ abstract class TopchatRoomTest {
 
     protected fun clickSrwPreviewItemAt(position: Int) {
         onView(
-            Matchers.allOf(
+            allOf(
                 withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
                     position, R.id.tp_srw_title
                 ),

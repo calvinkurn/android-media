@@ -8,17 +8,32 @@ import android.widget.ListView
 import android.widget.ScrollView
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.*
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions.actionWithAssertions
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.TreeIterables
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 
@@ -106,10 +121,10 @@ fun smoothScrollTo(position: Int): ViewAction {
 class NestedScrollViewExtension(scrolltoAction: ViewAction = scrollTo()) :
     ViewAction by scrolltoAction {
     override fun getConstraints(): Matcher<View> {
-        return Matchers.allOf(
+        return CoreMatchers.allOf(
             withEffectiveVisibility(Visibility.VISIBLE),
             isDescendantOfA(
-                Matchers.anyOf(
+                CoreMatchers.anyOf(
                     isAssignableFrom(NestedScrollView::class.java),
                     isAssignableFrom(ScrollView::class.java),
                     isAssignableFrom(HorizontalScrollView::class.java),
@@ -126,7 +141,7 @@ object UnifyComponent {
     fun fillPinUnify(text: String): ViewAction {
         return actionWithAssertions(object : ViewAction {
             override fun getConstraints(): Matcher<View> {
-                return Matchers.allOf(isDisplayed(), isAssignableFrom(PinUnify::class.java))
+                return CoreMatchers.allOf(isDisplayed(), isAssignableFrom(PinUnify::class.java))
             }
 
             override fun getDescription(): String {
@@ -193,7 +208,7 @@ fun searchFor(matcher: Matcher<View>): ViewAction {
 fun clickClickableSpan(textToClick: CharSequence): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
-            return Matchers.instanceOf(Typography::class.java)
+            return CoreMatchers.instanceOf(Typography::class.java)
         }
 
         override fun getDescription(): String {
@@ -210,7 +225,8 @@ fun clickClickableSpan(textToClick: CharSequence): ViewAction {
                     .build()
             }
 
-            val spans = spannableString.getSpans(0, spannableString.length, ClickableSpan::class.java)
+            val spans =
+                spannableString.getSpans(0, spannableString.length, ClickableSpan::class.java)
             if (spans.isNotEmpty()) {
                 var spanCandidate: ClickableSpan?
                 for (span in spans) {

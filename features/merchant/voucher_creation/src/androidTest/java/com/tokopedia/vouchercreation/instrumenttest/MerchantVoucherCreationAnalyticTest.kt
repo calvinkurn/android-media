@@ -4,10 +4,14 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonMatcher
@@ -57,7 +61,7 @@ class MerchantVoucherCreationAnalyticTest {
         // swipe the recycler view up to make the next button visible to espresso
         onView(CommonMatcher.withTagStringValue("voucher_target_recycler_view")).perform(swipeUp())
         // input the voucher name
-        onView(Matchers.allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.fillVoucherNameTextfield))))
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.fillVoucherNameTextfield))))
                 .perform(ViewActions.typeText("Nama Voucher"), ViewActions.closeSoftKeyboard())
         // click the next button
         onView(CommonMatcher.withTagStringValue("voucher_target_next_step_button"))

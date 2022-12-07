@@ -21,7 +21,14 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
@@ -37,10 +44,13 @@ import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSea
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf
-import org.junit.*
-import java.util.*
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 
 /**
@@ -187,7 +197,7 @@ class HotelHomepageActivityTest {
     private fun nestedScrollTo(): ViewAction? {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
-                return Matchers.allOf(
+                return CoreMatchers.allOf(
                         isDescendantOfA(isAssignableFrom(NestedScrollView::class.java)),
                         withEffectiveVisibility(Visibility.VISIBLE))
             }
