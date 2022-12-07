@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -29,6 +29,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.view.viewmodel.PlayViewModelFactory
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -41,13 +42,12 @@ import javax.inject.Inject
  */
 class PlayYouTubeFragment @Inject constructor(
         private val analytic: PlayAnalytic,
-        private val playLog: PlayLog
+        private val playLog: PlayLog,
+        factory: PlayViewModelFactory.Creator,
 ): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener, YouTubeViewComponent.DataSource {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
     private val youtubeView by viewComponent { YouTubeViewComponent(it, R.id.fl_youtube_player, childFragmentManager, this, this) }
-
-    private lateinit var playViewModel: PlayViewModel
 
     private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
@@ -55,6 +55,10 @@ class PlayYouTubeFragment @Inject constructor(
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
+    private val playViewModel by activityViewModels<PlayViewModel> {
+        factory.create(this, channelId)
+    }
 
     private val orientationListener: PlayOrientationListener
         get() = requireActivity() as PlayOrientationListener
@@ -70,13 +74,6 @@ class PlayYouTubeFragment @Inject constructor(
     )
 
     override fun getScreenName(): String = "Play YouTube"
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(
-            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
-        ).get(PlayViewModel::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_youtube, container, false)

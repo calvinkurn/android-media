@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -19,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -44,6 +46,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.view.viewmodel.PlayViewModelFactory
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -69,7 +72,8 @@ class PlayBottomSheetFragment @Inject constructor(
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
     private val router: Router,
-) : TkpdBaseV4Fragment(),
+    factory: PlayViewModelFactory.Creator,
+    ) : TkpdBaseV4Fragment(),
     PlayFragmentContract,
     ProductSheetViewComponent.Listener,
     VariantSheetViewComponent.Listener,
@@ -91,7 +95,12 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val offset16 by lazy { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
 
-    private lateinit var playViewModel: PlayViewModel
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
+    private val playViewModel by activityViewModels<PlayViewModel> {
+        factory.create(this, channelId)
+    }
     private lateinit var viewModel: PlayBottomSheetViewModel
 
     private val variantSheetMaxHeight: Int
@@ -104,9 +113,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(
-            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
-        ).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayBottomSheetViewModel::class.java)
     }
 

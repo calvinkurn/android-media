@@ -10,7 +10,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.ViewModel
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -50,6 +50,7 @@ import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
 import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.viewmodel.PlayViewModelFactory
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
@@ -67,12 +68,12 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayFragment @Inject constructor(
-    viewModelFactory: PlayViewModel.Factory,
     private val pageMonitoring: PlayPltPerformanceCallback,
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
     private val router: Router,
-) :
+    factory: PlayViewModelFactory.Creator,
+    ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
         FragmentVideoViewComponent.Listener,
@@ -96,14 +97,11 @@ class PlayFragment @Inject constructor(
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
-    val viewModelProviderFactory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return viewModelFactory.create(channelId) as T
-        }
-    }
-
     private lateinit var playParentViewModel: PlayParentViewModel
-    private lateinit var playViewModel: PlayViewModel
+
+    private val playViewModel by activityViewModels<PlayViewModel> {
+        factory.create(this, channelId)
+    }
 
     private val keyboardWatcher = KeyboardWatcher()
 
@@ -123,8 +121,6 @@ class PlayFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(this, viewModelProviderFactory)
-            .get(PlayViewModel::class.java)
 
         val theActivity = requireActivity()
         if (theActivity is PlayActivity) {
