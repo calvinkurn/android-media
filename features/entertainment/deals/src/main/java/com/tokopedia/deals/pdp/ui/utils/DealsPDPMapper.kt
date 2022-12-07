@@ -1,13 +1,10 @@
 package com.tokopedia.deals.pdp.ui.utils
 
 import com.tokopedia.common_entertainment.data.CartData
-import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.common_entertainment.data.DealsVerifyRequest
 import com.tokopedia.common_entertainment.data.ItemMap
 import com.tokopedia.common_entertainment.data.MetaData
 import com.tokopedia.deals.common.utils.DealsUtils
-import com.tokopedia.deals.pdp.data.Brand
-import com.tokopedia.deals.pdp.data.Catalog
 import com.tokopedia.deals.pdp.data.DealRatingRequest
 import com.tokopedia.deals.pdp.data.DealsRatingUpdateRequest
 import com.tokopedia.deals.pdp.data.DealsRecommendMessage
@@ -15,8 +12,6 @@ import com.tokopedia.deals.pdp.data.DealsRecommendTrackingRequest
 import com.tokopedia.deals.pdp.data.DealsTravelMessage
 import com.tokopedia.deals.pdp.data.DealsTravelRecentSearchTrackingRequest
 import com.tokopedia.deals.pdp.data.Entertainment
-import com.tokopedia.deals.pdp.data.Media
-import com.tokopedia.deals.pdp.data.Outlet
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.data.RecentData
 import com.tokopedia.deals.pdp.data.TravelRecentSearch

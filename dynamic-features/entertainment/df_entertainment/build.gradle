@@ -58,6 +58,4 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp)
     implementation projectOrAar(rootProject.ext.features.event)
     implementation projectOrAar(rootProject.ext.features.deals)
-    implementation projectOrAar(rootProject.ext.features.digitalDeals)
-
 }
