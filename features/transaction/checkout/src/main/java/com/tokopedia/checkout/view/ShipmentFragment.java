@@ -4008,7 +4008,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         for (int i = shipmentDataList.size() - 1; i >= 0; i--) {
             if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
                 UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                if (uploadPrescriptionUiModel.getConsultationFlow()) {
+                if (uploadPrescriptionUiModel.getConsultationFlow() && uploadPrescriptionUiModel.getShowImageUpload()) {
                     RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
                     if (viewHolder instanceof UploadPrescriptionViewHolder) {
                         ePharmacyAnalytics.clickPilihPembayaran(
@@ -4019,6 +4019,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         );
                     }
                 }
+                break;
             }
         }
     }
