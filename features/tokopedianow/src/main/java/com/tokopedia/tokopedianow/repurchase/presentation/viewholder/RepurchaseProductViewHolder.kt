@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RepurchaseProductViewHolder(

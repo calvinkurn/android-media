@@ -36,7 +36,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseE
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseLoadingViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseSortFilterViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 
 class RepurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,

@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendat
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
 object SimilarProductMapper {
-    const val POSITION_OFFSET = 1
+    private const val POSITION_OFFSET = 1
     fun mapToProductUiModel(index: Int, product: RecommendationItem): SimilarProductUiModel? {
         val position = index + POSITION_OFFSET
         return product.stock?.let { stock ->

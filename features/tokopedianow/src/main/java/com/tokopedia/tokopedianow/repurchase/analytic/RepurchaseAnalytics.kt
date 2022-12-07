@@ -53,8 +53,9 @@ import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant
+import java.io.Serializable
 
-class RepurchaseAnalytics {
+class RepurchaseAnalytics: Serializable {
 
     object CATEGORY{
         const val EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW = "repurchase page tokonow"

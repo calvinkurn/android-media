@@ -42,6 +42,18 @@ class SimilarProductViewHolder(
         setOnClickListener(product)
     }
 
+    override fun bind(product: SimilarProductUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && product != null) {
+            renderProductInfo(product)
+            renderSlashedPrice(product)
+            renderDiscountLabel(product)
+            renderProductButton(product)
+            renderQuantityEditor(product)
+            renderDeleteBtn(product)
+            setOnClickListener(product)
+        }
+    }
+
     private fun renderProductInfo(product: SimilarProductUiModel) {
         binding?.apply {
             textName.text = product.name

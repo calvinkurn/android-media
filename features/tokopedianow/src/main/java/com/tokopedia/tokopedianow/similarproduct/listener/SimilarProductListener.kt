@@ -1,8 +1,9 @@
-package com.tokopedia.tokopedianow.searchcategory.presentation.listener
+package com.tokopedia.tokopedianow.similarproduct.listener
 
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
+import java.io.Serializable
 
-interface SimilarProductListener {
+interface SimilarProductListener: Serializable {
     fun trackClickSimilarProductBtn(productId: String)
 
     fun trackImpressionBottomSheet(userId: String, warehouseId: String, productId: String, similarProducts: ArrayList<SimilarProductUiModel>)
@@ -14,5 +15,4 @@ interface SimilarProductListener {
     fun trackClickCloseBottomsheet(warehouseId: String, productId: String, similarProducts: ArrayList<SimilarProductUiModel>)
 
     fun trackImpressionEmptyState(warehouseId: String, productId: String)
-
 }

@@ -4,28 +4,28 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.tokopedianow.common.base.activity.BaseTokoNowActivity
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.similarproduct.fragment.TokoNowSimilarProductFragment
 
 class TokoNowSimilarProductActivity: BaseTokoNowActivity() {
 
     companion object {
-        private var listener: SimilarProductListener? = null
-        const val EXTRA_SIMILAR_PRODUCT_ID = "extra_similar_product_list"
+        const val EXTRA_SIMILAR_PRODUCT_ID = "extra_similar_product_id"
+        const val EXTRA_SIMILAR_PRODUCT_LISTENER = "extra_similar_product_listener_wrapper"
 
         fun createNewIntent(context: Context, products: String, listener: SimilarProductListener?): Intent {
-            this.listener = listener
             return Intent(context, TokoNowSimilarProductActivity::class.java).apply {
                 putExtra(EXTRA_SIMILAR_PRODUCT_ID, products)
+                putExtra(EXTRA_SIMILAR_PRODUCT_LISTENER, listener)
             }
         }
     }
 
     override fun getFragment(): Fragment {
-        val products = intent
-            ?.getStringExtra(EXTRA_SIMILAR_PRODUCT_ID)
+        val products = intent?.getStringExtra(EXTRA_SIMILAR_PRODUCT_ID)
+        val listenerWrapper = intent?.getSerializableExtra(EXTRA_SIMILAR_PRODUCT_LISTENER) as? SimilarProductListener
         return TokoNowSimilarProductFragment.newInstance(products).apply {
-            setListener(listener)
+            setListener(listenerWrapper)
         }
     }
 }
