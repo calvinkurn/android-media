@@ -66,4 +66,12 @@ class SearchPageViewModelTest {
 
         Assert.assertEquals(searchPageViewModel.getAddress(), address)
     }
+
+    @Test
+    fun `verify set gms availability flag is correct`() {
+        val gmsAvailable = true
+        searchPageViewModel.isGmsAvailable = gmsAvailable
+
+        Assert.assertEquals(searchPageViewModel.isGmsAvailable, gmsAvailable)
+    }
 }

@@ -72,6 +72,7 @@ import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -163,7 +164,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
-        TokoPatch.init(this);
+        initRobust();
         createAndCallPostSeq();
         initializeAbTestVariant();
         createAndCallFetchAbTest();
@@ -182,6 +183,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+    }
+
+    private void initRobust() {
+        if(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_ENABLE_ROBUST, false)) {
+            TokoPatch.init(this);
+        }
     }
 
     private void initializationNewRelic() {
@@ -273,6 +280,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return null;
             }
         }));
+        registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {

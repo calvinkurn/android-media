@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/feedback_bottomsheet_cl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    >
+   <com.tokopedia.unifyprinciples.Typography
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="@string/tokopedianow_feedback_bottomsheet_desc"
+       app:typographyType="display_2"
+       />
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:id="@+id/feedback_bm_textfield"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_text_field_maxline="3"
+        android:layout_marginTop="10dp"
+        />
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/feedback_bm_cta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/tokopedianow_feedback_bottomsheet_btn_text"
+        android:layout_marginTop="16dp"
+        android:enabled="false"
+        />
+</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

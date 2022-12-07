@@ -165,7 +165,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         outState.putString(KEY_CACHE_MANAGER_ID, cacheManager.id)
     }
 
-    override fun dispatchTouchEvent(e: MotionEvent?): Boolean {
+    override fun dispatchTouchEvent(e: MotionEvent): Boolean {
         autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
             e != null && !e.isAboveCloseButton() && !e.isAboveReviewerBasicInfo() &&
@@ -512,7 +512,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private inner class DetailedReviewMediaGalleryGestureListener : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             sharedReviewMediaGalleryViewModel.toggleOverlayVisibility()
             return true
         }

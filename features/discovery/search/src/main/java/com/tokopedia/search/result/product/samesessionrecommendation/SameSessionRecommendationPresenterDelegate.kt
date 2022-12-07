@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.samesessionrecommendation
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
@@ -41,6 +42,9 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         get() = productFilterIndicator.isAnyFilterOrSortActive
             || !isHideRecommendationExceedThreshold
 
+    private val productItemList: List<ProductItemDataView>?
+        get() = viewUpdater.itemList?.filterIsInstance<ProductItemDataView>()
+
     fun requestSameSessionRecommendation(
         item: ProductItemDataView,
         adapterPosition: Int,
@@ -51,11 +55,6 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         if (viewUpdater.itemCount < adapterPosition) return
 
         if (isFilterOrFeedbackActive) return
-
-        val targetPosition = adapterPosition + 1
-        val isNextItemIsSameSessionRecommendation =
-            viewUpdater.getItemAtIndex(targetPosition) is SameSessionRecommendationDataView
-        if (isNextItemIsSameSessionRecommendation) return
 
         if (!item.isKeywordIntentionLow) return
 
@@ -113,8 +112,23 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         recommendation: SameSessionRecommendationDataView,
         selectedProduct: ProductItemDataView,
     ) {
-        viewUpdater.insertItemAfter(recommendation, selectedProduct)
+        val selectedProductIndex = viewUpdater.itemList?.indexOf(selectedProduct) ?: -1
+        val nextItem = getNextOfSelectedItem(selectedProductIndex, selectedProduct)
+
+        val selectedProductPosition = productItemList?.indexOf(selectedProduct) ?: -1
+
+        val targetItem = if (selectedProductPosition.isOdd()) selectedProduct else nextItem
+        viewUpdater.insertItemAfter(recommendation, targetItem)
+        // prevent same session recommendation is displayed directly
+        viewUpdater.scrollToPosition(selectedProductIndex)
     }
+
+    private fun getNextOfSelectedItem(
+        selectedProductIndex: Int,
+        selectedProduct: ProductItemDataView,
+    ) = viewUpdater.getItemAtIndex(selectedProductIndex + 1)?.takeIf {
+        it is ProductItemDataView
+    } ?: selectedProduct
 
     fun handleFeedbackItemClick(
         feedback: Feedback,

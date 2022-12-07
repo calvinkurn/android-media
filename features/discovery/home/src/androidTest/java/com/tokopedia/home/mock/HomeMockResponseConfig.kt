@@ -22,6 +22,7 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         const val KEY_CONTAINS_WIDGET_TAB = "widget_tab"
         const val KEY_CONTAINS_WIDGET_GRID = "widget_grid"
         const val KEY_CONTAINS_DYNAMIC_HOME_RECOM_FEED = "recommendation_product"
+        const val KEY_CONTAINS_DYNAMIC_HOME_RECOM_FEED_V2 = "getHomeRecommendationProductV2"
         const val KEY_CONTAINS_SUGGESTED_REVIEW = "suggestedProductReview"
         const val KEY_CONTAINS_PLAY_DC = "playGetLiveDynamicChannels"
         const val KEY_CONTAINS_RECHARGE = "rechargeRecommendation"
@@ -29,6 +30,7 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         const val KEY_CONTAINS_SALAM = "salamWidget"
         const val KEY_CONTAINS_POPULAR_KEYWORDS = "PopularKeywords"
         const val KEY_CONTAINS_RECOMMENDATION_TAB = "getRecommendation"
+        const val KEY_CONTAINS_RECOMMENDATION_TAB_V2 = "getHomeRecommendationTabV2"
         const val KEY_CONTAINS_UNIVERSE_PLACEHOLDER = "universe_placeholder"
         const val KEY_QUERY_FLOATING_EGG = "gamiFloating"
         const val KEY_CONTAINS_TOKOPOINTS_LIST = "tokopointsDrawerList"
@@ -43,7 +45,7 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         const val KEY_CONTAINS_PLAY_GET_WIDGET_V2 = "playGetWidgetV2"
         const val KEY_CONTAINS_OCC = "mutation add_to_cart_occ_multi"
         const val KEY_CONTAINS_SLIDE = "homeSlides"
-        const val KEY_CONTAINS_HOME_BANNER_V2 ="getHomeBannerV2"
+        const val KEY_CONTAINS_HOME_BANNER_V2 = "getHomeBannerV2"
         const val KEY_CONTAINS_CM_HOME_WIDGET = "notifier_getHtdw"
         const val KEY_CONTAINS_PAYLATER_WIDGET = "paylater_getHomeWidget"
         const val KEY_CONTAINS_MISSION_WIDGET = "getHomeMissionWidget"
@@ -118,6 +120,12 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         )
 
         addMockResponse(
+            KEY_CONTAINS_DYNAMIC_HOME_RECOM_FEED_V2,
+            getRawString(context, R.raw.response_mock_data_dynamic_home_recom_feed_v2),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
             KEY_CONTAINS_POPULAR_KEYWORDS,
             getRawString(context, R.raw.response_mock_data_dynamic_home_popular_keyword),
             FIND_BY_CONTAINS
@@ -174,6 +182,12 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         addMockResponse(
             KEY_CONTAINS_RECOMMENDATION_TAB,
             getRawString(context, R.raw.response_mock_data_dynamic_home_recom_feed_tab),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_CONTAINS_RECOMMENDATION_TAB_V2,
+            getRawString(context, R.raw.response_mock_data_dynamic_home_recom_feed_tab_v2),
             FIND_BY_CONTAINS
         )
 
@@ -239,8 +253,11 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
 
         addMockResponse(
             KEY_CONTAINS_WALLETAPP_GETBALANCES,
-            if (isLinkedBalanceWidget) getRawString(context, R.raw.response_mock_data_walletapp)
-            else getRawString(context, R.raw.response_mock_data_walletapp_not_linked),
+            if (isLinkedBalanceWidget) {
+                getRawString(context, R.raw.response_mock_data_walletapp)
+            } else {
+                getRawString(context, R.raw.response_mock_data_walletapp_not_linked)
+            },
             FIND_BY_CONTAINS
         )
         addMockResponse(

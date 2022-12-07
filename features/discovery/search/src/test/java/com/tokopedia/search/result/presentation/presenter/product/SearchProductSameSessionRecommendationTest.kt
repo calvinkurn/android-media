@@ -17,7 +17,6 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
-import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
@@ -36,6 +35,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     private val recommendationSlot = slot<SameSessionRecommendationDataView>()
     private val selectedVisitableSlot = slot<Visitable<*>>()
     private val requestParamsSlot = slot<RequestParams>()
+    private val selectedVisitableIndexSlot = slot<Int>()
 
     private val warehouseId = "2216"
     private val dummyChooseAddressData = LocalCacheModel(
@@ -66,6 +66,8 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
 
+        `Given viewUpdater getItemAtPosition`(productItemDataViewIndex + 1)
+
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
@@ -74,7 +76,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     }
 
     @Test
-    fun `Product click return recommendation`() {
+    fun `Odd Position Product click return recommendation`() {
         `Setup choose address data`(dummyChooseAddressData)
         setUp()
 
@@ -93,12 +95,45 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
+        val nextProductItemDataView = visitableList[productItemDataViewIndex + 1] as ProductItemDataView
+
+        `Given viewUpdater getItemAtPosition`(productItemDataViewIndex + 1)
 
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
         `Then assert same session request params`(productItemDataView, dummyChooseAddressData)
-        `Then verify recommendationItem`(sameSessionRecommendation, productItemDataView)
+        `Then verify recommendationItem`(sameSessionRecommendation, nextProductItemDataView, productItemDataViewIndex)
+    }
+
+    @Test
+    fun `Even Position Product click return recommendation`() {
+        `Setup choose address data`(dummyChooseAddressData)
+        setUp()
+
+        val lowIntentionKeywordResponse =
+            searchProductLowIntentKeywordResponseJSON.jsonToObject<SearchProductModel>()
+        val sameSessionRecommendation =
+            sameSessionRecommendationResponseJSON.jsonToObject<SearchSameSessionRecommendationModel>()
+        `Given view already load data`(lowIntentionKeywordResponse)
+        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
+            sameSessionRecommendation
+        )
+        `Given recyclerViewUpdater`()
+        `Given same session recommendation preference will return empty`()
+        `Given product filter indicator has default sorting and no active filter`()
+        `Given queryKeyProvider queryKey return empty string`()
+
+        val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView } + 1
+        val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
+
+        `Given viewUpdater getItemAtPosition`(productItemDataViewIndex + 1)
+
+        `When product item is clicked`(productItemDataView, productItemDataViewIndex)
+
+        `Then verify same session recommendation API called once`()
+        `Then assert same session request params`(productItemDataView, dummyChooseAddressData)
+        `Then verify recommendationItem`(sameSessionRecommendation, productItemDataView, productItemDataViewIndex)
     }
 
     @Test
@@ -225,8 +260,18 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     }
 
     private fun `Given recyclerViewUpdater`() {
+        `Given viewUpdater itemList return visitableList`()
         `Given viewUpdater itemCount return visitableList size`()
         `Given recyclerViewUpdater addSameSessionRecommendation`()
+        `Given viewUpdater scrollToPosition`()
+    }
+
+    private fun `Given viewUpdater itemList return visitableList`() {
+        every { viewUpdater.itemList } returns visitableList
+    }
+
+    private fun `Given viewUpdater getItemAtPosition`(position: Int) {
+        every { viewUpdater.getItemAtIndex(position) } returns visitableList[position]
     }
 
     private fun `Given viewUpdater itemCount return visitableList size`() {
@@ -239,6 +284,12 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
                 capture(recommendationSlot),
                 capture(selectedVisitableSlot)
             )
+        } just runs
+    }
+
+    private fun `Given viewUpdater scrollToPosition`() {
+        every {
+            viewUpdater.scrollToPosition(capture(selectedVisitableIndexSlot))
         } just runs
     }
 
@@ -255,7 +306,8 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private fun `Then verify recommendationItem`(
         expectedRecommendation: SearchSameSessionRecommendationModel,
-        expectedSelectedProduct: Visitable<*>,
+        expectedPreviousProduct: Visitable<*>,
+        expectedProductPosition: Int,
     ) {
         verify {
             viewUpdater.removeFirstItemWithCondition(any())
@@ -263,8 +315,10 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
                 recommendationSlot.captured,
                 selectedVisitableSlot.captured
             )
+            viewUpdater.scrollToPosition(selectedVisitableIndexSlot.captured)
         }
-        Assert.assertEquals(expectedSelectedProduct, selectedVisitableSlot.captured)
+        expectedProductPosition shouldBe selectedVisitableIndexSlot.captured
+        expectedPreviousProduct shouldBe selectedVisitableSlot.captured
         expectedRecommendation.assertRecommendation(recommendationSlot.captured)
     }
 
