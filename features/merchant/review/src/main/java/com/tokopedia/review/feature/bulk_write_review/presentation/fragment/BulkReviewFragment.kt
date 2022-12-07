@@ -22,9 +22,16 @@ import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller.SNAP_TO_START
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getVisiblePercent
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -74,6 +81,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         private const val MAX_IMAGE_COUNT = 4
         private const val MAX_VIDEO_SIZE_BYTE = 250L * 1024L * 1024L
         private const val REQUEST_CODE_IMAGE = 111
+        private const val BULK_REVIEW_COACH_MARK_TAG = "BULK_REVIEW_COACH_MARK_TAG"
     }
 
     @Inject
@@ -90,9 +98,10 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(requireActivity(), viewModelFactory).get(BulkReviewViewModel::class.java)
     }
-    private val bottomSheetHandler by lazy(LazyThreadSafetyMode.NONE) { BottomSheetHandler() }
-    private val dialogHandler by lazy(LazyThreadSafetyMode.NONE) { DialogHandler() }
     private val activityResultHandler by lazy(LazyThreadSafetyMode.NONE) { ActivityResultHandler() }
+    private val bottomSheetHandler by lazy(LazyThreadSafetyMode.NONE) { BottomSheetHandler() }
+    private val coachMarkHandler by lazy(LazyThreadSafetyMode.NONE) { CoachMarkHandler() }
+    private val dialogHandler by lazy(LazyThreadSafetyMode.NONE) { DialogHandler() }
 
     override fun getScreenName(): String {
         return BulkReviewFragment::class.java.simpleName
@@ -419,6 +428,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                             loaderBulkReview.gone()
                             globalErrorBulkReview.gone()
                             widgetBulkReviewSubmitLoader.gone()
+                            coachMarkHandler.tryShowCoachMark()
                             continuation.resume(Unit)
                         }
                     }
@@ -634,6 +644,54 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
         fun dismissBulkReviewExpandedTextAreaBottomSheet() {
             getBulkReviewExpandedTextAreaBottomSheet()?.dismiss()
+        }
+    }
+
+    private inner class CoachMarkHandler {
+        fun tryShowCoachMark() {
+            context?.let { context ->
+                if (!CoachMarkPreference.hasShown(context, BULK_REVIEW_COACH_MARK_TAG)) {
+                    CoachMarkPreference.setShown(context, BULK_REVIEW_COACH_MARK_TAG, true)
+                    val coachMark = CoachMark2(context)
+                    val anchorView = getAnchorView()
+                    if (anchorView != null) {
+                        val scrollListener = object : OnScrollListener() {
+                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                                if (getVisiblePercent(anchorView) == -1) {
+                                    coachMark.dismissCoachMark()
+                                    binding?.rvBulkReviewItems?.removeOnScrollListener(this)
+                                }
+                            }
+                        }
+                        coachMark.showCoachMark(
+                            arrayListOf(
+                                CoachMark2Item(
+                                    anchorView = anchorView,
+                                    title = String.EMPTY,
+                                    description = context.getString(R.string.bulk_review_coach_mark_description)
+                                )
+                            )
+                        )
+                        binding?.rvBulkReviewItems?.addOnScrollListener(scrollListener)
+                        coachMark.setOnDismissListener {
+                            binding?.rvBulkReviewItems?.removeOnScrollListener(scrollListener)
+                        }
+                    }
+                }
+            }
+        }
+
+        private fun getAnchorView(): View? {
+            val layoutManager = binding?.rvBulkReviewItems?.layoutManager as? LinearLayoutManager
+            val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition().orZero().coerceAtLeast(Int.ZERO)
+            val lastVisibleItemPosition = layoutManager?.findLastVisibleItemPosition().orZero().coerceAtLeast(Int.ZERO)
+            for (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                layoutManager
+                    ?.findViewByPosition(i)
+                    ?.findViewById<View>(R.id.divider_bulk_write_review_form_actions)
+                    ?.let { return it }
+            }
+            return null
         }
     }
 

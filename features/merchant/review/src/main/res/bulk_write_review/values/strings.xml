@@ -27,4 +27,5 @@
     <string name="toaster_bulk_review_success_remove_review_item">1 barang berhasil dihapus dari daftar.</string>
     <string name="toaster_bulk_review_failed_submit_reviews">Ulasan tidak terkirim. Cek koneksi internet kamu &amp; coba lagi, ya</string>
     <string name="toaster_bulk_review_success_submit_reviews_partially">Beberapa ulasan tidak terkirim. Cek koneksi internet kamu &amp; coba lagi, ya</string>
+    <string name="bulk_review_coach_mark_description">Biar gampang dan cepat, rating sudah diisiin buat kamu. Tapi kamu masih bisa ubah, kok. 👍</string>
 </resources>

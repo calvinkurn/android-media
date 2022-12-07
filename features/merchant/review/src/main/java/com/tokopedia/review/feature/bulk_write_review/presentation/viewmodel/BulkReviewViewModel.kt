@@ -454,7 +454,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     fun onBackPressed(): Boolean {
-        return if (submitBulkReviewRequestState.value is RequestState.Requesting) {
+        return if (shouldSubmitReview.value && submitBulkReviewRequestState.value is RequestState.Requesting) {
             showCancelReviewSubmissionDialog()
             true
         } else false
