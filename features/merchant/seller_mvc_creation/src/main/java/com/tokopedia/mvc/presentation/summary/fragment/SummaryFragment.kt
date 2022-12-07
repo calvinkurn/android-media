@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -43,6 +45,7 @@ class SummaryFragment: BaseDaggerFragment() {
 
     companion object {
         private const val CORNER_RADIUS_HEADER = 16
+        private const val TNC_LINK = "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
         @JvmStatic
         fun newInstance(
             pageMode: PageMode?,
@@ -146,23 +149,42 @@ class SummaryFragment: BaseDaggerFragment() {
     }
 
     private fun SmvcVoucherDetailVoucherTypeSectionBinding.setupLayoutType() {
+        val configuration = viewModel.configuration.value
+        tpgEditAction.setOnClickListener {
+            onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
+        }
         tpgEditAction.visible()
     }
 
     private fun SmvcVoucherDetailVoucherInfoSectionBinding.setupLayoutInfo() {
+        val configuration = viewModel.configuration.value
+        tpgEditAction.setOnClickListener {
+            onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
+        }
         tpgEditAction.visible()
     }
 
     private fun SmvcVoucherDetailVoucherSettingSectionBinding.setupLayoutSetting() {
+        val configuration = viewModel.configuration.value
+        tpgEditAction.setOnClickListener {
+            onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
+        }
         tpgEditAction.visible()
     }
 
     private fun SmvcVoucherDetailProductSectionBinding.setupLayoutProducts() {
+        val configuration = viewModel.configuration.value
+        tpgEditAction.setOnClickListener {
+            onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
+        }
         tpgEditAction.visible()
     }
 
     private fun SmvcFragmentSummarySubmissionBinding.setupLayoutSubmission() {
-        cbTnc.text = MethodChecker.fromHtml(getString(R.string.smvc_summary_page_tnc_text))
+        tfTnc.text = MethodChecker.fromHtml(getString(R.string.smvc_summary_page_tnc_text))
+        tfTnc.setOnClickListener {
+            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$TNC_LINK")
+        }
     }
 
     private fun SmvcVoucherDetailVoucherSettingSectionBinding.updatePageData(
@@ -220,5 +242,25 @@ class SummaryFragment: BaseDaggerFragment() {
             getString(R.string.smvc_summary_page_product_coupon_text)
         else
             getString(R.string.smvc_summary_page_shop_coupon_text)
+    }
+
+    private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
+        // TODO: redirect to step 1
+    }
+
+    private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
+        // TODO: redirect to step 2
+    }
+
+    private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
+        // TODO: redirect to step 3
+    }
+
+    private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
+        // TODO: redirect to product coupon
+    }
+
+    private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
+        // TODO: redirect to product coupon
     }
 }

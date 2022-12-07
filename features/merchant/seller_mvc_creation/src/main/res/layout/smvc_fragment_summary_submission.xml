@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingHorizontal="16dp"
@@ -12,23 +12,38 @@
         android:id="@+id/labelSpendingEstimation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title_placeholder_text="@string/smvc_summary_page_max_expense_title"
+        app:layout_constraintTop_toTopOf="parent"
         app:description_placeholder_text="@string/smvc_summary_page_max_expense_desc"
-        tools:spending_estimation_placeholder_text="Rp3.200.000"/>
+        app:title_placeholder_text="@string/smvc_summary_page_max_expense_title"
+        tools:spending_estimation_placeholder_text="Rp3.200.000" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cbTnc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        tools:text="Saya menyetujui Syarat &amp; Ketentuan Pembuatan Kupon."
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelSpendingEstimation" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfTnc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/cbTnc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cbTnc"
+        app:layout_constraintTop_toTopOf="@+id/cbTnc"
+        app:typographyType="paragraph_3"
+        tools:text="TNC text" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/smvc_summary_page_submit_text"
+        app:layout_constraintTop_toBottomOf="@+id/tfTnc"
         app:unifyButtonSize="medium"
-        android:text="@string/smvc_summary_page_submit_text" />
+        tools:layout_editor_absoluteX="16dp" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>
