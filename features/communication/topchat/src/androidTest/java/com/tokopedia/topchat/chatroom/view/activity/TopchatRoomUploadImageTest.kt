@@ -18,13 +18,11 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
-import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.number.OrderingComparison
 import org.junit.After
 import org.junit.Test
 
@@ -93,7 +91,6 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
         assertImageContainerAtPosition(1, matches(isDisplayed()))
-        onView(withId(R.id.recycler_view_chatroom)).check(withItemCount(OrderingComparison.greaterThan(count)))
     }
 
     @Test
