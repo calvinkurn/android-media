@@ -353,6 +353,7 @@ class DetailEditorFragment @Inject constructor(
         if (requestCode == ADD_LOGO_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
             addLogoComponent.initUploadAvatar(elements.originalPaths.first())
+            viewModel.setLocalLogo(elements.originalPaths.first())
         }
     }
 
@@ -547,7 +548,8 @@ class DetailEditorFragment @Inject constructor(
                     addLogoComponent.setupView(
                         originalImageWidth,
                         originalImageHeight,
-                        viewModel.getAvatarShop()
+                        avatarUrl = viewModel.getAvatarShop(),
+                        localAvatarUrl = viewModel.getLocalLogo()
                     )
                 }
             }

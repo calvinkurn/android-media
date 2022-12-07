@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import java.util.concurrent.CountDownLatch
 
 interface AddLogoFilterRepository {
@@ -13,12 +14,17 @@ interface AddLogoFilterRepository {
         imageAddedUrl: String,
         sourcePath: String
     ): String
+
+    fun setLocalLogo(path: String)
+    fun getLocalLogo(): String
 }
 
 class AddLogoFilterRepositoryImpl(
     private val context: Context,
     private val saveImage: SaveImageRepository
 ): AddLogoFilterRepository {
+    private val localCacheHandler = LocalCacheHandler(context, PREF_NAME_CACHE_ADD_LOGO)
+
     override fun flattenImage(
         imageBaseUrl: String,
         imageAddedUrl: String,
@@ -57,7 +63,19 @@ class AddLogoFilterRepositoryImpl(
         return saveImage.saveToCache(baseBitmap, sourcePath = sourcePath)?.path ?: ""
     }
 
+    override fun setLocalLogo(path: String) {
+        localCacheHandler.putString(KEY_LOCAL_LOGO, path)
+        localCacheHandler.applyEditor()
+    }
+
+    override fun getLocalLogo(): String {
+        return localCacheHandler.getString(KEY_LOCAL_LOGO, "")
+    }
+
     companion object {
+        private const val PREF_NAME_CACHE_ADD_LOGO = "cache_add_logo_editor"
+        private const val KEY_LOCAL_LOGO = "local_logo_path"
+
         const val XY_FLATTEN_COORDINATE = 0f
     }
 }
