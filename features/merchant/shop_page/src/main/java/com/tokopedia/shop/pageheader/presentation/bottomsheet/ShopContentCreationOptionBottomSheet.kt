@@ -40,6 +40,11 @@ class ShopContentCreationOptionBottomSheet : BottomSheetUnify() {
         _binding = null
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+    }
+
     private fun setupBottomSheet(inflater: LayoutInflater) {
         _binding = BottomSheetShopContentCreationOptionBinding.inflate(inflater)
         setChild(binding.root)
