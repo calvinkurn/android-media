@@ -165,4 +165,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackEventProductBundlingAtcClick(componentsItems: ComponentsItem, selectedMultipleBundle: BundleDetailUiModel) {}
     open fun trackEventProductBundlingViewImpression(componentsItems: ComponentsItem, selectedBundle: BundleDetailUiModel, bundlePosition: Int) {}
     open fun trackEventProductBundlingCarouselImpression(componentsItems: ComponentsItem, bundledProductList: List<BundleUiModel>, totalBundlings: Int, totalBundleSeenPosition: Int, lastVisibleItemPosition: Int) {}
+    open fun trackContentCardImpression(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackContentCardClick(componentsItems: ComponentsItem, userID: String?) {}
 }
