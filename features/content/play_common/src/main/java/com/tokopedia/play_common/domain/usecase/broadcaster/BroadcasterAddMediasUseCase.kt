@@ -55,7 +55,7 @@ class BroadcasterAddMediasUseCase @Inject constructor(
         const val QUERY_NAME = "BroadcasterAddMediasUseCaseQuery"
         const val QUERY = """
             mutation BroadcasterAddMedias(
-                ${"$$PARAM_REQ"}: [BroadcasterAddMediaRequest]!
+                ${"$$PARAM_REQ"}: [broadcasterAddMediaRequest]!
             ) {
                 broadcasterAddMedias(
                     $PARAM_REQ: ${"$$PARAM_REQ"} 
