@@ -15,13 +15,13 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailFragment
 
 class ContentDetailActivity : BaseSimpleActivity() {
-    var contentDetailFirstPostData : FeedXCard? = null
-
+    var contentDetailFirstPostData: FeedXCard? = null
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle().apply {
             putString(
-                PARAM_POST_ID, postId()
+                PARAM_POST_ID,
+                postId()
             )
         }
         return ContentDetailFragment.newInstance(bundle)
@@ -42,7 +42,19 @@ class ContentDetailActivity : BaseSimpleActivity() {
     }
 
     fun getSource(): String {
-        return intent?.extras?.getString(PARAM_ENTRY_POINT) ?: SHARE_LINK
+        return if (checkSourceIsPushNotication()) {
+            return SOURCE_PUSH_NOTIFICATION
+        } else {
+            intent?.extras?.getString(PARAM_ENTRY_POINT) ?: SHARE_LINK
+        }
+    }
+
+    private fun checkSourceIsPushNotication(): Boolean {
+        return intent?.extras?.getString(PARAM_UTM_MEDIUM).isNullOrEmpty()
+            .not() && intent?.extras?.getString(PARAM_UTM_MEDIUM)?.contains(
+            PARAM_PUSH_NOTIFICATION,
+            true
+        ) ?: false
     }
 
     fun setContentDetailMainPostData(card: FeedXCard?) {
@@ -62,7 +74,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        if (getSource() == SHARE_LINK) {
+        if (getSource() == SHARE_LINK || getSource() == PARAM_PUSH_NOTIFICATION) {
             goToFeed()
         } else {
             super.onBackPressed()
@@ -82,6 +94,9 @@ class ContentDetailActivity : BaseSimpleActivity() {
         const val PARAM_POST_ID = "post_id"
         const val DEFAULT_POST_ID = "0"
         const val PARAM_ENTRY_POINT = "entry_point"
+        const val PARAM_UTM_MEDIUM = "utm_medium"
+        const val PARAM_PUSH_NOTIFICATION = "push"
+        const val SOURCE_PUSH_NOTIFICATION = "push_notification"
         const val SHARE_LINK = "share_link"
     }
 }
