@@ -29,8 +29,11 @@
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginEnd="2dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/searchBroadMatchTitle"
-        app:layout_constraintLeft_toLeftOf="@id/searchBroadMatchTitle"/>
+        app:layout_constraintLeft_toLeftOf="@id/searchBroadMatchTitle"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/searchBroadMatchSubtitle"
@@ -41,10 +44,11 @@
         android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
+        android:layout_marginTop="4dp"
         android:layout_marginStart="2dp"
         app:layout_goneMarginStart="0dp"
-        app:layout_constraintRight_toLeftOf="@id/searchBroadMatchSeeMore"
-        app:layout_constraintStart_toEndOf="@+id/searchBroadMatchSubtitleIcon"
+        app:layout_constraintRight_toRightOf="@id/searchBroadMatchTitle"
+        app:layout_constraintLeft_toRightOf="@id/searchBroadMatchSubtitleIcon"
         app:layout_constraintTop_toBottomOf="@id/searchBroadMatchTitle"
         app:typographyType="body_3"
         tools:text="@string/broad_match_title"
