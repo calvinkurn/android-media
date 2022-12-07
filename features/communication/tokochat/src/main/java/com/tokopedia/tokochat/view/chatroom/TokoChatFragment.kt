@@ -437,24 +437,35 @@ class TokoChatFragment :
             when (it) {
                 is Success -> setHeaderData(it.data)
                 is Fail -> {
-                    hideShimmeringHeader()
-                    val doesChatNotExist: Boolean = if (it.throwable is ConversationsNetworkError) {
-                        (it.throwable as ConversationsNetworkError).errorList.firstOrNull()?.code?.contains(
-                            CHAT_DOES_NOT_EXIST,
-                            ignoreCase = true
-                        ) ?: false
-                    } else {
-                        false
-                    }
-                    if (doesChatNotExist) {
-                        showUnavailableBottomSheet()
-                    } else {
-                        showGlobalErrorLayout(onActionClick = {
-                            initializeChatRoom(null)
-                        })
-                    }
+                    handleFailGetChannelDetails(it.throwable)
                 }
             }
+        }
+    }
+
+    private fun handleFailGetChannelDetails(error: Throwable) {
+        hideShimmeringHeader()
+        try {
+            val doesChatNotExist: Boolean = if (error is ConversationsNetworkError) {
+                error.errorList.firstOrNull()?.code?.contains(
+                    CHAT_DOES_NOT_EXIST,
+                    ignoreCase = true
+                ) ?: false
+            } else {
+                false
+            }
+            if (doesChatNotExist) {
+                showUnavailableBottomSheet()
+            } else {
+                showGlobalErrorWithRefreshAction()
+            }
+        } catch (throwable: Throwable) {
+            showGlobalErrorWithRefreshAction()
+            logExceptionTokoChat(
+                throwable,
+                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                ::handleFailGetChannelDetails.name
+            )
         }
     }
 
@@ -710,15 +721,26 @@ class TokoChatFragment :
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
         removeShimmering()
-        val errorCode = error.errorList.firstOrNull()?.code ?: ""
-        if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
-            showUnavailableBottomSheet()
-        } else {
-            showGlobalErrorLayout(onActionClick = {
-                initializeChatRoom(null)
-            })
+        handleOnErrorCreateGroupBooking(error)
+    }
+
+    private fun handleOnErrorCreateGroupBooking(error: ConversationsNetworkError) {
+        try {
+            val errorCode = error.errorList.firstOrNull()?.code ?: ""
+            if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
+                showUnavailableBottomSheet()
+            } else {
+                showGlobalErrorWithRefreshAction()
+            }
+            logExceptionTokoChat(error, TokoChatErrorLogger.ErrorType.ERROR_PAGE, ::initGroupBooking.name)
+        } catch (throwable: Throwable) {
+            showGlobalErrorWithRefreshAction()
+            logExceptionTokoChat(
+                throwable,
+                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                ::handleOnErrorCreateGroupBooking.name
+            )
         }
-        logExceptionTokoChat(error, TokoChatErrorLogger.ErrorType.ERROR_PAGE, ::initGroupBooking.name)
     }
 
     override fun onGroupBookingChannelCreationStarted() {
@@ -1037,6 +1059,12 @@ class TokoChatFragment :
                 }
             }
         )
+    }
+
+    private fun showGlobalErrorWithRefreshAction() {
+        showGlobalErrorLayout(onActionClick = {
+            initializeChatRoom(null)
+        })
     }
 
     companion object {
