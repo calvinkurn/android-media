@@ -3,17 +3,19 @@ package com.tokopedia.categorylevels.domain.repository
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.categorylevels.analytics.*
 import com.tokopedia.categorylevels.model.CategoryGetDetailModularData
+import com.tokopedia.categorylevels.raw.GQL_CATEGORY_GET_DETAIL_MODULAR
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.categorylevels.raw.GQL_CATEGORY_GET_DETAIL_MODULAR
 import java.net.URLEncoder
 
-class CategoryGqlPageRepository(private val departmentName: String,
-                                private val departmentId: String,
-                                private val categoryUrl: String?) : BaseRepository(), DiscoveryPageRepository {
+class CategoryGqlPageRepository(
+    private val departmentName: String,
+    private val departmentId: String,
+    private val categoryUrl: String?
+) : BaseRepository(), DiscoveryPageRepository {
     companion object {
         const val IDENTIFIER = "identifier"
         const val IS_LATEST_VERSION = "isLatestVersion"
@@ -22,9 +24,9 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val BANNED = 1
         const val INDEX_ONE = "1"
         const val LEVEL_3_CATEGORY = 3
-        const val TABS_HORIZONTAL_SCROLL="tabs-horizontal-scroll"
-        const val SEMUA="Semua"
-        const val DEFAULT_TARGET_COMPONENT_ID="2,3,4,5,6"
+        const val TABS_HORIZONTAL_SCROLL = "tabs-horizontal-scroll"
+        const val SEMUA = "Semua"
+        const val DEFAULT_TARGET_COMPONENT_ID = "2,3,4,5,6"
     }
 
     val componentMap = mutableMapOf<String, String>()
@@ -39,31 +41,41 @@ class CategoryGqlPageRepository(private val departmentName: String,
         componentMap["tabs-horizontal-scroll"] = ComponentNames.Tabs.componentName
     }
 
-    override suspend fun getDiscoveryPageData(pageIdentifier: String, extraParams: Map<String,Any>?): DiscoveryResponse {
+    override suspend fun getDiscoveryPageData(pageIdentifier: String, extraParams: Map<String, Any>?): DiscoveryResponse {
         val data = getGQLData(GQL_CATEGORY_GET_DETAIL_MODULAR, CategoryGetDetailModularData::class.java, createRequestParameterCategory(pageIdentifier)).categoryGetDetailModular
         return data.basicInfo.let { basicInfo ->
             DiscoveryResponse(
-                    components = getCategoryComponents(pageIdentifier,data),
-                    pageInfo = PageInfo(
-                            identifier = pageIdentifier, name = basicInfo.name, type = "", path = basicInfo.url, id = basicInfo.id
-                            ?: 0, showChooseAddress = true,
-                            searchTitle = "Cari di ${basicInfo.name}",
-                            searchApplink = "${SEARCH_APPLINK}/searchbox?hint=${encodeURL("Cari di ${basicInfo.name}")}&navsource=catpage&srp_page_id=${basicInfo.id}&srp_page_title=${encodeURL(basicInfo.name)}",
-                            redirectionUrl = basicInfo.appRedirectionURL,
-                            isAdult = basicInfo.isAdult,
-                            origin = AdultManager.ORIGIN_CATEGORY_PAGE,
-                            share = Share(
-                                    enabled = true,
-                                    description = "Beli ${basicInfo.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk ${basicInfo.name} Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
-                                    url = "https://www.tokopedia.com${basicInfo.url}", title = basicInfo.titleTag, image = basicInfo.iconImageURL)),
-                    title = basicInfo.name ?: departmentName,
-                    additionalInfo = AdditionalInfo(null, hashMapOf(
-                            KEY_CATEGORY_ID_MAP to basicInfo.id.toString(),
-                            KEY_ROOT_ID to (basicInfo.rootId.toString() ?: ""),
-                            KEY_PARENT to (basicInfo.parent.toString() ?: ""),
-                            KEY_URL to (basicInfo.url ?: ""),
-                            KEY_REDIRECTION_URL to (basicInfo.appRedirectionURL ?: "")
-                    )))
+                components = getCategoryComponents(pageIdentifier, data),
+                pageInfo = PageInfo(
+                    identifier = pageIdentifier, name = basicInfo.name, type = "", path = basicInfo.url,
+                    id = basicInfo.id
+                        ?: 0,
+                    showChooseAddress = true,
+                    searchTitle = "Cari di ${basicInfo.name}",
+                    searchApplink = "$SEARCH_APPLINK/searchbox?hint=${encodeURL("Cari di ${basicInfo.name}")}&navsource=catpage&srp_page_id=${basicInfo.id}&srp_page_title=${encodeURL(basicInfo.name)}",
+                    redirectionUrl = basicInfo.appRedirectionURL,
+                    isAdult = basicInfo.isAdult,
+                    origin = AdultManager.ORIGIN_CATEGORY_PAGE,
+                    share = Share(
+                        enabled = true,
+                        description = "Beli ${basicInfo.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk ${basicInfo.name} Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
+                        url = "https://www.tokopedia.com${basicInfo.url}",
+                        title = basicInfo.titleTag,
+                        image = basicInfo.iconImageURL
+                    )
+                ),
+                title = basicInfo.name ?: departmentName,
+                additionalInfo = AdditionalInfo(
+                    null,
+                    hashMapOf(
+                        KEY_CATEGORY_ID_MAP to basicInfo.id.toString(),
+                        KEY_ROOT_ID to (basicInfo.rootId.toString() ?: ""),
+                        KEY_PARENT to (basicInfo.parent.toString() ?: ""),
+                        KEY_URL to (basicInfo.url ?: ""),
+                        KEY_REDIRECTION_URL to (basicInfo.appRedirectionURL ?: "")
+                    )
+                )
+            )
         }
     }
 
@@ -84,32 +96,44 @@ class CategoryGqlPageRepository(private val departmentName: String,
         }
         for (component in data.components) {
             val componentsItem = ComponentsItem(
-                    name = componentMap[component.type],
-                    id = component.id.toString(),
-                    isSticky = component.sticky,
-                    pagePath = data.basicInfo.url,
-                    showFilterCount = false,
-                    renderByDefault = true,
-                    properties = Properties(targetId = component.targetId.toString(),
+                name = componentMap[component.type],
+                id = component.id.toString(),
+                isSticky = component.sticky,
+                pagePath = data.basicInfo.url,
+                showFilterCount = false,
+                renderByDefault = true,
+                isFromCategory = true,
+                properties = Properties(
+                    targetId = component.targetId.toString(),
                     background = component.properties.background,
                     dynamic = component.properties.dynamic,
-                    categoryDetail = component.properties.categoryDetail))
-            if(component.data.isNotEmpty()) {
+                    categoryDetail = component.properties.categoryDetail
+                )
+            )
+            if (component.data.isNotEmpty()) {
                 val dataItems = arrayListOf<DataItem>()
-                if(component.type== TABS_HORIZONTAL_SCROLL) dataItems.add(
-                    DataItem(
-                        name = SEMUA,
-                        id = if(data.basicInfo.tree == LEVEL_3_CATEGORY) data.basicInfo.parent.toString() else departmentId,
-                        targetComponentId = dataItems.firstOrNull()?.targetComponentId
-                            ?: DEFAULT_TARGET_COMPONENT_ID))
+                if (component.type == TABS_HORIZONTAL_SCROLL) {
+                    dataItems.add(
+                        DataItem(
+                            name = SEMUA,
+                            id = if (data.basicInfo.tree == LEVEL_3_CATEGORY) data.basicInfo.parent.toString() else departmentId,
+                            targetComponentId = dataItems.firstOrNull()?.targetComponentId
+                                ?: DEFAULT_TARGET_COMPONENT_ID
+                        )
+                    )
+                }
                 component.data.forEachIndexed { index, dataItem ->
-                    dataItems.add(DataItem(title = if(dataItem.text!=null) dataItem.text else dataItem.name,
-                        id = dataItem.id.toString(),
-                        applinks = dataItem.applinks,
-                        positionForParentItem = index,
-                        targetComponentId = dataItem.targetComponentId,
-                        name = dataItem.categoryName,
-                        isSelected = pageIdentifier == dataItem.id.toString() || data.basicInfo.id == dataItem.id))
+                    dataItems.add(
+                        DataItem(
+                            title = if (dataItem.text != null) dataItem.text else dataItem.name,
+                            id = dataItem.id.toString(),
+                            applinks = dataItem.applinks,
+                            positionForParentItem = index,
+                            targetComponentId = dataItem.targetComponentId,
+                            name = dataItem.categoryName,
+                            isSelected = pageIdentifier == dataItem.id.toString() || data.basicInfo.id == dataItem.id
+                        )
+                    )
                 }
                 componentsItem.data = dataItems
             }
