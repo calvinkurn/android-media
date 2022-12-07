@@ -24,7 +24,10 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.slideDown
+import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -153,6 +156,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.header?.setNavigationOnClickListener {
             activity?.finish()
         }
+        binding?.header?.subheaderView?.text = getString(R.string.smvc_add_product_subtitle)
     }
 
     private fun setupButton() {
@@ -199,6 +203,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             applyPaddingToLastItem()
             attachDividerItemDecoration()
+            attachOnScrollListener(
+                onScrollDown = {
+                    binding?.sortFilter?.slideDown()
+                }, onScrollUp = {
+                    binding?.sortFilter?.slideUp()
+                }
+            )
             adapter = productAdapter
 
             attachPaging(this, pagingConfig) { page, _ ->
