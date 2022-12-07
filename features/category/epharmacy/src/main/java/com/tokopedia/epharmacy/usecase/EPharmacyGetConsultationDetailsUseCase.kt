@@ -9,9 +9,11 @@ import javax.inject.Inject
 class EPharmacyGetConsultationDetailsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<EPharmacyConsultationDetailsResponse>(graphqlRepository) {
 
-    fun getConsultationDetails(onSuccess: (EPharmacyConsultationDetailsResponse) -> Unit,
-                               onError: (Throwable) -> Unit,
-                               tokoConsultationId : String) {
+    fun getConsultationDetails(
+        onSuccess: (EPharmacyConsultationDetailsResponse) -> Unit,
+        onError: (Throwable) -> Unit,
+        tokoConsultationId: Int
+    ) {
         try {
             this.setTypeClass(EPharmacyConsultationDetailsResponse::class.java)
             this.setRequestParams(getRequestParams(tokoConsultationId))
@@ -19,7 +21,8 @@ class EPharmacyGetConsultationDetailsUseCase @Inject constructor(graphqlReposito
             this.execute(
                 { result ->
                     onSuccess(result)
-                }, { error ->
+                },
+                { error ->
                     onError(error)
                 }
             )
@@ -28,7 +31,7 @@ class EPharmacyGetConsultationDetailsUseCase @Inject constructor(graphqlReposito
         }
     }
 
-    private fun getRequestParams(tokoConsultationId: String): MutableMap<String, Any?> {
+    private fun getRequestParams(tokoConsultationId: Int): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[PARAM_ID] = tokoConsultationId
         return requestMap

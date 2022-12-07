@@ -8,26 +8,13 @@ object EPharmacyGetConsultationDetailsQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-            query $OPERATION_NAME(${"$"}tokopedia_consultation_id: String!) {
-              getEpharmacyConsultationDetails(tokopedia_consultation_id: ${"$"}tokopedia_consultation_id) 
-              {
-                header {
-                  process_time
-                  error_code
-                  error_message
-                }
+            query $OPERATION_NAME(${'$'}tokopedia_consultation_id: Int64!) {
+              getEpharmacyConsultationDetails(tokopedia_consultation_id: ${'$'}tokopedia_consultation_id) {
                 data {
-                    consultation_status
-                    consultation_source_id
                     consultation_data {
                         prescription {
-                            id
-                            type
                             document_url
-                            expiry_date
                         }
-                        start_time
-                        end_time
                     }
                 }
               }

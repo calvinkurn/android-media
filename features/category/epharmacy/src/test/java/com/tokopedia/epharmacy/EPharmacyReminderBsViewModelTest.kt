@@ -1,7 +1,7 @@
 package com.tokopedia.epharmacy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.epharmacy.network.request.EPharmacyReminderScreenParam
+import com.tokopedia.epharmacy.network.request.EpharmacyUserReminderParam
 import com.tokopedia.epharmacy.network.response.EPharmacyHeader
 import com.tokopedia.epharmacy.network.response.EPharmacyReminderScreenResponse
 import com.tokopedia.epharmacy.usecase.*
@@ -38,11 +38,11 @@ class EPharmacyReminderBsViewModelTest {
     /**************************** test for getEPharmacyMiniConsultationDetail() *******************************************/
     @Test
     fun `test for getEPharmacyMiniConsultationDetail when response is not null`() {
-        val params = EPharmacyReminderScreenParam(
-            input = EPharmacyReminderScreenParam.Input(
+        val params = EpharmacyUserReminderParam(
+            input = EpharmacyUserReminderParam.Input(
                 reminderType = 1,
-                EPharmacyReminderScreenParam.Input.EpharmacyConsultationInfoParams(
-                    consultationSourceId = "89737"
+                EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
+                    consultationSourceId = 9
                 )
             )
         )
@@ -60,11 +60,11 @@ class EPharmacyReminderBsViewModelTest {
 
     @Test
     fun `test for getEPharmacyMiniConsultationDetail when when response is null`() {
-        val params = EPharmacyReminderScreenParam(
-            input = EPharmacyReminderScreenParam.Input(
+        val params = EpharmacyUserReminderParam(
+            input = EpharmacyUserReminderParam.Input(
                 reminderType = 1,
-                EPharmacyReminderScreenParam.Input.EpharmacyConsultationInfoParams(
-                    consultationSourceId = "89737"
+                EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
+                    consultationSourceId = 9
                 )
             )
         )
@@ -81,11 +81,11 @@ class EPharmacyReminderBsViewModelTest {
 
     @Test
     fun `test for getEPharmacyMiniConsultationDetail when when throws error`() {
-        val params = EPharmacyReminderScreenParam(
-            input = EPharmacyReminderScreenParam.Input(
+        val params = EpharmacyUserReminderParam(
+            input = EpharmacyUserReminderParam.Input(
                 reminderType = 1,
-                EPharmacyReminderScreenParam.Input.EpharmacyConsultationInfoParams(
-                    consultationSourceId = "89737"
+                EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
+                    consultationSourceId = 9
                 )
             )
         )

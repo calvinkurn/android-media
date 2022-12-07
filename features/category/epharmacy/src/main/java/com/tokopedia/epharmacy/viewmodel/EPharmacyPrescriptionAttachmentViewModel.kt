@@ -3,6 +3,7 @@ package com.tokopedia.epharmacy.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
@@ -13,7 +14,6 @@ import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetails
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetailsResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
-import com.tokopedia.epharmacy.network.response.InitiateConsultation
 import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
 import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
 import com.tokopedia.epharmacy.utils.*
@@ -33,8 +33,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val _productGroupLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productGroupLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productGroupLiveData
 
-    private val _initiateConsultation = MutableLiveData<Result<InitiateConsultation.InitiateConsultationData>>()
-    val initiateConsultation: LiveData<Result<InitiateConsultation.InitiateConsultationData>> = _initiateConsultation
+    private val _initiateConsultation = MutableLiveData<Result<EPharmacyInitiateConsultationResponse>>()
+    val initiateConsultation: LiveData<Result<EPharmacyInitiateConsultationResponse>> = _initiateConsultation
 
     private val _buttonLiveData = MutableLiveData<EPharmacyPrepareProductsGroupResponse.PapPrimaryCTA?>()
     val buttonLiveData: LiveData<EPharmacyPrepareProductsGroupResponse.PapPrimaryCTA?> = _buttonLiveData
@@ -64,7 +64,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    fun getConsultationDetails(tokoConsultationId: String) {
+    fun getConsultationDetails(tokoConsultationId: Int) {
         ePharmacyGetConsultationDetailsUseCase.cancelJobs()
         ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(
             ::onSuccessGetConsultationDetails,
@@ -87,13 +87,11 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     }
 
     private fun onSuccessInitiateConsultation(epGroupId: String, response: EPharmacyInitiateConsultationResponse) {
-        response.getInitiateConsultation?.let { data ->
-            if (data.initiateConsultationData?.tokoConsultationId?.isNotBlank() == true) {
-                data.initiateConsultationData.epharmacyGroupId = epGroupId
-                _initiateConsultation.postValue(Success(data.initiateConsultationData))
-            } else {
-                onFailInitiateConsultation(IllegalStateException("Data Invalid"))
-            }
+        response.epharmacyGroupId = epGroupId
+        response.getInitiateConsultation?.let { _ ->
+            _initiateConsultation.postValue(Success(response))
+        } ?: kotlin.run {
+            onFailInitiateConsultation(IllegalStateException("Data Invalid"))
         }
     }
 
@@ -169,6 +167,37 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
         _consultationDetails.postValue(Fail(throwable))
+    }
+
+    fun getResultForCheckout(): ArrayList<EPharmacyMiniConsultationResult> {
+        val result = arrayListOf<EPharmacyMiniConsultationResult>()
+        ePharmacyPrepareProductsGroupResponseData?.let { response ->
+            response.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
+                result.add(
+                    EPharmacyMiniConsultationResult(
+                        group?.epharmacyGroupId,
+                        group?.shopInfo,
+                        group?.consultationData?.consultationStatus,
+                        group?.consultationData?.consultationString,
+                        group?.consultationData?.prescription,
+                        group?.consultationData?.partnerConsultationId,
+                        group?.consultationData?.tokoConsultationId,
+                        group?.prescriptionImages
+                    )
+                )
+            }
+        }
+        return result
+    }
+
+    fun getGroupIds(): ArrayList<String> {
+        val ids = arrayListOf<String>()
+        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
+            if (!gp?.epharmacyGroupId.isNullOrBlank()) {
+                ids.add(gp?.epharmacyGroupId ?: "")
+            }
+        }
+        return ids
     }
 
     override fun onCleared() {

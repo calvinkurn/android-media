@@ -67,8 +67,6 @@ const val EPHARMACY_TICKER_BACKGROUND = "https://images.tokopedia.net/img/androi
 
 enum class EPharmacyConsultationStatus(val status: Int) {
     EXPIRED(0),
-    ACTIVE(1),
-    APPROVED(2),
     REJECTED(4),
     DOCTOR_NOT_AVAILABLE(5)
 }
@@ -82,6 +80,7 @@ enum class EPharmacyButtonState(val state: String) {
 
 const val PRESCRIPTION_ATTACH_SUCCESS = "PRESCRIPTION_ATTACH_SUCCESS"
 
+const val IS_OUTSIDE_WORKING_HOURS = "is_outside_working_hours"
 const val OPEN_TIME = "open_time"
 const val CLOSE_TIME = "close_time"
 const val REMINDER_TYPE = "reminder_type"
@@ -92,4 +91,6 @@ const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 const val UTC = "UTC"
 
 const val WEB_LINK_PREFIX = "tokopedia://webview?url="
-const val TYPE_DOCTOR_NOT_AVAILABLE_REMINDER = 1L
+const val TYPE_DOCTOR_NOT_AVAILABLE_REMINDER = 1
+
+const val ERROR_CODE_OUTSIDE_WORKING_HOUR = 404

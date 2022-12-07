@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.network.request.EPharmacyReminderScreenParam
+import com.tokopedia.epharmacy.network.request.EpharmacyUserReminderParam
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.IN_WORKING_HOURS
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.OUTSIDE_WORKING_HOURS
@@ -33,10 +33,11 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private var isOutsideWorkingHours = false
     companion object {
         fun newInstance(
+            isOutsideWorkingHours: Boolean,
             openTime: String,
             closeTime: String,
-            reminderType: Long,
-            consultationSourceId: String,
+            reminderType: Int,
+            consultationSourceId: Long,
             groupId: String?,
             enablerName: String?
         ): EPharmacyReminderScreenBottomSheet {
@@ -48,12 +49,13 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 isHideable = true
                 customPeekHeight = 800
                 arguments = Bundle().apply {
+                    putBoolean(IS_OUTSIDE_WORKING_HOURS, isOutsideWorkingHours)
                     putString(OPEN_TIME, openTime)
                     putString(CLOSE_TIME, closeTime)
-                    putLong(REMINDER_TYPE, reminderType)
+                    putInt(REMINDER_TYPE, reminderType)
                     putString(EPHARMACY_GROUP_ID, groupId)
                     putString(EPHARMACY_ENABLER_NAME, enablerName)
-                    putString(CONSULTATION_SOURCE_ID, consultationSourceId)
+                    putLong(CONSULTATION_SOURCE_ID, consultationSourceId)
                 }
             }
         }
@@ -96,7 +98,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private fun extractArguments() {
         openTime = arguments?.getString(OPEN_TIME) ?: ""
         closeTime = arguments?.getString(CLOSE_TIME) ?: ""
-        isOutsideWorkingHours = EPharmacyUtils.isOutsideWorkingHours(openTime, closeTime)
+        isOutsideWorkingHours = arguments?.getBoolean(IS_OUTSIDE_WORKING_HOURS, false) ?: false
     }
 
     private fun sendViewEvent() {
@@ -158,14 +160,14 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
         )
     }
 
-    private fun requestParams(): EPharmacyReminderScreenParam? {
-        val reminderType = arguments?.getLong(REMINDER_TYPE)
-        val consultationSourceId = arguments?.getString(CONSULTATION_SOURCE_ID)
+    private fun requestParams(): EpharmacyUserReminderParam? {
+        val reminderType = arguments?.getInt(REMINDER_TYPE)
+        val consultationSourceId = arguments?.getLong(CONSULTATION_SOURCE_ID)
         return if (reminderType != null) {
-            EPharmacyReminderScreenParam(
-                input = EPharmacyReminderScreenParam.Input(
+            EpharmacyUserReminderParam(
+                input = EpharmacyUserReminderParam.Input(
                     reminderType = reminderType,
-                    EPharmacyReminderScreenParam.Input.EpharmacyConsultationInfoParams(
+                    EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
                         consultationSourceId = consultationSourceId
                     )
                 )
@@ -179,7 +181,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     }
 
     private fun showToast(toasterType: Int = Toaster.TYPE_NORMAL, message: String) {
-        binding?.root?.let { it ->
+        binding?.reminderParentView?.let { it ->
             Toaster.build(it, message, Toaster.LENGTH_LONG, toasterType).show()
         }
     }

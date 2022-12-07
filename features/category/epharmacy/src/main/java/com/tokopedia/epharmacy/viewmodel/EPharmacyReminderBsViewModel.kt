@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.epharmacy.network.request.EPharmacyReminderScreenParam
+import com.tokopedia.epharmacy.network.request.EpharmacyUserReminderParam
 import com.tokopedia.epharmacy.network.response.EPharmacyReminderScreenResponse
 import com.tokopedia.epharmacy.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,7 +22,7 @@ class EPharmacyReminderBsViewModel @Inject constructor(
     private val _reminderLiveData = MutableLiveData<Result<EPharmacyReminderScreenResponse.SubmitEPharmacyUserReminderData>>()
     val reminderLiveData: LiveData<Result<EPharmacyReminderScreenResponse.SubmitEPharmacyUserReminderData>> = _reminderLiveData
 
-    fun setForReminder(params: EPharmacyReminderScreenParam) {
+    fun setForReminder(params: EpharmacyUserReminderParam) {
         launchCatchError(block = {
             val result = getEPharmacyReminderScreenUseCase(params)
             if (result.submitEpharmacyUserReminderData?.data?.isSuccess != null) {

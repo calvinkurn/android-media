@@ -76,7 +76,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderError() {
         if (dataModel?.isError == true) {
             containerUploadPrescription.setBackgroundResource(com.tokopedia.epharmacy.R.drawable.epharmacy_bg_rounded_red)
-            containerUploadPrescription.animate()
+            chatDokterUploadLayout.animate()
                 .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
                 .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
                 .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))

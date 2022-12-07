@@ -64,6 +64,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         }
         viewModel.getPrepareProductGroup()
         assert(viewModel.productGroupLiveDataResponse.value is Success)
+        assert(viewModel.ePharmacyPrepareProductsGroupResponseData != null)
     }
 
     @Test
@@ -98,9 +99,9 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun initiateConsultationSuccessTest() {
-        val responseGroup = InitiateConsultation.InitiateConsultationData("231324", null, null)
+        val responseGroup = InitiateConsultation.InitiateConsultationData(null, null)
         val responseData = InitiateConsultation(responseGroup)
-        val response = EPharmacyInitiateConsultationResponse(responseData)
+        val response = EPharmacyInitiateConsultationResponse(responseData, "231324")
         coEvery {
             ePharmacyInitiateConsultationUseCase.initiateConsultation(any(), any(), any())
         } coAnswers {
@@ -108,12 +109,11 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         }
         viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123")))
         assert(viewModel.initiateConsultation.value is Success)
-        assert(viewModel.ePharmacyPrepareProductsGroupResponseData != null)
     }
 
     @Test
     fun `initiation consultation success but condition fail`() {
-        val response = mockk<EPharmacyInitiateConsultationResponse>(relaxed = true)
+        val response = EPharmacyInitiateConsultationResponse(null, null)
         coEvery {
             ePharmacyInitiateConsultationUseCase.initiateConsultation(any(), any(), any())
         } coAnswers {
@@ -150,7 +150,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         } coAnswers {
             firstArg<(EPharmacyConsultationDetailsResponse) -> Unit>().invoke(response)
         }
-        viewModel.getConsultationDetails("2412")
+        viewModel.getConsultationDetails(40)
         assert(viewModel.consultationDetails.value is Success)
     }
 
@@ -162,7 +162,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         } coAnswers {
             firstArg<(EPharmacyConsultationDetailsResponse) -> Unit>().invoke(response)
         }
-        viewModel.getConsultationDetails("2412")
+        viewModel.getConsultationDetails(40)
         Assert.assertEquals(
             (viewModel.consultationDetails.value as Fail).throwable.localizedMessage,
             "Data Invalid"
@@ -176,7 +176,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getConsultationDetails("324")
+        viewModel.getConsultationDetails(40)
         Assert.assertEquals(
             (viewModel.consultationDetails.value as Fail).throwable,
             mockThrowable

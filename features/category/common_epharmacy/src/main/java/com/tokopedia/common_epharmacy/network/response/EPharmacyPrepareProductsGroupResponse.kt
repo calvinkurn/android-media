@@ -104,7 +104,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                     @SerializedName("enabler_name")
                     val enablerName: String?,
                     @SerializedName("id")
-                    val id: String?,
+                    val id: Long?,
                     @SerializedName("operating_schedule")
                     val operatingSchedule: OperatingSchedule?,
                     @SerializedName("enabler_logo_url")
@@ -140,7 +140,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                     @SerializedName("subtitle")
                     val subtitle: String?,
                     @SerializedName("action_type")
-                    val actionType: String?
+                    var actionType: String?
                 ) : Parcelable
 
                 @Parcelize

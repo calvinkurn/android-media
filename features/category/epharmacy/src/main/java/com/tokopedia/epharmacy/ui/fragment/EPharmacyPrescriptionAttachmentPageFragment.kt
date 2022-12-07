@@ -11,11 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
-import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
-import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
-import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
-import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
+import com.tokopedia.common_epharmacy.*
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
@@ -28,7 +24,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
-import com.tokopedia.epharmacy.network.response.InitiateConsultation
+import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
@@ -126,6 +122,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun addShimmer() {
         ePharmacyRecyclerView?.show()
+        ePharmacyDoneButton?.hide()
         ePharmacyAttachmentUiUpdater.mapOfData.clear()
         ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_1, SHIMMER_COMPONENT))
         ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_2, SHIMMER_COMPONENT))
@@ -209,7 +206,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner) { papCTA ->
             ePharmacyDoneButton?.show()
             papCTA?.let { cta ->
-                //TODO
+                // TODO
                 EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult("", "", "", "", "", "")
                 ePharmacyDoneButton?.text = cta.title
                 when (cta.state) {
@@ -228,43 +225,30 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         }
     }
 
-    private fun onSuccessInitiateConsultation(initiateConsultationData: InitiateConsultation.InitiateConsultationData) {
-        if (!initiateConsultationData.tokoConsultationId.isNullOrBlank()) {
-            val showReminderScreen = isOutsideWorkingHours(
-                initiateConsultationData.consultationSource?.operatingSchedule?.daily?.openTime,
-                initiateConsultationData.consultationSource?.operatingSchedule?.daily?.closeTime
-            )
-            if (showReminderScreen) {
+    private fun onSuccessInitiateConsultation(consultationResponse: EPharmacyInitiateConsultationResponse) {
+        if (consultationResponse.getInitiateConsultation?.header?.code == ERROR_CODE_OUTSIDE_WORKING_HOUR) {
+            ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.find {
+                it?.epharmacyGroupId == consultationResponse.epharmacyGroupId
+            }?.let { group ->
                 presentReminderScreen(
-                    initiateConsultationData.consultationSource?.operatingSchedule?.daily?.openTime,
-                    initiateConsultationData.consultationSource?.operatingSchedule?.daily?.closeTime,
-                    initiateConsultationData.consultationSource?.id,
-                    initiateConsultationData.epharmacyGroupId,
-                    initiateConsultationData.consultationSource?.enablerName
+                    true,
+                    group.consultationSource?.operatingSchedule?.daily?.openTime,
+                    group.consultationSource?.operatingSchedule?.daily?.closeTime,
+                    group.consultationSource?.id ?: 0L,
+                    group.epharmacyGroupId,
+                    group.consultationSource?.enablerName
                 )
-            } else {
-                activity?.let { safeContext ->
-//                    startActivityForResult(
-//                        RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${initiateConsultationData.consultationSource?.pwaLink}"),
-//                        EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
-//                    )
-                    startActivityForResult(
-                        RouteManager.getIntent(
-                            context,
-                            "tokopedia://webview?url=https://accounts-staging.tokopedia.com/oauth/sandbox/in"
-                        ),
-                        EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
-                    )
-                }
+            }
+        } else if (consultationResponse.getInitiateConsultation?.initiateConsultationData != null &&
+            !consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink.isNullOrBlank()
+        ) {
+            activity?.let { safeContext ->
+                startActivityForResult(
+                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
+                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
+                )
             }
         }
-    }
-
-    private fun isOutsideWorkingHours(openTime: String?, closeTime: String?): Boolean {
-        if (!openTime.isNullOrBlank() && !closeTime.isNullOrBlank()) {
-            return EPharmacyUtils.isOutsideWorkingHours(openTime, closeTime)
-        }
-        return false
     }
 
     private fun onFailInitiateConsultation() {
@@ -310,34 +294,41 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 if ((component).consultationData?.consultationStatus == EPharmacyConsultationStatus.DOCTOR_NOT_AVAILABLE.status) {
                     showReminderScreen = true
                     presentReminderScreen(
+                        false,
                         component.consultationSource?.operatingSchedule?.daily?.openTime,
                         component.consultationSource?.operatingSchedule?.daily?.closeTime,
-                        component.consultationSource?.id,
+                        component.consultationSource?.id ?: 0L,
                         component.epharmacyGroupId,
                         component.enablerName
                     )
                 }
             }
         }
-        //TODO
-        EPharmacyMiniConsultationAnalytics.userViewAttachPrescriptionPage(
-            userSession.isLoggedIn,
-            userSession.userId,
-            if (ePharmacyAttachmentUiUpdater.mapOfData.contains(TICKER_COMPONENT)) "${ePharmacyAttachmentUiUpdater.mapOfData.size - 1}" else "${ePharmacyAttachmentUiUpdater.mapOfData.size}",
-            ""
-        )
+        // TODO
+
+        if (!trackingSentBoolean) {
+            EPharmacyMiniConsultationAnalytics.userViewAttachPrescriptionPage(
+                userSession.isLoggedIn,
+                userSession.userId,
+                if (ePharmacyAttachmentUiUpdater.mapOfData.contains(TICKER_COMPONENT)) "${ePharmacyAttachmentUiUpdater.mapOfData.size - 1}" else "${ePharmacyAttachmentUiUpdater.mapOfData.size}",
+                ""
+            )
+            trackingSentBoolean = true
+        }
         updateUi()
     }
 
     private fun presentReminderScreen(
+        isOutSideWordingHours: Boolean,
         openTime: String?,
         closeTime: String?,
-        consultationId: String?,
+        consultationId: Long,
         groupId: String?,
         enablerName: String?
     ) {
-        if (!openTime.isNullOrBlank() && !closeTime.isNullOrBlank() && !consultationId.isNullOrBlank()) {
+        if (!openTime.isNullOrBlank() && !closeTime.isNullOrBlank()) {
             EPharmacyReminderScreenBottomSheet.newInstance(
+                isOutSideWordingHours,
                 openTime,
                 closeTime,
                 TYPE_DOCTOR_NOT_AVAILABLE_REMINDER,
@@ -362,7 +353,10 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 activity?.setResult(
                     EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,
                     Intent().apply {
-                        putParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA, getResultForCheckout())
+                        putParcelableArrayListExtra(
+                            EPHARMACY_CONSULTATION_RESULT_EXTRA,
+                            ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
+                        )
                     }
                 )
                 activity?.finish()
@@ -377,7 +371,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             if (it.value is EPharmacyAttachmentDataModel) {
                 if ((
                     (it.value as EPharmacyAttachmentDataModel).consultationData == null ||
-                        (it.value as EPharmacyAttachmentDataModel).prescriptionImages?.isNullOrEmpty() == true
+                        (it.value as EPharmacyAttachmentDataModel).prescriptionImages?.isEmpty() == true
                     ) &&
                     (it.value as EPharmacyAttachmentDataModel).showUploadWidget
                 ) {
@@ -389,27 +383,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             }
         }
         return false
-    }
-
-    private fun getResultForCheckout(): ArrayList<EPharmacyMiniConsultationResult> {
-        val result = arrayListOf<EPharmacyMiniConsultationResult>()
-        ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.let { response ->
-            response.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
-                result.add(
-                    EPharmacyMiniConsultationResult(
-                        group?.epharmacyGroupId,
-                        group?.shopInfo,
-                        group?.consultationData?.consultationStatus,
-                        group?.consultationData?.consultationString,
-                        group?.consultationData?.prescription,
-                        group?.consultationData?.partnerConsultationId,
-                        group?.consultationData?.tokoConsultationId,
-                        group?.prescriptionImages
-                    )
-                )
-            }
-        }
-        return result
     }
 
     private fun submitList(visitableList: List<BaseEPharmacyDataModel>) {
@@ -433,7 +406,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.prescriptionCTA,
             model.tokoConsultationId
         )
-        //TODO
+        // TODO
         EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
             "",
             "",
@@ -468,8 +441,11 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 startAttachmentChooser(enablerImage, groupId)
             }
             PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
-                tokoConsultationId?.let { id ->
-                    ePharmacyPrescriptionAttachmentViewModel.getConsultationDetails(id)
+                ePharmacyPrescriptionAttachmentViewModel.getConsultationDetails(40)
+            }
+            PrescriptionActionType.REDIRECT_CHECK_PRESCRIPTION.type -> {
+                groupId?.let { ePharmacyGroupId ->
+                    startPhotoUpload(ePharmacyGroupId, EPHARMACY_CEK_RESEP_REQUEST_CODE)
                 }
             }
         }
@@ -487,18 +463,18 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         }
     }
 
-    private fun startPhotoUpload(groupId: String?) {
+    private fun startPhotoUpload(groupId: String?, requestCode: Int = EPHARMACY_UPLOAD_REQUEST_CODE) {
         RouteManager.getIntent(activity, EPHARMACY_APPLINK).apply {
             putExtra(EXTRA_CHECKOUT_ID_STRING, groupId)
         }.also {
-            startActivityForResult(it, EPHARMACY_UPLOAD_REQUEST_CODE)
+            startActivityForResult(it, requestCode)
         }
     }
 
     private fun startMiniConsultation(groupId: String?) {
         if (!groupId.isNullOrBlank()) {
             // TODO
-            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(userSession.isLoggedIn,"","","","")
+            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(userSession.isLoggedIn, "", "", "", "")
             ePharmacyPrescriptionAttachmentViewModel.initiateConsultation(
                 InitiateConsultationParam(
                     InitiateConsultationParam.InitiateConsultationParamInput(groupId)

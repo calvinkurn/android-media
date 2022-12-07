@@ -22,7 +22,7 @@ object EPharmacyMapper {
             group.consultationData?.consultationString,
             group.consultationData?.prescription,
             group.consultationData?.partnerConsultationId,
-            group.consultationSource?.id,
+            group.consultationData?.tokoConsultationId,
             group.prescriptionImages,
             group.prescriptionSource,
             group.consultationSource,

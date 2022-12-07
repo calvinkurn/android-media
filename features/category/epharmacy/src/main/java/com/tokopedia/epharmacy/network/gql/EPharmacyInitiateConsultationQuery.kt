@@ -11,18 +11,10 @@ object EPharmacyInitiateConsultationQuery : GqlQueryInterface {
             mutation $OPERATION_NAME(${'$'}input: initiateConsultationParam!) {
               initiateConsultation(input: ${"$"}input) {
                 data {
-                    toko_consultation_id
                     consultation_source {
                         id
                         enabler_name
                         pwa_link
-                        operating_schedule {
-                            daily {
-                                open_time
-                                close_time
-                            }
-                            close_days
-                        }
                         status
                     }
                 }
