@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
+import com.tokopedia.mvc.presentation.summary.helper.SummaryPageHelper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ class SummaryViewModel @Inject constructor(
     private val _configuration = MutableLiveData<VoucherConfiguration>()
     val configuration: LiveData<VoucherConfiguration> get() = _configuration
     val information = Transformations.map(configuration) { it.voucherInformation }
+    val maxExpense = Transformations.map(configuration) { SummaryPageHelper.getMaxExpenses(it) }
 
     fun setConfiguration(configuration: VoucherConfiguration) {
         _configuration.value = configuration

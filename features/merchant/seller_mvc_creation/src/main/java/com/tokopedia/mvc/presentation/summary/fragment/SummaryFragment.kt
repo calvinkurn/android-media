@@ -42,6 +42,7 @@ import javax.inject.Inject
 class SummaryFragment: BaseDaggerFragment() {
 
     companion object {
+        private const val CORNER_RADIUS_HEADER = 16
         @JvmStatic
         fun newInstance(
             pageMode: PageMode?,
@@ -102,10 +103,18 @@ class SummaryFragment: BaseDaggerFragment() {
 
     private fun setupObservables() {
         viewModel.configuration.observe(viewLifecycleOwner) {
-            binding?.layoutSetting?.updatePageData(it)
+            binding?.apply {
+                layoutType.updateLayoutType(it)
+                layoutSetting.updatePageData(it)
+                layoutProducts.updateProductData(it)
+            }
         }
         viewModel.information.observe(viewLifecycleOwner) {
             binding?.layoutInfo?.updatePageInfo(it)
+        }
+        viewModel.maxExpense.observe(viewLifecycleOwner) {
+            binding?.layoutSubmission?.labelSpendingEstimation?.
+                spendingEstimationText = it.getCurrencyFormatted()
         }
     }
 
@@ -127,14 +136,13 @@ class SummaryFragment: BaseDaggerFragment() {
     }
 
     private fun SmvcFragmentSummaryPreviewBinding.setupLayoutPreview() {
-        val green2 = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        val green = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN200)
-        val gd = GradientDrawable(
-            GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(green2, green)
+        val greenDark = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        val greenLight = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN200)
+        val drawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(greenDark, greenLight)
         )
-        val corner = 16.toPx().toFloat()
-        gd.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, corner, corner, corner, corner)
-        viewBg.background = gd
+        val corner = CORNER_RADIUS_HEADER.toPx().toFloat()
+        drawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, corner, corner, corner, corner)
+        viewBg.background = drawable
     }
 
     private fun SmvcVoucherDetailVoucherTypeSectionBinding.setupLayoutType() {
@@ -179,7 +187,7 @@ class SummaryFragment: BaseDaggerFragment() {
             tpgVoucherMinimumBuy.text = minPurchase.getCurrencyFormatted()
             tpgVoucherQuota.text = quota.toString()
             tpgVoucherTargetBuyer.text = promoBuyerWordings.getOrNull(targetBuyer.id).orEmpty()
-            tpgVoucherNominalLabel.text = tpgDeductionType.text.toString() + " " + tpgPromoType.text
+            tpgVoucherNominalLabel.text = "${tpgDeductionType.text} ${tpgPromoType.text}"
         }
     }
 
@@ -197,7 +205,20 @@ class SummaryFragment: BaseDaggerFragment() {
             tpgVoucherStartPeriod.text = formatter.format(startPeriod)
             tpgVoucherEndPeriod.text = formatter.format(endPeriod)
         }
+    }
 
+    private fun SmvcVoucherDetailProductSectionBinding.updateProductData(configuration: VoucherConfiguration) {
+        root.isVisible = configuration.isVoucherProduct
+        tpgProductList.text = getString(
+            R.string.smvc_summary_page_product_format,
+            configuration.productIds.size
+        )
+    }
 
+    private fun SmvcVoucherDetailVoucherTypeSectionBinding.updateLayoutType(configuration: VoucherConfiguration) {
+        tpgVoucherType.text = if (configuration.isVoucherProduct)
+            getString(R.string.smvc_summary_page_product_coupon_text)
+        else
+            getString(R.string.smvc_summary_page_shop_coupon_text)
     }
 }

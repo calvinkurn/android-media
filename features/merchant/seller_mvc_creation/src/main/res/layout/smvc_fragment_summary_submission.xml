@@ -12,8 +12,8 @@
         android:id="@+id/labelSpendingEstimation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:title_placeholder_text="Pengeluaran hingga saat ini"
-        tools:description_placeholder_text="Tidak ada pemotongan karena kupon berasal dari Tokopedia"
+        app:title_placeholder_text="@string/smvc_summary_page_max_expense_title"
+        app:description_placeholder_text="@string/smvc_summary_page_max_expense_desc"
         tools:spending_estimation_placeholder_text="Rp3.200.000"/>
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
