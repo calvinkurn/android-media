@@ -61,6 +61,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
