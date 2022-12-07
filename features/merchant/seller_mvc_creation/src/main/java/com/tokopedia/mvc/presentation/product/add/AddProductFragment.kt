@@ -57,6 +57,7 @@ import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -150,13 +151,14 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         setupSearchBar()
         setupButton()
         setupToolbar()
+        binding?.cardUnify2?.cardType = CardUnify2.TYPE_CLEAR
     }
 
     private fun setupToolbar() {
         binding?.header?.setNavigationOnClickListener {
             activity?.finish()
         }
-        binding?.header?.subheaderView?.text = getString(R.string.smvc_add_product_subtitle)
+        binding?.header?.headerSubTitle = getString(R.string.smvc_add_product_subtitle)
     }
 
     private fun setupButton() {

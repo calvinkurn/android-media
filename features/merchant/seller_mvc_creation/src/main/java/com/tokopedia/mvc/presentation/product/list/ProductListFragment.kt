@@ -40,6 +40,7 @@ import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -128,6 +129,7 @@ class ProductListFragment : BaseDaggerFragment() {
         setupRecyclerView()
         setupButton()
         setupClickListener()
+        binding?.cardUnify2?.cardType = CardUnify2.TYPE_CLEAR
     }
 
     private fun setupToolbar() {

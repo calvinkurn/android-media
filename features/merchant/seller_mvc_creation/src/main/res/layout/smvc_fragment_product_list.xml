@@ -101,6 +101,15 @@
         app:unifyEmptyStatePrimaryCTAText="@string/smvc_add_product"
         tools:visibility="visible" />
 
+    <View
+        android:id="@+id/dividerBottom"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintBottom_toTopOf="@+id/cardUnify2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/cardUnify2"
         android:layout_width="0dp"
