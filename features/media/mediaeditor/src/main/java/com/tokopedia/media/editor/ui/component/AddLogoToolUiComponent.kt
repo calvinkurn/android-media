@@ -68,11 +68,15 @@ class AddLogoToolUiComponent constructor(
         setChild(child.root)
     }
 
-    fun setupView(imageWidth: Int, imageHeight: Int, avatarUrl: String) {
+    fun setupView(imageWidth: Int, imageHeight: Int, avatarUrl: String, localAvatarUrl: String = "") {
         originalImageWidth = imageWidth
         originalImageHeight = imageHeight
 
         shopAvatarUrl = avatarUrl
+
+        if (localAvatarUrl.isNotEmpty()) {
+            initUploadAvatar(localAvatarUrl)
+        }
 
         initShopAvatar()
         initListener()
