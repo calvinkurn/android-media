@@ -40,6 +40,7 @@ import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
 import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -48,7 +49,6 @@ class ProductListFragment : BaseDaggerFragment() {
 
     companion object {
         private const val ONE_PRODUCT = 1
-        private const val REQUEST_CODE_ADD_NEW_PRODUCT = 101
 
         @JvmStatic
         fun newInstance(
@@ -132,8 +132,13 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
+        val showSubtitle = pageMode == PageMode.CREATE
         binding?.header?.actionTextView?.setOnClickListener {
             viewModel.processEvent(ProductListEvent.TapCtaChangeProduct)
+        }
+        binding?.header?.subheaderView?.isVisible = showSubtitle
+        binding?.header?.setNavigationOnClickListener {
+            activity?.finish()
         }
     }
 
@@ -144,7 +149,7 @@ class ProductListFragment : BaseDaggerFragment() {
                     activity ?: return@setOnClickListener,
                     voucherConfiguration ?: return@setOnClickListener
                 )
-                startActivityForResult(intent, REQUEST_CODE_ADD_NEW_PRODUCT)
+                startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
             }
 
             if (pageMode == PageMode.CREATE) {
@@ -235,8 +240,8 @@ class ProductListFragment : BaseDaggerFragment() {
             binding?.header?.actionTextView?.gone()
         } else {
             binding?.header?.actionTextView?.visible()
-
             binding?.header?.actionText = getString(R.string.smvc_update_product)
+            binding?.header?.subheaderView?.gone()
         }
     }
 
@@ -391,7 +396,7 @@ class ProductListFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_CODE_ADD_NEW_PRODUCT) {
+        if (requestCode == NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION) {
             if (resultCode == Activity.RESULT_OK) {
                 val newlySelectedProducts = data?.getParcelableArrayListExtra<Product>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty()
                 viewModel.processEvent(ProductListEvent.AddNewProductToSelection(newlySelectedProducts))

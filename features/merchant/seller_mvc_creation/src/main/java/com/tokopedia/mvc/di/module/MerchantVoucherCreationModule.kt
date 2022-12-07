@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,4 +25,8 @@ class MerchantVoucherCreationModule {
     @MerchantVoucherCreationScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+
+    @MerchantVoucherCreationScope
+    @Provides
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper = PermissionCheckerHelper()
 }

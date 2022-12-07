@@ -14,6 +14,7 @@ import com.tokopedia.mvc.data.response.VoucherValidationPartialResponse
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import javax.inject.Inject
 
 class VoucherValidationPartialUseCase @Inject constructor(
@@ -128,14 +129,15 @@ class VoucherValidationPartialUseCase @Inject constructor(
         }
 
         val payload = VoucherValidationPartialRequest(
-            param.benefitIdr,
-            param.benefitMax,
-            param.benefitPercent,
-            benefitType,
-            promoType,
-            if (param.isVoucherProduct) PRODUCT_VOUCHER else SHOP_VOUCHER,
-            param.minPurchase,
-            formattedProductIds
+            benefitIdr = param.benefitIdr,
+            benefitMax = param.benefitMax,
+            benefitPercent = param.benefitPercent,
+            benefitType = benefitType,
+            couponType = promoType,
+            isLockToProduct = if (param.isVoucherProduct) PRODUCT_VOUCHER else SHOP_VOUCHER,
+            minPurchase = param.minPurchase,
+            productIds = formattedProductIds,
+            targetBuyer = param.targetBuyer.id
         )
 
         val params = mapOf(REQUEST_PARAM_VOUCHER_VALIDATION_PARTIAL_INPUT to payload)
@@ -154,7 +156,8 @@ class VoucherValidationPartialUseCase @Inject constructor(
         val promoType: PromoType,
         val isVoucherProduct: Boolean,
         val minPurchase: Long,
-        val productIds: List<Long>
+        val productIds: List<Long>,
+        val targetBuyer: VoucherTargetBuyer
     )
 }
 

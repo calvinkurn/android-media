@@ -8,33 +8,72 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.startLoading
+import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getPercentFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toCalendar
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.*
+import com.tokopedia.mvc.databinding.SmvcFragmentVoucherDetailBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState1Binding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState2Binding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState3Binding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailHeaderSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailProductSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
+import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
+import com.tokopedia.mvc.presentation.product.list.ProductListActivity
+import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
+import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
 import com.tokopedia.mvc.util.SharingUtil
-import com.tokopedia.mvc.util.constant.*
+import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.constant.ImageUrlConstant
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil as ShareComponentUtil
 
 class VoucherDetailFragment : BaseDaggerFragment() {
 
@@ -68,6 +107,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var shareComponentInstanceBuilder: ShareComponentInstanceBuilder
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private var universalShareBottomSheet : UniversalShareBottomSheet? = null
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
 
@@ -97,6 +144,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
+        observeGenerateVoucherImageResult()
+        observeOpenVoucherImageBottomSheetEvent()
+        observeRedirectionToProductListPage()
         getVoucherDetailData(voucherId)
     }
 
@@ -111,6 +161,33 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     showGlobalError()
                 }
             }
+        }
+    }
+
+    private fun observeGenerateVoucherImageResult() {
+        viewModel.generateVoucherImageMetadata.observe(viewLifecycleOwner) { result ->
+            stateButtonShareBinding?.btnShare.stopLoading()
+            when (result) {
+                is Success -> {
+                    displayShareBottomSheet(result.data)
+                }
+                is Fail -> {
+                    binding?.nsvContent.showToasterError(result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeRedirectionToProductListPage() {
+        viewModel.redirectToProductListPage.observe(viewLifecycleOwner) { voucherDetail ->
+            redirectToProductListPage(voucherDetail)
+        }
+    }
+
+
+    private fun observeOpenVoucherImageBottomSheetEvent() {
+        viewModel.openDownloadVoucherImageBottomSheet.observe(viewLifecycleOwner) { voucherDetail ->
+            displayDownloadVoucherImageBottomSheet(voucherDetail)
         }
     }
 
@@ -289,9 +366,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
         }
         voucherTypeBinding?.run {
-            tpgVoucherType.text = when (data.isLockToProduct) {
-                TRUE -> getString(R.string.smvc_voucher_product_label)
-                else -> getString(R.string.smvc_voucher_store_label)
+            tpgVoucherType.text = if (data.isVoucherProduct) {
+                getString(R.string.smvc_voucher_product_label)
+            } else {
+                getString(R.string.smvc_voucher_store_label)
             }
         }
     }
@@ -364,7 +442,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 else -> View.VISIBLE
             }
             tpgDeductionType.text = when (data.voucherDiscountType) {
-                DiscountTypeConstant.NOMINAL -> getString(R.string.smvc_nominal_label)
+                BenefitType.NOMINAL -> getString(R.string.smvc_nominal_label)
                 else -> getString(R.string.smvc_percentage_label)
             }
         }
@@ -380,7 +458,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 PromoType.CASHBACK -> {
                     when (data.voucherDiscountType) {
-                        DiscountTypeConstant.NOMINAL -> {
+                        BenefitType.NOMINAL -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_nominal_cashback_label)
                             tpgVoucherNominal.text =
@@ -396,7 +474,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     when (data.voucherDiscountType) {
-                        DiscountTypeConstant.NOMINAL -> {
+                        BenefitType.NOMINAL -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_nominal_discount_label)
                             tpgVoucherNominal.text =
@@ -422,7 +500,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     when (data.voucherDiscountType) {
-                        DiscountTypeConstant.PERCENTAGE -> {
+                        BenefitType.PERCENTAGE -> {
                             llVoucherMaxPriceDeduction.visible()
                             tpgVoucherMaxPriceDeduction.text =
                                 data.voucherDiscountAmountMax.getCurrencyFormatted()
@@ -446,7 +524,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupProductListSection(data: VoucherDetailData) {
-        if (data.isLockToProduct == TRUE) {
+        if (data.isVoucherProduct) {
             binding?.run {
                 if (layoutProductList.parent != null) {
                     layoutProductList.inflate()
@@ -457,9 +535,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     R.string.smvc_product_count_placeholder,
                     data.productIds.count()
                 )
-                tpgSeeProduct.setOnClickListener {
-                    // TODO:go to product page
-                }
+                tpgSeeProduct.setOnClickListener { viewModel.onTapViewAllProductCta() }
             }
         }
     }
@@ -545,7 +621,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 shareToBroadcastChat(data.voucherId)
             }
             btnShare.setOnClickListener {
-                // TODO:open share component
+                stateButtonShareBinding?.btnShare.startLoading()
+                viewModel.generateVoucherImage()
             }
         }
         stateButtonDuplicateBinding?.apply {
@@ -621,4 +698,163 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun shareToBroadcastChat(voucherId: Long) {
         routeToUrl(broadCastChatUrl + voucherId.toString())
     }
+
+    private fun displayShareBottomSheet(voucherImageMetadata: GenerateVoucherImageMetadata) {
+        val voucherDetail = voucherImageMetadata.voucherDetail
+        val voucherStartDate = voucherDetail.voucherStartTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val voucherEndDate = voucherDetail.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val productImageUrls = if (voucherDetail.isVoucherProduct) {
+            voucherImageMetadata.topSellingProductImageUrls
+        } else {
+            emptyList()
+        }
+
+        val shareComponentParam = ShareComponentInstanceBuilder.Param(
+            isVoucherProduct = voucherDetail.isVoucherProduct,
+            voucherId = voucherDetail.voucherId,
+            isPublic = voucherDetail.isPublic == TRUE,
+            voucherCode = voucherDetail.voucherCode,
+            voucherStartDate = voucherStartDate,
+            voucherEndDate = voucherEndDate,
+            promoType = voucherDetail.voucherType,
+            benefitType = voucherDetail.voucherDiscountType,
+            shopLogo = voucherImageMetadata.shopData.logo,
+            shopName = voucherImageMetadata.shopData.name,
+            shopDomain =  voucherImageMetadata.shopData.domain,
+            discountAmount = voucherDetail.voucherDiscountAmount,
+            discountAmountMax = voucherDetail.voucherDiscountAmountMax,
+            productImageUrls = productImageUrls,
+            discountPercentage = voucherDetail.voucherDiscountAmount.toInt(),
+            targetBuyer = voucherDetail.targetBuyer
+        )
+
+        val endDate = shareComponentParam.voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+        val endHour = shareComponentParam.voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
+
+        val formattedShopName = MethodChecker.fromHtml(shareComponentParam.shopName).toString()
+
+        val titleTemplate = if (shareComponentParam.isVoucherProduct) {
+            getString(R.string.smvc_placeholder_share_component_outgoing_title_product_voucher)
+        } else {
+            getString(R.string.smvc_placeholder_share_component_outgoing_title_shop_voucher)
+        }
+
+        val descriptionTemplate = if (shareComponentParam.isVoucherProduct) {
+            getString(R.string.smvc_placeholder_share_component_text_description_product_voucher)
+        } else {
+            getString(R.string.smvc_placeholder_share_component_text_description_shop_voucher)
+        }
+
+        val title = String.format(
+            titleTemplate,
+            formattedShopName
+        )
+        val description = String.format(
+            descriptionTemplate,
+            formattedShopName,
+            endDate,
+            endHour
+        )
+
+        universalShareBottomSheet = shareComponentInstanceBuilder.build(
+            shareComponentParam,
+            title,
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(
+                    shareComponentParam.isVoucherProduct,
+                    shareComponentParam.voucherId,
+                    shareModel,
+                    title,
+                    description,
+                    shareComponentParam.shopDomain
+                )
+            },
+            onBottomSheetClosed = {}
+        )
+
+        universalShareBottomSheet?.show(childFragmentManager, universalShareBottomSheet?.tag)
+    }
+
+    private fun handleShareOptionSelection(
+        isVoucherProduct: Boolean,
+        voucherId: Long,
+        shareModel: ShareModel,
+        title: String,
+        description: String,
+        shopDomain: String
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                ShareComponentUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    activity,
+                    view,
+                    wording
+                )
+                universalShareBottomSheet?.dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val outgoingDescription = if (isVoucherProduct) {
+            getString(R.string.smvc_share_component_outgoing_text_description_product_voucher)
+        } else {
+            getString(R.string.smvc_share_component_outgoing_text_description_shop_voucher)
+        }
+
+
+        val linkerDataGenerator = LinkerDataGenerator()
+        val linkerShareData = linkerDataGenerator.generate(
+            voucherId,
+            userSession.shopId,
+            shopDomain,
+            shareModel,
+            title,
+            outgoingDescription
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                Int.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+    }
+
+    private fun displayDownloadVoucherImageBottomSheet(voucherDetail: VoucherDetailData) {
+        if (!isVisible) return
+
+        val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+            voucherDetail.voucherImage,
+            voucherDetail.voucherImageSquare,
+            voucherDetail.voucherImagePortrait
+        )
+        bottomSheet.setOnDownloadSuccess {
+            binding?.layoutButtonGroup.showToaster(
+                getString(R.string.smvc_placeholder_download_voucher_image_success, voucherDetail.voucherName),
+                getString(R.string.smvc_ok)
+            )
+        }
+        bottomSheet.setOnDownloadError {
+            binding?.layoutButtonGroup.showToaster(
+                getString(R.string.smvc_download_voucher_image_failed),
+                getString(R.string.smvc_ok)
+            )
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
+        val intent = ProductListActivity.buildEditModeIntent(
+            activity ?: return,
+            voucherDetail.toVoucherConfiguration(),
+            voucherDetail.toSelectedProducts()
+        )
+
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
+    }
+
 }

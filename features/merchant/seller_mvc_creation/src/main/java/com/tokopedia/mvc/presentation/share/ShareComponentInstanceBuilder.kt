@@ -5,6 +5,7 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.util.constant.ShareComponentConstant
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -47,14 +48,15 @@ class ShareComponentInstanceBuilder @Inject constructor(
         val discountAmount: Long,
         val discountAmountMax: Long,
         val productImageUrls: List<String>,
-        val discountPercentage: Int
+        val discountPercentage: Int,
+        val targetBuyer: VoucherTargetBuyer
     )
     
     fun build(
         param: Param,
         title: String,
         onShareOptionsClicked: (ShareModel) -> Unit,
-        onCloseOptionClicked: () -> Unit
+        onBottomSheetClosed: () -> Unit
     ): UniversalShareBottomSheet {
         val formattedShopName = MethodChecker.fromHtml(param.shopName).toString()
         return UniversalShareBottomSheet.createInstance().apply {
@@ -64,7 +66,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 }
 
                 override fun onCloseOptionClicked() {
-                    onCloseOptionClicked()
+                    onBottomSheetClosed()
                 }
             }
 
@@ -73,13 +75,13 @@ class ShareComponentInstanceBuilder @Inject constructor(
             setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT)
             setMetaData(
                 tnTitle = title,
-                tnImage = ShareComponentConstant.VOUCHER_PRODUCT_THUMBNAIL_ICON_IMAGE_URL
+                tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL
             )
             setUtmCampaignData(
-                pageName = ShareComponentConstant.VOUCHER_PRODUCT_PAGE_NAME,
+                pageName = ShareComponentConstant.PAGE_NAME,
                 userId = userSession.userId,
                 pageIdConstituents = listOf(userSession.shopId, param.voucherId.toString()),
-                feature = ShareComponentConstant.VOUCHER_PRODUCT_FEATURE
+                feature = ShareComponentConstant.FEATURE_NAME
             )
 
             val cashbackType = when {
@@ -208,9 +210,16 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 )
             }
 
+            val audienceTarget = when (param.targetBuyer) {
+                VoucherTargetBuyer.ALL_BUYER -> ImageGeneratorConstants.AUDIENCE_TARGET.ALL_USERS
+                VoucherTargetBuyer.NEW_FOLLOWER -> ImageGeneratorConstants.AUDIENCE_TARGET.NEW_FOLLOWER
+                VoucherTargetBuyer.NEW_BUYER -> ImageGeneratorConstants.AUDIENCE_TARGET.NEW_USER
+                VoucherTargetBuyer.MEMBER -> ImageGeneratorConstants.AUDIENCE_TARGET.MEMBER
+            }
+
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.AUDIENCE_TARGET,
-                value = ImageGeneratorConstants.AUDIENCE_TARGET.ALL_USERS
+                value = audienceTarget
             )
         }
     }

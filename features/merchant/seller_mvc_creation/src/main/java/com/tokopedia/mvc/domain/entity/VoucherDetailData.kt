@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.domain.entity
 
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
@@ -13,7 +14,7 @@ data class VoucherDetailData(
     val voucherImageSquare: String = "",
     val voucherImagePortrait: String = "",
     val voucherStatus: VoucherStatus = VoucherStatus.NOT_STARTED,
-    val voucherDiscountType: Int = 0,
+    val voucherDiscountType: BenefitType = BenefitType.NOMINAL,
     val voucherDiscountAmount: Long = 0,
     val voucherDiscountAmountMax: Long = 0,
     val voucherDiscountAmountMin: Long = 0,
@@ -40,7 +41,7 @@ data class VoucherDetailData(
     val confirmedGlobalQuota: Long = 0,
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val minimumTierLevel: Int = 0,
-    val isLockToProduct: Int = 0,
+    val isVoucherProduct: Boolean = false,
     val isVps: Int = 0,
     val packageName: String = "",
     val vpsUniqueId: Long = 0,
@@ -62,5 +63,30 @@ data class VoucherDetailData(
         val parentProductId: Long = 0,
         val chilProductId: List<Long>? = listOf(),
     )
+    
+    fun toVoucherConfiguration(): VoucherConfiguration {
+        val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
+
+        return VoucherConfiguration(
+            voucherDiscountAmount,
+            voucherDiscountAmountMax,
+            voucherDiscountAmount.toInt(),
+            voucherDiscountType,
+            voucherType,
+            isVoucherProduct,
+            voucherDiscountAmountMin,
+            selectedParentProductIds,
+            targetBuyer
+        )
+    }
+
+    fun toSelectedProducts() : List<SelectedProduct> {
+        return productIds.map { parentProduct ->
+            SelectedProduct(
+                parentProduct.parentProductId,
+                parentProduct.chilProductId.orEmpty()
+            )
+        }
+    }
 }
 

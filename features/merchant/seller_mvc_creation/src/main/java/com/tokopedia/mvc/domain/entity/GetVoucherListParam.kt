@@ -55,30 +55,30 @@ data class VoucherListParam (
             source: List<VoucherSource> = emptyList()
         ): VoucherListParam {
             return VoucherListParam(
-                voucherType = type?.type,
-                voucherStatus = status.map { it.type }.joinToString(VALUE_DELIMITER),
-                isPublic = target.map { it.type }.joinToString(VALUE_DELIMITER),
+                voucherType = type?.id,
+                voucherStatus = status.map { it.id }.joinToString(VALUE_DELIMITER),
+                isPublic = target.map { it.id }.joinToString(VALUE_DELIMITER),
                 page = page,
                 perPage = perPage,
                 sortBy = sort?.type,
                 isInverted = false,
                 includeSubsidy = source.mapToSubsidy(),
-                isVps = if (source.any { it == VoucherSource.VPS_PROMOTION }) VoucherVps.VPS.type.toString() else "",
+                isVps = if (source.any { it == VoucherSource.VPS_PROMOTION }) VoucherVps.VPS.id.toString() else "",
                 voucherName = voucherName,
-                targetBuyer = targetBuyer.map { it.type }.joinToString(VALUE_DELIMITER),
-                isLockToProduct = voucherType.map { it.type }.joinToString(VALUE_DELIMITER)
+                targetBuyer = targetBuyer.map { it.id }.joinToString(VALUE_DELIMITER),
+                isLockToProduct = voucherType.map { it.id }.joinToString(VALUE_DELIMITER)
             )
         }
 
         private fun List<VoucherSource>.mapToSubsidy(): Int {
             return if (any { it == VoucherSource.SELLER_BUDGET } && any { it == VoucherSource.SELLER_BUDGET }) {
-                VoucherSubsidy.SELLER_AND_TOKOPEDIA.type
+                VoucherSubsidy.SELLER_AND_TOKOPEDIA.id
             } else if (any { it == VoucherSource.TOKOPEDIA_BUDGET }) {
-                VoucherSubsidy.SELLER.type
+                VoucherSubsidy.SELLER.id
             } else if (any { it == VoucherSource.TOKOPEDIA_BUDGET }) {
-                VoucherSubsidy.TOKOPEDIA.type
+                VoucherSubsidy.TOKOPEDIA.id
             } else {
-                VoucherSubsidy.SELLER_AND_TOKOPEDIA.type
+                VoucherSubsidy.SELLER_AND_TOKOPEDIA.id
             }
         }
     }
