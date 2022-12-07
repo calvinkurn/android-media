@@ -163,6 +163,10 @@ class DetailEditorFragment @Inject constructor(
                 finishPage()
             }
         } else {
+            if (data.isToolAddLogo()) {
+                saveOverlay()
+            }
+            
             getBitmap()?.let {
                 data.resultUrl = viewModel.saveImageCache(
                     it,
@@ -833,10 +837,6 @@ class DetailEditorFragment @Inject constructor(
                         saveAndExit()
                     }
                 } else {
-                    if (data.isToolAddLogo()) {
-                        saveOverlay()
-                    }
-
                     onEditSaveAnalytics()
                     saveAndExit()
                 }
