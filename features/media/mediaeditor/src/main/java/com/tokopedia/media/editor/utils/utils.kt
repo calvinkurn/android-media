@@ -83,6 +83,7 @@ fun getToolEditorText(editorToolType: Int): Int {
         EditorToolType.WATERMARK -> R.string.editor_tool_watermark
         EditorToolType.ROTATE -> R.string.editor_tool_rotate
         EditorToolType.CROP -> R.string.editor_tool_crop
+        EditorToolType.ADD_LOGO -> R.string.editor_tool_add_logo
         else -> R.string.editor_tool_remove_background
     }
 }
