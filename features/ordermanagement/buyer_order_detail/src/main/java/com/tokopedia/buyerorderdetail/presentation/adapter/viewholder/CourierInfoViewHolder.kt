@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailShipmentInfoCourierBinding
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
@@ -94,6 +95,7 @@ class CourierInfoViewHolder(
             tvBuyerOrderDetailPodLabel.text = pod.podLabel
             tvBuyerOrderDetailPodCta.text = pod.podCtaText
             contentBuyerOrderDetailPod.setOnClickListener {
+                listener.onClickPodPreview()
                 navigator.openAppLink(appLink = pod.podCtaUrl, shouldRefreshWhenBack = false)
             }
             layoutBuyerOrderDetailPod.show()
@@ -122,5 +124,6 @@ class CourierInfoViewHolder(
 
     interface CourierInfoViewHolderListener {
         fun onEtaChangedClicked(delayedInfo: String)
+        fun onClickPodPreview()
     }
 }
