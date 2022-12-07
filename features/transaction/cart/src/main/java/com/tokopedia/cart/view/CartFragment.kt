@@ -1424,7 +1424,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
                         } else {
                             null
                         }
-                    }.distinct()
+                    }
                 )
         }
     }
