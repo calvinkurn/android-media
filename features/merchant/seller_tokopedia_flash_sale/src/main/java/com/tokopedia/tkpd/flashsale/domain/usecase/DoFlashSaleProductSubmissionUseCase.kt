@@ -51,6 +51,8 @@ class DoFlashSaleProductSubmissionUseCase @Inject constructor(
                         message
                     }
                 }
+                sse_key
+                use_sse
              }
        }
     """.trimIndent()

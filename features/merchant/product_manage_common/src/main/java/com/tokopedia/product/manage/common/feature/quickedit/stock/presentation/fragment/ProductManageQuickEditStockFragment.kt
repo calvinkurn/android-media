@@ -393,7 +393,7 @@ class ProductManageQuickEditStockFragment(
                 ).parseAsHtml()
             }
             showWithCondition(!product.suspendAccess())
-            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attention, 0, 0, 0)
+            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_oos, 0, 0, 0)
         }
 
     }

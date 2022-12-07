@@ -19,6 +19,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.window.*
+import androidx.window.layout.DisplayFeature
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoTracker
+import androidx.window.layout.WindowLayoutInfo
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -60,7 +64,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private var chatComponent: ChatComponent? = null
 
-    private lateinit var windowInfoRepo: WindowInfoRepo
+    private lateinit var windowInfoRepo: WindowInfoTracker
     private lateinit var chatRoomFragment: TopChatRoomFragment
     private lateinit var chatListFragment: ChatListInboxFragment
 
@@ -277,7 +281,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     override fun onStart() {
         super.onStart()
         layoutUpdatesJob = CoroutineScope(Dispatchers.Main).launch {
-            windowInfoRepo.windowLayoutInfo()
+            windowInfoRepo.windowLayoutInfo(this@TopChatRoomActivity)
                 .collect { newLayoutInfo ->
                     changeLayout(newLayoutInfo)
                 }
@@ -298,7 +302,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         //variable toolbar is chatroom's toolbar
         toolbarChatList = findViewById(R.id.toolbar_chatlist)
 
-        windowInfoRepo = windowInfoRepository()
+        windowInfoRepo = WindowInfoTracker.getOrCreate(this@TopChatRoomActivity)
     }
 
     private fun setupFragments(savedInstanceState: Bundle?) {
@@ -351,7 +355,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private fun changeLayout(windowLayoutInfo: WindowLayoutInfo) {
         if (isAllowedFlexMode()) {
             val foldingFeature = getFoldingFeature(windowLayoutInfo.displayFeatures)
-            displayState = foldingFeature?.state ?: EMPTY_STATE
+            displayState = (foldingFeature?.state ?: EMPTY_STATE) as Int
             currentlyInFlexMode = if (windowLayoutInfo.displayFeatures.isNotEmpty()
                 && !isTableTop(foldingFeature)
             ) {
@@ -559,8 +563,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun isTableTop(foldFeature: FoldingFeature?) =
-        foldFeature?.state == FoldingFeature.STATE_HALF_OPENED &&
-                foldFeature.orientation == FoldingFeature.ORIENTATION_HORIZONTAL
+        foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
+                foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
 
     override fun onBackPressed() {
         if(::chatRoomFragment.isInitialized && chatRoomFragment.onBackPressed()) {

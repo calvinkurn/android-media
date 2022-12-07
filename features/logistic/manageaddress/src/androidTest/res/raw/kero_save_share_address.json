@@ -1,0 +1,11 @@
+{
+  "KeroAddrSaveSharedAddress": {
+    "is_success": true,
+    "message": "Alamat berhasil disimpan!",
+    "number_address_saved": 1,
+    "kero_addr_error": {
+      "code": 0,
+      "detail": ""
+    }
+  }
+}

@@ -41,6 +41,7 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
@@ -55,8 +56,8 @@ import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.Toko
 import com.tokopedia.tokofood.feature.search.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
-import com.tokopedia.tokofood.feature.search.searchresult.analytics.TokofoodSearchResultAnalytics
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
+import com.tokopedia.tokofood.feature.search.searchresult.analytics.TokofoodSearchResultAnalytics
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultAdapterTypeFactory
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultDiffer
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultPageAdapter
@@ -82,7 +83,9 @@ import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
-class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Listener,
+class SearchResultFragment :
+    BaseDaggerFragment(),
+    TokofoodSearchFilterTab.Listener,
     MerchantSearchResultViewHolder.TokoFoodMerchantSearchResultListener,
     TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
     MerchantSearchEmptyWithFilterViewHolder.Listener,
@@ -305,7 +308,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onOOCActionButtonClicked(type: Int) {
-        when(type) {
+        when (type) {
             MerchantSearchOOCUiModel.NO_ADDRESS -> {
                 navigateToAddAddress()
             }
@@ -335,7 +338,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_ADD_ADDRESS -> onResultFromAddAddress(resultCode, data)
             REQUEST_CODE_CHANGE_ADDRESS -> onResultFromChangeAddress(resultCode)
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
@@ -446,7 +449,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.visitables.collect { result ->
                 removeScrollListener()
-                when(result) {
+                when (result) {
                     is Success -> {
                         updateAdapterVisitables(result.data)
                     }
@@ -467,7 +470,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun collectUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEventFlow.collect { event ->
-                when(event.state) {
+                when (event.state) {
                     TokofoodSearchUiEvent.EVENT_OPEN_DETAIL_BOTTOMSHEET -> {
                         onOpenDetailFilterBottomSheet(event.data)
                     }
@@ -765,17 +768,21 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun navigateToSetPinpoint() {
-        val locationPass =  LocationPass().apply {
-            latitude = TOTO_LATITUDE
-            longitude = TOTO_LONGITUDE
+        view?.let {
+            MapsAvailabilityHelper.onMapsAvailableState(it) {
+                val locationPass = LocationPass().apply {
+                    latitude = TOTO_LATITUDE
+                    longitude = TOTO_LONGITUDE
+                }
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle().apply {
+                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                }
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+            }
         }
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun navigateToChangeAddress() {
@@ -900,5 +907,4 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
         private const val AND_SEPARATOR = "&"
     }
-
 }

@@ -3,6 +3,8 @@ package com.tokopedia.mvcwidget.trackers
 import androidx.annotation.IntDef
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.DISCO
+import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.FEED_BOTTOM_SHEET
+import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.FEED_PRODUCT_DETAIL
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.PDP
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.REWARDS
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.SHOP
@@ -88,25 +90,26 @@ object Tracker {
         const val CLICK_MVC_LOCK_TO_PRODUCT = "click entry point - MVC Lock to Product"
         const val VIEW_MVC_LOCK_TO_PRODUCT = "view entry point - MVC Lock to Product"
     }
-        object Label {
-            const val PDP_VIEW = "pdp view"
-            const val SHOP_PAGE = "shop page"
-            const val MVC_CLOSE_VIEW_SELEGKAPANYA = "mvc_closed_lihat_selengkapnya"
-            const val MVC_CLOSE_VIEW_MULAIBELANJA = "mvc_closed_mulai_belanja"
-            const val MVC_CLOSE_CEK_INFO = "mvc_closed_cek_info"
-        }
 
-        fun fillCommonItems(map: MutableMap<String, Any>, userId: String?, businessUnit: String) {
-            map[Constants.BUSINESS_UNIT] = businessUnit
-            map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
-            userId?.let {
-                map[Constants.USER_ID] = userId
-            }
-        }
+    object Label {
+        const val PDP_VIEW = "pdp view"
+        const val SHOP_PAGE = "shop page"
+        const val MVC_CLOSE_VIEW_SELEGKAPANYA = "mvc_closed_lihat_selengkapnya"
+        const val MVC_CLOSE_VIEW_MULAIBELANJA = "mvc_closed_mulai_belanja"
+        const val MVC_CLOSE_CEK_INFO = "mvc_closed_cek_info"
     }
 
+    fun fillCommonItems(map: MutableMap<String, Any>, userId: String?, businessUnit: String) {
+        map[Constants.BUSINESS_UNIT] = businessUnit
+        map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
+        userId?.let {
+            map[Constants.USER_ID] = userId
+        }
+    }
+}
+
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(DEFAULT, SHOP, PDP, REWARDS, DISCO, TOKOFOOD)
+@IntDef(DEFAULT, SHOP, PDP, REWARDS, DISCO, FEED_BOTTOM_SHEET, FEED_PRODUCT_DETAIL, TOKOFOOD)
 annotation class MvcSource {
 
     companion object {
@@ -116,5 +119,8 @@ annotation class MvcSource {
         const val REWARDS = 3
         const val DISCO = 4
         const val TOKOFOOD = 5
+        const val FEED_BOTTOM_SHEET = 6
+        const val FEED_PRODUCT_DETAIL = 7
+
     }
 }

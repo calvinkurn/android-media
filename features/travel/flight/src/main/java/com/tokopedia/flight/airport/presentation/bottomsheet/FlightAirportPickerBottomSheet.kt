@@ -148,10 +148,18 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
     private fun initBottomSheet() {
         showCloseIcon = true
         isFullpage = true
-        setTitle(getString(R.string.flight_search_airport_arrival_title))
+        initializeTitle()
 
         mChildView = View.inflate(requireContext(), R.layout.bottom_sheet_flight_airport_picker, null)
         setChild(mChildView)
+    }
+
+    private fun initializeTitle() {
+        if (tag == TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER) {
+            setTitle(getString(R.string.flight_search_airport_departure_title))
+        } else {
+            setTitle(getString(R.string.flight_search_airport_arrival_title))
+        }
     }
 
     private fun initView() {
@@ -244,7 +252,8 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
     }
 
     companion object {
-        const val TAG_FLIGHT_AIRPORT_PICKER = "TAG_FLIGHT_AIRPORT_PICKER"
+        const val TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER = "TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER"
+        const val TAG_FLIGHT_DESTINATION_AIRPORT_PICKER = "TAG_FLIGHT_DESTINATION_AIRPORT_PICKER"
 
         private val DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300)
 
