@@ -54,6 +54,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         isTokoNow: Boolean,
         isPinned: Boolean,
         isRilisanSpesial: Boolean,
+        buttons: List<ProductButtonUiModel>,
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -68,6 +69,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         isTokoNow = isTokoNow,
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
+        buttons = buttons,
     )
 
     override fun buildMerchantVoucher(
@@ -125,4 +127,11 @@ class TagItemBuilderImpl : TagItemBuilder {
         background = background,
         reminder = reminderStatus,
     )
+
+    override fun buildButton(
+        text: String,
+        color: ProductButtonColor,
+        type: ProductButtonType
+    ): ProductButtonUiModel =
+        ProductButtonUiModel(text, color, type)
 }

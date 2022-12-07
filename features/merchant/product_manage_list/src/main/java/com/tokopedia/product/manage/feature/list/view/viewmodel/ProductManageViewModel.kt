@@ -49,7 +49,6 @@ import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProduc
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_TICKER_NOTIFY_ME
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -398,15 +397,13 @@ class ProductManageViewModel @Inject constructor(
         })
     }
 
-    fun getTickerData() {
+    fun getTickerData(enableStockAvailable: Boolean= true) {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        val isShowTickerNotifyMe =
-            remoteConfig.getBoolean(ENABLE_TICKER_NOTIFY_ME, true)
         _tickerData.value =
             tickerStaticDataProvider.getTickers(
                 isMultiLocationShop,
                 _shopStatus.value?.shopStatus.orEmpty(),
-                isShowTickerNotifyMe
+                enableStockAvailable
             )
     }
 
@@ -458,7 +455,7 @@ class ProductManageViewModel @Inject constructor(
                                 GetStatusShopUseCase.createRequestParams(shopId.toIntSafely())
                             getStatusShop.executeOnBackground()
                         } catch (ex: Exception) {
-                            null
+                            StatusInfo(String.EMPTY, String.EMPTY, String.EMPTY, String.EMPTY)
                         }
                     }
                     productAccess.await() to shopStatusResponse.await()

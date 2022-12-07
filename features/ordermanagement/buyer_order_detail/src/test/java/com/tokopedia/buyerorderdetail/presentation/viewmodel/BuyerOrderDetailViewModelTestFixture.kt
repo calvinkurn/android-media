@@ -103,7 +103,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         productId = "2147819914",
         productName = "Hengpong jadul",
         productNote = "Test product note",
-        productThumbnailUrl = "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+        productThumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
         quantity = 1,
         totalPrice = "500000",
         totalPriceText = "Rp500.000",

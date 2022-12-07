@@ -191,7 +191,8 @@ class TokoNowCategoryFragment:
             recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
-            recomWidgetBindPageNameListener = this
+            recomWidgetBindPageNameListener = this,
+            feedbackWidgetListener = this
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel

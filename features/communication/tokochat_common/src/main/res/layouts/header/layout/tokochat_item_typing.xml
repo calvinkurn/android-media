@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_tv_typing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:includeFontPadding="false"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintLeft_toRightOf="@id/tokochat_iv_typing"
+        app:layout_constraintTop_toTopOf="@id/tokochat_iv_typing"
+        app:layout_constraintBottom_toBottomOf="@id/tokochat_iv_typing"
+        app:typographyType="body_3"
+        android:layout_marginStart="4dp"
+        android:text="@string/tokochat_is_typing" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokochat_iv_typing"
+        android:layout_width="26dp"
+        android:layout_height="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tokochat_tv_typing" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
