@@ -33,10 +33,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     @Inject
     lateinit var quickFilterRepository: QuickFilterRepository
-
     @Inject
     lateinit var quickFilterGQLRepository: IQuickFilterGqlRepository
-
     @Inject
     lateinit var quickFilterUseCase: QuickFilterUseCase
     private var selectedSort: HashMap<String, String> = HashMap()
@@ -68,8 +66,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
             addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
         }, onError = {
-                Timber.e(it)
-            })
+            Timber.e(it)
+        })
     }
 
     private fun addFilterOptions(filters: ArrayList<Filter>) {
@@ -83,16 +81,15 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun getTargetComponent(): ComponentsItem? {
-        var compId = components.properties?.targetId ?: ""
+        var compId = components.properties?.targetId?:""
         if (components.properties?.dynamic == true) {
             getComponent(components.parentComponentId, components.pageEndPoint)?.let parent@{ parentItem ->
                 parentItem.getComponentsItem()?.forEach {
-                    if (!it.dynamicOriginalId.isNullOrEmpty()) {
+                    if (!it.dynamicOriginalId.isNullOrEmpty())
                         if (it.dynamicOriginalId == compId) {
                             compId = it.id
                             return@parent
                         }
-                    }
                 }
             }
         }
@@ -113,24 +110,23 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                     syncData.value = true
                 }
             }, onError = {
-                    Timber.e(it)
-                })
+                Timber.e(it)
+            })
         }
     }
 
     fun fetchDynamicFilterModel() {
         launchCatchError(block = {
             var componentID = components.id
-            if (components.properties?.dynamic == true && !components.dynamicOriginalId.isNullOrEmpty()) {
+            if(components.properties?.dynamic == true && !components.dynamicOriginalId.isNullOrEmpty())
                 componentID = components.dynamicOriginalId!!
-            }
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(components.userAddressData))
             dynamicFilterModel.value = filterRepository.getFilterData(componentID, queryParameterMap, components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
-                Timber.e(it)
-            })
+            Timber.e(it)
+        })
     }
 
     private fun renderDynamicFilter(data: DataValue?) {
@@ -152,9 +148,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     private fun setFilterData(filters: List<Filter>?) {
-        if (filters?.isNotEmpty() == true) {
+        if (filters?.isNotEmpty() == true)
             components.filters.addAll(filters)
-        }
     }
 
     private fun setSortData(sort: List<Sort>?) {
@@ -172,7 +167,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         return false
     }
 
-    fun clearQuickFilters() {
+    fun clearQuickFilters(){
         for (filter in quickFilterList)
             for (option in filter.options)
                 components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
@@ -191,8 +186,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         reloadData()
     }
 
-    fun onDropDownFilterSelected(options: List<Option>) {
-        for (option in options) {
+    fun onDropDownFilterSelected(options : List<Option>) {
+        for(option in options) {
             if (option.inputState.toBoolean()) {
                 components.filterController.setFilter(
                     option,
@@ -219,9 +214,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     private fun setSelectedSort(mapParameter: Map<String, String>) {
         sortKeySet.forEach {
-            if (mapParameter.containsKey(it)) {
+            if (mapParameter.containsKey(it))
                 selectedSort[it] = mapParameter[it] ?: error("")
-            }
         }
     }
 
@@ -242,9 +236,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
     private fun addDefaultToSearchParameter() {
-        if (components.isFromCategory && !components.searchParameter.contains(SORT_KEY)) {
+        if(components.isFromCategory && !components.searchParameter.contains(SORT_KEY))
             components.searchParameter.set(SORT_KEY, DEFAULT_SORT_ID)
-        }
     }
 
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
@@ -275,16 +268,13 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             if (targetList.isNotEmpty()) {
                 launchCatchError(block = {
                     productCountMutableLiveData.value = quickFilterGQLRepository
-                        .getQuickFilterProductCountData(
-                            targetList.first(),
-                            components.pageEndPoint,
-                            appendRPCInKey(selectedFilterMapParameter),
-                            getUserId()
-                        ).component?.compAdditionalInfo?.totalProductData
-                        ?.productCountWording ?: ""
+                            .getQuickFilterProductCountData(targetList.first(),
+                                    components.pageEndPoint, appendRPCInKey(selectedFilterMapParameter),
+                                    getUserId()).component?.compAdditionalInfo?.totalProductData
+                            ?.productCountWording ?: ""
                 }, onError = {
-                        it.printStackTrace()
-                    })
+                    it.printStackTrace()
+                })
             }
         }
     }
