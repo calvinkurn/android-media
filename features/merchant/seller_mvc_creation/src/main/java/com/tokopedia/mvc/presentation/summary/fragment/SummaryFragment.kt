@@ -21,6 +21,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBindi
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.VoucherInformation
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant

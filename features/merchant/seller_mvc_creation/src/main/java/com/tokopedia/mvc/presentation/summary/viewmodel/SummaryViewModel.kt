@@ -13,7 +13,21 @@ class SummaryViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    fun aaa(){
-        print("ss")
+    private val _configuration = MutableLiveData<VoucherConfiguration>()
+    val configuration: LiveData<VoucherConfiguration> get() = _configuration
+
+    private val _information = MutableLiveData<VoucherInformation>()
+    val information: LiveData<VoucherInformation> get() = _information
+
+    fun setConfiguration(configuration: VoucherConfiguration) {
+        _configuration.value = configuration
+    }
+
+    fun setInformation(information: VoucherInformation) {
+        _information.value = information
+    }
+
+    fun setupEditMode(voucherId: String) {
+
     }
 }
