@@ -11,8 +11,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -111,6 +109,13 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
         listener?.trackClickAddToCart(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product, items as ArrayList<SimilarProductUiModel>)
     }
 
+    private fun injectDependencies() {
+        DaggerSimilarProductComponent.builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
     private fun configureBottomSheet() {
         clearContentPadding = true
         showCloseIcon = true
@@ -170,7 +175,7 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
         binding?.miniCart?.updateData(listOf(shopId))
     }
 
-    fun showMiniCart(data: MiniCartSimplifiedData, shopId: Long, listener: MiniCartWidgetListener) {
+    fun setMiniCartData(data: MiniCartSimplifiedData, shopId: Long, listener: MiniCartWidgetListener) {
         val miniCartWidget = binding?.miniCart
         val showMiniCartWidget = data.isShowMiniCartWidget
 
@@ -185,53 +190,7 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
                 pageName = pageName,
                 source = source
             )
-        } else {
-            hideMiniCart()
         }
-        setupPadding(data)
-    }
-
-    fun hideMiniCart() {
-        binding?.miniCart?.apply {
-            hide()
-        }
-        resetPadding()
-    }
-
-    private fun setupPadding(data: MiniCartSimplifiedData) {
-        binding?.miniCart?.post {
-            val paddingZero = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
-            ).orZero()
-
-            val paddingBottom = if (data.isShowMiniCartWidget) {
-                getMiniCartHeight()
-            } else {
-                paddingZero
-            }
-            binding?.recyclerView?.setPadding(paddingZero, paddingZero, paddingZero, paddingBottom)
-        }
-    }
-
-    private fun resetPadding() {
-        val paddingZero = context?.resources?.getDimensionPixelSize(
-            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
-        ).orZero()
-        binding?.recyclerView?.setPadding(paddingZero, paddingZero, paddingZero, paddingZero)
-    }
-
-    private fun getMiniCartHeight(): Int {
-        val space16 = context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
-        )?.toInt().orZero()
-        return binding?.miniCart?.height.orZero() - space16
-    }
-
-    private fun injectDependencies() {
-        DaggerSimilarProductComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
     }
 
     fun changeQuantity(quantity:Int, position: Int){

@@ -258,4 +258,6 @@
     <string name="tokopedianow_toaster_retry">Coba Lagi</string>
     <string name="tokopedianow_toaster_see">Lihat</string>
 
+    <string name="tokopedianow_product_card_similar_product_error_description">Tidak Ada Produk Serupa yang Tersedia</string>
+
 </resources>

@@ -56,9 +56,6 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     @Inject
     lateinit var viewModel : TokoNowSimilarProductViewModel
 
-    @Inject
-    lateinit var chooseAddressWrapper: ChooseAddressWrapper
-
     private val productList = ArrayList<SimilarProductUiModel>()
 
     private var bottomSheet: TokoNowSimilarProductBottomSheet? = null
@@ -194,18 +191,16 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         observe(viewModel.miniCart) {
             when(it) {
                 is Success -> {
-                    bottomSheet?.showMiniCart(it.data, viewModel.getShopId(), this)
+                    bottomSheet?.setMiniCartData(it.data, viewModel.getShopId(), this)
                 }
-                is Fail -> {
-                    bottomSheet?.hideMiniCart()
-                }
+                is Fail -> { /* nothing to do */ }
             }
         }
     }
 
     private fun onSuccessAddItemToCart(data: AddToCartDataModel) {
         val message = data.errorMessage.joinToString(separator = ", ")
-        showToaster(message = message, actionText = "Lihat", onClickAction = {bottomSheet?.openMiniCartBottomsheet(this)})
+        showToaster(message = message, actionText = getString(R.string.tokopedianow_toaster_see), onClickAction = {bottomSheet?.openMiniCartBottomsheet(this)})
         val position = productList.indexOfFirst {
             it.id == data.data.productId.toString()
         }
@@ -214,7 +209,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
-        showToaster(message = data.second, actionText = "Oke", onClickAction = {})
+        showToaster(message = data.second, actionText = getString(R.string.tokopedianow_toaster_ok), onClickAction = {})
         val position = productList.indexOfFirst {
             it.id == data.first
         }
@@ -263,17 +258,16 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     private fun trackImpression() {
             if(productList.isNotEmpty()) {
                 listener?.trackImpressionBottomSheet(
-                    userSession.userId,
-                    warehouseId = chooseAddressWrapper.getChooseAddressData().warehouse_id,
-                    productId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "")
-                        .toString(),
+                    userId = userSession.userId,
+                    warehouseId = viewModel.warehouseId,
+                    productId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString(),
                     similarProducts = productList,
                 )
             }
             else{
                 listener?.trackImpressionEmptyState(
-                    chooseAddressWrapper.getChooseAddressData().warehouse_id,
-                    arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString()
+                    warehouseId = viewModel.warehouseId,
+                    productId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString()
                 )
             }
     }

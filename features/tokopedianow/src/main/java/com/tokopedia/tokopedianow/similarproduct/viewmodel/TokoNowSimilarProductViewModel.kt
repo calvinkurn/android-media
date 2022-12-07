@@ -50,6 +50,9 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     val similarProductList: LiveData<List<RecommendationItem?>>
         get() = _similarProductList
 
+    var warehouseId: String = ""
+        private set
+
     override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
         super.setMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
@@ -66,6 +69,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     private fun appendChooseAddressParams(): MutableMap<String, Any> {
         val tokonowQueryParam: MutableMap<String, Any> = mutableMapOf()
         val chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        warehouseId = chooseAddressData.warehouse_id
 
         if (chooseAddressData.city_id.isNotEmpty())
             tokonowQueryParam[SearchApiConst.USER_CITY_ID] = chooseAddressData.city_id
@@ -97,7 +101,6 @@ class TokoNowSimilarProductViewModel @Inject constructor(
 
     fun getSimilarProductList(userId: Int, productIds: String){
         launchCatchError( block = {
-            chooseAddressWrapper.getChooseAddressData()
             val response = getSimilarProductUseCase.execute(userId, productIds, appendChooseAddressParams())
             _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation)
         }, onError = {

@@ -51,7 +51,7 @@
             android:textColor="@color/Unify_NN950"
             app:typographyType="display_1"
             app:typographyWeight="bold"
-            android:text="Tidak Ada Produk Serupa yang Tersedia"/>
+            android:text="@string/tokopedianow_product_card_similar_product_error_description"/>
 
     </LinearLayout>
 
