@@ -2,6 +2,7 @@ package com.tokopedia.videoTabComponent.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -66,7 +67,7 @@ class PlayFeedVideoTabViewModelPlayDataTest {
 
         viewModel.getPlayData(false, params)
 
-        val result = viewModel.getPlayDataRsp.value
+        val result = viewModel.getPlayDataRsp.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -81,7 +82,7 @@ class PlayFeedVideoTabViewModelPlayDataTest {
 
         viewModel.getPlayData(true, params)
 
-        val result = viewModel.getPlayDataForSlotRsp.value
+        val result = viewModel.getPlayDataForSlotRsp.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -94,7 +95,7 @@ class PlayFeedVideoTabViewModelPlayDataTest {
 
         viewModel.getPlayData(true, null)
 
-        val result = viewModel.getPlayDataForSlotRsp.value
+        val result = viewModel.getPlayDataForSlotRsp.getOrAwaitValue()
 
         Assertions
             .assertThat(result)

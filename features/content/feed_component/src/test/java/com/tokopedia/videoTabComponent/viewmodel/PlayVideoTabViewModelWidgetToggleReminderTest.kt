@@ -5,6 +5,7 @@ import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -88,7 +89,7 @@ class PlayVideoTabViewModelWidgetToggleReminderTest {
             true
         )
 
-        val result = viewModel.reminderObservable.value
+        val result = viewModel.reminderObservable.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -118,7 +119,7 @@ class PlayVideoTabViewModelWidgetToggleReminderTest {
             true
         )
 
-        val result = viewModel.reminderObservable.value
+        val result = viewModel.reminderObservable.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -159,7 +160,7 @@ class PlayVideoTabViewModelWidgetToggleReminderTest {
             true
         )
 
-        val result = viewModel.reminderObservable.value
+        val result = viewModel.reminderObservable.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -179,7 +180,7 @@ class PlayVideoTabViewModelWidgetToggleReminderTest {
             false
         )
 
-        val result = viewModel.playWidgetReminderEvent.value
+        val result = viewModel.playWidgetReminderEvent.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -198,7 +199,7 @@ class PlayVideoTabViewModelWidgetToggleReminderTest {
             position
         )
 
-        val result = viewModel.playWidgetReminderEvent.value
+        val result = viewModel.playWidgetReminderEvent.getOrAwaitValue()
 
         Assertions
             .assertThat(result)

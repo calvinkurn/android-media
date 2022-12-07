@@ -2,6 +2,7 @@ package com.tokopedia.videoTabComponent.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,7 +53,7 @@ class PlayVideoTabViewModelPlayDetailPageDataTest {
 
         viewModel.getPlayDetailPageData(widgetType, "", "")
 
-        val result = viewModel.getLiveOrUpcomingPlayDataRsp.value
+        val result = viewModel.getLiveOrUpcomingPlayDataRsp.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -67,7 +68,7 @@ class PlayVideoTabViewModelPlayDetailPageDataTest {
 
         viewModel.getPlayDetailPageData(widgetType, "", "")
 
-        val result = viewModel.getLiveOrUpcomingPlayDataRsp.value
+        val result = viewModel.getLiveOrUpcomingPlayDataRsp.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -83,7 +84,7 @@ class PlayVideoTabViewModelPlayDetailPageDataTest {
 
         viewModel.getPlayDetailPageData(widgetType, "", "")
 
-        val result = viewModel.getLiveOrUpcomingPlayDataRsp.value
+        val result = viewModel.getLiveOrUpcomingPlayDataRsp.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -99,7 +100,7 @@ class PlayVideoTabViewModelPlayDetailPageDataTest {
 
         viewModel.getPlayDetailPageData(widgetType, sourceType = "")
 
-        val result = viewModel.getLiveOrUpcomingPlayDataRsp.value
+        val result = viewModel.getLiveOrUpcomingPlayDataRsp.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -114,7 +115,7 @@ class PlayVideoTabViewModelPlayDetailPageDataTest {
 
         viewModel.getPlayDetailPageData(widgetType, "", "")
 
-        val result = viewModel.getLiveOrUpcomingPlayDataRsp.value
+        val result = viewModel.getLiveOrUpcomingPlayDataRsp.getOrAwaitValue()
 
         Assertions
             .assertThat(result)

@@ -3,6 +3,7 @@ package feedcomponent.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -61,7 +62,7 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
 
         viewModel.fetchMerchantVoucherSummary(shopid)
 
-        val result = viewModel.merchantVoucherSummary.value
+        val result = viewModel.merchantVoucherSummary.getOrAwaitValue()
         val expected = builder.buildTokopointsCatalogMVCSummary()
 
         Assertions
@@ -77,7 +78,7 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
 
         viewModel.fetchMerchantVoucherSummary(shopid)
 
-        val result = viewModel.merchantVoucherSummary.value
+        val result = viewModel.merchantVoucherSummary.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -92,7 +93,7 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
 
         viewModel.fetchMerchantVoucherSummary(shopid)
 
-        val result = viewModel.merchantVoucherSummary.value
+        val result = viewModel.merchantVoucherSummary.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -107,7 +108,7 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
 
         viewModel.fetchMerchantVoucherSummary(shopid)
 
-        val result = viewModel.merchantVoucherSummary.value
+        val result = viewModel.merchantVoucherSummary.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -122,7 +123,7 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
 
         viewModel.fetchMerchantVoucherSummary(shopid)
 
-        val result = viewModel.merchantVoucherSummary.value
+        val result = viewModel.merchantVoucherSummary.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
@@ -135,7 +136,7 @@ class FeedProductItemInfoViewModelFetchVoucherSummaryTest {
 
         viewModel.fetchMerchantVoucherSummary(shopid)
 
-        val result = viewModel.merchantVoucherSummary.value
+        val result = viewModel.merchantVoucherSummary.getOrAwaitValue()
 
         Assertions
             .assertThat(result)
