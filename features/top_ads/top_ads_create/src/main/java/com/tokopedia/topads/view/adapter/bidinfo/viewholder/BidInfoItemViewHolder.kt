@@ -12,7 +12,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 const val LOW = "low"
 const val HIGH = "high"
-const val MEDIUM = "mid"
+const val MID = "mid"
+const val MEDIUM = "medium"
 const val KALI = " kali"
 
 class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int, budget: String) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
@@ -59,6 +60,7 @@ class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int)
             val competition = when (item.data.competition) {
                 LOW -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low)
                 MEDIUM -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_moderation)
+                MID -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_moderation)
                 HIGH -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_high)
                 else -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low)
             }
