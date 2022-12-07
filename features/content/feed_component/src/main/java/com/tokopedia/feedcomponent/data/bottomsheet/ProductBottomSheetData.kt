@@ -8,6 +8,7 @@ data class ProductBottomSheetData(
     val shopId: String,
     val postType: String,
     val isFollowed: Boolean,
+    val hasVoucher: Boolean,
     val positionInFeed: Int,
     val playChannelId: String,
     val shopName:String,

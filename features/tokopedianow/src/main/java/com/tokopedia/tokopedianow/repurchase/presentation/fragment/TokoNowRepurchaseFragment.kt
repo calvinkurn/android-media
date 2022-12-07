@@ -45,7 +45,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -97,6 +96,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.adapter.differ.Repurch
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.SimilarProductCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
@@ -162,6 +162,7 @@ class TokoNowRepurchaseFragment:
         RepurchaseAdapter(
             RepurchaseAdapterTypeFactory(
                 productCardListener = createProductCardListener(),
+                similarProductListener = createSimilarProductCallback(),
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
@@ -1049,6 +1050,14 @@ class TokoNowRepurchaseFragment:
             tokoNowRepurchaseViewModel = viewModel,
             activity = activity,
             startActivityForResult=::startActivityForResult
+        )
+    }
+
+    private fun createSimilarProductCallback(): SimilarProductCallback {
+        return SimilarProductCallback(
+            analytics = analytics,
+            warehouseId = localCacheModel?.warehouse_id.orEmpty(),
+            userId = userSession.userId
         )
     }
 }

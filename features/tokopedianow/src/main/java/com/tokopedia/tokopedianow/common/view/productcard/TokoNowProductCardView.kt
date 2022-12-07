@@ -13,6 +13,7 @@ import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
@@ -23,14 +24,16 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.LIGHT_GREEN
 import com.tokopedia.tokopedianow.common.model.LIGHT_RED
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.util.doOnPreDraw
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -46,8 +49,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
         private const val BOUND_DEFAULT_VALUE = 0
         private const val NO_MARGIN = 0
         private const val NO_DISCOUNT_STRING = "0"
+        private const val DEFAULT_MAX_LINES = 2
+        private const val MAX_LINES_NEEDED_TO_CHANGE = 1
     }
 
+    private var similarProductListener: SimilarProductListener? = null
     private var binding: LayoutTokopedianowProductCardViewBinding
 
     init {
@@ -88,7 +94,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
             slashPrice = model.slashPrice,
         )
         initProductNameTypography(
-            productName = model.name
+            name = model.name,
+            needToChangeMaxLinesName = model.needToChangeMaxLinesName
         )
         initRatingTypography(
             rating = model.rating,
@@ -110,7 +117,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
         )
         initSimilarProductTypography(
             isOos = model.isOos(),
-            isShown = model.isSimilarProductShown
+            isShown = model.isSimilarProductShown,
+            productId = model.productId
         )
         initProgressBar(
             isFlashSale = model.isFlashSale(),
@@ -197,10 +205,16 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initProductNameTypography(
-        productName: String
+        name: String,
+        needToChangeMaxLinesName: Boolean,
     ) {
-        productNameTypography.showIfWithBlock(productName.isNotBlank()) {
-            text = productName
+        productNameTypography.showIfWithBlock(name.isNotBlank()) {
+            text = name
+            maxLines = if (needToChangeMaxLinesName && promoLayout.isVisible) {
+                MAX_LINES_NEEDED_TO_CHANGE
+            } else {
+                DEFAULT_MAX_LINES
+            }
         }
     }
 
@@ -219,9 +233,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initSimilarProductTypography(
         isOos: Boolean,
-        isShown: Boolean
+        isShown: Boolean,
+        productId: String
     ) {
-        similarProductTypography.showIfWithBlock(isShown && isOos) {
+        similarProductTypography.showIfWithBlock(isOos && isShown) {
             adjustChevronIcon(
                 drawable = getIconUnifyDrawable(
                     context = context,
@@ -232,6 +247,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     )
                 )
             )
+            setOnClickListener {
+                similarProductListener?.trackClickSimilarProductBtn(productId)
+                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, similarProductListener)
+                context.startActivity(intent)
+            }
         }
     }
 
@@ -511,6 +531,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
         onClickVariantListener: (Int) -> Unit
     ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
+    }
+
+    fun setListeners(similarProductListener: SimilarProductListener?){
+        this.similarProductListener = similarProductListener
     }
 
     fun setWishlistButtonListener(

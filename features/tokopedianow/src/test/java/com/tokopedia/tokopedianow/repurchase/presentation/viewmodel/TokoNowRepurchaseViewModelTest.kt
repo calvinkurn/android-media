@@ -343,7 +343,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         val layoutList = listOf(createRepurchaseProductUiModel(
             productCard = TokoNowProductCardViewUiModel(
                 isSimilarProductShown = true,
-                isWishlistShown = true
+                isWishlistShown = true,
+                needToShowQuantityEditor = true
             ),
             position = 1
         ))
@@ -597,7 +598,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                         productCardModel = TokoNowProductCardViewUiModel(
                             productId = "2",
                             isSimilarProductShown = true,
-                            isWishlistShown = true
+                            isWishlistShown = true,
+                            needToShowQuantityEditor = true
                         ),
                         position = 2
                     )
@@ -877,7 +879,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = TokoNowProductCardViewUiModel(
                 productId = "1",
                 isSimilarProductShown = true,
-                isWishlistShown = true
+                isWishlistShown = true,
+                needToShowQuantityEditor = true
             ),
             position = 1
         ))
@@ -953,7 +956,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = TokoNowProductCardViewUiModel(
                 productId = "1",
                 isSimilarProductShown = true,
-                isWishlistShown = true
+                isWishlistShown = true,
+                needToShowQuantityEditor = true
             ),
             position = 1
         ))
@@ -1029,7 +1033,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = TokoNowProductCardViewUiModel(
                 productId = "1",
                 isSimilarProductShown = true,
-                isWishlistShown = true
+                isWishlistShown = true,
+                needToShowQuantityEditor = true
             ),
             position = 1
         ))
@@ -1330,7 +1335,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = TokoNowProductCardViewUiModel(
                     productId = "1",
                     isSimilarProductShown = true,
-                    isWishlistShown = true
+                    isWishlistShown = true,
+                    needToShowQuantityEditor = true
                 ),
                 position = 1
             ),
@@ -1338,7 +1344,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = TokoNowProductCardViewUiModel(
                     productId = "2",
                     isSimilarProductShown = true,
-                    isWishlistShown = true
+                    isWishlistShown = true,
+                    needToShowQuantityEditor = true
                 ),
                 position = 1
             )
@@ -1407,7 +1414,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = TokoNowProductCardViewUiModel(
                     productId = "1",
                     isSimilarProductShown = true,
-                    isWishlistShown = true
+                    isWishlistShown = true,
+                    needToShowQuantityEditor = true
                 ),
                 position = 1
             ),
@@ -1776,7 +1784,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 position = 1,
                 productCard = TokoNowProductCardViewUiModel(
                     productId = productId,
-                    hasBeenWishlist = false
+                    hasBeenWishlist = false,
+                    needToShowQuantityEditor = true
                 )
             )
         )
@@ -1784,7 +1793,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             position = 1,
             productCard = TokoNowProductCardViewUiModel(
                 productId = productId,
-                hasBeenWishlist = true
+                hasBeenWishlist = true,
+                needToShowQuantityEditor = true
             )
         )
 

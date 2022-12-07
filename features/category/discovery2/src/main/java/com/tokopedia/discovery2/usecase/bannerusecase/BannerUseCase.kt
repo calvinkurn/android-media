@@ -4,6 +4,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.repository.banner.BannerRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
@@ -12,13 +13,14 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, isDarkMode: Boolean = false): Boolean {
         val component = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         if (component?.noOfPagesLoaded == CONST_ONE) return false
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
             val bannerData = repository.getBanner(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
                         component.dynamicOriginalId!! else componentId,
-                    getQueryParameterMap(isDarkMode,it.userAddressData),
+                    getQueryParameterMap(isDarkMode,paramWithoutRpc,it.userAddressData),
                     pageEndPoint, it.name)
             val bannerListData = (bannerData?.data ?: emptyList()).toMutableList()
             it.noOfPagesLoaded = CONST_ONE
@@ -68,11 +70,15 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
     }
 
     private fun getQueryParameterMap(isDarkMode: Boolean,
+                                     queryParameterMapWithoutRpc: Map<String, String>?,
                                      userAddressData: LocalCacheModel?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
         queryParameterMap[Utils.DARK_MODE] = isDarkMode
+        queryParameterMapWithoutRpc?.let {
+            queryParameterMap.putAll(it)
+        }
         queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(userAddressData))
 
         return queryParameterMap

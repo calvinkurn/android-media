@@ -92,7 +92,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     isVariant = false,
                     price = "0",
                     orderQuantity = 1,
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
                 ),
                 parentId = "0"
             )
@@ -107,7 +108,9 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 productCardModel = TokoNowProductCardViewUiModel(
                     productId = "5",
                     name = "Tahu Bulat",
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
                 ),
                 parentId = "0"
             )
@@ -248,7 +251,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     price = "2000",
                     orderQuantity = 1,
                     isVariant = true,
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
                 )
             ),
             TokoNowProductCardCarouselItemUiModel(
@@ -262,7 +266,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     price = "3000",
                     orderQuantity = 2,
                     isVariant = true,
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
                 )
             )
         )
@@ -278,7 +283,9 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     name = "Tahu Bulat",
                     orderQuantity = 2,
                     isVariant = true,
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
                 )
             )
         )
@@ -417,7 +424,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     isVariant = false,
                     price = "0",
                     orderQuantity = 1,
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
                 ),
                 parentId = "0"
             )
@@ -431,7 +439,9 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 productCardModel = TokoNowProductCardViewUiModel(
                     productId = "5",
                     name = "Tahu Bulat",
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
                 ),
                 parentId = "0"
             )
@@ -562,7 +572,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     isVariant = false,
                     price = "0",
                     orderQuantity = 1,
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
                 ),
                 parentId = "0"
             )
@@ -734,7 +745,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     isVariant = false,
                     price = "0",
                     orderQuantity = 1,
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
                 ),
                 parentId = "0"
             )

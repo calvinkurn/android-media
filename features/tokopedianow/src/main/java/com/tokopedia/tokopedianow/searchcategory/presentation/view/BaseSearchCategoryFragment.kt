@@ -68,6 +68,7 @@ import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
 import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
+import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
@@ -81,6 +82,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHold
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
@@ -93,6 +95,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -125,8 +128,8 @@ abstract class BaseSearchCategoryFragment:
     ProductItemListener,
     SwitcherWidgetListener,
     TokoNowEmptyStateNoResultListener,
-    TokoNowProductCardListener
-{
+    TokoNowProductCardListener,
+    FeedbackWidgetListener {
 
     companion object {
         private const val SPAN_COUNT = 3
@@ -1091,7 +1094,13 @@ abstract class BaseSearchCategoryFragment:
         })
     }
 
-    open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(
+    override fun onFeedbackCtaClicked() {
+        TokoNowProductFeedbackBottomSheet().also {
+            it.showBottomSheet(activity?.supportFragmentManager,view)
+        }
+    }
+
+    protected open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(
         lifecycle = viewLifecycleOwner.lifecycle,
         userSession = userSession,
         trackingQueue = trackingQueue,
@@ -1105,7 +1114,7 @@ abstract class BaseSearchCategoryFragment:
         },
     )
 
-    open fun createProductRecommendationCallback() = ProductRecommendationCallback(
+    protected open fun createProductRecommendationCallback() = ProductRecommendationCallback(
         productRecommendationViewModel = productRecommendationViewModel,
         baseSearchCategoryViewModel = getViewModel(),
         activity = activity,
@@ -1119,4 +1128,12 @@ abstract class BaseSearchCategoryFragment:
             getListValue(false, recommendationItem)
         },
     )
+
+    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : SimilarProductCallback {
+        return SimilarProductCallback(
+            warehouseId = getViewModel().warehouseId,
+            userId = userSession.userId.toString(),
+            isCategoryPage = isCategoryPage
+        )
+    }
 }

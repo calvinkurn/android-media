@@ -15,9 +15,11 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddres
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
+import org.junit.Assert
 import org.junit.Assert.assertThat
 import java.io.File
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -154,4 +156,22 @@ private fun assertATCConfiguration(
         assertThat(actualProductDataView.productCardModel.minOrder, shouldBe(expectedProduct.minOrder))
         assertThat(actualProductDataView.productCardModel.maxOrder, shouldBe(expectedProduct.maxOrder))
     }
+}
+
+fun Visitable<*>.assertProductFeedbackWidget(){
+    assertThat(this, instanceOf(TokoNowFeedbackWidgetUiModel::class.java))
+}
+
+fun List<Visitable<*>>.assertNotProductFeedbackWidget(){
+   val tempList = this.filterIsInstance<TokoNowFeedbackWidgetUiModel>()
+    Assert.assertEquals(tempList.size,0)
+}
+
+fun assertNoProductFeedbackWidget(list:List<Visitable<*>>){
+    var found = false
+    list.forEach {
+        if(it is TokoNowFeedbackWidgetUiModel)
+           found = true
+    }
+    Assert.assertEquals(found,false)
 }
