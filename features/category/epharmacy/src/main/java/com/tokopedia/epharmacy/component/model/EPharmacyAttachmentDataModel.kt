@@ -16,7 +16,7 @@ data class EPharmacyAttachmentDataModel(
     val consultationString: String?,
     val prescription: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription?>?,
     val partnerConsultationId: String?,
-    val tokoConsultationId: String?,
+    val tokoConsultationId: Long?,
     var prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?,
     val prescriptionSource: List<String?>?,
     val consultationSource: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource?,
@@ -25,7 +25,7 @@ data class EPharmacyAttachmentDataModel(
     var prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
     val showUploadWidget: Boolean = false,
     val showDivider: Boolean = true,
-    var isError : Boolean = false
+    var isError: Boolean = false
 ) :
     BaseEPharmacyDataModel {
 

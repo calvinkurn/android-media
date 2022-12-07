@@ -64,7 +64,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    fun getConsultationDetails(tokoConsultationId: Int) {
+    fun getConsultationDetails(tokoConsultationId: Long) {
         ePharmacyGetConsultationDetailsUseCase.cancelJobs()
         ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(
             ::onSuccessGetConsultationDetails,
@@ -181,7 +181,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                         group?.consultationData?.consultationString,
                         group?.consultationData?.prescription,
                         group?.consultationData?.partnerConsultationId,
-                        group?.consultationData?.tokoConsultationId,
+                        group?.consultationData?.tokoConsultationId.toString(),
                         group?.prescriptionImages
                     )
                 )
@@ -195,6 +195,42 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
             if (!gp?.epharmacyGroupId.isNullOrBlank()) {
                 ids.add(gp?.epharmacyGroupId ?: "")
+            }
+        }
+        return ids
+    }
+
+    fun getShopIds(): ArrayList<String> {
+        val ids = arrayListOf<String>()
+        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
+            gp?.shopInfo?.forEach { si ->
+                if (!si?.shopId.isNullOrBlank()) {
+                    ids.add(si?.shopId ?: "")
+                }
+            }
+        }
+        return ids
+    }
+
+    fun getShopIds(ePharmacyGroupId: String?): ArrayList<String> {
+        val ids = arrayListOf<String>()
+        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
+            if (gp?.epharmacyGroupId == ePharmacyGroupId) {
+                gp?.shopInfo?.forEach { si ->
+                    if (!si?.shopId.isNullOrBlank()) {
+                        ids.add(si?.shopId ?: "")
+                    }
+                }
+            }
+        }
+        return ids
+    }
+
+    fun getEnablers(): ArrayList<String> {
+        val ids = arrayListOf<String>()
+        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
+            if (!gp?.consultationSource?.enablerName.isNullOrBlank()) {
+                ids.add(gp?.consultationSource?.enablerName ?: "")
             }
         }
         return ids

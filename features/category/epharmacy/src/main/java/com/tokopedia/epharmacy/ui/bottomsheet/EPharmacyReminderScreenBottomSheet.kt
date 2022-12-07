@@ -17,6 +17,7 @@ import com.tokopedia.epharmacy.utils.LabelKeys.Companion.OUTSIDE_WORKING_HOURS
 import com.tokopedia.epharmacy.viewmodel.EPharmacyReminderBsViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.picker.common.basecomponent.utils.rootCurrentView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -181,7 +182,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     }
 
     private fun showToast(toasterType: Int = Toaster.TYPE_NORMAL, message: String) {
-        binding?.reminderParentView?.let { it ->
+        activity?.rootCurrentView()?.let { it ->
             Toaster.build(it, message, Toaster.LENGTH_LONG, toasterType).show()
         }
     }

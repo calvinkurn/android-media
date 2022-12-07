@@ -12,7 +12,7 @@ class EPharmacyGetConsultationDetailsUseCase @Inject constructor(graphqlReposito
     fun getConsultationDetails(
         onSuccess: (EPharmacyConsultationDetailsResponse) -> Unit,
         onError: (Throwable) -> Unit,
-        tokoConsultationId: Int
+        tokoConsultationId: Long
     ) {
         try {
             this.setTypeClass(EPharmacyConsultationDetailsResponse::class.java)
@@ -31,7 +31,7 @@ class EPharmacyGetConsultationDetailsUseCase @Inject constructor(graphqlReposito
         }
     }
 
-    private fun getRequestParams(tokoConsultationId: Int): MutableMap<String, Any?> {
+    private fun getRequestParams(tokoConsultationId: Long): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[PARAM_ID] = tokoConsultationId
         return requestMap

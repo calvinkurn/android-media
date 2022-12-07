@@ -25,4 +25,6 @@ interface EPharmacyListener {
     fun onCTACClick(adapterPosition: Int, modelKey: String?) {}
 
     fun onError(adapterPosition: Int, modelKey: String?) {}
+
+    fun onToast(toasterType: Int, message: String) {}
 }

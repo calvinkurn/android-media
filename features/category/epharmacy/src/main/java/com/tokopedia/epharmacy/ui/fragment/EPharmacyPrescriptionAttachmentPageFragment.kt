@@ -304,14 +304,12 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 }
             }
         }
-        // TODO
-
         if (!trackingSentBoolean) {
             EPharmacyMiniConsultationAnalytics.userViewAttachPrescriptionPage(
                 userSession.isLoggedIn,
                 userSession.userId,
-                if (ePharmacyAttachmentUiUpdater.mapOfData.contains(TICKER_COMPONENT)) "${ePharmacyAttachmentUiUpdater.mapOfData.size - 1}" else "${ePharmacyAttachmentUiUpdater.mapOfData.size}",
-                ""
+                ePharmacyPrescriptionAttachmentViewModel.getShopIds().size.toString(),
+                ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString()
             )
             trackingSentBoolean = true
         }
@@ -401,18 +399,19 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         super.onCTACClick(adapterPosition, modelKey)
         val model = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel)
         redirectAttachmentCTA(
+            model.enablerName,
             model.enablerLogo,
             model.epharmacyGroupId,
             model.prescriptionCTA,
-            model.tokoConsultationId
+            model.tokoConsultationId,
+            model.consultationSource?.id
         )
-        // TODO
         EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
-            "",
-            "",
-            "",
-            "",
-            "",
+            model.prescriptionCTA?.title ?: "",
+            ePharmacyPrescriptionAttachmentViewModel.getEnablers().toString(),
+            adapterPosition.toString(),
+            ePharmacyPrescriptionAttachmentViewModel.getShopIds(model.epharmacyGroupId).size.toString(),
+            ePharmacyPrescriptionAttachmentViewModel.getShopIds(model.epharmacyGroupId).toString(),
             model.epharmacyGroupId
         )
     }
@@ -424,24 +423,33 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyAttachmentUiUpdater.updateModel(updated)
     }
 
+    override fun onToast(toasterType: Int, message: String) {
+        super.onToast(toasterType, message)
+        showToast(toasterType, message)
+    }
+
     private fun redirectAttachmentCTA(
+        enablerName: String?,
         enablerImage: String?,
         groupId: String?,
         prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
-        tokoConsultationId: String?
+        tokoConsultationId: Long?,
+        consultationId: Long?
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PWA.type -> {
-                startMiniConsultation(groupId)
+                startMiniConsultation(enablerName, groupId, consultationId)
             }
             PrescriptionActionType.REDIRECT_UPLOAD.type -> {
                 startPhotoUpload(groupId)
             }
             PrescriptionActionType.REDIRECT_OPTION.type -> {
-                startAttachmentChooser(enablerImage, groupId)
+                startAttachmentChooser(enablerImage, groupId, enablerName, consultationId)
             }
             PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
-                ePharmacyPrescriptionAttachmentViewModel.getConsultationDetails(40)
+                tokoConsultationId?.let {
+                    ePharmacyPrescriptionAttachmentViewModel.getConsultationDetails(it)
+                }
             }
             PrescriptionActionType.REDIRECT_CHECK_PRESCRIPTION.type -> {
                 groupId?.let { ePharmacyGroupId ->
@@ -453,11 +461,15 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun startAttachmentChooser(
         enablerImage: String?,
-        ePharmacyGroupId: String?
+        ePharmacyGroupId: String?,
+        enablerName: String?,
+        consultationSourceId: Long?
     ) {
         RouteManager.getIntent(activity, EPHARMACY_CHOOSER_APPLINK).apply {
             putExtra(ENABLER_IMAGE_URL, enablerImage)
             putExtra(EPHARMACY_GROUP_ID, ePharmacyGroupId)
+            putExtra(EPHARMACY_ENABLER_NAME, enablerName)
+            putExtra(EPHARMACY_CONSULTATION_SOURCE_ID, consultationSourceId)
         }.also {
             startActivityForResult(it, EPHARMACY_CHOOSER_REQUEST_CODE)
         }
@@ -471,10 +483,15 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         }
     }
 
-    private fun startMiniConsultation(groupId: String?) {
+    private fun startMiniConsultation(enablerName: String?, groupId: String?, consultationSourceId: Long?) {
         if (!groupId.isNullOrBlank()) {
-            // TODO
-            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(userSession.isLoggedIn, "", "", "", "")
+            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(
+                userSession.isLoggedIn,
+                userSession.userId,
+                enablerName ?: "",
+                groupId,
+                consultationSourceId.toString()
+            )
             ePharmacyPrescriptionAttachmentViewModel.initiateConsultation(
                 InitiateConsultationParam(
                     InitiateConsultationParam.InitiateConsultationParamInput(groupId)
@@ -490,7 +507,11 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 when (resultCode) {
                     EPHARMACY_MINI_CONSULTATION_REQUEST_CODE -> {
                         data?.getStringExtra(EPHARMACY_GROUP_ID)?.let { groupId ->
-                            startMiniConsultation(groupId)
+                            startMiniConsultation(
+                                data.getStringExtra(EPHARMACY_ENABLER_NAME),
+                                groupId,
+                                data.getLongExtra(EPHARMACY_CONSULTATION_SOURCE_ID, 0L)
+                            )
                             EPharmacyMiniConsultationAnalytics.clickChatDokter(data.getStringExtra(EPHARMACY_ENABLER_NAME), groupId)
                         }
                     }

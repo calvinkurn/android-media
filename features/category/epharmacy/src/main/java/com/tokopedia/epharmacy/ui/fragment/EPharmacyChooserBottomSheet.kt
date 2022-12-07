@@ -24,11 +24,13 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private var enableImageURL = ""
     private var groupId = ""
     private var enablerName = ""
+    private var consultationSourceId = 0L
     companion object {
         fun newInstance(
             enableImageURL: String,
             groupId: String,
-            enablerName: String
+            enablerName: String,
+            consultationSourceId: Long
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
                 showCloseIcon = false
@@ -41,6 +43,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     putString(ENABLER_IMAGE_URL, enableImageURL)
                     putString(EPHARMACY_GROUP_ID, groupId)
                     putString(EPHARMACY_ENABLER_NAME, enablerName)
+                    putLong(EPHARMACY_CONSULTATION_SOURCE_ID, consultationSourceId)
                 }
             }
         }
@@ -85,6 +88,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
         enableImageURL = arguments?.getString(ENABLER_IMAGE_URL) ?: ""
         groupId = arguments?.getString(EPHARMACY_GROUP_ID) ?: ""
         enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME) ?: ""
+        consultationSourceId = arguments?.getLong(EPHARMACY_CONSULTATION_SOURCE_ID) ?: 0L
     }
 
     private fun setupBottomSheetUiData() {
