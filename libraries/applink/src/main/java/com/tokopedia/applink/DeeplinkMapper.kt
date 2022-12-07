@@ -500,7 +500,7 @@ object DeeplinkMapper {
         DLP.exact(ApplinkConst.KYC_NO_PARAM, ApplinkConstInternalUserPlatform.KYC_INFO_BASE),
         DLP.startWith(ApplinkConst.KYC_FORM_NO_PARAM, ApplinkConstInternalUserPlatform.KYC_FORM_BASE),
         DLP.startWith(ApplinkConst.KYC_FORM, ApplinkConstInternalUserPlatform.KYC_FORM),
-        DLP.startWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM) { _, _, deeplink, _ -> DeeplinkMapperUser.getKycInternalApplink(deeplink) },
+        DLP.startWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM) { _, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredUserNavigation(deeplink) },
         DLP.exact(ApplinkConst.SETTING_BANK, ApplinkConstInternalGlobal.SETTING_BANK),
         DLP.exact(ApplinkConst.OTP, ApplinkConstInternalUserPlatform.COTP),
         DLP.startWith(ApplinkConst.QR_LOGIN, ApplinkConstInternalUserPlatform.QR_LOGIN),

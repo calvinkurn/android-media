@@ -78,7 +78,7 @@ open class SubmitPostUseCase @Inject constructor(
                                 PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
                                 PARAM_ID to if(id.isNullOrEmpty()) null else id,
                                 PARAM_AD_ID to null,
-                                PARAM_TYPE to getInputType(type),
+                                PARAM_TYPE to INPUT_TYPE_CONTENT,
                                 PARAM_TOKEN to token,
                                 PARAM_AUTHOR_ID to authorId,
                                 PARAM_AUTHOR_TYPE to type,
@@ -137,7 +137,7 @@ open class SubmitPostUseCase @Inject constructor(
                     PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
                     PARAM_ID to if(id.isNullOrEmpty()) null else id,
                     PARAM_AD_ID to null,
-                    PARAM_TYPE to getInputType(type),
+                    PARAM_TYPE to INPUT_TYPE_CONTENT,
                     PARAM_TOKEN to token,
                     PARAM_AUTHOR_ID to authorId,
                     PARAM_AUTHOR_TYPE to type,
@@ -190,10 +190,6 @@ open class SubmitPostUseCase @Inject constructor(
         }
         return rearrangedList
     }
-
-    private fun getInputType(type: String) =
-        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
-
 
     companion object {
         private const val PARAM_TYPE = "type"
