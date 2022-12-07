@@ -65,7 +65,7 @@ class GetAnnouncementDataUseCase(
               }
             }
         """
-        private const val DATA_KEYS = "datakeys"
+        private const val DATA_KEYS = "dataKeys"
 
         fun createRequestParams(
             dataKey: List<String>
