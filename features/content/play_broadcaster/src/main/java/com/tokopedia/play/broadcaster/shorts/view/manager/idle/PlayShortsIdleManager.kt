@@ -23,9 +23,9 @@ class PlayShortsIdleManager @Inject constructor(
         get() = _state
     private var job: Job? = null
 
-    fun startIdleTimer() {
+    fun startIdleTimer(scope: CoroutineScope) {
         clear()
-        job = CoroutineScope(dispatchers.computation).launch {
+        job = scope.launch(dispatchers.computation) {
             emitState(State.StandBy)
             delay(IDLE_WAITING_DURATION)
             emitState(State.Idle)
@@ -42,13 +42,13 @@ class PlayShortsIdleManager @Inject constructor(
         emitState(State.Idle)
     }
 
-    fun toggleState() {
+    fun toggleState(scope: CoroutineScope) {
         when (_state.value) {
             State.StandBy -> {
                 forceIdleMode()
             }
             State.Idle -> {
-                startIdleTimer()
+                startIdleTimer(scope)
             }
         }
     }
