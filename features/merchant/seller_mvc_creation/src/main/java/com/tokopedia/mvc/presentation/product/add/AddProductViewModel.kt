@@ -234,7 +234,8 @@ class AddProductViewModel @Inject constructor(
 
             val isProductAlreadyOnSelection = product.id in selectedProductIds
             val isSelected = isProductAlreadyOnSelection || (shouldAutomaticallyAddToProductSelection && isEligible)
-            val enableCheckbox = (isBelowMaximumProductSelection && isEligible) || isSelected || (selectedProductIds.size < currentState.maxProductSelection && isEligible)
+            val enableCheckbox = shouldEnableCheckbox(isSelected, isEligible, selectedProductIds.size, currentState.maxProductSelection)
+
             product.copy(
                 isEligible = isEligible,
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
@@ -246,6 +247,27 @@ class AddProductViewModel @Inject constructor(
         }
 
         return formattedProducts
+    }
+
+    private fun shouldEnableCheckbox(
+        isSelected: Boolean,
+        isEligible: Boolean,
+        totalSelectedProductCount: Int,
+        maxProductSelection: Int
+    ): Boolean {
+        if (isSelected) {
+            return true
+        }
+
+        if (!isEligible) {
+            return false
+        }
+
+        if (totalSelectedProductCount < maxProductSelection) {
+            return true
+        }
+
+        return false
     }
 
     private fun findValidatedProduct(
