@@ -79,6 +79,7 @@ class VoucherEditPeriodViewModel @Inject constructor(
                     hourEnd
                 )
             }, onError = {
+                    onFailureUpdateVoucher(it)
                 })
         }
     }
