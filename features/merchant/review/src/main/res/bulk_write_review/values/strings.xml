@@ -11,6 +11,10 @@
     <string name="bulk_review_remove_review_item_dialog_description">Padahal kamu sudah isi ulasannya, lho. Tinggal selangkah lagi untuk kirim.</string>
     <string name="bulk_review_remove_review_item_dialog_primary_cta_text">Hapus</string>
     <string name="bulk_review_remove_review_item_dialog_secondary_cta_text">Batal</string>
+    <string name="bulk_review_cancel_review_submission_dialog_title">Kembali dan batalkan kirim ulasan?</string>
+    <string name="bulk_review_cancel_review_submission_dialog_description">Sebagian ulasan mungkin telah terkirim.</string>
+    <string name="bulk_review_cancel_review_submission_dialog_primary_cta_text">Kembali</string>
+    <string name="bulk_review_cancel_review_submission_dialog_secondary_cta_text">Tunggu, deh</string>
     <string name="btn_bulk_review_bad_rating_category_cta_text">Terapkan</string>
     <string name="bulk_review_bad_rating_category_bottom_sheet_title">Apa yang bikin kamu tidak puas?</string>
     <string name="tv_bulk_review_bad_rating_category_change">Ubah</string>

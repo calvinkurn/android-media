@@ -44,10 +44,12 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.typef
 import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.viewholder.BulkReviewItemViewHolder
 import com.tokopedia.review.feature.bulk_write_review.presentation.bottomsheet.BulkReviewBadRatingCategoryBottomSheet
 import com.tokopedia.review.feature.bulk_write_review.presentation.bottomsheet.BulkReviewExpandedTextAreaBottomSheet
+import com.tokopedia.review.feature.bulk_write_review.presentation.dialog.BulkReviewCancelReviewSubmissionDialog
 import com.tokopedia.review.feature.bulk_write_review.presentation.dialog.BulkReviewRemoveReviewItemDialog
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewVisitable
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryBottomSheetUiState
+import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewCancelReviewSubmissionDialogUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewExpandedTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewPageUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewRemoveReviewItemDialogUiState
@@ -113,6 +115,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         collectBulkReviewPageUiState()
         collectToasterQueue()
         collectBulkReviewRemoveReviewItemDialogUiState()
+        collectBulkReviewCancelReviewSubmissionDialogUiState()
         collectBulkReviewBadRatingCategoryBottomSheetUiState()
         collectBulkReviewExpandedTextAreaBottomSheetUiState()
     }
@@ -136,6 +139,10 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activityResultHandler.handleResult(requestCode, resultCode, data)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        return viewModel.onBackPressed()
     }
 
     override fun onClickRemoveReviewItem(inboxID: String) {
@@ -301,6 +308,12 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     private fun collectBulkReviewRemoveReviewItemDialogUiState() {
         collectLatestWhenResumed(viewModel.removeReviewItemDialogUiState) {
             dialogHandler.updateRemoveReviewItemDialog(it)
+        }
+    }
+
+    private fun collectBulkReviewCancelReviewSubmissionDialogUiState() {
+        collectLatestWhenResumed(viewModel.cancelReviewSubmissionDialogUiState) {
+            dialogHandler.updateCancelReviewSubmissionDialog(it)
         }
     }
 
@@ -628,9 +641,16 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         private val removeReviewItemDialog by lazy(LazyThreadSafetyMode.NONE) {
             BulkReviewRemoveReviewItemDialog(requireContext(), RemoveReviewItemDialogListener())
         }
+        private val cancelReviewSubmissionDialog by lazy(LazyThreadSafetyMode.NONE) {
+            BulkReviewCancelReviewSubmissionDialog(requireContext(), ReviewCancelReviewSubmissionDialogListener())
+        }
 
         fun updateRemoveReviewItemDialog(uiState: BulkReviewRemoveReviewItemDialogUiState) {
             removeReviewItemDialog.updateUiState(uiState)
+        }
+
+        fun updateCancelReviewSubmissionDialog(uiState: BulkReviewCancelReviewSubmissionDialogUiState) {
+            cancelReviewSubmissionDialog.updateUiState(uiState)
         }
     }
 
@@ -665,6 +685,16 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
         override fun onCancelRemoveReviewItem() {
             viewModel.onCancelRemoveReviewItem()
+        }
+    }
+
+    private inner class ReviewCancelReviewSubmissionDialogListener : BulkReviewCancelReviewSubmissionDialog.Listener {
+        override fun onConfirmCancelReviewSubmission() {
+            viewModel.onConfirmCancelReviewSubmission()
+        }
+
+        override fun onCancelReviewSubmissionCancellation() {
+            viewModel.onCancelReviewSubmissionCancellation()
         }
     }
 

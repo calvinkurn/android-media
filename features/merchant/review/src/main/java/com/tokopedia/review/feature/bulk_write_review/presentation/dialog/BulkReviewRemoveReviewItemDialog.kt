@@ -17,6 +17,7 @@ class BulkReviewRemoveReviewItemDialog(
             setSecondaryCTAText(context.getString(R.string.bulk_review_remove_review_item_dialog_secondary_cta_text))
             setSecondaryCTAClickListener { listener.onCancelRemoveReviewItem() }
             setOverlayClose(false)
+            setCancelable(false)
         }
     }
 

@@ -43,6 +43,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkR
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.ReviewTestimonyUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryBottomSheetUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryUiState
+import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewCancelReviewSubmissionDialogUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewExpandedTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewItemUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewMiniActionsUiState
@@ -236,6 +237,9 @@ class BulkReviewViewModel @Inject constructor(
     private val _removeReviewItemDialogUiState = MutableStateFlow<BulkReviewRemoveReviewItemDialogUiState>(BulkReviewRemoveReviewItemDialogUiState.Dismissed)
     val removeReviewItemDialogUiState: StateFlow<BulkReviewRemoveReviewItemDialogUiState>
         get() = _removeReviewItemDialogUiState
+    private val _cancelReviewSubmissionDialogUiState = MutableStateFlow<BulkReviewCancelReviewSubmissionDialogUiState>(BulkReviewCancelReviewSubmissionDialogUiState.Dismissed)
+    val cancelReviewSubmissionDialogUiState: StateFlow<BulkReviewCancelReviewSubmissionDialogUiState>
+        get() = _cancelReviewSubmissionDialogUiState
     private val _badRatingCategoryBottomSheetUiState = MutableStateFlow<BulkReviewBadRatingCategoryBottomSheetUiState>(BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
     val badRatingCategoryBottomSheetUiState: StateFlow<BulkReviewBadRatingCategoryBottomSheetUiState>
         get() = _badRatingCategoryBottomSheetUiState
@@ -440,6 +444,22 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
+    fun onConfirmCancelReviewSubmission() {
+        shouldSubmitReview.value = false
+        dismissCancelReviewSubmissionDialog()
+    }
+
+    fun onCancelReviewSubmissionCancellation() {
+        dismissCancelReviewSubmissionDialog()
+    }
+
+    fun onBackPressed(): Boolean {
+        return if (submitBulkReviewRequestState.value is RequestState.Requesting) {
+            showCancelReviewSubmissionDialog()
+            true
+        } else false
+    }
+
     fun findFocusedReviewItemVisitable(): Pair<Int, BulkReviewItemUiModel>? {
         return bulkReviewVisitableList.value.find {
             it is BulkReviewItemUiModel && it.uiState is BulkReviewItemUiState.Focused
@@ -616,25 +636,31 @@ class BulkReviewViewModel @Inject constructor(
     private fun observeSubmitReviewsResult() {
         viewModelScope.launch {
             submitBulkReviewRequestState.collectLatest { submitBulkReviewRequestState ->
-                if (submitBulkReviewRequestState is RequestState.Complete.Success && submitBulkReviewRequestState.result.success == false) {
-                    val bulkReviewItems = bulkReviewVisitableList.value
-                        .filterIsInstance<BulkReviewItemUiModel>()
-                    val reviewItemsInboxID = bulkReviewItems.map { it.inboxID }
-                    val failedReviewItemsInboxID = submitBulkReviewRequestState
-                        .result
-                        .failedInboxIDs
-                        .orEmpty()
-                    val successReviewItemsInboxID = reviewItemsInboxID
-                        .filter { it !in failedReviewItemsInboxID }
-                    if (successReviewItemsInboxID.isNotEmpty()) {
-                        removeReviewItem(
-                            inboxID = successReviewItemsInboxID.toTypedArray(),
-                            notifyUser = false
-                        )
-                        enqueueToasterSuccessSubmitReviewsPartially()
-                    } else {
-                        enqueueToasterFailedSubmitReviews()
+                if (submitBulkReviewRequestState is RequestState.Complete.Success) {
+                    if (submitBulkReviewRequestState.result.success == false) {
+                        val bulkReviewItems = bulkReviewVisitableList.value
+                            .filterIsInstance<BulkReviewItemUiModel>()
+                        val reviewItemsInboxID = bulkReviewItems.map { it.inboxID }
+                        val failedReviewItemsInboxID = submitBulkReviewRequestState
+                            .result
+                            .failedInboxIDs
+                            .orEmpty()
+                        val successReviewItemsInboxID = reviewItemsInboxID
+                            .filter { it !in failedReviewItemsInboxID }
+                        if (successReviewItemsInboxID.isNotEmpty()) {
+                            removeReviewItem(
+                                inboxID = successReviewItemsInboxID.toTypedArray(),
+                                notifyUser = false
+                            )
+                            enqueueToasterSuccessSubmitReviewsPartially()
+                        } else {
+                            enqueueToasterFailedSubmitReviews()
+                        }
                     }
+                    dismissCancelReviewSubmissionDialog()
+                } else if (submitBulkReviewRequestState is RequestState.Complete.Error) {
+                    enqueueToasterFailedSubmitReviews()
+                    dismissCancelReviewSubmissionDialog()
                 }
             }
         }
@@ -1039,6 +1065,14 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun dismissRemoveReviewItemDialog() {
         _removeReviewItemDialogUiState.value = BulkReviewRemoveReviewItemDialogUiState.Dismissed
+    }
+
+    private fun showCancelReviewSubmissionDialog() {
+        _cancelReviewSubmissionDialogUiState.value = BulkReviewCancelReviewSubmissionDialogUiState.Showing
+    }
+
+    private fun dismissCancelReviewSubmissionDialog() {
+        _cancelReviewSubmissionDialogUiState.value = BulkReviewCancelReviewSubmissionDialogUiState.Dismissed
     }
 
     private fun removeReviewItem(vararg inboxID: String, notifyUser: Boolean) {
