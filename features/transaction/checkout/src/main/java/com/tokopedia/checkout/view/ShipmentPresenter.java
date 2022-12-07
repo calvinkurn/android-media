@@ -5,7 +5,6 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -1307,7 +1306,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                                 @Override
                                 public void onCompleted() {
-                                    Log.i("qwertyuiop", "complete validate");
                                     if (logisticDonePublisher != null) {
                                         logisticDonePublisher.onCompleted();
                                     }
@@ -1346,7 +1344,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200);
                                         if (isValidatePromoRevampSuccess) {
                                             getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
-                                            Log.i("qwertyuiop", "next validate");
                                         } else {
                                             if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                                 String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
@@ -2278,7 +2275,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 compositeSubscription.add(
                         ratesPublisher
                                 .concatMap(shipmentGetCourierHolderData -> {
-                                    Log.i("qwertyuiop", "concat");
                                     ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
                                             .map(shippingRecommendationData ->
                                                     stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
@@ -2791,7 +2787,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 compositeSubscription.add(
                         ratesPromoPublisher
                                 .concatMap(shipmentGetCourierHolderData -> {
-                                    Log.i("qwertyuiop", "concat");
                                     ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
                                             .map(shippingRecommendationData ->
                                                     stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),

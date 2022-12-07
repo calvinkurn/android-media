@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.subscriber
 
-import android.util.Log
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
@@ -29,8 +28,7 @@ class GetCourierRecommendationSubscriber(
 ) : Subscriber<ShippingRecommendationData?>() {
 
     override fun onCompleted() {
-        Log.i("qwertyuiop", "complete")
-//        temporaryEmitter?.onCompleted()
+        // no op
     }
 
     override fun onError(e: Throwable) {
@@ -45,7 +43,6 @@ class GetCourierRecommendationSubscriber(
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
-        Log.i("qwertyuiop", "on next")
         if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {

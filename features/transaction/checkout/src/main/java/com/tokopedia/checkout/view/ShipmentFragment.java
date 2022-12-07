@@ -34,7 +34,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -1139,7 +1138,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                     .get(0).getPreOrderDurationDay());
                             ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
                             ordersItem.setBoCampaignId(courierItemData.getBoCampaignId());
-                            Log.i("qwertyuiop", "set bo campaign id " + courierItemData.getBoCampaignId());
                             ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
                             ordersItem.setBenefitClass(courierItemData.getBenefitClass());
                             ordersItem.setShippingPrice(courierItemData.getShippingRate());
@@ -2681,7 +2679,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ordersItem.setSpId(0);
             ordersItem.setFreeShippingMetadata("");
             ordersItem.setBoCampaignId(0);
-            Log.i("qwertyuiop", "1 set bo campaign id 0 " + ordersItem.getShopId());
             ordersItem.setBenefitClass("");
             ordersItem.setShippingSubsidy(0);
             ordersItem.setShippingPrice(0);
@@ -2701,7 +2698,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     } else {
                         ordersItem.setFreeShippingMetadata("");
                         ordersItem.setBoCampaignId(0);
-                        Log.i("qwertyuiop", "2 set bo campaign id 0 " + ordersItem.getShopId());
                         ordersItem.setBenefitClass("");
                         ordersItem.setShippingSubsidy(0);
                         ordersItem.setShippingPrice(0);
@@ -2712,7 +2708,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setSpId(0);
                     ordersItem.setFreeShippingMetadata("");
                     ordersItem.setBoCampaignId(0);
-                    Log.i("qwertyuiop", "3 set bo campaign id 0 " + ordersItem.getShopId());
                     ordersItem.setBenefitClass("");
                     ordersItem.setShippingSubsidy(0);
                     ordersItem.setShippingPrice(0);
@@ -2732,7 +2727,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     } else {
                         ordersItem.setFreeShippingMetadata("");
                         ordersItem.setBoCampaignId(0);
-                        Log.i("qwertyuiop", "4 set bo campaign id 0 " + ordersItem.getShopId());
                         ordersItem.setBenefitClass("");
                         ordersItem.setShippingSubsidy(0);
                         ordersItem.setShippingPrice(0);
@@ -2743,7 +2737,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setSpId(0);
                     ordersItem.setFreeShippingMetadata("");
                     ordersItem.setBoCampaignId(0);
-                    Log.i("qwertyuiop", "5 set bo campaign id 0 " + ordersItem.getShopId());
                     ordersItem.setBenefitClass("");
                     ordersItem.setShippingSubsidy(0);
                     ordersItem.setShippingPrice(0);
