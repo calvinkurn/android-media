@@ -9,6 +9,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import java.io.File
 import javax.inject.Inject
 
@@ -103,8 +104,10 @@ class EditorViewModel @Inject constructor(
             if (it.isImageEdited()) {
                 it.getImageUrl()
             } else {
-                if (it.getOriginalUrl().contains(pickerCameraCacheDir)) {
-                    cameraImageList.add(it.getImageUrl())
+                it.getOriginalUrl().apply {
+                    if (contains(pickerCameraCacheDir) && !contains(PICKER_URL_FILE_CODE)) {
+                        cameraImageList.add(it.getImageUrl())
+                    }
                 }
                 ""
             }
