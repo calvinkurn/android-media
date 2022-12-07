@@ -386,6 +386,63 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Get Rates With Courier Recommendation Error`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels =
+            helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
+        val errorMessage = "error"
+        val firstDurationCouriers =
+            ArrayList(shippingDurationViewModels[0].shippingCourierViewModelList)
+        firstDurationCouriers[1].productData.isUiRatesHidden = true
+        firstDurationCouriers[0].productData.isRecommend = false
+        firstDurationCouriers[0].productData.error =
+            ErrorProductData().apply {
+                this.errorId = ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
+                this.errorMessage = errorMessage
+        }
+        firstDurationCouriers.add(ShippingCourierUiModel().apply {
+            productData = ProductData().apply {
+                shipperName = "pakirim"
+                shipperId = 2
+                shipperProductId = 4
+                insurance = InsuranceData()
+                price = PriceData().apply {
+                    price = 2000
+                }
+            }
+            ratesId = "0"
+        })
+        helper.shippingRecommendationData.shippingDurationUiModels[0].shippingCourierViewModelList = firstDurationCouriers
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
+            shipment = helper.shipment.copy(recommendationSpId = helper.secondCourierFirstDuration.productData.shipperProductId, recommendationServiceId = helper.firstDuration.serviceData.serviceId)
+        )
+
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(
+                OrderShipment(
+                        serviceName = helper.firstDuration.serviceData.serviceName,
+                        serviceDuration = helper.firstDuration.serviceData.serviceName,
+                        serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
+                        shipperName = firstDurationCouriers[2].productData.shipperName,
+                        shipperId = firstDurationCouriers[2].productData.shipperId,
+                        shipperProductId = firstDurationCouriers[2].productData.shipperProductId,
+                        ratesId = firstDurationCouriers[2].ratesId,
+                        shippingPrice =firstDurationCouriers[2].productData.price.price,
+                        shippingRecommendationData = helper.shippingRecommendationData,
+                        logisticPromoTickerMessage = "Tersedia bbo",
+                        logisticPromoViewModel = helper.logisticPromo,
+                        insurance = OrderInsurance(firstDurationCouriers[2].productData.insurance)),
+                orderSummaryPageViewModel.orderShipment.value)
+    }
+
+    @Test
     fun `Get Rates Duration Not Match Revamp With No Recommendation`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
