@@ -442,6 +442,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
             binding?.run {
                 headerBulkReview.isShowBackButton = false
                 widgetBulkReviewSubmitLoader.show()
+                coachMarkHandler.tryDismissCoachMark()
                 animatePageUiStateChange(
                     rvBulkReviewItemsAlphaTarget = 0F,
                     loaderBulkReviewAlphaTarget = 0F,
@@ -506,10 +507,10 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
             val currentWidgetBulkReviewSubmitLoaderAlpha = widgetBulkReviewSubmitLoader.alpha
             val currentGlobalErrorBulkReviewAlpha = globalErrorBulkReview.alpha
             val needToAnimate = currentRvBulkReviewItemsAlpha != rvBulkReviewItemsAlphaTarget ||
-                    currentLoaderBulkReviewAlpha != loaderBulkReviewAlphaTarget ||
-                    currentWidgetBulkReviewStickyButtonAlpha != widgetBulkReviewStickyButtonAlphaTarget ||
-                    currentWidgetBulkReviewSubmitLoaderAlpha != widgetBulkReviewSubmitLoaderAlphaTarget ||
-                    currentGlobalErrorBulkReviewAlpha != globalErrorBulkReviewAlphaTarget
+                currentLoaderBulkReviewAlpha != loaderBulkReviewAlphaTarget ||
+                currentWidgetBulkReviewStickyButtonAlpha != widgetBulkReviewStickyButtonAlphaTarget ||
+                currentWidgetBulkReviewSubmitLoaderAlpha != widgetBulkReviewSubmitLoaderAlphaTarget ||
+                currentGlobalErrorBulkReviewAlpha != globalErrorBulkReviewAlphaTarget
             if (needToAnimate) {
                 val animatorSet = AnimatorSet()
                 animatorSet.playTogether(
@@ -563,7 +564,9 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                     BaseReviewCustomView.CUBIC_BEZIER_Y2
                 )
                 animatorSet.start()
-            } else onAnimationEnd()
+            } else {
+                onAnimationEnd()
+            }
         } ?: onAnimationEnd()
     }
 
@@ -648,22 +651,25 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     }
 
     private inner class CoachMarkHandler {
+
+        private var coachMark: CoachMark2? = null
+
         fun tryShowCoachMark() {
             context?.let { context ->
                 if (!CoachMarkPreference.hasShown(context, BULK_REVIEW_COACH_MARK_TAG)) {
                     CoachMarkPreference.setShown(context, BULK_REVIEW_COACH_MARK_TAG, true)
-                    val coachMark = CoachMark2(context)
+                    coachMark = CoachMark2(context)
                     val anchorView = getAnchorView()
                     if (anchorView != null) {
                         val scrollListener = object : OnScrollListener() {
                             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                                 if (getVisiblePercent(anchorView) == -1) {
-                                    coachMark.dismissCoachMark()
+                                    coachMark?.dismissCoachMark()
                                     binding?.rvBulkReviewItems?.removeOnScrollListener(this)
                                 }
                             }
                         }
-                        coachMark.showCoachMark(
+                        coachMark?.showCoachMark(
                             arrayListOf(
                                 CoachMark2Item(
                                     anchorView = anchorView,
@@ -673,12 +679,16 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                             )
                         )
                         binding?.rvBulkReviewItems?.addOnScrollListener(scrollListener)
-                        coachMark.setOnDismissListener {
+                        coachMark?.setOnDismissListener {
                             binding?.rvBulkReviewItems?.removeOnScrollListener(scrollListener)
                         }
                     }
                 }
             }
+        }
+
+        fun tryDismissCoachMark() {
+            coachMark?.dismissCoachMark()
         }
 
         private fun getAnchorView(): View? {
