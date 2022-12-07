@@ -7,8 +7,8 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
-import com.tokopedia.logger.model.embrace.EmbraceBody
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
+import com.tokopedia.logger.model.embrace.EmbraceBody
 import com.tokopedia.logger.model.newrelic.NewRelicBody
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
@@ -19,7 +19,6 @@ import com.tokopedia.logger.utils.LoggerReporting
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
-
 
 class LoggerRepository(
     private val logDao: LoggerDao,
@@ -74,22 +73,26 @@ class LoggerRepository(
         )
     }
 
-    //start region for view server logger in developer options
+    // start region for view server logger in developer options
     override suspend fun getLoggerList(
         serverChannel: String,
         limit: Int,
         offset: Int
     ): List<Logger> {
-        return if (serverChannel.isBlank()) logDao.getLoggerList(
-            limit,
-            offset
-        ) else logDao.getLoggerListFilter(serverChannel, limit, offset)
+        return if (serverChannel.isBlank()) {
+            logDao.getLoggerList(
+                limit,
+                offset
+            )
+        } else {
+            logDao.getLoggerListFilter(serverChannel, limit, offset)
+        }
     }
 
     override suspend fun deleteAll() {
         logDao.deleteAll()
     }
-    //end region for view server logger in developer options
+    // end region for view server logger in developer options
 
     private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {
         val priorityScalyrIndex = priorityScalyr - 1
@@ -149,12 +152,12 @@ class LoggerRepository(
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         val messageNewRelicList = mutableListOf<NewRelicBody>()
         val messageEmbraceList = mutableListOf<EmbraceBody>()
-        //make the timestamp equals to timestamp when hit the api
-        //convert the milli to nano, based on scalyr requirement.
+        // make the timestamp equals to timestamp when hit the api
+        // convert the milli to nano, based on scalyr requirement.
         var counter = 0
         var ts: Long
         for (log in logs) {
-            //to make sure each timestamp in each row is unique
+            // to make sure each timestamp in each row is unique
             ts = log.timeStamp * 1000000
             ts += counter
             counter++
@@ -178,18 +181,29 @@ class LoggerRepository(
             LoggerReporting.getInstance().tagMapsScalyr[tagMapsValue]?.let {
                 scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
             }
-            LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
-                if (priorityName == LoggerReporting.SF) {
-                    messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_SF_NEW_RELIC, jsonToMap(message)))
-                } else {
-                    messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_NEW_RELIC, jsonToMap(message)))
-                }
-            }
+
+            setMessageNewRelicList(tagMapsValue, priorityName, message, messageNewRelicList)
+
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
                 messageEmbraceList.add(EmbraceBody(tagValue, jsonToMap(message)))
             }
         }
         return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicList, messageEmbraceList)
+    }
+
+    private fun setMessageNewRelicList(
+        tagMapsValue: String,
+        priorityName: String,
+        message: String,
+        messageNewRelicList: MutableList<NewRelicBody>
+    ) {
+        LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
+            if (priorityName == LoggerReporting.SF) {
+                messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_SF_NEW_RELIC, jsonToMap(message)))
+            } else {
+                messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_NEW_RELIC, jsonToMap(message)))
+            }
+        }
     }
 
     private suspend fun sendNewRelicLogToServer(

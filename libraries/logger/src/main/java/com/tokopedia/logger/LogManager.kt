@@ -34,7 +34,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             loggerReporting.versionName = loggerProxy.versionName
             loggerReporting.versionCode = loggerProxy.versionCode
             val installer: String = application.packageManager.getInstallerPackageName(application.packageName)
-                    ?: ""
+                ?: ""
             loggerReporting.installer = installer
             loggerReporting.packageName = application.packageName
             loggerReporting.debug = loggerProxy.isDebug
@@ -63,19 +63,29 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             if (logNewRelicConfigString.isNotEmpty()) {
                 val dataLogConfigNewRelic = Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
                 if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.tags != null &&
-                        dataLogConfigNewRelic.isEnabled && loggerProxy.versionCode >= dataLogConfigNewRelic.appVersionMin) {
+                    dataLogConfigNewRelic.isEnabled && loggerProxy.versionCode >= dataLogConfigNewRelic.appVersionMin
+                ) {
                     val queryLimit = dataLogConfigNewRelic.queryLimits
                     if (queryLimit != null) {
                         queryLimits = queryLimit
                     }
                     loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.tags)
+
+                    if (dataLogConfigNewRelic.keys?.isNotEmpty() == true) {
+                        loggerReporting.setPopulateKeyMapsNewRelic(dataLogConfigNewRelic.keys)
+                    }
+
+                    if (dataLogConfigNewRelic.tables?.isNotEmpty() == true) {
+                        loggerReporting.setPopulateTableMapsNewRelic(dataLogConfigNewRelic.tables)
+                    }
                 }
             }
 
             if (logEmbraceConfigString.isNotEmpty()) {
                 val dataLogConfigEmbrace = Gson().fromJson(logEmbraceConfigString, DataLogConfig::class.java)
                 if (dataLogConfigEmbrace != null && dataLogConfigEmbrace.tags != null &&
-                        dataLogConfigEmbrace.isEnabled && loggerProxy.versionCode >= dataLogConfigEmbrace.appVersionMin) {
+                    dataLogConfigEmbrace.isEnabled && loggerProxy.versionCode >= dataLogConfigEmbrace.appVersionMin
+                ) {
                     val queryLimit = dataLogConfigEmbrace.queryLimits
                     if (queryLimit != null) {
                         queryLimits = queryLimit
@@ -84,7 +94,6 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 }
             }
         } catch (e: Exception) {
-
         }
     }
 
@@ -98,13 +107,16 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource()
             val loggerCloudNewRelicDataSource = LoggerCloudNewRelicDataSource()
             val loggerCloudEmbraceDataSource = LoggerCloudEmbraceDataSource()
-            val loggerRepoNew = LoggerRepository(logsDao,
-                    loggerCloudScalyrDataSource,
-                    loggerCloudNewRelicDataSource,
-                    loggerCloudEmbraceDataSource,
-                    getScalyrConfigList(context),
-                    NewRelicConfig(loggerProxy.newRelicUserId, loggerProxy.newRelicToken),
-                    loggerProxy.encrypt, loggerProxy.decrypt)
+            val loggerRepoNew = LoggerRepository(
+                logsDao,
+                loggerCloudScalyrDataSource,
+                loggerCloudNewRelicDataSource,
+                loggerCloudEmbraceDataSource,
+                getScalyrConfigList(context),
+                NewRelicConfig(loggerProxy.newRelicUserId, loggerProxy.newRelicToken),
+                loggerProxy.encrypt,
+                loggerProxy.decrypt
+            )
             loggerRepository = loggerRepoNew
             return loggerRepoNew
         } else {
@@ -119,7 +131,6 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         }
         return scalyrConfigList
     }
-
 
     private fun getScalyrConfig(context: Context, priority: Int): ScalyrConfig {
         val session = getLogSession(context)
@@ -145,8 +156,12 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         fun log(priority: Priority, tag: String, message: Map<String, String>) {
             globalScopeLaunch({
                 val thisInstance = instance ?: return@globalScopeLaunch
-                val processedLogger = LoggerReporting.getInstance().getProcessedMessage(priority, tag, message,
-                        thisInstance.loggerProxy.userId)
+                val processedLogger = LoggerReporting.getInstance().getProcessedMessage(
+                    priority,
+                    tag,
+                    message,
+                    thisInstance.loggerProxy.userId
+                )
                 if (processedLogger != null) {
                     instance?.getLogger()?.insert(processedLogger)
                     instance?.run {
