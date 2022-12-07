@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.summary.fragment
 
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,6 +33,7 @@ import com.tokopedia.mvc.domain.entity.VoucherInformation
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.toPx
@@ -41,7 +43,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
-class SummaryFragment: BaseDaggerFragment() {
+class SummaryFragment: BaseDaggerFragment(),
+    SummaryPageRedirectionHelper.SummaryPageResultListener {
 
     companion object {
         private const val CORNER_RADIUS_HEADER = 16
@@ -66,6 +69,7 @@ class SummaryFragment: BaseDaggerFragment() {
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val configuration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private val voucherId by lazy { arguments?.getString(BundleConstant.BUNDLE_VOUCHER_ID) }
+    private val redirectionHelper = SummaryPageRedirectionHelper(this)
 
     @Inject
     lateinit var viewModel: SummaryViewModel
@@ -94,6 +98,19 @@ class SummaryFragment: BaseDaggerFragment() {
         binding?.setupView()
         setupObservables()
         setupPageMode()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        redirectionHelper.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onAddProductResult() {
+        println("ok")
+    }
+
+    override fun onViewProductResult() {
+        println("ok view")
     }
 
     private fun setupPageMode() {
@@ -149,35 +166,39 @@ class SummaryFragment: BaseDaggerFragment() {
     }
 
     private fun SmvcVoucherDetailVoucherTypeSectionBinding.setupLayoutType() {
-        val configuration = viewModel.configuration.value
         tpgEditAction.setOnClickListener {
+            val configuration = viewModel.configuration.value
             onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
         }
         tpgEditAction.visible()
     }
 
     private fun SmvcVoucherDetailVoucherInfoSectionBinding.setupLayoutInfo() {
-        val configuration = viewModel.configuration.value
         tpgEditAction.setOnClickListener {
-            onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
+            val configuration = viewModel.configuration.value
+            onInformationCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
         }
         tpgEditAction.visible()
     }
 
     private fun SmvcVoucherDetailVoucherSettingSectionBinding.setupLayoutSetting() {
-        val configuration = viewModel.configuration.value
         tpgEditAction.setOnClickListener {
-            onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
+            val configuration = viewModel.configuration.value
+            onConfigurationCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
         }
         tpgEditAction.visible()
     }
 
     private fun SmvcVoucherDetailProductSectionBinding.setupLayoutProducts() {
-        val configuration = viewModel.configuration.value
         tpgEditAction.setOnClickListener {
-            onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
+            val configuration = viewModel.configuration.value
+            onChangeProductBtnChangeClicked(configuration ?: return@setOnClickListener)
         }
         tpgEditAction.visible()
+        tpgSeeProduct.setOnClickListener {
+            val configuration = viewModel.configuration.value
+            onProductListBtnChangeClicked(configuration ?: return@setOnClickListener)
+        }
     }
 
     private fun SmvcFragmentSummarySubmissionBinding.setupLayoutSubmission() {
@@ -257,10 +278,11 @@ class SummaryFragment: BaseDaggerFragment() {
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
-        // TODO: redirect to product coupon
+        redirectionHelper.redirectToAddProductPage(activity ?: return, configuration)
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
-        // TODO: redirect to product coupon
+        redirectionHelper.redirectToViewProductPage(activity ?: return, configuration, listOf())
+
     }
 }
