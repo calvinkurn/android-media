@@ -1,11 +1,12 @@
 package com.tokopedia.mvc.data.mapper
 
-import androidx.annotation.StringDef
 import com.tokopedia.mvc.data.request.UpdateVoucherRequest
 import com.tokopedia.mvc.data.response.UpdateVoucherResponse
 import com.tokopedia.mvc.domain.entity.UpdateVoucherResult
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.util.constant.VoucherTypeConst
+import com.tokopedia.mvc.util.constant.Source
+import com.tokopedia.mvc.util.constant.TargetType
+import com.tokopedia.mvc.util.constant.VoucherDefinition
 import javax.inject.Inject
 
 class UpdateVoucherMapper @Inject constructor() {
@@ -51,47 +52,19 @@ class UpdateVoucherMapper @Inject constructor() {
                 benefitType = discountTypeFormatted,
                 code = code,
                 couponName = name,
-                couponType = convertVoucherToCouponDefinition(type),
+                couponType = VoucherDefinition.convertVoucherToCouponDefinition(type),
                 dateStart = startDate,
                 dateEnd = endDate,
                 hourStart = startHour,
                 hourEnd = endHour,
                 image = image,
                 imageSquare = imageSquare,
-                isPublic = convertTargetType(isPublic),
+                isPublic = TargetType.convertTargetType(isPublic),
                 minPurchase = minimumAmt,
                 quota = quota,
                 token = token,
-                source = "android-sellerapp"
-
+                source = Source.source
             )
-        }
-    }
-
-    private fun convertVoucherToCouponDefinition(@VoucherTypeConst type: Int): String {
-        return when (type) {
-            VoucherTypeConst.FREE_ONGKIR -> CouponType.SHIPPING
-            VoucherTypeConst.DISCOUNT -> CouponType.DISCOUNT
-            VoucherTypeConst.CASHBACK -> CouponType.CASHBACK
-            else -> CouponType.SHIPPING
-        }
-    }
-
-    @Retention(AnnotationRetention.SOURCE)
-    @StringDef(CouponType.SHIPPING, CouponType.CASHBACK, CouponType.DISCOUNT)
-    annotation class CouponType {
-        companion object {
-            const val SHIPPING = "shipping"
-            const val DISCOUNT = "discount"
-            const val CASHBACK = "cashback"
-        }
-    }
-
-    private fun convertTargetType(isPublic: Boolean): Int {
-        return if (isPublic) {
-            1
-        } else {
-            0
         }
     }
 }
