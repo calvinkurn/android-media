@@ -477,58 +477,70 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         onAnimationEnd: () -> Unit
     ) {
         binding?.run {
-            val animatorSet = AnimatorSet()
-            animatorSet.playTogether(
-                ObjectAnimator.ofFloat(
-                    rvBulkReviewItems,
-                    View.ALPHA,
-                    rvBulkReviewItems.alpha,
-                    rvBulkReviewItemsAlphaTarget
-                ),
-                ObjectAnimator.ofFloat(
-                    loaderBulkReview,
-                    View.ALPHA,
-                    loaderBulkReview.alpha,
-                    loaderBulkReviewAlphaTarget
-                ),
-                ObjectAnimator.ofFloat(
-                    widgetBulkReviewStickyButton,
-                    View.ALPHA,
-                    widgetBulkReviewStickyButton.alpha,
-                    widgetBulkReviewStickyButtonAlphaTarget
-                ),
-                ObjectAnimator.ofFloat(
-                    widgetBulkReviewSubmitLoader,
-                    View.ALPHA,
-                    widgetBulkReviewSubmitLoader.alpha,
-                    widgetBulkReviewSubmitLoaderAlphaTarget
-                ),
-                ObjectAnimator.ofFloat(
-                    globalErrorBulkReview,
-                    View.ALPHA,
-                    globalErrorBulkReview.alpha,
-                    globalErrorBulkReviewAlphaTarget
+            val currentRvBulkReviewItemsAlpha = rvBulkReviewItems.alpha
+            val currentLoaderBulkReviewAlpha = loaderBulkReview.alpha
+            val currentWidgetBulkReviewStickyButtonAlpha = widgetBulkReviewStickyButton.alpha
+            val currentWidgetBulkReviewSubmitLoaderAlpha = widgetBulkReviewSubmitLoader.alpha
+            val currentGlobalErrorBulkReviewAlpha = globalErrorBulkReview.alpha
+            val needToAnimate = currentRvBulkReviewItemsAlpha != rvBulkReviewItemsAlphaTarget ||
+                    currentLoaderBulkReviewAlpha != loaderBulkReviewAlphaTarget ||
+                    currentWidgetBulkReviewStickyButtonAlpha != widgetBulkReviewStickyButtonAlphaTarget ||
+                    currentWidgetBulkReviewSubmitLoaderAlpha != widgetBulkReviewSubmitLoaderAlphaTarget ||
+                    currentGlobalErrorBulkReviewAlpha != globalErrorBulkReviewAlphaTarget
+            if (needToAnimate) {
+                val animatorSet = AnimatorSet()
+                animatorSet.playTogether(
+                    ObjectAnimator.ofFloat(
+                        rvBulkReviewItems,
+                        View.ALPHA,
+                        currentRvBulkReviewItemsAlpha,
+                        rvBulkReviewItemsAlphaTarget
+                    ),
+                    ObjectAnimator.ofFloat(
+                        loaderBulkReview,
+                        View.ALPHA,
+                        currentLoaderBulkReviewAlpha,
+                        loaderBulkReviewAlphaTarget
+                    ),
+                    ObjectAnimator.ofFloat(
+                        widgetBulkReviewStickyButton,
+                        View.ALPHA,
+                        currentWidgetBulkReviewStickyButtonAlpha,
+                        widgetBulkReviewStickyButtonAlphaTarget
+                    ),
+                    ObjectAnimator.ofFloat(
+                        widgetBulkReviewSubmitLoader,
+                        View.ALPHA,
+                        currentWidgetBulkReviewSubmitLoaderAlpha,
+                        widgetBulkReviewSubmitLoaderAlphaTarget
+                    ),
+                    ObjectAnimator.ofFloat(
+                        globalErrorBulkReview,
+                        View.ALPHA,
+                        currentGlobalErrorBulkReviewAlpha,
+                        globalErrorBulkReviewAlphaTarget
+                    )
                 )
-            )
-            animatorSet.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator?) {}
+                animatorSet.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator?) {}
 
-                override fun onAnimationEnd(animation: Animator?) {
-                    onAnimationEnd()
-                }
+                    override fun onAnimationEnd(animation: Animator?) {
+                        onAnimationEnd()
+                    }
 
-                override fun onAnimationCancel(animation: Animator?) {}
+                    override fun onAnimationCancel(animation: Animator?) {}
 
-                override fun onAnimationRepeat(animation: Animator?) {}
-            })
-            animatorSet.duration = BaseReviewCustomView.ANIMATION_DURATION
-            animatorSet.interpolator = PathInterpolatorCompat.create(
-                BaseReviewCustomView.CUBIC_BEZIER_X1,
-                BaseReviewCustomView.CUBIC_BEZIER_Y1,
-                BaseReviewCustomView.CUBIC_BEZIER_X2,
-                BaseReviewCustomView.CUBIC_BEZIER_Y2
-            )
-            animatorSet.start()
+                    override fun onAnimationRepeat(animation: Animator?) {}
+                })
+                animatorSet.duration = BaseReviewCustomView.ANIMATION_DURATION
+                animatorSet.interpolator = PathInterpolatorCompat.create(
+                    BaseReviewCustomView.CUBIC_BEZIER_X1,
+                    BaseReviewCustomView.CUBIC_BEZIER_Y1,
+                    BaseReviewCustomView.CUBIC_BEZIER_X2,
+                    BaseReviewCustomView.CUBIC_BEZIER_Y2
+                )
+                animatorSet.start()
+            } else onAnimationEnd()
         } ?: onAnimationEnd()
     }
 

@@ -12,6 +12,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestParam
 import com.tokopedia.review.feature.bulk_write_review.domain.model.RequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetBadRatingCategoryRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetBadRatingCategoryUseCase
@@ -70,11 +71,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.mapLatest
@@ -114,7 +113,7 @@ class BulkReviewViewModel @Inject constructor(
     private val getFormRequestState = MutableStateFlow<BulkReviewGetFormRequestState>(RequestState.Requesting)
     private val getBadRatingCategoryRequestState = MutableStateFlow<BulkReviewGetBadRatingCategoryRequestState>(RequestState.Requesting)
     private val submitBulkReviewRequestState = MutableStateFlow<BulkReviewSubmitRequestState>(RequestState.Requesting)
-    private val removedReviewItemsInboxID = MutableStateFlow(emptyList<String>())
+    private val removedReviewItemsInboxID = MutableStateFlow(emptySet<String>())
     private val reviewItemsRating = MutableStateFlow(emptyList<BulkReviewItemRatingUiModel>())
     private val reviewItemsBadRatingCategory = MutableStateFlow(emptyList<BulkReviewItemBadRatingCategoryUiModel>())
     private val reviewItemsTestimony = MutableStateFlow(emptyList<BulkReviewItemTestimonyUiModel>())
@@ -265,22 +264,23 @@ class BulkReviewViewModel @Inject constructor(
 
     init {
         observeMediaUrisForUpload()
+        observeSubmitReviewsResult()
         handleMediaPickerErrorToasterQueue()
         handleSubmitReviews()
     }
 
     fun getForms() {
         viewModelScope.launch {
-            getFormUseCase(userSession.userId).collectLatest {
-                getFormRequestState.value = it
+            getFormUseCase(userSession.userId).collectLatest { requestState ->
+                getFormRequestState.value = requestState
             }
         }
     }
 
     fun getBadRatingCategory() {
         viewModelScope.launch {
-            getBadRatingCategoryUseCase(Unit).collectLatest {
-                getBadRatingCategoryRequestState.value = it
+            getBadRatingCategoryUseCase(Unit).collectLatest { requestState ->
+                getBadRatingCategoryRequestState.value = requestState
             }
         }
     }
@@ -289,7 +289,7 @@ class BulkReviewViewModel @Inject constructor(
         if (haveMinimumReviewItem()) {
             findReviewItemVisitable(inboxID)?.hasDefaultState()?.let { hasDefaultState ->
                 if (hasDefaultState) {
-                    removeReviewItem(inboxID)
+                    removeReviewItem(inboxID, notifyUser = true)
                 } else {
                     showRemoveReviewItemDialog(inboxID)
                 }
@@ -366,7 +366,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     fun onConfirmRemoveReviewItem(inboxID: String) {
-        removeReviewItem(inboxID)
+        removeReviewItem(inboxID, notifyUser = true)
         dismissRemoveReviewItemDialog()
     }
 
@@ -570,7 +570,7 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun mapBulkReviewVisitableList(
         getFormRequestState: BulkReviewGetFormRequestState,
-        removedReviewItem: List<String>,
+        removedReviewItem: Set<String>,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>,
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
@@ -613,6 +613,33 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
+    private fun observeSubmitReviewsResult() {
+        viewModelScope.launch {
+            submitBulkReviewRequestState.collectLatest { submitBulkReviewRequestState ->
+                if (submitBulkReviewRequestState is RequestState.Complete.Success && submitBulkReviewRequestState.result.success == false) {
+                    val bulkReviewItems = bulkReviewVisitableList.value
+                        .filterIsInstance<BulkReviewItemUiModel>()
+                    val reviewItemsInboxID = bulkReviewItems.map { it.inboxID }
+                    val failedReviewItemsInboxID = submitBulkReviewRequestState
+                        .result
+                        .failedInboxIDs
+                        .orEmpty()
+                    val successReviewItemsInboxID = reviewItemsInboxID
+                        .filter { it !in failedReviewItemsInboxID }
+                    if (successReviewItemsInboxID.isNotEmpty()) {
+                        removeReviewItem(
+                            inboxID = successReviewItemsInboxID.toTypedArray(),
+                            notifyUser = false
+                        )
+                        enqueueToasterSuccessSubmitReviewsPartially()
+                    } else {
+                        enqueueToasterFailedSubmitReviews()
+                    }
+                }
+            }
+        }
+    }
+
     private fun handleMediaPickerErrorToasterQueue() {
         viewModelScope.launch {
             reviewItemsMediaPickerUiState.collectLatest {
@@ -627,22 +654,84 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun handleSubmitReviews() {
         viewModelScope.launch {
-            combine(
-                shouldSubmitReview,
-                bulkReviewVisitableList,
-                ::mapSubmitReviewParams
-            ).filterNotNull().collectLatest {
-                submitUseCase(it).collect { submitBulkReviewRequestState.value = it }
-                shouldSubmitReview.value = false
+            shouldSubmitReview.collectLatest { shouldSubmitReview ->
+                if (shouldSubmitReview) {
+                    mapSubmitReviewParams(
+                        bulkReviewVisitableList = bulkReviewVisitableList.value,
+                        anonymous = anonymous.value
+                    )?.let { params ->
+                        submitUseCase(params).collectLatest { requestState ->
+                            submitBulkReviewRequestState.value = requestState
+                        }
+                    } ?: enqueueToasterFailedSubmitReviews()
+                    this@BulkReviewViewModel.shouldSubmitReview.value = false
+                }
             }
         }
     }
 
     private fun mapSubmitReviewParams(
-        shouldSubmitReview: Boolean,
-        bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>
-    ): String? {
-        return if (shouldSubmitReview) "" else null
+        bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
+        anonymous: Boolean
+    ): List<BulkReviewSubmitRequestParam>? {
+        return bulkReviewVisitableList
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .mapNotNull { bulkReviewItemUiModel ->
+                val productInfoUiState = bulkReviewItemUiModel.uiState.productCardUiState
+                val ratingUiState = bulkReviewItemUiModel.uiState.ratingUiState
+                val badRatingCategoryUiState = bulkReviewItemUiModel.uiState.badRatingCategoriesUiState
+                val textAreaUiState = bulkReviewItemUiModel.uiState.textAreaUiState
+                val mediaPickerUiState = bulkReviewItemUiModel.uiState.mediaPickerUiState
+                if (
+                    productInfoUiState is BulkReviewProductInfoUiState.Showing &&
+                    ratingUiState is BulkReviewRatingUiState.Showing
+                ) {
+                    BulkReviewSubmitRequestParam(
+                        inboxID = bulkReviewItemUiModel.inboxID,
+                        reputationID = bulkReviewItemUiModel.reputationID,
+                        productID = productInfoUiState.productID,
+                        shopID = "",
+                        rating = ratingUiState.rating,
+                        reviewText = if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                            textAreaUiState.text
+                        } else "",
+                        isAnonymous = anonymous,
+                        attachmentIDs = if (mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
+                            mediaPickerUiState
+                                .mediaItems
+                                .filterIsInstance<CreateReviewMediaUiModel.Image>()
+                                .map { mediaItem ->
+                                    mediaItem.uploadId
+                                }
+                        } else emptyList(),
+                        utmSource = "",
+                        badRatingCategoryIDs = if (badRatingCategoryUiState is BulkReviewBadRatingCategoryUiState.Showing) {
+                            badRatingCategoryUiState
+                                .badRatingCategory
+                                .filter { badRatingCategory ->
+                                    badRatingCategory.selected
+                                }
+                                .map { badRatingCategory ->
+                                    badRatingCategory.id
+                                }
+                        } else emptyList(),
+                        videoAttachments = if (mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
+                            mediaPickerUiState
+                                .mediaItems
+                                .filterIsInstance<CreateReviewMediaUiModel.Video>()
+                                .map { mediaItem ->
+                                    BulkReviewSubmitRequestParam.VideoAttachment(
+                                        uploadID = mediaItem.uploadId,
+                                        url = mediaItem.remoteUrl
+                                    )
+                                }
+                        } else emptyList(),
+                        orderID = ""
+                    )
+                } else {
+                    null
+                }
+            }.takeIf { it.isNotEmpty() }
     }
 
     private suspend fun tryUploadMedia(reviewItemMediaUris: BulkReviewItemMediaUrisUiModel) {
@@ -704,6 +793,7 @@ class BulkReviewViewModel @Inject constructor(
             val hasUploadResult = findReviewItemMediaUploadResult(inboxID, uri) != null
             val needToStartNewJob = !hasActiveUploadJob && !hasUploadResult
             if (needToStartNewJob) {
+                findReviewItemMediaUploadJobs(inboxID)?.values?.joinAll()
                 updateMediaUploadJobs(inboxID, uri, startNewUploadMediaJob(inboxID, uri))
                 findReviewItemMediaUploadJobs(inboxID)?.values?.joinAll()
             }
@@ -876,6 +966,28 @@ class BulkReviewViewModel @Inject constructor(
         )
     }
 
+    private fun enqueueToasterFailedSubmitReviews() {
+        _bulkReviewPageToasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.toaster_bulk_review_failed_submit_reviews),
+                actionText = StringRes(R.string.review_oke),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
+            )
+        )
+    }
+
+    private fun enqueueToasterSuccessSubmitReviewsPartially() {
+        _bulkReviewPageToasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.toaster_bulk_review_success_submit_reviews_partially),
+                actionText = StringRes(R.string.review_oke),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
+            )
+        )
+    }
+
     private fun showBadRatingCategoryBottomSheet(inboxID: String) {
         _badRatingCategoryBottomSheetUiState.update {
             val initialBadRatingCategories = bulkReviewBadRatingCategoryMapper.map(
@@ -929,9 +1041,9 @@ class BulkReviewViewModel @Inject constructor(
         _removeReviewItemDialogUiState.value = BulkReviewRemoveReviewItemDialogUiState.Dismissed
     }
 
-    private fun removeReviewItem(inboxID: String) {
+    private fun removeReviewItem(vararg inboxID: String, notifyUser: Boolean) {
         removedReviewItemsInboxID.update { it.plus(inboxID) }
-        enqueueToasterSuccessRemoveReviewItem()
+        if (notifyUser) enqueueToasterSuccessRemoveReviewItem()
     }
 
     private fun getAndUpdateRating(inboxID: String, rating: Int): Int {

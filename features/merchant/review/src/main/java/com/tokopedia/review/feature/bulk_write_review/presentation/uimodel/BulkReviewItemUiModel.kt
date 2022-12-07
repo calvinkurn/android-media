@@ -11,6 +11,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 
 data class BulkReviewItemUiModel(
     val inboxID: String,
+    val reputationID: String,
     val uiState: BulkReviewItemUiState
 ) : Visitable<BulkReviewAdapterTypeFactory>, BulkReviewVisitable<BulkReviewAdapterTypeFactory> {
     override fun type(typeFactory: BulkReviewAdapterTypeFactory): Int {

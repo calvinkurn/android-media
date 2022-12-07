@@ -28,6 +28,7 @@ class BulkReviewProductInfoUiStateMapper @Inject constructor() {
         return Pair(
             reviewForm.inboxID.orEmpty(),
             BulkReviewProductInfoUiState.Showing(
+                productID = reviewForm.product?.productID.orEmpty(),
                 productName = reviewForm.product?.productName.orEmpty(),
                 productImageUrl = reviewForm.product?.productImageURL.orEmpty(),
                 productVariantName = reviewForm.product?.productVariant?.variantName.orEmpty(),

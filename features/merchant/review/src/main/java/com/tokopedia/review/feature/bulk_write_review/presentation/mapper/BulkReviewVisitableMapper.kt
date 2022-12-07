@@ -17,7 +17,7 @@ import javax.inject.Inject
 class BulkReviewVisitableMapper @Inject constructor() {
     fun map(
         productRevGetBulkForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm,
-        removedReviewItem: List<String>,
+        removedReviewItem: Set<String>,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>,
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
@@ -57,6 +57,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
         bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>
     ): BulkReviewItemUiModel? {
         val inboxID = reviewForm.inboxID.orEmpty()
+        val reputationID = reviewForm.reputationID.orEmpty()
         val productCardUiState = bulkReviewProductInfoUiState[inboxID]
         val ratingUiState = bulkReviewRatingUiState[inboxID]
         val badRatingCategoriesUiState = bulkReviewBadRatingCategoryUiState[inboxID]
@@ -66,6 +67,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
         return if (productCardUiState != null && ratingUiState != null && badRatingCategoriesUiState != null && textAreaUiState != null && mediaPickerUiState != null && miniActionsUiState != null) {
             BulkReviewItemUiModel(
                 inboxID = inboxID,
+                reputationID = reputationID,
                 uiState = if (textAreaUiState is BulkReviewTextAreaUiState.Showing && textAreaUiState.focused) {
                     BulkReviewItemUiState.Focused(
                         productCardUiState = productCardUiState,

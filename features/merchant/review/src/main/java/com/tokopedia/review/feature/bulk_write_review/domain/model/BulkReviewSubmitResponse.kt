@@ -1,0 +1,25 @@
+package com.tokopedia.review.feature.bulk_write_review.domain.model
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+data class BulkReviewSubmitResponse(
+    @SerializedName("data")
+    @Expose
+    val data: Data? = null
+) {
+    data class Data(
+        @SerializedName("productrevSubmitBulkReview")
+        @Expose
+        val productrevSubmitBulkReview: ProductrevSubmitBulkReview? = null
+    ) {
+        data class ProductrevSubmitBulkReview(
+            @SerializedName("success")
+            @Expose
+            val success: Boolean? = null,
+            @SerializedName("failedInboxIDs")
+            @Expose
+            val failedInboxIDs: List<String>? = null
+        )
+    }
+}
