@@ -56,7 +56,6 @@ import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.util.SharingUtil
-import com.tokopedia.mvc.util.extension.showErrorToaster
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -211,7 +210,7 @@ class MvcListFragment :
         } else {
             context?.getString(R.string.smvc_general_error).toBlankOrString()
         }
-        view?.showErrorToaster(errorMessage)
+        view?.showToasterError(errorMessage)
     }
 
     private fun showDisplayVoucherBottomSheet(voucher: Voucher) {

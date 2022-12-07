@@ -3,11 +3,11 @@ package com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.campaign.utils.extension.toDate
 import com.tokopedia.mvc.databinding.SmvcItemPeriodListBinding
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.util.DateTimeUtils.DASH_DATE_FORMAT
-import com.tokopedia.mvc.util.DateTimeUtils.DATE_FORMAT
 import com.tokopedia.mvc.util.formatTo
 
 class VoucherPeriodBottomSheetAdapter :
@@ -26,7 +26,7 @@ class VoucherPeriodBottomSheetAdapter :
         }
 
         fun String.formatDateToDisplayDate(): String {
-            return this.toDate(DASH_DATE_FORMAT).formatTo(DATE_FORMAT)
+            return this.toDate(DASH_DATE_FORMAT).formatTo(DATE_YEAR_PRECISION)
         }
     }
 

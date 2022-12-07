@@ -19,7 +19,7 @@ class ChangeVoucherPeriodUseCase @Inject constructor(
     companion object {
         private val query = object : GqlQueryInterface {
             private val OPERATION_NAME = "ChangeVoucherPromo"
-            val MUTATION = "mutation ChangeVoucherPromo(\$update_param: mvUpdateData!) {\n" +
+            private val MUTATION = "mutation ChangeVoucherPromo(\$update_param: mvUpdateData!) {\n" +
                 "  merchantPromotionUpdateMV(merchantVoucherUpdateData: \$update_param) {\n" +
                 "    status\n" +
                 "    message\n" +

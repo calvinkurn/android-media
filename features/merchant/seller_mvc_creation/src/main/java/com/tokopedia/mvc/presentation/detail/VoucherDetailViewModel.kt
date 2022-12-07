@@ -77,20 +77,6 @@ class VoucherDetailViewModel @Inject constructor(
         }
     }
 
-//    fun getThreeDotsBottomSheetType(data: VoucherDetailData): Int {
-//        return when (data.voucherStatus) {
-//            VoucherStatus.NOT_STARTED -> {
-//                ThreeDotsMenuBottomSheet.TYPE_CANCEL
-//            }
-//            VoucherStatus.ONGOING -> {
-//                ThreeDotsMenuBottomSheet.TYPE_STOP
-//            }
-//            else -> {
-//                ThreeDotsMenuBottomSheet.TYPE_DEFAULT
-//            }
-//        }
-//    }
-
     fun generateVoucherImage() {
         launchCatchError(
             dispatchers.io,
@@ -121,10 +107,8 @@ class VoucherDetailViewModel @Inject constructor(
                     .take(THREE_TOP_SELLING_PRODUCT)
                     .map { it.picture }
 
-
                 val metadata = GenerateVoucherImageMetadata(voucherDetail, shopData, topSellingProductImageUrls)
                 _generateVoucherImageMetadata.postValue(Success(metadata))
-
             },
             onError = { error ->
                 _generateVoucherImageMetadata.postValue(Fail(error))
@@ -141,7 +125,6 @@ class VoucherDetailViewModel @Inject constructor(
         val voucherDetail = _voucherDetail.value?.unwrapOrNull() ?: return
         _redirectToProductListPage.value = voucherDetail
     }
-
 
     private fun Result<VoucherDetailData>.unwrapOrNull(): VoucherDetailData? {
         return if (this is Success) {

@@ -2,9 +2,8 @@ package com.tokopedia.mvc.data.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-// TODO Change it to Long
+
 data class UpdateVoucherRequest(
-    // Change it to Long
     @SerializedName("voucher_id")
     @Expose
     val voucherId: Long = 0,

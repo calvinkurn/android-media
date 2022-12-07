@@ -1,11 +1,9 @@
 package com.tokopedia.mvc.presentation.bottomsheet.editperiod
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.datepicker.LocaleUtils
@@ -23,7 +21,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetEditPeriodCalendarBinding>()
 
-    var calendar: CalendarPickerView? = null
+    private var calendar: CalendarPickerView? = null
 
     private var startDate: GregorianCalendar? = null
     private var endDate: GregorianCalendar? = null
@@ -33,8 +31,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     private var callback: (Calendar) -> Unit = {}
 
     private var timePicker: DateTimePickerUnify? = null
-    private val locale = Locale("id", "ID")
-    val dateFormat = SimpleDateFormat("d MMMM", locale)
+    private val dateFormat = SimpleDateFormat("d MMMM", LocaleUtils.getIDLocale())
 
     init {
         isFullpage = true
@@ -47,7 +44,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = SmvcBottomsheetEditPeriodCalendarBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
-        // TODO verify this
         setTitle(context?.resources?.getString(R.string.edit_period_calender_title).toBlankOrString())
         dateFormat.timeZone = TimeZone.getDefault()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -60,10 +56,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
-                // put your implementation here
-                // Save the currentDate to ViewModel
-                // Navigate To Time Picker Bottom Sheet
-//                val selectedDate = dateFormat.format(date)
                 showTimePickerBottomSheet(date)
             }
 
@@ -128,7 +120,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             setInfoVisible(true)
             datePickerButton.setOnClickListener {
                 getDate()
-                Log.d("FATAL", "showTimePickerBottomSheet: ${getDate().time}")
                 callback.invoke(getDate())
                 dismiss()
                 this@VoucherEditCalendarBottomSheet.dismiss()
@@ -150,12 +141,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                     ?.withSelectedDates(selectedDates)
             }
         }
-
-        calendar?.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
-            override fun onNotifyMax() {
-                Toast.makeText(activity, "woy udh max", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     companion object {

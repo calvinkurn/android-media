@@ -112,7 +112,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var universalShareBottomSheet : UniversalShareBottomSheet? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
@@ -182,7 +182,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             redirectToProductListPage(voucherDetail)
         }
     }
-
 
     private fun observeOpenVoucherImageBottomSheetEvent() {
         viewModel.openDownloadVoucherImageBottomSheet.observe(viewLifecycleOwner) { voucherDetail ->
@@ -634,7 +633,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    //TODO fix this
+//    TODO fix this - relationship between VoucherDetailData and Voucher -
+//     As MoreMenuBottomSheet accepts Voucher data type
     private fun openThreeDotsBottomSheet(data: VoucherDetailData) {
 //        val bottomSheetType = viewModel.getThreeDotsBottomSheetType(data)
 //        ThreeDotsMenuBottomSheet.newInstance(data.voucherName, bottomSheetType)
@@ -720,7 +720,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             benefitType = voucherDetail.voucherDiscountType,
             shopLogo = voucherImageMetadata.shopData.logo,
             shopName = voucherImageMetadata.shopData.name,
-            shopDomain =  voucherImageMetadata.shopData.domain,
+            shopDomain = voucherImageMetadata.shopData.domain,
             discountAmount = voucherDetail.voucherDiscountAmount,
             discountAmountMax = voucherDetail.voucherDiscountAmountMax,
             productImageUrls = productImageUrls,
@@ -805,7 +805,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             getString(R.string.smvc_share_component_outgoing_text_description_shop_voucher)
         }
 
-
         val linkerDataGenerator = LinkerDataGenerator()
         val linkerShareData = linkerDataGenerator.generate(
             voucherId,
@@ -856,5 +855,4 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
         startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
     }
-
 }

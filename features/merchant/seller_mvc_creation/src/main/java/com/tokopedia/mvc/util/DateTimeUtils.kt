@@ -1,12 +1,11 @@
 package com.tokopedia.mvc.util
 
-import android.content.Context
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.util.DateTimeUtils.FULL_DAY_FORMAT
-import com.tokopedia.mvc.util.DateTimeUtils.TIME_STAMP_FORMAT
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -18,15 +17,11 @@ import java.util.*
 
 object DateTimeUtils {
 
-    const val TIME_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val TIME_STAMP_MILLISECONDS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
     const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm"
     const val DASH_DATE_FORMAT = "yyyy-MM-dd"
-    const val DATE_FORMAT = "dd MMM yyyy"
     private const val EXTRA_DAYS = 30
-    const val PREVIOUS_EXTRA_DAYS = -30
-
-    fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
+    private const val PREVIOUS_EXTRA_DAYS = -30
 
     /**
      * Minimum end time should be 30 days before time
@@ -54,7 +49,7 @@ object DateTimeUtils {
 fun String.convertUnsafeDateTime(): Date {
     val locale = LocaleUtils.getIDLocale()
     return try {
-        convertToDate(TIME_STAMP_FORMAT, locale)
+        convertToDate(DATE_WITH_SECOND_PRECISION_ISO_8601, locale)
     } catch (ex: ParseException) {
         try {
             convertToDate(DateTimeUtils.TIME_STAMP_MILLISECONDS_FORMAT, locale)
@@ -67,7 +62,7 @@ fun String.convertUnsafeDateTime(): Date {
 
 fun Date.formatTo(
     desiredOutputFormat: String,
-    locale: Locale = Locale("id", "ID")
+    locale: Locale = LocaleUtils.getIDLocale()
 ): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
@@ -79,7 +74,7 @@ fun Date.formatTo(
 }
 
 fun Date.formatTo(locale: Locale): String {
-    return this.toFormattedString(TIME_STAMP_FORMAT).convertDate(locale)
+    return this.toFormattedString(DATE_WITH_SECOND_PRECISION_ISO_8601).convertDate(locale)
 }
 
 private fun String.convertDate(locale: Locale): String {

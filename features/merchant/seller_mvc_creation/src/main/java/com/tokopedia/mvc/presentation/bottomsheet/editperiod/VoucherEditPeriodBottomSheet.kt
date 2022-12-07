@@ -156,68 +156,74 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         binding?.apply {
             voucher?.let {
                 edtMvcStartDate.run {
-                    editText.run {
-                        setOnClickListener {
-                            context?.run {
-                                DateTimeUtils.getMinDate(startCalendar)?.let { minDate ->
-                                    DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
-                                        voucherEditCalendarBottomSheet =
-                                            VoucherEditCalendarBottomSheet.newInstance(
-                                                startCalendar,
-                                                minDate,
-                                                maxDate,
-                                                startHour,
-                                                startMinute,
-                                                getSelectedDateStarting
-                                            )
-                                        voucherEditCalendarBottomSheet?.show(
-                                            childFragmentManager,
-                                            ""
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        labelText.text = context?.getString(R.string.edit_period_start_date).toBlankOrString()
-                        disableText(this)
+                    editText.setOnClickListener {
+                        onClickListenerForStartDate()
                     }
+                    labelText.text =
+                        context?.getString(R.string.edit_period_start_date).toBlankOrString()
+                    disableText(editText)
                 }
 
                 edtMvcEndDate.run {
-                    editText.run {
-                        setOnClickListener {
-                            context?.run {
-                                DateTimeUtils.getMinDate(endCalendar)?.let { minDate ->
-                                    DateTimeUtils.getMaxDate(endCalendar)?.let { maxDate ->
-                                        voucherEditCalendarBottomSheet =
-                                            VoucherEditCalendarBottomSheet.newInstance(
-                                                endCalendar,
-                                                minDate,
-                                                maxDate,
-                                                endHour,
-                                                endMinute,
-                                                getSelectedDateEnding
-                                            )
-                                        voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
-                                    }
-                                }
-                            }
-                        }
-                        labelText.text = context?.getString(R.string.edit_period_end_date).toBlankOrString()
-                        disableText(this)
+                    editText.setOnClickListener {
+                        onClickListenerForEndDate()
                     }
+                    labelText.text =
+                        context?.getString(R.string.edit_period_end_date).toBlankOrString()
+                    disableText(editText)
                 }
+            }
 
-                if (tickerVisibility) {
-                    informationTicker.show()
-                } else {
-                    informationTicker.hide()
-                }
+            if (tickerVisibility) {
+                informationTicker.show()
+            } else {
+                informationTicker.hide()
             }
         }
 
         setAction(context?.getString(R.string.edit_period_reset).toBlankOrString()) {
             setUpDate()
+        }
+    }
+
+    private fun onClickListenerForStartDate() {
+        context?.run {
+            DateTimeUtils.getMinDate(startCalendar)?.let { minDate ->
+                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
+                    voucherEditCalendarBottomSheet =
+                        VoucherEditCalendarBottomSheet.newInstance(
+                            startCalendar,
+                            minDate,
+                            maxDate,
+                            startHour,
+                            startMinute,
+                            getSelectedDateStarting
+                        )
+                    voucherEditCalendarBottomSheet?.show(
+                        childFragmentManager,
+                        ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun onClickListenerForEndDate() {
+        context?.run {
+            DateTimeUtils.getMinDate(endCalendar)?.let { minDate ->
+                DateTimeUtils.getMaxDate(endCalendar)?.let { maxDate ->
+                    voucherEditCalendarBottomSheet =
+                        VoucherEditCalendarBottomSheet.newInstance(
+                            endCalendar,
+                            minDate,
+                            maxDate,
+                            endHour,
+                            endMinute,
+                            getSelectedDateEnding
+                        )
+                    voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
+                }
+            }
         }
     }
 

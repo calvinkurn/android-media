@@ -26,13 +26,8 @@ class VoucherEditPeriodViewModel @Inject constructor(
         private const val HOUR_FORMAT = "HH:mm"
     }
 
-
     private val _dateStartLiveData = MutableLiveData<String>()
-    val dateStartLiveData: LiveData<String>
-        get() = _dateStartLiveData
     private val _dateEndLiveData = MutableLiveData<String>()
-    val dateEndLiveData: LiveData<String>
-        get() = _dateEndLiveData
     private val _hourStartLiveData = MutableLiveData<String>()
     val hourStartLiveData: LiveData<String>
         get() = _hourStartLiveData
@@ -47,7 +42,8 @@ class VoucherEditPeriodViewModel @Inject constructor(
     val endDateCalendarLiveData: LiveData<Calendar>
         get() = _endDateCalendarLiveData
 
-    private val _updateVoucherPeriodStateLiveData = MutableLiveData<com.tokopedia.usecase.coroutines.Result<UpdateVoucherResult>>()
+    private val _updateVoucherPeriodStateLiveData =
+        MutableLiveData<com.tokopedia.usecase.coroutines.Result<UpdateVoucherResult>>()
     val updateVoucherPeriodStateLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<UpdateVoucherResult>>
         get() = _updateVoucherPeriodStateLiveData
 
@@ -80,9 +76,9 @@ class VoucherEditPeriodViewModel @Inject constructor(
                                     hourEnd
                                 )
                                 _updateVoucherPeriodStateLiveData.value = Success(response)
-                            }, onError =  {
-                                _updateVoucherPeriodStateLiveData.value = Fail(it)
-                            })
+                            }, onError = {
+                                    _updateVoucherPeriodStateLiveData.value = Fail(it)
+                                })
                         }
                     }
                 }
