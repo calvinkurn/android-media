@@ -157,6 +157,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
 
         // Then
         assertBroadcastCtaText("Lihat Selengkapnya")
+        openPageWithExtra("url", "https://chat.tokopedia.com/tc/v1/redirect/original_url/")
     }
 
     @Test
