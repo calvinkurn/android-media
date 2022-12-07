@@ -4,7 +4,8 @@ import android.app.Application
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceDataSource
-import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicDataSource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiDataSource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
@@ -105,17 +106,21 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             val context = application.applicationContext
             val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
             val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource()
-            val loggerCloudNewRelicDataSource = LoggerCloudNewRelicDataSource()
+            val loggerCloudNewRelicSdkDataSource = LoggerCloudNewRelicSdkDataSource()
+            val loggerCloudNewRelicApiDataSource = LoggerCloudNewRelicApiDataSource()
             val loggerCloudEmbraceDataSource = LoggerCloudEmbraceDataSource()
             val loggerRepoNew = LoggerRepository(
+                Gson(),
                 logsDao,
                 loggerCloudScalyrDataSource,
-                loggerCloudNewRelicDataSource,
+                loggerCloudNewRelicSdkDataSource,
+                loggerCloudNewRelicApiDataSource,
                 loggerCloudEmbraceDataSource,
                 getScalyrConfigList(context),
                 NewRelicConfig(loggerProxy.newRelicUserId, loggerProxy.newRelicToken),
                 loggerProxy.encrypt,
-                loggerProxy.decrypt
+                loggerProxy.decrypt,
+                loggerProxy.decryptNrKey
             )
             loggerRepository = loggerRepoNew
             return loggerRepoNew
@@ -195,4 +200,5 @@ interface LoggerProxy {
     val versionName: String
     val encrypt: ((String) -> (String))?
     val decrypt: ((String) -> (String))?
+    val decryptNrKey: ((String) -> (String))?
 }

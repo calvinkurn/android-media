@@ -60,6 +60,7 @@ import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.encryption.security.RSA;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
 import com.tokopedia.journeydebugger.JourneySubscriber;
@@ -96,6 +97,7 @@ import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -441,6 +443,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(NewRelicConstants.ENCRYPTION_KEY);
 
+            final RSA encryptorRSA = new RSA();
+            final RSAPrivateKey privateKeyRSA = encryptorRSA.stringToPrivateKey(NewRelicConstants.PRIVATE_RSA_KEY_STR);
+
+
             @Override
             public Function1<String, String> getDecrypt() {
                 return new Function1<String, String>() {
@@ -461,6 +467,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 };
             }
 
+
+            @Override
+            public Function1<String, String> getDecryptNrKey() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptorRSA.decrypt(s, privateKeyRSA, com.tokopedia.encryption.utils.Constants.RSA_OAEP_ALGORITHM);
+                    }
+                };
+            }
+
             @NotNull
             @Override
             public String getVersionName() {
@@ -476,6 +493,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public String getScalyrToken() {
                 return Keys.getAUTH_SCALYR_API_KEY();
+
             }
 
             @NotNull

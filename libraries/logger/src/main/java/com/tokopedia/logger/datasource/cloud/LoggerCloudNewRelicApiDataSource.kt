@@ -12,11 +12,7 @@ import java.util.zip.GZIPOutputStream
 
 class LoggerCloudNewRelicApiDataSource : LoggerCloudNewRelicApiImpl {
 
-    companion object {
-        val gson = Gson()
-    }
-
-    override suspend fun sendToLogServer(newRelicConfig: NewRelicConfig, message: List<String>): Boolean {
+    override suspend fun sendToLogServer(gson: Gson, newRelicConfig: NewRelicConfig, message: List<String>): Boolean {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         withContext(Dispatchers.IO) {
             try {
