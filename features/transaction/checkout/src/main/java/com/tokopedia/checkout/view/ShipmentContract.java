@@ -197,7 +197,7 @@ public interface ShipmentContract {
 
         void onNoValidCheckoutItem();
 
-        void showCoachMarkEpharmacy(ArrayList<String> epharmacyGroupIds);
+        void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
     }
 
     interface AnalyticsActionListener {

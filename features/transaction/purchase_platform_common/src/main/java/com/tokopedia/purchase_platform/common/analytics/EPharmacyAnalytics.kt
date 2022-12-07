@@ -62,7 +62,7 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
             Events.CLICK_PP,
             Category.CART,
             Actions.CLICK_INFO_CHAT_DOKTER,
-            "$enablerName - $shopId - ${cartId.joinToString(",")}"
+            " - $enablerName - $shopId - ${cartId.joinToString(",")}"
         )
         gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
         gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE
@@ -84,12 +84,17 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
         sendGeneralEvent(gtmData)
     }
 
-    fun viewBannerPesananButuhResepInCheckoutPage(epharmacyGroupIds: List<String>) {
+    fun viewBannerPesananButuhResepInCheckoutPage(
+        epharmacyGroupIds: List<String>,
+        enablerNames: List<String>,
+        shopIds: List<String>,
+        cartIds: List<String>
+    ) {
         val gtmData = getGtmData(
             Events.VIEW_PP_IRIS,
             Category.EPharmacyCategory,
             Actions.VIEW_BANNER_PESANAN_BUTUH_RESEP_IN_CHECKOUT_PAGE,
-            "${epharmacyGroupIds.joinToString(",")}"
+            "${epharmacyGroupIds.joinToString(",")} - ${enablerNames.joinToString(",")} - ${shopIds.joinToString(",")} - ${cartIds.joinToString(",")}"
         )
         gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
         gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE
@@ -101,13 +106,16 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
         state: String,
         buttonText: String,
         buttonNotes: String,
-        epharmacyGroupIds: List<String>
+        epharmacyGroupIds: List<String>,
+        enablerNames: List<String>,
+        shopIds: List<String>,
+        cartIds: List<String>
     ) {
         val gtmData = getGtmData(
             Events.CLICK_PP,
             Category.EPharmacyCategory,
             Actions.CLICK_LAMPIRKAN_RESEP_DOKTER,
-            "$state - $buttonText - $buttonNotes - ${epharmacyGroupIds.joinToString(",")}"
+            "$state - $buttonText - $buttonNotes - ${epharmacyGroupIds.joinToString(",")} - ${enablerNames.joinToString(",")} - ${shopIds.joinToString(",")} - ${cartIds.joinToString(",")}"
         )
         gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
         gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE
@@ -116,7 +124,6 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
     }
 
     fun clickPilihPembayaran(
-        state: String,
         buttonNotes: String,
         epharmacyGroupIds: List<String>,
         isSuccess: Boolean,
@@ -131,7 +138,7 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
             Events.CLICK_PP,
             Category.EPharmacyCategory,
             Actions.CLICK_PILIH_PEMBAYARAN,
-            "$state - $buttonNotes - ${epharmacyGroupIds.joinToString(",")} - $successValue - $reason"
+            "$successValue - $buttonNotes - ${epharmacyGroupIds.joinToString(",")} - $successValue - $reason"
         )
         gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
         gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE

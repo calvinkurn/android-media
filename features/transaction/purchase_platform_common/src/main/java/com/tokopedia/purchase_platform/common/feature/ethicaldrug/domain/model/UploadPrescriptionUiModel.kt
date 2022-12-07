@@ -20,6 +20,11 @@ data class UploadPrescriptionUiModel(
     var rejectedWording: String = "",
     var hasInvalidPrescription: Boolean = false,
     var isOcc: Boolean = false,
+
+    // data for trackers
+    var enablerNames: List<String> = emptyList(),
+    var shopIds: List<String> = emptyList(),
+    var cartIds: List<String> = emptyList()
 ) : Parcelable {
 
     fun getWidgetState(): String {
@@ -31,18 +36,6 @@ data class UploadPrescriptionUiModel(
             }
         } else {
             "success"
-        }
-    }
-
-    fun getPayState(hasCompletePrescription: Boolean): String {
-        return if (hasCompletePrescription) {
-            "success state"
-        } else {
-            if (uploadedImageCount == 0) {
-                "failed state no prescription"
-            } else {
-                "failed state with prescription"
-            }
         }
     }
 }

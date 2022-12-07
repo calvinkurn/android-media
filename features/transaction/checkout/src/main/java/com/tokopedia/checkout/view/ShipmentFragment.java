@@ -718,7 +718,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void showCoachMarkEpharmacy(ArrayList<String> epharmacyGroupIds) {
+    public void showCoachMarkEpharmacy(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
         if (getActivityContext() != null && !CoachMarkPreference.INSTANCE.hasShown(getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY)) {
             int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
             rvShipment.scrollToPosition(uploadPrescriptionPosition);
@@ -736,7 +736,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     CoachMark2 coachMark = new CoachMark2(requireContext());
                     coachMark.showCoachMark(list, null, 0);
                     CoachMarkPreference.INSTANCE.setShown(getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY, true);
-                    ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(epharmacyGroupIds);
+                    ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
+                            uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                            uploadPrescriptionUiModel.getEnablerNames(),
+                            uploadPrescriptionUiModel.getShopIds(),
+                            uploadPrescriptionUiModel.getCartIds()
+                    );
                 }
             });
         }
@@ -3460,7 +3465,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 uploadPrescriptionUiModel.setError(true);
                                 onNeedUpdateViewItem(i);
                                 ePharmacyAnalytics.clickPilihPembayaran(
-                                        uploadPrescriptionUiModel.getPayState(false),
                                         ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
                                         uploadPrescriptionUiModel.getEpharmacyGroupIds(),
                                         false,
@@ -3695,7 +3699,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink);
             startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION);
-            ePharmacyAnalytics.clickLampirkanResepDokter(uploadPrescriptionUiModel.getWidgetState(), buttonText, buttonNotes, uploadPrescriptionUiModel.getEpharmacyGroupIds());
+            ePharmacyAnalytics.clickLampirkanResepDokter(uploadPrescriptionUiModel.getWidgetState(),
+                    buttonText,
+                    buttonNotes,
+                    uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                    uploadPrescriptionUiModel.getEnablerNames(),
+                    uploadPrescriptionUiModel.getShopIds(),
+                    uploadPrescriptionUiModel.getCartIds()
+            );
         }
     }
 
@@ -3998,7 +4009,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
                 if (viewHolder instanceof UploadPrescriptionViewHolder) {
                     ePharmacyAnalytics.clickPilihPembayaran(
-                            uploadPrescriptionUiModel.getPayState(false),
                             ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
                             uploadPrescriptionUiModel.getEpharmacyGroupIds(),
                             false,
