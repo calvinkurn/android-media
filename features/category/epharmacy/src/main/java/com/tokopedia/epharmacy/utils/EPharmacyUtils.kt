@@ -33,13 +33,6 @@ object EPharmacyUtils {
         }
     }
 
-    fun isOutsideWorkingHours(openTime: String, closeTime: String): Boolean {
-        val openTimeLocal: Date? = formatDateToLocal(dateString = openTime)
-        val closeTimeLocal: Date? = formatDateToLocal(dateString = closeTime)
-        val currentLocal = Calendar.getInstance().time
-        return (openTimeLocal != null) && ((currentLocal < openTimeLocal) || (currentLocal > closeTimeLocal))
-    }
-
     fun getTimeFromDate(date: Date?): String {
         date?.let {
             val fromFormat: DateFormat = SimpleDateFormat("HH:MM", Locale.ENGLISH)

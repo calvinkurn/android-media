@@ -136,7 +136,6 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                                 group,
                                 info,
                                 index,
-                                EPharmacyMapper.isLastIndex(group.shopInfo, index),
                                 EPharmacyMapper.isLastIndex(data.detailData?.groupsData?.epharmacyGroups, indexGroup)
                             )
                         )
@@ -151,10 +150,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
         info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
         index: Int,
-        isLastShopOfGroup: Boolean,
         isLastGroup: Boolean
     ): BaseEPharmacyDataModel {
-        return EPharmacyMapper.mapGroupsToAttachmentComponents(group, info, index, isLastShopOfGroup, isLastGroup)
+        return EPharmacyMapper.mapGroupsToAttachmentComponents(group, info, index, isLastGroup)
     }
 
     private fun onFailPrepareProductGroup(throwable: Throwable) {

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
@@ -23,6 +24,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -114,13 +117,33 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
         viewModel?.reminderLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    context?.resources?.let { res ->
-                        showToast(Toaster.TYPE_NORMAL, res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_success))
+                    if (it.data.data?.isSuccess == true) {
+                        context?.resources?.let { res ->
+                            showToast(
+                                Toaster.TYPE_NORMAL,
+                                res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_success)
+                            )
+                        }
+                    } else {
+                        context?.resources?.let { res ->
+                            if (it.data.data?.error.isNullOrBlank()) {
+                                showToast(Toaster.TYPE_ERROR, it.data.data?.error ?: "")
+                            } else {
+                                showToast(Toaster.TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail) ?: "")
+                            }
+                        }
                     }
                 }
                 is Fail -> {
-                    context?.resources?.let { res ->
-                        showToast(Toaster.TYPE_ERROR, res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail))
+                    when (it.throwable) {
+                        is UnknownHostException, is SocketTimeoutException -> showToast(
+                            Toaster.TYPE_ERROR,
+                            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_internet_error) ?: ""
+                        )
+                        else -> showToast(
+                            Toaster.TYPE_ERROR,
+                            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail) ?: ""
+                        )
                     }
                 }
             }
@@ -131,7 +154,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheetUiData() {
         binding?.let {
             with(it) {
-                reminderParentView.errorIllustration.loadImageFitCenter("https://images.tokopedia.net/img/pharmacy-illustration.png")
+                reminderParentView.errorIllustration.loadImageFitCenter(REMINDER_ILLUSTRATION_IMAGE)
                 reminderParentView.errorTitle.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_title)
                 reminderParentView.errorDescription.text = getMessageString()
                 reminderParentView.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)

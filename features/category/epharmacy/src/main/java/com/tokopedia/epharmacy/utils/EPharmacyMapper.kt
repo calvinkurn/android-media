@@ -9,11 +9,10 @@ object EPharmacyMapper {
         group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
         info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
         index: Int,
-        isLastShopOfGroup: Boolean,
         isLastGroup: Boolean
     ): EPharmacyAttachmentDataModel {
         return EPharmacyAttachmentDataModel(
-            getUniqueModelName(group.epharmacyGroupId, index, isLastShopOfGroup), GROUP_COMPONENT,
+            getUniqueModelName(group.epharmacyGroupId, index), GROUP_COMPONENT,
             group.epharmacyGroupId,
             group.consultationSource?.enablerName,
             group.consultationSource?.enablerLogoUrl,
@@ -34,12 +33,8 @@ object EPharmacyMapper {
         )
     }
 
-    fun getUniqueModelName(ePharmacyGroupId: String?, index: Int, isLastShopOfGroup: Boolean): String {
-        return if (isLastShopOfGroup) {
-            "${ePharmacyGroupId}_$index"
-        } else {
-            "${ePharmacyGroupId}_N"
-        }
+    private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {
+        return "${ePharmacyGroupId}_$index"
     }
 
     fun isLastIndex(list: List<Any?>?, index: Int): Boolean {

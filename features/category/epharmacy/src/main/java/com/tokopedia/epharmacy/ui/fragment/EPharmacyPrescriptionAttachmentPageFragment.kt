@@ -177,7 +177,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                     onSuccessInitiateConsultation(data.data)
                 }
                 is Fail -> {
-                    onFailInitiateConsultation()
+                    onFailInitiateConsultation(data.throwable)
                 }
             }
         }
@@ -199,7 +199,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
-        showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
+        showToasterError(throwable)
     }
 
     private fun observerEPharmacyButtonData() {
@@ -251,8 +251,15 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         }
     }
 
-    private fun onFailInitiateConsultation() {
-        showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
+    private fun onFailInitiateConsultation(throwable: Throwable) {
+        showToasterError(throwable)
+    }
+
+    private fun showToasterError(throwable: Throwable) {
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
+            else -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail) ?: "")
+        }
     }
 
     private fun onFailGroupData(it: Fail) {

@@ -95,3 +95,4 @@ const val WEB_LINK_PREFIX = "tokopedia://webview?url="
 const val TYPE_DOCTOR_NOT_AVAILABLE_REMINDER = 1
 
 const val ERROR_CODE_OUTSIDE_WORKING_HOUR = 404
+const val REMINDER_ILLUSTRATION_IMAGE = "https://images.tokopedia.net/img/pharmacy-illustration.png"
