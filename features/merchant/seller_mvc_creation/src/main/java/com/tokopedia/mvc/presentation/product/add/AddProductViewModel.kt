@@ -213,40 +213,46 @@ class AddProductViewModel @Inject constructor(
         selectedProductIds: Set<Long>,
         validatedProducts: List<VoucherValidationResult.ValidationProduct>
     ): List<Product> {
+        return currentPageParentProduct.map { product ->
+            val validatedParentProduct = findValidatedProduct(product.id, validatedProducts)
+            val variants = validatedParentProduct.toProductVariants()
 
-        val nextSelectedProductSize = selectedProductIds.size + AddProductFragment.PAGE_SIZE
-        val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.maxProductSelection
-        val shouldAutomaticallyAddToProductSelection = currentState.isSelectAllCheckboxActive && isBelowMaximumProductSelection
+            val isEligible = validatedParentProduct?.isEligible.orTrue()
 
-        val formattedProducts = currentPageParentProduct.map { product ->
-
-            val matchedProduct = findValidatedProduct(product.id, validatedProducts)
-            val variants = matchedProduct?.variant?.map {
-                Product.Variant(
-                    variantProductId = it.productId,
-                    isEligible = it.isEligible,
-                    reason = it.reason,
-                    isSelected = it.isEligible,
-                )
-            }
-
-            val isEligible = matchedProduct?.isEligible.orTrue()
-
-            val isProductAlreadyOnSelection = product.id in selectedProductIds
-            val isSelected = isProductAlreadyOnSelection || (shouldAutomaticallyAddToProductSelection && isEligible)
+            val isSelected = shouldSelectProduct(product.id, selectedProductIds, isEligible)
             val enableCheckbox = shouldEnableCheckbox(isSelected, isEligible, selectedProductIds.size, currentState.maxProductSelection)
 
             product.copy(
                 isEligible = isEligible,
-                ineligibleReason = matchedProduct?.reason.orEmpty(),
-                originalVariants = variants.orEmpty(),
-                selectedVariantsIds = variants?.map { it.variantProductId }?.toSet().orEmpty(),
+                ineligibleReason = validatedParentProduct?.reason.orEmpty(),
+                originalVariants = variants,
+                selectedVariantsIds = variants.allVariantIds(),
                 isSelected = isSelected,
                 enableCheckbox = enableCheckbox
             )
         }
+    }
 
-        return formattedProducts
+    private fun shouldSelectProduct(productId: Long, selectedProductIds: Set<Long>, isEligible: Boolean): Boolean {
+        val nextSelectedProductSize = selectedProductIds.size + AddProductFragment.PAGE_SIZE
+        val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.maxProductSelection
+        val shouldAutomaticallyAddToProductSelection = currentState.isSelectAllCheckboxActive && isBelowMaximumProductSelection
+
+        val isProductAlreadyOnSelection = productId in selectedProductIds
+
+        if (isProductAlreadyOnSelection) {
+            return true
+        }
+
+        if (!isEligible) {
+            return false
+        }
+
+        if (shouldAutomaticallyAddToProductSelection) {
+            return true
+        }
+
+        return false
     }
 
     private fun shouldEnableCheckbox(
@@ -632,4 +638,22 @@ class AddProductViewModel @Inject constructor(
     private fun List<Product.Variant>.eligibleVariantOnly(): Set<Long> {
         return filter { it.isEligible }.map { it.variantProductId }.toSet()
     }
+
+    private fun VoucherValidationResult.ValidationProduct?.toProductVariants(): List<Product.Variant> {
+        if (this == null) return emptyList()
+
+        return variant.map {
+            Product.Variant(
+                variantProductId = it.productId,
+                isEligible = it.isEligible,
+                reason = it.reason,
+                isSelected = it.isEligible,
+            )
+        }
+    }
+
+    private fun List<Product.Variant>.allVariantIds(): Set<Long> {
+        return map { it.variantProductId }.toSet()
+    }
+
 }
