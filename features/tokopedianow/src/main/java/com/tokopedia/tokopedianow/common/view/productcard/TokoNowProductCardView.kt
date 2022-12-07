@@ -13,6 +13,7 @@ import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
@@ -48,6 +49,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
         private const val BOUND_DEFAULT_VALUE = 0
         private const val NO_MARGIN = 0
         private const val NO_DISCOUNT_STRING = "0"
+        private const val DEFAULT_MAX_LINES = 2
+        private const val MAX_LINES_NEEDED_TO_CHANGE = 1
     }
 
     private var similarProductListener: SimilarProductListener? = null
@@ -91,7 +94,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
             slashPrice = model.slashPrice,
         )
         initProductNameTypography(
-            productName = model.name
+            name = model.name,
+            needToChangeMaxLinesName = model.needToChangeMaxLinesName
         )
         initRatingTypography(
             rating = model.rating,
@@ -201,10 +205,16 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initProductNameTypography(
-        productName: String
+        name: String,
+        needToChangeMaxLinesName: Boolean,
     ) {
-        productNameTypography.showIfWithBlock(productName.isNotBlank()) {
-            text = productName
+        productNameTypography.showIfWithBlock(name.isNotBlank()) {
+            text = name
+            maxLines = if (needToChangeMaxLinesName && promoLayout.isVisible) {
+                MAX_LINES_NEEDED_TO_CHANGE
+            } else {
+                DEFAULT_MAX_LINES
+            }
         }
     }
 

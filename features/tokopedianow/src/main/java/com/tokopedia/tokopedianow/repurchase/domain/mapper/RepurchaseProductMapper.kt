@@ -6,8 +6,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 
 object RepurchaseProductMapper {
-    private const val DEFAULT_MAX_ORDER = 0
-
     private fun mapRepurchaseProductToProductCard(
         product: RepurchaseProduct
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
@@ -25,7 +23,7 @@ object RepurchaseProductMapper {
         isWishlistShown = true,
         isSimilarProductShown = true,
         isVariant = product.parentProductId.isNotBlank() && product.parentProductId != "0",
-        needToShowQuantityEditor = product.minOrder <= product.maxOrder && product.maxOrder != DEFAULT_MAX_ORDER,
+        needToShowQuantityEditor = true,
         labelGroupList = product.labelGroup.map {
             TokoNowProductCardViewUiModel.LabelGroup(
                 position = it.position,

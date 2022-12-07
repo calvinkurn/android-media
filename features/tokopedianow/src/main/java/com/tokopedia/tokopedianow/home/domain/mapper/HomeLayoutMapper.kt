@@ -669,8 +669,8 @@ object HomeLayoutMapper {
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapResponseToProductRecom(response, loadedState, miniCartData, warehouseId)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
-            MIX_LEFT_CAROUSEL_ATC -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId)
-            MIX_LEFT_CAROUSEL -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId)
+            MIX_LEFT_CAROUSEL_ATC -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId, MIX_LEFT_CAROUSEL_ATC)
+            MIX_LEFT_CAROUSEL -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId, MIX_LEFT_CAROUSEL)
             PRODUCT_RECOM_OOC -> mapResponseToProductRecomOoc(loadedState)
             // endregion
 
