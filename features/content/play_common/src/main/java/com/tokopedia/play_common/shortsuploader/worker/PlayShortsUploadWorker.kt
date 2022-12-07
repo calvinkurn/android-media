@@ -1,7 +1,9 @@
 package com.tokopedia.play_common.shortsuploader.worker
 
 import android.content.Context
+import android.media.ThumbnailUtils
 import android.util.Log
+import android.util.Size
 import androidx.work.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -27,7 +29,7 @@ import javax.inject.Inject
  */
 class PlayShortsUploadWorker(
     private val appContext: Context,
-    private val workerParam: WorkerParameters,
+    workerParam: WorkerParameters,
 ) : CoroutineWorker(appContext, workerParam) {
 
     @Inject
@@ -48,9 +50,6 @@ class PlayShortsUploadWorker(
     private var currentProgress = 0
 
     private val uploadData = PlayShortsUploadModel.parse(inputData)
-
-    private val coverUrl: String
-        get() = uploadData.coverUri.ifEmpty { uploadData.mediaUri }
 
     private val progressPerStep = if(uploadData.coverUri.isEmpty()) PROGRESS_PER_STEP_WITHOUT_COVER else PROGRESS_PER_STEP_WITH_COVER
 
@@ -120,38 +119,31 @@ class PlayShortsUploadWorker(
                 val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
 
                 if (uploadData.coverUri.isEmpty()) {
-                    uploadFirstSnapshotAsCover(this, uploadData, {
-                        addMediaAndUpdateChannel(uploadData, mediaUrl)
-                    }) {
-                        throw it
-                    }
-                } else {
-                    addMediaAndUpdateChannel(uploadData, mediaUrl)
+                    uploadFirstSnapshotAsCover(uploadData)
                 }
 
-                updateCompleted()
+                val activeMediaId = addMedia(uploadData, mediaUrl)
+                updateChannelStatusWithMedia(activeMediaId, uploadData, PlayChannelStatusType.Active)
+
+                broadcastComplete()
 
                 Result.success(workDataOf(PlayShortsUploadConst.SHORTS_ID to uploadData.shortsId))
             }
             catch (e: Exception) {
+                Log.d("<LOG>", "ERROR UPLOAD : $e")
+
                 updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
 
                 snapshotHelper.deleteLocalFile()
-                Log.d("<LOG>", "ERROR UPLOAD : $e")
-                updateFailed()
+
+                broadcastFail()
 
                 Result.failure(inputData)
             }
         }
     }
 
-    private suspend fun addMediaAndUpdateChannel(
-        uploadData: PlayShortsUploadModel,
-        mediaUrl: String
-    ) {
-        val activeMediaId = addMedia(uploadData, mediaUrl)
-        updateChannelStatusWithMedia(uploadData, activeMediaId, PlayChannelStatusType.Active)
-    }
+
 
     private suspend fun uploadMedia(
         uploadType: UploadType,
@@ -183,34 +175,24 @@ class PlayShortsUploadWorker(
     }
 
     private suspend fun uploadFirstSnapshotAsCover(
-        scope: CoroutineScope,
-        uploadData: PlayShortsUploadModel,
-        onSuccess: suspend () -> Unit,
-        onError: suspend (Throwable) -> Unit
+        uploadData: PlayShortsUploadModel
     ) {
-        snapshotHelper.snap(appContext, uploadData.mediaUri) {
-            scope.launchCatchError(block = {
-                val uploadId = uploadMedia(UploadType.Image, it.absolutePath, withUpdateProgress = false)
+        val bitmap = snapshotHelper.snapVideo(appContext, uploadData.mediaUri)
+            ?: throw Exception("Gagal upload cover")
 
-                updateChannelUseCase.apply {
-                    setQueryParams(
-                        PlayBroadcastUpdateChannelUseCase.createUpdateFullCoverRequest(
-                            channelId = uploadData.shortsId,
-                            authorId = uploadData.authorId,
-                            coverUrl = uploadId
-                        )
-                    )
-                }.executeOnBackground()
+        val uploadId = uploadMedia(UploadType.Image, bitmap.absolutePath, withUpdateProgress = false)
 
-                snapshotHelper.deleteLocalFile()
+        updateChannelUseCase.apply {
+            setQueryParams(
+                PlayBroadcastUpdateChannelUseCase.createUpdateFullCoverRequest(
+                    channelId = uploadData.shortsId,
+                    authorId = uploadData.authorId,
+                    coverUrl = uploadId
+                )
+            )
+        }.executeOnBackground()
 
-                updateProgress()
-
-                onSuccess()
-            }) {
-                onError(it)
-            }
-        }
+        snapshotHelper.deleteLocalFile()
     }
 
     private suspend fun addMedia(
@@ -250,8 +232,8 @@ class PlayShortsUploadWorker(
     }
 
     private suspend fun updateChannelStatusWithMedia(
-        uploadData: PlayShortsUploadModel,
         activeMediaId: String,
+        uploadData: PlayShortsUploadModel,
         status: PlayChannelStatusType
     ) {
         updateChannelUseCase.apply {
@@ -273,12 +255,12 @@ class PlayShortsUploadWorker(
         broadcastProgress(currentProgress)
     }
 
-    private suspend fun updateCompleted() {
+    private suspend fun broadcastComplete() {
         broadcastProgress(PlayShortsUploadConst.PROGRESS_COMPLETED)
         delay(UPLOAD_FINISH_DELAY)
     }
 
-    private suspend fun updateFailed() {
+    private suspend fun broadcastFail() {
         broadcastProgress(PlayShortsUploadConst.PROGRESS_FAILED)
         delay(UPLOAD_FINISH_DELAY)
     }
@@ -288,7 +270,8 @@ class PlayShortsUploadWorker(
             PlayShortsUploadConst.PROGRESS to progress,
             PlayShortsUploadConst.UPLOAD_DATA to uploadData.toString(),
         )
-        Log.d("<LOG>", data.toString())
+
+        Log.d("<LOG>", "data : $data")
 
         setProgress(
             workDataOf(
@@ -303,13 +286,17 @@ class PlayShortsUploadWorker(
         val id: String,
         val withTranscode: Boolean
     ) {
-        Image(UPLOAD_TYPE_IMAGE, "jJtrdn", false),
-        Video(UPLOAD_TYPE_VIDEO, "JQUJTn", true)
+        Image(UPLOAD_TYPE_IMAGE, UPLOAD_IMAGE_SOURCE_ID, false),
+        Video(UPLOAD_TYPE_VIDEO, UPLOAD_VIDEO_SOURCE_ID, true)
     }
 
     companion object {
         private const val UPLOAD_TYPE_IMAGE = "UPLOAD_TYPE_IMAGE"
         private const val UPLOAD_TYPE_VIDEO = "UPLOAD_TYPE_VIDEO"
+
+        private const val UPLOAD_IMAGE_SOURCE_ID = "jJtrdn"
+        private const val UPLOAD_VIDEO_SOURCE_ID = "JQUJTn"
+
         private const val PROGRESS_PER_STEP_WITHOUT_COVER = 20
         private const val PROGRESS_PER_STEP_WITH_COVER = 25
         private const val UPLOAD_FINISH_DELAY = 1000L
