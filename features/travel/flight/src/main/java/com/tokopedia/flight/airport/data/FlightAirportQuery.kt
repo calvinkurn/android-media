@@ -8,7 +8,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
  * @author by furqan on 08/10/2020
  */
 @GqlQuery("AirPortPopularCityQuery", QUERY_AIRPORT_POPULAR_CITY)
-internal object QueryAirPortPopularCity{
+internal object QueryAirPortPopularCity {
     const val QUERY_AIRPORT_POPULAR_CITY = """
         {
             flightPopularCity{
@@ -19,13 +19,14 @@ internal object QueryAirPortPopularCity{
                 cityCode
                 cityName
                 airportName
+                isPopular
             }
         }
     """
 }
 
 @GqlQuery("AirPortSuggestionQuery", QUERY_AIRPORT_SUGGESTION)
-internal object QueryAirPortSuggestion{
+internal object QueryAirPortSuggestion {
     const val QUERY_AIRPORT_SUGGESTION = """
         query flightSuggestion(${'$'}input:String!) {
             flightSuggestion(input:${'$'}input) {

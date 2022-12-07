@@ -241,6 +241,8 @@
 
     <!--Follow Bottom Sheet-->
     <string name="feed_follow_bottom_sheet_success_toaster_text" tools:ignore="UnusedResources">Kamu berhasil follow toko. Yuk, buruan beli produknya sebelum kehabisan!</string>
+    <string name="feed_follow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil mengikuti akun ini</string>
+    <string name="feed_unfollow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil berhenti mengikuti akun ini</string>
     <string name="feed_asgc_campaign_cta_copywriting_text">Eksklusif untuk Follower Toko</string>
     <string name="feed_follow_bottom_sheet_button_text">Follow</string>
     <string name="feed_follow_bottom_sheet_title_text">Follow toko ini dulu, yuk!</string>

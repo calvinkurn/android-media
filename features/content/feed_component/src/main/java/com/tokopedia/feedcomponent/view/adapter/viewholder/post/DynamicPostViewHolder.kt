@@ -35,13 +35,13 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
@@ -65,7 +65,7 @@ open class DynamicPostViewHolder(v: View,
                                  private val videoViewListener: VideoViewHolder.VideoViewListener,
                                  private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                                  private val userSession: UserSessionInterface)
-    : AbstractViewHolder<DynamicPostViewModel>(v) {
+    : AbstractViewHolder<DynamicPostModel>(v) {
 
     var captionTv: Typography = itemView.caption
     lateinit var adapter: PostPagerAdapter
@@ -98,7 +98,7 @@ open class DynamicPostViewHolder(v: View,
         const val ANIMATION_DURATION = 2000L
     }
 
-    override fun bind(element: DynamicPostViewModel?) {
+    override fun bind(element: DynamicPostModel?) {
         if (element == null) {
             itemView.hide()
             return
@@ -113,7 +113,7 @@ open class DynamicPostViewHolder(v: View,
         bindTracking(element.impressHolder, element.tracking)
     }
 
-    override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicPostModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         if (element == null || payloads.isEmpty() || payloads[0] !is Int) {
             return
@@ -341,7 +341,7 @@ open class DynamicPostViewHolder(v: View,
     }
 
     private fun bindContentList(postId: String,
-                                contentList: MutableList<BasePostViewModel>,
+                                contentList: MutableList<BasePostModel>,
                                 template: TemplateBody,
                                 feedType: String) {
         itemView.contentLayout.shouldShowWithAction(template.media && contentList.size !=0) {
@@ -537,13 +537,13 @@ open class DynamicPostViewHolder(v: View,
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
-    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: String, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: String, positionInFeed: Int, authorType: String): MutableList<BasePostTagModel> {
         val needToRezise = postTagItemList.size > 1
-        val itemList: MutableList<BasePostTagViewModel> = ArrayList()
+        val itemList: MutableList<BasePostTagModel> = ArrayList()
         for (postTagItem in postTagItemList) {
             when (postTagItem.type) {
                 POSTTAG_PRODUCT -> {
-                    val item = ProductPostTagViewModel(
+                    val item = ProductPostTagModel(
                             postTagItem.id,
                             postTagItem.text,
                             postTagItem.price,
@@ -567,7 +567,7 @@ open class DynamicPostViewHolder(v: View,
                     itemList.add(item)
                 }
                 POSTTAG_BUTTONCTA -> {
-                    val item = CtaPostTagViewModel(
+                    val item = CtaPostTagModel(
                             postTagItem.id,
                             postTagItem.text,
                             postTagItem.type,
@@ -585,7 +585,7 @@ open class DynamicPostViewHolder(v: View,
         return itemList
     }
 
-    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingViewModel>) {
+    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingModel>) {
         itemView.addOnImpressionListener(impressHolder) {
             listener.onAffiliateTrackClicked(trackList, false)
         }
@@ -708,7 +708,7 @@ open class DynamicPostViewHolder(v: View,
                 adClickUrl: String
         )
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
 
         fun onPostTagItemBuyClicked(
             positionInFeed: Int,
@@ -753,7 +753,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String)
 
-        fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int, feedXCard: FeedXCard)
+        fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, hasVoucher: Boolean, positionInFeed: Int, feedXCard: FeedXCard)
 
     }
 }

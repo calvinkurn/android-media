@@ -44,7 +44,9 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

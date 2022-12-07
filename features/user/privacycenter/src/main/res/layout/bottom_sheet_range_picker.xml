@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="heading_3"
+        android:id="@+id/typography4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dsar_date_picker_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <RadioGroup
+        android:layout_marginTop="24dp"
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography4">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:layout_marginTop="10dp"
+            android:id="@+id/itemRange1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:checked="true"
+            android:text="@string/dsar_range_item_1"
+            android:layoutDirection="rtl"
+            />
+
+        <View
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/Neutral_N100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:layout_marginTop="12dp"
+            android:id="@+id/itemRange2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dsar_range_item_2"
+            android:layoutDirection="rtl"
+            />
+
+        <View
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/Neutral_N100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:layout_marginTop="12dp"
+            android:id="@+id/itemRange3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dsar_range_item_3"
+            android:layoutDirection="rtl"
+            />
+
+        <View
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/Neutral_N100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:layout_marginTop="12dp"
+            android:id="@+id/itemRange4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dsar_range_item_4"
+            android:layoutDirection="rtl"
+            />
+
+        <View
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/Neutral_N100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:layout_marginTop="12dp"
+            android:id="@+id/itemRange5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dsar_range_item_5"
+            android:layoutDirection="rtl"
+            />
+
+        <View
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/Neutral_N100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:layout_marginTop="12dp"
+            android:id="@+id/itemRange6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dsar_range_item_6"
+            android:layoutDirection="rtl"
+            />
+
+        <View
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/Neutral_N100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layoutCustomDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup">
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/txtStartDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/txtEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            app:unify_text_field_placeholder="@string/dsar_date_picker_end_title" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnApplyFilter"
+        android:layout_marginTop="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dsar_date_picker_btn_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutCustomDate" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
