@@ -50,8 +50,8 @@ class ReplyBubbleOnBoarding @Inject constructor(
                 )
             )
             coachMark?.showCoachMark(coachMarkItem, null)
+            markAsShowed()
             coachMark?.setOnDismissListener {
-                markAsShowed()
                 onboardingDismissListener?.dismissReplyBubbleOnBoarding()
             }
         }
