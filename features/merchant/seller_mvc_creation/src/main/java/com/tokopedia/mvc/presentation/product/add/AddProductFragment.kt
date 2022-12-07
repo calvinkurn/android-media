@@ -287,7 +287,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun handleUiState(uiState: AddProductUiState) {
         renderLoadingState(uiState.isLoading)
 
-        renderSelectAllCheckbox(uiState)
+        renderSelectAllCheckbox(uiState.isSelectAllCheckboxActive, uiState.selectedProductCount, uiState.products.count(), uiState.totalProducts)
         renderMaxProductSelection(uiState.maxProductSelection)
 
         //Filter
@@ -353,18 +353,37 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         }
     }
 
-    private fun renderSelectAllCheckbox(uiState: AddProductUiState) {
-        binding?.checkbox?.isChecked = uiState.isSelectAllCheckboxActive
+    private fun renderSelectAllCheckbox(
+        isSelectAllCheckboxActive: Boolean,
+        selectedProductCount: Int,
+        allLoadedProductCount: Int,
+        totalProductCount: Int
+    ) {
+        when {
+            isSelectAllCheckboxActive -> {
+                binding?.checkbox?.isChecked = true
+            }
+            selectedProductCount.isZero() -> {
+                binding?.checkbox?.isChecked = false
+            }
+            selectedProductCount < allLoadedProductCount -> {
+                binding?.checkbox?.setIndeterminate(true)
+                binding?.checkbox?.isChecked = true
+            }
+            selectedProductCount == allLoadedProductCount -> {
+                binding?.checkbox?.isChecked = true
+            }
+        }
 
-        val checkboxWording = if (uiState.selectedProductCount.isZero()) {
+        val checkboxWording = if (selectedProductCount.isZero()) {
             getString(R.string.smvc_select_all)
         } else {
             getString(
                 R.string.smvc_placeholder_check_all_selected_product_count,
-                uiState.selectedProductCount,
-                uiState.totalProducts
+                selectedProductCount,
+                totalProductCount
             )
-        } 
+        }
         binding?.tpgSelectAll?.text = checkboxWording
     }
 
