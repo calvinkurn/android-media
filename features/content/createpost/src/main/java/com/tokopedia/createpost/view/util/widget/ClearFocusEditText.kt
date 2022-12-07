@@ -1,4 +1,4 @@
-package com.tokopedia.affiliatecommon.view.widget
+package com.tokopedia.createpost.view.util.widget
 
 import android.content.Context
 import android.util.AttributeSet
