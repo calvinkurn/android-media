@@ -1,8 +1,8 @@
 package com.tokopedia.createpost.common.domain.usecase
 
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
+import com.tokopedia.createpost.common.domain.entity.request.MediaTag
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.createpost.common.TYPE_CONTENT_SHOP
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
@@ -78,7 +78,7 @@ open class SubmitPostUseCase @Inject constructor(
                                 PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
                                 PARAM_ID to if(id.isNullOrEmpty()) null else id,
                                 PARAM_AD_ID to null,
-                                PARAM_TYPE to getInputType(type),
+                                PARAM_TYPE to INPUT_TYPE_CONTENT,
                                 PARAM_TOKEN to token,
                                 PARAM_AUTHOR_ID to authorId,
                                 PARAM_AUTHOR_TYPE to type,
@@ -137,7 +137,7 @@ open class SubmitPostUseCase @Inject constructor(
                     PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
                     PARAM_ID to if(id.isNullOrEmpty()) null else id,
                     PARAM_AD_ID to null,
-                    PARAM_TYPE to getInputType(type),
+                    PARAM_TYPE to INPUT_TYPE_CONTENT,
                     PARAM_TOKEN to token,
                     PARAM_AUTHOR_ID to authorId,
                     PARAM_AUTHOR_TYPE to type,
@@ -155,23 +155,31 @@ open class SubmitPostUseCase @Inject constructor(
     private fun getMediumList(media: List<Pair<String, String>>, mediaList: List<MediaModel>): List<SubmitPostMedium> {
         val mediumList = mutableListOf<SubmitPostMedium>()
         media.forEachIndexed { index, pair ->
-            val tags = mapTagList(index, mediaList[index].tags, mediaList[index].products)
+            val tags = mapTagList(mediaList[index].tags, mediaList[index].products)
             mediumList.add(SubmitPostMedium(pair.first, index, tags, pair.second))
         }
         return mediumList
     }
 
-    private fun mapTagList(index: Int, tags: List<FeedXMediaTagging>, productItem: List<RelatedProductItem>): List<MediaTag> {
-        var tagList : MutableList<MediaTag> = arrayListOf()
+    private fun mapTagList(tags: List<FeedXMediaTagging>, productItem: List<RelatedProductItem>): List<MediaTag> {
+        val tagList : MutableList<MediaTag> = arrayListOf()
+
         tags.forEach {
             val position: MutableList<Double> = arrayListOf()
             position.add(it.posX.toDouble())
             position.add(it.posY.toDouble())
-            var tag = MediaTag(type = TAGS_TYPE_PRODUCT,
-                content = productItem[it.tagIndex].id,
-                position = position)
-            tagList.add(tag)
+
+            val id = productItem.getOrNull(it.tagIndex)?.id
+            if(id != null) {
+                val tag = MediaTag(
+                    type = TAGS_TYPE_PRODUCT,
+                    content = id,
+                    position = position
+                )
+                tagList.add(tag)
+            }
         }
+
         return tagList
     }
 
@@ -182,10 +190,6 @@ open class SubmitPostUseCase @Inject constructor(
         }
         return rearrangedList
     }
-
-    private fun getInputType(type: String) =
-        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
-
 
     companion object {
         private const val PARAM_TYPE = "type"

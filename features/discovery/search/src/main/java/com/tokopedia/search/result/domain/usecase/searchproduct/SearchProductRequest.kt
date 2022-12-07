@@ -262,6 +262,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     uri
                     relative_uri
                     price_format
+                    price_range
                     wholesale_price {
                         price_format
                         quantity_max_format
@@ -352,6 +353,11 @@ private const val HEADLINE_ADS_QUERY = """
                         full_url
                         full_ecs
                     }
+                    flash_sale_campaign_detail{
+                        start_time
+                        end_time
+                        campaign_type
+                     }
                     shop {
                         id
                         name

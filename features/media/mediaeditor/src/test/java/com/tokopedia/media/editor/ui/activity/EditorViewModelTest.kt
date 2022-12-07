@@ -10,10 +10,14 @@ import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.getTokopediaCacheDir
+import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
+import com.tokopedia.utils.file.FileUtil
 import org.junit.Rule
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
+import io.mockk.mockkStatic
 import io.mockk.verify
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -79,7 +83,7 @@ class EditorViewModelTest {
     fun `remove background state on undo should clear state`() {
         // Given
         val stateTarget = pathSampleList[0]
-        val removeBackgroundPath = "/storage/sdcard/Pictures/remove_background.jpg"
+        val removeBackgroundPath = removeBackgroundPath
         val editState = EditorDetailUiModel()
         editState.removeBackgroundUrl = removeBackgroundPath
 
@@ -185,22 +189,31 @@ class EditorViewModelTest {
     @Test
     fun `save image to gallery`() {
         // Given
-        val dataList = pathSampleList.mapIndexed { index, path ->
-            val stateList = listOf<EditorDetailUiModel>().toMutableList()
-
-            if (index == 1) {
-                stateList.add(
-                    EditorDetailUiModel(originalUrl = path, resultUrl = path)
-                )
-            }
-
-            EditorUiModel(originalUrl = path,
-                editList = stateList
-            )
-        }
+        val dataList = createUiModelState(0, -1)
+        dataList[2].editList.clear()
+        dataList[3].editList.clear()
 
         // When
-        every { saveImageRepo.saveToGallery(any(), any())}.answers {
+        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
+            (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
+        }
+        viewModel.saveToGallery(dataList) {}
+
+        // Then
+        verify { saveImageRepo.saveToGallery(any(), any()) }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `save captured image to gallery`() {
+        // Given
+        val cameraDataIndex = pathSampleList.size - 1
+        val dataList = createUiModelState(cameraDataIndex, cameraDataIndex)
+
+        // When
+        mockkStatic(FileUtil::class)
+        every { getTokopediaCacheDir() } returns tokopediaCacheDir
+        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
             (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
         }
         viewModel.saveToGallery(dataList) {}
@@ -235,10 +248,33 @@ class EditorViewModelTest {
         verify { saveImageRepo.saveToCache(any(), any(), any()) }
     }
 
+    private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {
+        return pathSampleList.mapIndexed { index, path ->
+            val stateList = listOf<EditorDetailUiModel>().toMutableList()
+            val originalPath = if (cameraIndex == index) "$tokopediaCacheDir/$path" else path
+
+            if (index != excludeIndex) {
+                stateList.add(
+                    EditorDetailUiModel(originalUrl = originalPath, resultUrl = originalPath)
+                )
+            }
+
+            EditorUiModel(
+                originalUrl = originalPath,
+                editList = stateList
+            )
+        }
+    }
+
     companion object {
+        private const val tokopediaCacheDir = "com.tokopedia.tkpd/cache/Tokopedia"
+        private const val removeBackgroundPath = "/storage/sdcard/Pictures/remove_background.jpg"
+
         private val pathSampleList = listOf(
             "/storage/sdcard/Pictures/Image1.jpg",
             "/storage/sdcard/Pictures/Image2.jpeg",
+            "/storage/sdcard/Pictures/$PICKER_URL_FILE_CODE.jpeg",
+            "$tokopediaCacheDir/$PICKER_URL_FILE_CODE.png",
             "/storage/sdcard/Pictures/Image3.png"
         )
 

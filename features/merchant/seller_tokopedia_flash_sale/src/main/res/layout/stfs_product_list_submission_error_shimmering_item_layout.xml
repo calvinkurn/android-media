@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/shimmering_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_product_image"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect" />
+
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_product_name"
+            android:layout_width="0dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/shimmer_product_image"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_weight="0.6"
+            app:layout_constraintLeft_toRightOf="@id/shimmer_product_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/shimmer_product_image"
+            app:layout_constraintVertical_bias="0.15"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_product_sku"
+            android:layout_width="100dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintLeft_toRightOf="@id/shimmer_product_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_product_name"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_product_error_message"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_product_image"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:loader_type="rect" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

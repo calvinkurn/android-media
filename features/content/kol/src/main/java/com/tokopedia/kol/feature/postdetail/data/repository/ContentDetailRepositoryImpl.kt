@@ -7,7 +7,12 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatu
 import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
@@ -46,7 +51,11 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val trackViewerUseCase: FeedXTrackViewerUseCase,
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
+    private val getUserProfileFeedPostUseCase: GetUserProfileFeedPostsUseCase,
+    private val followUserUseCase: ProfileFollowUseCase,
+    private val unfollowUserUseCase: ProfileUnfollowedUseCase,
     private val mapper: ContentDetailMapper,
+    private val profileMutationMapper: ProfileMutationMapper,
 ) : ContentDetailRepository {
 
     override suspend fun getContentDetail(contentId: String): ContentDetailUiModel {
@@ -74,6 +83,21 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getFeedPosts(
+        userID: String,
+        cursor: String,
+        limit: Int,
+    ): ContentDetailUiModel {
+        return withContext(dispatcher.io) {
+            val response = getUserProfileFeedPostUseCase.executeOnBackground(
+                    userID = userID,
+                    cursor = cursor,
+                    limit = limit,
+                )
+            return@withContext mapper.mapFeedPosts(response)
+        }
+    }
+
     override suspend fun likeContent(
         contentId: String,
         action: ContentLikeAction,
@@ -97,7 +121,8 @@ class ContentDetailRepositoryImpl @Inject constructor(
     override suspend fun followShop(
         shopId: String,
         action: ShopFollowAction,
-        rowNumber: Int
+        rowNumber: Int,
+        isFollowedFromRSRestrictionBottomSheet: Boolean
     ): ShopFollowModel {
         return withContext(dispatcher.io) {
             followShopUseCase.params = UpdateFollowStatusUseCase.createParams(
@@ -111,7 +136,21 @@ class ContentDetailRepositoryImpl @Inject constructor(
                     else R.string.feed_unfollow_error_message
                 )
             }
-            mapper.mapShopFollow(rowNumber, action)
+            mapper.mapShopFollow(rowNumber, action, isFollowedFromRSRestrictionBottomSheet)
+        }
+    }
+
+    override suspend fun followUnfollowUser(isFollow: Boolean, encryptedUserId: String): MutationUiModel {
+        return withContext(dispatcher.io) {
+            if (isFollow) {
+                profileMutationMapper.mapUnfollow(
+                    unfollowUserUseCase.executeOnBackground(encryptedUserId)
+                )
+            } else {
+                profileMutationMapper.mapFollow(
+                    followUserUseCase.executeOnBackground(encryptedUserId)
+                )
+            }
         }
     }
 

@@ -14,13 +14,19 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
+import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
+import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
+import com.tokopedia.wishlistcollection.data.response.UpdateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
+import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
+import com.tokopedia.wishlistcollection.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import kotlinx.coroutines.launch
@@ -32,7 +38,9 @@ class WishlistCollectionViewModel @Inject constructor(
     private val getWishlistCollectionUseCase: GetWishlistCollectionUseCase,
     private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase,
     private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
-    private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase
+    private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase,
+    private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase,
+    private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
 
@@ -58,7 +66,16 @@ class WishlistCollectionViewModel @Inject constructor(
     val deleteWishlistProgressResult: LiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>
         get() = _deleteWishlistProgressResult
 
+    private val _getWishlistCollectionSharingDataResult = MutableLiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>()
+    val getWishlistCollectionSharingDataResult: LiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>
+        get() = _getWishlistCollectionSharingDataResult
+
+    private val _updateWishlistCollectionResult = MutableLiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>()
+    val updateWishlistCollectionResult: LiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>
+        get() = _updateWishlistCollectionResult
+
     fun getWishlistCollections() {
+        WishlistIdlingResource.increment()
         launchCatchError(block = {
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
@@ -75,9 +92,11 @@ class WishlistCollectionViewModel @Inject constructor(
                 _collections.value = Fail(Throwable())
                 _collectionData.value = Fail(Throwable())
             }
+            WishlistIdlingResource.decrement()
         }, onError = {
             _collections.value = Fail(it)
             _collectionData.value = Fail(Throwable())
+            WishlistIdlingResource.decrement()
         })
     }
 
@@ -113,6 +132,7 @@ class WishlistCollectionViewModel @Inject constructor(
     }
 
     fun loadRecommendation(page: Int) {
+        WishlistIdlingResource.increment()
         val listData = arrayListOf<WishlistCollectionTypeLayoutData>()
         launch {
             try {
@@ -127,8 +147,10 @@ class WishlistCollectionViewModel @Inject constructor(
                     )
                 }
                 _collectionData.value = Success(listData)
+                WishlistIdlingResource.decrement()
             } catch (e: Exception) {
                 Timber.d(e)
+                WishlistIdlingResource.decrement()
             }
         }
     }
@@ -146,8 +168,34 @@ class WishlistCollectionViewModel @Inject constructor(
         })
     }
 
+    fun getWishlistCollectionSharingData(collectionId: Long) {
+        launchCatchError(block = {
+            val result = getWishlistCollectionSharingDataUseCase(collectionId)
+            if (result.getWishlistCollectionSharingData.status == OK) {
+                _getWishlistCollectionSharingDataResult.value = Success(result.getWishlistCollectionSharingData)
+            } else {
+                _getWishlistCollectionSharingDataResult.value = Fail(Throwable())
+            }
+        }, onError = {
+            _getWishlistCollectionSharingDataResult.value = Fail(it)
+        })
+    }
+
+    fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
+        launchCatchError(block = {
+            val result = updateWishlistCollectionUseCase(updateWishlistCollectionParams)
+            if (result.updateWishlistCollection.status == OK && result.updateWishlistCollection.data.success) {
+                _updateWishlistCollectionResult.value = Success(result.updateWishlistCollection)
+            } else {
+                _updateWishlistCollectionResult.value = Fail(Throwable())
+            }
+        }, onError = {
+            _updateWishlistCollectionResult.value = Fail(it)
+        })
+    }
+
     companion object {
-        private const val WISHLIST_PAGE_NAME = "wishlist"
-        private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
+        private const val WISHLIST_PAGE_NAME = "wlcollection"
+        private const val EMPTY_WISHLIST_PAGE_NAME = "wlcollection_empty"
     }
 }

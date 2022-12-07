@@ -56,9 +56,15 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
-class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private var isEdit: Boolean): BottomSheetUnify(),
+class DiscomBottomSheetRevamp(
+    private var isPinpoint: Boolean = false,
+    private var isEdit: Boolean,
+    private var isGmsAvailable: Boolean
+) : BottomSheetUnify(),
     ZipCodeChipsAdapter.ActionListener,
-    PopularCityAdapter.ActionListener, DiscomContract.View, DiscomAdapterRevamp.ActionListener{
+    PopularCityAdapter.ActionListener,
+    DiscomContract.View,
+    DiscomAdapterRevamp.ActionListener {
 
     @Inject
     lateinit var presenter: DiscomContract.Presenter
@@ -115,15 +121,21 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isEdit) {
-            permissionCheckerHelper = PermissionCheckerHelper()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fusedLocationClient = FusedLocationProviderClient(requireActivity())
+        setCurrentLocationProvider()
         setViewListener()
+    }
+
+    private fun setCurrentLocationProvider() {
+        context?.let {
+            if (isEdit && isGmsAvailable) {
+                fusedLocationClient = FusedLocationProviderClient(it)
+                permissionCheckerHelper = PermissionCheckerHelper()
+            }
+        }
     }
 
     override fun onDetach() {
@@ -178,48 +190,49 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     private fun setupDiscomBottomsheet(viewBinding: BottomsheetDistcrictReccomendationRevampBinding?) {
-        val cityList = resources.getStringArray(R.array.cityList)
-        val chipsLayoutManager = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
-            .setOrientation(ChipsLayoutManager.HORIZONTAL)
-            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-            .build()
+        context?.let {
+            val cityList = it.resources.getStringArray(R.array.cityList)
+            val chipsLayoutManager = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
 
-        chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
-            .setOrientation(ChipsLayoutManager.HORIZONTAL)
-            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-            .build()
+            chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
 
-        viewBinding?.rvChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
+            viewBinding?.rvChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
 
-        popularCityAdapter.cityList = cityList.toMutableList()
+            popularCityAdapter.cityList = cityList.toMutableList()
 
-        viewBinding?.run {
-            rvListDistrict.visibility = View.GONE
-            llZipCode.visibility = View.GONE
-            btnChooseZipcode.visibility = View.GONE
+            viewBinding?.run {
+                rvListDistrict.visibility = View.GONE
+                llZipCode.visibility = View.GONE
+                btnChooseZipcode.visibility = View.GONE
 
-            rvChips.apply {
-                val dist = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
-                layoutManager = chipsLayoutManager
-                adapter = popularCityAdapter
-                addItemDecoration(ChipsItemDecoration(dist))
-            }
+                rvChips.apply {
+                    val dist = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                    layoutManager = chipsLayoutManager
+                    adapter = popularCityAdapter
+                    addItemDecoration(ChipsItemDecoration(dist))
+                }
 
-            rvListDistrict.apply {
-                layoutManager = mLayoutManager
-                adapter = listDistrictAdapter
-            }
+                rvListDistrict.apply {
+                    layoutManager = mLayoutManager
+                    adapter = listDistrictAdapter
+                }
 
-            if (isEdit) {
-                layoutUseCurrentLoc.visibility = View.VISIBLE
-                dividerUseCurrentLocation.visibility = View.VISIBLE
+                if (isEdit && isGmsAvailable) {
+                    layoutUseCurrentLoc.visibility = View.VISIBLE
+                    dividerUseCurrentLocation.visibility = View.VISIBLE
+                }
             }
         }
     }
 
     private fun setViewListener() {
         viewBinding?.searchPageInput?.searchBarTextField?.run {
-
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     if (!isEdit) {
@@ -237,14 +250,14 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                 }
             }
 
-            addTextChangedListener(object: TextWatcher {
+            addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
                     count: Int,
                     after: Int
                 ) {
-                    //no-op
+                    // no-op
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -268,9 +281,8 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-                    //no-op
+                    // no-op
                 }
-
             })
         }
 
@@ -366,7 +378,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     override fun setLoadingState(active: Boolean) {
-        //no-op
+        // no-op
     }
 
     override fun showEmpty() {
@@ -405,8 +417,13 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     override fun showToasterError(message: String) {
         val toaster = Toaster
         viewBinding?.root?.let { v ->
-            toaster.build(v, message, Toaster.LENGTH_SHORT,
-                Toaster.TYPE_ERROR, "").show()
+            toaster.build(
+                v,
+                message,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+                ""
+            ).show()
         }
     }
 
@@ -508,7 +525,9 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     private fun requestPermissionLocation() {
-        permissionCheckerHelper?.checkPermissions(this, getPermissions(),
+        permissionCheckerHelper?.checkPermissions(
+            this,
+            getPermissions(),
             object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
                     if (!AddNewAddressUtils.isGpsEnabled(requireActivity())) {
@@ -526,8 +545,9 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                         getLocation()
                     }
                 }
-
-            }, getString(R.string.rationale_need_location))
+            },
+            getString(R.string.rationale_need_location)
+        )
     }
 
     private fun allPermissionsGranted(): Boolean {
@@ -547,7 +567,9 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
-                    locationCallback, null)
+                    locationCallback,
+                    null
+                )
             }
         }
     }
@@ -560,7 +582,6 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
-
 
     private fun showDialogAskGps() {
         context?.let {
@@ -604,26 +625,36 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                     //  GPS is already enable, callback GPS status through listener
                     isGpsOn = true
                 }
-                .addOnFailureListener(requireActivity(), OnFailureListener { e ->
-                    when ((e as ApiException).statusCode) {
-                        LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                .addOnFailureListener(
+                    requireActivity(),
+                    OnFailureListener { e ->
+                        when ((e as ApiException).statusCode) {
+                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
 
-                            try {
-                                // Show the dialog by calling startResolutionForResult(), and check the
-                                // result in onActivityResult().
-                                val rae = e as ResolvableApiException
-                                startIntentSenderForResult(rae.resolution.intentSender,
-                                    AddressConstants.GPS_REQUEST, null, 0, 0, 0, null)
-                            } catch (sie: IntentSender.SendIntentException) {
-                                sie.printStackTrace()
+                                try {
+                                    // Show the dialog by calling startResolutionForResult(), and check the
+                                    // result in onActivityResult().
+                                    val rae = e as ResolvableApiException
+                                    startIntentSenderForResult(
+                                        rae.resolution.intentSender,
+                                        AddressConstants.GPS_REQUEST,
+                                        null,
+                                        0,
+                                        0,
+                                        0,
+                                        null
+                                    )
+                                } catch (sie: IntentSender.SendIntentException) {
+                                    sie.printStackTrace()
+                                }
+
+                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
-
-                        LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                            val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                         }
                     }
-                })
+                )
         }
         return isGpsOn
     }
@@ -644,7 +675,8 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     private fun getPermissions(): Array<String> {
         return arrayOf(
             PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
+        )
     }
 
     companion object {
@@ -655,6 +687,5 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
         private const val DELAY_MILIS: Long = 200
         private const val LOCATION_REQUEST_INTERVAL = 10000L
         private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
-
     }
 }
