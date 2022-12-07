@@ -156,8 +156,10 @@ class VideoTabFragment :
                 Observer {
                     when (it) {
                         is Success -> onSuccessReminderSet(it.data)
-                        else -> {
-                            showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
+                        is Fail -> {
+                            val errorMsg = it.throwable.message
+                                ?: getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder)
+                            showToast(errorMsg, Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -380,7 +382,6 @@ class VideoTabFragment :
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 playFeedVideoTabViewModel.getPlayData(false, null)
             }
-
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
