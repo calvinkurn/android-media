@@ -16,5 +16,7 @@ data class VoucherConfiguration(
     val isVoucherProduct: Boolean,
     val minPurchase: Long,
     val productIds: List<Long>,
-    val targetBuyer: VoucherTargetBuyer
+    val targetBuyer: VoucherTargetBuyer,
+    val quota: Long = 0,
+    val voucherInformation: VoucherInformation = VoucherInformation()
 ) : Parcelable

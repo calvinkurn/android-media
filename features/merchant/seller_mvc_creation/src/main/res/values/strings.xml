@@ -235,6 +235,8 @@
     <string name="smvc_summary_page_preview_button_text">Lihat Tampilan</string>
     <string name="smvc_summary_page_tnc_text"><![CDATA[Saya menyetujui <font color=#00AA5B><b>Syarat & Ketentuan</b></font> Pembuatan Kupon.]]></string>
     <string name="smvc_summary_page_submit_text">Buat Kupon</string>
+    <string name="smvc_summary_page_deduction_nominal_text">Nominal</string>
+    <string name="smvc_summary_page_deduction_percentage_text">Persentase</string>
     <string name="smvc_edit_label">Ubah</string>
 
 </resources>

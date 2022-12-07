@@ -1,9 +1,13 @@
 package com.tokopedia.mvc.domain.entity
 
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z
+import com.tokopedia.utils.date.toDate
 
 data class VoucherDetailData(
     val voucherId: Long = 0,
@@ -63,6 +67,14 @@ data class VoucherDetailData(
         val parentProductId: Long = 0,
         val chilProductId: List<Long>? = listOf(),
     )
+
+    fun toVoucherInformation() = VoucherInformation(
+        voucherName = voucherName,
+        code = voucherCode,
+        target = if (isPublic.isZero()) VoucherTarget.PRIVATE else VoucherTarget.PUBLIC,
+        startPeriod = voucherStartTime.toDate(YYYY_MM_DD_T_HH_MM_SS_Z),
+        endPeriod = voucherFinishTime.toDate(YYYY_MM_DD_T_HH_MM_SS_Z)
+    )
     
     fun toVoucherConfiguration(): VoucherConfiguration {
         val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
@@ -76,7 +88,9 @@ data class VoucherDetailData(
             isVoucherProduct,
             voucherDiscountAmountMin,
             selectedParentProductIds,
-            targetBuyer
+            targetBuyer,
+            voucherQuota,
+            toVoucherInformation()
         )
     }
 

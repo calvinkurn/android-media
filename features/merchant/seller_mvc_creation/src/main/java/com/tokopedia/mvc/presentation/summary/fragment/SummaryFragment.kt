@@ -10,6 +10,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getPercentFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryBinding
@@ -22,11 +27,16 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherInformation
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.utils.date.DateUtil.DEFAULT_LOCALE
+import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_TIME_FORMAT
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 class SummaryFragment: BaseDaggerFragment() {
@@ -77,16 +87,26 @@ class SummaryFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
-        pageMode
-        configuration
-        voucherId
         binding?.setupView()
         setupObservables()
-        viewModel.aaa()
+        setupPageMode()
+    }
+
+    private fun setupPageMode() {
+        if (pageMode == PageMode.EDIT) {
+            viewModel.setupEditMode(voucherId ?: return)
+        } else {
+            viewModel.setConfiguration(configuration ?: return)
+        }
     }
 
     private fun setupObservables() {
-
+        viewModel.configuration.observe(viewLifecycleOwner) {
+            binding?.layoutSetting?.updatePageData(it)
+        }
+        viewModel.information.observe(viewLifecycleOwner) {
+            binding?.layoutInfo?.updatePageInfo(it)
+        }
     }
 
     private fun SmvcFragmentSummaryBinding.setupView() {
@@ -135,5 +155,49 @@ class SummaryFragment: BaseDaggerFragment() {
 
     private fun SmvcFragmentSummarySubmissionBinding.setupLayoutSubmission() {
         cbTnc.text = MethodChecker.fromHtml(getString(R.string.smvc_summary_page_tnc_text))
+    }
+
+    private fun SmvcVoucherDetailVoucherSettingSectionBinding.updatePageData(
+        configuration: VoucherConfiguration
+    ) {
+        val resources = root.context.resources
+        val promoTypeWordings = resources.getStringArray(R.array.promo_type_items)
+        val promoBuyerWordings = resources.getStringArray(R.array.target_buyer_items)
+        with(configuration) {
+            tpgPromoType.text = promoTypeWordings.getOrNull(promoType.id.dec()).orEmpty()
+            if (benefitType == BenefitType.NOMINAL) {
+                tpgVoucherNominal.text = benefitPercent.getCurrencyFormatted()
+                llVoucherMaxPriceDeduction.gone()
+                tpgVoucherMaxPriceDeduction.text = benefitIdr.getCurrencyFormatted()
+                tpgDeductionType.text = getString(R.string.smvc_summary_page_deduction_nominal_text)
+            } else {
+                tpgVoucherNominal.text = benefitPercent.getPercentFormatted()
+                llVoucherMaxPriceDeduction.show()
+                tpgVoucherMaxPriceDeduction.text = benefitMax.getCurrencyFormatted()
+                tpgDeductionType.text = getString(R.string.smvc_summary_page_deduction_percentage_text)
+            }
+            tpgVoucherMinimumBuy.text = minPurchase.getCurrencyFormatted()
+            tpgVoucherQuota.text = quota.toString()
+            tpgVoucherTargetBuyer.text = promoBuyerWordings.getOrNull(targetBuyer.id).orEmpty()
+            tpgVoucherNominalLabel.text = tpgDeductionType.text.toString() + " " + tpgPromoType.text
+        }
+    }
+
+    private fun SmvcVoucherDetailVoucherInfoSectionBinding.updatePageInfo(
+        information: VoucherInformation
+    ) {
+        val resources = root.context.resources
+        with(information) {
+            val targetItems = resources.getStringArray(R.array.target_items)
+            val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
+            tpgVoucherName.text = voucherName
+            tpgVoucherCode.text = code
+            tpgVoucherTarget.text = targetItems.getOrNull(target.ordinal)
+            llVoucherCode.isVisible = target == VoucherTarget.PRIVATE
+            tpgVoucherStartPeriod.text = formatter.format(startPeriod)
+            tpgVoucherEndPeriod.text = formatter.format(endPeriod)
+        }
+
+
     }
 }

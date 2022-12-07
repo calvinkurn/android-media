@@ -14,7 +14,7 @@ class SummaryActivity: BaseSimpleActivity() {
 
     companion object {
         fun start(
-            context: Context,
+            context: Context?,
             voucherConfiguration: VoucherConfiguration
         ) {
             val bundle = Bundle().apply {
@@ -23,7 +23,7 @@ class SummaryActivity: BaseSimpleActivity() {
             }
             val starter = Intent(context, SummaryActivity::class.java)
                 .putExtras(bundle)
-            context.startActivity(starter)
+            context?.startActivity(starter)
         }
 
         fun buildEditModeIntent(
