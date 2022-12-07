@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
@@ -34,16 +35,16 @@ class DetailEditorActivity : BaseEditorActivity() {
     private var editorParam = EditorParam()
     private var editorModel = EditorUiModel()
 
-    override fun onHeaderActionClick() {}
+    override fun onHeaderActionClick() {
+        if (editorIntent.isToolAddLogo()) {
+            (fragment as DetailEditorFragment).showAddLogoUploadTips()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
-
-        setHeader(
-            getString(getToolEditorText(editorIntent.editorToolType))
-        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -77,6 +78,11 @@ class DetailEditorActivity : BaseEditorActivity() {
             editorParam = it
             viewModel.setEditorParam(it)
         }
+
+        setHeader(
+            getString(getToolEditorText(editorIntent.editorToolType)),
+            rightIcon = if (editorIntent.isToolAddLogo()) IconUnify.INFORMATION else null
+        )
     }
 
     override fun initInjector() {
