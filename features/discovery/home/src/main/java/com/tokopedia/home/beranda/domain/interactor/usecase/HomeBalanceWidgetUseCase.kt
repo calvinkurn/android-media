@@ -4,9 +4,9 @@ import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
@@ -21,12 +21,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class HomeBalanceWidgetUseCase @Inject constructor(
-        private val homeWalletAppRepository: HomeWalletAppRepository,
-        private val homeTokopointsListRepository: HomeTokopointsListRepository,
-        private val userSession: UserSessionInterface,
-        private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
-        private val getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository
-        ) {
+    private val homeWalletAppRepository: HomeWalletAppRepository,
+    private val homeTokopointsListRepository: HomeTokopointsListRepository,
+    private val userSession: UserSessionInterface,
+    private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
+    private val getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository
+) {
 
     companion object {
         const val error_unable_to_parse_wallet = "Unable to parse wallet, wallet app list is empty"
@@ -111,7 +111,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
     private fun getHomeBalanceModel(currentHeaderDataModel: HomeHeaderDataModel): HomeBalanceModel {
         return HomeBalanceModel().apply {
             val currentHomeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel
-                    ?: HomeBalanceModel()
+                ?: HomeBalanceModel()
             balanceDrawerItemModels = currentHomeBalanceModel.balanceDrawerItemModels
         }
     }
@@ -126,13 +126,14 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
         homeBalanceModel = getTokopointData(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
-                headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                    homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS,
-                        balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions
-                            ?: DEFAULT_BALANCE_POSITION
-                    ),
-                        isUserLogin = userSession.isLoggedIn,
-                )
+            headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                homeBalanceModel = homeBalanceModel.copy(
+                    status = HomeBalanceModel.STATUS_SUCCESS,
+                    balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions
+                        ?: DEFAULT_BALANCE_POSITION
+                ),
+                isUserLogin = userSession.isLoggedIn
+            )
         )
     }
 
@@ -147,7 +148,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
             headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS,
+                homeBalanceModel = homeBalanceModel.copy(
+                    status = HomeBalanceModel.STATUS_SUCCESS,
                     balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions
                         ?: DEFAULT_BALANCE_POSITION
                 ),
@@ -157,13 +159,21 @@ class HomeBalanceWidgetUseCase @Inject constructor(
     }
 
     fun onGetBalanceWidgetLoadingState(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
-        if (!userSession.isLoggedIn) return currentHeaderDataModel
-        return currentHeaderDataModel.copy(
-            headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                isUserLogin = userSession.isLoggedIn,
-                homeBalanceModel = HomeBalanceModel(balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions?: DEFAULT_BALANCE_POSITION)
+        return if (!userSession.isLoggedIn) {
+            currentHeaderDataModel
+        } else if (currentHeaderDataModel.headerDataModel?.homeBalanceModel?.status == HomeBalanceModel.STATUS_LOADING) {
+            currentHeaderDataModel.copy(
+                headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                    isUserLogin = userSession.isLoggedIn,
+                    homeBalanceModel = HomeBalanceModel(
+                        balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions
+                            ?: DEFAULT_BALANCE_POSITION
+                    )
+                )
             )
-        )
+        } else {
+            currentHeaderDataModel
+        }
     }
 
     private suspend fun getTokopointData(
@@ -218,9 +228,9 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                     )
                 } else {
                     HomeServerLogger.logWarning(
-                            type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
-                            throwable = MessageErrorException(error_unable_to_parse_wallet),
-                            reason = error_unable_to_parse_wallet
+                        type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
+                        throwable = MessageErrorException(error_unable_to_parse_wallet),
+                        reason = error_unable_to_parse_wallet
                     )
                     throw IllegalStateException(error_unable_to_parse_wallet)
                 }
