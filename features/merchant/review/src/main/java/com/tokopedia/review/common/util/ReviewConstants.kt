@@ -144,6 +144,10 @@ object ReviewConstants {
     const val REVIEW_CREDIBILITY_PLT_RENDER_METRICS = "review_credibility_trace"
 
     const val TEMP_IMAGE_EXTENSION = ".0"
+    const val BAD_RATING_OTHER_ID = "6"
+    const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
+    const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
+    const val MEDIA_UPLOAD_ERROR_MESSAGE = "Error when uploading %s. Cause: %s"
 }
 
 

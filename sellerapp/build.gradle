@@ -45,8 +45,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 200000123;
-        defaultVersionName = "2.00.123";
+        defaultVersionCode = 1422131008;
+        defaultVersionName = "2.133-test";
     }
 
     packagingOptions {

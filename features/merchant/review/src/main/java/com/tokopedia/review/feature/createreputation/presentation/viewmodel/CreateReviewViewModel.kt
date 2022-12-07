@@ -21,6 +21,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.review.R
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.extension.combine
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -126,8 +127,6 @@ class CreateReviewViewModel @Inject constructor(
         private const val UPDATE_POEM_INTERVAL = 1000L
         private const val GOOD_RATING_THRESHOLD = 2
         private const val REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS = 1L
-        private const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
-        private const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
 
         private const val SAVED_STATE_RATING = "savedStateRating"
         private const val SAVED_STATE_REVIEW_TEXT = "savedStateReviewText"
@@ -154,8 +153,6 @@ class CreateReviewViewModel @Inject constructor(
         private const val CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun"
 
         private const val REVIEW_INSPIRATION_ENABLED = "experiment_variant"
-
-        private const val MEDIA_UPLOAD_ERROR_MESSAGE = "Error when uploading %s. Cause: %s"
     }
 
     // region state that need to be saved and restored
@@ -400,11 +397,12 @@ class CreateReviewViewModel @Inject constructor(
         mediaUploadJobs: MediaUploadJobMap
     ): List<CreateReviewMediaUiModel> {
         return CreateReviewMapper.mapMediaItems(
-            mediaUris,
-            mediaUploadResults,
-            mediaUploadJobs,
-            mediaItems.value,
-            uploadBatchNumber
+            reviewItemMediaUris = mediaUris,
+            reviewItemsMediaUploadResults = mediaUploadResults,
+            reviewItemMediaUploadJobs = mediaUploadJobs,
+            existingMediaItems = mediaItems.value,
+            uploadBatchNumber = uploadBatchNumber,
+            showLargeAddMediaItem = true
         )
     }
 
@@ -699,7 +697,7 @@ class CreateReviewViewModel @Inject constructor(
                 val concatenatedErrorMessage = mediaItems.filter {
                     it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
                 }.joinToString("|") {
-                    String.format(MEDIA_UPLOAD_ERROR_MESSAGE, it.uri, it.message)
+                    String.format(ReviewConstants.MEDIA_UPLOAD_ERROR_MESSAGE, it.uri, it.message)
                 }
                 val errorCode = ErrorHandler.getErrorMessagePair(
                     context = null,
@@ -715,7 +713,8 @@ class CreateReviewViewModel @Inject constructor(
                     CreateReviewMediaPickerUiState.FailedUpload(
                         failedOccurrenceCount = currentMediaPickerUiState.failedOccurrenceCount + 1,
                         mediaItems = mediaItems,
-                        errorCode = errorCode
+                        errorCode = errorCode,
+                        shouldQueueToaster = false
                     )
                 }
             } else {
@@ -1289,7 +1288,7 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private fun getUploadSourceId(uri: String): String {
-        return if (isVideoFormat(uri)) CREATE_REVIEW_VIDEO_SOURCE_ID else CREATE_REVIEW_IMAGE_SOURCE_ID
+        return if (isVideoFormat(uri)) ReviewConstants.CREATE_REVIEW_VIDEO_SOURCE_ID else ReviewConstants.CREATE_REVIEW_IMAGE_SOURCE_ID
     }
 
     private fun getErrorCode(throwable: Throwable): String {

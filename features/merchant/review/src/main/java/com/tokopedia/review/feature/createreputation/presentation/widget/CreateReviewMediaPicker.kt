@@ -108,30 +108,35 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         binding.layoutMediaPickerWaitingState.tvCreateReviewMediaPickerPoem.text = waitingText
     }
 
-    fun updateUi(uiState: CreateReviewMediaPickerUiState, continuation: Continuation<Unit>) {
+    fun updateUi(uiState: CreateReviewMediaPickerUiState, continuation: Continuation<Unit>? = null) {
         when(uiState) {
             is CreateReviewMediaPickerUiState.Loading -> {
                 showLoading()
                 animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
+                    continuation?.resume(Unit)
                 })
             }
             is CreateReviewMediaPickerUiState.Uploading -> {
                 showMediaPickerUploadingState(uiState)
                 animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
+                    continuation?.resume(Unit)
                 })
             }
             is CreateReviewMediaPickerUiState.SuccessUpload -> {
                 showMediaPickerSuccessUploadState(uiState)
                 animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
+                    continuation?.resume(Unit)
                 })
             }
             is CreateReviewMediaPickerUiState.FailedUpload -> {
                 showMediaPickerFailedUploadState(uiState)
                 animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
+                    continuation?.resume(Unit)
+                })
+            }
+            CreateReviewMediaPickerUiState.Hidden -> {
+                animateHide(onAnimationEnd = {
+                    continuation?.resume(Unit)
                 })
             }
         }

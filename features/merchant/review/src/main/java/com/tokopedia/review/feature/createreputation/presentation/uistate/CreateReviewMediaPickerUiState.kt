@@ -17,6 +17,11 @@ sealed interface CreateReviewMediaPickerUiState {
             get() = Int.ZERO
     }
 
+    object Hidden : CreateReviewMediaPickerUiState {
+        override val failedOccurrenceCount: Int
+            get() = Int.ZERO
+    }
+
     data class Uploading(
         override val failedOccurrenceCount: Int,
         override val mediaItems: List<CreateReviewMediaUiModel>,
@@ -33,6 +38,7 @@ sealed interface CreateReviewMediaPickerUiState {
     data class FailedUpload(
         override val failedOccurrenceCount: Int,
         override val mediaItems: List<CreateReviewMediaUiModel>,
-        val errorCode: String
+        val errorCode: String,
+        val shouldQueueToaster: Boolean
     ) : CreateReviewMediaPickerUiState, HasMedia
 }

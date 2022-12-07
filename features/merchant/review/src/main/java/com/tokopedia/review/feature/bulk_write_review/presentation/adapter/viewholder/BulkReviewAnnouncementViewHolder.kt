@@ -1,0 +1,19 @@
+package com.tokopedia.review.feature.bulk_write_review.presentation.adapter.viewholder
+
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.review.R
+import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewAnnouncementUiModel
+
+class BulkReviewAnnouncementViewHolder(
+    itemView: View
+) : AbstractViewHolder<BulkReviewAnnouncementUiModel>(itemView) {
+
+    companion object {
+        val LAYOUT = R.layout.item_bulk_review_announcement_card
+    }
+
+    override fun bind(element: BulkReviewAnnouncementUiModel) {
+        // noop
+    }
+}
