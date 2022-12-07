@@ -47,7 +47,6 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.unifyprinciples.R as RUnify
 
-
 /**
  * @author by devarafikry on 11/28/20.
  */
@@ -81,7 +80,7 @@ class BannerComponentViewHolder(itemView: View,
 
     private fun autoScrollLauncher() = launch(coroutineContext) {
         while (autoScrollState == STATE_RUNNING) {
-            delay(scrollTransitionDuration)
+            delay(scrollTransitionDuration + FLING_DURATION)
             autoScrollCoroutine()
         }
     }
