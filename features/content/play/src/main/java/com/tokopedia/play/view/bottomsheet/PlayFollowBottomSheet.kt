@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -22,7 +21,6 @@ import com.tokopedia.play.view.uimodel.event.FailedFollow
 import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -37,13 +35,7 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
     private val binding: PlayFollowBottomSheetBinding
         get() = _binding!!
 
-    private var _headerBinding: BottomSheetHeaderBinding? = null
-    private val headerBinding: BottomSheetHeaderBinding
-        get() = _headerBinding!!
-
     private lateinit var playViewModel: PlayViewModel
-
-    private val impressHolder = ImpressHolder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +45,6 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
 
     private fun setupSheet () {
         _binding = PlayFollowBottomSheetBinding.inflate(LayoutInflater.from(requireContext()))
-        _headerBinding = BottomSheetHeaderBinding.bind(binding.root)
         setChild(binding.root)
 
         clearContentPadding = true
@@ -102,12 +93,17 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
     private fun setupView() {
         analytic.impressFollowPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
 
-        headerBinding.ivSheetClose.setOnClickListener {
-            analytic.clickDismissFollowPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
+        binding.followHeader.closeListener = View.OnClickListener {
+            analytic.clickDismissFollowPopUp(
+                playViewModel.channelId,
+                playViewModel.channelType.value,
+                playViewModel.partnerType,
+                playViewModel.partnerId.toString()
+            )
             dismiss()
         }
 
-        headerBinding.tvSheetTitle.text = getString(R.string.play_follow_popup_header_title)
+        binding.followHeader.title = getString(R.string.play_follow_popup_header_title)
 
         val partnerInfo = playViewModel.latestCompleteChannelData.partnerInfo
 
@@ -149,7 +145,6 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
         super.onDestroyView()
 
         _binding = null
-        _headerBinding = null
     }
 
     companion object {
