@@ -152,7 +152,7 @@ class HotelHomepageActivityTest {
             Thread.sleep(1000)
         } else {
             Thread.sleep(1000)
-            onView(withId(R.id.banner_hotel_homepage_promo)).check(matches(org.hamcrest.Matchers.not(isDisplayed())))
+            onView(withId(R.id.banner_hotel_homepage_promo)).check(matches(CoreMatchers.not(isDisplayed())))
         }
     }
 

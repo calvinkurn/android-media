@@ -24,6 +24,7 @@ import com.tokopedia.hotel.cancellation.presentation.activity.mock.HotelCancella
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf
 import org.junit.Assert
@@ -93,7 +94,7 @@ class HotelCancellationActivityTest {
     }
 
     private fun withTagStringValue(tagStringValue: String): Matcher<View> {
-        return withTagValue(Matchers.`is`(tagStringValue))
+        return withTagValue(CoreMatchers.`is`(tagStringValue))
     }
 
     private fun forceClick(): ViewAction? {
