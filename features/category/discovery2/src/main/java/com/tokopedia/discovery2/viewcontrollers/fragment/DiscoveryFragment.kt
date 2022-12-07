@@ -1639,7 +1639,10 @@ class DiscoveryFragment :
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
-                        sendOpenScreenAnalytics(it.data.identifier, it.data.additionalInfo)
+                        sendOpenScreenAnalytics(
+                            it.data.identifier,
+                            it.data.additionalInfo,
+                            it.data.isAffiliate)
                     }
                     else -> sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
                 }
@@ -1654,14 +1657,30 @@ class DiscoveryFragment :
         addMiniCartToPage()
     }
 
-    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
+    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null, isAffiliate: Boolean = false) {
         val campaignId = arguments?.getString(CAMPAIGN_ID, "") ?: ""
         val variantId = arguments?.getString(VARIANT_ID, "") ?: ""
         val shopId = arguments?.getString(SHOP_ID, "") ?: ""
+        val affiliateUID = arguments?.getString(AFFILIATE_UNIQUE_ID, "") ?: ""
+        val affiliateChannelID = if (isAffiliate && affiliateUID.isNotEmpty()) {
+            val trackerID = discoveryViewModel.getTrackerIDForAffiliate()
+            "$affiliateUID - $trackerID - $AFFILIATE"
+        } else
+            ""
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(), campaignId, variantId, shopId)
+            getDiscoveryAnalytics().trackOpenScreen(
+                discoveryViewModel.pageIdentifier,
+                additionalInfo,
+                isUserLoggedIn(),
+                ParamsForOpenScreen(campaignId, variantId, shopId, affiliateChannelID)
+            )
         } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(), campaignId, variantId, shopId)
+            getDiscoveryAnalytics().trackOpenScreen(
+                identifier,
+                additionalInfo,
+                isUserLoggedIn(),
+                ParamsForOpenScreen(campaignId, variantId, shopId, affiliateChannelID)
+            )
         }
         openScreenStatus = true
     }

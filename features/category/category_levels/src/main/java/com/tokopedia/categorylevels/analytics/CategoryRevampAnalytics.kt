@@ -6,6 +6,7 @@ import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -306,7 +307,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         }
     }
 
-    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String, shopID: String) {
+    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean, paramsForOpenScreen: ParamsForOpenScreen) {
         additionalInfo?.categoryData?.let {
             categoryUrl = it[KEY_URL] ?: ""
             if(it[KEY_REDIRECTION_URL].isNullOrEmpty())

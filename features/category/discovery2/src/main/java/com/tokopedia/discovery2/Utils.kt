@@ -468,5 +468,9 @@ class Utils {
                 (selectedSort?.isNotEmpty() == true ||
                     selectedFilters?.isNotEmpty() == true)
         }
+
+        fun generateRandomUUID(): String {
+            return UUID.randomUUID().toString()
+        }
     }
 }

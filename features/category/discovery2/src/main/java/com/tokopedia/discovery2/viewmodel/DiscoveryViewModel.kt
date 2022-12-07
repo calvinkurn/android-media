@@ -9,6 +9,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -16,12 +17,15 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -132,6 +136,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var campaignCode: String = ""
     private var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
     var isAffiliateInitialized = false
+    private var randomUUIDAffiliate: String? = null
     private var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject
@@ -178,13 +183,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     ) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = discoATCRequestParams.productId,
-            shopId = discoATCRequestParams.shopId?:"",
-            quantity = discoATCRequestParams.quantity
+            shopId = discoATCRequestParams.shopId ?: "",
+            quantity = discoATCRequestParams.quantity,
+            atcExternalSource = if (isAffiliateInitialized)
+                AtcFromExternalSource.ATC_FROM_DISCOVERY
+            else
+                AtcFromExternalSource.ATC_FROM_OTHERS
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             _miniCartAdd.postValue(Success(DiscoveryAddToCartDataModel(it, discoATCRequestParams)))
-            handleATCAffiliate()
+            handleATCAffiliate(discoATCRequestParams)
         }, {
             _miniCartAdd.postValue(Fail(it))
             _miniCartOperationFailed.postValue(
@@ -196,19 +205,38 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         })
     }
 
-    private fun handleATCAffiliate() {
-        launchCatchError(
-            block = {
-                if (isAffiliateInitialized) {
-//                          Todo:: Call for DirectATC case.
-//                val pageDetail = AffiliatePageDetail(source = AffiliateSdkPageSource.Discovery())
-//                affiliateCookieHelper.initCookie(affiliatePageDetail = pageDetail)
-                }
-            },
-            onError = {
+    private fun handleATCAffiliate(discoATCRequestParams: DiscoATCRequestParams) {
+        if (isAffiliateInitialized) {
+            var affiliateUID = ""
+            var affiliateChannel = ""
+            discoComponentQuery?.let {
+                affiliateUID = it[AFFILIATE_UNIQUE_ID] ?: ""
+                affiliateChannel = it[CHANNEL] ?: ""
+            }
+            val productInfo =
+                AffiliateSdkProductInfo(
+                    discoATCRequestParams.requestingComponent.data?.firstOrNull()?.categoryDeptId
+                        ?: "", false, discoATCRequestParams.quantity
+                )
+            val pageDetail = AffiliatePageDetail(
+                source = AffiliateSdkPageSource.DirectATC(
+                    AffiliateAtcSource.DISCOVERY_PAGE,
+                    discoATCRequestParams.shopId,
+                    productInfo
+                ),
+                pageName = pageIdentifier
+            )
+            launchCatchError(block = {
+                affiliateCookieHelper.initCookie(
+                    affiliateUUID = affiliateUID,
+                    affiliateChannel = affiliateChannel,
+                    affiliatePageDetail = pageDetail
+                )
+            }, onError = {
 
             }
-        )
+            )
+        }
     }
 
     private fun updateItemCart(
@@ -571,7 +599,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         )
     }
 
-    //      Todo:: Where will get the values for this function and what will be the default values ??
     fun initAffiliateSDK() {
         isAffiliateInitialized = true
         var affiliateUID = ""
@@ -580,9 +607,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             affiliateUID = it[AFFILIATE_UNIQUE_ID] ?: ""
             affiliateChannel = it[CHANNEL] ?: ""
         }
-//            What is required for pageName
-        val pageDetail = AffiliatePageDetail(source = AffiliateSdkPageSource.Discovery())
-//            Is uuid required ?? Ask Hilman
+        val pageDetail = AffiliatePageDetail(
+            source = AffiliateSdkPageSource.Discovery(),
+            pageName = pageIdentifier
+        )
         launchCatchError(block = {
             affiliateCookieHelper.initCookie(
                 affiliateUUID = affiliateUID,
@@ -590,15 +618,22 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 affiliatePageDetail = pageDetail
             )
         }, onError = {
-//            What to do in case of error.
+
         }
         )
     }
 
     fun createAffiliateLink(applink: String): String {
         return if (isAffiliateInitialized)
-            affiliateCookieHelper.createAffiliateLink(applink)
+            affiliateCookieHelper.createAffiliateLink(applink, getTrackerIDForAffiliate())
         else
             applink
+    }
+
+    fun getTrackerIDForAffiliate(): String {
+        if(randomUUIDAffiliate == null){
+            randomUUIDAffiliate = Utils.generateRandomUUID()
+        }
+        return randomUUIDAffiliate ?: ""
     }
 }
