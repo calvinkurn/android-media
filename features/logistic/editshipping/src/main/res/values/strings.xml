@@ -94,5 +94,5 @@
     <string name="gocar_info_bottomsheet_title"><![CDATA[GoSend Car & GoSend Bike]]></string>
     <string name="gocar_instan_title_coachmark">Sekarang, kamu bisa pakai motor atau mobil untuk kurir instan GoSend!</string>
     <string name="gocar_instan_description_coachmark">Aktifkan layanan ini untuk mengaktifkan kurir motor / mobil instan GoSend (maks. 150kg).</string>
-    <string name="maps_preview_unavailable_ticker_desc">Untuk sementara, pengguna HUAWEI belum bisa pinpoint. Tenang, kamu bisa atur di perangkat lain, pakai alamat lain yang sudah pinpoint, atau lanjutkan transaksi dengan kurir selain instan/same day.</string>
+    <string name="maps_preview_unavailable_ticker_desc">Yaah, perangkat kamu belum bisa pinpoint. Tenang, kamu bisa atur di perangkat lain, pakai alamat lain yang sudah pinpoint, atau lanjutkan transaksi dengan kurir selain instan/same day.</string>
 </resources>
