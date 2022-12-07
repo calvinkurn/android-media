@@ -46,6 +46,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_49
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_79
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_82
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_84
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_90
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_INDEX
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS
@@ -379,7 +380,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     productCategory = ""
                 ).apply {
                     putString(KEY_DIMENSION_40, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
-                    putString(KEY_DIMENSION_82, channelId)
+                    putString(KEY_DIMENSION_84, channelId)
                 }
             ),
             productId = recommendationItem.productCardModel.productId,
@@ -406,7 +407,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 productCategory = ""
             ).apply {
                 putString(KEY_DIMENSION_40, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
-                putString(KEY_DIMENSION_82, channelId)
+                putString(KEY_DIMENSION_84, channelId)
             }
         )
         val dataLayer = getEcommerceDataLayer(
@@ -501,7 +502,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName"
             )
             putString(KEY_DIMENSION_45, cartId)
-            putString(KEY_DIMENSION_82, channelId)
+            putString(KEY_DIMENSION_84, channelId)
             putString(KEY_QUANTITY, quantity)
             putString(KEY_SHOP_ID, recommendationItem.shopId)
             putString(KEY_SHOP_NAME, recommendationItem.shopName)
