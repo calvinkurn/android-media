@@ -8,11 +8,11 @@ object MockResponse {
               "pushnotif": [
                 {
                   "section": "Aktivitas",
-                  "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/aktivitas.png",
+                  "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/aktivitas.png",
                   "list_settings": [
                     {
                       "name": "Chat Promosi dari Penjual",
-                      "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/chat.png",
+                      "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/chat.png",
                       "key": "chat_promosi_dari_penjual",
                       "status": true,
                       "description": "",
@@ -20,7 +20,7 @@ object MockResponse {
                     },
                     {
                       "name": "Feed",
-                      "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/feed.png",
+                      "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/feed.png",
                       "key": "aktivitas_feed",
                       "status": true,
                       "description": "",
@@ -28,7 +28,7 @@ object MockResponse {
                     },
                     {
                       "name": "Diskusi Produk",
-                      "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/diskusi.png",
+                      "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/diskusi.png",
                       "key": "diskusi_produk",
                       "status": true,
                       "description": "",
@@ -36,7 +36,7 @@ object MockResponse {
                     },
                     {
                       "name": "Emas",
-                      "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/emas.png",
+                      "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/emas.png",
                       "key": "emas",
                       "status": true,
                       "description": "",
@@ -44,7 +44,7 @@ object MockResponse {
                     },
                     {
                       "name": "TokoMember",
-                      "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/toko_member.png",
+                      "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/toko_member.png",
                       "key": "toko_member",
                       "status": true,
                       "description": "",
@@ -52,7 +52,7 @@ object MockResponse {
                     },
                     {
                       "name": "Games",
-                      "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/games.png",
+                      "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/games.png",
                       "key": "games",
                       "status": true,
                       "description": "",
@@ -62,11 +62,11 @@ object MockResponse {
                 },
                 {
                   "section": "Promo",
-                  "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/promo.png",
+                  "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/promo.png",
                   "list_settings": [
                     {
                       "name": "Rekomendasi Untukmu",
-                      "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/produk.png",
+                      "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/produk.png",
                       "key": "promo",
                       "status": true,
                       "description": "Dapatkan info promosi terkini di Tokopedia",

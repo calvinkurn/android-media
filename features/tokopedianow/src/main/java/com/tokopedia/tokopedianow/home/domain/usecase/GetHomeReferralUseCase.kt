@@ -18,7 +18,7 @@ class GetHomeReferralUseCase @Inject constructor(
     }
 
     suspend fun execute(slug: String): HomeReferralDataModel {
-        return if(userSession.isLoggedIn) {
+        return if (userSession.isLoggedIn) {
             val response = validateReferralUserUseCase.execute(slug)
             if (response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
                 val status = response.gamiReferralValidateUser.status
@@ -30,7 +30,12 @@ class GetHomeReferralUseCase @Inject constructor(
                     getReferralReceiver(slug, status)
                 }
             } else {
-                HomeReferralDataModel(isEligible = false)
+                return HomeReferralDataModel(
+                    userStatus = "2",
+                    maxReward = "100",
+                    isSender = false,
+                    isEligible = false
+                )
             }
         } else {
             HomeReferralDataModel(isEligible = false)
@@ -41,8 +46,9 @@ class GetHomeReferralUseCase @Inject constructor(
         val response = getReferralSenderHomeUseCase.execute(slug)
         val gamiReferralSenderHome = response.gamiReferralSenderHome
 
-        if(gamiReferralSenderHome.resultStatus.code == SUCCESS_CODE) {
+        if (gamiReferralSenderHome.resultStatus.code == SUCCESS_CODE) {
             val metaData = gamiReferralSenderHome.sharingMetaData
+            val action = gamiReferralSenderHome.actionButton
             val reward = gamiReferralSenderHome.reward
             return HomeReferralDataModel(
                 ogImage = metaData.ogImage,
@@ -53,8 +59,13 @@ class GetHomeReferralUseCase @Inject constructor(
                 userStatus = status.toString(),
                 maxReward = reward.maxReward,
                 isSender = true,
-                isEligible = true
-            )
+                isEligible = true,
+                type = action.type,
+                applink = action.appLink,
+                url = action.url,
+                textButton = action.text,
+
+                )
         } else {
             throw MessageErrorException(gamiReferralSenderHome.resultStatus.reason)
         }
@@ -64,13 +75,14 @@ class GetHomeReferralUseCase @Inject constructor(
         val response = getReferralReceiverHomeUseCase.execute(slug)
         val gamiReferralReceiverHome = response.gamiReferralReceiverHome
 
-        if(gamiReferralReceiverHome.resultStatus.code == SUCCESS_CODE) {
+        if (gamiReferralReceiverHome.resultStatus.code == SUCCESS_CODE) {
             val reward = gamiReferralReceiverHome.reward
             return HomeReferralDataModel(
                 userStatus = status.toString(),
                 maxReward = reward.maxReward,
                 isSender = false,
-                isEligible = true
+                isEligible = true,
+                ogDescription = gamiReferralReceiverHome.benefits.firstOrNull()?.description ?: ""
             )
         } else {
             throw MessageErrorException(gamiReferralReceiverHome.resultStatus.reason)

@@ -709,6 +709,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
+    fun setCustomBackButton(icon: Int = IconUnify.ARROW_BACK, color: Int) {
+        navIconBack.setImage(newIconId = icon,
+                newLightEnable = color,
+                newLightDisable = color,
+                newDarkDisable = color,
+                newDarkEnable = color)
+    }
+
     private fun setBackButtonColorBasedOnTheme() {
         when (backType) {
             BACK_TYPE_CLOSE -> {

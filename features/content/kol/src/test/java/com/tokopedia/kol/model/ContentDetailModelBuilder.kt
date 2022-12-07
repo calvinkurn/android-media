@@ -2,6 +2,7 @@ package com.tokopedia.kol.model
 
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
@@ -35,6 +36,22 @@ class ContentDetailModelBuilder {
         rowNumber = rowNumber,
         action = followAction,
     )
+
+    fun getUserFollowUnfollowModel(
+        isFollow: Boolean,
+        currentPosition: Int,
+    ) = UGCFollowUnfollowModel(
+        isFollow = isFollow,
+        currentPosition = currentPosition
+    )
+
+    fun buildMutationSuccess(
+        message: String = "Yeay",
+    ) = MutationUiModel.Success(message)
+
+    fun buildMutationError(
+        message: String = "Terjadi kesalahan",
+    ) = MutationUiModel.Error(message)
 
     fun getVisitContentModel(rowNumber: Int = 0) = VisitContentModel(rowNumber)
 

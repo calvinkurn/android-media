@@ -42,6 +42,10 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             this.finish()
         }
         super.onCreate(savedInstanceState)
+        setPageTitle()
+    }
+
+    private fun setPageTitle() {
         updateTitle(getString(R.string.epharmacy_upload_title))
     }
 
@@ -54,6 +58,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
         extractCheckoutId()
         extractSource()
         extractEntryPoint()
+
         return UploadPrescriptionFragment.newInstance(Bundle().apply {
             putLong(EXTRA_ORDER_ID_LONG, orderId)
             putString(EXTRA_CHECKOUT_ID_STRING, checkoutId)

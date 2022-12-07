@@ -6,7 +6,9 @@ import android.os.Build
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 
 /**
  * Created By @ilhamsuaib on 2020-02-28
@@ -81,4 +83,13 @@ fun Activity.getIntIntentExtra(key: String, defValue: Int): Lazy<Int> {
     return lazy {
         intent?.getIntExtra(key, defValue) ?: defValue
     }
+}
+
+
+fun Fragment.showToast(message: Int) {
+    showToast(context?.getString(message))
+}
+
+fun Fragment.showToast(message: String?) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

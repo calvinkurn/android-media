@@ -12,8 +12,8 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetShopFeaturedProductUseCase @Inject constructor(
-        private val gqlUseCase: MultiRequestGraphqlUseCase
-): UseCase<List<ShopFeaturedProduct>>() {
+    private val gqlUseCase: MultiRequestGraphqlUseCase
+) : UseCase<List<ShopFeaturedProduct>>() {
 
     private val query = """
             query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!,${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String){              
@@ -55,33 +55,35 @@ class GetShopFeaturedProductUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+    """.trimIndent()
 
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): List<ShopFeaturedProduct> {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CLOUD_THEN_CACHE).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+        )
 
         val gqlRequest = GraphqlRequest(query, ShopFeaturedProduct.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopFeaturedProduct.Response::class.java)
 
-        if (error == null || error.isEmpty()){
+        if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ShopFeaturedProduct.Response>(ShopFeaturedProduct.Response::class.java)
-                    .shopFeaturedProductList.data
+                .shopFeaturedProductList.data
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
     }
 
-    fun clearCache(){
+    fun clearCache() {
         gqlUseCase.clearCache()
     }
 
-    companion object{
+    companion object {
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_USER_ID = "userID"
         private const val KEY_DISTRICT_ID = "districtId"
@@ -91,14 +93,14 @@ class GetShopFeaturedProductUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(
-                params: ShopFeaturedProductParams
+            params: ShopFeaturedProductParams
         ): Map<String, Any> = mapOf(
-                PARAM_SHOP_ID to params.shopId.toIntOrZero(),
-                PARAM_USER_ID to params.userId.toIntOrZero(),
-                KEY_DISTRICT_ID to params.districtId,
-                KEY_CITY_ID to params.cityId,
-                KEY_LATITUDE to params.latitude,
-                KEY_LONGITUDE to params.longitude
+            PARAM_SHOP_ID to params.shopId.toIntOrZero(),
+            PARAM_USER_ID to params.userId.toIntOrZero(),
+            KEY_DISTRICT_ID to params.districtId,
+            KEY_CITY_ID to params.cityId,
+            KEY_LATITUDE to params.latitude,
+            KEY_LONGITUDE to params.longitude
         )
     }
 }
