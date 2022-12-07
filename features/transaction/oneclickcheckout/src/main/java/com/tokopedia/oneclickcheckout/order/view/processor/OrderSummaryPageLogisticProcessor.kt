@@ -572,7 +572,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             // fallback if spId from cart is ui-hidden
             selectedCourier =
                 shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
-                    ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
+                    ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
         }
         return selectedCourier
     }
