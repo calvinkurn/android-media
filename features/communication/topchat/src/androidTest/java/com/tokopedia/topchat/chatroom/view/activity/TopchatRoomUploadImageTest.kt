@@ -24,7 +24,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers
+import org.hamcrest.number.OrderingComparison
 import org.junit.After
 import org.junit.Test
 
@@ -93,7 +93,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
         assertImageContainerAtPosition(1, matches(isDisplayed()))
-        onView(withId(R.id.recycler_view_chatroom)).check(withItemCount(Matchers.greaterThan(count)))
+        onView(withId(R.id.recycler_view_chatroom)).check(withItemCount(OrderingComparison.greaterThan(count)))
     }
 
     @Test
