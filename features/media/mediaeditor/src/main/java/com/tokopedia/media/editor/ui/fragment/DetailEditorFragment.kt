@@ -319,7 +319,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onUpload() {
-        addLogoComponent.bottomSheet().show(childFragmentManager, bottomSheetTag)
+        showAddLogoUploadTips()
     }
 
     override fun onLoadFailed() {
@@ -1030,6 +1030,10 @@ class DetailEditorFragment @Inject constructor(
         }
 
         return editHistory
+    }
+
+    fun showAddLogoUploadTips() {
+        addLogoComponent.bottomSheet().show(childFragmentManager, bottomSheetTag)
     }
 
     private fun removeBgConnectionToast(ctaAction: () -> Unit): Snackbar? {
