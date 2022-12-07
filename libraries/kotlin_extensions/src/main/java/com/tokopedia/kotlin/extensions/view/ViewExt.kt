@@ -419,3 +419,9 @@ fun View?.generateBackgroundWithShadow(@ColorRes backgroundColor: Int,
 
     return drawable
 }
+
+fun View.setLayoutHeight(height: Int) {
+    if (layoutParams.height == height) return
+
+    layoutParams.height = height
+}
