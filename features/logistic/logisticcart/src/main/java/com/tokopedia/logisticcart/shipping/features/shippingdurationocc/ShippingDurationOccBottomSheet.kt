@@ -51,7 +51,7 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
     override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
         var flagNeedToSetPinpoint = false
         var selectedServiceId = 0
-        var selectedShippingCourierUiModel = shippingCourierUiModelList.firstOrNull { it.productData.error?.errorMessage?.isEmpty() ?: true } ?: shippingCourierUiModelList.first()
+        var selectedShippingCourierUiModel = shippingCourierUiModelList.firstOrNull { it.productData.error?.errorMessage?.isEmpty() != false } ?: shippingCourierUiModelList.first()
         for (shippingCourierUiModel in shippingCourierUiModelList) {
             val recommend = isRecommend(shippingCourierUiModel, serviceData)
             if (recommend) {
