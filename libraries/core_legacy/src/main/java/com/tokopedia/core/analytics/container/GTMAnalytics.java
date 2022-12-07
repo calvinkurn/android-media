@@ -64,6 +64,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import rx.Observable;
@@ -123,6 +124,22 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String EMBRACE_EVENT_NAME = "eventName";
     private static final String EMBRACE_EVENT_ACTION = "eventAction";
     private static final String EMBRACE_EVENT_LABEL = "eventLabel";
+
+    private static String UTM_SOURCE_HOLDER = "";
+    private static String UTM_MEDIUM_HOLDER = "";
+    private static String UTM_CAMPAIGN_HOLDER = "";
+
+    public static void setUTMParamsForSession(Map<String, Object> maps){
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
+            UTM_SOURCE_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_SOURCE)).toString();
+        }
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null) {
+            UTM_MEDIUM_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_MEDIUM)).toString();
+        }
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null) {
+            UTM_CAMPAIGN_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN)).toString();
+        }
+    }
 
     public GTMAnalytics(Context context) {
         super(context);
@@ -1428,6 +1445,9 @@ public class GTMAnalytics extends ContextAnalytics {
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
+                    it.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+                    it.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+                    it.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
                     pushIris("", it);
                     return true;
                 })
