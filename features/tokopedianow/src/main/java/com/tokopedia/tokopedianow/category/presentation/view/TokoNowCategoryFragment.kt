@@ -44,14 +44,13 @@ import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
-import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
@@ -194,7 +193,8 @@ class TokoNowCategoryFragment:
                 categoryL1 = getViewModel().categoryL1,
                 cdListName = getCDListName(),
                 categoryIdTracking = getViewModel().categoryIdTracking
-            )
+            ),
+            feedbackWidgetListener = this
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -323,8 +323,8 @@ class TokoNowCategoryFragment:
 
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
-            thumbNailImage = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-            ogImageUrl = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
             linkerType = NOW_TYPE
         )
     }

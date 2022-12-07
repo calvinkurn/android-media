@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
@@ -48,7 +49,8 @@ class SearchTypeFactoryImpl(
     private val suggestionListener: SuggestionListener,
     private val categoryJumperListener: CategoryJumperListener,
     private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
-    private val broadMatchListener: BroadMatchListener
+    private val broadMatchListener: BroadMatchListener,
+    feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ): BaseSearchCategoryTypeFactoryImpl(
     tokoNowEmptyStateOocListener,
     chooseAddressListener,
@@ -57,9 +59,10 @@ class SearchTypeFactoryImpl(
     quickFilterListener,
     categoryFilterListener,
     productItemListener,
-    similarProductListener,
     switcherWidgetListener,
     tokoNowEmptyStateNoResultListener,
+    feedbackWidgetListener,
+    similarProductListener,
     productRecommendationBindOocListener,
     productRecommendationOocListener,
     productRecommendationListener

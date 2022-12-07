@@ -13,8 +13,8 @@
         android:id="@+id/layout_bundle_multiple_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_button_white_border"
-        android:padding="0.7dp"
+        android:background="@drawable/bg_productbundle_image"
+        android:padding="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,6 +24,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:scaleType="centerCrop"
+            app:unify_image_corner_radius="6"
             app:unify_image_type="rect" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

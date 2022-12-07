@@ -9,12 +9,12 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryAisle
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryChooseAddressViewHolder
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherW
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
 
 class CategoryTypeFactoryImpl(
     tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
@@ -43,6 +44,7 @@ class CategoryTypeFactoryImpl(
     private val categoryAisleListener: CategoryAisleListener,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridListener,
     private val tokoNowProductCardListener: TokoNowProductCardListener,
+    feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ): BaseSearchCategoryTypeFactoryImpl(
         tokoNowEmptyStateOocListener,
         chooseAddressListener,
@@ -51,9 +53,10 @@ class CategoryTypeFactoryImpl(
         quickFilterListener,
         categoryFilterListener,
         productItemListener,
-        similarProductListener,
         switcherWidgetListener,
         tokoNowEmptyStateNoResultListener,
+        feedbackWidgetListener,
+        similarProductListener,
         productRecommendationOocBindListener,
         productRecommendationOocListener,
         productRecommendationListener

@@ -37,10 +37,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
@@ -146,11 +148,22 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkGms()
         initView()
         showInitialLoadMessage()
         setSearchView()
         setViewListener()
         initObserver()
+    }
+
+    private fun checkGms() {
+        context?.let {
+            val gmsAvailable = MapsAvailabilityHelper.isMapsAvailable(it)
+            viewModel.isGmsAvailable = gmsAvailable
+            if (!gmsAvailable) {
+                goToAddressForm()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -176,6 +189,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             }
         } else {
             showInitialLoadMessage()
+            if (requestCode == REQUEST_ADDRESS_FORM_PAGE && !viewModel.isGmsAvailable) {
+                activity?.finish()
+            }
         }
     }
 
@@ -263,14 +279,19 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding?.tvMessageSearch?.text = getString(R.string.txt_message_initial_load)
         binding?.tvMessageSearch?.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-            Intent(context, AddressFormActivity::class.java).apply {
-                putExtra(EXTRA_IS_POSITIVE_FLOW, false)
-                putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-                putExtra(PARAM_SOURCE, source)
-                startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
-            }
+            goToAddressForm()
         }
+    }
+
+    private fun goToAddressForm() {
+        val intent = Intent(context, AddressFormActivity::class.java).apply {
+            putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+            putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
+            putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+            putExtra(PARAM_SOURCE, source)
+            putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
+        }
+        startActivityForResult(intent, REQUEST_ADDRESS_FORM_PAGE)
     }
 
     private fun setSearchView() {

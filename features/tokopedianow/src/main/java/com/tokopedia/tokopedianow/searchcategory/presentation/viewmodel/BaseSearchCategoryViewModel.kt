@@ -57,11 +57,11 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
@@ -91,8 +91,9 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
@@ -127,6 +128,9 @@ abstract class BaseSearchCategoryViewModel(
         protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
     companion object {
+        private const val LABEL_GROUP_TYPE_TRANSPARENTBLACK = "transparentBlack"
+        private const val LABEL_GROUP_POSITION_STATUS = "status"
+        private const val MIN_PRODUCT_COUNT = 6
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
     }
 
@@ -142,6 +146,8 @@ abstract class BaseSearchCategoryViewModel(
     private var totalFetchedData = 0
     private var nextPage = 1
     private var currentProductPosition: Int = 1
+    protected var feedbackFieldToggle = false
+    private var isFeedbackFieldVisible = false
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -242,8 +248,13 @@ abstract class BaseSearchCategoryViewModel(
     private val updateToolbarNotificationLiveData = MutableLiveData<Boolean>()
     val updateToolbarNotification: LiveData<Boolean> = updateToolbarNotificationLiveData
 
+    private val _feedbackLoopTrackingMutableLivedata:MutableLiveData<Pair<String,Boolean>> = MutableLiveData(null)
+    val feedbackLoopTrackingMutableLivedata:LiveData<Pair<String,Boolean>> = _feedbackLoopTrackingMutableLivedata
+
     private val needToUpdateProductRecommendationMutableLiveData = MutableLiveData<Boolean>()
     val needToUpdateProductRecommendationLiveData: LiveData<Boolean> = needToUpdateProductRecommendationMutableLiveData
+
+    var isEmptyResult:Boolean = false
 
     init {
         updateQueryParams()
@@ -417,11 +428,13 @@ abstract class BaseSearchCategoryViewModel(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
             searchProduct: SearchProduct,
+            feedbackFieldIsActive:Boolean = false
     ) {
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
         currentProductPosition = 1
+        feedbackFieldToggle = feedbackFieldIsActive
 
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
@@ -461,6 +474,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createVisitableListWithEmptyProduct() {
         val activeFilterList = filterController.getActiveFilterOptionList()
+        isEmptyResult = true
 
         visitableList.add(chooseAddressDataView)
         visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
@@ -471,14 +485,33 @@ abstract class BaseSearchCategoryViewModel(
                 )
             )
         )
+        if(feedbackFieldToggle){
+            _feedbackLoopTrackingMutableLivedata.value = Pair(
+                first = chooseAddressData?.warehouse_id.orEmpty(),
+                second = false
+            )
+            isFeedbackFieldVisible = true
+            visitableList.add(TokoNowFeedbackWidgetUiModel())
+        }
+        else isFeedbackFieldVisible = false
     }
 
     private fun createVisitableListWithProduct(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
     ) {
+        isEmptyResult = false
         visitableList.addAll(createHeaderVisitableList(headerDataView))
         visitableList.addAll(createContentVisitableList(contentDataView))
+        if(isLastPage() && feedbackFieldToggle && headerDataView.aceSearchProductHeader.totalData<= MIN_PRODUCT_COUNT){
+            _feedbackLoopTrackingMutableLivedata.value = Pair(
+                first = chooseAddressData?.warehouse_id.orEmpty(),
+                second = true
+            )
+            isFeedbackFieldVisible = true
+            visitableList.add(TokoNowFeedbackWidgetUiModel(true))
+        }
+        else isFeedbackFieldVisible = false
         visitableList.addFooter()
     }
 
@@ -598,7 +631,7 @@ abstract class BaseSearchCategoryViewModel(
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
         dynamicFilterModelMutableLiveData.value = null
-
+        isFeedbackFieldVisible = false
         showLoading()
         processLoadDataPage()
     }
@@ -1343,6 +1376,10 @@ abstract class BaseSearchCategoryViewModel(
                         && it.value == optionToCheck.value
             }
         }
+    }
+
+    fun isProductFeedbackLoopVisible() : Boolean {
+       return feedbackFieldToggle && isFeedbackFieldVisible
     }
 
     fun updateWishlistStatus(

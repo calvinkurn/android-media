@@ -51,6 +51,9 @@ internal object GetProductList {
                 notifyMeOOSCount
                 notifyMeOOSWording
                 isEmptyStock
+                manageProductData {
+                   isStockGuaranteed
+                }
             }
         }
     }
