@@ -107,7 +107,7 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
