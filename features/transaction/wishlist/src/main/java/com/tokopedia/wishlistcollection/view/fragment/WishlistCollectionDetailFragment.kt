@@ -395,6 +395,7 @@ class WishlistCollectionDetailFragment :
         observeSavingItemToCollections()
         observeUpdateAccessWishlistCollection()
         observeGetCollectionSharingData()
+        observingCollectionType()
         observingAddWishlistBulk()
     }
 
