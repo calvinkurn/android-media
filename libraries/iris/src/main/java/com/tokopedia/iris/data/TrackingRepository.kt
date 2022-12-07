@@ -89,7 +89,7 @@ class TrackingRepository(
     }
 
     private fun setRelicLog(queryName: String, queryParam: String) {
-        if(getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING)?:false) {
+        if (getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING) ?: false) {
             Log.e("Hii", "Inside Relic")
             val relicMap = mapOf(
                 "queryName" to queryName,
