@@ -27,6 +27,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 
 class AddLogoToolUiComponent constructor(
     viewGroup: ViewGroup,
@@ -37,6 +38,7 @@ class AddLogoToolUiComponent constructor(
     private val uploadAvatar = findViewById<ImageView>(editorR.id.add_logo_upload_avatar)
     private val uploadAvatarWrapper = findViewById<LinearLayout>(editorR.id.add_logo_upload_avatar_wrapper)
     private val uploadButton = findViewById<CardUnify2>(editorR.id.add_logo_upload_button)
+    private val uploadText = findViewById<Typography>(editorR.id.add_logo_upload_text)
 
     private var originalImageWidth = 1
     private var originalImageHeight = 1
@@ -141,6 +143,8 @@ class AddLogoToolUiComponent constructor(
                         roundedBitmap(it, cornerRadius = 8f)
                     )
                     logoUrl = shopAvatarUrl
+
+                    uploadText.text = resources().getString(editorR.string.editor_add_logo_upload)
                 }
             )
         )

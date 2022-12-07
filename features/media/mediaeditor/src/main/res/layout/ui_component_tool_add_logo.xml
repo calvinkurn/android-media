@@ -38,9 +38,10 @@
         </com.tokopedia.unifycomponents.CardUnify2>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/add_logo_upload_text"
             android:layout_marginTop="6dp"
             app:typographyType="small"
-            android:text="Ubah Logo"
+            android:text= "@string/editor_add_logo_first_upload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -50,7 +51,7 @@
         android:id="@+id/add_logo_upload_avatar_wrapper"
         android:visibility="gone"
         tools:visibility="visible"
-        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
@@ -69,6 +70,7 @@
                 android:layout_height="64dp">
 
                 <ImageView
+                    android:contentDescription="@string/editor_add_logo_profile_desc"
                     android:id="@+id/add_logo_upload_avatar"
                     android:layout_gravity="center"
                     android:layout_width="48dp"
@@ -80,7 +82,7 @@
                 android:gravity="center_horizontal"
                 android:layout_marginTop="6dp"
                 app:typographyType="small"
-                android:text="Logo Terakhir"
+                android:text="@string/editor_add_logo_last_uploaded"
                 android:maxWidth="64dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -88,7 +90,7 @@
         </LinearLayout>
 
         <View
-            android:layout_marginLeft="14dp"
+            android:layout_marginStart="14dp"
             android:background="@color/Unify_NN300"
             android:layout_width="0.5dp"
             android:layout_height="match_parent"/>
@@ -97,7 +99,7 @@
 
     <LinearLayout
         android:gravity="center"
-        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -110,6 +112,7 @@
             android:layout_height="64dp">
 
             <ImageView
+                android:contentDescription="@string/editor_add_logo_upload_desc"
                 android:id="@+id/add_logo_shop_avatar"
                 android:layout_gravity="center"
                 android:layout_width="48dp"
@@ -121,7 +124,7 @@
             android:gravity="center_horizontal"
             android:layout_marginTop="6dp"
             app:typographyType="small"
-            android:text="Foto Profil Tokomu"
+            android:text="@string/editor_add_logo_profile"
             android:maxWidth="64dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
