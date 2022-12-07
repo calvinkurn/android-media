@@ -100,7 +100,6 @@ class ProductCustomInfoViewHolder(
             val componentTrack = getComponentTrackData(element)
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(componentTrack)
-                listener.showCustomInfoCoachMark(element.name, binding.customImage)
             }
         }
     }

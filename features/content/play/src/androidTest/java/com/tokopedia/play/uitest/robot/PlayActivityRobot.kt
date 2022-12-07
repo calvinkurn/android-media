@@ -7,15 +7,15 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.test.espresso.clickOnViewChild
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.espresso.waitUntilViewIsDisplayed
 import com.tokopedia.play.R
+import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
+import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
@@ -81,7 +81,7 @@ class PlayActivityRobot(
             withId(R.id.rv_product_featured)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<ProductCarouselViewHolder.PinnedProduct>(
-                0, clickOnViewChild(R.id.btn_buy)
+                0, clickOnViewChild(R.id.btn_second)
             )
         )
     }
@@ -91,7 +91,7 @@ class PlayActivityRobot(
             withId(R.id.rv_product_featured)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<ProductCarouselViewHolder.PinnedProduct>(
-                0, clickOnViewChild(R.id.btn_atc)
+                0, clickOnViewChild(R.id.btn_first)
             )
         )
     }
@@ -157,6 +157,52 @@ class PlayActivityRobot(
         ).check(
             if (hasPinned) matches(viewMatcher)
             else matches(not(viewMatcher))
+        )
+    }
+
+    fun hasEngagement(isGame: Boolean) {
+        RecyclerViewMatcher(R.id.rv_engagement_widget)
+            .atPosition(0)
+            .matches(hasDescendant(
+                hasBackground(
+                    if (isGame) R.drawable.bg_play_quiz_widget //QUIZ
+                    else R.drawable.bg_play_voucher_widget)
+                )
+            )
+    }
+
+    fun clickEngagementWidget(position: Int) {
+        Espresso.onView(
+            withId(R.id.rv_engagement_widget)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<EngagementWidgetViewHolder>(
+                position, ViewActions.click()
+            )
+        )
+    }
+
+    fun swipeEngagement(index: Int) {
+        Espresso.onView(
+            withId(R.id.rv_engagement_widget)
+        ).perform(
+            RecyclerViewActions.scrollToPosition<EngagementWidgetViewHolder>(index)
+        )
+    }
+
+    fun hasVoucherInBottomSheet() {
+        val child = hasMinimumChildCount(1)
+        Espresso.onView(
+            withId(R.id.rv_voucher_list)
+        ).check(matches(child))
+    }
+
+    fun clickVoucherInBottomSheet(position: Int) {
+        Espresso.onView(
+            withId(R.id.rv_voucher_list)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<MerchantVoucherNewViewHolder>(
+                position, ViewActions.click()
+            )
         )
     }
 
