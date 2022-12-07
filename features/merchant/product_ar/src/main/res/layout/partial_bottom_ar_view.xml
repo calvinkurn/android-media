@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN50"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/container_button_ar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="RtlSymmetry"
+        tools:listitem="@layout/item_image_variant_ar_view"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_button_ar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_unavailable_product"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_atc_ar"
+            app:layout_constraintEnd_toStartOf="@+id/btn_atc_ar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_atc_ar"
+            android:layout_marginEnd="8dp"
+            app:typographyType="small"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="Barang ini sedang tidak dijual untuk sementara waktu. " />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_stock_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small"
+            tools:text="Stok: 50" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_main_price_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_stock_ar"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            tools:text="Rp150.000" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_discounted_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:visibility="gone"
+            app:labelType="general_light_red"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_main_price_ar"
+            app:layout_constraintStart_toEndOf="@+id/txt_main_price_ar"
+            app:layout_constraintTop_toTopOf="@+id/txt_main_price_ar"
+            app:layout_goneMarginStart="0dp"
+            tools:text="50%"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_slash_price_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN400"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/btn_atc_ar"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/lbl_discounted_ar"
+            app:layout_constraintTop_toTopOf="@+id/lbl_discounted_ar"
+            app:layout_goneMarginStart="0dp"
+            app:layout_goneMarginTop="6dp"
+            app:typographyType="body_3"
+            tools:text="Rp300.000"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_atc_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="120dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unifyButtonSize="small"
+            tools:text="+ Keranjang" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

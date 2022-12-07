@@ -19,6 +19,7 @@ object ShopPageConstant {
     const val DEFAULT_VALUE_ETALASE_TYPE = 0 // It's only for apps or frontend identifier
     const val ATC_SUCCESS_VALUE = 1
     const val VALUE_INT_ONE = 1
+    const val SOURCE = "shop"
 
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list
     const val GO_TO_MEMBERSHIP_DETAIL = "membership detail"
@@ -48,11 +49,9 @@ object ShopPageConstant {
     const val ALL_SHOWCASE_ID = "etalase"
     const val CODE_STATUS_SUCCESS = "200"
     const val AFFILIATE_PAGE_ID = "pageID"
-
-    const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
     const val SHARED_PREF_AFFILIATE_CHANNEL = "SHARED_PREF_AFFILIATE_CHANNEL"
-
-    object ShopLayoutFeatures {
+    const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
+    object ShopLayoutFeatures{
         const val DIRECT_PURCHASE = "direct_purchase"
     }
 

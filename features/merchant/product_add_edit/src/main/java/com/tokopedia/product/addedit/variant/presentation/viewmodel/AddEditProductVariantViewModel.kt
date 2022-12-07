@@ -12,10 +12,10 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.isAllowedString
 import com.tokopedia.product.addedit.common.util.getValueOrDefault
-import com.tokopedia.product.addedit.common.util.toBigIntegerOrZero
 import com.tokopedia.product.addedit.common.util.toBigIntegerSafely
 import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -717,5 +717,11 @@ class AddEditProductVariantViewModel @Inject constructor(
         if (productInputModel.hasVariant()) {
             productInputModel.removeVariantCombinations(position, layoutPosition)
         }
+    }
+
+    fun cleanUrlOrPathPicture(imageResult : PickerResult) : String?{
+        val editedPath = imageResult.editedImages.firstOrNull()
+        val originalPath = imageResult.originalPaths.firstOrNull()
+        return if(editedPath.isNullOrEmpty()) originalPath else editedPath
     }
 }

@@ -129,29 +129,30 @@ class FollowerFollowingListingFragment @Inject constructor(
         // setting adapter to view pager.
         viewPager?.adapter = adapter
 
-        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int,
-            ) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                if (position == 1) {
-                    userProfileTracker.openFollowingTab(
-                        userId,
-                    )
-                } else {
-                    userProfileTracker.openFollowersTab(
-                        userId,
-                    )
+        viewPager?.addOnPageChangeListener(
+            object : ViewPager.OnPageChangeListener {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int,
+                ) {
                 }
-            }
 
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-        },
+                override fun onPageSelected(position: Int) {
+                    if (position == 1) {
+                        userProfileTracker.openFollowingTab(
+                            userId,
+                        )
+                    } else {
+                        userProfileTracker.openFollowersTab(
+                            userId,
+                        )
+                    }
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+            },
         )
     }
 
