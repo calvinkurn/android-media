@@ -27,9 +27,11 @@ import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetF
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterView
 import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProviderDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
@@ -134,8 +136,42 @@ internal open class ProductListPresenterTestFixtures {
         { getDynamicFilterUseCase },
         dynamicFilterModel,
     )
-    protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
-    private val visitableFactory = mockk<VisitableFactory>(relaxed = true)
+    val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
+        addToCartUseCase,
+        userSession,
+        inspirationListAtcView,
+        searchParameterProvider,
+    )
+    private val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
+    private val suggestionPresenter = SuggestionPresenter()
+    private val inspirationCarouselPresenter = InspirationCarouselPresenterDelegate(
+        inspirationCarouselView,
+        inspirationListAtcPresenterDelegate,
+    )
+    private val bannerPresenterDelegate = BannerPresenterDelegate(pagination)
+    private val inspirationWidgetPresenterDelegate = InspirationWidgetPresenterDelegate()
+    private val broadMatchPresenterDelegate = BroadMatchPresenterDelegate(
+        broadMatchView,
+        inspirationCarouselDynamicProductView,
+        viewUpdater,
+        topAdsUrlHitter,
+        classNameProvider,
+        applinkModifier,
+        pagination,
+        suggestionPresenter,
+    )
+    private val topAdsImageViewPresenter = TopAdsImageViewPresenterDelegate()
+    private val visitableFactory = VisitableFactory(
+        suggestionPresenter = suggestionPresenter,
+        performanceMonitoringProvider = { performanceMonitoring },
+        topAdsHeadlineHelper = topAdsHeadlineHelper,
+        inspirationCarouselPresenter = inspirationCarouselPresenter,
+        inspirationWidgetPresenter = inspirationWidgetPresenterDelegate,
+        bannerDelegate = bannerPresenterDelegate,
+        broadMatchDelegate = broadMatchPresenterDelegate,
+        topAdsImageViewPresenterDelegate = topAdsImageViewPresenter,
+        pagination = pagination,
+    )
 
     protected lateinit var productListPresenter: ProductListPresenter
 
@@ -149,20 +185,12 @@ internal open class ProductListPresenterTestFixtures {
             queryKeyProvider,
             productFilterIndicator,
         )
-        val suggestionPresenter = SuggestionPresenter()
 
-        val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
-            addToCartUseCase,
-            userSession,
-            inspirationListAtcView,
-            searchParameterProvider,
-        )
         val tickerPresenter = TickerPresenterDelegate()
         val safeSearchPresenter = SafeSearchPresenterDelegate(
             safeSearchPreference,
             safeSearchView,
         )
-        val topAdsImageViewPresenter = TopAdsImageViewPresenterDelegate()
 
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
@@ -181,7 +209,7 @@ internal open class ProductListPresenterTestFixtures {
             topAdsHeadlineHelper,
             { performanceMonitoring },
             chooseAddressPresenterDelegate,
-            BannerPresenterDelegate(pagination),
+            bannerPresenterDelegate,
             requestParamsGenerator,
             pagination,
             LastFilterPresenterDelegate(
@@ -191,16 +219,7 @@ internal open class ProductListPresenterTestFixtures {
             sameSessionRecommendationPresenterDelegate,
             BannedProductsPresenterDelegate(bannedProductsView, viewUpdater),
             inspirationListAtcPresenterDelegate,
-            BroadMatchPresenterDelegate(
-                broadMatchView,
-                inspirationCarouselDynamicProductView,
-                viewUpdater,
-                topAdsUrlHitter,
-                classNameProvider,
-                applinkModifier,
-                pagination,
-                suggestionPresenter,
-            ),
+            broadMatchPresenterDelegate,
             suggestionPresenter,
             tickerPresenter,
             safeSearchPresenter,

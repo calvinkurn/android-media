@@ -401,7 +401,7 @@ class ProductListPresenter @Inject constructor(
             searchParameter,
             searchProductModel.getProductListType(),
             searchProductModel.isShowButtonAtc,
-        ).toMutableList()
+        )
         productList.addAll(loadMoreProductList)
 
         return visitableFactory.createLoadMoreVisitableList(
@@ -412,10 +412,11 @@ class ProductListPresenter @Inject constructor(
                 isLocalSearch(),
                 isTickerHasDismissed,
                 responseCode,
-                loadMoreProductList,
+                productList,
                 searchProductModel,
                 externalReference,
                 constructGlobalSearchApplink(),
+                loadMoreProductList,
             )
         )
     }
@@ -860,6 +861,7 @@ class ProductListPresenter @Inject constructor(
                 searchProductModel,
                 externalReference,
                 constructGlobalSearchApplink(),
+                listOf(),
             )
         )
 

@@ -15,5 +15,6 @@ data class VisitableFactoryData(
     val searchProductModel: SearchProductModel,
     val externalReference: String,
     val globalSearchApplink: String,
+    val loadMoreProductList: List<Visitable<*>>,
 )
 

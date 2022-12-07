@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.visitable
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
@@ -35,6 +36,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import timber.log.Timber
 import javax.inject.Inject
 
+@SearchScope
 class VisitableFactory @Inject constructor(
     private val suggestionPresenter: SuggestionPresenter,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
@@ -417,7 +419,7 @@ class VisitableFactory @Inject constructor(
     fun createLoadMoreVisitableList(data: VisitableFactoryData): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        addProductList(visitableList, data.productList)
+        addProductList(visitableList, data.loadMoreProductList)
         processHeadlineAdsLoadMore(
             data.searchProductModel,
             visitableList,
@@ -432,9 +434,7 @@ class VisitableFactory @Inject constructor(
             data.productList,
             data.responseCode,
         )
-        bannerDelegate.processBanner(visitableList, data.productList) { index, banner ->
-            visitableList.add(index, banner)
-        }
+        addBanner(visitableList, data.productList)
         broadMatchDelegate.processBroadMatch(
             data.responseCode,
             data.productList,
