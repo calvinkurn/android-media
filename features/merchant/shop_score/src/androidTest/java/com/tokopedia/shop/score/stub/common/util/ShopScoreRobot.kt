@@ -26,6 +26,7 @@ import com.tokopedia.shop.score.stub.penalty.presentation.fragment.ShopPenaltyPa
 import com.tokopedia.shop.score.stub.performance.presentation.activity.ShopPerformanceActivityStub
 import com.tokopedia.shop.score.stub.performance.presentation.fragment.ShopPerformanceFragmentStub
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
@@ -103,7 +104,7 @@ fun smoothScrollToFaq(positionItem: Int) {
 fun clickClickableSpan(textToClick: CharSequence): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
-            return Matchers.instanceOf(TextView::class.java)
+            return CoreMatchers.instanceOf(TextView::class.java)
         }
 
         override fun getDescription(): String {

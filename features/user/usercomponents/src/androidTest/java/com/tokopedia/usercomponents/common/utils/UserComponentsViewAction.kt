@@ -8,7 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.TreeIterables
 import com.tokopedia.unifycomponents.TextFieldUnify2
-import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 
 fun setTextOnTextFieldUnify2(text: String, resId: Int): ViewAction {
@@ -96,7 +96,7 @@ fun searchFor(matcher: Matcher<View>): ViewAction {
 fun clickClickableSpanOnTypographyUnify(textToClick: CharSequence): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
-            return Matchers.instanceOf(Typography::class.java)
+            return CoreMatchers.instanceOf(Typography::class.java)
         }
 
         override fun getDescription(): String {

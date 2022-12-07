@@ -21,10 +21,10 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.mock.MerchantOnGoingVoucherDetailMockModelConfig
 import com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
@@ -107,7 +107,7 @@ class MerchantOnGoingVoucherDetailPageAnalyticTest {
         return object : ViewAction {
 
             override fun getConstraints(): Matcher<View> {
-                return Matchers.instanceOf(TextView::class.java)
+                return CoreMatchers.instanceOf(TextView::class.java)
             }
 
             override fun getDescription(): String {

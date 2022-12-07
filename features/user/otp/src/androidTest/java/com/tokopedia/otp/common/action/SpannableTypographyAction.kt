@@ -6,7 +6,7 @@ import android.view.View
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 
 
@@ -15,7 +15,7 @@ object SpannableTypographyAction {
     fun clickClickableSpan(textToClick: CharSequence): ViewAction {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
-                return Matchers.instanceOf(Typography::class.java)
+                return CoreMatchers.instanceOf(Typography::class.java)
             }
 
             override fun getDescription(): String {
