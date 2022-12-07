@@ -7,13 +7,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingDefaultResource">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/tm_vip_coupon_ticker_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerShapeType="full"
+        app:tickerType="announcement" />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/box1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ticker"
         android:layout_width="@dimen/tm_dash_dp_93"
         android:layout_height="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/tm_dash_dp_18"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="@dimen/unify_space_32"
         android:layout_marginEnd="@dimen/unify_space_32"
         app:loader_corner_radius="@dimen/unify_space_8"

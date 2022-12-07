@@ -232,7 +232,7 @@ class CarouselImageViewHolder(
 
     }
 
-    private fun updateAsgcButton(){
+    fun updateAsgcButton(){
         flashSaleViewCardUpcoming.setReminderBtnState(dataSource.getFeedXCard().campaign.reminder, dataSource.getPositionInFeed())
     }
 
