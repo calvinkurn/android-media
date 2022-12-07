@@ -11,7 +11,7 @@ class TokoNowSimilarProductActivity: BaseTokoNowActivity() {
 
     companion object {
         const val EXTRA_SIMILAR_PRODUCT_ID = "extra_similar_product_id"
-        const val EXTRA_SIMILAR_PRODUCT_LISTENER = "extra_similar_product_listener_wrapper"
+        const val EXTRA_SIMILAR_PRODUCT_LISTENER = "extra_similar_product_listener"
 
         fun createNewIntent(context: Context, products: String, listener: SimilarProductListener?): Intent {
             return Intent(context, TokoNowSimilarProductActivity::class.java).apply {
@@ -23,9 +23,9 @@ class TokoNowSimilarProductActivity: BaseTokoNowActivity() {
 
     override fun getFragment(): Fragment {
         val products = intent?.getStringExtra(EXTRA_SIMILAR_PRODUCT_ID)
-        val listenerWrapper = intent?.getSerializableExtra(EXTRA_SIMILAR_PRODUCT_LISTENER) as? SimilarProductListener
+        val listener = intent?.getSerializableExtra(EXTRA_SIMILAR_PRODUCT_LISTENER) as? SimilarProductListener
         return TokoNowSimilarProductFragment.newInstance(products).apply {
-            setListener(listenerWrapper)
+            setListener(listener)
         }
     }
 }
