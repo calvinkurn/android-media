@@ -31,9 +31,10 @@ object PayLaterHelper {
         openGoPay: (Bundle) -> Unit
     ) {
         when (detail.cta.cta_type) {
-            TYPE_APP_LINK -> {
-                callAddOccApi()
-            }
+            TYPE_APP_LINK ->
+                {
+                    callAddOccApi()
+                }
             TYPE_WEB_VIEW -> {
                 if (shouldShowGoPayBottomSheet(detail)) {
                     openGoPay(PayLaterBundleGenerator.getGoPayBundle(detail.cta))
