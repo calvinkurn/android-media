@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseE
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseLoadingViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseSortFilterViewHolder
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 
 class RepurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
@@ -43,6 +44,7 @@ class RepurchaseAdapterTypeFactory(
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
     private val productCardListener: RepurchaseProductCardListener,
+    private val similarProductListener: SimilarProductListener,
     private val emptyStateNoHistorylistener: RepurchaseEmptyStateNoHistoryViewHolder.RepurchaseEmptyStateNoHistoryListener? = null,
     private val tokoNowRecommendationCarouselListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener? = null,
     private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
@@ -101,7 +103,7 @@ class RepurchaseAdapterTypeFactory(
             // endregion
 
             // region Repurchase Component
-            RepurchaseProductViewHolder.LAYOUT -> RepurchaseProductViewHolder(view, productCardListener)
+            RepurchaseProductViewHolder.LAYOUT -> RepurchaseProductViewHolder(view, productCardListener, similarProductListener)
             RepurchaseLoadingViewHolder.LAYOUT -> RepurchaseLoadingViewHolder(view)
             RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT -> RepurchaseEmptyStateNoHistoryViewHolder(view, emptyStateNoHistorylistener)
             RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view, sortFilterListener)

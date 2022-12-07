@@ -23,14 +23,16 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.LIGHT_GREEN
 import com.tokopedia.tokopedianow.common.model.LIGHT_RED
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.util.doOnPreDraw
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -48,6 +50,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         private const val NO_DISCOUNT_STRING = "0"
     }
 
+    private var similarProductListener: SimilarProductListener? = null
     private var binding: LayoutTokopedianowProductCardViewBinding
 
     init {
@@ -110,7 +113,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
         )
         initSimilarProductTypography(
             isOos = model.isOos(),
-            isShown = model.isSimilarProductShown
+            isShown = model.isSimilarProductShown,
+            productId = model.productId
         )
         initProgressBar(
             isFlashSale = model.isFlashSale(),
@@ -219,9 +223,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initSimilarProductTypography(
         isOos: Boolean,
-        isShown: Boolean
+        isShown: Boolean,
+        productId: String
     ) {
-        similarProductTypography.showIfWithBlock(isShown && isOos) {
+        similarProductTypography.showIfWithBlock(isOos && isShown) {
             adjustChevronIcon(
                 drawable = getIconUnifyDrawable(
                     context = context,
@@ -232,6 +237,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     )
                 )
             )
+            setOnClickListener {
+                similarProductListener?.trackClickSimilarProductBtn(productId)
+                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, similarProductListener)
+                context.startActivity(intent)
+            }
         }
     }
 
@@ -511,6 +521,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
         onClickVariantListener: (Int) -> Unit
     ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
+    }
+
+    fun setListeners(similarProductListener: SimilarProductListener?){
+        this.similarProductListener = similarProductListener
     }
 
     fun setWishlistButtonListener(

@@ -49,6 +49,8 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherW
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductCallback
+import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import javax.inject.Inject
 
 class TokoNowSearchFragment :
@@ -70,7 +72,6 @@ class TokoNowSearchFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
@@ -148,6 +149,7 @@ class TokoNowSearchFragment :
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            similarProductListener = createSimilarProductCallback(false),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,

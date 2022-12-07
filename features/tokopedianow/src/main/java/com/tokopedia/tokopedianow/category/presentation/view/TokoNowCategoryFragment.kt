@@ -51,6 +51,7 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
+import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
@@ -90,7 +91,6 @@ class TokoNowCategoryFragment:
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
@@ -182,6 +182,7 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            similarProductListener = createSimilarProductCallback(true),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
