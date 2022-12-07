@@ -215,7 +215,7 @@ class ProductListFragment : BaseDaggerFragment() {
         renderTopSection(uiState.currentPageMode, uiState.products.count(), uiState.maxProductSelection)
         renderLoadingState(uiState.isLoading)
         renderList(uiState.products)
-        renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.currentPageMode, uiState.originalPageMode, uiState.voucherConfiguration)
+        renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.currentPageMode)
         renderProductCounter(uiState.products.count(), uiState.selectedProductsIdsToBeRemoved.count(), uiState.currentPageMode)
         renderBulkDeleteIcon(uiState.selectedProductsIdsToBeRemoved.count())
         renderSelectAllCheckbox(uiState.products.count(), uiState.selectedProductsIdsToBeRemoved.count(), uiState.currentPageMode)
@@ -293,23 +293,13 @@ class ProductListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderEmptyState(
-        productCount: Int,
-        isLoading: Boolean,
-        pageMode: PageMode,
-        originalPageMode: PageMode,
-        voucherConfiguration: VoucherConfiguration
-    ) {
+    private fun renderEmptyState(productCount: Int, isLoading: Boolean, pageMode: PageMode) {
         val isCreateMode = pageMode == PageMode.CREATE
 
         binding?.run {
             emptyState.isVisible = productCount.isZero() && !isLoading
             emptyState.emptyStateCTAID.setOnClickListener {
-                if (originalPageMode == PageMode.EDIT) {
-                    redirectToAddProductPage(voucherConfiguration)
-                } else {
-                    backToPreviousPage()
-                }
+                viewModel.processEvent(ProductListEvent.TapCtaAddProduct)
             }
 
             when {
@@ -398,7 +388,7 @@ class ProductListFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION) {
+        if (requestCode == NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION) {
             if (resultCode == Activity.RESULT_OK) {
                 val newlySelectedProducts = data?.getParcelableArrayListExtra<Product>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty()
                 viewModel.processEvent(ProductListEvent.AddNewProductToSelection(newlySelectedProducts))
@@ -447,7 +437,7 @@ class ProductListFragment : BaseDaggerFragment() {
             activity ?: return,
             voucherConfiguration
         )
-        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION)
     }
 
 }

@@ -854,7 +854,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             voucherDetail.toSelectedProducts()
         )
 
-        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION)
     }
 
 }

@@ -68,6 +68,7 @@ data class VoucherDetailData(
         val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
 
         return VoucherConfiguration(
+            voucherId,
             voucherDiscountAmount,
             voucherDiscountAmountMax,
             voucherDiscountAmount.toInt(),

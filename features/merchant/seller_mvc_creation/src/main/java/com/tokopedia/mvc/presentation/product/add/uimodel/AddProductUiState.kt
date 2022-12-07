@@ -33,6 +33,7 @@ data class AddProductUiState(
     val selectedShopShowcase: List<ShopShowcase> = emptyList(),
     val selectedCategories: List<ProductCategoryOption> = emptyList(),
     val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(
+        voucherId = NumberConstant.VOUCHER_ID_NOT_CREATED,
         benefitIdr = 0,
         benefitMax = 0,
         benefitPercent = 0,

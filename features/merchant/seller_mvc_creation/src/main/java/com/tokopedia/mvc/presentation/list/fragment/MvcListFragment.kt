@@ -48,6 +48,7 @@ import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -298,6 +299,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     private fun redirectToCreateVoucherPage() {
         //For sample only. Will redirect to add product page.
         val voucherConfiguration = VoucherConfiguration(
+            voucherId = NumberConstant.VOUCHER_ID_NOT_CREATED,
             benefitIdr = 25_000,
             benefitMax = 500_000,
             benefitPercent = 0,
@@ -314,7 +316,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             voucherConfiguration
         )
 
-        startActivityForResult(intent, 100)
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_FROM_SCRATCH)
     }
 
     private fun redirectToQuotaVoucherPage() {

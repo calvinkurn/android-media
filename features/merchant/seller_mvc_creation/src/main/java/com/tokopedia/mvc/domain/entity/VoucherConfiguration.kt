@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class VoucherConfiguration(
+    val voucherId: Long,
     val benefitIdr: Long,
     val benefitMax: Long,
     val benefitPercent: Int,
