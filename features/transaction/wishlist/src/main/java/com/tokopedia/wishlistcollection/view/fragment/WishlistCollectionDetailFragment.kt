@@ -675,6 +675,7 @@ class WishlistCollectionDetailFragment :
                             )
                         }
 
+                        setupLayoutTypeIcon()
                         setupGearIcon()
                     }
                 }
@@ -906,7 +907,7 @@ class WishlistCollectionDetailFragment :
                     if (result.data.success) {
                         if (_isNeedRefreshAndTurnOffBulkModeFromOthers) {
                             turnOffBulkAddFromOtherCollection()
-                            getCollectionItems()
+                            setRefreshing()
                         }
                     } else {
                         when (result.data.errorType) {
@@ -1178,16 +1179,21 @@ class WishlistCollectionDetailFragment :
                     rvWishlistCollectionDetail.smoothScrollToPosition(0)
                 }
                 wishlistCollectionDetailFb.gone()
-                setTypeLayoutIcon()
-                wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.setOnClickListener {
-                    changeTypeLayout()
-                    setTypeLayoutIcon()
-                }
             }
         }
 
         if (toasterMessageInitial.isNotEmpty()) {
             showToasterInitial(toasterMessageInitial)
+        }
+    }
+
+    private fun setupLayoutTypeIcon() {
+        setTypeLayoutIcon()
+        binding?.run {
+            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.setOnClickListener {
+                changeTypeLayout()
+                setTypeLayoutIcon()
+            }
         }
     }
 
@@ -1459,6 +1465,8 @@ class WishlistCollectionDetailFragment :
                         wishlistCollectionDetailManageLabel.gone()
                         iconGearCollectionDetail.gone()
                         wishlistCollectionSelectItemOption.show()
+                        wishlistDivider.show()
+                        wishlistCollectionDetailTypeLayoutIcon.show()
                     } else {
                         wishlistCollectionSelectItemOption.gone()
                         wishlistCollectionDetailManageLabel.gone()
