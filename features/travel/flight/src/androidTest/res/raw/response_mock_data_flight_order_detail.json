@@ -34,7 +34,7 @@
               "status": 2,
               "statusStr": "Verified",
               "gatewayName": "Saldo Tokopedia",
-              "gatewayIcon": "https://ecs7.tokopedia.net/img/toppay/payment-logo/saldo-tokopedia.png",
+              "gatewayIcon": "https://images.tokopedia.net/img/toppay/payment-logo/saldo-tokopedia.png",
               "paymentDate": "2020-11-27T13:57:49Z",
               "expireOn": "",
               "transactionCode": "",
@@ -137,9 +137,9 @@
                   "subTitle": "Maskapai ini tidak menerima web check-in",
                   "startTime": "2020-11-11T00:00:00Z",
                   "endTime": "2030-11-11T00:00:00Z",
-                  "iconURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png",
+                  "iconURL": "https://images.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png",
                   "appURL": "",
-                  "webURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png"
+                  "webURL": "https://images.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png"
                 }
               },
               {
@@ -218,9 +218,9 @@
                   "subTitle": "Maskapai ini tidak menerima web check-in",
                   "startTime": "2020-11-11T00:00:00Z",
                   "endTime": "2030-11-11T00:00:00Z",
-                  "iconURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png",
+                  "iconURL": "https://images.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png",
                   "appURL": "",
-                  "webURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png"
+                  "webURL": "https://images.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png"
                 }
               }
             ],

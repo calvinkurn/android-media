@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.usecase
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
@@ -14,6 +15,7 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
     }
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
@@ -26,8 +28,12 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                     it.nextPageKey,
                     it.userAddressData,
                     it.selectedFilters,
-                    it.selectedSort),
-                pageEndPoint, it.name)
+                    it.selectedSort,
+                    paramWithoutRpc
+                ),
+                pageEndPoint,
+                it.name
+            )
             it.showVerticalLoader = voucherListData.isNotEmpty()
             it.setComponentsItem(voucherListData, component.tabName)
             it.noOfPagesLoaded = 1
@@ -42,6 +48,7 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
 
     suspend fun getVoucherUseCase(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
@@ -53,7 +60,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                     component1.nextPageKey,
                     component1.userAddressData,
                     component1.selectedFilters,
-                    component1.selectedSort),
+                    component1.selectedSort,
+                    paramWithoutRpc
+                ),
                 pageEndPoint,
                 component1.name)
             component1.nextPageKey = nextPage
@@ -73,6 +82,7 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
 
     suspend fun getPaginatedData(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
@@ -84,7 +94,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                     component1.nextPageKey,
                     component1.userAddressData,
                     component1.selectedFilters,
-                    component1.selectedSort),
+                    component1.selectedSort,
+                    paramWithoutRpc
+                ),
                 pageEndPoint,
                 component1.name)
             component1.nextPageKey = nextPage
@@ -104,6 +116,7 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
 
     suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
             val (voucherListData,nextPage) = repository.getMerchantVouchers(
@@ -113,9 +126,12 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                     component.nextPageKey,
                     component.userAddressData,
                     component.selectedFilters,
-                    component.selectedSort),
+                    component.selectedSort,
+                    paramWithoutRpc
+                ),
                 pageEndPoint,
-                it.name)
+                it.name
+            )
             component.nextPageKey = nextPage
             if (voucherListData.isEmpty()) return false else it.pageLoadedCounter += 1
             updatePaginatedData(voucherListData,it)
@@ -139,7 +155,8 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         nextPageKey: String?,
         userAddressData: LocalCacheModel?,
         selectedFilters: HashMap<String, String>?,
-        selectedSort: HashMap<String, String>?
+        selectedSort: HashMap<String, String>?,
+        queryParameterMapWithoutRpc: Map<String, String>?
     ): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
 
@@ -155,6 +172,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
             for (map in it) {
                 queryParameterMap[Utils.RPC_FILTER_KEY + map.key] = map.value
             }
+        }
+        queryParameterMapWithoutRpc?.let {
+            queryParameterMap.putAll(it)
         }
         queryParameterMap.putAll(Utils.addAddressQueryMap(userAddressData))
         return queryParameterMap

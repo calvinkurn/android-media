@@ -26,11 +26,13 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatMetricResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListTickerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
@@ -73,6 +75,7 @@ class ChatItemListViewModelTest {
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase = mockk(relaxed = true)
     private val operationalInsightUseCase: GetOperationalInsightUseCase = mockk(relaxed = true)
+    private val getChatListTickerUseCase: GetChatListTickerUseCase = mockk(relaxed = true)
     private val sharedPref: SharedPreferences = mockk(relaxed = true)
     private val abTestPlatform: AbTestPlatform = mockk(relaxed = true)
 
@@ -97,6 +100,7 @@ class ChatItemListViewModelTest {
             authorizeAccessUseCase,
             moveChatToTrashUseCase,
             operationalInsightUseCase,
+            getChatListTickerUseCase,
             sharedPref,
             userSession,
             abTestPlatform,
@@ -1038,6 +1042,57 @@ class ChatItemListViewModelTest {
         assertEquals(
             null,
             viewModel.chatOperationalInsight.value
+        )
+    }
+
+    @Test
+    fun should_return_success_when_get_chat_list_ticker() {
+        //Given
+        val expectedResponse = ChatListTickerResponse(
+            chatlistTicker = ChatListTickerResponse.ChatListTicker(
+                tickerBuyer = ChatListTickerResponse.ChatListTicker.TickerBuyer(
+                    message = "Ini adalah content dari ticker buyer",
+                    enable = true,
+                    tickerType = 1
+                ),
+                tickerSeller = ChatListTickerResponse.ChatListTicker.TickerSeller(
+                    message = "Ini adalah content dari ticker seller",
+                    enable = false,
+                    tickerType = 1
+                )
+            )
+        )
+        coEvery {
+            getChatListTickerUseCase(Unit)
+        } returns expectedResponse
+
+        //When
+        viewModel.getChatListTicker()
+
+        //Then
+        val actualValue = (viewModel.chatListTicker.value as Success).data
+        val expectedValue = expectedResponse.chatlistTicker
+        assertEquals(expectedValue.tickerBuyer.message, actualValue.tickerBuyer.message)
+        assertEquals(expectedValue.tickerBuyer.tickerType, actualValue.tickerBuyer.tickerType)
+        assertEquals(expectedValue.tickerSeller.message, actualValue.tickerSeller.message)
+        assertEquals(expectedValue.tickerSeller.tickerType, actualValue.tickerSeller.tickerType)
+    }
+
+    @Test
+    fun should_get_throwable_when_error_get_chatlist_ticker() {
+        //Given
+        val expectedResult = Throwable("Oops!")
+        coEvery {
+            getChatListTickerUseCase(Unit)
+        } throws expectedResult
+
+        //When
+        viewModel.getChatListTicker()
+
+        //Then
+        assertEquals(
+            expectedResult.message,
+            (viewModel.chatListTicker.value as Fail).throwable.message
         )
     }
 

@@ -38,7 +38,7 @@ class PickerFile constructor(
         val width = bitmapOptions.outWidth
         val height = bitmapOptions.outHeight
 
-        return width > value && height > value
+        return width > value || height > value
     }
 
     fun isMinImageRes(value: Int): Boolean {
@@ -47,7 +47,7 @@ class PickerFile constructor(
         val width = bitmapOptions.outWidth
         val height = bitmapOptions.outHeight
 
-        return width < value && height < value
+        return width < value || height < value
     }
 
     fun readableVideoDuration(context: Context?): String {

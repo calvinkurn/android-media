@@ -29,4 +29,6 @@ data class DiscoveryResponse(
         var cartMap: Map<MiniCartItemKey, MiniCartItem>? = null
         var sectionMap: MutableMap<String, Int>? = null
         var queryParamMap: MutableMap<String, String?>? = null
+        var queryParamMapWithRpc: MutableMap<String, String> = mutableMapOf()
+        var queryParamMapWithoutRpc: MutableMap<String, String> = mutableMapOf()
 }

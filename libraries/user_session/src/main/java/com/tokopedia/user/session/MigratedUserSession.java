@@ -26,6 +26,8 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStoreException;
 import java.util.HashMap;
 
+import timber.log.Timber;
+
 public class MigratedUserSession {
     public static final String suffix = "_v2";
     protected Context context;
@@ -209,6 +211,7 @@ public class MigratedUserSession {
     }
 
     private String decryptString(String message, String keyName) {
+        Timber.i("decrypting %s with key %s", message, keyName);
         try {
 	    /*
             Check PII data from SET, if keyName is PII data decrypt with aead (tink)
@@ -220,6 +223,7 @@ public class MigratedUserSession {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
+            Timber.e(e);
             if(e instanceof InvalidProtocolBufferException ||
                     e instanceof GeneralSecurityException ||
                     e instanceof KeyStoreException ||
@@ -311,6 +315,7 @@ public class MigratedUserSession {
             String oldValue = internalGetString(prefName, keyName, defValue);
 
             if (oldValue != null && !oldValue.equals(defValue)) {
+                Timber.d("cleaning %s", oldValue);
                 internalCleanKey(prefName, keyName);
                 internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
