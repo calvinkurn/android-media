@@ -79,6 +79,7 @@ class ShopHomeNplCampaignViewHolder(
         private const val PADDING_LEFT_PERCENTAGE = 0.4f
         private const val NPL_RULE_ID_FOLLOWERS_ONLY = "33"
         private const val RV_CAROUSEL_MARGIN_TOP = 24f
+        private const val BANNER_IMAGE_RATION_EMPTY_PRODUCT = "1:1"
     }
 
     private var productListCampaignAdapter: ShopCampaignCarouselProductAdapter? = null
@@ -207,12 +208,20 @@ class ShopHomeNplCampaignViewHolder(
         }?.imageUrl.orEmpty()
         bannerBackground?.apply {
             try {
-                if (context.isValidGlideContext())
+                (layoutParams as? ConstraintLayout.LayoutParams)?.apply {
+                    dimensionRatio = if(model.data?.firstOrNull()?.productList?.isEmpty() == true)
+                        BANNER_IMAGE_RATION_EMPTY_PRODUCT
+                    else{
+                        null
+                    }
+                }
+                if (context.isValidGlideContext()) {
                     if (DeviceScreenInfo.isTablet(context)) {
                         setImageUrlTileMode(bannerUrl)
                     } else {
                         setImageUrl(bannerUrl, isOverrideScaleType = false)
                     }
+                }
             } catch (e: Exception) { }
         }
     }
