@@ -304,13 +304,13 @@ class PlayAnalytic(
                     }
                     else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
-            ProductAction.Buy -> {
+            ProductAction.Buy, ProductAction.OCC -> {
                 when (bottomInsetsType) {
                     BottomInsetsType.VariantSheet -> {
                         if(sectionInfo.config.type != ProductSectionType.Active) clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
                         else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
                     }
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, action = productAction, shopInfo)
                 }
             }
         }
@@ -632,11 +632,11 @@ class PlayAnalytic(
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                     product: PlayProductUiModel.Product,
                                                     sectionInfo: ProductSectionUiModel.Section,
-                                                    cartId: String,
+                                                    action: ProductAction,
                                                     shopInfo: PlayPartnerInfo) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
-            else -> Pair("click buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", "${generateBaseEventLabel(product = product, campaignId = sectionInfo.id)} - beli langsung ${action == ProductAction.OCC}")
+            else -> Pair("click buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - beli langsung ${action == ProductAction.OCC}")
         }
         trackingQueue.putEETracking(
                 EventModel(

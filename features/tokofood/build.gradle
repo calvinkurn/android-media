@@ -90,6 +90,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.total_amount
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.loader_dialog
+    implementation rootProject.ext.unifyDependencies.iconNotification
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

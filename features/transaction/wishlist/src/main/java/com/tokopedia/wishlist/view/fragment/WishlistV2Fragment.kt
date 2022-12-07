@@ -1397,6 +1397,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
+    override fun onValidateCheckBulkOption(productId: String, isChecked: Boolean, position: Int) {
+        // wishlist collection detail only
+    }
+
     private fun setLabelDeleteButton() {
         binding?.run {
             containerDelete.visible()

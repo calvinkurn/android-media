@@ -26,7 +26,7 @@ import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
  */
 class ChatListTypeFactoryImpl(
     private val listener: ChatListItemListener,
-    private val tickerListener: ChatListTickerListener,
+    private val chatListTickerListener: ChatListTickerListener,
     private val chatListAnalytics: ChatListAnalytic
 ) : BaseAdapterTypeFactory(), ChatListTypeFactory {
 
@@ -66,7 +66,7 @@ class ChatListTypeFactoryImpl(
             ChatAdminNoAccessViewHolder.LAYOUT -> ChatAdminNoAccessViewHolder(parent, listener::returnToSellerHome)
             EmptyChatViewHolder.LAYOUT -> EmptyChatViewHolder(parent, chatListAnalytics)
             OperationalInsightViewHolder.LAYOUT -> OperationalInsightViewHolder(parent, listener)
-            ChatListTickerViewHolder.LAYOUT -> ChatListTickerViewHolder(parent, tickerListener)
+            ChatListTickerViewHolder.LAYOUT -> ChatListTickerViewHolder(parent, chatListTickerListener)
             else -> super.createViewHolder(parent, type)
         }
     }

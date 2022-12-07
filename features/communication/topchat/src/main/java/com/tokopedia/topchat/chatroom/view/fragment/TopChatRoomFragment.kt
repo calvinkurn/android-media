@@ -51,7 +51,6 @@ import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
-import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
@@ -1012,7 +1011,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
         analytics.trackClickImageAnnouncement(
-            uiModel.broadcastBlastId.toString(),
+            uiModel.broadcastBlastId,
             uiModel.attachmentId
         )
         super.onImageAnnouncementClicked(uiModel)
