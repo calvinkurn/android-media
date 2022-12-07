@@ -35,7 +35,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.getElemen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.After

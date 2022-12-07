@@ -60,7 +60,6 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
-import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withIndex
@@ -78,9 +77,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

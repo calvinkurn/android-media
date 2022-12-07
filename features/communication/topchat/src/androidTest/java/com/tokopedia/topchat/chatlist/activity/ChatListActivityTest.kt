@@ -17,9 +17,9 @@ import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.common.UserSessionStub
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 @UiTest

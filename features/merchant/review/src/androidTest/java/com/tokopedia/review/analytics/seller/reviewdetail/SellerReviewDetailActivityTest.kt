@@ -38,7 +38,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.CoreMatchers.anything
 import org.hamcrest.CoreMatchers.startsWith
-import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
 

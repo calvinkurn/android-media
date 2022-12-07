@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 fun onIdView(id: Int): ViewInteraction = onView(allOf(withId(id)))
 

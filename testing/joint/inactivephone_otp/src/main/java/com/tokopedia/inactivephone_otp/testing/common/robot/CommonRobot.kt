@@ -19,9 +19,8 @@ import androidx.test.espresso.util.TreeIterables
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.containsString
 
 fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
     return RecyclerViewMatcher(recyclerViewId)

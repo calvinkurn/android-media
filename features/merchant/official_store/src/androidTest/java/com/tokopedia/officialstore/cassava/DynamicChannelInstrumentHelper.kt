@@ -9,7 +9,6 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import org.hamcrest.Matchers
 import com.tokopedia.officialstore.R
 
 private fun clickOnViewChild(viewId: Int) = object: ViewAction {

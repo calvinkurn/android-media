@@ -15,13 +15,20 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.common.ViewActionUtils
-import com.tokopedia.home_account.view.adapter.viewholder.*
+import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.ProfileViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.SettingViewHolder
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
 
 
 object ViewUtils {

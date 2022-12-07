@@ -5,7 +5,6 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.common.utils.setTextOnTextFieldUnify2
-import org.hamcrest.Matchers
 
 
 fun userUserConsentDebugViewRobot(action: UserConsentDebugViewRobot.() -> Unit): UserConsentDebugViewRobot {

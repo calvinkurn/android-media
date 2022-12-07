@@ -8,7 +8,6 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ScrollToAction
 import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 /*
 this class is modified version of ScrollToAction

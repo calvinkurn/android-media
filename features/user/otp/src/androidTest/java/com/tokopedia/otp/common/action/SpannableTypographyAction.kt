@@ -8,7 +8,6 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 
 object SpannableTypographyAction {

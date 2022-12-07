@@ -14,7 +14,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.util.HumanReadables
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 
 /**

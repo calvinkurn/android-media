@@ -33,10 +33,10 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoItemViewHolder
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import java.lang.reflect.Type
 

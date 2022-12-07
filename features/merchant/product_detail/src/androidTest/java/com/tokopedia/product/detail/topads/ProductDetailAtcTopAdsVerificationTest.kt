@@ -2,14 +2,8 @@ package com.tokopedia.product.detail.topads
 
 import android.Manifest
 import android.content.Intent
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.PerformException
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -22,10 +16,7 @@ import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInte
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import com.tokopedia.unifycomponents.UnifyButton
-import org.hamcrest.Matchers
 import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 

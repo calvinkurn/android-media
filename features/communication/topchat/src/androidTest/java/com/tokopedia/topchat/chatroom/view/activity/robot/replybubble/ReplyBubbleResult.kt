@@ -8,8 +8,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleMatcher.matchReplyBoxChildWithId
 import com.tokopedia.topchat.matchers.withRecyclerView
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.not
 
 object ReplyBubbleResult {
 

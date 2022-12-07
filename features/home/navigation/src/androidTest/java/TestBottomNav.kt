@@ -10,12 +10,9 @@ import androidx.test.rule.ActivityTestRule
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar
 import com.tokopedia.navigation.test.R
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 

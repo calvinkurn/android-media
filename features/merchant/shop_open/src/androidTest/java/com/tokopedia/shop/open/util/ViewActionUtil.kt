@@ -8,7 +8,6 @@ import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 fun clickClickableSpan(textToClick: CharSequence): ViewAction {
     return object : ViewAction {

@@ -10,7 +10,6 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.util.HumanReadables
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 /**
  * @author by jessica on 09/02/21

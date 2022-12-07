@@ -24,9 +24,9 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
@@ -38,7 +38,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
 import org.junit.*
 import java.util.*

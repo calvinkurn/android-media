@@ -9,10 +9,15 @@ import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.stub.Config
-import com.tokopedia.sessioncommon.data.*
+import com.tokopedia.sessioncommon.data.Error
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.data.LoginToken
+import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.test.application.annotations.UiTest
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 
 @UiTest

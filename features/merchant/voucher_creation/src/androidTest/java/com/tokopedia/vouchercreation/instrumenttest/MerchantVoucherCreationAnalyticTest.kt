@@ -19,7 +19,6 @@ import com.tokopedia.vouchercreation.mock.MerchantVoucherCreationMockModelConfig
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

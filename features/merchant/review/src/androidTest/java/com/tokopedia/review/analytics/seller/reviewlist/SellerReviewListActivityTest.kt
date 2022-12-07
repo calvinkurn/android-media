@@ -20,7 +20,6 @@ import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.review.stub.inbox.presentation.activity.InboxReputationActivityStub
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
 

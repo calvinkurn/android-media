@@ -39,7 +39,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRob
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.verifyVariantLabel
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Test
 

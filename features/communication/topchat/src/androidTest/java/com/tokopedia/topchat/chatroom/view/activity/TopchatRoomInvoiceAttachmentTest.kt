@@ -15,7 +15,6 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers
 import org.junit.Test
 
 @UiTest

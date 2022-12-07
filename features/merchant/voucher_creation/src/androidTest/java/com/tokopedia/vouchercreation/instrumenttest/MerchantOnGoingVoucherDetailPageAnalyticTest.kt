@@ -28,7 +28,6 @@ import com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActi
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

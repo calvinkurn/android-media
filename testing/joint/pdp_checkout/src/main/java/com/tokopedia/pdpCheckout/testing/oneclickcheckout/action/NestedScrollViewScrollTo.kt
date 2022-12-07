@@ -9,7 +9,6 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 // Duplicate Class For ScrollToViewAction with support for NestedScrollView descendants
 class NestedScrollViewScrollTo(scrollToAction: ViewAction = ViewActions.scrollTo()): ViewAction by scrollToAction {

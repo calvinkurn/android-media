@@ -27,13 +27,11 @@ import com.tokopedia.deals.pdp.common.DealsPDPIdlingResource
 import com.tokopedia.deals.pdp.mock.DealsPDPGQLMockResponse
 import com.tokopedia.deals.pdp.rule.DealsIdlingResourceTestRule
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
-import com.tokopedia.graphql.GraphqlCacheManager
-import com.tokopedia.test.application.annotations.UiTest
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.deals.test.R
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.annotations.CassavaTest
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before

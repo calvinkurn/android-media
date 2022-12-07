@@ -17,7 +17,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.test.application.util.ViewUtils
 import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
 
 object CommonActions {

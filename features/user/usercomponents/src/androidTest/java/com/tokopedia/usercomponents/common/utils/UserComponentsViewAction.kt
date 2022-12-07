@@ -8,10 +8,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.TreeIterables
 import com.tokopedia.unifycomponents.TextFieldUnify2
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 fun setTextOnTextFieldUnify2(text: String, resId: Int): ViewAction {
     return object : ViewAction {

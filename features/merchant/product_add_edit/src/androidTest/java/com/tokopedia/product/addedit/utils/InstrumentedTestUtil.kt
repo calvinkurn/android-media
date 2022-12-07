@@ -10,7 +10,6 @@ import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProduct
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_TABLE
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_VERSION_10
 import com.tokopedia.test.application.espresso_component.CommonMatcher
-import org.hamcrest.Matchers
 
 object InstrumentedTestUtil {
 

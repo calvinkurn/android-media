@@ -3,9 +3,9 @@ package com.tokopedia.productcard.test.utils
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.unifycomponents.QuantityEditorUnify
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
 
 @Suppress("UNCHECKED_CAST")

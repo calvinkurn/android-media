@@ -21,8 +21,8 @@ import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
 import com.tokopedia.topchat.matchers.withRecyclerView
-import org.hamcrest.Matchers.greaterThan
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.greaterThan
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Test
 

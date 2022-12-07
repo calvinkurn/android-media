@@ -10,14 +10,13 @@ import com.tokopedia.media.R
 import com.tokopedia.media.picker.helper.utils.ImageGenerator
 import com.tokopedia.media.picker.helper.utils.PickerPreviewViewActions
 import com.tokopedia.media.picker.helper.utils.VideoGenerator
+import com.tokopedia.media.picker.helper.utils.convertExoPlayerDuration
 import com.tokopedia.media.picker.ui.PreviewTest
+import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
 import com.tokopedia.media.preview.ui.activity.pagers.adapter.PreviewPagerAdapter
+import com.tokopedia.media.preview.ui.player.VideoControlView
 import com.tokopedia.media.preview.ui.widget.pager.PreviewViewPager
 import com.tokopedia.picker.common.PickerResult
-import org.hamcrest.Matchers
-import com.tokopedia.media.picker.helper.utils.convertExoPlayerDuration
-import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
-import com.tokopedia.media.preview.ui.player.VideoControlView
 import org.junit.Assert.*
 
 
