@@ -47,16 +47,6 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
         toolbar.setVisibility(View.GONE);
         Uri uri = getIntent().getData();
         Bundle extras = getIntent().getExtras();
-        if (uri != null) {
-            List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri, true);
-            slug = params.get(0);
-            if (extras == null) {
-                extras = new Bundle();
-                extras.putString(DealDetailsPresenter.HOME_DATA, slug);
-            } else {
-                extras.putString(DealDetailsPresenter.HOME_DATA, slug);
-            }
-        }
         return DealDetailsFragment.createInstance(extras);
 }
 
