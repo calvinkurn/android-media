@@ -29,10 +29,14 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
+import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
+import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionProgressDialog
+import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
 import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.*
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.ProductCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
@@ -71,7 +75,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/finished_campaign_banner.png"
 
         @JvmStatic
-        fun newInstance(flashSaleId: Long, totalSubmittedProduct: Long = 0): CampaignDetailFragment {
+        fun newInstance(
+            flashSaleId: Long,
+            totalSubmittedProduct: Long = 0
+        ): CampaignDetailFragment {
             val fragment = CampaignDetailFragment()
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
@@ -109,6 +116,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private var finishedCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var finishedCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
+    private var flashSaleName: String = ""
     private val flashSaleId by lazy {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
         if (isOpenedFromApplink(appLinkData)) {
@@ -154,6 +162,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             .add(LoadingDelegateAdapter())
             .build()
     }
+    private var sseProgressDialog: FlashSaleProductSseSubmissionProgressDialog? = null
 
     override fun getScreenName(): String =
         CampaignDetailFragment::class.java.canonicalName.orEmpty()
@@ -175,6 +184,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         setupProductSubmissionCount()
         setupChooseProductRedirection()
         observeCampaignDetail()
@@ -187,6 +197,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         loadCampaignDetailData()
     }
 
+    private fun init() {
+        context?.let {
+            sseProgressDialog = FlashSaleProductSseSubmissionProgressDialog(it)
+        }
+    }
+
     private fun observeCampaignDetail() {
         viewModel.campaign.observe(viewLifecycleOwner) { flashSale ->
             hideLoading()
@@ -194,6 +210,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 when (flashSale) {
                     is Success -> {
                         setupView(flashSale.data)
+                        getFlashSaleSubmissionProgress(flashSaleId)
                     }
                     is Fail -> {
                         showGlobalError()
@@ -326,7 +343,81 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             CampaignDetailViewModel.UiEffect.ShowIneligibleAccessWarning -> {
                 navigateToIneligibleAccessPage()
             }
+            is CampaignDetailViewModel.UiEffect.OnSseOpen -> {
+                listenToExistingSse()
+            }
+            is CampaignDetailViewModel.UiEffect.OnProductSseSubmissionProgress -> {
+                checkProductSubmissionProgressStatus(effect.flashSaleProductSubmissionSseResult)
+            }
+            is CampaignDetailViewModel.UiEffect.OnSuccessAcknowledgeProductSubmissionSse -> {
+                totalSubmittedProduct = effect.totalSubmittedProduct.toLong()
+                showProductSubmissionResultToaster(flashSaleName)
+            }
         }
+    }
+
+    private fun checkProductSubmissionProgressStatus(
+        flashSaleProductSubmissionSseResult: FlashSaleProductSubmissionSseResult
+    ) {
+        val currentProcessedProduct = flashSaleProductSubmissionSseResult.countProcessedProduct
+        val totalProduct = flashSaleProductSubmissionSseResult.countAllProduct
+        when (flashSaleProductSubmissionSseResult.status) {
+            FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS -> {
+                showProductSubmissionSseProgressDialog()
+            }
+            FlashSaleProductSubmissionSseResult.Status.PARTIAL_SUCCESS -> {
+                hideProductSubmissionSseProgressDialog()
+                showDialogProductSubmissionSsePartialSuccess()
+            }
+            FlashSaleProductSubmissionSseResult.Status.COMPLETE -> {
+                hideProductSubmissionSseProgressDialog()
+                acknowledgeProductSubmissionSse(
+                    flashSaleProductSubmissionSseResult.campaignId,
+                    flashSaleProductSubmissionSseResult.countProcessedProduct
+                )
+            }
+            else -> {}
+        }
+        updateProductSubmissionProgressDialog(currentProcessedProduct, totalProduct)
+    }
+
+    private fun showProductSubmissionSseProgressDialog() {
+        sseProgressDialog?.show()
+    }
+
+    private fun hideProductSubmissionSseProgressDialog() {
+        sseProgressDialog?.hide()
+    }
+
+    private fun acknowledgeProductSubmissionSse(campaignId: String, totalSubmittedProduct: Int) {
+        viewModel.acknowledgeProductSubmissionSse(campaignId, totalSubmittedProduct)
+    }
+
+    private fun updateProductSubmissionProgressDialog(
+        currentProcessedProduct: Int,
+        totalProduct: Int
+    ) {
+        sseProgressDialog?.updateData(currentProcessedProduct, totalProduct)
+    }
+
+    private fun showDialogProductSubmissionSsePartialSuccess() {
+        context?.let {
+            val productSseSubmissionErrorDialog = FlashSaleProductSseSubmissionDialog(it)
+            productSseSubmissionErrorDialog.show(getString(R.string.stfs_dialog_error_product_submission_sse_title_partial_success)) {
+                openFlashSaleProductListSseSubmissionErrorBottomSheet()
+            }
+        }
+    }
+
+    private fun openFlashSaleProductListSseSubmissionErrorBottomSheet() {
+        val bottomSheet = FlashSaleProductListSseSubmissionErrorBottomSheet.createInstance(
+            flashSaleId.toString()
+        )
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun listenToExistingSse() {
+        viewModel.listenToOpenedSse(flashSaleId.toString())
     }
 
     private fun setupHeader(flashSale: FlashSale) {
@@ -342,7 +433,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupView(flashSale: FlashSale) {
-        showProductSubmissionResultToaster(flashSale.name)
+        flashSaleName = flashSale.name
+        showProductSubmissionResultToaster(flashSaleName)
         setupHeader(flashSale)
         when (flashSale.tabName) {
             FlashSaleListPageTab.UPCOMING -> setupUpcoming(flashSale)
@@ -365,7 +457,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupProductSubmissionCount() {
-        totalSubmittedProduct = arguments?.getLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT).orZero()
+        totalSubmittedProduct =
+            arguments?.getLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT).orZero()
     }
 
     private fun showProductSubmissionResultToaster(flashSaleName: String) {
@@ -384,6 +477,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 totalSubmittedProduct = Int.ZERO.toLong()
             }
         }
+    }
+
+    private fun getFlashSaleSubmissionProgress(flashSaleId: Long) {
+        viewModel.getFlashSaleSubmissionProgress(flashSaleId.toString())
     }
 
     /**

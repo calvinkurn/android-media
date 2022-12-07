@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ViewFlipper
+        android:id="@+id/user_feed_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_feed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/feed_component_dp_1"
+            tools:listitem="@layout/up_item_user_post" />
+
+        <include layout="@layout/up_shimmer_user_feed" />
+
+        <com.tokopedia.unifycomponents.LocalLoad
+            android:id="@+id/global_error_feed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/unify_space_16"
+            android:layout_marginRight="@dimen/unify_space_16"
+            app:unify_local_load_description="@string/up_common_failed_desc"
+            app:unify_local_load_title="@string/up_common_failed_title" />
+
+        <include
+            android:id="@+id/empty_feed"
+            layout="@layout/up_layout_error_empty_user_post" />
+
+    </ViewFlipper>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

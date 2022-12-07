@@ -100,6 +100,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
 
+    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
