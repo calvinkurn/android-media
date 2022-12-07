@@ -119,13 +119,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onCtaBroadcastClicked(uiModel: ImageAnnouncementUiModel) {
-        var url: String? = uiModel.broadcastCtaUrl
-        // If broadcast cta url null, use default redirect url
-        if (url.isNullOrBlank()) {
-            url = uiModel.redirectUrl
-        }
-
-        // Open the webview page when url is not null
+        val url: String = uiModel.broadcastCtaUrl ?: uiModel.redirectUrl
+        // Open the page when url is not null or blank
         if (url.isNotBlank()) {
             onGoToWebView(url, uiModel.attachmentId)
         }
