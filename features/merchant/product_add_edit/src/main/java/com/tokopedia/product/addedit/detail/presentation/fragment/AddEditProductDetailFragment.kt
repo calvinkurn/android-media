@@ -49,7 +49,6 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.CATEGORY_EDU_URL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
@@ -91,10 +90,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.customview.TypoCorrectionView
-import com.tokopedia.product.addedit.detail.presentation.dialog.PriceSuggestionBottomSheet
-import com.tokopedia.product.addedit.detail.presentation.dialog.PriceSuggestionInfoBottomSheet
-import com.tokopedia.product.addedit.detail.presentation.dialog.ServiceFeeBottomSheet
-import com.tokopedia.product.addedit.detail.presentation.dialog.TitleValidationBottomSheet
+import com.tokopedia.product.addedit.detail.presentation.dialog.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
@@ -204,6 +200,7 @@ class AddEditProductDetailFragment :
     private var additionalInfoView: Typography? = null
     private var commissionInfoTipsView: TipsUnify? = null
     private var disabledCategoryInfoView: ImageUnify? = null
+    private var categoryChangeBottomSheet: CategoryChangeBottomSheet? = null
 
     // product specification
     private var productSpecificationLayout: ViewGroup? = null
@@ -1859,6 +1856,7 @@ class AddEditProductDetailFragment :
         additionalInfoView = binding?.addEditProductCategoryLayout?.tpgAdditionalInfo
         commissionInfoTipsView = binding?.addEditProductCategoryLayout?.tuCommissionInfoTips
         disabledCategoryInfoView = binding?.addEditProductCategoryLayout?.iuCtaInformation
+        categoryChangeBottomSheet = CategoryChangeBottomSheet.createInstance()
 
         context?.let {
             categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
@@ -1895,10 +1893,7 @@ class AddEditProductDetailFragment :
             }
         }
         disabledCategoryInfoView?.setOnClickListener {
-            RouteManager.route(
-                context,
-                String.format("%s?url=%s", ApplinkConst.WEBVIEW, CATEGORY_EDU_URL)
-            )
+            categoryChangeBottomSheet?.show(childFragmentManager)
         }
     }
 

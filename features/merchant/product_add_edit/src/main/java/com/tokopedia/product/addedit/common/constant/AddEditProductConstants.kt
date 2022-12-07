@@ -49,6 +49,4 @@ object AddEditProductConstants {
 
     // only applied to CE (Commission Engine) service
     const val GET_COMMISSION_ENGINE_REGULAR_MERCHANT = 999
-
-    const val CATEGORY_EDU_URL = "https://www.tokopedia.com/help/article/st-1023-faq-seputar-deteksi-kategori-produk"
 }
