@@ -55,6 +55,7 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -128,6 +129,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         TrackApp.getInstance().initializeAllApis();
 
         super.onCreate();
+        initRobust();
         initLogManager();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.setContextData(this);
@@ -143,6 +145,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         showDevOptNotification();
+    }
+
+    private void initRobust() {
+        if(remoteConfig.getBoolean(com.tokopedia.remoteconfig.RemoteConfigKey.SELLER_ENABLE_ROBUST, true)) {
+            TokoPatch.init(this);
+        }
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {

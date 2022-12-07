@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:closeButtonVisibility="gone"
-                app:descriptionText="@string/tm_kupon_single_ticker"
+                app:descriptionText="@string/tm_vip_coupon_ticker_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tickerShapeType="full"
