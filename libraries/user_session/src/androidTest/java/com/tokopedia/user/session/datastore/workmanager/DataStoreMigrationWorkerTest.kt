@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.ListenableWorker.Result
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
-import com.tokopedia.di.FakeComponentFactory
+import com.tokopedia.user.session.di.FakeComponentFactory
 import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.DataStorePreference
@@ -18,6 +18,7 @@ import com.tokopedia.user.session.di.ComponentFactory
 import com.tokopedia.utils.SampleUserModel
 import com.tokopedia.utils.getSampleUser
 import com.tokopedia.utils.setSample
+import io.mockk.every
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
@@ -39,19 +40,21 @@ class DataStoreMigrationWorkerTest {
         val factory = FakeComponentFactory()
         ComponentFactory.instance = factory
         spykedPref = factory.spykedPreference
+        every { spykedPref.isDataStoreEnabled() } returns false
     }
 
     @Test
     fun basic_migration_test() {
-        val sample = SampleUserModel(
-            true, "fakeId", "Foo Name", "fooToken", "barToken"
-        )
-        with(UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())) {
-            setSample(sample)
-        }
-
-        val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
         runBlocking {
+            val sample = SampleUserModel(
+                true, "fakeId", "Foo Name", "fooToken", "barToken"
+            )
+            with(UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())) {
+                setSample(sample)
+            }
+            every { spykedPref.isDataStoreEnabled() } returns true
+
+            val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
             val result = worker.doWork()
 
             val dataStore = UserSessionDataStoreClient.getInstance(context)
@@ -61,13 +64,14 @@ class DataStoreMigrationWorkerTest {
     }
 
     @Test
-    fun When_run_twice_Then_sync_is_passed() {
+    fun when_run_twice_Then_sync_is_passed() {
         val sample = SampleUserModel(
             true, "fakeId", "Foo Name", "fooToken", "barToken"
         )
         with(UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())) {
             setSample(sample)
         }
+        every { spykedPref.isDataStoreEnabled() } returns true
 
         val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
         runBlocking {
@@ -83,13 +87,15 @@ class DataStoreMigrationWorkerTest {
     }
 
     @Test
-    fun When_usersession_is_set_after_migration_Then_datastore_is_updated_and_next_migration_is_noop() {
+    fun when_usersession_is_set_after_migration_Then_datastore_is_updated_and_next_migration_is_noop() {
         val sample = SampleUserModel(
-            true, "fakeId", "Foo Name", "fooToken", "barToken"
+            true, "fakeId", "Foo Name", "fooToken", "barToken", true
         )
-        val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead()).apply {
-            setSample(sample)
-        }
+        val userSession =
+            UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead()).apply {
+                setSample(sample)
+            }
+        every { spykedPref.isDataStoreEnabled() } returns true
 
         val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
         runBlocking {
@@ -105,25 +111,5 @@ class DataStoreMigrationWorkerTest {
             assertThat(secondResult, `is`(Result.success(workDataOf(OPERATION_KEY to NO_OPS))))
         }
     }
-
-    @Test
-    fun basic_migration_test_with_non_default_value() {
-        val sample = SampleUserModel(
-            true, "fakeId", "Foo Name", "fooToken", "barToken", true
-        )
-        with(UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())) {
-            setSample(sample)
-        }
-
-        val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
-        runBlocking {
-            val result = worker.doWork()
-
-            val dataStore = UserSessionDataStoreClient.getInstance(context)
-            assertThat(result, `is`(Result.success(workDataOf(OPERATION_KEY to MIGRATED))))
-            assertThat(dataStore.getSampleUser(), equalTo(sample))
-        }
-    }
-
 
 }

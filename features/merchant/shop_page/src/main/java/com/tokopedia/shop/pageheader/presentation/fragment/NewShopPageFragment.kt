@@ -119,6 +119,7 @@ import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.SHOP_PAGE_SHARED_PREFERENCE
 import com.tokopedia.shop.common.constant.ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
@@ -127,15 +128,10 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.model.HomeLayoutData
-import com.tokopedia.shop.common.data.model.ShopAffiliateData
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
-import com.tokopedia.shop.common.util.ShopAsyncErrorException
-import com.tokopedia.shop.common.util.ShopLogger
-import com.tokopedia.shop.common.util.ShopPageExceptionHandler
-import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
@@ -158,6 +154,8 @@ import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.common.data.model.ShopAffiliateData
+import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
@@ -222,6 +220,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
 import java.net.URLEncoder
+import java.util.*
 import javax.inject.Inject
 
 class NewShopPageFragment :
@@ -264,7 +263,6 @@ class NewShopPageFragment :
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
         const val SAVED_IS_CONFETTI_ALREADY_SHOWN = "saved_is_confetti_already_shown"
         const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
-        const val SHOP_PAGE_PREFERENCE = "SHOP_PAGE_PREFERENCE"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
@@ -1000,7 +998,7 @@ class NewShopPageFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
-        sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_PREFERENCE, Context.MODE_PRIVATE)
+        sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(NewShopPageViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopPageMiniCartSharedViewModel = ViewModelProviders.of(requireActivity()).get(
@@ -1056,7 +1054,7 @@ class NewShopPageFragment :
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
-                    setAffiliateData(this)
+                    checkAffiliateAppLink(this)
                     getMarketingServiceQueryParamData(this)
                 }
                 handlePlayBroadcastExtra(this@run)
@@ -1088,7 +1086,14 @@ class NewShopPageFragment :
                 permissionListener = this
             )
         }
-        initAffiliateCookie()
+        shopLandingPageInitAffiliateCookie()
+    }
+
+    private fun checkAffiliateAppLink(uri: Uri) {
+        val isAppLinkContainAffiliateUuid = uri.queryParameterNames.contains(QUERY_AFFILIATE_UUID)
+        if(isAppLinkContainAffiliateUuid) {
+            setAffiliateData(uri)
+        }
     }
 
     private fun getMarketingServiceQueryParamData(data: Uri) {
@@ -1097,14 +1102,18 @@ class NewShopPageFragment :
     }
 
     private fun setAffiliateData(uri: Uri) {
+        val affiliateTrackerId = UUID.randomUUID().toString()
+        val affiliateChannel = uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
+        shopViewModel?.saveAffiliateChannel(affiliateChannel)
         affiliateData = ShopAffiliateData(
             uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
-            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
+            affiliateChannel,
+            affiliateTrackerId
         )
     }
 
-    private fun initAffiliateCookie() {
-        shopViewModel?.initAffiliateCookie(
+    private fun shopLandingPageInitAffiliateCookie() {
+        shopViewModel?.shopLandingPageInitAffiliateCookie(
             affiliateCookieHelper,
             affiliateData?.affiliateUUId.orEmpty(),
             affiliateData?.affiliateChannel.orEmpty(),
@@ -1677,7 +1686,7 @@ class NewShopPageFragment :
         val selectedTabName = getSelectedTabName()
         if (selectedTabName.isNotEmpty()) {
             if (!isMyShop) {
-                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId)
+                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId, affiliateData)
                 shopPageTracking?.sendBranchScreenShop(userId)
             }
         }
@@ -3140,14 +3149,14 @@ class NewShopPageFragment :
                     setComposition(result)
                     playAnimation()
                     this.addAnimatorListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(p0: Animator?) {}
+                        override fun onAnimationStart(p0: Animator) {}
 
-                        override fun onAnimationEnd(p0: Animator?) {
+                        override fun onAnimationEnd(p0: Animator) {
                             hide()
                         }
 
-                        override fun onAnimationCancel(p0: Animator?) {}
-                        override fun onAnimationRepeat(p0: Animator?) {}
+                        override fun onAnimationCancel(p0: Animator) {}
+                        override fun onAnimationRepeat(p0: Animator) {}
                     })
                 }
             }
@@ -3171,6 +3180,25 @@ class NewShopPageFragment :
     }
 
     fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
+        return affiliateCookieHelper.createAffiliateLink(
+            basePdpAppLink,
+            affiliateData?.affiliateTrackerId.orEmpty()
+        )
+    }
+
+    fun createAffiliateCookieAtcProduct(
+        productId: String,
+        isVariant: Boolean,
+        stockQty: Int
+    ) {
+        shopViewModel?.createAffiliateCookieShopAtcProduct(
+            affiliateData?.affiliateUUId.orEmpty(),
+            affiliateCookieHelper,
+            affiliateData?.affiliateChannel.orEmpty(),
+            productId,
+            isVariant,
+            stockQty,
+            shopId
+        )
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
@@ -100,6 +101,8 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var deleteCartUseCase: DeleteCartUseCase
 
     @RelaxedMockK
+    lateinit var sharedPreferences: SharedPreferences
+    @RelaxedMockK
     lateinit var context: Context
 
     @RelaxedMockK
@@ -145,22 +148,23 @@ abstract class ShopPageProductListViewModelTestFixture {
         )
 
         shopPageProductListResultViewModel = ShopPageProductListResultViewModel(
-            userSessionInterface,
-            getShopInfoUseCase,
-            getShopEtalaseByShopUseCase,
-            getShopProductUseCase,
-            gqlGetShopSortUseCase,
-            shopProductSortMapper,
-            testCoroutineDispatcherProvider,
-            getShopFilterBottomSheetDataUseCase,
-            getShopFilterProductCountUseCase,
-            restrictionEngineNplUseCase,
-            toggleFavouriteShopUseCase,
-            getFollowStatusUseCase,
-            gqlShopPageGetDynamicTabUseCase,
-            addToCartUseCase,
-            updateCartUseCase,
-            deleteCartUseCase
+                userSessionInterface,
+                getShopInfoUseCase,
+                getShopEtalaseByShopUseCase,
+                getShopProductUseCase,
+                gqlGetShopSortUseCase,
+                shopProductSortMapper,
+                testCoroutineDispatcherProvider,
+                getShopFilterBottomSheetDataUseCase,
+                getShopFilterProductCountUseCase,
+                restrictionEngineNplUseCase,
+                toggleFavouriteShopUseCase,
+                getFollowStatusUseCase,
+                gqlShopPageGetDynamicTabUseCase,
+                addToCartUseCase,
+                updateCartUseCase,
+                deleteCartUseCase,
+                sharedPreferences
         )
     }
 }

@@ -10,7 +10,7 @@
         },
         "recommendations": [
           {
-            "iconUrl": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png",
+            "iconUrl": "https://images.tokopedia.net/img/recharge/operator/telkomsel.png",
             "title": "100.000",
             "clientNumber": "081232323232",
             "appLink": "tokopedia://digital/form?category_id=9&client_number=081232323232&product_id=559&operator_id=113&is_from_widget=true",
@@ -26,7 +26,7 @@
         "promos": [
           {
             "id": 2312,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/24/41966928/41966928_92c36a38-a9f6-4a87-9cc0-56aa1aae767a.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/8/24/41966928/41966928_92c36a38-a9f6-4a87-9cc0-56aa1aae767a.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-payday",
             "status": 1,
@@ -36,7 +36,7 @@
           },
           {
             "id": 2430,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/24/41966928/41966928_46cc6908-5736-458b-a50c-789069244ee7.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/8/24/41966928/41966928_46cc6908-5736-458b-a50c-789069244ee7.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-cashback-3/",
             "status": 1,
@@ -46,7 +46,7 @@
           },
           {
             "id": 2397,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/31/42484317/42484317_a917be56-8f7e-490a-be79-767d8f8130ed.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/7/31/42484317/42484317_a917be56-8f7e-490a-be79-767d8f8130ed.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
             "status": 1,
@@ -56,7 +56,7 @@
           },
           {
             "id": 2252,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/31/42484317/42484317_c806c50c-e1c8-42c8-bca6-9ca0ed2453a4.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/7/31/42484317/42484317_c806c50c-e1c8-42c8-bca6-9ca0ed2453a4.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-cashback-7/",
             "status": 1,
@@ -66,7 +66,7 @@
           },
           {
             "id": 2424,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/14/42484317/42484317_d4337082-a443-4881-9440-cd814c530196.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/8/14/42484317/42484317_d4337082-a443-4881-9440-cd814c530196.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-cashback-10/",
             "status": 1,
@@ -76,7 +76,7 @@
           },
           {
             "id": 1573,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/9/42484317/42484317_e1fee503-1aab-49e1-97a3-77cc5112870e.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/8/9/42484317/42484317_e1fee503-1aab-49e1-97a3-77cc5112870e.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
             "status": 1,
@@ -86,7 +86,7 @@
           },
           {
             "id": 2053,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/4/2/50732530/50732530_048258b0-fc1c-46a8-8eb4-b6935eaeb61d.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/4/2/50732530/50732530_048258b0-fc1c-46a8-8eb4-b6935eaeb61d.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-telkomsel-2",
             "status": 1,
@@ -96,7 +96,7 @@
           },
           {
             "id": 2529,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/27/42484317/42484317_848eb75b-36c9-4bef-a254-115418ae5638.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/8/27/42484317/42484317_848eb75b-36c9-4bef-a254-115418ae5638.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-bca/",
             "status": 1,
@@ -106,7 +106,7 @@
           },
           {
             "id": 1751,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/2/50732530/50732530_08625252-c6ad-4f5f-80a4-10e1266dacc8.jpg",
+            "filename": "https://images.tokopedia.net/img/banner/2020/6/2/50732530/50732530_08625252-c6ad-4f5f-80a4-10e1266dacc8.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-telkomsel",
             "status": 1,

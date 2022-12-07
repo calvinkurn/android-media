@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:isScrollContainer="false"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -23,6 +23,17 @@
             android:layout_marginTop="16dp"
             android:paddingBottom="16dp"
             android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_maps_unavailable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:descriptionText="@string/maps_unavailable_ticker_description"
+                app:tickerType="error"
+                app:tickerShapeType="loose"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                tools:visibility="visible"/>
 
             <include
                 android:id="@+id/card_address_pinpoint"

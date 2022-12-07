@@ -21,7 +21,6 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
@@ -45,9 +44,11 @@ import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataVi
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
+import com.tokopedia.tokopedianow.searchcategory.analytics.ProductFeedbackLoopTracker
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
+import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
@@ -92,6 +93,23 @@ class TokoNowSearchFragment :
     override fun getNavToolbarHint() =
             listOf(HintData(tokoNowSearchViewModel.query, tokoNowSearchViewModel.query))
 
+    override fun configureNavToolbar() {
+        super.configureNavToolbar()
+        navToolbar?.setOnBackButtonClickListener{
+            if(getViewModel().isProductFeedbackLoopVisible()){
+                getViewModel().feedbackLoopTrackingMutableLivedata.value?.let {
+                    sendProductFeedbackLoopEvent(
+                        ProductFeedbackLoopTracker::sendClickBackBtnFeedbackLoop,
+                        getUserId(),
+                        it.first,
+                        it.second
+                    )
+                }
+            }
+            activity?.onBackPressed()
+        }
+    }
+
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.Q}=${tokoNowSearchViewModel.query}" + "&" +
@@ -110,6 +128,7 @@ class TokoNowSearchFragment :
 
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
         getViewModel().addToCartBroadMatchTrackingLiveData.observe(this::sendATCBroadMatchTrackingEvent)
+        getViewModel().feedbackLoopTrackingMutableLivedata.observe(this::sendFeedbackLoopImpressionEvent)
     }
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
@@ -158,7 +177,8 @@ class TokoNowSearchFragment :
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
             broadMatchListener = this,
-            recomWidgetBindPageNameListener = this
+            recomWidgetBindPageNameListener = this,
+            feedbackWidgetListener = this
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -440,4 +460,41 @@ class TokoNowSearchFragment :
             AdultManager.showAdultPopUp(this, AR_ORIGIN_TOKONOW_SEARCH_RESULT, "${querySafeModel.warehouseId} - ${tokoNowSearchViewModel.query}")
         }
     }
+
+    private fun sendFeedbackLoopImpressionEvent(data:Pair<String,Boolean>?){
+        data?.let {
+            sendProductFeedbackLoopEvent(
+                ProductFeedbackLoopTracker::sendImpressionFeedbackLoop,
+                getUserId(),
+                it.first,
+                it.second
+            )
+        }
+    }
+
+    override fun onFeedbackCtaClicked() {
+        getViewModel().feedbackLoopTrackingMutableLivedata.value?.let {
+            sendProductFeedbackLoopEvent(
+                ProductFeedbackLoopTracker::sendClickSarankanCtaFeedbackLoop,
+                getUserId(),
+                it.first,
+                it.second
+            )
+            var trackData:Triple<String,String,Boolean>?=null
+            getViewModel().feedbackLoopTrackingMutableLivedata.value?.let { it1 ->
+                trackData = Triple(getUserId(),it1.first,it1.second)
+            }
+            TokoNowProductFeedbackBottomSheet().also { it1 ->
+                it1.showBottomSheet(activity?.supportFragmentManager,view,trackData)
+            }
+        }
+    }
+
+    private fun sendProductFeedbackLoopEvent(event:(userId:String,warehouseId:String,isSearchResult:Boolean) -> Unit,
+                                               userId:String,
+                                               warehouseId:String,
+                                               isSearchResult:Boolean){
+            event.invoke(userId,warehouseId,isSearchResult)
+    }
+
 }
