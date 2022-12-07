@@ -99,11 +99,8 @@ import com.tokopedia.wishlist_common.R as wishlistR
  */
 
 @Suppress("LateinitUsage")
-class ContentDetailFragment :
-    BaseDaggerFragment(),
-    ContentDetailPostViewHolder.CDPListener,
-    ProductItemInfoBottomSheet.Listener,
-    ShareBottomsheetListener,
+class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.CDPListener,
+    ProductItemInfoBottomSheet.Listener, ShareBottomsheetListener,
     FeedFollowersOnlyBottomSheet.Listener {
 
     private var cdpRecyclerView: RecyclerView? = null
@@ -119,6 +116,7 @@ class ContentDetailFragment :
     private lateinit var productTagBS: ProductItemInfoBottomSheet
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
+
     private val adapter = ContentDetailAdapter(
         ContentDetailListener = this
     )
@@ -133,6 +131,7 @@ class ContentDetailFragment :
     lateinit var analyticsTracker: ContentDetailNewPageAnalytics
 
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
 
     private lateinit var shareData: LinkerData
     private var isShareFromProductBottomSheet: Boolean = false
@@ -166,7 +165,7 @@ class ContentDetailFragment :
     }
 
     private fun initVar() {
-        contentDetailSource = arguments?.getString(ContentDetailActivity.PARAM_ENTRY_POINT) ?: ContentDetailActivity.SHARE_LINK
+        contentDetailSource = arguments?.getString(ContentDetailActivity.PARAM_SOURCE) ?: ContentDetailActivity.SHARE_LINK
         postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID) ?: ContentDetailActivity.DEFAULT_POST_ID
 
         if (contentDetailSource == SOURCE_USER_PROFILE) {
@@ -187,7 +186,7 @@ class ContentDetailFragment :
                         is Success -> onSuccessGetUserProfileFeedPost(it.data)
                         is Fail -> showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
                     }
-                }
+                },
             )
             getCDPPostFirstPostData.observe(viewLifecycleOwner, {
                 when (it) {
@@ -246,11 +245,8 @@ class ContentDetailFragment :
 
         setupView(view)
 
-        if (contentDetailSource == SOURCE_USER_PROFILE) {
-            viewModel.fetchUserProfileFeedPost(visitedUserID, currentPosition)
-        } else {
-            viewModel.getContentDetail(postId)
-        }
+        if (contentDetailSource == SOURCE_USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID, currentPosition)
+        else viewModel.getContentDetail(postId)
 
         observeLikeContent()
         observeWishlist()
@@ -279,11 +275,8 @@ class ContentDetailFragment :
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (contentDetailSource == SOURCE_USER_PROFILE) {
-                    viewModel.fetchUserProfileFeedPost(visitedUserID)
-                } else {
-                    viewModel.getContentDetailRecommendation(postId)
-                }
+                if (contentDetailSource == SOURCE_USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID)
+                else viewModel.getContentDetailRecommendation(postId)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -314,15 +307,14 @@ class ContentDetailFragment :
             OPEN_KOL_COMMENT -> if (resultCode == Activity.RESULT_OK) {
                 val serverErrorMsg = data.getStringExtra(COMMENT_ARGS_SERVER_ERROR_MSG)
                 if (!TextUtils.isEmpty(serverErrorMsg)) {
-                    // TODO check toaster is as per requirement
+                    //TODO check toaster is as per requirement
                     view?.let {
                         Toaster.build(
                             it,
                             serverErrorMsg ?: "",
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR,
-                            getString(kolR.string.cta_refresh_feed)
-                        )
+                            getString(kolR.string.cta_refresh_feed))
                     }
                 } else {
                     onSuccessAddDeleteKolComment(
@@ -366,6 +358,7 @@ class ContentDetailFragment :
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(data.postList)
         viewModel.getContentDetailRecommendation(postId)
+
     }
 
     private fun onSuccessGetCDPRecomData(data: ContentDetailUiModel) {
@@ -375,10 +368,11 @@ class ContentDetailFragment :
     }
 
     private fun showToast(message: String, type: Int, actionText: String? = null) {
-        if (actionText?.isEmpty() == false) {
+        if (actionText?.isEmpty() == false)
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
-        } else {
+        else {
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
+
         }
     }
 
@@ -409,7 +403,7 @@ class ContentDetailFragment :
             trackerIdSgc = if (!feedXCard.like.isLiked) "33260" else "33261",
             trackerIdSgcRecom = if (!feedXCard.like.isLiked) "34304" else "34305"
         )
-        if (isDoubleTap) {
+        if (isDoubleTap)
             analyticsTracker.sendClickDoubleTapLikeUnlikeSgcImageEvent(
                 getContentDetailAnalyticsData(
                     feedXCard,
@@ -417,25 +411,24 @@ class ContentDetailFragment :
                 ),
                 !feedXCard.like.isLiked
             )
-        } else {
-            analyticsTracker.sendClickLikeSgcImageEvent(
-                getContentDetailAnalyticsData(
+        else analyticsTracker.sendClickLikeSgcImageEvent(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                trackerId = getTrackerID(
                     feedXCard,
-                    trackerId = getTrackerID(
-                        feedXCard,
-                        trackerIdSgc = "33259",
-                        trackerIdVod = "34152",
-                        trackerIdVodRecomm = "34170",
-                        trackerIdSgcRecom = "34283",
-                        trackerIdAsgcRecom = "34096",
-                        trackerIdSgcVideo = "34613",
-                        trackerIdAsgc = "34108",
-                        trackerIdLongVideo = "34503",
-                        trackerIdLongVideoRecomm = "34521"
-                    )
+                    trackerIdSgc = "33259",
+                    trackerIdVod = "34152",
+                    trackerIdVodRecomm = "34170",
+                    trackerIdSgcRecom = "34283",
+                    trackerIdAsgcRecom = "34096",
+                    trackerIdSgcVideo = "34613",
+                    trackerIdAsgc = "34108",
+                    trackerIdLongVideo = "34503",
+                    trackerIdLongVideoRecomm = "34521"
                 )
             )
-        }
+        )
+
 
         if (!userSession.isLoggedIn) {
             onGoToLogin()
@@ -451,9 +444,8 @@ class ContentDetailFragment :
 
     private fun showNoInterNetDialog(context: Context) {
         val sheet = FeedNetworkErrorBottomSheet.newInstance(false)
-        if (!sheet.isAdded) {
+        if (!sheet.isAdded)
             sheet.show(childFragmentManager, "")
-        }
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
@@ -509,30 +501,30 @@ class ContentDetailFragment :
         if (rowNumber < adapter.getList().size) {
             val feedXCardData = adapter.getList()[rowNumber]
 
-            feedXCardData.followers.isFollowed = !feedXCardData.followers.isFollowed
-            if (!feedXCardData.followers.isFollowed && data.action.isUnFollowing) {
-                showToast(
-                    getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
-                    Toaster.TYPE_NORMAL
-                )
-            } else {
-                showToast(
-                    getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
-                    Toaster.TYPE_NORMAL
-                )
-            }
+                feedXCardData.followers.isFollowed = !feedXCardData.followers.isFollowed
+                if (!feedXCardData.followers.isFollowed && data.action.isUnFollowing) {
+                    showToast(
+                        getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
+                        Toaster.TYPE_NORMAL
+                    )
+                } else  {
+                    showToast(
+                        getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
+                        Toaster.TYPE_NORMAL
+                    )
+                }
 
-            if (feedXCardData.followers.isFollowed) {
-                feedXCardData.followers.transitionFollow = true
-            }
+                if (feedXCardData.followers.isFollowed)
+                    feedXCardData.followers.transitionFollow = true
 
-            val followUnfollowPayload = Bundle().apply {
-                putBoolean(ContentDetailPostViewHolder.IMAGE_POST_FOLLOW_UNFOLLOW, true)
-            }
-            adapter.notifyItemChanged(
-                rowNumber,
-                followUnfollowPayload
-            )
+                val followUnfollowPayload = Bundle().apply {
+                    putBoolean(ContentDetailPostViewHolder.IMAGE_POST_FOLLOW_UNFOLLOW, true)
+                }
+                adapter.notifyItemChanged(
+                    rowNumber,
+                    followUnfollowPayload
+                )
+
         }
     }
 
@@ -548,16 +540,13 @@ class ContentDetailFragment :
             }
 
             view.count = view.count + 1
+
         }
     }
 
     private fun openCommentPage(
-        rowNumber: Int,
-        id: Int,
-        authorType: String,
-        isVideo: Boolean,
-        isFollowed: Boolean,
-        type: String
+        rowNumber: Int, id: Int, authorType: String,
+        isVideo: Boolean, isFollowed: Boolean, type: String
     ) {
         val intent = RouteManager.getIntent(
             requireContext(),
@@ -594,7 +583,7 @@ class ContentDetailFragment :
             trackerIdLongVideoRecomm = "34522"
 
         )
-        if (isSeeMoreComment) {
+        if (isSeeMoreComment)
             analyticsTracker.sendClickLehatSemuaCommentClick(
                 getContentDetailAnalyticsData(
                     feedXCard,
@@ -607,21 +596,19 @@ class ContentDetailFragment :
                     )
                 )
             )
-        } else {
+        else
             analyticsTracker.sendClickCommentSgcImageEvent(
                 getContentDetailAnalyticsData(
                     feedXCard,
                     trackerId = trackerId
                 )
             )
-        }
 
         val media = feedXCard.media.firstOrNull()
         var authId = ""
         val authorType = feedXCard.author.type
-        if (authorType != 1) {
+        if (authorType != 1)
             authId = feedXCard.author.id
-        }
         openCommentPage(
             rowNumber = postPosition,
             id = feedXCard.id.toIntOrZero(),
@@ -633,6 +620,7 @@ class ContentDetailFragment :
     }
 
     override fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int) {
+
         rowNumberWhenShareClicked = postPosition
 
         val trackerId = getTrackerID(
@@ -674,31 +662,29 @@ class ContentDetailFragment :
                 .setDeepLink(feedXCard.appLink)
                 .setUri(feedXCard.webLink)
 
+
             shareData = shareDataBuilder.build()
             isShareFromProductBottomSheet = false
             showUniversalShareBottomSheet(getContentShareDataModel(feedXCard))
+
         }
+
     }
 
     private fun getContentShareDataModel(feedXCard: FeedXCard): ContentShareDataModel {
         val mediaUrl =
-            if (feedXCard.isTypeProductHighlight) {
-                feedXCard.products.firstOrNull()?.coverURL ?: ""
-            } else {
-                feedXCard.media.firstOrNull()?.mediaUrl ?: ""
-            }
+            if (feedXCard.isTypeProductHighlight) feedXCard.products.firstOrNull()?.coverURL ?: ""
+            else feedXCard.media.firstOrNull()?.mediaUrl ?: ""
 
         return ContentShareDataModel(
             id = feedXCard.id,
             name = feedXCard.author.name,
-            tnTitle = (
-                String.format(
-                    context?.getString(kolR.string.feed_share_title) ?: "",
-                    feedXCard.author.name
-                )
-                ),
+            tnTitle = (String.format(
+                context?.getString(kolR.string.feed_share_title) ?: "",
+                feedXCard.author.name
+            )),
             tnImage = mediaUrl,
-            ogUrl = mediaUrl
+            ogUrl = mediaUrl,
         )
     }
 
@@ -706,15 +692,14 @@ class ContentDetailFragment :
         ContentShareDataModel(
             id = product.id,
             name = product.shopName,
-            tnTitle = (
-                String.format(
-                    context?.getString(kolR.string.feed_share_title) ?: "",
-                    product.shopName
-                )
-                ),
+            tnTitle = (String.format(
+                context?.getString(kolR.string.feed_share_title) ?: "",
+                product.shopName
+            )),
             tnImage = product.imgUrl,
-            ogUrl = product.imgUrl
+            ogUrl = product.imgUrl,
         )
+
 
     private fun showUniversalShareBottomSheet(contentShareDataModel: ContentShareDataModel) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
@@ -746,17 +731,17 @@ class ContentDetailFragment :
             }
         }
         universalShareBottomSheet?.let {
-            if (!it.isAdded) {
+            if (!it.isAdded)
                 it.show(fragmentManager, this, null)
-            }
         }
     }
+
 
     private fun onShareProduct(
         item: ProductPostTagModelNew
     ) {
         rowNumberWhenShareClicked = item.positionInFeed
-        if (!item.isFollowed && item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_IMAGE) {
+        if (!item.isFollowed && item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_IMAGE)
             analyticsTracker.sendClickShareProductSgcRecommEvent(
                 ContentDetailPageAnalyticsDataModel(
                     activityId = item.postId,
@@ -767,7 +752,7 @@ class ContentDetailFragment :
                     source = contentDetailSource
                 )
             )
-        } else {
+        else
             analyticsTracker.sendClickShareSgcImageBottomSheet(
                 ContentDetailPageAnalyticsDataModel(
                     activityId = item.postId,
@@ -786,20 +771,15 @@ class ContentDetailFragment :
                         trackerIdLongVideoRecomm = "34536"
                     ),
                     source = contentDetailSource
-                )
+                ),
             )
-        }
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
         val desc = context?.getString(feedComponentR.string.cdp_share_default_text)?.let {
             String.format(
-                it,
-                item.product.name,
-                "%s",
-                item.shopName,
-                item.priceFmt
+                it, item.product.name, "%s", item.shopName, item.priceFmt
             )
         }
 
@@ -818,6 +798,7 @@ class ContentDetailFragment :
             isShareFromProductBottomSheet = true
             showUniversalShareBottomSheet(getContentShareDataModel(item))
         }
+
     }
 
     override fun onFollowUnfollowClicked(
@@ -825,7 +806,7 @@ class ContentDetailFragment :
         postPosition: Int,
         isFollowedFromRSRestrictionBottomSheet: Boolean
     ) {
-        if (!feedXCard.followers.isFollowed) {
+        if (!feedXCard.followers.isFollowed)
             analyticsTracker.sendClickFollowAsgcRecomEvent(
                 getContentDetailAnalyticsData(
                     feedXCard,
@@ -840,13 +821,12 @@ class ContentDetailFragment :
                     )
                 )
             )
-        }
 
         if (feedXCard.isTypeUGC) {
             viewModel.followUnFollowUser(
                 isFollow = feedXCard.followers.isFollowed,
                 encryptedUserID = visitedUserEncryptedID,
-                currentPosition = postPosition
+                currentPosition = postPosition,
             )
         } else {
             viewModel.followShop(
@@ -881,15 +861,14 @@ class ContentDetailFragment :
                 canUnfollow = feedXCard.followers.isFollowed,
                 isDeletable = feedXCard.deletable
             )
-            if (!sheet.isAdded) {
+            if (!sheet.isAdded)
                 sheet.show(childFragmentManager, "")
-            }
             sheet.onReport = {
-                if (feedXCard.isTypeProductHighlight && feedXCard.followers.isFollowed) {
+                if (feedXCard.isTypeProductHighlight && feedXCard.followers.isFollowed)
                     analyticsTracker.sendClickThreeDotsMenuLaporkanAsgcEvent(
                         getContentDetailAnalyticsData(feedXCard)
                     )
-                } else {
+                else
                     analyticsTracker.sendClickReportSgcImageEvent(
                         getContentDetailAnalyticsData(
                             feedXCard,
@@ -901,7 +880,6 @@ class ContentDetailFragment :
                             )
                         )
                     )
-                }
                 analyticsTracker.sendClickThreeDotsMenuSgcImageEvent(
                     getContentDetailAnalyticsData(
                         feedXCard,
@@ -914,8 +892,7 @@ class ContentDetailFragment :
                             trackerIdLongVideo = "34509",
                             trackerIdLongVideoRecomm = "34527"
                         )
-                    ),
-                    selectedOption = "laporkan"
+                    ), selectedOption = "laporkan"
                 )
                 if (userSession.isLoggedIn) {
                     context?.let {
@@ -940,11 +917,10 @@ class ContentDetailFragment :
                                         postPosition,
                                         feedXCard.id,
                                         reasonType,
-                                        reasonDesc
+                                        reasonDesc,
                                     )
                                 }
-                            }
-                        )
+                            })
                         reportBottomSheet.onClosedClicked = {
                             analyticsTracker.sendClickXThreeDotsReportSheet(
                                 getContentDetailAnalyticsData(
@@ -963,10 +939,11 @@ class ContentDetailFragment :
                                     trackerId = getTrackerID(
                                         feedXCard,
                                         trackerIdSgc = "33289",
-                                        trackerIdSgcRecom = "34301"
+                                        trackerIdSgcRecom = "34301",
                                     )
-                                )
+                                ),
                             )
+
                         }
                         reportBottomSheet.show(
                             childFragmentManager,
@@ -989,17 +966,13 @@ class ContentDetailFragment :
                             trackerIdLongVideo = "34509",
                             trackerIdLongVideoRecomm = "34527"
                         )
-                    ),
-                    selectedOption = "unfollow"
+                    ), selectedOption = "unfollow"
                 )
-                if (userSession.isLoggedIn) {
+                if (userSession.isLoggedIn)
                     onFollowUnfollowClicked(
                         feedXCard,
                         postPosition
-                    )
-                } else {
-                    onGoToLogin()
-                }
+                    ) else onGoToLogin()
             }
             sheet.onDelete = { createDeleteDialog(feedXCard.id, postPosition) }
             sheet.onDismiss = {
@@ -1008,7 +981,7 @@ class ContentDetailFragment :
                         feedXCard,
                         trackerId = getTrackerID(
                             feedXCard,
-                            trackerIdSgc = "33273"
+                            trackerIdSgc = "33273",
                         )
                     )
                 )
@@ -1022,6 +995,7 @@ class ContentDetailFragment :
                         )
                     )
                 )
+
             }
             sheet.onEdit = {
                 openEditPostPage(feedXCard.text, postId, feedXCard.author.id)
@@ -1042,9 +1016,7 @@ class ContentDetailFragment :
                     getContentDetailAnalyticsData(
                         feedXCard,
                         trackerId = getTrackerID(
-                            feedXCard,
-                            trackerIdSgc = "33294",
-                            trackerIdSgcRecom = "34600"
+                            feedXCard, trackerIdSgc = "33294", trackerIdSgcRecom = "34600"
                         )
                     )
                 )
@@ -1059,26 +1031,25 @@ class ContentDetailFragment :
         shouldTrack: Boolean,
         isFullScreen: Boolean
     ) {
+
         if (isFullScreen) {
-            if (feedXCard.isTypeVOD) {
+            if (feedXCard.isTypeVOD)
                 analyticsTracker.sendClickFullScreenVOD(
                     getContentDetailAnalyticsData(feedXCard)
                 )
-            } else if (feedXCard.isTypeLongVideo) {
+            else if (feedXCard.isTypeLongVideo)
                 analyticsTracker.sendClickFullScreenLongVideo(
                     getContentDetailAnalyticsData(feedXCard)
                 )
-            }
         } else {
-            if (feedXCard.isTypeVOD) {
+            if (feedXCard.isTypeVOD)
                 analyticsTracker.sendClickLanjutMenontonVod(
                     getContentDetailAnalyticsData(feedXCard)
                 )
-            } else if (feedXCard.isTypeLongVideo) {
+            else if (feedXCard.isTypeLongVideo)
                 analyticsTracker.sendClickLanjutMenontonLongVideo(
                     getContentDetailAnalyticsData(feedXCard)
                 )
-            }
         }
 
         val finalApplink = if (!shouldTrack) {
@@ -1094,7 +1065,7 @@ class ContentDetailFragment :
                 .appendQueryParameter(SOURCE_TYPE, VOD_POST)
                 .build().toString()
         }
-        if (feedXCard.isTypeLongVideo) {
+        if (feedXCard.isTypeLongVideo)
             onVideoPlayerClicked(
                 postPosition,
                 0,
@@ -1103,24 +1074,21 @@ class ContentDetailFragment :
                 feedXCard.followers.isFollowed,
                 currentTime
             )
-        } else {
+        else
             onGoToLink(finalApplink)
-        }
     }
 
     override fun onShopHeaderItemClicked(feedXCard: FeedXCard, isShopNameBelow: Boolean) {
-        if (isShopNameBelow) {
+        if (isShopNameBelow)
             analyticsTracker.sendClickShopNameBelowSgcImageEvent(
                 getContentDetailAnalyticsData(
                     feedXCard,
                     trackerId = getTrackerID(
-                        feedXCard,
-                        trackerIdSgc = "33264",
-                        trackerIdSgcRecom = "34302"
+                        feedXCard, trackerIdSgc = "33264", trackerIdSgcRecom = "34302"
                     )
                 )
             )
-        } else {
+        else
             analyticsTracker.sendClickShopSgcImageEvent(
                 getContentDetailAnalyticsData(
                     feedXCard,
@@ -1138,7 +1106,6 @@ class ContentDetailFragment :
                     )
                 )
             )
-        }
         onGoToLink(feedXCard.author.appLink)
     }
 
@@ -1149,11 +1116,10 @@ class ContentDetailFragment :
         hitTrackerApi: Boolean
     ) {
         if (hitTrackerApi) {
-            if (feedXCard.isTypeLongVideo) {
+            if (feedXCard.isTypeLongVideo)
                 viewModel.trackLongVideoView(feedXCard.id, rowNumber)
-            } else {
+            else
                 viewModel.trackVisitChannel(feedXCard.playChannelID, rowNumber)
-            }
         }
     }
 
@@ -1215,9 +1181,8 @@ class ContentDetailFragment :
     }
 
     override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
-        if (::productTagBS.isInitialized) {
+        if (::productTagBS.isInitialized)
             productTagBS.dismiss()
-        }
         viewModel.fetchLatestFeedPostWidgetData(card.id, positionInFeed)
     }
 
@@ -1227,6 +1192,7 @@ class ContentDetailFragment :
             adapter.notifyItemRemoved(positionInFeed)
         }
     }
+
 
     override fun onLihatProdukClicked(
         feedXCard: FeedXCard,
@@ -1281,10 +1247,11 @@ class ContentDetailFragment :
                             trackerIdSgc = "33266",
                             trackerIdSgcRecom = "34276",
                             trackerIdAsgcRecom = "34088",
-                            trackerIdAsgc = "34102"
+                            trackerIdAsgc = "34102",
                         )
                     )
                 )
+
             }
             productTagBS.disMissed = {
                 analyticsTracker.sendClickGreyAreaProductBottomSheet(
@@ -1300,9 +1267,8 @@ class ContentDetailFragment :
                     )
                 )
             }
-            if (shouldShowFollowerBottomSheet(feedXCard)) {
+            if (shouldShowFollowerBottomSheet(feedXCard))
                 showFollowerBottomSheet(postPosition, feedXCard.campaign.status)
-            }
         }
     }
 
@@ -1380,11 +1346,11 @@ class ContentDetailFragment :
         intent.putExtra(PARAM_AUTHOR_TYPE, authorType)
         intent.putExtra(ContentDetailArgumentModel.PARAM_SALE_TYPE, feedXCard.campaign.name)
         intent.putExtra(ContentDetailArgumentModel.PARAM_SALE_STATUS, feedXCard.campaign.status)
-        if (shouldShowFollowerBottomSheet(feedXCard)) {
+        if (shouldShowFollowerBottomSheet(feedXCard))
             startActivityForResult(intent, OPEN_FEED_DETAIL)
-        } else {
+        else
             startActivity(intent)
-        }
+
     }
 
     private fun shouldShowFollowerBottomSheet(card: FeedXCard) =
@@ -1405,6 +1371,7 @@ class ContentDetailFragment :
             )
         }
 
+
         onGoToLink(redirectUrl)
     }
 
@@ -1414,21 +1381,17 @@ class ContentDetailFragment :
                 feedXCard,
                 postPosition,
                 trackerId = getTrackerID(
-                    feedXCard,
-                    trackerIdSgc = "33258",
-                    trackerIdSgcRecom = "34274"
+                    feedXCard, trackerIdSgc = "33258", trackerIdSgcRecom = "34274"
                 )
             )
         )
     }
 
     override fun onPostImpressed(feedXCard: FeedXCard, postPosition: Int) {
-        if (feedXCard.isTypeVOD) {
+        if (feedXCard.isTypeVOD)
             analyticsTracker.sendImpressionPostVOD(
                 getContentDetailAnalyticsData(
-                    feedXCard,
-                    postPosition,
-                    trackerId = getTrackerID(
+                    feedXCard, postPosition, trackerId = getTrackerID(
                         feedXCard,
                         trackerIdVod = "34150",
                         trackerIdVodRecomm = "34167",
@@ -1437,7 +1400,7 @@ class ContentDetailFragment :
                     )
                 )
             )
-        } else {
+        else
             analyticsTracker.sendImpressionPost(
                 getContentDetailAnalyticsData(
                     feedXCard,
@@ -1452,7 +1415,6 @@ class ContentDetailFragment :
                     )
                 )
             )
-        }
     }
 
     override fun onDestroyView() {
@@ -1464,6 +1426,7 @@ class ContentDetailFragment :
             reportBottomSheet.onDestroy()
         }
     }
+
 
     private fun createDeleteDialog(contentId: String, rowNumber: Int) {
         val dialog =
@@ -1497,6 +1460,7 @@ class ContentDetailFragment :
         startActivity(intent)
     }
 
+
     private fun onVideoPlayerClicked(
         positionInFeed: Int,
         contentPosition: Int,
@@ -1506,7 +1470,7 @@ class ContentDetailFragment :
         startTime: Long
 
     ) {
-        // TODO check start time logic
+        //TODO check start time logic
         if (activity != null) {
             val videoDetailIntent =
                 RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
@@ -1541,7 +1505,7 @@ class ContentDetailFragment :
         context: Context,
         shopId: String
     ) {
-        if (item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed && item.mediaType == TYPE_IMAGE) {
+        if (item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed && item.mediaType == TYPE_IMAGE)
             analyticsTracker.sendClickThreeDotsSgcRecomm(
                 ContentDetailPageAnalyticsDataModel(
                     activityId = item.postId,
@@ -1553,7 +1517,7 @@ class ContentDetailFragment :
                     source = contentDetailSource
                 )
             )
-        } else {
+        else
             analyticsTracker.sendClickThreeDotsSgcImageEventForBottomSheet(
                 ContentDetailPageAnalyticsDataModel(
                     activityId = item.postId,
@@ -1574,15 +1538,13 @@ class ContentDetailFragment :
                     source = contentDetailSource
                 )
             )
-        }
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)
-        if (!sheet.isAdded) {
+        if (!sheet.isAdded)
             sheet.show(childFragmentManager, "")
-        }
         sheet.shareProductCB = {
             onShareProduct(
                 item
@@ -1663,7 +1625,7 @@ class ContentDetailFragment :
     ) {
         if (adapter.getList().size > positionInFeed) {
             val item = adapter.getList()[positionInFeed]
-            if (item.tags.isNotEmpty()) {
+            if (item.tags.isNotEmpty())
                 analyticsTracker.sendClickProductSgcImageEvent(
                     ContentDetailPageAnalyticsDataModel(
                         activityId = item.id,
@@ -1688,7 +1650,6 @@ class ContentDetailFragment :
                         source = contentDetailSource
                     )
                 )
-            }
         }
 
         onGoToLink(redirectUrl)
@@ -1784,7 +1745,7 @@ class ContentDetailFragment :
                 postTagItem.id,
                 postTagItem.productName,
                 postTagItem.price.toString(),
-                shopId
+                shopId,
             )
         } else {
             onGoToLogin()
@@ -1801,7 +1762,7 @@ class ContentDetailFragment :
         mediaType: String,
         rowNumber: Int
     ) {
-        if (type == TYPE_FEED_X_CARD_POST && !isFollowed && mediaType == TYPE_IMAGE) {
+        if (type == TYPE_FEED_X_CARD_POST && !isFollowed && mediaType == TYPE_IMAGE)
             analyticsTracker.sendClickWishlistProductSgcRecommEvent(
                 ContentDetailPageAnalyticsDataModel(
                     activityId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId,
@@ -1813,7 +1774,7 @@ class ContentDetailFragment :
                     source = contentDetailSource
                 )
             )
-        } else {
+        else
             analyticsTracker.sendClickWishlistProductEvent(
                 ContentDetailPageAnalyticsDataModel(
                     activityId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId,
@@ -1840,7 +1801,6 @@ class ContentDetailFragment :
                     source = contentDetailSource
                 )
             )
-        }
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
@@ -1888,12 +1848,10 @@ class ContentDetailFragment :
         if (rowNumber in 0 until newList.size) {
             val card = newList[rowNumber]
             val campaign = card.campaign
-            if (campaign.campaignId == data.campaignId) {
+            if (campaign.campaignId == data.campaignId)
                 campaign.reminder = data.reminderStatus
-            }
-            if (shouldShowToaster) {
+            if (shouldShowToaster)
                 showToastOnSuccessReminderSetForFSTorRS(card)
-            }
 
             val reminderBtnPayload = Bundle().apply {
                 putBoolean(ContentDetailPostViewHolder.PAYLOAD_REMINDER_BTN_STATUS_UPDATED, true)
@@ -1915,8 +1873,7 @@ class ContentDetailFragment :
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.Off -> showToast(
                 getString(
                     com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_deactivate_message
-                ),
-                Toaster.TYPE_NORMAL
+                ), Toaster.TYPE_NORMAL
             )
         }
     }
@@ -1931,83 +1888,72 @@ class ContentDetailFragment :
 
     //region observer
     private fun observeWishlist() {
-        viewModel.observableWishlist.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ContentDetailResult.Success -> onWishListSuccess(
-                        it.data.rowNumber,
-                        it.data.productId
+        viewModel.observableWishlist.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ContentDetailResult.Success -> onWishListSuccess(
+                    it.data.rowNumber,
+                    it.data.productId
+                )
+                is ContentDetailResult.Failure -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(
+                        errorMessage,
+                        requireView()
                     )
-                    is ContentDetailResult.Failure -> {
-                        val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(
-                            errorMessage,
-                            requireView()
-                        )
-                    }
                 }
             }
-        )
+        })
     }
 
     private fun observeFollowUnfollow() {
-        viewModel.followShopObservable.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ContentDetailResult.Success -> {
-                        if (it.data.isFollowedFromRSRestrictionBottomSheet && it.data.action.isFollowing) {
-                            if (::productTagBS.isInitialized) {
-                                productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
-                                    Toaster.TYPE_NORMAL,
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
-                                )
-                                feedFollowersOnlyBottomSheet?.dismiss()
-                            }
+        viewModel.followShopObservable.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    if (it.data.isFollowedFromRSRestrictionBottomSheet && it.data.action.isFollowing) {
+                        if (::productTagBS.isInitialized) {
+                            productTagBS.showToasterOnBottomSheetOnSuccessFollow(
+                                getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                Toaster.TYPE_NORMAL,
+                                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
+                            )
+                            feedFollowersOnlyBottomSheet?.dismiss()
                         }
-                        onSuccessFollowShop(it.data)
                     }
-                    is ContentDetailResult.Failure -> {
-                        when (it.error) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                showNoInterNetDialog(requireContext())
-                            }
-                            else -> {
-                                val errorMessage = if (it.error is CustomUiMessageThrowable) {
-                                    requireContext().getString(it.error.errorMessageId)
-                                } else {
-                                    ErrorHandler.getErrorMessage(requireContext(), it.error)
-                                }
+                    onSuccessFollowShop(it.data)
+                }
+                is ContentDetailResult.Failure -> {
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString(it.error.errorMessageId)
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error)
 
-                                Toaster.build(
-                                    requireView(),
-                                    errorMessage,
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.abstraction.R.string.title_try_again)
-                                ) { view ->
-                                    it.onRetry()
-                                }
-                                    .show()
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
                             }
+                                .show()
                         }
                     }
                 }
             }
-        )
+        })
         viewModel.followUserObservable.observe(viewLifecycleOwner) {
             when (it) {
                 is ContentDetailResult.Success -> {
                     (activity as ContentDetailActivity).setActionToRefresh(true)
                     currentPosition = it.data.currentPosition
 
-                    val toastMessage = if (it.data.isFollow) {
-                        getString(com.tokopedia.feedcomponent.R.string.feed_unfollow_ugc_success_toaster_text)
-                    } else {
-                        getString(com.tokopedia.feedcomponent.R.string.feed_follow_ugc_success_toaster_text)
-                    }
+                    val toastMessage = if (it.data.isFollow) getString(com.tokopedia.feedcomponent.R.string.feed_unfollow_ugc_success_toaster_text)
+                    else getString(com.tokopedia.feedcomponent.R.string.feed_follow_ugc_success_toaster_text)
                     showToast(toastMessage, Toaster.TYPE_NORMAL)
                 }
                 is ContentDetailResult.Failure -> {
@@ -2018,9 +1964,7 @@ class ContentDetailFragment :
                         else -> {
                             val errorMessage = if (it.error is CustomUiMessageThrowable) {
                                 requireContext().getString(it.error.errorMessageId)
-                            } else {
-                                ErrorHandler.getErrorMessage(requireContext(), it.error)
-                            }
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error)
 
                             Toaster.build(
                                 requireView(),
@@ -2072,86 +2016,75 @@ class ContentDetailFragment :
     }
 
     private fun observeReportContent() {
-        viewModel.reportResponse.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    ContentDetailResult.Loading -> {
-                        // todo: add loading state?
-                    }
-                    is ContentDetailResult.Success -> {
-                        reportBottomSheet.setFinalView()
-                        onSuccessDeletePost(it.data.rowNumber)
-                    }
-                    is ContentDetailResult.Failure -> {
-                        reportBottomSheet.dismiss()
-                        when (it.error) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                showNoInterNetDialog(requireContext())
+        viewModel.reportResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Success -> {
+                    reportBottomSheet.setFinalView()
+                    onSuccessDeletePost(it.data.rowNumber)
+                }
+                is ContentDetailResult.Failure -> {
+                    reportBottomSheet.dismiss()
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage =
+                                ErrorHandler.getErrorMessage(requireContext(), it.error)
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
                             }
-                            else -> {
-                                val errorMessage =
-                                    ErrorHandler.getErrorMessage(requireContext(), it.error)
-                                Toaster.build(
-                                    requireView(),
-                                    errorMessage,
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.abstraction.R.string.title_try_again)
-                                ) { view ->
-                                    it.onRetry()
-                                }
-                                    .show()
-                            }
+                                .show()
                         }
                     }
                 }
             }
-        )
+        })
     }
 
     private fun observeVideoViewData() {
-        viewModel.vodViewData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    ContentDetailResult.Loading -> {}
-                    is ContentDetailResult.Success -> onSuccessAddViewVODPost(it.data.rowNumber)
-                    is ContentDetailResult.Failure -> {
-                        // TODO fail case
-                    }
+        viewModel.vodViewData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {}
+                is ContentDetailResult.Success -> onSuccessAddViewVODPost(it.data.rowNumber)
+                is ContentDetailResult.Failure -> {
+                    //TODO fail case
                 }
             }
-        )
+        })
     }
 
     private fun observeLikeContent() {
-        viewModel.getLikeKolResp.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    ContentDetailResult.Loading -> {}
-                    is ContentDetailResult.Success -> {
-                        onSuccessLikeDislikeKolPost(it.data.rowNumber)
-                    }
-                    is ContentDetailResult.Failure -> {
-                        when (it.error) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                showNoInterNetDialog(requireContext())
-                            }
-                            else -> {
-                                val errorMessage = if (it.error is CustomUiMessageThrowable) {
-                                    requireContext().getString(it.error.errorMessageId)
-                                } else {
-                                    ErrorHandler.getErrorMessage(requireContext(), it.error)
-                                }
-                                showToast(errorMessage, Toaster.TYPE_ERROR)
-                            }
+        viewModel.getLikeKolResp.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {}
+                is ContentDetailResult.Success -> {
+                    onSuccessLikeDislikeKolPost(it.data.rowNumber)
+                }
+                is ContentDetailResult.Failure -> {
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString(it.error.errorMessageId)
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error)
+                            showToast(errorMessage, Toaster.TYPE_ERROR)
                         }
                     }
                 }
             }
-        )
+        })
     }
 
     private fun onWishListSuccess(
@@ -2186,9 +2119,8 @@ class ContentDetailFragment :
                         )
                     )
                     RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
-                }
-            ).show()
-            // row number is set to 0 as asgc product bottomsheet always has 1 product
+                }).show()
+            //row number is set to 0 as asgc product bottomsheet always has 1 product
             productTagBS.changeWishlistIconOnWishlistSuccess(0)
         }
     }
@@ -2197,15 +2129,14 @@ class ContentDetailFragment :
         dissmisByGreyArea = false
         if (adapter.getList().size > rowNumberWhenShareClicked) {
             val card = adapter.getList()[rowNumberWhenShareClicked]
-            if (!isShareFromProductBottomSheet) {
+            if (!isShareFromProductBottomSheet)
                 analyticsTracker.sendClickShareOptionInShareBottomSheet(
                     getContentDetailAnalyticsData(
                         card,
                         shareMedia = shareModel.socialMediaName ?: ""
                     )
                 )
-            }
-            // hit only for sgc
+            //hit only for sgc
             if (isShareFromProductBottomSheet) {
                 isShareFromProductBottomSheet = false
                 analyticsTracker.sendClickShareSgcImageBottomSheet(
@@ -2213,10 +2144,10 @@ class ContentDetailFragment :
                         card,
                         trackerId = getTrackerID(
                             card,
-                            trackerIdSgc = "33272"
+                            trackerIdSgc = "33272",
                         ),
                         shareMedia = shareModel.socialMediaName ?: ""
-                    )
+                    ),
                 )
             }
             universalShareBottomSheet?.dismiss()
@@ -2224,38 +2155,33 @@ class ContentDetailFragment :
 
         val linkerShareData = DataMapper().getLinkerShareData(shareData)
         LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(
-                0, linkerShareData,
-                object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        context?.let {
-                            var shareString =
-                                if (shareData.description.contains("%s")) {
-                                    String.format(
-                                        shareData.description,
-                                        linkerShareData?.shareUri ?: ""
-                                    )
-                                } else {
-                                    shareData.description + "\n" + linkerShareData?.shareUri
-                                }
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    context?.let {
 
-                            SharingUtil.executeShareIntent(
-                                shareModel,
-                                linkerShareData,
-                                activity,
-                                view,
-                                shareString
-                            )
+                        var shareString =
+                            if (shareData.description.contains("%s")) String.format(
+                                shareData.description,
+                                linkerShareData?.shareUri ?: ""
+                            ) else
+                                shareData.description + "\n" + linkerShareData?.shareUri
 
-                            universalShareBottomSheet?.dismiss()
-                        }
-                    }
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareData,
+                            activity,
+                            view,
+                            shareString
+                        )
 
-                    override fun onError(linkerError: LinkerError?) {
-                        // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+                        universalShareBottomSheet?.dismiss()
                     }
                 }
-            )
+
+                override fun onError(linkerError: LinkerError?) {
+                    //Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+                }
+            })
         )
     }
 
@@ -2264,6 +2190,7 @@ class ContentDetailFragment :
         if (adapter.getList().size > rowNumberWhenShareClicked) {
             val card = adapter.getList()[rowNumberWhenShareClicked]
             analyticsTracker.sendClickXShareDetailPage(getContentDetailAnalyticsData(card))
+
         }
     }
 
@@ -2303,9 +2230,9 @@ class ContentDetailFragment :
         trackerIdVodRecomm: String = "",
         trackerIdLongVideo: String = "",
         trackerIdLongVideoRecomm: String = "",
-        trackerIdSgcVideo: String = ""
+        trackerIdSgcVideo: String = "",
 
-    ) = when {
+        ) = when {
         feedXCard.isTypeVOD && feedXCard.followers.isFollowed -> trackerIdVod
         feedXCard.isTypeLongVideo && feedXCard.followers.isFollowed -> trackerIdLongVideo
         feedXCard.isTypeLongVideo && !feedXCard.followers.isFollowed -> trackerIdLongVideoRecomm
@@ -2316,6 +2243,7 @@ class ContentDetailFragment :
         feedXCard.isTypeSGC && !feedXCard.isTypeSgcVideo && !feedXCard.followers.isFollowed -> trackerIdSgcRecom
         feedXCard.isTypeSgcVideo -> trackerIdSgcVideo
         else -> ""
+
     }
 
     private fun getTrackerID(
@@ -2328,7 +2256,7 @@ class ContentDetailFragment :
         trackerIdVodRecomm: String = "",
         trackerIdLongVideo: String = "",
         trackerIdLongVideoRecomm: String = "",
-        trackerIdSgcVideo: String = ""
+        trackerIdSgcVideo: String = "",
     ) = when {
         item.postType == TYPE_FEED_X_CARD_PLAY && item.isFollowed -> trackerIdVod
         item.postType == TYPE_FEED_X_CARD_PLAY && !item.isFollowed -> trackerIdVodRecomm
@@ -2340,6 +2268,7 @@ class ContentDetailFragment :
         item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed && item.mediaType != TYPE_VIDEO -> trackerIdSgcRecom
         item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_VIDEO -> trackerIdSgcVideo
         else -> ""
+
     }
 
     override fun onPause() {
@@ -2347,78 +2276,67 @@ class ContentDetailFragment :
         analyticsTracker.sendPendingAnalytics()
     }
 
+
     private fun observeAddToCart() {
-        viewModel.atcRespData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    ContentDetailResult.Loading -> {
-                        // todo: add loading state?
-                    }
-                    is ContentDetailResult.Failure -> {
-                        val errorMessage =
-                            it.error.message ?: getString(networkR.string.default_request_error_unknown)
-                        showToast(
-                            errorMessage,
-                            Toaster.TYPE_ERROR
-                        )
-                    }
-                    is ContentDetailResult.Success -> {
-                        Toaster.build(
-                            requireView(),
-                            getString(kolR.string.feed_added_to_cart),
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_NORMAL,
-                            getString(kolR.string.feed_go_to_cart)
-                        ) {
-                            onAddToCartSuccess()
-                        }.show()
-                    }
+        viewModel.atcRespData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Failure -> {
+                    val errorMessage =
+                        it.error.message ?: getString(networkR.string.default_request_error_unknown)
+                    showToast(
+                        errorMessage,
+                        Toaster.TYPE_ERROR
+                    )
+                }
+                is ContentDetailResult.Success -> {
+                    Toaster.build(
+                        requireView(),
+                        getString(kolR.string.feed_added_to_cart),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        getString(kolR.string.feed_go_to_cart)
+                    ) {
+                        onAddToCartSuccess()
+                    }.show()
                 }
             }
-        )
+        })
     }
 
     private fun observeReminderBtnInitialState() {
-        viewModel.asgcReminderButtonInitialStatus.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ContentDetailResult.Success -> {
-                        onSuccessFetchStatusCampaignReminderButton(it.data)
-                    }
+        viewModel.asgcReminderButtonInitialStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    onSuccessFetchStatusCampaignReminderButton(it.data)
                 }
             }
-        )
+        })
     }
 
     private fun observeReminderBtnSetState() {
-        viewModel.asgcReminderButtonStatus.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ContentDetailResult.Success -> {
-                        onSuccessFetchStatusCampaignReminderButton(it.data, true)
-                    }
-                    is ContentDetailResult.Failure -> {
-                        showToast(ErrorHandler.getErrorMessage(context, it.error), Toaster.TYPE_ERROR)
-                    }
+        viewModel.asgcReminderButtonStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    onSuccessFetchStatusCampaignReminderButton(it.data, true)
+                }
+                is ContentDetailResult.Failure -> {
+                    showToast(ErrorHandler.getErrorMessage(context, it.error), Toaster.TYPE_ERROR)
                 }
             }
-        )
+        })
     }
 
     private fun observeFeedWidgetUpdatedData() {
-        viewModel.feedWidgetLatestData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
-                    }
+        viewModel.feedWidgetLatestData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                 }
             }
-        )
+        })
     }
 
     override fun onFollowClickedFromFollowBottomSheet(position: Int) {
