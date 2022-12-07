@@ -60,29 +60,34 @@ class VoucherEditPeriodViewModel @Inject constructor(
     }
 
     fun validateAndUpdateDateTime(voucher: Voucher?) {
-        _dateStartLiveData.value?.let { dateStart ->
-            _dateEndLiveData.value?.let { dateEnd ->
-                _hourStartLiveData.value?.let { hourStart ->
-                    _hourEndLiveData.value?.let { hourEnd ->
-                        voucher?.let {
-                            launchCatchError(dispatchers.io, {
-                                val token = getTokenUseCase.executeOnBackground()
-                                val response = changeVoucherPeriodUseCase.execute(
-                                    voucher,
-                                    token,
-                                    dateStart,
-                                    hourStart,
-                                    dateEnd,
-                                    hourEnd
-                                )
-                                _updateVoucherPeriodStateLiveData.value = Success(response)
-                            }, onError = {
-                                    _updateVoucherPeriodStateLiveData.value = Fail(it)
-                                })
-                        }
-                    }
-                }
-            }
+        val dateStart = _dateStartLiveData.value ?: return
+        val dateEnd = _dateEndLiveData.value ?: return
+        val hourStart = _hourStartLiveData.value ?: return
+        val hourEnd = _hourEndLiveData.value ?: return
+
+        voucher?.let {
+            launchCatchError(dispatchers.io, {
+                val token = getTokenUseCase.executeOnBackground()
+                changeVoucherPeriodUseCase.updateVoucherPeriod(
+                    ::onSuccessUpdateVoucher,
+                    ::onFailureUpdateVoucher,
+                    voucher,
+                    token,
+                    dateStart,
+                    hourStart,
+                    dateEnd,
+                    hourEnd
+                )
+            }, onError = {
+                })
         }
+    }
+
+    private fun onSuccessUpdateVoucher(result: UpdateVoucherResult) {
+        _updateVoucherPeriodStateLiveData.value = Success(result)
+    }
+
+    private fun onFailureUpdateVoucher(throwable: Throwable) {
+        _updateVoucherPeriodStateLiveData.value = Fail(throwable)
     }
 }
