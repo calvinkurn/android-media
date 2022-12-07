@@ -51,16 +51,21 @@ class AddLogoToolUiComponent constructor(
 
     private var logoUrl: String = ""
 
-    fun bottomSheet() = BottomSheetUnify().apply {
+    fun bottomSheet(isUpload: Boolean = true) = BottomSheetUnify().apply {
         val child = AddLogoTipsBottomsheetBinding.inflate(
             LayoutInflater.from(container().context),
             null,
             false
         )
 
-        child.addLogoBottomsheetButton.setOnClickListener {
-            listener.onPickerCall()
-            this.dismiss()
+        child.addLogoBottomsheetButton.apply {
+            if (isUpload) {
+                text = container().context.getString(editorR.string.add_logo_tips_upload_text)
+            }
+            setOnClickListener {
+                if (isUpload) listener.onPickerCall()
+                dismiss()
+            }
         }
 
         child.addLogoTipsMore.text = getTipsMoreText()

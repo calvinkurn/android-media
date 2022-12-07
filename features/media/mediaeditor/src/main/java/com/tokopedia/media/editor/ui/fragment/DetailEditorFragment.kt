@@ -1035,8 +1035,8 @@ class DetailEditorFragment @Inject constructor(
         return editHistory
     }
 
-    fun showAddLogoUploadTips() {
-        addLogoComponent.bottomSheet().show(childFragmentManager, bottomSheetTag)
+    fun showAddLogoUploadTips(isUpload: Boolean = true) {
+        addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, bottomSheetTag)
     }
 
     override fun getScreenName() = SCREEN_NAME
