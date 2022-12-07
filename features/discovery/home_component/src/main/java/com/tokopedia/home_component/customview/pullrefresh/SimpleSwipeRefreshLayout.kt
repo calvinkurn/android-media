@@ -326,7 +326,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray) {
         // If we are in the middle of consuming, a scroll, then we want to move the spinner back up
         // before allowing the list to scroll
-        if (dy > Int.ZERO && offsetY > Int.ZERO) {
+        if (dy > Int.ZERO && offsetY > Int.ZERO && consumed.size > Int.ONE) {
             if (dy > offsetY) {
                 consumed[Int.ONE] = dy - offsetY.toInt()
                 offsetY = MINIMUM_OFFSET
@@ -339,15 +339,17 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
         // Now let our nested parent consume the leftovers
         val parentConsumed: IntArray = mParentScrollConsumed
-        if (dispatchNestedPreScroll(
-                dx - consumed[Int.ZERO],
-                dy - consumed[Int.ONE],
-                parentConsumed,
-                null
-            )
-        ) {
-            consumed[Int.ZERO] += parentConsumed[Int.ZERO]
-            consumed[Int.ONE] += parentConsumed[Int.ONE]
+        if (consumed.size > Int.ONE) {
+            if (dispatchNestedPreScroll(
+                    dx - consumed[Int.ZERO],
+                    dy - consumed[Int.ONE],
+                    parentConsumed,
+                    null
+                )
+            ) {
+                consumed[Int.ZERO] += parentConsumed[Int.ZERO]
+                consumed[Int.ONE] += parentConsumed[Int.ONE]
+            }
         }
     }
 
@@ -391,7 +393,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         // nested scrolling parent has stopped handling events. We do that by using the
         // 'offset in window 'functionality to see if we have been moved from the event.
         // This is a decent indication of whether we should take over the event stream or not.
-        val dy: Int = dyUnconsumed + mParentOffsetInWindow[1]
+        val dy: Int = dyUnconsumed + if (mParentOffsetInWindow.size > Int.ONE) mParentOffsetInWindow[Int.ONE] else Int.ZERO
         if (dy < Int.ZERO && !canChildScrollUp()) {
             offsetY += abs(dy).toFloat()
             move()

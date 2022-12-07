@@ -93,7 +93,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
             pullRefreshIcon?.setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.home_component.R.color.dms_white_pull_refresh
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                 )
             )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE_WHITE
