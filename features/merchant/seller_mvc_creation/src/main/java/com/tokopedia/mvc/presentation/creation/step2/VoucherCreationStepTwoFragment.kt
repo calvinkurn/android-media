@@ -233,7 +233,9 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
         voucherNameSectionBinding?.run {
             tfVoucherName.editText.setText(voucherConfiguration.voucherName)
             tfVoucherName.editText.doOnTextChanged { text ->
-                viewModel.processEvent(VoucherCreationStepTwoEvent.ValidateVoucherNameInput(text))
+                viewModel.processEvent(
+                    VoucherCreationStepTwoEvent.OnVoucherNameChanged(text)
+                )
             }
         }
     }

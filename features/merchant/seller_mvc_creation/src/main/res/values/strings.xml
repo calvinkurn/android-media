@@ -252,5 +252,7 @@
     <string name="smvc_end_label">Berakhir</string>
     <string name="smvc_repeat_period_label">Ulangi di Bulan Berikutnya</string>
     <string name="smvc_repeat_for_label">Ulangi selama</string>
+    <string name="smvc_input_count_error">Minimal 5 karakter.</string>
+    <string name="smvc_input_empty_error">Kamu belum mengisi informasi ini.</string>
 
 </resources>

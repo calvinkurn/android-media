@@ -3,6 +3,8 @@ package com.tokopedia.mvc.presentation.creation.step2
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.presentation.creation.step2.helper.ErrorHelper
+import com.tokopedia.mvc.presentation.creation.step2.helper.ErrorMessageHelper
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
@@ -10,7 +12,8 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class VoucherCreationStepTwoViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val errorMessageHelper: ErrorMessageHelper
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -33,9 +36,8 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
             )
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(event.isPublic)
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep(currentState.voucherConfiguration)
-            is VoucherCreationStepTwoEvent.ValidateVoucherNameInput -> handleVoucherNameValidation(
-                event.voucherName
-            )
+            is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
+            is VoucherCreationStepTwoEvent.ValidateVoucherInput -> {}
         }
     }
 
@@ -69,33 +71,24 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
         }
     }
 
-    private fun handleVoucherNameValidation(voucherName: String) {
-        when {
-            voucherName.count() < 5 -> {
-                _uiState.update {
-                    it.copy(
-                        isVoucherNameError = true,
-                        voucherNameErrorMsg = "Minimal 5 karakter."
-                    )
-                }
-            }
-            voucherName.isEmpty() -> {
-                _uiState.update {
-                    it.copy(
-                        isVoucherNameError = true,
-                        voucherNameErrorMsg = "Kamu belum mengisi informasi ini."
-                    )
-                }
-            }
-            else -> {
-                _uiState.update {
-                    it.copy(
-                        isVoucherNameError = false,
-                        voucherNameErrorMsg = "",
-                        voucherConfiguration = it.voucherConfiguration.copy(voucherName = voucherName)
-                    )
-                }
-            }
+    private fun handleVoucherNameChanges(voucherName: String) {
+        _uiState.update {
+            it.copy(
+                voucherConfiguration = it.voucherConfiguration.copy(voucherName = voucherName)
+            )
+        }
+        handleVoucherInputValidation()
+    }
+
+    private fun handleVoucherInputValidation() {
+        val voucherConfiguration = currentState.voucherConfiguration
+        _uiState.update {
+            it.copy(
+                isVoucherNameError = ErrorHelper.getVoucherNameErrorStatus(voucherConfiguration.voucherName),
+                voucherNameErrorMsg = errorMessageHelper.getVoucherNameErrorMessage(
+                    voucherConfiguration.voucherName
+                )
+            )
         }
     }
 }
