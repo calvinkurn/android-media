@@ -15,6 +15,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R as editorR
@@ -153,6 +154,10 @@ class AddLogoToolUiComponent constructor(
                 }
             )
         )
+    }
+
+    fun isUploadAvatarReady(): Boolean {
+        return uploadAvatarWrapper.isVisible
     }
 
     private fun initListener() {

@@ -319,7 +319,11 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onUpload() {
-        showAddLogoUploadTips()
+        if (!addLogoComponent.isUploadAvatarReady()) {
+            showAddLogoUploadTips()
+        } else {
+            showAddLogoPicker()
+        }
     }
 
     override fun onLoadFailed() {
@@ -329,15 +333,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onPickerCall() {
-        val intent = MediaPicker.intent(requireContext()) {
-            pageType(PageType.GALLERY)
-            modeType(ModeType.IMAGE_ONLY)
-            minImageResolution(500)
-            pageSource(PageSource.AddLogo)
-            singleSelectionMode()
-        }
-
-        startActivityForResult(intent, ADD_LOGO_PICKER_REQUEST_CODE)
+        showAddLogoPicker()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1034,6 +1030,18 @@ class DetailEditorFragment @Inject constructor(
 
     fun showAddLogoUploadTips(isUpload: Boolean = true) {
         addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, bottomSheetTag)
+    }
+
+    private fun showAddLogoPicker() {
+        val intent = MediaPicker.intent(requireContext()) {
+            pageType(PageType.GALLERY)
+            modeType(ModeType.IMAGE_ONLY)
+            minImageResolution(500)
+            pageSource(PageSource.AddLogo)
+            singleSelectionMode()
+        }
+
+        startActivityForResult(intent, ADD_LOGO_PICKER_REQUEST_CODE)
     }
 
     private fun removeBgConnectionToast(ctaAction: () -> Unit): Snackbar? {
