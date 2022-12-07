@@ -55,6 +55,8 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.Create
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewToasterUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
+import com.tokopedia.review.feature.createreputation.presentation.viewmodel.MediaUploadJobMap
+import com.tokopedia.review.feature.createreputation.presentation.viewmodel.MediaUploadResultMap
 import com.tokopedia.review.feature.createreputation.util.CreateReviewMapper
 import com.tokopedia.reviewcommon.extension.combine
 import com.tokopedia.reviewcommon.uimodel.StringRes
@@ -108,6 +110,7 @@ class BulkReviewViewModel @Inject constructor(
         private const val MIN_REVIEW_ITEM = 1
     }
 
+    // region stateflow that need to be saved and restored
     private val getFormRequestState = MutableStateFlow<BulkReviewGetFormRequestState>(RequestState.Requesting)
     private val getBadRatingCategoryRequestState = MutableStateFlow<BulkReviewGetBadRatingCategoryRequestState>(RequestState.Requesting)
     private val submitBulkReviewRequestState = MutableStateFlow<BulkReviewSubmitRequestState>(RequestState.Requesting)
@@ -122,6 +125,8 @@ class BulkReviewViewModel @Inject constructor(
     private val anonymous = MutableStateFlow(false)
     private val shouldSubmitReview = MutableStateFlow(false)
     private var activeMediaPickerInboxID = ""
+
+    // endregion stateflow that need to be saved and restored
     private val reviewItemsProductInfoUiState = getFormRequestState.mapLatest(
         ::mapProductInfoUiState
     ).stateIn(
@@ -158,7 +163,7 @@ class BulkReviewViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
         initialValue = emptyMap()
     )
-    private val reviewItemsMediaItems = combine(
+    private val reviewItemsMediaPickerItems = combine(
         reviewItemsMediaUris,
         reviewItemsMediaUploadResults,
         reviewItemsMediaUploadJobs,
@@ -175,8 +180,8 @@ class BulkReviewViewModel @Inject constructor(
             emit(Unit)
         }
     }
-    private val reviewItemsPoem = combine(
-        reviewItemsMediaItems,
+    private val reviewItemsMediaPickerPoem = combine(
+        reviewItemsMediaPickerItems,
         poemUpdateSignal,
         ::mapPoem
     ).stateIn(
@@ -186,8 +191,8 @@ class BulkReviewViewModel @Inject constructor(
     )
     private val reviewItemsMediaPickerUiState = combine(
         getFormRequestState,
-        reviewItemsMediaItems,
-        reviewItemsPoem,
+        reviewItemsMediaPickerItems,
+        reviewItemsMediaPickerPoem,
         reviewItemsUploadBatchNumber,
         ::mapMediaPickerUiState
     ).stateIn(
@@ -281,16 +286,12 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     fun onRemoveReviewItem(inboxID: String) {
-        if (bulkReviewVisitableList.value.count { it is BulkReviewItemUiModel } > MIN_REVIEW_ITEM) {
-            (bulkReviewVisitableList.value.find {
-                it is BulkReviewItemUiModel && it.inboxID == inboxID
-            } as? BulkReviewItemUiModel)?.hasDefaultState()?.let { hasDefaultState ->
+        if (haveMinimumReviewItem()) {
+            findReviewItemVisitable(inboxID)?.hasDefaultState()?.let { hasDefaultState ->
                 if (hasDefaultState) {
                     removeReviewItem(inboxID)
                 } else {
-                    _removeReviewItemDialogUiState.value = BulkReviewRemoveReviewItemDialogUiState.Showing(
-                        inboxID = inboxID
-                    )
+                    showRemoveReviewItemDialog(inboxID)
                 }
             }
         } else {
@@ -298,175 +299,32 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    fun dismissRemoveReviewItemDialog() {
-        _removeReviewItemDialogUiState.value = BulkReviewRemoveReviewItemDialogUiState.Dismissed
-    }
-
-    fun removeReviewItem(inboxID: String) {
-        removedReviewItemsInboxID.update { it.plus(inboxID) }
-        enqueueToasterSuccessRemoveReviewItem()
-    }
-
     fun onRatingChanged(inboxID: String, rating: Int) {
-        val previousRating = reviewItemsRating.getAndUpdate {
-            it.toMutableList().apply {
-                find { reviewItemRating ->
-                    reviewItemRating.inboxID == inboxID
-                }.let { previousUiModel ->
-                    if (previousUiModel != null) {
-                        remove(previousUiModel)
-                        add(previousUiModel.copy(rating = rating))
-                    } else {
-                        add(BulkReviewItemRatingUiModel(inboxID = inboxID, rating = rating))
-                    }
-                }
-            }
-        }.find {
-            it.inboxID == inboxID
-        }?.rating ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
-        if (rating <= BAD_RATING_CATEGORY_THRESHOLD) {
-            if (previousRating > BAD_RATING_CATEGORY_THRESHOLD) {
-                showBadRatingCategoryBottomSheet(inboxID = inboxID)
-            } else {
-                // ignore, user need to click `Ubah` to show the bad rating categories bottomsheet
-            }
-        } else {
-            clearReviewItemBadRatingCategory(inboxID)
-        }
+        val previousRating = getAndUpdateRating(inboxID, rating)
+        shouldShowBadRatingCategoryBottomSheet(inboxID, rating, previousRating)
     }
 
-    fun dismissBadRatingCategoryBottomSheet() {
-        _badRatingCategoryBottomSheetUiState.update {
-            BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed
-        }
+    fun onDismissBadRatingCategoryBottomSheet() {
+        dismissBadRatingCategoryBottomSheet()
     }
 
-    fun dismissExpandedTextAreaBottomSheet(text: String) {
-        _expandedTextAreaBottomSheetUiState.update {
-            if (
-                it is BulkReviewExpandedTextAreaBottomSheetUiState.Showing &&
-                (it.allowEmpty || text.isNotBlank())
-            ) {
-                BulkReviewExpandedTextAreaBottomSheetUiState.Dismissed
-            } else {
-                it
-            }
-        }
+    fun onDismissExpandedTextAreaBottomSheet(text: String) {
+        applyExpandedTextAreaValue(text)
+        dismissExpandedTextAreaBottomSheet(text)
     }
 
     fun onBadRatingCategorySelectionChanged(badRatingCategoryID: String, selected: Boolean) {
-        _badRatingCategoryBottomSheetUiState.update { currentUiState ->
-            if (currentUiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
-                currentUiState.copy(
-                    badRatingCategories = currentUiState.badRatingCategories.map { badRatingCategory ->
-                        if (badRatingCategory.id == badRatingCategoryID) {
-                            badRatingCategory.copy(selected = selected)
-                        } else badRatingCategory
-                    }
-                )
-            } else {
-                currentUiState
-            }
-        }
-        if (badRatingCategoryID == ReviewConstants.BAD_RATING_OTHER_ID == selected) {
-            (_badRatingCategoryBottomSheetUiState.value as? BulkReviewBadRatingCategoryBottomSheetUiState.Showing)?.inboxID?.let { inboxID ->
-                showExpandedTextAreaBottomSheet(
-                    inboxID = inboxID,
-                    title = StringRes(R.string.bulk_review_bad_rating_category_bottom_sheet_title),
-                    hint = StringRes(R.string.hint_bulk_review_bad_rating_category_expanded_text_area),
-                    text = getReviewItemTestimony(inboxID),
-                    allowEmpty = false
-                )
-            }
-            applyBadRatingCategory()
-            dismissBadRatingCategoryBottomSheet()
-        }
+        updateBadRatingCategorySelection(badRatingCategoryID, selected)
+        shouldShowExpandedTextAreaBottomSheetOnBadRatingChanged(badRatingCategoryID, selected)
     }
 
-    fun getReviewItemTestimony(inboxID: String): String {
-        return (reviewItemsTextAreaUiState.value[inboxID] as? BulkReviewTextAreaUiState.Showing)?.text.orEmpty()
-    }
-
-    fun getReviewItemHint(inboxID: String): StringRes {
-        return (reviewItemsTextAreaUiState.value[inboxID] as? BulkReviewTextAreaUiState.Showing)?.hint ?: StringRes(Int.ZERO)
-    }
-
-    fun applyBadRatingCategory() {
-        val uiState = _badRatingCategoryBottomSheetUiState.value
-        if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
-            reviewItemsBadRatingCategory.update {
-                it.toMutableList().apply {
-                    find { reviewItemBadRatingCategory ->
-                        reviewItemBadRatingCategory.inboxID == uiState.inboxID
-                    }.let { oldReviewItemBadRatingCategory ->
-                        if (oldReviewItemBadRatingCategory == null) {
-                            add(
-                                BulkReviewItemBadRatingCategoryUiModel(
-                                    inboxID = uiState.inboxID,
-                                    badRatingCategory = uiState.badRatingCategories
-                                )
-                            )
-                        } else {
-                            remove(oldReviewItemBadRatingCategory)
-                            add(
-                                oldReviewItemBadRatingCategory.copy(
-                                    badRatingCategory = uiState.badRatingCategories
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fun applyExpandedTextAreaValue(text: String) {
-        val uiState = _expandedTextAreaBottomSheetUiState.value
-        if (uiState is BulkReviewExpandedTextAreaBottomSheetUiState.Showing) {
-            if (uiState.allowEmpty || text.isNotBlank()) {
-                reviewItemsTestimony.update {
-                    it.filter { reviewItemTestimony ->
-                        reviewItemTestimony.inboxID != uiState.inboxID
-                    }.toMutableList().apply {
-                        add(
-                            BulkReviewItemTestimonyUiModel(
-                                inboxID = uiState.inboxID,
-                                testimonyUiModel = ReviewTestimonyUiModel(
-                                    text = text,
-                                    showTextArea = text.isNotBlank(),
-                                    focused = false
-                                )
-                            )
-                        )
-                    }
-                }
-            } else {
-                enqueueToasterErrorEmptyBadRatingCategoryOtherReason()
-            }
-        }
+    fun onApplyBadRatingCategory() {
+        applyReviewItemBadRatingCategory()
+        dismissBadRatingCategoryBottomSheet()
     }
 
     fun onChangeBadRatingCategory(inboxID: String) {
         showBadRatingCategoryBottomSheet(inboxID)
-    }
-
-    fun showReviewItemTextArea(inboxID: String) {
-        reviewItemsTestimony.update {
-            it.filter { reviewItemTestimony ->
-                reviewItemTestimony.inboxID != inboxID
-            }.toMutableList().apply {
-                add(
-                    BulkReviewItemTestimonyUiModel(
-                        inboxID = inboxID,
-                        testimonyUiModel = ReviewTestimonyUiModel(
-                            text = String.EMPTY,
-                            showTextArea = true,
-                            focused = true
-                        )
-                    )
-                )
-            }
-        }
     }
 
     fun onReviewItemTextAreaGainFocus(inboxID: String) {
@@ -507,119 +365,45 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    fun updateReviewItemTestimony(inboxID: String, text: String) {
-        reviewItemsTestimony.update {
-            it.toMutableList().apply {
-                find { reviewItemTestimony ->
-                    reviewItemTestimony.inboxID == inboxID
-                }?.let { previousReviewItemTestimony ->
-                    remove(previousReviewItemTestimony)
-                    add(
-                        previousReviewItemTestimony.copy(
-                            testimonyUiModel = previousReviewItemTestimony.testimonyUiModel.copy(
-                                text = text
-                            )
-                        )
-                    )
-                }
-            }
-        }
+    fun onConfirmRemoveReviewItem(inboxID: String) {
+        removeReviewItem(inboxID)
+        dismissRemoveReviewItemDialog()
     }
 
-    fun showExpandedTextAreaBottomSheet(
-        inboxID: String,
-        title: StringRes,
-        hint: StringRes,
-        text: String,
-        allowEmpty: Boolean
-    ) {
-        _expandedTextAreaBottomSheetUiState.update {
-            BulkReviewExpandedTextAreaBottomSheetUiState.Showing(
-                inboxID = inboxID,
-                title = title,
-                hint = hint,
-                text = text,
-                allowEmpty = allowEmpty
-            )
-        }
+    fun onCancelRemoveReviewItem() {
+        dismissRemoveReviewItemDialog()
     }
 
-    fun findFocusedVisitable(): Pair<Int, BulkReviewVisitable<BulkReviewAdapterTypeFactory>>? {
-        return bulkReviewVisitableList.value.find {
-            it is BulkReviewItemUiModel && it.uiState is BulkReviewItemUiState.Focused
-        }?.let { bulkReviewVisitableList.value.indexOf(it) to it }
+    fun onClickTestimonyMiniAction(inboxID: String) {
+        showReviewItemTextArea(inboxID)
     }
 
-    fun updateMediaUris(inboxID: String, originalPaths: List<String>) {
-        reviewItemsMediaUris.update {
-            it.filter { reviewItemMediaUris ->
-                reviewItemMediaUris.inboxID != inboxID
-            }.toMutableList().apply {
-                add(
-                    BulkReviewItemMediaUrisUiModel(
-                        inboxID = inboxID,
-                        uris = originalPaths,
-                        shouldResetFailedUploadStatus = true
-                    )
-                )
-            }
-        }
-    }
-
-    fun retryUploadMedia(inboxID: String) {
-        reviewItemsUploadBatchNumber.update {
-            it.toMutableList().apply {
-                find { reviewItemUploadBatchNumber ->
-                    reviewItemUploadBatchNumber.inboxID == inboxID
-                }.let { previousReviewItemUploadBatchNumber ->
-                    if (previousReviewItemUploadBatchNumber == null) {
-                        add(
-                            BulkReviewItemMediaUploadBatchNumberUiModel(
-                                inboxID = inboxID,
-                                batchNumber = Int.ONE
-                            )
-                        )
-                    } else {
-                        remove(previousReviewItemUploadBatchNumber)
-                        add(
-                            previousReviewItemUploadBatchNumber.copy(
-                                batchNumber = previousReviewItemUploadBatchNumber.batchNumber.inc()
-                            )
-                        )
-                    }
-                }
-            }
-        }
-        reviewItemsMediaUris.update {
-            it.toMutableList().apply {
-                find { reviewItemMediaUris ->
-                    reviewItemMediaUris.inboxID == inboxID
-                }?.let { previousReviewItemMediaUris ->
-                    remove(previousReviewItemMediaUris)
-                    add(previousReviewItemMediaUris.copy(shouldResetFailedUploadStatus = true))
-                }
-            }
-        }
-    }
-
-    fun getAndUpdateActiveMediaPickerInboxID(inboxID: String): String {
-        val previousValue = activeMediaPickerInboxID
-        activeMediaPickerInboxID = inboxID
-        return previousValue
-    }
-
-    fun enqueueToasterDisabledAddMoreMedia() {
-        _bulkReviewPageToasterQueue.tryEmit(
-            CreateReviewToasterUiModel(
-                message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
-                actionText = StringRes(Int.ZERO),
-                duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_NORMAL
-            )
+    fun onExpandTextArea(inboxID: String, text: String) {
+        updateReviewItemTestimony(inboxID, text)
+        showExpandedTextAreaBottomSheet(
+            inboxID = inboxID,
+            title = StringRes(R.string.review_create_best_title),
+            hint = getReviewItemHint(inboxID),
+            text = getReviewItemTestimony(inboxID),
+            allowEmpty = true
         )
     }
 
-    fun removeMedia(inboxID: String, media: CreateReviewMediaUiModel) {
+    fun onAnonymousCheckChanged(checked: Boolean) {
+        anonymous.value = checked
+    }
+
+    fun onReceiveMediaPickerResult(originalPaths: List<String>) {
+        val inboxID = getAndUpdateActiveMediaPickerInboxID(String.EMPTY)
+        updateMediaUris(inboxID, originalPaths)
+    }
+
+    fun onRetryUploadClicked(inboxID: String) {
+        incrementReviewItemMediaUploadBatchNumber(inboxID)
+        updateReviewItemsMediaUrisForRetryUpload(inboxID)
+    }
+
+    fun onRemoveMedia(inboxID: String, media: CreateReviewMediaUiModel) {
         reviewItemsMediaUris.update {
             it.toMutableList().apply {
                 find { reviewItemMediaUris ->
@@ -638,11 +422,7 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    fun onAnonymousCheckChanged(checked: Boolean) {
-        anonymous.value = checked
-    }
-
-    fun submitReview() {
+    fun onSubmitReviews() {
         reviewItemsMediaPickerUiState.value.let { currentMediaPickerUiState ->
             val firstFailMediaPickerUiState = currentMediaPickerUiState.values.firstOrNull {
                 it is CreateReviewMediaPickerUiState.FailedUpload
@@ -658,6 +438,29 @@ class BulkReviewViewModel @Inject constructor(
                 shouldSubmitReview.value = true
             }
         }
+    }
+
+    fun findFocusedReviewItemVisitable(): Pair<Int, BulkReviewItemUiModel>? {
+        return bulkReviewVisitableList.value.find {
+            it is BulkReviewItemUiModel && it.uiState is BulkReviewItemUiState.Focused
+        }?.let { bulkReviewVisitableList.value.indexOf(it) to it as BulkReviewItemUiModel }
+    }
+
+    fun getAndUpdateActiveMediaPickerInboxID(inboxID: String): String {
+        val previousValue = activeMediaPickerInboxID
+        activeMediaPickerInboxID = inboxID
+        return previousValue
+    }
+
+    fun enqueueToasterDisabledAddMoreMedia() {
+        _bulkReviewPageToasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
+                actionText = StringRes(Int.ZERO),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            )
+        )
     }
 
     private fun mapProductInfoUiState(
@@ -690,13 +493,66 @@ class BulkReviewViewModel @Inject constructor(
         getFormRequestState: BulkReviewGetFormRequestState,
         reviewItemsTestimony: List<BulkReviewItemTestimonyUiModel>,
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
-        bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>,
+        bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>
     ): Map<String, BulkReviewTextAreaUiState> {
         return bulkReviewTextAreaUiStateMapper.map(
             getFormRequestState = getFormRequestState,
             reviewItemsTestimony = reviewItemsTestimony,
             bulkReviewBadRatingCategoryUiState = bulkReviewBadRatingCategoryUiState,
             bulkReviewRatingUiState = bulkReviewRatingUiState
+        )
+    }
+
+    private fun mapMediaItems(
+        reviewItemsMediaUris: List<BulkReviewItemMediaUrisUiModel>,
+        reviewItemsMediaUploadResults: List<BulkReviewItemMediaUploadResultsUiModel>,
+        reviewItemsMediaUploadJobs: List<BulkReviewItemMediaUploadJobsUiModel>,
+        reviewItemsUploadBatchNumber: List<BulkReviewItemMediaUploadBatchNumberUiModel>
+    ): Map<String, List<CreateReviewMediaUiModel>> {
+        return reviewItemsMediaUris.associate { reviewItemMediaUris ->
+            reviewItemMediaUris.inboxID to CreateReviewMapper.mapMediaItems(
+                reviewItemMediaUris = reviewItemMediaUris.uris,
+                reviewItemsMediaUploadResults = reviewItemsMediaUploadResults.find {
+                    it.inboxID == reviewItemMediaUris.inboxID
+                }?.mediaUploadResults.orEmpty(),
+                reviewItemMediaUploadJobs = reviewItemsMediaUploadJobs.find {
+                    it.inboxID == reviewItemMediaUris.inboxID
+                }?.jobs.orEmpty(),
+                existingMediaItems = reviewItemsMediaPickerItems.value[reviewItemMediaUris.inboxID].orEmpty(),
+                uploadBatchNumber = reviewItemsUploadBatchNumber.find {
+                    it.inboxID == reviewItemMediaUris.inboxID
+                }?.batchNumber.orZero(),
+                showLargeAddMediaItem = false
+            )
+        }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun mapPoem(
+        mediaItems: Map<String, List<CreateReviewMediaUiModel>>,
+        updateSignal: Unit
+    ): Map<String, Pair<String, StringRes>> {
+        return mediaItems.keys.associateWith { inboxID ->
+            CreateReviewMapper.mapPoem(
+                currentValue = reviewItemsMediaPickerPoem.value[inboxID] ?: Pair("", StringRes(Int.ZERO)),
+                mediaItems = mediaItems[inboxID].orEmpty(),
+                uploadBatchNumber = mediaItems[inboxID]?.firstOrNull()?.uploadBatchNumber.orZero()
+            )
+        }
+    }
+
+    private fun mapMediaPickerUiState(
+        getFormRequestState: BulkReviewGetFormRequestState,
+        mediaItems: Map<String, List<CreateReviewMediaUiModel>>,
+        poem: Map<String, Pair<String, StringRes>>,
+        reviewItemsUploadBatchNumber: List<BulkReviewItemMediaUploadBatchNumberUiModel>
+    ): Map<String, CreateReviewMediaPickerUiState> {
+        return bulkReviewMediaPickerUiStateMapper.map(
+            getFormRequestState = getFormRequestState,
+            mediaItems = mediaItems,
+            poem = poem,
+            currentMediaPickerUiStates = reviewItemsMediaPickerUiState.value,
+            reviewItemsUploadBatchNumber = reviewItemsUploadBatchNumber
         )
     }
 
@@ -720,7 +576,7 @@ class BulkReviewViewModel @Inject constructor(
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
         bulkReviewTextAreaUiState: Map<String, BulkReviewTextAreaUiState>,
         bulkReviewMediaPickerUiState: Map<String, CreateReviewMediaPickerUiState>,
-        bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>,
+        bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>
     ): List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>> {
         return when (getFormRequestState) {
             is RequestState.Complete.Success -> bulkReviewVisitableMapper.map(
@@ -791,61 +647,83 @@ class BulkReviewViewModel @Inject constructor(
 
     private suspend fun tryUploadMedia(reviewItemMediaUris: BulkReviewItemMediaUrisUiModel) {
         val inboxID = reviewItemMediaUris.inboxID
-        cancelInvalidUploadJobs(reviewItemMediaUris)
+        cancelReviewItemInvalidUploadJobs(reviewItemMediaUris)
         if (reviewItemMediaUris.shouldResetFailedUploadStatus) {
-            reviewItemsMediaUploadResults.update {
-                it.toMutableList().apply {
-                    find { reviewItemMediaUploadResults ->
-                        reviewItemMediaUploadResults.inboxID == inboxID
-                    }?.let { previousReviewItemMediaUploadResults ->
-                        remove(previousReviewItemMediaUploadResults)
-                        add(
-                            previousReviewItemMediaUploadResults.copy(
-                                mediaUploadResults = previousReviewItemMediaUploadResults
-                                    .mediaUploadResults
-                                    .filterValues { uploadResult ->
-                                        uploadResult is CreateReviewMediaUploadResult.Success
-                                    }
-                            )
-                        )
-                    }
-                }
-            }
-            reviewItemsMediaUris.update {
-                it.toMutableList().apply {
-                    find { reviewItemMediaUris ->
-                        reviewItemMediaUris.inboxID == inboxID
-                    }?.let { previousReviewItemMediaUris ->
-                        remove(previousReviewItemMediaUris)
-                        add(previousReviewItemMediaUris.copy(shouldResetFailedUploadStatus = false))
-                    }
-                }
-            }
+            resetReviewItemFailedMediaUploadResults(inboxID)
         } else {
-            reviewItemMediaUris.uris.forEach { uri ->
-                val hasActiveUploadJob = reviewItemsMediaUploadJobs.value.find {
-                    it.inboxID == inboxID
-                }?.jobs?.get(uri)?.isActive == true
-                val hasUploadResult = reviewItemsMediaUploadResults.value.find {
-                    it.inboxID == inboxID
-                }?.mediaUploadResults?.get(uri) != null
-                val needToStartNewJob = !hasActiveUploadJob && !hasUploadResult
-                if (needToStartNewJob) {
-                    updateMediaUploadJobs(inboxID, uri, startNewUploadMediaJob(inboxID, uri))
-                    reviewItemsMediaUploadJobs.value.find {
-                        it.inboxID == inboxID
-                    }?.jobs?.values?.joinAll()
+            uploadMedia(inboxID, reviewItemMediaUris)
+        }
+    }
+
+    private suspend fun cancelReviewItemInvalidUploadJobs(
+        reviewItemMediaUris: BulkReviewItemMediaUrisUiModel
+    ) {
+        findReviewItemMediaUploadJobs(reviewItemMediaUris.inboxID)?.forEach { (uri, job) ->
+            if (uri !in reviewItemMediaUris.uris && job.isActive) job.cancelAndJoin()
+        }
+    }
+
+    private fun resetReviewItemFailedMediaUploadResults(inboxID: String) {
+        reviewItemsMediaUploadResults.update {
+            it.toMutableList().apply {
+                find { reviewItemMediaUploadResults ->
+                    reviewItemMediaUploadResults.inboxID == inboxID
+                }?.let { previousReviewItemMediaUploadResults ->
+                    remove(previousReviewItemMediaUploadResults)
+                    add(
+                        previousReviewItemMediaUploadResults.copy(
+                            mediaUploadResults = previousReviewItemMediaUploadResults
+                                .mediaUploadResults
+                                .filterValues { uploadResult ->
+                                    uploadResult is CreateReviewMediaUploadResult.Success
+                                }
+                        )
+                    )
+                }
+            }
+        }
+        // update shouldResetFailedUploadStatus value to false
+        reviewItemsMediaUris.update {
+            it.toMutableList().apply {
+                find { reviewItemMediaUris ->
+                    reviewItemMediaUris.inboxID == inboxID
+                }?.let { previousReviewItemMediaUris ->
+                    remove(previousReviewItemMediaUris)
+                    add(previousReviewItemMediaUris.copy(shouldResetFailedUploadStatus = false))
                 }
             }
         }
     }
 
-    private suspend fun cancelInvalidUploadJobs(reviewItemMediaUris: BulkReviewItemMediaUrisUiModel) {
-        reviewItemsMediaUploadJobs.value.find {
-            it.inboxID == reviewItemMediaUris.inboxID
-        }?.jobs?.forEach { (uri, job) ->
-            if (uri !in reviewItemMediaUris.uris && job.isActive) job.cancelAndJoin()
+    private suspend fun uploadMedia(
+        inboxID: String,
+        reviewItemMediaUris: BulkReviewItemMediaUrisUiModel
+    ) {
+        reviewItemMediaUris.uris.forEach { uri ->
+            val hasActiveUploadJob = findReviewItemMediaUploadJob(inboxID, uri)?.isActive == true
+            val hasUploadResult = findReviewItemMediaUploadResult(inboxID, uri) != null
+            val needToStartNewJob = !hasActiveUploadJob && !hasUploadResult
+            if (needToStartNewJob) {
+                updateMediaUploadJobs(inboxID, uri, startNewUploadMediaJob(inboxID, uri))
+                findReviewItemMediaUploadJobs(inboxID)?.values?.joinAll()
+            }
         }
+    }
+
+    private fun findReviewItemMediaUploadJob(inboxID: String, uri: String): Job? {
+        return findReviewItemMediaUploadJobs(inboxID)?.get(uri)
+    }
+
+    private fun findReviewItemMediaUploadJobs(inboxID: String): MediaUploadJobMap? {
+        return reviewItemsMediaUploadJobs.value.find { it.inboxID == inboxID }?.jobs
+    }
+
+    private fun findReviewItemMediaUploadResult(inboxID: String, uri: String): CreateReviewMediaUploadResult? {
+        return findReviewItemMediaUploadResults(inboxID)?.get(uri)
+    }
+
+    private fun findReviewItemMediaUploadResults(inboxID: String): MediaUploadResultMap? {
+        return reviewItemsMediaUploadResults.value.find { it.inboxID == inboxID }?.mediaUploadResults
     }
 
     private fun startNewUploadMediaJob(inboxID: String, uri: String): Job {
@@ -864,8 +742,8 @@ class BulkReviewViewModel @Inject constructor(
             }
             updateMediaUploadResults(inboxID, uri, uploadMediaResult)
         }, onError = {
-            updateMediaUploadResults(inboxID, uri, CreateReviewMediaUploadResult.Error(it.message.orEmpty()))
-        }).also { job -> job.invokeOnCompletion { updateMediaUploadJobs(inboxID, uri, null) } }
+                updateMediaUploadResults(inboxID, uri, CreateReviewMediaUploadResult.Error(it.message.orEmpty()))
+            }).also { job -> job.invokeOnCompletion { updateMediaUploadJobs(inboxID, uri, null) } }
     }
 
     private fun updateMediaUploadJobs(inboxID: String, uri: String, newUploadJob: Job?) {
@@ -943,59 +821,6 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    private fun mapMediaItems(
-        reviewItemsMediaUris: List<BulkReviewItemMediaUrisUiModel>,
-        reviewItemsMediaUploadResults: List<BulkReviewItemMediaUploadResultsUiModel>,
-        reviewItemsMediaUploadJobs: List<BulkReviewItemMediaUploadJobsUiModel>,
-        reviewItemsUploadBatchNumber: List<BulkReviewItemMediaUploadBatchNumberUiModel>
-    ): Map<String, List<CreateReviewMediaUiModel>> {
-        return reviewItemsMediaUris.associate { reviewItemMediaUris ->
-            reviewItemMediaUris.inboxID to CreateReviewMapper.mapMediaItems(
-                reviewItemMediaUris = reviewItemMediaUris.uris,
-                reviewItemsMediaUploadResults = reviewItemsMediaUploadResults.find {
-                    it.inboxID == reviewItemMediaUris.inboxID
-                }?.mediaUploadResults.orEmpty(),
-                reviewItemMediaUploadJobs = reviewItemsMediaUploadJobs.find {
-                    it.inboxID == reviewItemMediaUris.inboxID
-                }?.jobs.orEmpty(),
-                existingMediaItems = reviewItemsMediaItems.value[reviewItemMediaUris.inboxID].orEmpty(),
-                uploadBatchNumber = reviewItemsUploadBatchNumber.find {
-                    it.inboxID == reviewItemMediaUris.inboxID
-                }?.batchNumber.orZero(),
-                showLargeAddMediaItem = false
-            )
-        }
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    private fun mapPoem(
-        mediaItems: Map<String, List<CreateReviewMediaUiModel>>,
-        updateSignal: Unit
-    ): Map<String, Pair<String, StringRes>> {
-        return mediaItems.keys.associateWith { inboxID ->
-            CreateReviewMapper.mapPoem(
-                currentValue = reviewItemsPoem.value[inboxID] ?: Pair("", StringRes(Int.ZERO)),
-                mediaItems = mediaItems[inboxID].orEmpty(),
-                uploadBatchNumber = mediaItems[inboxID]?.firstOrNull()?.uploadBatchNumber.orZero()
-            )
-        }
-    }
-
-    private fun mapMediaPickerUiState(
-        getFormRequestState: BulkReviewGetFormRequestState,
-        mediaItems: Map<String, List<CreateReviewMediaUiModel>>,
-        poem: Map<String, Pair<String, StringRes>>,
-        reviewItemsUploadBatchNumber: List<BulkReviewItemMediaUploadBatchNumberUiModel>
-    ): Map<String, CreateReviewMediaPickerUiState> {
-        return bulkReviewMediaPickerUiStateMapper.map(
-            getFormRequestState = getFormRequestState,
-            mediaItems = mediaItems,
-            poem = poem,
-            currentMediaPickerUiStates = reviewItemsMediaPickerUiState.value,
-            reviewItemsUploadBatchNumber = reviewItemsUploadBatchNumber
-        )
-    }
-
     private fun enqueueToasterErrorUploadMedia(errorCode: String) {
         _bulkReviewPageToasterQueue.tryEmit(
             CreateReviewToasterUiModel(
@@ -1070,10 +895,300 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
+    private fun dismissBadRatingCategoryBottomSheet() {
+        _badRatingCategoryBottomSheetUiState.update {
+            BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed
+        }
+    }
+
     private fun clearReviewItemBadRatingCategory(inboxID: String) {
         reviewItemsBadRatingCategory.update {
             it.filter { reviewItemBadRatingCategory ->
                 reviewItemBadRatingCategory.inboxID != inboxID
+            }
+        }
+    }
+
+    private fun haveMinimumReviewItem(): Boolean {
+        return bulkReviewVisitableList.value.count { it is BulkReviewItemUiModel } > MIN_REVIEW_ITEM
+    }
+
+    private fun findReviewItemVisitable(inboxID: String): BulkReviewItemUiModel? {
+        return bulkReviewVisitableList.value.find {
+            it is BulkReviewItemUiModel && it.inboxID == inboxID
+        } as? BulkReviewItemUiModel
+    }
+
+    private fun showRemoveReviewItemDialog(inboxID: String) {
+        _removeReviewItemDialogUiState.value = BulkReviewRemoveReviewItemDialogUiState.Showing(
+            inboxID = inboxID
+        )
+    }
+
+    private fun dismissRemoveReviewItemDialog() {
+        _removeReviewItemDialogUiState.value = BulkReviewRemoveReviewItemDialogUiState.Dismissed
+    }
+
+    private fun removeReviewItem(inboxID: String) {
+        removedReviewItemsInboxID.update { it.plus(inboxID) }
+        enqueueToasterSuccessRemoveReviewItem()
+    }
+
+    private fun getAndUpdateRating(inboxID: String, rating: Int): Int {
+        return reviewItemsRating.getAndUpdate {
+            it.toMutableList().apply {
+                find { reviewItemRating ->
+                    reviewItemRating.inboxID == inboxID
+                }.let { previousUiModel ->
+                    if (previousUiModel != null) {
+                        remove(previousUiModel)
+                        add(previousUiModel.copy(rating = rating))
+                    } else {
+                        add(BulkReviewItemRatingUiModel(inboxID = inboxID, rating = rating))
+                    }
+                }
+            }
+        }.find {
+            it.inboxID == inboxID
+        }?.rating ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
+    }
+
+    private fun shouldShowBadRatingCategoryBottomSheet(
+        inboxID: String,
+        currentRating: Int,
+        priorRating: Int
+    ) {
+        if (currentRating <= BAD_RATING_CATEGORY_THRESHOLD) {
+            if (priorRating > BAD_RATING_CATEGORY_THRESHOLD) {
+                showBadRatingCategoryBottomSheet(inboxID = inboxID)
+            } else {
+                // ignore, user need to click `Ubah` to show the bad rating categories bottomsheet
+            }
+        } else {
+            clearReviewItemBadRatingCategory(inboxID)
+        }
+    }
+
+    private fun dismissExpandedTextAreaBottomSheet(text: String) {
+        _expandedTextAreaBottomSheetUiState.update {
+            if (
+                it is BulkReviewExpandedTextAreaBottomSheetUiState.Showing &&
+                (it.allowEmpty || text.isNotBlank())
+            ) {
+                BulkReviewExpandedTextAreaBottomSheetUiState.Dismissed
+            } else {
+                it
+            }
+        }
+    }
+
+    private fun updateBadRatingCategorySelection(badRatingCategoryID: String, selected: Boolean) {
+        _badRatingCategoryBottomSheetUiState.update { currentUiState ->
+            if (currentUiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
+                currentUiState.copy(
+                    badRatingCategories = currentUiState.badRatingCategories.map { badRatingCategory ->
+                        if (badRatingCategory.id == badRatingCategoryID) {
+                            badRatingCategory.copy(selected = selected)
+                        } else {
+                            badRatingCategory
+                        }
+                    }
+                )
+            } else {
+                currentUiState
+            }
+        }
+    }
+
+    private fun shouldShowExpandedTextAreaBottomSheetOnBadRatingChanged(
+        badRatingCategoryID: String,
+        selected: Boolean
+    ) {
+        if (badRatingCategoryID == ReviewConstants.BAD_RATING_OTHER_ID == selected) {
+            (_badRatingCategoryBottomSheetUiState.value as? BulkReviewBadRatingCategoryBottomSheetUiState.Showing)?.inboxID?.let { inboxID ->
+                showExpandedTextAreaBottomSheet(
+                    inboxID = inboxID,
+                    title = StringRes(R.string.bulk_review_bad_rating_category_bottom_sheet_title),
+                    hint = StringRes(R.string.hint_bulk_review_bad_rating_category_expanded_text_area),
+                    text = getReviewItemTestimony(inboxID),
+                    allowEmpty = false
+                )
+            }
+            onApplyBadRatingCategory()
+            dismissBadRatingCategoryBottomSheet()
+        }
+    }
+
+    private fun applyReviewItemBadRatingCategory() {
+        val uiState = _badRatingCategoryBottomSheetUiState.value
+        if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
+            reviewItemsBadRatingCategory.update {
+                it.toMutableList().apply {
+                    find { reviewItemBadRatingCategory ->
+                        reviewItemBadRatingCategory.inboxID == uiState.inboxID
+                    }.let { oldReviewItemBadRatingCategory ->
+                        if (oldReviewItemBadRatingCategory == null) {
+                            add(
+                                BulkReviewItemBadRatingCategoryUiModel(
+                                    inboxID = uiState.inboxID,
+                                    badRatingCategory = uiState.badRatingCategories
+                                )
+                            )
+                        } else {
+                            remove(oldReviewItemBadRatingCategory)
+                            add(
+                                oldReviewItemBadRatingCategory.copy(
+                                    badRatingCategory = uiState.badRatingCategories
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun applyExpandedTextAreaValue(text: String) {
+        val uiState = _expandedTextAreaBottomSheetUiState.value
+        if (uiState is BulkReviewExpandedTextAreaBottomSheetUiState.Showing) {
+            if (uiState.allowEmpty || text.isNotBlank()) {
+                reviewItemsTestimony.update {
+                    it.filter { reviewItemTestimony ->
+                        reviewItemTestimony.inboxID != uiState.inboxID
+                    }.toMutableList().apply {
+                        add(
+                            BulkReviewItemTestimonyUiModel(
+                                inboxID = uiState.inboxID,
+                                testimonyUiModel = ReviewTestimonyUiModel(
+                                    text = text,
+                                    showTextArea = text.isNotBlank(),
+                                    focused = false
+                                )
+                            )
+                        )
+                    }
+                }
+            } else {
+                enqueueToasterErrorEmptyBadRatingCategoryOtherReason()
+            }
+        }
+    }
+
+    private fun showReviewItemTextArea(inboxID: String) {
+        reviewItemsTestimony.update {
+            it.filter { reviewItemTestimony ->
+                reviewItemTestimony.inboxID != inboxID
+            }.toMutableList().apply {
+                add(
+                    BulkReviewItemTestimonyUiModel(
+                        inboxID = inboxID,
+                        testimonyUiModel = ReviewTestimonyUiModel(
+                            text = String.EMPTY,
+                            showTextArea = true,
+                            focused = true
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    private fun getReviewItemTestimony(inboxID: String): String {
+        return (reviewItemsTextAreaUiState.value[inboxID] as? BulkReviewTextAreaUiState.Showing)?.text.orEmpty()
+    }
+
+    private fun getReviewItemHint(inboxID: String): StringRes {
+        return (reviewItemsTextAreaUiState.value[inboxID] as? BulkReviewTextAreaUiState.Showing)?.hint ?: StringRes(Int.ZERO)
+    }
+
+    private fun updateReviewItemTestimony(inboxID: String, text: String) {
+        reviewItemsTestimony.update {
+            it.toMutableList().apply {
+                find { reviewItemTestimony ->
+                    reviewItemTestimony.inboxID == inboxID
+                }?.let { previousReviewItemTestimony ->
+                    remove(previousReviewItemTestimony)
+                    add(
+                        previousReviewItemTestimony.copy(
+                            testimonyUiModel = previousReviewItemTestimony.testimonyUiModel.copy(
+                                text = text
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun showExpandedTextAreaBottomSheet(
+        inboxID: String,
+        title: StringRes,
+        hint: StringRes,
+        text: String,
+        allowEmpty: Boolean
+    ) {
+        _expandedTextAreaBottomSheetUiState.update {
+            BulkReviewExpandedTextAreaBottomSheetUiState.Showing(
+                inboxID = inboxID,
+                title = title,
+                hint = hint,
+                text = text,
+                allowEmpty = allowEmpty
+            )
+        }
+    }
+
+    private fun updateMediaUris(inboxID: String, originalPaths: List<String>) {
+        reviewItemsMediaUris.update {
+            it.filter { reviewItemMediaUris ->
+                reviewItemMediaUris.inboxID != inboxID
+            }.toMutableList().apply {
+                add(
+                    BulkReviewItemMediaUrisUiModel(
+                        inboxID = inboxID,
+                        uris = originalPaths,
+                        shouldResetFailedUploadStatus = true
+                    )
+                )
+            }
+        }
+    }
+
+    private fun incrementReviewItemMediaUploadBatchNumber(inboxID: String) {
+        reviewItemsUploadBatchNumber.update {
+            it.toMutableList().apply {
+                find { reviewItemUploadBatchNumber ->
+                    reviewItemUploadBatchNumber.inboxID == inboxID
+                }.let { previousReviewItemUploadBatchNumber ->
+                    if (previousReviewItemUploadBatchNumber == null) {
+                        add(
+                            BulkReviewItemMediaUploadBatchNumberUiModel(
+                                inboxID = inboxID,
+                                batchNumber = Int.ONE
+                            )
+                        )
+                    } else {
+                        remove(previousReviewItemUploadBatchNumber)
+                        add(
+                            previousReviewItemUploadBatchNumber.copy(
+                                batchNumber = previousReviewItemUploadBatchNumber.batchNumber.inc()
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateReviewItemsMediaUrisForRetryUpload(inboxID: String) {
+        reviewItemsMediaUris.update {
+            it.toMutableList().apply {
+                find { reviewItemMediaUris ->
+                    reviewItemMediaUris.inboxID == inboxID
+                }?.let { previousReviewItemMediaUris ->
+                    remove(previousReviewItemMediaUris)
+                    add(previousReviewItemMediaUris.copy(shouldResetFailedUploadStatus = true))
+                }
             }
         }
     }

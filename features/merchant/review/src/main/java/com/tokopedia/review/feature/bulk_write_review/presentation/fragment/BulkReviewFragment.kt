@@ -154,7 +154,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
     override fun onClickTestimonyMiniAction(inboxID: String) {
         clearViewFocus()
-        viewModel.showReviewItemTextArea(inboxID)
+        viewModel.onClickTestimonyMiniAction(inboxID)
     }
 
     override fun onClickAddAttachmentMiniAction(inboxID: String) {
@@ -173,14 +173,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     }
 
     override fun onExpandTextArea(inboxID: String, text: String) {
-        viewModel.updateReviewItemTestimony(inboxID, text)
-        viewModel.showExpandedTextAreaBottomSheet(
-            inboxID = inboxID,
-            title = StringRes(R.string.review_create_best_title),
-            hint = viewModel.getReviewItemHint(inboxID),
-            text = viewModel.getReviewItemTestimony(inboxID),
-            allowEmpty = true
-        )
+        viewModel.onExpandTextArea(inboxID, text)
     }
 
     override fun onSingleTapToDismissKeyboard() {
@@ -196,17 +189,19 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     }
 
     override fun onRemoveMediaClicked(inboxID: String, media: CreateReviewMediaUiModel) {
-        viewModel.removeMedia(inboxID, media)
+        viewModel.onRemoveMedia(inboxID, media)
     }
 
     override fun onRetryUploadClicked(inboxID: String) {
-        viewModel.retryUploadMedia(inboxID)
+        viewModel.onRetryUploadClicked(inboxID)
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupViews() {
         binding?.rvBulkReviewItems?.layoutManager = LinearLayoutManager(
-            context, LinearLayoutManager.VERTICAL, false
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
         )
         binding?.rvBulkReviewItems?.adapter = adapter
         binding?.rvBulkReviewItems?.setOnTouchListener { _, e ->
@@ -246,7 +241,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                     Int.ZERO,
                     bottom.coerceAtLeast(Int.ZERO)
                 )
-                viewModel.findFocusedVisitable()?.let { (index, _) ->
+                viewModel.findFocusedReviewItemVisitable()?.let { (index, _) ->
                     binding?.rvBulkReviewItems?.smoothSnapToPosition(index, SNAP_TO_START)
                 }
                 if (imeInsets.bottom.isZero()) clearViewFocus()
@@ -256,7 +251,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     }
 
     private fun initUiState(savedInstanceState: Bundle?) {
-        //TODO: Handle restoration
+        // TODO: Handle restoration
         viewModel.getForms()
         viewModel.getBadRatingCategory()
     }
@@ -287,7 +282,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                         it.actionText.getStringValue(view.context)
                     ) {}.run {
                         anchorView = binding?.widgetBulkReviewStickyButton
-                        addCallback(object: Snackbar.Callback() {
+                        addCallback(object : Snackbar.Callback() {
                             override fun onDismissed(
                                 transientBottomBar: Snackbar?,
                                 event: Int
@@ -540,8 +535,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     private inner class ActivityResultHandler {
         private fun handleMediaPickerResult(data: Intent) {
             val result = MediaPicker.result(data)
-            val inboxID = viewModel.getAndUpdateActiveMediaPickerInboxID("")
-            viewModel.updateMediaUris(inboxID, result.originalPaths)
+            viewModel.onReceiveMediaPickerResult(result.originalPaths)
         }
 
         fun handleResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -562,9 +556,11 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         private val expandedTextAreaBottomSheetListener = ExpandedTextAreaBottomSheetListener()
 
         private fun getBulkReviewBadRatingCategoryBottomSheet(): BulkReviewBadRatingCategoryBottomSheet? {
-            return (childFragmentManager.findFragmentByTag(
-                BulkReviewBadRatingCategoryBottomSheet.TAG
-            ) as? BulkReviewBadRatingCategoryBottomSheet)
+            return (
+                childFragmentManager.findFragmentByTag(
+                    BulkReviewBadRatingCategoryBottomSheet.TAG
+                ) as? BulkReviewBadRatingCategoryBottomSheet
+                )
         }
 
         fun showBulkReviewBadRatingCategoryBottomSheet(
@@ -585,9 +581,11 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         }
 
         private fun getBulkReviewExpandedTextAreaBottomSheet(): BulkReviewExpandedTextAreaBottomSheet? {
-            return (childFragmentManager.findFragmentByTag(
-                BulkReviewExpandedTextAreaBottomSheet.TAG
-            ) as? BulkReviewExpandedTextAreaBottomSheet)
+            return (
+                childFragmentManager.findFragmentByTag(
+                    BulkReviewExpandedTextAreaBottomSheet.TAG
+                ) as? BulkReviewExpandedTextAreaBottomSheet
+                )
         }
 
         fun showBulkReviewExpandedTextAreaBottomSheet(
@@ -626,12 +624,11 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
     private inner class BadRatingCategoryBottomSheetListener : BulkReviewBadRatingCategoryBottomSheet.Listener {
         override fun onDismiss() {
-            viewModel.dismissBadRatingCategoryBottomSheet()
+            viewModel.onDismissBadRatingCategoryBottomSheet()
         }
 
         override fun onApplyBadRatingCategory() {
-            viewModel.applyBadRatingCategory()
-            viewModel.dismissBadRatingCategoryBottomSheet()
+            viewModel.onApplyBadRatingCategory()
         }
 
         override fun onBadRatingCategorySelected(badRatingCategoryID: String) {
@@ -645,20 +642,17 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
     private inner class ExpandedTextAreaBottomSheetListener : BulkReviewExpandedTextAreaBottomSheet.Listener {
         override fun onDismiss(text: String) {
-            viewModel.applyExpandedTextAreaValue(text)
-            viewModel.dismissExpandedTextAreaBottomSheet(text)
-
+            viewModel.onDismissExpandedTextAreaBottomSheet(text)
         }
     }
 
     private inner class RemoveReviewItemDialogListener : BulkReviewRemoveReviewItemDialog.Listener {
         override fun onConfirmRemoveReviewItem(inboxID: String) {
-            viewModel.removeReviewItem(inboxID)
-            viewModel.dismissRemoveReviewItemDialog()
+            viewModel.onConfirmRemoveReviewItem(inboxID)
         }
 
         override fun onCancelRemoveReviewItem() {
-            viewModel.dismissRemoveReviewItemDialog()
+            viewModel.onCancelRemoveReviewItem()
         }
     }
 
@@ -675,7 +669,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         }
 
         override fun onClickSubmitReview() {
-            viewModel.submitReview()
+            viewModel.onSubmitReviews()
         }
     }
 }
