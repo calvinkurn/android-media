@@ -16,17 +16,7 @@ import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.startLoading
 import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.formatTo
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.getPercentFormatted
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setTextColorCompat
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toCalendar
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -90,7 +80,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         private const val TRUE = 1
         private const val FALSE = 0
         private const val COPY_PROMO_CODE_LABEL = "promo_code"
-        private const val broadCastChatUrl = "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id="
+        private const val broadCastChatUrl =
+            "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id="
     }
 
     // binding
@@ -113,7 +104,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var universalShareBottomSheet : UniversalShareBottomSheet? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
@@ -183,7 +174,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             redirectToProductListPage(voucherDetail)
         }
     }
-
 
     private fun observeOpenVoucherImageBottomSheetEvent() {
         viewModel.openDownloadVoucherImageBottomSheet.observe(viewLifecycleOwner) { voucherDetail ->
@@ -330,21 +320,25 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     tpgPeriodStop.invisible()
                 }
                 else -> {
-                    val format = SimpleDateFormat(
-                        DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
-                        Locale.getDefault()
-                    )
-                    val stoppedDate = format.parse(data.updateTime)
-                    btnUbahKupon.invisible()
-                    timer.invisible()
-                    tpgPeriodStop.apply {
-                        visible()
-                        if (stoppedDate != null) {
-                            text = getString(
-                                R.string.smvc_placeholder_stopped_date,
-                                stoppedDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
-                            )
+                    try {
+                        val format = SimpleDateFormat(
+                            DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
+                            Locale.getDefault()
+                        )
+                        val stoppedDate = format.parse(data.updateTime)
+                        btnUbahKupon.invisible()
+                        timer.invisible()
+                        tpgPeriodStop.apply {
+                            visible()
+                            if (stoppedDate != null) {
+                                text = getString(
+                                    R.string.smvc_placeholder_stopped_date,
+                                    stoppedDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+                                )
+                            }
                         }
+                    } catch (t: Throwable) {
+                        tpgPeriodStop.gone()
                     }
                 }
             }
@@ -388,23 +382,36 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 tpgVoucherTarget.text = getString(R.string.smvc_voucher_private_label)
                 llVoucherCode.visible()
             }
-            tpgVoucherName.text = data.voucherName
-            tpgVoucherCode.text = data.voucherCode
-            iconCopy.setOnClickListener {
-                copyVoucherCode(data.voucherCode)
+            tpgVoucherName.text = data.voucherName.ifEmpty {
+                getString(R.string.smvc_dash_label)
             }
-            val format = SimpleDateFormat(
-                DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
-                Locale.getDefault()
-            )
-            val startPeriodDate = format.parse(data.voucherStartTime)
-            val endPeriodDate = format.parse(data.voucherFinishTime)
-            if (startPeriodDate != null) {
-                tpgVoucherStartPeriod.text =
-                    startPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
+            tpgVoucherCode.text = data.voucherCode.ifEmpty {
+                getString(R.string.smvc_dash_label)
             }
-            if (endPeriodDate != null) {
-                tpgVoucherEndPeriod.text = endPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
+            iconCopy.apply {
+                isVisible = data.voucherCode.isNotEmpty()
+                setOnClickListener {
+                    copyVoucherCode(data.voucherCode)
+                }
+            }
+        }
+        setVoucherInfoDate(data)
+    }
+
+    private fun setVoucherInfoDate(data: VoucherDetailData) {
+        voucherInfoBinding?.run {
+            try {
+                val format = SimpleDateFormat(
+                    DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
+                    Locale.getDefault()
+                )
+                val startPeriodDate = format.parse(data.voucherStartTime)
+                val endPeriodDate = format.parse(data.voucherFinishTime)
+                tpgVoucherStartPeriod.text = startPeriodDate?.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
+                tpgVoucherEndPeriod.text = endPeriodDate?.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
+            } catch (t: Throwable) {
+                tpgVoucherStartPeriod.text = getString(R.string.smvc_dash_label)
+                tpgVoucherEndPeriod.text = getString(R.string.smvc_dash_label)
             }
         }
     }
@@ -569,7 +576,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             when (data.voucherStatus) {
                 VoucherStatus.NOT_STARTED -> {
                     layoutButton.setOnInflateListener { _, view ->
-                        stateButtonBroadCastBinding = SmvcVoucherDetailButtonSectionState1Binding.bind(view)
+                        stateButtonBroadCastBinding =
+                            SmvcVoucherDetailButtonSectionState1Binding.bind(view)
                     }
                     layoutButton.layoutResource =
                         R.layout.smvc_voucher_detail_button_section_state_1
@@ -579,7 +587,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 VoucherStatus.ONGOING -> {
                     layoutButton.setOnInflateListener { _, view ->
-                        stateButtonShareBinding = SmvcVoucherDetailButtonSectionState2Binding.bind(view)
+                        stateButtonShareBinding =
+                            SmvcVoucherDetailButtonSectionState2Binding.bind(view)
                     }
                     layoutButton.layoutResource =
                         R.layout.smvc_voucher_detail_button_section_state_2
@@ -589,7 +598,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     layoutButton.setOnInflateListener { _, view ->
-                        stateButtonDuplicateBinding = SmvcVoucherDetailButtonSectionState3Binding.bind(view)
+                        stateButtonDuplicateBinding =
+                            SmvcVoucherDetailButtonSectionState3Binding.bind(view)
                     }
                     layoutButton.layoutResource =
                         R.layout.smvc_voucher_detail_button_section_state_3
@@ -701,8 +711,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun displayShareBottomSheet(voucherImageMetadata: GenerateVoucherImageMetadata) {
         val voucherDetail = voucherImageMetadata.voucherDetail
-        val voucherStartDate = voucherDetail.voucherStartTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
-        val voucherEndDate = voucherDetail.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val voucherStartDate =
+            voucherDetail.voucherStartTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val voucherEndDate =
+            voucherDetail.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
         val productImageUrls = if (voucherDetail.isVoucherProduct) {
             voucherImageMetadata.topSellingProductImageUrls
         } else {
@@ -720,7 +732,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             benefitType = voucherDetail.voucherDiscountType,
             shopLogo = voucherImageMetadata.shopData.logo,
             shopName = voucherImageMetadata.shopData.name,
-            shopDomain =  voucherImageMetadata.shopData.domain,
+            shopDomain = voucherImageMetadata.shopData.domain,
             discountAmount = voucherDetail.voucherDiscountAmount,
             discountAmountMax = voucherDetail.voucherDiscountAmountMax,
             productImageUrls = productImageUrls,
@@ -729,7 +741,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         )
 
         val endDate = shareComponentParam.voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
-        val endHour = shareComponentParam.voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
+        val endHour =
+            shareComponentParam.voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
 
         val formattedShopName = MethodChecker.fromHtml(shareComponentParam.shopName).toString()
 
@@ -805,7 +818,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             getString(R.string.smvc_share_component_outgoing_text_description_shop_voucher)
         }
 
-
         val linkerDataGenerator = LinkerDataGenerator()
         val linkerShareData = linkerDataGenerator.generate(
             voucherId,
@@ -834,7 +846,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         )
         bottomSheet.setOnDownloadSuccess {
             binding?.layoutButtonGroup.showToaster(
-                getString(R.string.smvc_placeholder_download_voucher_image_success, voucherDetail.voucherName),
+                getString(
+                    R.string.smvc_placeholder_download_voucher_image_success,
+                    voucherDetail.voucherName
+                ),
                 getString(R.string.smvc_ok)
             )
         }
@@ -856,5 +871,4 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
         startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
     }
-
 }
