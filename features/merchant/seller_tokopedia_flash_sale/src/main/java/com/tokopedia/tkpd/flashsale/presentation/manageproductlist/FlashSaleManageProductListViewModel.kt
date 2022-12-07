@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproductlist
 
 import android.content.SharedPreferences
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
@@ -10,15 +11,12 @@ import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tkpd.flashsale.data.mapper.FlashSaleMonitorSubmitProductSseMapper
 import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductSubmissionRequest
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
-import com.tokopedia.tkpd.flashsale.domain.entity.ProductDeleteResult
-import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductDeleteUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductSubmissionUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleReservedProductListUseCase
+import com.tokopedia.tkpd.flashsale.data.response.SSEStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.*
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS
+import com.tokopedia.tkpd.flashsale.domain.usecase.*
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.ONE_SECOND_DELAY
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.SHARED_PREF_MANAGE_PRODUCT_LIST_COACH_MARK
 import com.tokopedia.tkpd.flashsale.presentation.detail.helper.ProductCriteriaHelper
@@ -31,16 +29,21 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.Flash
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class FlashSaleManageProductListListViewModel @Inject constructor(
+class FlashSaleManageProductListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleReservedProductListUseCase: GetFlashSaleReservedProductListUseCase,
     private val getFlashSaleDetailForSellerUseCase: GetFlashSaleDetailForSellerUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
     private val doFlashSaleProductSubmissionUseCase: DoFlashSaleProductSubmissionUseCase,
-    private val sharedPreferences: SharedPreferences
+    private val flashSaleTkpdProductSubmissionMonitoringSse: FlashSaleTkpdProductSubmissionMonitoringSse,
+    private val sharedPreferences: SharedPreferences,
+    private val getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase,
+    private val flashSaleMonitorSubmitProductSseMapper: FlashSaleMonitorSubmitProductSseMapper,
+    private val doFlashSaleProductSubmitAcknowledgeUseCase: DoFlashSaleProductSubmitAcknowledgeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -113,13 +116,62 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
     private fun submitDiscountedProduct(reservationId: String, campaignId: String) {
         launchCatchError(dispatchers.io, {
             val result = doSubmitDiscountedProduct(reservationId, campaignId)
-            delay(ONE_SECOND_DELAY)
-            _uiEffect.emit(FlashSaleManageProductListUiEffect.OnProductSubmitted(result))
+            if (result.useSse) {
+                monitorProductSubmitSse(result.sseKey)
+            } else {
+                delay(ONE_SECOND_DELAY)
+                _uiEffect.emit(FlashSaleManageProductListUiEffect.OnProductSubmitted(result))
+            }
         }) { error ->
             _uiEffect.tryEmit(
                 FlashSaleManageProductListUiEffect.ShowErrorSubmitDiscountedProduct(error)
             )
         }
+    }
+
+    fun listenToExistingSse(campaignId: String) {
+        launchCatchError(dispatchers.io, {
+            monitorProductSubmitSse(campaignId)
+        }) {
+
+        }
+    }
+
+    private suspend fun monitorProductSubmitSse(sseKey: String) {
+        viewModelScope.launch {
+            flashSaleTkpdProductSubmissionMonitoringSse.connect(sseKey)
+            flashSaleTkpdProductSubmissionMonitoringSse.listen().collect {
+                when (it) {
+                    is SSEStatus.Success -> {
+                        val sseMsg = it.sseResponse.message
+                        val flashSaleProductSubmissionSseResult =
+                            flashSaleMonitorSubmitProductSseMapper.map(sseMsg)
+                        flashSaleProductSubmissionSseResult?.let { sseResult ->
+                            _uiEffect.emit(
+                                FlashSaleManageProductListUiEffect.OnProductSseSubmissionProgress(
+                                    sseResult
+                                )
+                            )
+                            if (sseResult.status != IN_PROGRESS) {
+                                closeSse()
+                            }
+                        }
+                    }
+                    is SSEStatus.Close -> {
+
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        closeSse()
+    }
+
+    private fun closeSse() {
+        flashSaleTkpdProductSubmissionMonitoringSse.closeSSE()
     }
 
     private suspend fun doSubmitDiscountedProduct(
@@ -417,5 +469,43 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
     fun setSharedPrefCoachMarkAlreadyShown() {
         sharedPreferences.edit().putBoolean(SHARED_PREF_MANAGE_PRODUCT_LIST_COACH_MARK, true)
             .apply()
+    }
+
+    fun acknowledgeProductSubmissionSse(campaignId: String, totalSubmittedProduct: Int) {
+        launchCatchError(dispatchers.io, {
+            if (doAcknowledgeProductSubmission(campaignId)) {
+                _uiEffect.tryEmit(
+                    FlashSaleManageProductListUiEffect.OnSuccessAcknowledgeProductSubmissionSse(
+                        totalSubmittedProduct
+                    )
+                )
+            }
+        }) { }
+    }
+
+    private suspend fun doAcknowledgeProductSubmission(campaignId: String): Boolean {
+        val param = DoFlashSaleProductSubmitAcknowledgeUseCase.Param(campaignId.toLongOrZero())
+        return doFlashSaleProductSubmitAcknowledgeUseCase.execute(param)
+    }
+
+    fun getFlashSaleSubmissionProgress(flashSaleId: String) {
+        launchCatchError(dispatchers.io,
+            block = {
+                val flashSaleSubmissionProgress = getFlashSaleProductSubmissionProgressResponse(
+                    flashSaleId
+                )
+                if (flashSaleSubmissionProgress.isOpenSse) {
+                    _uiEffect.emit(FlashSaleManageProductListUiEffect.OnSseOpen)
+                }
+            }) { }
+    }
+
+    private suspend fun getFlashSaleProductSubmissionProgressResponse(campaignId: String): FlashSaleProductSubmissionProgress {
+        return getFlashSaleProductSubmissionProgressUseCase.execute(
+            GetFlashSaleProductSubmissionProgressUseCase.Param(
+                campaignId,
+                checkProgress = true
+            )
+        )
     }
 }

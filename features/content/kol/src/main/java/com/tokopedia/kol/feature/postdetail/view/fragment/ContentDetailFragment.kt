@@ -1177,7 +1177,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
-        viewModel.setUnsetReminder(card.campaign.campaignId, card.campaign.reminder, positionInFeed)
+        viewModel.setUnsetReminder(card.campaign, positionInFeed)
     }
 
     override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
