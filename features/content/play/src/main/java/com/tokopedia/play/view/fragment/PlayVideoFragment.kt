@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ui.PlayerView
@@ -57,7 +56,6 @@ import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
-import com.tokopedia.play.view.viewmodel.PlayViewModelFactory
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -80,8 +78,7 @@ class PlayVideoFragment @Inject constructor(
     private val pipSessionStorage: PiPSessionStorage,
     private val playLog: PlayLog,
     private val router: Router,
-    factory: PlayViewModelFactory.Creator,
-    ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
+) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.immediate + job)
@@ -199,9 +196,8 @@ class PlayVideoFragment @Inject constructor(
     private val cornerRadius = 16f.dpToPx()
 
     private lateinit var playParentViewModel: PlayParentViewModel
-    private val playViewModel by activityViewModels<PlayViewModel> {
-        factory.create(this, channelId)
-    }
+    private lateinit var playViewModel: PlayViewModel
+
     private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
     private lateinit var containerVideo: RoundedConstraintLayout
@@ -219,6 +215,9 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        playViewModel = ViewModelProvider(
+            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+        ).get(PlayViewModel::class.java)
 
         val theActivity = requireActivity()
         if (theActivity is PlayActivity) {

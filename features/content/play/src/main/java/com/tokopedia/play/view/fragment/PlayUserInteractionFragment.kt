@@ -10,7 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -82,7 +82,6 @@ import com.tokopedia.play.view.viewcomponent.partnerinfo.PartnerInfoViewComponen
 import com.tokopedia.play.view.viewcomponent.realtimenotif.RealTimeNotificationViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play.view.viewmodel.PlayViewModelFactory
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.eventbus.EventBus
@@ -121,8 +120,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val newAnalytic: PlayNewAnalytic,
     private val analyticManager: PlayChannelAnalyticManager,
     private val router: Router,
-    factory: PlayViewModelFactory.Creator,
-    ) :
+) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
         PlayFragmentContract,
@@ -187,10 +185,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
-    private val playViewModel by activityViewModels<PlayViewModel> {
-        factory.create(this, channelId)
-    }
-
+    private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
@@ -258,6 +253,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private val delayFadeOutAnimation = PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
     private val fadeAnimationList = arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation)
 
+    private val interactiveDialogDataSource = object : InteractiveDialogFragment.DataSource {
+        override fun getViewModelProvider(): ViewModelProvider {
+            return getPlayViewModelProvider()
+        }
+    }
+
     override fun getScreenName(): String = "Play User Interaction"
 
     private val components = mutableListOf<UiComponent<PlayViewerNewUiState>>()
@@ -270,6 +271,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        playViewModel = getPlayViewModelProvider().get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
     }
 
@@ -369,6 +371,22 @@ class PlayUserInteractionFragment @Inject constructor(
 
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is InteractiveDialogFragment -> {
+                childFragment.setDataSource(interactiveDialogDataSource)
+            }
+        }
+    }
+
+    private fun getPlayViewModelProvider(): ViewModelProvider {
+        return ViewModelProvider(
+            requireParentFragment(),
+            (requireParentFragment() as PlayFragment).viewModelProviderFactory,
+        )
     }
 
     //region ComponentListener

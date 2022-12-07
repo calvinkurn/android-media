@@ -4,16 +4,16 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
@@ -27,7 +27,6 @@ import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play.view.viewmodel.PlayViewModelFactory
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -49,8 +48,7 @@ import javax.inject.Inject
  * Created by jegul on 10/12/19
  */
 class PlayMoreActionBottomSheet @Inject constructor(
-    private val analytic: PlayAnalytic,
-    factory: PlayViewModelFactory.Creator,
+    private val analytic: PlayAnalytic
     ) : BottomSheetUnify(), KebabMenuSheetViewComponent.Listener,
     PlayUserReportSheetViewComponent.Listener,
     PlayUserReportSubmissionViewComponent.Listener {
@@ -66,16 +64,21 @@ class PlayMoreActionBottomSheet @Inject constructor(
         )
     }
 
-    private val channelId: String
-        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+    private lateinit var playViewModel: PlayViewModel
 
-    private val playViewModel by activityViewModels<PlayViewModel> {
-        factory.create(this, channelId)
-    }
     private var userReportTimeMillis: Date = Date()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(requireParentFragment() is PlayUserInteractionFragment){
+            val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
+
+            playViewModel = ViewModelProvider(
+                grandParentActivity, grandParentActivity.viewModelProviderFactory
+            ).get(PlayViewModel::class.java)
+        }
+
         initBottomSheet()
     }
 

@@ -13,12 +13,11 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
@@ -29,7 +28,6 @@ import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play.view.viewmodel.PlayViewModelFactory
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.GiveawayWidgetView
@@ -50,15 +48,12 @@ import javax.inject.Inject
 class InteractiveDialogFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val analytic: PlayNewAnalytic,
-    factory: PlayViewModelFactory.Creator,
-    ) : DialogFragment() {
+) : DialogFragment() {
 
-    private val channelId: String
-        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+    private var mDataSource: DataSource? = null
 
-    private val viewModel by activityViewModels<PlayViewModel> {
-        factory.create(this, channelId)
-    }
+    private lateinit var viewModel: PlayViewModel
+
     private val job = SupervisorJob()
     private val scope = CoroutineScope(CoroutineDispatchersProvider.main + job)
 
@@ -94,6 +89,12 @@ class InteractiveDialogFragment @Inject constructor(
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val vmProvider = mDataSource?.getViewModelProvider() ?: ViewModelProvider(this)
+        viewModel = vmProvider.get(PlayViewModel::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -123,6 +124,10 @@ class InteractiveDialogFragment @Inject constructor(
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         viewModel.submitAction(PlayViewerNewAction.StopPlayingInteractive)
+    }
+
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
     }
 
     fun showNow(fragmentManager: FragmentManager) {
@@ -349,5 +354,10 @@ class InteractiveDialogFragment @Inject constructor(
                 InteractiveDialogFragment::class.java.name
             ) as InteractiveDialogFragment
         }
+    }
+
+    interface DataSource {
+
+        fun getViewModelProvider(): ViewModelProvider
     }
 }
