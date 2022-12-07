@@ -996,9 +996,29 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
+            },
+            {
+                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
+    }
+
     private suspend fun adjustCCAdminFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee()
+        val newOrderPayment = orderPayment.value
+        orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
+        if (dynamicPaymentFee == null) {
+            calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+            return
+        }
         val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(orderPayment.value.creditCard, userSession.userId,
                 orderCost, orderCart)
         if (installmentTermList == null) {
@@ -1016,18 +1036,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
     }
 
-    fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-                {
-                    eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-                },
-                {
-                    eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-                },
-                AddressConstant.ANA_REVAMP_FEATURE_ID
-        )
-    }
-
     private suspend fun adjustGoCicilFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
@@ -1035,6 +1043,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees
                 && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount
                 && orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount) {
+            val dynamicPaymentFee = paymentProcessor.get().getPaymentFee()
+            val newOrderPayment = orderPayment.value
+            orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
+            if (dynamicPaymentFee == null) {
+                calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                    validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+                return
+            }
             val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart, orderProfile.value)
             if (result != null) {
                 chooseInstallment(result.first, result.second, !result.third)
@@ -1097,14 +1113,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         calculateTotal()
     }
 
-    fun updatePrescriptionIds(it: ArrayList<String>) {
-        uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
-            prescriptionIds = it,
-            uploadedImageCount = it.size,
-            isError = false,
-        )
-    }
-
     private fun setDefaultAddOnState(orderShop: OrderShop, orderProduct: OrderProduct?) {
         if (orderShop.isFulfillment) {
             orderShop.addOn = AddOnsDataModel()
@@ -1119,6 +1127,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderCost = orderTotal.value.orderCost.copy(
                         hasAddOn = false
                 )
+        )
+    }
+
+    fun updatePrescriptionIds(it: ArrayList<String>) {
+        uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+            prescriptionIds = it,
+            uploadedImageCount = it.size,
+            isError = false,
         )
     }
 
