@@ -3,12 +3,12 @@ package com.tokopedia.categorylevels.domain.repository
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.categorylevels.analytics.*
 import com.tokopedia.categorylevels.model.CategoryGetDetailModularData
+import com.tokopedia.categorylevels.raw.GQL_CATEGORY_GET_DETAIL_MODULAR
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.categorylevels.raw.GQL_CATEGORY_GET_DETAIL_MODULAR
 import java.net.URLEncoder
 
 class CategoryGqlPageRepository(private val departmentName: String,
@@ -24,7 +24,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val LEVEL_3_CATEGORY = 3
         const val TABS_HORIZONTAL_SCROLL="tabs-horizontal-scroll"
         const val SEMUA="Semua"
-        const val DEFAULT_TARGET_COMPONENT_ID="2,3,4,5,6"
+        const val DEFAULT_TARGET_COMPONENT_ID="2,3,4,5,6,7"
     }
 
     val componentMap = mutableMapOf<String, String>()
@@ -102,7 +102,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                     DataItem(
                         name = SEMUA,
                         id = if(data.basicInfo.tree == LEVEL_3_CATEGORY) data.basicInfo.parent.toString() else departmentId,
-                        targetComponentId = dataItems.firstOrNull()?.targetComponentId
+                        targetComponentId = component.data.firstOrNull()?.targetComponentId
                             ?: DEFAULT_TARGET_COMPONENT_ID))
                 component.data.forEachIndexed { index, dataItem ->
                     dataItems.add(DataItem(title = if(dataItem.text!=null) dataItem.text else dataItem.name,
