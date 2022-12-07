@@ -131,7 +131,7 @@ class ContentDetailMapperImpl : ContentDetailMapper {
                                 mods = media.mods,
                             )
                         },
-                        products = it.tags.map { tag ->
+                        tags = it.tags.map { tag ->
                             FeedXProduct(
                                 appLink = tag.appLink,
                                 bebasOngkirStatus = tag.bebasOngkirStatus,
