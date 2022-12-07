@@ -674,6 +674,8 @@ class WishlistCollectionDetailFragment :
                                 SRC_WISHLIST_COLLECTION_SHARING
                             )
                         }
+
+                        setupGearIcon()
                     }
                 }
                 is Fail -> {
@@ -1162,7 +1164,6 @@ class WishlistCollectionDetailFragment :
             } else {
                 if (collectionId == "0") {
                     wishlistCollectionDetailStickyCountManageLabel.apply {
-                        iconGearCollectionDetail.gone()
                         wishlistCollectionDetailManageLabel.show()
                         wishlistCollectionDetailManageLabel.setOnClickListener { onStickyManageClicked() }
                     }
@@ -1170,14 +1171,6 @@ class WishlistCollectionDetailFragment :
                 } else {
                     wishlistCollectionDetailStickyCountManageLabel.apply {
                         wishlistCollectionDetailManageLabel.gone()
-                        iconGearCollectionDetail.show()
-                        iconGearCollectionDetail.setOnClickListener {
-                            onCollectionSettingsClicked(
-                                collectionId,
-                                collectionName
-                            )
-                            WishlistCollectionAnalytics.sendClickGearIconEvent()
-                        }
                     }
                     WishlistCollectionAnalytics.sendWishListCollectionDetailPageOpenedEvent(userSession.isLoggedIn, userSession.userId)
                 }
@@ -1195,6 +1188,35 @@ class WishlistCollectionDetailFragment :
 
         if (toasterMessageInitial.isNotEmpty()) {
             showToasterInitial(toasterMessageInitial)
+        }
+    }
+
+    private fun setupGearIcon() {
+        binding?.run {
+            if (collectionId == "0") {
+                wishlistCollectionDetailStickyCountManageLabel.apply {
+                    iconGearCollectionDetail.gone()
+                }
+            } else {
+                wishlistCollectionDetailStickyCountManageLabel.apply {
+                    if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        wishlistCollectionDetailManageLabel.gone()
+                        iconGearCollectionDetail.gone()
+                        wishlistCollectionSelectItemOption.show()
+                    } else {
+                        wishlistCollectionSelectItemOption.gone()
+                        wishlistCollectionDetailManageLabel.gone()
+                        iconGearCollectionDetail.show()
+                        iconGearCollectionDetail.setOnClickListener {
+                            onCollectionSettingsClicked(
+                                collectionId,
+                                collectionName
+                            )
+                            WishlistCollectionAnalytics.sendClickGearIconEvent()
+                        }
+                    }
+                }
+            }
         }
     }
 
