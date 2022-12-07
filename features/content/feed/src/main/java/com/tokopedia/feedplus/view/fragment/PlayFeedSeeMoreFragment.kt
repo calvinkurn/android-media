@@ -34,8 +34,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
-import com.tokopedia.videoTabComponent.domain.model.data.*
-import com.tokopedia.videoTabComponent.view.VideoTabFragment
+import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetFeedReminderInfoData
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel

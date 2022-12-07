@@ -602,13 +602,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         )
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
-        val desc =
-            context.getString(feedComponentR.string.feed_detail_share_default_text)
-                ?.let {
-                    String.format(
-                        it, item.product.name, item.shopName, item.priceFmt
-                    )
-                }
         val sheet = ProductActionBottomSheet.newInstance(bundle)
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
         sheet.shareProductCB = {
