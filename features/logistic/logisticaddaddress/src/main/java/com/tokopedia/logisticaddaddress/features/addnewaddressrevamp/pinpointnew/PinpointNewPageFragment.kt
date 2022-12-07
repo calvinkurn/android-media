@@ -221,8 +221,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 saveAddressDataModel = viewModel.getAddress(),
                 districtId = districtId,
                 lat = currentLat,
-                lng = currentLong,
-                source = PinpointSource.ADD_ADDRESS
+                lng = currentLong
             )
         }
     }
