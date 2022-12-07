@@ -530,7 +530,7 @@ open class HomeRevampFragment :
         return DaggerBerandaComponent.builder().baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
     }
 
-    private fun isUseNewPullRefresh() : Boolean =
+    private fun isUseNewPullRefresh(): Boolean =
         getRemoteConfig().getBoolean(RemoteConfigKey.HOME_USE_NEW_PULL_REFRESH, true)
 
     private fun fetchRemoteConfig() {
@@ -1176,10 +1176,13 @@ open class HomeRevampFragment :
                     }
                 }
             }
-        })
-        getHomeViewModel().hideShowLoading.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-        })
+        )
+        getHomeViewModel().hideShowLoading.observe(
+            viewLifecycleOwner,
+            Observer {
+                hideLoading()
+            }
+        )
     }
 
     private fun observeTrackingData() {
@@ -1701,8 +1704,7 @@ open class HomeRevampFragment :
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
             getHomeViewModel().refreshHomeData()
-        }
-        else {
+        } else {
             hideLoading()
         }
         if (activity is RefreshNotificationListener) {

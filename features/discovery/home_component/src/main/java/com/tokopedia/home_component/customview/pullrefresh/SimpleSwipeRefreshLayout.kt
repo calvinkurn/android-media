@@ -217,7 +217,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
             duration = ROLL_BACK_DURATION
             interpolator = DecelerateInterpolator(FACTOR_ACCELERATE)
             addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     offsetY = triggerOffset
                 }
             })
@@ -251,7 +251,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
             duration = ROLL_BACK_DURATION
             interpolator = DecelerateInterpolator(FACTOR_ACCELERATE)
             addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     if (notify && triggerOffset != Int.ZERO && currentState == State.ROLLING) {
                         currentState = State.TRIGGERING
                         isRefreshing = true
