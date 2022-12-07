@@ -10,11 +10,12 @@ import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.DualTabSavedNumberFragment
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
 
-class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
+open class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
     HasComponent<CommonTopupBillsComponent> {
 
     protected lateinit var clientNumberType: String
@@ -24,6 +25,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
     protected var currentCategoryName = ""
     protected var isSwitchChecked = false
     protected var loyaltyStatus = ""
+    protected var pageConfig: FavoriteNumberPageConfig = FavoriteNumberPageConfig.TELCO
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_saved_number
@@ -56,6 +58,12 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             this.dgOperatorIds = extras.getStringArrayList(EXTRA_DG_OPERATOR_IDS) ?: arrayListOf()
             this.isSwitchChecked = extras.getBoolean(EXTRA_IS_SWITCH_CHECKED, false)
             this.loyaltyStatus = extras.getString(EXTRA_LOYALTY_STATUS, "")
+
+            val favoriteNumberPageConfig = extras
+                .getSerializable(EXTRA_FAVORITE_NUMBER_PAGE_CONFIG) as? FavoriteNumberPageConfig
+            if (favoriteNumberPageConfig != null) {
+                pageConfig = favoriteNumberPageConfig
+            }
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_saved_number_title))
@@ -70,7 +78,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return DualTabSavedNumberFragment
             .newInstance(clientNumberType, number, currentCategoryName,
-                dgCategoryIds, dgOperatorIds, isSwitchChecked, loyaltyStatus)
+                dgCategoryIds, dgOperatorIds, isSwitchChecked, loyaltyStatus, pageConfig)
     }
 
     override fun onBackPressed() {
@@ -86,7 +94,8 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             dgOperatorIds: ArrayList<String>,
             categoryName: String,
             isSwitchChecked: Boolean,
-            loyaltyStatus: String
+            loyaltyStatus: String,
+            favoriteNumberPageConfig: FavoriteNumberPageConfig,
         ): Intent {
             val intent = Intent(context, TopupBillsPersoSavedNumberActivity::class.java)
             val extras = Bundle()
@@ -97,6 +106,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
             extras.putString(EXTRA_LOYALTY_STATUS, loyaltyStatus)
             extras.putBoolean(EXTRA_IS_SWITCH_CHECKED, isSwitchChecked)
+            extras.putSerializable(EXTRA_FAVORITE_NUMBER_PAGE_CONFIG, favoriteNumberPageConfig)
 
             intent.putExtras(extras)
             return intent
@@ -108,6 +118,7 @@ class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
         const val EXTRA_DG_OPERATOR_IDS = "EXTRA_DG_OPERATOR_IDS"
         const val EXTRA_IS_SWITCH_CHECKED = "EXTRA_IS_SWITCH_CHECKED"
         const val EXTRA_LOYALTY_STATUS = "EXTRA_LOYALTY_STATUS"
+        const val EXTRA_FAVORITE_NUMBER_PAGE_CONFIG = "EXTRA_FAVORITE_NUMBER_PAGE_CONFIG"
 
         const val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
     }

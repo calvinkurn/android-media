@@ -46,175 +46,176 @@ class LivenessDetectionAnalytics @Inject constructor() {
         const val labelConnectionTimeout= "connection timeout"
     }
 
+
     fun eventViewFaceInCenter(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.VIEW_FACE_CENTER,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2630")
     }
 
     fun eventClickBackFaceInCenter(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelTwo} $projectID - ${getKycType(projectID)}"
-        ))
+        ), "2629")
     }
 
     fun eventViewCloserFaceToScreen(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.VIEW_FACE_CLOSER_SCREEN,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2632")
     }
 
     fun eventClickBackCloserFaceToScreen(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelThree} $projectID - ${getKycType(projectID)}"
-        ))
+        ), "2629")
     }
 
     fun eventViewMultipleFaces(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.VIEW_FACE_MULTIPLE,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2634")
     }
 
     fun eventClickBackMultipleFaces(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelFour} $projectID - ${getKycType(projectID)}"
-        ))
+        ), "2629")
     }
 
     fun eventViewBlinkDetection(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.VIEW_BLINK_DETECTION,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2636")
     }
 
     fun eventSuccessBlinkDetection(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.SUCCESS_BLINK_DETECTION,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2637")
     }
 
     fun eventClickBackBlinkDetection(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelFive} $projectID - ${getKycType(projectID)}"
-        ))
+        ), "2629")
     }
 
     fun eventViewMouthDetection(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.VIEW_MOUTH_DETECTION,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2639")
     }
 
     fun eventSuccessMouthDetection(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.SUCCESS_MOUTH_DETECTION,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2640")
     }
 
     fun eventClickBackMouthDetection(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelSix} $projectID - ${getKycType(projectID)}"
-        ))
+        ), "2629")
     }
 
     fun eventViewHeadDetection(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.VIEW_HEAD_DETECTION,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2642")
     }
 
     fun eventSuccessHeadDetection(projectID: String, isSuccess: Boolean, message: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.SUCCESS_HEAD_DETECTION,
                 getLabel(projectID, isSuccess, message)
-        ))
+        ), "2643")
     }
 
     fun eventClickBackHeadDetection(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelSeven} $projectID - ${getKycType(projectID)}"
-        ))
+        ), "2629")
     }
 
     fun eventClickTimeout(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_COBA_LAGI,
                 "${Label.labelTimeout} - $projectID - ${getKycType(projectID)}"
-        ))
-    }
-
-    fun eventClickBackTimeout(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_LIVENESS_FAILED_PAGE,
-                Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelTimeout} - $projectID - ${getKycType(projectID)}"
-        ))
+        ), "2656")
     }
 
     fun eventClickConnectionTimeout(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
+            Event.CLICK_ACCOUNT,
+            Category.KYC_LIVENESS_FAILED_PAGE,
+            Action.CLICK_ON_BUTTON_COBA_LAGI,
+            "${Label.labelConnectionTimeout} - $projectID - ${getKycType(projectID)}"
+        ), "2656")
+    }
+
+    fun eventClickBackTimeout(projectID: String) {
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
-                Action.CLICK_ON_BUTTON_COBA_LAGI,
-                "${Label.labelConnectionTimeout} - $projectID - ${getKycType(projectID)}"
-        ))
+                Action.CLICK_ON_BUTTON_BACK,
+                "${Label.labelTimeout} - $projectID - ${getKycType(projectID)}"
+        ), "2657")
     }
 
     fun eventClickBackConnectionTimeout(projectID: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelConnectionTimeout} - $projectID - ${getKycType(projectID)}"
-        ))
+        ), "2657")
     }
 
     private fun getLabel(projectID: String, isSuccess: Boolean, message: String = ""): String {
@@ -238,11 +239,24 @@ class LivenessDetectionAnalytics @Inject constructor() {
         }
     }
 
+    private fun track(data: MutableMap<String, Any>, trackerId: String) {
+        data[BUSINESS_UNIT] = USER_PLATFORM
+        data[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        data[TRACKER_ID] = trackerId
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
     companion object {
         private const val PROJECT_ID_HOME_CREDIT = "16"
         private const val PROJECT_ID_CO_BRAND_CC = "18"
         private const val PROJECT_ID_GO_CICIL = "21"
         private const val TYPE_ALA_CARTE = "ala carte"
         private const val TYPE_CKYC = "ckyc"
+
+        const val BUSINESS_UNIT = "businessUnit"
+        const val USER_PLATFORM = "user platform"
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val CURRENT_SITE = "currentSite"
+        const val TRACKER_ID = "trackerId"
     }
 }

@@ -133,7 +133,10 @@ data class SomDetailOrder(
 
             @SerializedName("addon_info")
             @Expose
-            val addOnInfo: AddOnInfo? = null
+            val addOnInfo: AddOnInfo? = null,
+
+            @SerializedName("has_reso_status")
+            val hasResoStatus: Boolean? = false
         ) {
 
             fun getFirstProduct(): Details.Product? {
@@ -458,7 +461,11 @@ data class SomDetailOrder(
 
                 @SerializedName("is_broadcast_chat")
                 @Expose
-                val isBroadcastChat: Boolean = false
+                val isBroadcastChat: Boolean = false,
+
+                @SerializedName("shipment_logo")
+                @Expose
+                val shipmentLogo: String = "",
             )
 
             data class LogisticInfo(

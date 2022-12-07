@@ -75,17 +75,18 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="6sp"
-                android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_11"
+                android:textColor="@color/Unify_NN600"
+                android:textSize="11sp"
                 android:textStyle="normal"
                 app:typographyWeight="reguler"
-                tools:text="20 Menit" />
+                tools:text="20 Menit"
+                app:typographyType="body_3"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_36"
+                android:layout_marginStart="@dimen/unify_space_16"
                 android:text="@string/kol_reply"
                 app:unifyButtonSize="micro"
                 app:unifyButtonVariant="text" />

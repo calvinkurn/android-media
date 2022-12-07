@@ -1,13 +1,16 @@
 package com.tokopedia.tokomember_seller_dashboard
 
+import android.media.MediaMetadata
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashIntroUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberIntroSectionMapperUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashIntroViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -59,6 +62,37 @@ class TokomemberIntroViewModelTest {
         viewModel.getIntroInfo(0)
         Assert.assertEquals(
             (viewModel.tokomemberOnboardingResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+    @Test
+    fun getIntroSectionDataSuccess(){
+       val response = mockk<TokomemberIntroItem>()
+        val data = mockk<MembershipData>()
+        every {
+            tokomemberIntroSectionMapperUsecase.getIntroSectionData(any(),any(),any())
+        } answers {
+            secondArg<(TokomemberIntroItem) -> Unit>().invoke(response)
+        }
+        viewModel.getIntroSectionData(data)
+        Assert.assertEquals(
+            (viewModel.tokomemberIntroSectionResultLiveData.value as Success).data,
+            response
+        )
+    }
+
+    @Test
+    fun getIntroSectionDataFailure(){
+        val data = mockk<MembershipData>()
+        every {
+            tokomemberIntroSectionMapperUsecase.getIntroSectionData(any(),any(),any())
+        } answers {
+            lastArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getIntroSectionData(data)
+        Assert.assertEquals(
+            (viewModel.tokomemberIntroSectionResultLiveData.value as Fail).throwable,
             mockThrowable
         )
     }

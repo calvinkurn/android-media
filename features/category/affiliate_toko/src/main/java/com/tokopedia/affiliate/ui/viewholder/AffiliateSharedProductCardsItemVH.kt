@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.PAGE_TYPE_PDP
+import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceData
 import com.tokopedia.affiliate_toko.R
@@ -22,6 +24,7 @@ class AffiliateSharedProductCardsItemVH(itemView: View, private val productClick
         var LAYOUT = R.layout.affiliate_vertical_product_card_item_layout
 
         const val PRODUCT_ACTIVE = 1
+        const val TYPE_PRODUCT = 0
     }
 
     override fun bind(element: AffiliateSharedProductCardsModel?) {
@@ -44,8 +47,9 @@ class AffiliateSharedProductCardsItemVH(itemView: View, private val productClick
             itemView.findViewById<Typography>(R.id.shop_name)?.text = product.footer?.firstOrNull()?.footerText
             itemView.setOnClickListener {
                 sendSelectContentEvent(product)
+                val type = if(product.itemType == TYPE_PRODUCT) PAGE_TYPE_PDP else PAGE_TYPE_SHOP
                 productClickInterface?.onProductClick(product.itemID, product.itemTitle ?: "", product.image?.androidURL
-                        ?: "", product.defaultLinkURL ?: "", product.itemID, product.status ?: 0)
+                        ?: "", product.defaultLinkURL ?: "", product.itemID, product.status ?: 0, type =  type )
             }
         }
     }

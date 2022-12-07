@@ -12,9 +12,11 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.isAllowedString
 import com.tokopedia.product.addedit.common.util.getValueOrDefault
+import com.tokopedia.product.addedit.common.util.toBigIntegerSafely
 import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
@@ -42,6 +44,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -495,7 +498,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     ): List<ProductVariantInputModel> {
         val result: MutableList<ProductVariantInputModel> = mutableListOf()
         val unitValueList: MutableList<List<UnitValue>> = mutableListOf()
-        val variantIdList: MutableList<Int> = mutableListOf()
+        val variantIdList: MutableList<BigInteger> = mutableListOf()
         var level = 0
 
         // init unitValueList and variantIdList
@@ -600,7 +603,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         val selectedVariantDetails = mutableListOf<VariantDetail>()
         selectedVariantInputModels.forEach { inputModel ->
             // selected variant types
-            val id = inputModel.variantId.toIntSafely()
+            val id = inputModel.variantId.toBigIntegerSafely()
             val identifier = inputModel.identifier
             val name = inputModel.variantName
             // selected variant unit values
@@ -714,5 +717,11 @@ class AddEditProductVariantViewModel @Inject constructor(
         if (productInputModel.hasVariant()) {
             productInputModel.removeVariantCombinations(position, layoutPosition)
         }
+    }
+
+    fun cleanUrlOrPathPicture(imageResult : PickerResult) : String?{
+        val editedPath = imageResult.editedImages.firstOrNull()
+        val originalPath = imageResult.originalPaths.firstOrNull()
+        return if(editedPath.isNullOrEmpty()) originalPath else editedPath
     }
 }

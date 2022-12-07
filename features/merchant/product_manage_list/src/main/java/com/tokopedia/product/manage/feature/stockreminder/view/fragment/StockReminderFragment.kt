@@ -21,7 +21,13 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
@@ -177,7 +183,7 @@ class StockReminderFragment : BaseDaggerFragment(),
 
         val dataIsValid = getProductWareHouseList().firstOrNull{
             it.thresholdStatus == REMINDER_ACTIVE.toString() &&
-                    (it.threshold.toInt() < MINIMUM_STOCK_REMINDER || it.threshold.toInt() > maxStock ?: MAXIMUM_STOCK_REMINDER)
+                    (it.threshold.toIntOrZero() < MINIMUM_STOCK_REMINDER || it.threshold.toIntOrZero() > maxStock ?: MAXIMUM_STOCK_REMINDER)
         } == null
 
         val haveValidChanges = haveChanges.size.orZero() > 0

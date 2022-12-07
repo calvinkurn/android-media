@@ -22,6 +22,7 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
+import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -46,7 +47,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         private const val PAGE_SIZE = 50
         private const val LIST_TYPE = 0
         private const val RECYCLERVIEW_ITEM_FIRST_INDEX = 0
-        private const val DELAY = 1000L
+        private const val DELAY = 3000L
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
@@ -54,6 +55,7 @@ class ManageProductFragment : BaseDaggerFragment() {
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/product_incomplete.png"
         private const val SCROLL_ANIMATION_DELAY = 500L
 
+        private const val GUIDELINE_MARGIN_FOOTER_HALF_WAY = 95
         private const val GUIDELINE_MARGIN_FOOTER_MIN = 0
         private const val GUIDELINE_MARGIN_HEADER_MIN = 0
 
@@ -164,7 +166,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun handlePageMode() {
-        if (pageMode == PageMode.UPDATE) {
+        if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
             binding?.btnSaveDraft?.gone()
         }
     }
@@ -183,12 +185,14 @@ class ManageProductFragment : BaseDaggerFragment() {
             when (result) {
                 is Success -> {
                     hideLoader()
+                    displayProducts(result.data)
                     if (result.data.productList.size.isMoreThanZero()) {
-                        displayProducts(result.data)
                         hideEmptyState()
                     } else {
                         showEmptyState()
-                        showChooseProductPage()
+                        if (viewModel.autoNavigateToChooseProduct()) {
+                            showChooseProductPage()
+                        }
                     }
                 }
                 is Fail -> {
@@ -248,6 +252,9 @@ class ManageProductFragment : BaseDaggerFragment() {
                 HIDE_BANNER -> {
                     hideBanner()
                 }
+                else -> {
+                    hideBanner()
+                }
             }
         }
     }
@@ -269,8 +276,6 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun displayProducts(productList: SellerCampaignProductList) {
-        viewModel.setProductErrorMessage(productList)
-        viewModel.setProductInfoCompletion(productList)
         viewModel.getBannerType(productList)
         viewModel.getCampaignDetail(campaignId)
         handleScrollUp()
@@ -299,7 +304,20 @@ class ManageProductFragment : BaseDaggerFragment() {
                     setGuidelineMinAndMax()
                     setGuidelineHeader()
                     setGuidelineFooter()
-                    animateScrollDebounce.invoke(dy)
+                    if (guidelineMarginFooter <= GUIDELINE_MARGIN_FOOTER_HALF_WAY) {
+                        animateScrollDebounce.invoke(dy)
+                    } else {
+                        animateScrollDebounce.invoke(Constant.ZERO)
+                    }
+                }
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (!recyclerView.canScrollVertically(Constant.ONE)
+                        && newState == RecyclerView.SCROLL_STATE_DRAGGING
+                    ) {
+                        animateScrollDebounce.invoke(Constant.ZERO)
+                    }
                 }
             })
         }
@@ -434,7 +452,7 @@ class ManageProductFragment : BaseDaggerFragment() {
                         )
                     }
 
-                    val coachMark = activity?.let { it -> CoachMark2(it) }
+                    val coachMark = activity?.let { act -> CoachMark2(act) }
                     coachMark?.showCoachMark(coachMarkItems)
                     viewModel.setIsCoachMarkShown(true)
                     coachMark?.onFinishListener = {
@@ -471,11 +489,17 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun showEditProductBottomSheet(productList: List<SellerCampaignProductList.Product>) {
         if (productList.isEmpty()) return
-        val bottomSheet = EditProductInfoBottomSheet.newInstance(productList)
+        val bottomSheet = EditProductInfoBottomSheet.newInstance(campaignId, productList)
         bottomSheet.setOnEditProductSuccessListener {
             doOnDelayFinished(DELAY) {
                 loadProductsData()
                 showSuccessEditProductToaster()
+            }
+        }
+        bottomSheet.setOnDeleteProductSuccessListener {
+            doOnDelayFinished(DELAY) {
+                loadProductsData()
+                showSuccessDeleteProductToaster()
             }
         }
         bottomSheet.show(childFragmentManager)
@@ -483,7 +507,11 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun showChooseProductPage() {
         val context = context ?: return
-        val intent = ChooseProductActivity.createIntent(context, campaignId.toString(), manageProductListAdapter.itemCount)
+        val intent = ChooseProductActivity.createIntent(
+            context,
+            campaignId.toString(),
+            manageProductListAdapter.itemCount
+        )
         startActivityForResult(intent, REQUEST_CODE)
     }
 
@@ -494,6 +522,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun deleteProduct(product: SellerCampaignProductList.Product) {
         ProductDeleteDialog().apply {
             setOnPrimaryActionClick {
+                showLoader()
                 viewModel.removeProducts(campaignId, listOf(product))
             }
             show(context ?: return)
@@ -522,6 +551,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         when (resultCode) {
             Activity.RESULT_OK -> {
                 viewModel.autoShowEditProduct = true
+                viewModel.setAutoNavigateToChooseProduct(false)
                 showLoader()
                 doOnDelayFinished(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
@@ -560,6 +590,13 @@ class ManageProductFragment : BaseDaggerFragment() {
             if (viewModel.bannerType.value == HIDE_BANNER) {
                 guidelineHeader.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
                 guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+
+                guidelineFooter.animateSlide(
+                    guidelineMarginFooter,
+                    guidelineMarginFooterMax,
+                    false
+                )
+                guidelineMarginFooter = guidelineMarginFooterMax
             } else {
                 guidelineHeader.animateSlide(
                     guidelineMarginHeader,

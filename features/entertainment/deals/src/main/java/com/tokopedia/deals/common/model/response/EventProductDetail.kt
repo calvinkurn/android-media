@@ -3,6 +3,7 @@ package com.tokopedia.deals.common.model.response
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -182,7 +183,7 @@ data class EventProductDetail(
         @SerializedName("category")
         @Expose
         val category: List<Category> = listOf()
-): Parcelable
+) : Parcelable, ImpressHolder()
 
 @Parcelize
 data class Brand(

@@ -22,11 +22,17 @@
                 "options": [
                   {
                     "value": "yes",
-                    "caption": "Iya, Benar"
+                    "caption": "Iya, Benar",
+                    "message": "Oke!, Kami akan rekomendasiin kuliner halal di Tokopedia NYAM! & hasil pencarian.",
+                    "applink": "tokopedia://explicit-profile",
+                    "textApplink": "Lihat detail"
                   },
                   {
                     "value": "no",
-                    "caption": "Nggak"
+                    "caption": "Nggak",
+                    "message": "Sip!, Kamu bisa atur rekomendasi kuliner lainnya di Preferensi Belanja.",
+                    "applink": "tokopedia://explicit-profile",
+                    "textApplink": "Lihat detail"
                   }
                 ]
               }

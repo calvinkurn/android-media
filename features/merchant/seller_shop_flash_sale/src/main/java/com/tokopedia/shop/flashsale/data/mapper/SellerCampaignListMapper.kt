@@ -70,6 +70,7 @@ class SellerCampaignListMapper @Inject constructor() {
                 thematicInfo = it.thematicInfo.toThematicInfoUiModel(),
                 reviewStartDate = it.reviewStartDate.epochToDate(),
                 reviewEndDate = it.reviewEndDate.epochToDate(),
+                packageInfo = it.toPackageInfo()
             )
         }
         return CampaignMeta(
@@ -117,6 +118,10 @@ class SellerCampaignListMapper @Inject constructor() {
             PAYMENT_TYPE_REGULAR -> PaymentType.REGULAR
             else -> PaymentType.INSTANT
         }
+    }
+
+    private fun GetSellerCampaignListResponse.GetSellerCampaignList.Campaign.toPackageInfo(): CampaignUiModel.PackageInfo {
+        return CampaignUiModel.PackageInfo(packageInfo.packageId, packageInfo.packageName)
     }
 
 }

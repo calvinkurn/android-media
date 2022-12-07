@@ -28,18 +28,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_header">
 
-            <include layout="@layout/view_product_voucher_info" />
+            <com.tokopedia.play.view.custom.PlayVoucherView
+                android:id="@+id/voucher_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl7"
+                app:layout_constraintBottom_toTopOf="@id/rv_product_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_product_list"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl0"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_product_voucher_info"
+                app:layout_constraintTop_toBottomOf="@id/voucher_view"
                 app:layout_goneMarginTop="@dimen/spacing_lvl4"
-                tools:listitem="@layout/item_play_product_section_header" />
+                tools:listitem="@layout/item_play_product_sheet_section"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

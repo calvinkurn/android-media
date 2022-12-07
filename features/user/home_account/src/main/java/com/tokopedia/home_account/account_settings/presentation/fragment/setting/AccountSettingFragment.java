@@ -231,7 +231,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                 accountAnalytics.eventClickAccountSetting(PASSWORD);
                 accountAnalytics.eventClickAccountPassword();
-                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalUserPlatform.HAS_PASSWORD);
                 startActivity(intent);
                 break;
             case SettingConstant.SETTING_PIN:
@@ -247,7 +247,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 break;
             case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                 accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
-                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS_FROM_ACCOUNT);
                 startActivity(intent);
                 break;
             case SettingConstant.SETTING_ACCOUNT_KYC_ID:
@@ -268,7 +268,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToKyc() {
         if (getActivity() != null) {
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO, String.valueOf(PROJECT_ID));
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalUserPlatform.KYC_INFO, String.valueOf(PROJECT_ID));
             startActivity(intent);
         }
     }
@@ -371,6 +371,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void onPushNotifClicked() {
-        RouteManager.route(getContext(), ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_SETTING);
+        RouteManager.route(getContext(), ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_SETTING);
     }
 }

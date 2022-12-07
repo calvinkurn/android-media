@@ -7,9 +7,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.CtaPostTagViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.ProductPostTagViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.ProductPostTagViewHolderNew
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 
 /**
  * @author by yoasfs on 2019-07-18
@@ -17,15 +17,15 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewMode
 class PostTagTypeFactoryImpl(val listener: DynamicPostViewHolder.DynamicPostListener, val screenWidth: Int)
     : BaseAdapterTypeFactory(), PostTagTypeFactory {
 
-    override fun type(productPostTagViewModel: ProductPostTagViewModel): Int {
+    override fun type(productPostTagViewModel: ProductPostTagModel): Int {
         return ProductPostTagViewHolder.LAYOUT
     }
 
-    override fun type(productPostTagViewModelNew: ProductPostTagViewModelNew): Int {
+    override fun type(productPostTagViewModelNew: ProductPostTagModelNew): Int {
         return ProductPostTagViewHolderNew.LAYOUT
     }
 
-    override fun type(ctaPostTagViewModel: CtaPostTagViewModel): Int {
+    override fun type(ctaPostTagViewModel: CtaPostTagModel): Int {
         return CtaPostTagViewHolder.LAYOUT
     }
 
@@ -36,9 +36,6 @@ class PostTagTypeFactoryImpl(val listener: DynamicPostViewHolder.DynamicPostList
             }
             CtaPostTagViewHolder.LAYOUT -> {
                 CtaPostTagViewHolder(parent, listener)
-            }
-            ProductPostTagViewHolderNew.LAYOUT -> {
-                ProductPostTagViewHolderNew(parent, listener)
             }
             else -> {
                 super.createViewHolder(parent, type)

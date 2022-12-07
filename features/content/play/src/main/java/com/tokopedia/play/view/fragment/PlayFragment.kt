@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +26,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.extensions.*
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
@@ -39,6 +40,7 @@ import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.*
@@ -58,6 +60,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -68,6 +71,7 @@ class PlayFragment @Inject constructor(
     private val pageMonitoring: PlayPltPerformanceCallback,
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
+    private val router: Router,
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -233,6 +237,11 @@ class PlayFragment @Inject constructor(
         fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
     }
 
+    fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
+        val selectedProduct = product.buttons.firstOrNull { it.type.toAction == action }.orDefault()
+        fragmentBottomSheetView.openVariantBottomSheet(selectedProduct)
+    }
+
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
@@ -313,8 +322,9 @@ class PlayFragment @Inject constructor(
         try {
             val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
             playViewModel.focusPage(channelData)
-            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelDetail.channelInfo.title)
+            analytic.sendScreen(channelId, playViewModel.channelType, sourceType = playParentViewModel.source.type, channelName = channelData.channelDetail.channelInfo.title)
             newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
+            newAnalytic.setData(channelData.channelDetail.channelInfo)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
@@ -467,7 +477,7 @@ class PlayFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                handleStatus(state.status)
+                if(cachedState.isChanged { it.status.channelStatus.statusType }) handleStatus(state.status)
             }
         }
     }
@@ -482,7 +492,7 @@ class PlayFragment @Inject constructor(
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 it.finish()
-                if (buttonUrl.isNotEmpty()) RouteManager.route(it, buttonUrl)
+                if (buttonUrl.isNotEmpty()) router.route(it, buttonUrl)
             }
             dialog.setOverlayClose(false)
             dialog.show()
@@ -571,8 +581,12 @@ class PlayFragment @Inject constructor(
         if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
     }
 
+    @Throws(IndexOutOfBoundsException::class)
     private fun sendSwipeRoomAnalytic() {
-        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom()
+        try {
+            val nextId = playParentViewModel.getNextChannel(channelId)
+            if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom(nextId)
+        } catch (e: Exception) {}
     }
 
     //region onStateChanged

@@ -9,9 +9,9 @@ import com.tokopedia.play.view.uimodel.recom.PlayLikeStatus
 interface PlayLikeAnalytic {
 
     fun clickLike(
-            channelId: String,
-            channelType: PlayChannelType,
-            channelName: String,
-            likeStatus: PlayLikeStatus,
+        channelId: String,
+        channelType: PlayChannelType,
+        channelName: String,
+        likeStatus: PlayLikeStatus,
     )
 }

@@ -191,7 +191,8 @@ class TokoNowCategoryFragment:
             recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
-            recomWidgetBindPageNameListener = this
+            recomWidgetBindPageNameListener = this,
+            feedbackWidgetListener = this
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -255,7 +256,7 @@ class TokoNowCategoryFragment:
 
         TokoNowUniversalShareUtil.shareOptionRequest(
             shareModel = shareModel,
-            shareHomeTokonow = shareCategoryTokonow,
+            shareTokoNowData = shareCategoryTokonow,
             activity = activity,
             view = view,
             onSuccess = {
@@ -519,7 +520,7 @@ class TokoNowCategoryFragment:
 
     override fun onAllCategoryClicked() { }
 
-    override fun onCategoryClicked(position: Int, categoryId: String) { }
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { }
 
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
 

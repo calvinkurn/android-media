@@ -25,7 +25,7 @@ import com.tokopedia.unifyprinciples.Typography
 class PartialButtonShopFollowersView private constructor(val view: View, private val listener: PartialButtonShopFollowersListener) {
 
     companion object {
-        const val SHOP_FOLLOWERS_IMG_ASSET = "https://ecs7.tokopedia.net/android/other/il_pdp%20bts_follower.png"
+        const val SHOP_FOLLOWERS_IMG_ASSET = "https://images.tokopedia.net/android/other/il_pdp%20bts_follower.png"
         const val GONE_ANIMATION_DURATION = 300L
         fun build(_view: View, _buttonListener: PartialButtonShopFollowersListener) = PartialButtonShopFollowersView(_view, _buttonListener)
     }
@@ -141,7 +141,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
 
     private fun animateSlideDown() = with(view) {
         animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 visibility = View.GONE
                 stopLoading()

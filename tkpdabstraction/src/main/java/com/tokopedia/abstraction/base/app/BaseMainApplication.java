@@ -2,10 +2,10 @@ package com.tokopedia.abstraction.base.app;
 
 import android.content.Context;
 
-import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
+import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.AppModule;
@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.di.module.AppModule;
 public class BaseMainApplication extends MultiDexApplication {
 
     private BaseAppComponent baseAppComponent;
+    private TokoChatConnection tokoChatConnection;
 
     public BaseAppComponent getBaseAppComponent(){
         if (baseAppComponent == null) {
@@ -24,12 +25,8 @@ public class BaseMainApplication extends MultiDexApplication {
                     .appModule(new AppModule(this));
             baseAppComponent = daggerBuilder.build();
         }
+        initTokoChatConnection();
         return baseAppComponent;
-    }
-
-    public BaseAppComponent reinitBaseAppComponent(AppModule appModule){
-        return baseAppComponent = DaggerBaseAppComponent.builder()
-                .appModule(appModule).build();
     }
 
     public void setComponent(BaseAppComponent appComponent) {
@@ -40,5 +37,19 @@ public class BaseMainApplication extends MultiDexApplication {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         SplitCompat.install(this);
+    }
+
+    private void initTokoChatConnection() {
+        if (tokoChatConnection == null) {
+            tokoChatConnection = TokoChatConnection.INSTANCE;
+        }
+
+        if (!tokoChatConnection.hasBeenInitialized()) {
+            tokoChatConnection.init(getApplicationContext());
+        }
+    }
+
+    public TokoChatConnection getTokoChatConnection() {
+        return tokoChatConnection;
     }
 }

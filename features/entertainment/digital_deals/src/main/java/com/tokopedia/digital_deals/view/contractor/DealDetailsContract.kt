@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
+import com.tokopedia.common_entertainment.data.Outlet
 import com.tokopedia.digital_deals.view.model.ProductItem
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
-import com.tokopedia.digital_deals.view.model.Outlet
 import com.tokopedia.digital_deals.view.model.response.EventContentData
 import com.tokopedia.usecase.RequestParams
 import java.util.ArrayList

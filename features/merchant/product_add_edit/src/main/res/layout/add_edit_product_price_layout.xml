@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_price_header"
@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/add_product_price_header"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,25 +24,24 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/tfu_product_price"
         android:contentDescription="@string/content_desc_tfu_product_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="18dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_product_price_header"
-        app:text_field_input_type="number"
-        app:text_field_label="@string/detail_label_product_price"
-        app:text_field_label_static="true"
-        app:text_field_message="@string/label_add_product_price_tips"
-        app:text_field_prepend_text="Rp" />
+        app:unify_text_field_input_type="number"
+        app:unify_text_field_label="@string/detail_label_product_price"
+        app:unify_text_field_prepend_text="Rp" />
 
     <com.tokopedia.unifycomponents.ImageUnify
+        android:visibility="gone"
         android:id="@+id/ic_edit_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/layout_lvl1"
+        android:paddingBottom="8dp"
         app:layout_constraintTop_toTopOf="@id/tfu_product_price"
         app:layout_constraintBottom_toBottomOf="@id/tfu_product_price"
         app:layout_constraintRight_toRightOf="parent"

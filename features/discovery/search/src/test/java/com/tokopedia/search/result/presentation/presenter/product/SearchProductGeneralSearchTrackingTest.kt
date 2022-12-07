@@ -169,6 +169,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -200,6 +201,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -231,6 +233,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -263,6 +266,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -296,6 +300,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -331,6 +336,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -365,6 +371,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -400,6 +407,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -433,6 +441,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -466,6 +475,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -498,6 +508,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -529,6 +540,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -560,6 +572,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -591,6 +604,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -632,6 +646,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -673,6 +688,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -720,6 +736,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
                 "${searchParameter[SearchApiConst.SRP_PAGE_ID]}",
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
         )
 
         `Test General Search Tracking`(
@@ -761,6 +778,49 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             pageSource = searchRef,
             searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
+        )
+
+        `Test General Search Tracking`(
+            searchProductModel,
+            expectedGeneralSearchTrackingModel,
+        )
+    }
+
+    @Test
+    fun `General Search Tracking External Reference`() {
+        val externalReference = "1234567"
+
+        searchParameter = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = keyword
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+            it[SearchApiConst.SRP_EXT_REF] = externalReference
+        }
+
+        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+            eventCategory = SearchEventTracking.Category.EVENT_TOP_NAV,
+            eventLabel = String.format(
+                SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
+                keyword,
+                searchProductModel.searchProduct.header.keywordProcess,
+                searchProductModel.searchProduct.header.responseCode,
+                NONE,
+                NONE,
+                NONE,
+                searchProductModel.searchProduct.header.totalData,
+            ),
+            userId = userId,
+            isResultFound = true.toString(),
+            categoryIdMapping = "65",
+            categoryNameMapping = "Handphone & Tablet",
+            relatedKeyword = "none - none",
+            pageSource = pageSource,
+            searchFilter = searchProductModel.backendFilters,
+            componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = externalReference,
         )
 
         `Test General Search Tracking`(

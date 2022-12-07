@@ -2,14 +2,14 @@ package com.tokopedia.digital_deals
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.digital_deals.data.DealCheckoutGeneral
-import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstant
-import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstantNoPromo
-import com.tokopedia.digital_deals.data.DealCheckoutGeneralNoPromo
-import com.tokopedia.digital_deals.data.DealsCheckoutInstantResponse
-import com.tokopedia.digital_deals.data.DealsCheckoutResponse
-import com.tokopedia.digital_deals.data.DealsVerifyResponse
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
+import com.tokopedia.common_entertainment.data.DealCheckoutGeneral
+import com.tokopedia.common_entertainment.data.DealCheckoutGeneralInstant
+import com.tokopedia.common_entertainment.data.DealCheckoutGeneralInstantNoPromo
+import com.tokopedia.common_entertainment.data.DealCheckoutGeneralNoPromo
+import com.tokopedia.common_entertainment.data.DealsCheckoutInstantResponse
+import com.tokopedia.common_entertainment.data.DealsCheckoutResponse
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
+import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.digital_deals.view.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError

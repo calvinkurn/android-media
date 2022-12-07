@@ -12,6 +12,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -96,11 +97,11 @@ class HotelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getDefaultHomepageParameter(rawQuery: String) {
+    fun getDefaultHomepageParameter(rawQuery: GqlQueryInterface) {
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelPropertyDefaultHome.Response::class.java)
-                var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                val graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 graphqlRepository.response(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<HotelPropertyDefaultHome.Response>().response.data
 
@@ -108,7 +109,7 @@ class HotelHomepageViewModel @Inject constructor(
         }) { }
     }
 
-    fun getRecentSearch(rawQuery: String) {
+    fun getRecentSearch(rawQuery: GqlQueryInterface) {
         launchCatchError(block = {
             val data = travelRecentSearchUseCase.execute(rawQuery, true)
             mutableRecentSearch.postValue(Success(HotelRecentSearchModel(title = data.travelMeta.title, items = data.items)))
@@ -117,11 +118,11 @@ class HotelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecentSearch(rawQuery: String) {
+    fun deleteRecentSearch(rawQuery: GqlQueryInterface) {
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelDeleteRecentSearchEntity.Response::class.java)
-                var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                val graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 graphqlRepository.response(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<HotelDeleteRecentSearchEntity.Response>()
 

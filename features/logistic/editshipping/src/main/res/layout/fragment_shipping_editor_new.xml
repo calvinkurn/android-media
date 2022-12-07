@@ -11,14 +11,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_Background">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/sv_shipping_editor"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:isScrollContainer="false"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_Background"
             app:layout_constraintBottom_toTopOf="@id/bottom_layout_address"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"

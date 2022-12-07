@@ -3,7 +3,9 @@ package com.tokopedia.review.feature.createreputation.presentation.viewmodel
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -11,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -18,7 +21,6 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.review.R
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.extension.combine
-import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -31,7 +33,7 @@ import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.old.CreateReviewBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
@@ -41,6 +43,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSu
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewTemplateItemUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousInfoBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoriesUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoryUiState
@@ -51,12 +54,12 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProgressBarUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewSubmitButtonUiState
-import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateItemUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTopicsUiState
 import com.tokopedia.review.feature.createreputation.util.CreateReviewMapper
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
@@ -85,6 +88,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 typealias ReviewFormRequestState = RequestState<ProductRevGetForm, Nothing>
@@ -114,12 +118,14 @@ class CreateReviewViewModel @Inject constructor(
     private val getReviewTemplatesUseCase: GetReviewTemplatesUseCase,
     private val getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase,
     private val getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase,
+    private val cacheManager: CacheManager
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
         private const val GOOD_RATING_THRESHOLD = 2
+        private const val REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS = 1L
         private const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
         private const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
 
@@ -144,6 +150,12 @@ class CreateReviewViewModel @Inject constructor(
         private const val SAVED_STATE_POST_SUBMIT_REVIEW_RESULT = "savedStatePostSubmitReviewResult"
         private const val SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET = "savedStateShowIncentiveBottomSheet"
         private const val SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET = "savedStateShowTextAreaBottomSheet"
+        private const val SAVED_STATE_SHOULD_SHOW_ANONYMOUS_INFO_BOTTOM_SHEET = "savedStateShowAnonymousInfoBottomSheet"
+        private const val CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun"
+
+        private const val REVIEW_INSPIRATION_ENABLED = "experiment_variant"
+
+        private const val MEDIA_UPLOAD_ERROR_MESSAGE = "Error when uploading %s. Cause: %s"
     }
 
     // region state that need to be saved and restored
@@ -169,6 +181,7 @@ class CreateReviewViewModel @Inject constructor(
     private val postSubmitReviewResult = MutableStateFlow<PostSubmitReviewRequestState>(RequestState.Idle)
     private val shouldShowIncentiveBottomSheet = MutableStateFlow(false)
     private val shouldShowTextAreaBottomSheet = MutableStateFlow(false)
+    private val shouldShowAnonymousInfoBottomSheet = MutableStateFlow(false)
     // endregion state that need to be saved and restored
 
     // region state that must not be saved nor restored
@@ -176,6 +189,7 @@ class CreateReviewViewModel @Inject constructor(
     private val textAreaHasFocus = MutableStateFlow(false)
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
     private val _toasterQueue = MutableSharedFlow<CreateReviewToasterUiModel>(extraBufferCapacity = 50)
+    private val bottomSheetBottomInset = MutableStateFlow(Int.ZERO)
     // endregion state that must not be saved nor restored
 
     // region state whose it's value is determined by other states
@@ -234,9 +248,16 @@ class CreateReviewViewModel @Inject constructor(
     ).toStateFlow(CreateReviewBadRatingCategoriesUiState.Loading)
     // endregion bad rating categories state
 
+    // region topics state
+    val topicsUiState = combine(
+        canRenderForm, reviewForm.filterIsInstance(), ::mapTopics
+    ).toStateFlow(CreateReviewTopicsUiState.Hidden)
+    // endregion topics state
+
     // region text area state
     private val textAreaHint = combine(
-        rating, isOnlyBadRatingOtherCategorySelected, badRatingCategoriesUiState, ::mapTextAreaHint
+        rating, isOnlyBadRatingOtherCategorySelected, badRatingCategoriesUiState,
+        reviewForm.filterIsInstance(), ::mapTextAreaHint
     ).toStateFlow(StringRes(Int.ZERO))
     private val textAreaHelper = combine(
         reviewText, hasIncentive, hasOngoingChallenge, textAreaHasFocus, ::mapTextAreaHelper
@@ -296,8 +317,10 @@ class CreateReviewViewModel @Inject constructor(
     // endregion submit button state
 
     // region create review bottom sheet state
-    val createReviewBottomSheetUiState = reviewForm.mapLatest(::mapCreateReviewBottomSheetUiState)
-        .toStateFlow(CreateReviewBottomSheetUiState.Showing)
+    val createReviewBottomSheetUiState = combine(
+        reviewForm, bottomSheetBottomInset, ::mapCreateReviewBottomSheetUiState
+    ).toStateFlow(CreateReviewBottomSheetUiState.Showing(Int.ZERO))
+
     // endregion create review bottom sheet state
 
     // region incentive bottom sheet state
@@ -317,6 +340,12 @@ class CreateReviewViewModel @Inject constructor(
     val postSubmitBottomSheetUiState = postSubmitReviewResult.mapLatest(::mapPostSubmitUiState)
         .toStateFlow(PostSubmitUiState.Hidden)
     // endregion post submit bottom sheet state
+
+    // region anonymous info bottom sheet state
+    val anonymousInfoBottomSheetUiState = combine(
+        canRenderForm, shouldShowAnonymousInfoBottomSheet, ::mapAnonymousInfoBottomSheetUiState
+    ).toStateFlow(CreateReviewAnonymousInfoBottomSheetUiState.Hidden)
+    // endregion anonymous info bottom sheet state
 
     val toasterQueue: Flow<CreateReviewToasterUiModel>
         get() = _toasterQueue
@@ -424,7 +453,8 @@ class CreateReviewViewModel @Inject constructor(
     private fun mapTextAreaHint(
         rating: Int,
         isOnlyBadRatingOtherCategorySelected: Boolean,
-        badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
+        badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState,
+        reviewFormResult: ReviewFormRequestSuccessState
     ): StringRes {
         val badRatingCategoriesShowing = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
         return if (rating in CreateReviewFragment.RATING_1..CreateReviewFragment.RATING_2) {
@@ -442,9 +472,14 @@ class CreateReviewViewModel @Inject constructor(
         } else if (rating == CreateReviewFragment.RATING_3) {
             StringRes(R.string.review_form_neutral_helper)
         } else {
-            StringRes(R.string.review_form_good_helper)
+            reviewFormResult.result.productrevGetForm.placeholder.takeIf {
+                !it.isNullOrBlank() && shouldShowReviewDynamicPlaceholder()
+            }?.let { placeholder ->
+                StringRes(R.string.review_raw_string_format, listOf(placeholder))
+            } ?: StringRes(R.string.review_form_good_helper)
         }
     }
+
     private fun mapTextAreaHelper(
         reviewTextAreaTextUiModel: CreateReviewTextAreaTextUiModel,
         hasIncentive: Boolean,
@@ -575,6 +610,24 @@ class CreateReviewViewModel @Inject constructor(
         )
     }
 
+    private suspend fun mapTopics(
+        canRenderForm: Boolean,
+        reviewFormRequestResult: ReviewFormRequestSuccessState
+    ): CreateReviewTopicsUiState {
+        return if (canRenderForm && shouldShowReviewTopicsInspiration()) {
+            if (reviewFormRequestResult.result.productrevGetForm.keywords.isNullOrEmpty()) {
+                CreateReviewTopicsUiState.Hidden
+            } else {
+                CreateReviewTopicsUiState.Showing(
+                    reviewFormRequestResult.result.productrevGetForm.keywords,
+                    shouldRunReviewTopicsPeekAnimation()
+                )
+            }
+        } else {
+            CreateReviewTopicsUiState.Hidden
+        }
+    }
+
     private fun mapTextAreaUiState(
         canRenderForm: Boolean,
         textAreaTextAreaTextUiModel: CreateReviewTextAreaTextUiModel,
@@ -643,15 +696,26 @@ class CreateReviewViewModel @Inject constructor(
                     )
                 }
             } else if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
+                val concatenatedErrorMessage = mediaItems.filter {
+                    it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                }.joinToString("|") {
+                    String.format(MEDIA_UPLOAD_ERROR_MESSAGE, it.uri, it.message)
+                }
+                val errorCode = ErrorHandler.getErrorMessagePair(
+                    context = null,
+                    e = MessageErrorException(concatenatedErrorMessage),
+                    builder = ErrorHandler.Builder()
+                ).second
                 if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.FailedUpload) {
                     currentMediaPickerUiState.copy(mediaItems = mediaItems)
                 } else {
                     if (currentMediaPickerUiState.failedOccurrenceCount.isMoreThanZero()) {
-                        enqueueErrorUploadMediaToaster()
+                        enqueueErrorUploadMediaToaster(errorCode)
                     }
                     CreateReviewMediaPickerUiState.FailedUpload(
                         failedOccurrenceCount = currentMediaPickerUiState.failedOccurrenceCount + 1,
-                        mediaItems = mediaItems
+                        mediaItems = mediaItems,
+                        errorCode = errorCode
                     )
                 }
             } else {
@@ -724,29 +788,31 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private fun mapCreateReviewBottomSheetUiState(
-        reviewForm: ReviewFormRequestState
+        reviewForm: ReviewFormRequestState, bottomInset: Int
     ): CreateReviewBottomSheetUiState {
-        return if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
-            CreateReviewBottomSheetUiState.ShouldDismiss(
+        var uiState = createReviewBottomSheetUiState.value
+        if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
+            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
                 success = false,
                 message = StringRes(R.string.review_pending_invalid_to_review),
                 feedbackId = ""
             )
         } else if (reviewForm is RequestState.Success && reviewForm.result.productrevGetForm.productData.productStatus == 0) {
-            CreateReviewBottomSheetUiState.ShouldDismiss(
+            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
                 success = false,
                 message = StringRes(R.string.review_pending_deleted_product_error_toaster),
                 feedbackId = ""
             )
         } else if (reviewForm is RequestState.Error) {
-            CreateReviewBottomSheetUiState.ShouldDismiss(
+            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
                 success = false,
                 message = StringRes(R.string.review_toaster_page_error),
                 feedbackId = ""
             )
-        } else {
-            createReviewBottomSheetUiState.value
+        } else if (uiState is CreateReviewBottomSheetUiState.Showing) {
+            uiState = uiState.copy(bottomInset)
         }
+        return uiState
     }
 
     private fun mapIncentiveBottomSheetUiState(
@@ -794,6 +860,15 @@ class CreateReviewViewModel @Inject constructor(
         } else {
             PostSubmitUiState.Hidden
         }
+    }
+
+    private fun mapAnonymousInfoBottomSheetUiState(
+        canRenderForm: Boolean,
+        shouldShowAnonymousInfoBottomSheet: Boolean
+    ): CreateReviewAnonymousInfoBottomSheetUiState {
+        return if (canRenderForm && shouldShowAnonymousInfoBottomSheet) {
+            CreateReviewAnonymousInfoBottomSheetUiState.Showing
+        } else CreateReviewAnonymousInfoBottomSheetUiState.Hidden
     }
 
     private suspend fun mapPostSubmitReviewRequestParams(
@@ -883,7 +958,7 @@ class CreateReviewViewModel @Inject constructor(
         return reviewTemplates.result.takeIf { it.isNotEmpty() }?.let { templates ->
             templates.mapNotNull { template ->
                 if (!template.selected) {
-                    CreateReviewTemplateItemUiModel(CreateReviewTemplateItemUiState.Showing(template))
+                    CreateReviewTemplateItemUiModel(template)
                 } else null
             }
         }.orEmpty()
@@ -1118,19 +1193,6 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
-    private fun mergeImagePickerResultWithOriginalImages(
-        imagePickerResult: MutableList<String>,
-        imagesFedIntoPicker: MutableList<String>
-    ): List<String> {
-        return imagePickerResult.mapIndexed { index, result ->
-            if (result.endsWith(ReviewConstants.TEMP_IMAGE_EXTENSION)) {
-                imagesFedIntoPicker[index]
-            } else {
-                result
-            }
-        }
-    }
-
     private fun appendSelectedTemplatesToReviewText(
         reviewTemplate: ReviewTemplateRequestSuccessState
     ) {
@@ -1193,10 +1255,10 @@ class CreateReviewViewModel @Inject constructor(
         sendingReview.value = false
     }
 
-    private fun enqueueErrorUploadMediaToaster() {
+    private fun enqueueErrorUploadMediaToaster(errorCode: String) {
         _toasterQueue.tryEmit(
             CreateReviewToasterUiModel(
-                message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
+                message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message, listOf(errorCode)),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR
@@ -1234,18 +1296,59 @@ class CreateReviewViewModel @Inject constructor(
         return ErrorHandler.getErrorMessagePair(null, throwable, ErrorHandler.Builder()).second
     }
 
-    fun submitReview() {
-        when(mediaPickerUiState.value) {
-            is CreateReviewMediaPickerUiState.FailedUpload -> enqueueErrorUploadMediaToaster()
-            is CreateReviewMediaPickerUiState.Uploading -> enqueueWaitForUploadMediaToaster()
-            else ->sendingReview.value = true
+    private suspend fun shouldRunReviewTopicsPeekAnimation(): Boolean {
+        return withContext(coroutineDispatcherProvider.io) {
+            val alreadyRun = isReviewTopicsPeekAnimationAlreadyRun()
+            if (alreadyRun.not()) updateIsReviewTopicsPeekAnimationAlreadyRun()
+            alreadyRun.not()
         }
     }
 
-    fun shouldUseUniversalMediaPicker(): Boolean {
+    private fun isReviewTopicsPeekAnimationAlreadyRun(): Boolean {
+        return cacheManager.get(
+            customId = CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN,
+            type = Boolean::class.java,
+            defaultValue = false
+        ).orFalse()
+    }
+
+    private fun updateIsReviewTopicsPeekAnimationAlreadyRun() {
+        cacheManager.put(
+            customId = CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN,
+            objectToPut = true,
+            cacheDuration = TimeUnit.DAYS.toMillis(REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS)
+        )
+    }
+
+    private fun shouldShowReviewTopicsInspiration(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
-        ) == RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
+            RollenceKey.CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME, REVIEW_INSPIRATION_ENABLED
+        ) == REVIEW_INSPIRATION_ENABLED
+    }
+
+    private fun shouldShowReviewDynamicPlaceholder(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME, REVIEW_INSPIRATION_ENABLED
+        ) == REVIEW_INSPIRATION_ENABLED
+    }
+
+    fun submitReview() {
+        when(val currentMediaPickerUiState = mediaPickerUiState.value) {
+            is CreateReviewMediaPickerUiState.FailedUpload -> enqueueErrorUploadMediaToaster(currentMediaPickerUiState.errorCode)
+            is CreateReviewMediaPickerUiState.Uploading -> enqueueWaitForUploadMediaToaster()
+            else -> sendingReview.value = true
+        }
+    }
+
+    fun enqueueDisabledAddMoreMediaToaster() {
+        _toasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
+                actionText = StringRes(Int.ZERO),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            )
+        )
     }
 
     // region MutableStateFlow updater
@@ -1304,14 +1407,6 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
-    fun updateMediaPicker(
-        selectedImages: MutableList<String>,
-        imagesFedIntoPicker: MutableList<String>
-    ) {
-        retryUploadMedia()
-        mediaUris.value = mergeImagePickerResultWithOriginalImages(selectedImages, imagesFedIntoPicker)
-    }
-
     fun updateMediaPicker(selectedMedia: List<String>) {
         retryUploadMedia()
         mediaUris.value = selectedMedia
@@ -1337,6 +1432,18 @@ class CreateReviewViewModel @Inject constructor(
 
     fun dismissTextAreaBottomSheet() {
         shouldShowTextAreaBottomSheet.value = false
+    }
+
+    fun showAnonymousInfoBottomSheet() {
+        shouldShowAnonymousInfoBottomSheet.value = true
+    }
+
+    fun dismissAnonymousInfoBottomSheet() {
+        shouldShowAnonymousInfoBottomSheet.value = false
+    }
+
+    fun setBottomSheetBottomInset(inset: Int) {
+        bottomSheetBottomInset.value = inset
     }
     // endregion MutableStateFlow updater
 
@@ -1473,6 +1580,7 @@ class CreateReviewViewModel @Inject constructor(
             putString(SAVED_STATE_UTM_SOURCE, utmSource.value)
             putBoolean(SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET, shouldShowIncentiveBottomSheet.value)
             putBoolean(SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET, shouldShowTextAreaBottomSheet.value)
+            putBoolean(SAVED_STATE_SHOULD_SHOW_ANONYMOUS_INFO_BOTTOM_SHEET, shouldShowAnonymousInfoBottomSheet.value)
             putBoolean(SAVED_STATE_SENDING_REVIEW, sendingReview.value)
             putSerializable(SAVED_STATE_REVIEW_FORM, reviewForm.value)
             putSerializable(SAVED_STATE_INCENTIVE_OVO, incentiveOvo.value)
@@ -1501,6 +1609,7 @@ class CreateReviewViewModel @Inject constructor(
             utmSource.value = getSavedState(SAVED_STATE_UTM_SOURCE, utmSource.value)!!
             shouldShowIncentiveBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET, shouldShowIncentiveBottomSheet.value)!!
             shouldShowTextAreaBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET, shouldShowTextAreaBottomSheet.value)!!
+            shouldShowAnonymousInfoBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_ANONYMOUS_INFO_BOTTOM_SHEET, shouldShowAnonymousInfoBottomSheet.value)!!
             sendingReview.value = getSavedState(SAVED_STATE_SENDING_REVIEW, sendingReview.value)!!
             reviewText.value = getSavedState(SAVED_STATE_REVIEW_TEXT, reviewText.value)!!.copy(source = CreateReviewTextAreaTextUiModel.Source.SAVED_INSTANCE_STATE)
             shopId.value = getSavedState(SAVED_STATE_SHOP_ID, shopId.value)!!

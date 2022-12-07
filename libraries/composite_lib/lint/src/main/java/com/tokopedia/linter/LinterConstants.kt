@@ -48,7 +48,13 @@ sealed class LinterConstants {
         const val BOTTOM_SHEET = "com.tokopedia.unifycomponents.BottomSheetUnify"
     }
 
-
+    object Attrs {
+        const val RADIUS = "radius"
+        const val BOTTOM_RIGHT_RADIUS = "bottomRightRadius"
+        const val BOTTOM_LEFT_RADIUS = "bottomLeftRadius"
+        const val TOP_RIGHT_RADIUS = "topRightRadius"
+        const val TOP_LEFT_RADIUS = "topLeftRadius"
+    }
 }
 
 

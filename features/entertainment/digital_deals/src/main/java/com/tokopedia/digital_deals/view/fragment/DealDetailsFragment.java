@@ -45,6 +45,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse;
+import com.tokopedia.common_entertainment.data.Outlet;
+import com.tokopedia.common_entertainment.data.Media;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
@@ -56,10 +59,7 @@ import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapterDealDetails;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
 import com.tokopedia.digital_deals.view.model.Location;
-import com.tokopedia.digital_deals.view.model.Media;
-import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.EventContentData;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
@@ -549,7 +549,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void notifyDataSetChanged(int position) {
-        setLikes(dealDetail.getLikes(), dealDetail.getIsLiked());
+        setLikes(dealDetail.getLikes(), dealDetail.isLiked());
     }
 
     @SuppressLint("Range")
@@ -581,7 +581,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void setLikes(int likes, boolean isLiked) {
-        dealDetail.setIsLiked(isLiked);
+        dealDetail.setLiked(isLiked);
         dealDetail.setLikes(likes);
         if (isLiked) {
             ivFavourite.setImageResource(com.tokopedia.digital_deals.R.drawable.ic_wishlist_filled);
@@ -702,17 +702,17 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         } else if (Id == com.tokopedia.digital_deals.R.id.tv_view_map) {
             Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_wish_list) {
-            boolean isLoggedIn = mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0, dealDetail.getLikes());
+            boolean isLoggedIn = mPresenter2.setDealLike(dealDetail.getId(), dealDetail.isLiked(), 0, dealDetail.getLikes());
             if (isLoggedIn) {
-                if (dealDetail.getIsLiked()) {
-                    setLikes(dealDetail.getLikes() - 1, !dealDetail.getIsLiked());
+                if (dealDetail.isLiked()) {
+                    setLikes(dealDetail.getLikes() - 1, !dealDetail.isLiked());
                 } else {
-                    setLikes(dealDetail.getLikes() + 1, !dealDetail.getIsLiked());
+                    setLikes(dealDetail.getLikes() + 1, !dealDetail.isLiked());
                 }
             }
         } else if (Id == com.tokopedia.digital_deals.R.id.cl_redeem_instructions) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL);
-            if((dealDetail.customText1 & SALAM_VALUE) <= SALAM_INDICATOR){
+            if((dealDetail.getCustomText1() & SALAM_VALUE) <= SALAM_INDICATOR){
                 startGeneralWebView(DealsUrl.WebUrl.REDEEM_URL);
             } else {
                 mPresenter.getEventContent(onSuccessGetEventContent(), onErrorGetEventContent());
@@ -774,11 +774,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         if (requestCode == LIKE_REQUEST_CODE) {
             UserSessionInterface userSession = new UserSession(getActivity());
             if (userSession.isLoggedIn()) {
-                mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0, dealDetail.getLikes());
-                if (dealDetail.getIsLiked()) {
-                    setLikes(dealDetail.getLikes() - 1, !dealDetail.getIsLiked());
+                mPresenter2.setDealLike(dealDetail.getId(), dealDetail.isLiked(), 0, dealDetail.getLikes());
+                if (dealDetail.isLiked()) {
+                    setLikes(dealDetail.getLikes() - 1, !dealDetail.isLiked());
                 } else {
-                    setLikes(dealDetail.getLikes() + 1, !dealDetail.getIsLiked());
+                    setLikes(dealDetail.getLikes() + 1, !dealDetail.isLiked());
                 }
             }
         }

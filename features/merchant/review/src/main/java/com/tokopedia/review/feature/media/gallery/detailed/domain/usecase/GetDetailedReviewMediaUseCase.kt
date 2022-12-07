@@ -35,6 +35,7 @@ class GetDetailedReviewMediaUseCase @Inject constructor(
                       fullName
                       image
                       url
+                      label
                     }
                     feedbackID
                     variantName

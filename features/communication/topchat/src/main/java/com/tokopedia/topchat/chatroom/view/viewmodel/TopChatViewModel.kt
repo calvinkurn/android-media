@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
+import android.util.Log
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -18,7 +19,8 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logger.ServerLogger
@@ -41,7 +43,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
@@ -52,14 +53,16 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
-import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
+import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Companion.FEATURE_ID_GENERAL
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.Constant
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
@@ -69,9 +72,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -108,8 +108,6 @@ open class TopChatViewModel @Inject constructor(
     private val getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase,
     private val chatSrwUseCase: GetSmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: GetChatTokoNowWarehouseUseCase,
-    private var addWishListUseCase: AddWishListUseCase,
-    private var removeWishListUseCase: RemoveWishListUseCase,
     private var addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private var deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private var getChatUseCase: GetChatUseCase,
@@ -157,9 +155,9 @@ open class TopChatViewModel @Inject constructor(
     val orderProgress: LiveData<Result<OrderProgressResponse>>
         get() = _orderProgress
 
-    private val _srwTickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
-    val srwTickerReminder: LiveData<Result<ReminderTickerUiModel>>
-        get() = _srwTickerReminder
+    private val _tickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
+    val tickerReminder: LiveData<Result<ReminderTickerUiModel>>
+        get() = _tickerReminder
 
     private val _occProduct = MutableLiveData<Result<ProductAttachmentUiModel>>()
     val occProduct: LiveData<Result<ProductAttachmentUiModel>>
@@ -276,11 +274,27 @@ open class TopChatViewModel @Inject constructor(
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
 
+    /*
+    * these flags use to handle messages in order to unread when from the bubble and on stop
+     */
+    var isOnStop = false
+    var isFromBubble = false
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         chatWebSocket.close()
         chatWebSocket.destroy()
         cancel()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        isOnStop = true
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        isOnStop = false
     }
 
     fun connectWebSocket() {
@@ -321,7 +335,7 @@ open class TopChatViewModel @Inject constructor(
 
     private fun handleOnMessageWebSocket(response: WebSocketResponse) {
         val incomingChatEvent = topChatRoomWebSocketMessageMapper.parseResponse(response)
-        if (incomingChatEvent.msgId.toString() != roomMetaData.msgId) return
+        if (incomingChatEvent.msgId != roomMetaData.msgId) return
         when (response.code) {
             WebsocketEvent.Event.EVENT_TOPCHAT_TYPING -> onReceiveTypingEvent()
             WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING -> onReceiveEndTypingEvent()
@@ -342,6 +356,7 @@ open class TopChatViewModel @Inject constructor(
     private fun onReceiveReplyEvent(chat: ChatSocketPojo) {
         if (!isInTheMiddleOfThePage()) {
             renderChatItem(chat)
+            if (isFromBubble && isOnStop) return
             updateLiveDataOnMainThread(_unreadMsg, 0)
         } else {
             if (chat.isOpposite) {
@@ -517,10 +532,10 @@ open class TopChatViewModel @Inject constructor(
     private fun setupAddToCartParam(addToCartParam: AddToCartParam) {
         val addToCartRequestParams = AddToCartRequestParams(
             productId = addToCartParam.productId.toLongOrZero(),
-            shopId = addToCartParam.shopId.toInt(),
+            shopId = addToCartParam.shopId.toIntOrZero(),
             quantity = addToCartParam.minOrder,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT,
-            warehouseId = attachProductWarehouseId.toIntSafely()
+            warehouseId = attachProductWarehouseId.toIntOrZero()
         )
         addToCartUseCase.addToCartRequestParams = addToCartRequestParams
     }
@@ -560,28 +575,28 @@ open class TopChatViewModel @Inject constructor(
         })
     }
 
-    fun getTickerReminder() {
+    fun getTickerReminder(isSeller: Boolean) {
         launchCatchError(
             block = {
                 val existingMessageIdParam = GetReminderTickerUseCase.Param(
-                    featureId = SRW_TICKER
+                    featureId = FEATURE_ID_GENERAL,
+                    isSeller = isSeller,
+                    msgId = roomMetaData.msgId.toLongOrZero()
                 )
                 val result = reminderTickerUseCase(existingMessageIdParam)
-                _srwTickerReminder.value = Success(result.getReminderTicker)
+                _tickerReminder.value = Success(result.getReminderTicker)
             },
             onError = { }
         )
     }
 
-    fun removeTicker() {
-        _srwTickerReminder.value = null
-    }
-
-    fun closeTickerReminder(element: ReminderTickerUiModel) {
+    fun closeTickerReminder(element: ReminderTickerUiModel, isSeller: Boolean) {
         launchCatchError(
             block = {
                 val existingMessageIdParam = GetReminderTickerUseCase.Param(
-                    featureId = element.featureId.toIntSafely()
+                    featureId = element.featureId,
+                    isSeller = isSeller,
+                    msgId = roomMetaData.msgId.toLongOrZero()
                 )
                 closeReminderTicker(existingMessageIdParam)
             },
@@ -788,14 +803,6 @@ open class TopChatViewModel @Inject constructor(
             })
     }
 
-    fun addToWishList(
-        productId: String,
-        userId: String,
-        wishlistActionListener: WishListActionListener
-    ) {
-        addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
-    }
-
     fun addToWishListV2(
         productId: String,
         userId: String,
@@ -811,12 +818,6 @@ open class TopChatViewModel @Inject constructor(
                 wishlistActionListener.onErrorAddWishList(error, productId)
             }
         }
-    }
-
-    fun removeFromWishList(
-        productId: String, userId: String, wishListActionListener: WishListActionListener
-    ) {
-        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
     fun removeFromWishListV2(
@@ -1026,6 +1027,10 @@ open class TopChatViewModel @Inject constructor(
     }
 
     fun markAsRead() {
+        if (isFromBubble && isOnStop) {
+            incrementUnreadMsg()
+            return
+        }
         val wsPayload = payloadGenerator.generateMarkAsReadPayload(roomMetaData)
         sendWsPayload(wsPayload)
     }

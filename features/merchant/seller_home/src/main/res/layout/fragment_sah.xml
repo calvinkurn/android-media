@@ -6,41 +6,16 @@
     android:layout_height="match_parent"
     android:background="?android:colorBackground">
 
-    <View
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/viewBgShopStatus"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="280dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relTicker" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_sah_pattern"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        app:layout_constraintTop_toTopOf="parent"/>
-    
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_sah_ornament"
-        android:layout_width="210dp"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_sah_gradient"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:translationX="-10dp"
-        app:layout_constraintWidth_percent="0.4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/relTicker"
+        app:unify_image_corner_radius="0" />
 
     <RelativeLayout
         android:id="@+id/relTicker"
@@ -76,8 +51,8 @@
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/sahNestedScrollView"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="@dimen/layout_lvl0"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:fillViewport="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -116,8 +91,8 @@
 
                     <com.tokopedia.unifycomponents.LoaderUnify
                         android:id="@+id/progressBarSah"
-                        android:layout_width="@dimen/layout_lvl4"
-                        android:layout_height="@dimen/layout_lvl4"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -132,10 +107,10 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:overScrollMode="never"
-                android:paddingStart="@dimen/spacing_lvl2"
-                android:paddingLeft="@dimen/spacing_lvl2"
-                android:paddingEnd="@dimen/spacing_lvl2"
-                android:paddingRight="@dimen/spacing_lvl2"
+                android:paddingStart="4dp"
+                android:paddingLeft="4dp"
+                android:paddingEnd="4dp"
+                android:paddingRight="4dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

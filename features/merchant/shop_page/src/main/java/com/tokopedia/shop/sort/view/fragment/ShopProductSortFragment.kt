@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.sort.di.component.DaggerShopProductSortComponent
 import com.tokopedia.shop.sort.di.module.ShopProductSortModule
@@ -70,13 +71,15 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getRecyclerView(view)?.setPadding(
-                0,
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                0,
-                0
-        )
-        getRecyclerView(view)?.clipToPadding = false
+        context?.let {
+            getRecyclerView(view)?.setPadding(
+                Int.ZERO,
+                it.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                Int.ZERO,
+                Int.ZERO
+            )
+            getRecyclerView(view)?.clipToPadding = false
+        }
     }
 
     override fun getAdapterTypeFactory(): ShopProductSortAdapterTypeFactory {
@@ -85,11 +88,11 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun initInjector() {
         DaggerShopProductSortComponent
-                .builder()
-                .shopProductSortModule(ShopProductSortModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+            .builder()
+            .shopProductSortModule(ShopProductSortModule())
+            .shopComponent(getComponent(ShopComponent::class.java))
+            .build()
+            .inject(this)
     }
 
     override fun getScreenName(): String {

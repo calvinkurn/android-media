@@ -34,20 +34,20 @@ class PlayVideoScalingManager(
 
     private var videoScaleAnimator: Animator = AnimatorSet()
     private val onBottomInsetsShownAnimatorListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             flVideo.isClickable = true
             flYouTube.isClickable = true
 
             mListener?.onAnimationFinish(false)
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             flVideo.isClickable = false
             flYouTube.isClickable = false
 
@@ -55,20 +55,20 @@ class PlayVideoScalingManager(
         }
     }
     private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             flVideo.isClickable = false
             flYouTube.isClickable = true
 
             mListener?.onAnimationFinish(true)
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             flVideo.isClickable = false
             flYouTube.isClickable = false
 
@@ -133,8 +133,8 @@ class PlayVideoScalingManager(
             bottomMostBoundsWithMargin / (ivClose.y + view.height)
         } else scaleFactorFromWidth
 
-        val animatorScaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, FULL_SCALE_FACTOR, scaleFactor)
-        val animatorScaleX = ObjectAnimator.ofFloat(view ,View.SCALE_X, FULL_SCALE_FACTOR, scaleFactor)
+        val animatorScaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, view.scaleY, scaleFactor)
+        val animatorScaleX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, scaleFactor)
 
         animatorScaleY.duration = ANIMATION_DURATION
         animatorScaleX.duration = ANIMATION_DURATION
@@ -142,7 +142,7 @@ class PlayVideoScalingManager(
         val currentY = view.y
         val destY = ivClose.y
         val translateDelta = destY - currentY
-        val animatorTranslateY = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, NO_TRANSLATION, translateDelta)
+        val animatorTranslateY = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, view.translationY, translateDelta)
 
         animatorTranslateY.duration = ANIMATION_DURATION
 
@@ -176,8 +176,8 @@ class PlayVideoScalingManager(
         val scaleFactor =
                 if (currentHeight <= 0) DEFAULT_VERTICAL_SCALE_FACTOR
                 else destHeight / currentHeight
-        val animatorY = ObjectAnimator.ofFloat(view, View.SCALE_Y, FULL_SCALE_FACTOR, scaleFactor)
-        val animatorX = ObjectAnimator.ofFloat(view ,View.SCALE_X, FULL_SCALE_FACTOR, scaleFactor)
+        val animatorY = ObjectAnimator.ofFloat(view, View.SCALE_Y, view.scaleY, scaleFactor)
+        val animatorX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, scaleFactor)
         animatorY.duration = ANIMATION_DURATION
         animatorX.duration = ANIMATION_DURATION
 

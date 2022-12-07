@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -11,12 +12,50 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
+import com.tokopedia.sellerhome.view.helper.handleSseMessage
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.usecase.*
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.SubmitWidgetDismissUseCase
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -26,7 +65,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -53,15 +95,19 @@ class SellerHomeViewModel @Inject constructor(
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
+    private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
     private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
+    private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
+    private val widgetSse: Lazy<SellerHomeWidgetSSE>,
     private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
+        private const val SELLER_HOME_SSE = "home"
         private const val TICKER_PAGE_NAME = "seller"
     }
 
@@ -76,6 +122,8 @@ class SellerHomeViewModel @Inject constructor(
             dateType = DateFilterType.DATE_TYPE_DAY
         )
     }
+    var rawWidgetList: List<BaseWidgetUiModel<*>> = emptyList()
+        private set
 
     private val _homeTicker = MutableLiveData<Result<List<TickerItemUiModel>>>()
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -97,8 +145,10 @@ class SellerHomeViewModel @Inject constructor(
         MutableLiveData<Result<List<RecommendationDataUiModel>>>()
     private val _milestoneWidgetData = MutableLiveData<Result<List<MilestoneDataUiModel>>>()
     private val _calendarWidgetData = MutableLiveData<Result<List<CalendarDataUiModel>>>()
+    private val _unificationWidgetData = MutableLiveData<Result<List<UnificationDataUiModel>>>()
     private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
+    private val _submitWidgetDismissal = MutableLiveData<Result<WidgetDismissalResultUiModel>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -136,10 +186,14 @@ class SellerHomeViewModel @Inject constructor(
         get() = _milestoneWidgetData
     val calendarWidgetData: LiveData<Result<List<CalendarDataUiModel>>>
         get() = _calendarWidgetData
+    val unificationWidgetData: LiveData<Result<List<UnificationDataUiModel>>>
+        get() = _unificationWidgetData
     val shopShareData: LiveData<Result<ShopShareDataUiModel>>
         get() = _shopShareData
     val shopShareTracker: LiveData<Result<ShopQuestGeneralTracker>>
         get() = _shopShareTracker
+    val submitWidgetDismissal: LiveData<Result<WidgetDismissalResultUiModel>>
+        get() = _submitWidgetDismissal
 
     init {
         sellerHomeLayoutHelper.get().init(
@@ -195,10 +249,14 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getLayoutUseCase.get()
             useCase.params = params
             if (heightDp == null) {
-                getDataFromUseCase(useCase, _widgetLayout)
+                getDataFromUseCase(useCase, _widgetLayout) { widgets ->
+                    saveRawWidgets(widgets)
+                }
             } else {
-                getDataFromUseCase(useCase, _widgetLayout) { result, isFromCache ->
-                    sellerHomeLayoutHelper.get().getInitialWidget(result, heightDp, isFromCache)
+                getDataFromUseCase(useCase, _widgetLayout) { widgets, isFromCache ->
+                    saveRawWidgets(widgets)
+                    return@getDataFromUseCase sellerHomeLayoutHelper.get()
+                        .getInitialWidget(widgets, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
                 }
             }
@@ -351,6 +409,17 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
+    fun getUnificationWidgetData(widgets: List<UnificationWidgetUiModel>) {
+        launchCatchError(block = {
+            val useCase = getUnificationDataUseCase.get()
+            val shopId = userSession.get().shopId
+            useCase.setParam(shopId, widgets, dynamicParameter)
+            getDataFromUseCase(useCase, _unificationWidgetData)
+        }, onError = {
+            _unificationWidgetData.value = Fail(it)
+        })
+    }
+
     fun getShopLocation() {
         launchCatchError(block = {
             val result: Success<ShippingLoc> = Success(withContext(dispatcher.io) {
@@ -398,22 +467,55 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
+    fun submitWidgetDismissal(param: SubmitWidgetDismissUiModel) {
+        launchCatchError(context = dispatcher.io, block = {
+            val useCase = submitWidgetDismissUseCase.get()
+            val result = useCase.execute(param)
+            _submitWidgetDismissal.postValue(Success(result))
+        }, onError = {
+            _submitWidgetDismissal.postValue(Fail(it))
+        })
+    }
+
+    fun startSse(realTimeDataKeys: List<String>) {
+        stopSSE()
+        viewModelScope.launch(dispatcher.io) {
+            if (realTimeDataKeys.isNotEmpty()) {
+                widgetSse.get().connect(SELLER_HOME_SSE, realTimeDataKeys)
+                widgetSse.get().listen().handleSseMessage(_cardWidgetData, _milestoneWidgetData)
+            }
+        }
+    }
+
+    fun stopSSE() {
+        widgetSse.get().closeSse()
+    }
+
+    private fun saveRawWidgets(widgets: List<BaseWidgetUiModel<*>>) {
+        this.rawWidgetList = widgets
+    }
+
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
     }
 
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
-        liveData: MutableLiveData<Result<T>>
+        liveData: MutableLiveData<Result<T>>,
+        onSuccess: (widgets: T) -> Unit = {}
     ) {
         try {
             useCase.setUseCache(false)
-            liveData.value = Success(useCase.executeUseCase())
+            val result = useCase.executeUseCase()
+            liveData.value = Success(result)
+            onSuccess(result)
         } catch (networkException: Exception) {
             if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
                 try {
                     useCase.setUseCache(true)
-                    liveData.value = Success(useCase.executeUseCase())
+                    val result = useCase.executeUseCase()
+                    liveData.value = Success(result)
+                    onSuccess(result)
                 } catch (_: Exception) {
                     throw networkException
                 }
@@ -426,7 +528,7 @@ class SellerHomeViewModel @Inject constructor(
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>,
-        getTransformerFlow: suspend (result: T, isFromCache: Boolean) -> Flow<T>
+        getTransformerFlow: suspend (widgets: T, isFromCache: Boolean) -> Flow<T>
     ) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false

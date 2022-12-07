@@ -1,7 +1,5 @@
 package com.tokopedia.navigation.presentation.presenter
 
-import android.content.Context
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -12,6 +10,7 @@ import com.tokopedia.devicefingerprint.appauth.AppAuthWorker.Companion.userSessi
 import com.tokopedia.navigation.GlobalNavConstant
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
+import com.tokopedia.navigation.domain.model.Param
 import com.tokopedia.navigation.domain.model.RecomTitle
 import com.tokopedia.navigation.domain.model.Recommendation
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber
@@ -28,14 +27,9 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import org.xml.sax.ErrorHandler
 import rx.Subscriber
 import java.util.ArrayList
 import javax.inject.Inject
@@ -49,21 +43,16 @@ class InboxPresenter @Inject constructor(
     private val getNotificationUseCase: GetDrawerNotificationUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val userSessionInterface: UserSessionInterface,
-    private val addWishListUseCase: AddWishListUseCase,
-    private val removeWishListUseCase: RemoveWishListUseCase,
     private val addToWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase
+    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel
 ) : BaseDaggerPresenter<CustomerView>() {
 
     private var inboxView: InboxView? = null
 
     fun setView(inboxView: InboxView) {
         this.inboxView = inboxView
-    }
-
-    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel by lazy {
-        ViewModelProvider(inboxView?.context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
     }
 
     fun getInboxData() {
@@ -80,6 +69,7 @@ class InboxPresenter @Inject constructor(
                 R.raw.query_notification
             )
         )
+        requestParams.putObject(PARAM_INPUT, Param(userSessionInterface.shopId))
         getNotificationUseCase.execute(requestParams, InboxSubscriber(this.inboxView))
     }
 
@@ -179,29 +169,6 @@ class InboxPresenter @Inject constructor(
     }
 
 
-    fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
-        if (model.isTopAds) {
-            val params = RequestParams.create()
-            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                    callback.invoke(false, e)
-                }
-
-                override fun onNext(wishlistModel: WishlistModel) {
-                    if (wishlistModel.data != null) {
-                        callback.invoke(true, null)
-                    }
-                }
-            })
-        } else {
-            doAddWishlist(model, callback)
-        }
-    }
-
     fun addWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener) {
         addToWishListV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
         addToWishListV2UseCase.execute(
@@ -212,65 +179,13 @@ class InboxPresenter @Inject constructor(
             })
     }
 
-    private fun doAddWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
-        addWishListUseCase.createObservable(
-            model.productId.toString(),
-            userSessionInterface.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    // do nothing
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    // do nothing
-                }
-            })
-    }
-
-    fun removeWishlist(
-        model: RecommendationItem,
-        wishlistCallback: ((Boolean, Throwable?) -> Unit)) {
-        removeWishListUseCase.createObservable(
-            model.productId.toString(),
-            userSessionInterface.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    // do nothing
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    // do nothing
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    wishlistCallback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    wishlistCallback.invoke(true, null)
-                }
-            })
-    }
-
     fun removeWishlistV2(
         model: RecommendationItem,
         actionListener: WishlistV2ActionListener) {
             deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
             deleteWishlistV2UseCase.execute(
                 onSuccess = { result ->
-                    if (result is Success) {
-                        actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
-                    } else if (result is Fail) {
-                        actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
-                    } },
+                    if (result is Success) actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())},
                 onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
     }
 
@@ -301,5 +216,7 @@ class InboxPresenter @Inject constructor(
     companion object {
         val X_SOURCE_RECOM_WIDGET = "recom_widget"
         val INBOX_PAGE = "inbox"
+
+        private const val PARAM_INPUT = "input"
     }
 }

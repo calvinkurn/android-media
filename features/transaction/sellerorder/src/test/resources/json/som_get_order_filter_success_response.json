@@ -1,6 +1,43 @@
 {
   "data": {
     "orderFilterSom": {
+      "order_types": [
+        {
+          "id": 2,
+          "key": "same_day",
+          "name": "Sameday Delivery"
+        },
+        {
+          "id": 9,
+          "key": "next_day",
+          "name": "Nextday Delivery"
+        },
+        {
+          "id": 3,
+          "key": "pickup_delivery",
+          "name": "Request Pickup"
+        },
+        {
+          "id": 1,
+          "key": "pre_order",
+          "name": "Pre Order"
+        },
+        {
+          "id": 10,
+          "key": "request_cancel",
+          "name": "Pengajuan Pembatalan"
+        },
+        {
+          "id": 8,
+          "key": "cod",
+          "name": "Bayar di Tempat"
+        },
+        {
+          "id": 11,
+          "key": "tokocabang",
+          "name": "Tokocabang"
+        }
+      ],
       "status_list": [
         {
           "order_status_id": [
@@ -217,7 +254,7 @@
           "shipping_name": "J&T",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-jnt.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-jnt.png"
         },
         {
           "shipping_id": 25,
@@ -225,7 +262,7 @@
           "shipping_name": "Indo Paket",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-indopaket.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-indopaket.png"
         },
         {
           "shipping_id": 2,
@@ -233,7 +270,7 @@
           "shipping_name": "TIKI",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-tiki.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-tiki.png"
         },
         {
           "shipping_id": 3,
@@ -249,7 +286,7 @@
           "shipping_name": "Pos Indonesia",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-pos.png"
         },
         {
           "shipping_id": 12,
@@ -257,7 +294,7 @@
           "shipping_name": "Ninja Xpress",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-ninja.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-ninja.png"
         },
         {
           "shipping_id": 13,
@@ -265,7 +302,7 @@
           "shipping_name": "GrabExpress",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-grab.png"
         },
         {
           "shipping_id": 6,
@@ -273,7 +310,7 @@
           "shipping_name": "Wahana",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-wahana.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-wahana.png"
         },
         {
           "shipping_id": 9,
@@ -281,7 +318,7 @@
           "shipping_name": "First",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-first.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-first.png"
         },
         {
           "shipping_id": 17,
@@ -297,7 +334,7 @@
           "shipping_name": "Paxel",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-paxel.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-paxel.png"
         },
         {
           "shipping_id": 999,
@@ -305,7 +342,7 @@
           "shipping_name": "Custom Logistik",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-custom.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-custom.png"
         },
         {
           "shipping_id": 26,
@@ -313,7 +350,7 @@
           "shipping_name": "Kurir Rekomendasi",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-rekomendasi.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-rekomendasi.png"
         },
         {
           "shipping_id": 1,
@@ -321,7 +358,7 @@
           "shipping_name": "JNE",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-jne.png"
         },
         {
           "shipping_id": 8,
@@ -337,7 +374,7 @@
           "shipping_name": "SiCepat",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-sicepat.png"
         },
         {
           "shipping_id": 15,
@@ -353,7 +390,7 @@
           "shipping_name": "AnterAja",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-anteraja.png"
         },
         {
           "shipping_id": 24,
@@ -361,7 +398,7 @@
           "shipping_name": "Lion Parcel",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-lionparcel.png"
         },
         {
           "shipping_id": 7,
@@ -377,7 +414,7 @@
           "shipping_name": "GoSend",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-gosend.png"
         },
         {
           "shipping_id": 16,
@@ -385,7 +422,7 @@
           "shipping_name": "REX",
           "shipping_desc": null,
           "status": 0,
-          "img_logo": "https://ecs7.tokopedia.net/img/kurir-rex.png"
+          "img_logo": "https://images.tokopedia.net/img/kurir-rex.png"
         },
         {
           "shipping_id": 20,
@@ -414,43 +451,6 @@
           "value": 0
         }
       ]
-    },
-    "orderTypeList": [
-      {
-        "id": 2,
-        "key": "same_day",
-        "name": "Sameday Delivery"
-      },
-      {
-        "id": 9,
-        "key": "next_day",
-        "name": "Nextday Delivery"
-      },
-      {
-        "id": 3,
-        "key": "pickup_delivery",
-        "name": "Request Pickup"
-      },
-      {
-        "id": 1,
-        "key": "pre_order",
-        "name": "Pre Order"
-      },
-      {
-        "id": 10,
-        "key": "request_cancel",
-        "name": "Pengajuan Pembatalan"
-      },
-      {
-        "id": 8,
-        "key": "cod",
-        "name": "Bayar di Tempat"
-      },
-      {
-        "id": 11,
-        "key": "tokocabang",
-        "name": "Tokocabang"
-      }
-    ]
+    }
   }
 }

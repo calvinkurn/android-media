@@ -17,8 +17,10 @@ class SearchEmptyProductTest: SearchTestFixtures(), EmptyProductTestHelper.Callb
         emptyProductTestHelper = EmptyProductTestHelper(tokoNowSearchViewModel, this)
     }
 
-    override fun `Given first page product list is empty`() {
+    override fun `Given first page product list is empty`(feedbackFieldToggle:Boolean) {
         val emptyProductModel = "search/emptyproduct/empty-product.json".jsonToObject<SearchModel>()
+        if(feedbackFieldToggle)
+            emptyProductModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive = true
         `Given get search first page use case will be successful`(emptyProductModel)
     }
 
@@ -58,5 +60,10 @@ class SearchEmptyProductTest: SearchTestFixtures(), EmptyProductTestHelper.Callb
     @Test
     fun `empty state remove filter with exclude_ prefix`() {
         emptyProductTestHelper.`empty state remove filter with exclude_ prefix`()
+    }
+
+    @Test
+    fun `empty product list with feedback widget active should show feedback view`(){
+        emptyProductTestHelper.`empty product list with feedback widget active should show feedback view`()
     }
 }

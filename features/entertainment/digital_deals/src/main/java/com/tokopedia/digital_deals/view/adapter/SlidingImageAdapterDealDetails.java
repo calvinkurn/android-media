@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
-import com.tokopedia.digital_deals.view.model.Media;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.common_entertainment.data.Media;;
 
 
 import java.util.ArrayList;

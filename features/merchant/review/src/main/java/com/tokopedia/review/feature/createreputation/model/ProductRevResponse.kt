@@ -25,5 +25,11 @@ data class ProductRevResponse(
     val userData: UserData = UserData(),
     @SerializedName("reputationData")
     @Expose
-    val reputation: Reputation = Reputation()
+    val reputation: Reputation = Reputation(),
+    @SerializedName("keywords")
+    @Expose
+    val keywords: List<String>? = null,
+    @SerializedName("placeholder")
+    @Expose
+    val placeholder: String? = null
 ) : Serializable

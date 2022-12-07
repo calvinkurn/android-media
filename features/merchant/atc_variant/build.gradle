@@ -17,6 +17,7 @@ buildscript {
 android {
     buildFeatures {
         buildConfig true
+        viewBinding true
     }
 }
 
@@ -30,7 +31,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation projectOrAar(rootProject.ext.features.atc_common)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
@@ -75,6 +75,9 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    // please remove remote config lib, if ItemContainerViewHolder has stable
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

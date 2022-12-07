@@ -95,7 +95,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     override var viewBound = VerificationMethodViewBinding()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_VERIFICATION_METHOD
 
@@ -255,7 +255,14 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     open fun getVerificationMethod() {
         showLoading()
         val otpType = otpData.otpType.toString()
-        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
+        if (otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY.toString()) {
+            viewmodel.getVerificationMethodPhoneRegisterMandatory(
+                otpType = otpType,
+                msisdn = otpData.msisdn,
+                email = otpData.email,
+                validateToken = otpData.accessToken
+            )
+        } else if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
                 && otpData.userIdEnc.isNotEmpty()) {
             viewmodel.getVerificationMethod2FA(
                     otpType = otpType,

@@ -15,7 +15,7 @@ class ChatBotOptionItemViewHolder(itemView: View, listener: QuickSingleFilterLis
     override fun updateData(filterItem: QuickFilterItem) {
         filterName?.text = filterItem.name
         filterName?.context?.let {
-            filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.abstraction.R.color.font_black_primary_70))
+            filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
 
         layoutInside1.setBackgroundResource(R.drawable.ic_csat_check_box_bg)

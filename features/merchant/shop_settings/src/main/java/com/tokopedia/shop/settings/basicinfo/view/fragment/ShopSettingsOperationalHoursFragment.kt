@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,15 +27,18 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_KEY
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_NO_KEY
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
 import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsSetOperationalHoursActivity
@@ -44,18 +46,26 @@ import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopSettingsOperationa
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsOperationalHoursViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.shop.settings.databinding.BottomsheetNewShopSetHolidayBinding
+import com.tokopedia.shop.settings.databinding.BottomsheetShopEditHolidayBinding
+import com.tokopedia.shop.settings.databinding.FragmentShopSettingsOperationalHoursBinding
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.resources.isDarkMode
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.Calendar
+import java.util.TimeZone
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -67,15 +77,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
         @JvmStatic
         fun createInstance(): ShopSettingsOperationalHoursFragment = ShopSettingsOperationalHoursFragment()
-
-        @LayoutRes
-        val FRAGMENT_LAYOUT = R.layout.fragment_shop_settings_operational_hours
-
-        @LayoutRes
-        val HOLIDAY_BOTTOMSHEET_LAYOUT = R.layout.bottomsheet_new_shop_set_holiday
-
-        @LayoutRes
-        val ACTION_BOTTOMSHEET_LAYOUT = R.layout.bottomsheet_shop_edit_holiday
 
         private const val NO_HOLIDAY_DATE = "0"
         private const val REQUEST_CODE_SET_OPS_HOUR = 100
@@ -92,9 +93,10 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private val tomorrowDate = Calendar.getInstance(TimeZone.getDefault()).apply { add(Calendar.DAY_OF_YEAR, 1) }.time
     private val defaultMaxDate = Calendar.getInstance().apply { add(Calendar.YEAR, 1) }.time // next year
 
+    private var binding by autoClearedNullable<FragmentShopSettingsOperationalHoursBinding>()
     private var headerOpsHour: HeaderUnify? = null
-    private var icEditOpsHour: IconUnify? = null
-    private var rvOpsHourList: RecyclerView? = null
+    private var icEditOperationalHour: IconUnify? = null
+    private var rvOperationalHourList: RecyclerView? = null
     private var rvOpsHourListAdapter: ShopSettingsOperationalHoursListAdapter? = null
     private var holidayBottomSheet: BottomSheetUnify? = null
     private var actionBottomSheet: BottomSheetUnify? = null
@@ -102,13 +104,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var loader: LoaderUnify? = null
     private var opsHourContainer: LinearLayout? = null
     private var holidayScheduleContainer: RelativeLayout? = null
-    private var tvShopHolidaySchedule: Typography? = null
+    private var tvHolidaySchedule: Typography? = null
     private var autoChatTicker: Ticker? = null
     private var holidayEditActionButton: IconUnify? = null
     private var startDateTextField: TextFieldUnify? = null
     private var endDateTextField: TextFieldUnify? = null
     private var calendarUnify: UnifyCalendar? = null
-    private var holidayCalendarFooter: LinearLayout? = null
+    private var holidayCalendarBottomSheetFooter: LinearLayout? = null
     private var buttonSaveHolidaySchedule: UnifyButton? = null
     private var shopIsOnHolidayContainer: CardUnify? = null
     private var shopIsOnHolidayEndDateText: Typography? = null
@@ -116,7 +118,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var imageOngoingHoliday: ImageUnify? = null
     private var containerScroller: NestedScrollView? = null
 
-    private var shopAbTestPlatform: ShopAbTestPlatform? = null
     private var isNeedToShowToaster: Boolean = false
     private var isNeedToShowOpenShopToaster: Boolean = false
     private var isShopClosed: Boolean = false
@@ -135,15 +136,16 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var existingEndDate = Date()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(FRAGMENT_LAYOUT, container, false).apply {
+        binding = FragmentShopSettingsOperationalHoursBinding.inflate(inflater, container, false).apply {
             initView(this)
             initRecyclerView()
         }
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkAbTestRollenceVariant()
+        getInitialData()
         setupToolbar()
         setBackgroundColor()
         initListener()
@@ -202,76 +204,42 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         removeObservers(shopSettingsOperationalHoursViewModel.shopInfoAbortSchedule)
     }
 
-    private fun checkAbTestRollenceVariant() {
-        context?.let { ctx ->
-            shopAbTestPlatform = ShopAbTestPlatform(ctx).apply {
-                requestParams = ShopAbTestPlatform.createRequestParam(
-                        listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
-                        shopId = userSession.shopId
-                )
-                fetch(object : RemoteConfig.Listener {
-                    override fun onComplete(remoteConfig: RemoteConfig?) {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            val variantType = getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)
-                            if (variantType == AB_TEST_OPERATIONAL_HOURS_NO_KEY) {
-                                // no experiment / successfully deleted, by default render new page
-                                getInitialData()
-                            }
-                            else {
-                                if (variantType.isEmpty() || variantType != AB_TEST_OPERATIONAL_HOURS_KEY) {
-                                    // user not get the experiment yet,
-                                    // redirect to old shop ops hour settings
-                                    RouteManager.route(ctx, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
-                                    activity?.finish()
-                                }
-                                else {
-                                    // user get new experiment
-                                    getInitialData()
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onError(e: Exception?) {}
-                })
-            }
+    private fun initView(binding: FragmentShopSettingsOperationalHoursBinding?) {
+        binding?.apply {
+            headerOpsHour = headerShopOperationalHours
+            icEditOperationalHour = icEditOpsHour
+            rvOperationalHourList = rvOpsHourList
+            buttonAddHoliday = btnAddHolidaySchedule
+            loader = opsHourLoader
+            opsHourContainer = opsHourParentContainer
+            holidayScheduleContainer = shopHolidayScheduleContainer
+            tvHolidaySchedule = tvShopHolidaySchedule
+            autoChatTicker = opsHourChatAutoTicker
+            holidayEditActionButton = opsHourImgScheduleAction
+            shopIsOnHolidayContainer = holidayToggleContainer
+            shopIsOnHolidayEndDateText = tvHolidayEnd
+            openShopButton = btnOpenShop
+            imageOngoingHoliday = imgShopHoliday
+            containerScroller = opsHourScrollerContainer
         }
-    }
-
-    private fun initView(view: View?) {
-        headerOpsHour = view?.findViewById(R.id.header_shop_operational_hours)
-        icEditOpsHour = view?.findViewById(R.id.ic_edit_ops_hour)
-        rvOpsHourList = view?.findViewById(R.id.rv_ops_hour_list)
-        buttonAddHoliday = view?.findViewById(R.id.btn_add_holiday_schedule)
-        loader = view?.findViewById(R.id.ops_hour_loader)
-        opsHourContainer = view?.findViewById(R.id.ops_hour_parent_container)
-        holidayScheduleContainer = view?.findViewById(R.id.shop_holiday_schedule_container)
-        tvShopHolidaySchedule = view?.findViewById(R.id.tv_shop_holiday_schedule)
-        autoChatTicker = view?.findViewById(R.id.ops_hour_chat_auto_ticker)
-        holidayEditActionButton = view?.findViewById(R.id.ops_hour_img_schedule_action)
-        shopIsOnHolidayContainer = view?.findViewById(R.id.holiday_toggle_container)
-        shopIsOnHolidayEndDateText = view?.findViewById(R.id.tv_holiday_end)
-        openShopButton = view?.findViewById(R.id.btn_open_shop)
-        imageOngoingHoliday = view?.findViewById(R.id.img_shop_holiday)
-        containerScroller = view?.findViewById(R.id.ops_hour_scroller_container)
 
         // setup image ongoing holiday container image
         imageOngoingHoliday?.loadImage(getString(R.string.shop_operational_hour_image_ongoing_holiday_container_url))
     }
 
     private fun getHolidayDatePickerBottomSheetView(): View {
-        return View.inflate(context, HOLIDAY_BOTTOMSHEET_LAYOUT, null).apply {
-            calendarUnify = findViewById(R.id.ops_hour_holiday_calendar_start)
-            startDateTextField = findViewById(R.id.text_field_start_date_holiday)
-            endDateTextField = findViewById(R.id.text_field_end_date_holiday)
-            holidayCalendarFooter = findViewById(R.id.holiday_calendar_footer)
-            buttonSaveHolidaySchedule = findViewById(R.id.btn_save_holiday_schedule)
+        return BottomsheetNewShopSetHolidayBinding.inflate(LayoutInflater.from(context)).apply {
+            calendarUnify = opsHourHolidayCalendarStart
+            startDateTextField = textFieldStartDateHoliday
+            endDateTextField = textFieldEndDateHoliday
+            holidayCalendarBottomSheetFooter = holidayCalendarFooter
+            buttonSaveHolidaySchedule = btnSaveHolidaySchedule
 
             // init calendar range view
             initCalendarRangeView(
-                    minDate = todayDate,
-                    maxDate = defaultMaxDate,
-                    isActionEdit = isActionEdit
+                minDate = todayDate,
+                maxDate = defaultMaxDate,
+                isActionEdit = isActionEdit
             )
 
             // setup text field start date
@@ -284,13 +252,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             buttonSaveHolidaySchedule?.setOnClickListener {
                 showConfirmDialogForSaveHolidaySchedule(selectedStartDate, selectedEndDate)
             }
-        }
+        }.root
     }
 
     private fun getActionBottomSheetView(): View {
-        return View.inflate(context, ACTION_BOTTOMSHEET_LAYOUT, null).apply {
-            val actionEdit = findViewById<LinearLayout>(R.id.action_edit_holiday)
-            val actionDelete = findViewById<LinearLayout>(R.id.action_delete_holiday)
+        return BottomsheetShopEditHolidayBinding.inflate(LayoutInflater.from(context)).apply {
+            val actionEdit = actionEditHoliday
+            val actionDelete = actionDeleteHoliday
 
             // set action edit schedule click listener
             actionEdit.setOnClickListener {
@@ -305,12 +273,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 actionBottomSheet?.dismiss()
                 showConfirmDialogForDeleteHolidaySchedule()
             }
-        }
+        }.root
     }
 
     private fun initRecyclerView() {
         rvOpsHourListAdapter = ShopSettingsOperationalHoursListAdapter()
-        rvOpsHourList?.apply {
+        rvOperationalHourList?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = rvOpsHourListAdapter
@@ -319,7 +287,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private fun initListener() {
         // set click listener for icon edit ops hour
-        icEditOpsHour?.setOnClickListener {
+        icEditOperationalHour?.setOnClickListener {
             startActivityForResult(
                     Intent(context, ShopSettingsSetOperationalHoursActivity::class.java),
                     REQUEST_CODE_SET_OPS_HOUR
@@ -378,7 +346,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 RouteManager.route(context, String.format(
                         WEBVIEW_APPLINK_FORMAT,
                         ApplinkConst.WEBVIEW,
-                        getString(R.string.shop_operational_hour_seller_edu_revamp)
+                        getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
                 ))
             }
             isShowShadow = false
@@ -388,7 +356,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun setBackgroundColor() {
         activity?.run {
             window.decorView.setBackgroundColor(
-                    androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
             )
         }
     }
@@ -541,7 +509,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // render holiday schedule section
         buttonAddHoliday?.showWithCondition(!isShouldShowHolidaySchedule)
         holidayScheduleContainer?.shouldShowWithAction(isShouldShowHolidaySchedule) {
-            tvShopHolidaySchedule?.text = OperationalHoursUtil.toIndonesianDateRangeFormat(selectedStartDate, selectedEndDate)
+            tvHolidaySchedule?.text = OperationalHoursUtil.toIndonesianDateRangeFormat(selectedStartDate, selectedEndDate)
         }
     }
 
@@ -590,7 +558,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                         }
 
                         // show footer if seller have picked both start & end date
-                        holidayCalendarFooter?.shouldShowWithAction(endDateTextField?.textFieldInput?.text?.isNotEmpty().orFalse()) {
+                        holidayCalendarBottomSheetFooter?.shouldShowWithAction(endDateTextField?.textFieldInput?.text?.isNotEmpty().orFalse()) {
                             isDateChanged = true
                         }
                     }

@@ -19,6 +19,7 @@ data class ShopLocWhitelist(
 )
 
 data class DataWhitelist(
+        /* if value is 1, user is eligible for multilocation */
         @SerializedName("eligibility_state")
         var eligibilityState: Int = -1
 )

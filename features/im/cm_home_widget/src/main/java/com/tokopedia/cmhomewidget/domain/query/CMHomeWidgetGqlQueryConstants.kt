@@ -1,7 +1,7 @@
 package com.tokopedia.cmhomewidget.domain.query
 
-const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query{
-    notifier_getHtdw(){
+const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query(${"$"}param: Notifier_Htdw_v2_request!){
+    notifier_getHtdw_v2(input: ${"$"}param){
         status
         data {
             notification_id
@@ -11,6 +11,7 @@ const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query{
             campaign_id
             session_id
             widget_title
+            widget_type
             products {
                 id
                 name
@@ -28,6 +29,21 @@ const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query{
                     id
                     text
                     app_link
+                }
+            }
+            payments {
+                image_url
+                gateway_name
+                account_number
+                total_payment
+                expired_time
+                app_link
+                action_buttons {
+                        id
+                        icon
+                        text
+                        type
+                        app_link
                 }
             }
             card {

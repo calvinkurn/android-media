@@ -25,7 +25,9 @@
         </activity>
         <activity
             android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
             android:name=".common.presentation.view.BaseTokofoodActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_tokofood">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -50,6 +52,11 @@
                 <data
                     android:host="@string/host_food"
                     android:path="@string/path_tokofood_purchase"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_food"
+                    android:path="@string/path_tokofood_search"
                     android:scheme="@string/internal_scheme" />
 
             </intent-filter>

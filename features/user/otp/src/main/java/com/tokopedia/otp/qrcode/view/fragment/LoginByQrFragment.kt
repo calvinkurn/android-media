@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.util.LetUtil
-import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.SignatureUtil
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
@@ -46,7 +46,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
 
     override val viewBound = LoginByQrViewBinding()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_LOGIN_BY_QR_APPROVAL_PAGE
 
@@ -165,7 +165,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun goToResult(imglink: String, messageTitle: String, messageBody: String, ctaType: String, status: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.QR_LOGIN_RESULT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.QR_LOGIN_RESULT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IMG_LINK, imglink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_TITLE, messageTitle)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, messageBody)

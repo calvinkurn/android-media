@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.media.editor">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application android:requestLegacyExternalStorage="true">
+        <activity
+            android:name="com.tokopedia.media.editor.ui.activity.main.EditorActivity"
+            android:screenOrientation="portrait"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="@string/host_media_editor"
+                    android:host="@string/host_global"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activity.detail.DetailEditorActivity"/>
+    </application>
+
+</manifest>

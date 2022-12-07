@@ -17,6 +17,9 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_DAY
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_MONTH
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_WEEK
 import com.tokopedia.product_bundle.common.data.model.request.Bundle
 import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
@@ -55,8 +58,6 @@ class ProductBundleViewModel @Inject constructor(
         private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
         private const val PRODUCT_BUNDLE_STATUS_ACTIVE = "1"
         private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
-        private const val PREORDER_TYPE_DAY: Int = 1
-        private const val PREORDER_TYPE_MONTH: Int = 2
     }
 
     var parentProductID: Long = 0L
@@ -130,8 +131,9 @@ class ProductBundleViewModel @Inject constructor(
 
     fun getPreOrderTimeUnitWording(processTypeNum: Int): String {
         return when (processTypeNum) {
-            PREORDER_TYPE_DAY -> rscProvider.getPreOrderTimeUnitDay() ?: ""
-            PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth() ?: ""
+            PREORDER_TYPE_DAY -> rscProvider.getPreOrderTimeUnitDay()
+            PREORDER_TYPE_WEEK -> rscProvider.getPreOrderTimeUnitWeek()
+            PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth()
             else -> ""
         }
     }
@@ -241,7 +243,7 @@ class ProductBundleViewModel @Inject constructor(
             bundleName = bundleInfo.name,
             quota = bundleInfo.quota,
             preOrderStatus = bundleInfo.preorder.status,
-            processDay = bundleInfo.preorder.processDay,
+            processDay = bundleInfo.preorder.processTime.toLongOrZero(),
             processTypeNum = bundleInfo.preorder.processTypeNum
         )
     }
@@ -253,13 +255,13 @@ class ProductBundleViewModel @Inject constructor(
                 productId = bundleItem.productID,
                 productName = bundleItem.name,
                 productImageUrl = bundleItem.picURL,
-                productQuantity = bundleItem.quantity,
+                productQuantity = bundleItem.getPreviewMinOrder().coerceAtLeast(ATC_BUNDLE_QUANTITY),
                 originalPrice = bundleItem.getPreviewOriginalPrice(),
                 bundlePrice = bundleItem.getPreviewBundlePrice(),
                 warehouseId = warehouseId,
                 discountAmount = calculateDiscountPercentage(
-                    originalPrice = bundleItem.getPreviewOriginalPrice(),
-                    bundlePrice = bundleItem.getPreviewBundlePrice()
+                    originalPrice = bundleItem.getMultipliedOriginalPrice(),
+                    bundlePrice = bundleItem.getMultipliedBundlePrice()
                 ),
                 productVariant = if (productVariant.hasVariant) productVariant else null
             )
@@ -270,7 +272,7 @@ class ProductBundleViewModel @Inject constructor(
         return productBundleDetails.map { productBundleDetail ->
             ProductDetail(
                 productId = productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString(),
-                quantity = ATC_BUNDLE_QUANTITY,
+                quantity = productBundleDetail.productQuantity,
                 shopId = shopId,
                 isProductParent = parentProductID == productBundleDetail.productId,
                 customerId = userId,
@@ -295,6 +297,7 @@ class ProductBundleViewModel @Inject constructor(
                 this.bundlePrice = selectedProductVariant?.finalPrice.orZero()
                 this.discountAmount = calculateDiscountPercentage(originalPrice, bundlePrice)
                 this.selectedVariantText = getSelectedVariantText(productVariant, this.selectedVariantId ?: "")
+                this.productImageUrl = selectedProductVariant.getVariantPicture()
             }
         }
         return target
@@ -332,11 +335,11 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     fun calculateTotalPrice(productBundleDetails: List<ProductBundleDetail>): Double {
-        return productBundleDetails.map { it.originalPrice }.sum()
+        return productBundleDetails.map { it.originalPrice * it.productQuantity }.sum()
     }
 
     fun calculateTotalBundlePrice(productBundleDetails: List<ProductBundleDetail>): Double {
-        return productBundleDetails.map { it.bundlePrice }.sum()
+        return productBundleDetails.map { it.bundlePrice * it.productQuantity }.sum()
     }
 
     fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {

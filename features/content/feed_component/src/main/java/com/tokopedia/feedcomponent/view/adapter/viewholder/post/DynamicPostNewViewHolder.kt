@@ -39,6 +39,8 @@ open class DynamicPostNewViewHolder(
         const val PAYLOAD_FRAGMENT_VISIBLE = 44
         const val PAYLOAD_FRAGMENT_GONE = 42
         const val PAYLOAD_POST_VISIBLE = 77
+        const val PAYLOAD_CTA_VISIBLE = 88
+        const val PAYLOAD_REMINDER_BTN_STATUS_UPDATED = 56
 
 
         @LayoutRes
@@ -80,6 +82,8 @@ open class DynamicPostNewViewHolder(
                 element.feedXCard.media[element.feedXCard.lastCarouselIndex],
                 element.feedXCard
             )
+            PAYLOAD_CTA_VISIBLE -> postDynamicView.onCTAVisible(element.feedXCard)
+            PAYLOAD_REMINDER_BTN_STATUS_UPDATED -> postDynamicView.onFSTReminderStatusUpdated()
         }
     }
 

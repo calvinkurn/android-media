@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_global_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_global_search"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_name="TOPED"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_global_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:text="@string/content_creation_search_bs_item_tokopedia"
+            app:layout_constraintStart_toEndOf="@id/ic_global_search"
+            app:layout_constraintTop_toTopOf="@id/ic_global_search"
+            app:layout_constraintBottom_toBottomOf="@id/ic_global_search"
+            app:layout_constraintEnd_toStartOf="@+id/ic_global_search_chevron"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_global_search_chevron"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_my_account_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cc_product_tag_source_my_account_label"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_2"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_last_purchase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_last_purchase"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_name="CART"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_last_purchase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:text="@string/content_creation_search_bs_item_last_purchase"
+            app:layout_constraintStart_toEndOf="@id/ic_last_purchase"
+            app:layout_constraintTop_toTopOf="@id/ic_last_purchase"
+            app:layout_constraintBottom_toBottomOf="@id/ic_last_purchase"
+            app:layout_constraintEnd_toStartOf="@+id/ic_last_purchase_chevron"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_last_purchase_chevron"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_my_shop_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cc_product_tag_source_my_shop_label"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_2"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_my_shop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ic_my_shop"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:unify_image_corner_radius="0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_my_shop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toBottomOf="@id/ic_my_shop"
+            app:layout_constraintEnd_toStartOf="@+id/ic_my_shop_chevron"
+            app:layout_constraintStart_toEndOf="@id/ic_my_shop"
+            app:layout_constraintTop_toTopOf="@id/ic_my_shop"
+            app:layout_goneMarginStart="0dp" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_my_shop_chevron"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

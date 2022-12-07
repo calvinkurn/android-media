@@ -17,14 +17,14 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="#E5F5FF"
+        app:cardBackgroundColor="@color/chatbot_dms_date_indicator_bg"
         android:layout_centerHorizontal="true">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/chatbot_color_date"
+            android:textColor="@color/chatbot_dms_color_date"
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingBottom="@dimen/spacing_lvl1"
             android:paddingLeft="@dimen/unify_space_12"
@@ -94,8 +94,8 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_toStartOf="@+id/fl_image_container"
         android:layout_toLeftOf="@+id/fl_image_container"
+        android:contentDescription="@null"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_retry_image_send"
-        android:contentDescription="@null"/>
+        app:srcCompat="@drawable/ic_retry_image_send" />
 
 </RelativeLayout>

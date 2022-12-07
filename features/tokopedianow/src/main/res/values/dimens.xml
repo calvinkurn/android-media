@@ -16,4 +16,5 @@
     <dimen name="tokopedianow_usp_illustration_height">32dp</dimen>
     <dimen name="tokopedianow_usp_illustration_width">32dp</dimen>
     <dimen name="tokopedianow_switcher_coachmark_left_margin">55dp</dimen>
-</resources>
+    <dimen name="tokopedianow_space_item_recipe_bookmark">16dp</dimen>
+\</resources>

@@ -37,13 +37,13 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
@@ -105,8 +105,8 @@ open class DynamicPostUIViewHolder(v: View,
         bindTitle(element.feedXCard)
         bindHeader(element.feedXCard)
         bindCaption(element.feedXCard, element.trackingPostModel)
-        bindContentList(element.feedXCard.id.toIntOrZero(), element.feedXCard)
-        bindPostTag(element.feedXCard.id.toIntOrZero(), element.feedXCard)
+        bindContentList(element.feedXCard)
+        bindPostTag(element.feedXCard)
         bindFooter(element.feedXCard)
     }
 
@@ -121,8 +121,8 @@ open class DynamicPostUIViewHolder(v: View,
             PAYLOAD_COMMENT -> bindComment(element.feedXCard.comments)
             PAYLOAD_FOLLOW -> bindFollow(element.feedXCard)
             PAYLOAD_ANIMATE_FOOTER -> animateFooter()
-            PAYLOAD_PLAY_VIDEO -> bindContentList(element.feedXCard.id.toIntOrZero(), element.feedXCard)
-            PAYLOAD_PLAY_VOD -> bindContentList(element.feedXCard.id.toIntOrZero(), element.feedXCard)
+            PAYLOAD_PLAY_VIDEO -> bindContentList(element.feedXCard)
+            PAYLOAD_PLAY_VOD -> bindContentList(element.feedXCard)
             else -> bind(element)
         }
     }
@@ -161,7 +161,7 @@ open class DynamicPostUIViewHolder(v: View,
 
                 itemView.authorImage.setOnClickListener {
                     onAvatarClick(author.appLink,
-                        feedXCard.id.toIntOrZero(),
+                        feedXCard.id,
                         "",
                         followCta,
                         author.id)
@@ -180,7 +180,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.authorTitle.text = MethodChecker.fromHtml(author.name)
                 itemView.authorTitle.setOnClickListener {
                     onAvatarClick(author.appLink,
-                        feedXCard.id.toIntOrZero(),
+                        feedXCard.id,
                         "",
                         followCta,
                         author.id) }
@@ -200,7 +200,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.authorSubtitile.text = spannableString
                 itemView.authorSubtitile.setOnClickListener {
                     onAvatarClick(author.appLink,
-                            feedXCard.id.toIntOrZero(),
+                            feedXCard.id,
                             "",
                             followCta,
                             author.id)
@@ -216,16 +216,16 @@ open class DynamicPostUIViewHolder(v: View,
                     itemView.menu.setOnClickListener {
                         listener.onMenuClick(
                             adapterPosition,
-                            feedXCard.id.toIntOrZero(),
+                            feedXCard.id,
                             feedXCard.reportable,
                             feedXCard.deletable,
                             feedXCard.editable,
                             true,
+                            feedXCard.author.id,
                             "",
                             "",
                             "",
-                            "",
-                            ""
+                            feedXCard.text,
                         )
                     }
                 } else{
@@ -239,7 +239,7 @@ open class DynamicPostUIViewHolder(v: View,
 
     private fun onAvatarClick(
         redirectUrl: String,
-        activityId: Int,
+        activityId: String,
         activityName: String,
         followCta: FollowCta,
         shopId: String,
@@ -347,12 +347,11 @@ open class DynamicPostUIViewHolder(v: View,
                 firstIndex + 1) else caption.length
     }
 
-    private fun bindContentList(postId: Int,
-                                feedXCard: FeedXCard) {
+    private fun bindContentList(feedXCard: FeedXCard) {
         var contentList = if (feedXCard.typename == FEED_X_CARD_TYPE_ASGC) mapASGCPostContent(feedXCard) else mapPostContent(feedXCard)
         val shouldShow = contentList.isNotEmpty()
         itemView.contentLayout.shouldShowWithAction(shouldShow) {
-            contentList.forEach { it.postId = postId }
+            contentList.forEach { it.postId = feedXCard.id }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
             adapter = PostPagerAdapter(imagePostListener,
@@ -370,8 +369,8 @@ open class DynamicPostUIViewHolder(v: View,
             itemView.tabLayout.visibility =  View.GONE
         }
     }
-    private fun mapPostContent(feedXCard: FeedXCard): MutableList<BasePostViewModel> {
-        val list: MutableList<BasePostViewModel> = ArrayList()
+    private fun mapPostContent(feedXCard: FeedXCard): MutableList<BasePostModel> {
+        val list: MutableList<BasePostModel> = ArrayList()
         for (media in feedXCard.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
@@ -390,8 +389,8 @@ open class DynamicPostUIViewHolder(v: View,
 
         return list
     }
-    private fun mapASGCPostContent(feedXCard: FeedXCard): MutableList<BasePostViewModel> {
-        val list: MutableList<BasePostViewModel> = ArrayList()
+    private fun mapASGCPostContent(feedXCard: FeedXCard): MutableList<BasePostModel> {
+        val list: MutableList<BasePostModel> = ArrayList()
         for (product in feedXCard.products) {
             val mediaFromProduct = FeedXMedia(id = product.id,type = TYPE_IMAGE,appLink = product.appLink, mediaUrl = product.coverURL, webLink = product.webLink)
             list.add(mapPostImage(mediaFromProduct))
@@ -399,15 +398,15 @@ open class DynamicPostUIViewHolder(v: View,
 
         return list
     }
-    private fun mapPostImage(media: FeedXMedia): ImagePostViewModel {
-        return ImagePostViewModel(
+    private fun mapPostImage(media: FeedXMedia): ImagePostModel {
+        return ImagePostModel(
                image= media.mediaUrl,
                 redirectLink = media.webLink
         )
     }
 
-    private fun mapPostVideo(media: FeedXMedia): VideoViewModel {
-        return VideoViewModel(
+    private fun mapPostVideo(media: FeedXMedia): VideoModel {
+        return VideoModel(
                 media.id,
                 media.coverUrl,
                 media.mediaUrl,
@@ -424,7 +423,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.likeIcon.setOnClickListener {
                     listener.onLikeClick(
                         adapterPosition,
-                        feedXCard.id.toIntOrZero(),
+                        feedXCard.id.toLongOrZero(),
                         feedXCard.like.isLiked,
                         "",
                         false,
@@ -434,7 +433,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.likeText.setOnClickListener {
                     listener.onLikeClick(
                         adapterPosition,
-                        feedXCard.id.toIntOrZero(),
+                        feedXCard.id.toLongOrZero(),
                         feedXCard.like.isLiked,
                         "",
                         isFollowed = false, type = false, "", ""
@@ -449,7 +448,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.commentIcon.setOnClickListener {
                     listener.onCommentClick(
                         adapterPosition,
-                        feedXCard.id.toIntOrZero(),
+                        feedXCard.id,
                         "",
                         "",
                         isFollowed = false,
@@ -459,7 +458,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.commentText.setOnClickListener {
                     listener.onCommentClick(
                         adapterPosition,
-                        feedXCard.id.toIntOrZero(), "",
+                        feedXCard.id, "",
                         "",
                         isFollowed = false,
                         ""
@@ -474,7 +473,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
                         adapterPosition,
-                            feedXCard.id.toIntOrZero(),
+                            feedXCard.id,
                             feedXCard.author.name + " `post",
                             desc.replace("%s", feedXCard.webLink),
                             feedXCard.webLink,
@@ -489,7 +488,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.shareText.setOnClickListener {
                     listener.onShareClick(
                             adapterPosition,
-                            feedXCard.id.toIntOrZero(),
+                            feedXCard.id,
                             feedXCard.author.name + " `post",
                             desc.replace("%s", feedXCard.webLink),
                             feedXCard.webLink,
@@ -548,7 +547,7 @@ open class DynamicPostUIViewHolder(v: View,
     }
 
 
-    private fun bindPostTag(postId: Int, feedXCard: FeedXCard) {
+    private fun bindPostTag(feedXCard: FeedXCard) {
             if (feedXCard.tags.isNotEmpty()) {
                 itemView.rvPosttag.show()
                 itemView.rvPosttag.setHasFixedSize(true)
@@ -558,7 +557,7 @@ open class DynamicPostUIViewHolder(v: View,
 
                 itemView.rvPosttag.isNestedScrollingEnabled = false
                 itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(feedXCard.tags, "", postId, adapterPosition, authorType),
+                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(feedXCard.tags, "", feedXCard.id, adapterPosition, authorType),
                         PostTagTypeFactoryImpl(listener,  DeviceScreenInfo.getScreenWidth(itemView.context)))
                 (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
             } else {
@@ -571,11 +570,11 @@ open class DynamicPostUIViewHolder(v: View,
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
-    private fun mapPostTag(postTagItemList: List<FeedXProduct>, feedType: String, postId: Int, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(postTagItemList: List<FeedXProduct>, feedType: String, postId: String, positionInFeed: Int, authorType: String): MutableList<BasePostTagModel> {
         val needToRezise = postTagItemList.size > 1
-        val itemList: MutableList<BasePostTagViewModel> = ArrayList()
+        val itemList: MutableList<BasePostTagModel> = ArrayList()
         for (postTagItem in postTagItemList) {
-                    val item = ProductPostTagViewModel(
+                    val item = ProductPostTagModel(
                             postTagItem.id,
                             postTagItem.name,
                             postTagItem.priceFmt,
@@ -616,7 +615,7 @@ open class DynamicPostUIViewHolder(v: View,
 
     }
 
-    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingViewModel>) {
+    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingModel>) {
         itemView.addOnImpressionListener(impressHolder) {
             listener.onAffiliateTrackClicked(trackList, false)
         }

@@ -28,9 +28,11 @@ import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistD
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 
 class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
-                             private val userSession: UserSessionInterface)
+                             private val userSession: UserSessionInterface,
+                             private val tokopediaPlusListener: TokopediaPlusListener)
     : HomeNavTypeFactory, MainNavTypeFactory {
 
     override fun type(accountHeaderDataModel: AccountHeaderDataModel): Int {
@@ -116,7 +118,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             HomeNavMenuViewHolder.LAYOUT -> HomeNavMenuViewHolder(view, mainNavListener)
-            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
+            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession, tokopediaPlusListener)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
             HomeNavTitleViewHolder.LAYOUT -> HomeNavTitleViewHolder(view, mainNavListener)
@@ -131,7 +133,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             FavoriteShopViewHolder.LAYOUT -> FavoriteShopViewHolder(view, mainNavListener)
             ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view, mainNavListener)
             ErrorFavoriteShopViewHolder.LAYOUT -> ErrorFavoriteShopViewHolder(view, mainNavListener)
-            HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession)
+            HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession, tokopediaPlusListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

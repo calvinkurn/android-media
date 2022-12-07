@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_collection_ticker"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/collection_ticker_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/wishlist_collection_ticker_bg"
+                android:layout_width="334dp"
+                android:layout_height="73dp"
+                android:layout_alignParentEnd="true"/>
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_close_ticker_collection_wishlist"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:padding="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                app:icon_name="CLOSE"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="14dp"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/wishlist_collection_ticker_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/wishlist_collection_ticker_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_3"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+</RelativeLayout>

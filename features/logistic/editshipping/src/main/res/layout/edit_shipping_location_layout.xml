@@ -24,7 +24,8 @@
         android:layout_below="@id/title_edit_shipping_location"
         android:layout_alignLeft="@id/title_edit_shipping_location"
         android:layout_marginTop="10dp"
-        android:hint="@string/title_city">
+        android:hint="@string/title_city"
+        android:textColorHint="@color/Unify_N400_68">
 
         <EditText
             android:id="@+id/text_edit_shipping_city"
@@ -33,7 +34,7 @@
             android:clickable="true"
             android:focusable="false"
             android:textColor="@color/Unify_N700"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -41,9 +42,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/city_text_input_layout"
-        android:layout_alignLeft="@id/title_edit_shipping_location"
+        android:layout_alignStart="@id/title_edit_shipping_location"
         android:layout_marginTop="10dp"
-        android:hint="@string/title_post_code">
+        android:hint="@string/title_post_code"
+        android:textColorHint="@color/Unify_N400_68">
 
         <AutoCompleteTextView
             android:id="@+id/postal_code"
@@ -52,7 +54,8 @@
             android:completionThreshold="1"
             android:digits="1234567890"
             android:inputType="phone"
-            android:maxLength="5" />
+            android:maxLength="5"
+            android:textColor="@color/Unify_N700" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

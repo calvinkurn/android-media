@@ -9,6 +9,7 @@ import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -58,6 +59,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         mapAttributes[PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
                         mapAttributes[PARAM_CARD_UUID] = responseCardUID
                         mapAttributes[PARAM_LAST_BALANCE] = responseCardLastBalance
+
                         getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
                     } else {
                         isoDep.close()
@@ -92,7 +94,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 it.issuer_id = ISSUER_ID_EMONEY
 
                 if (it.status == 0) {
-                    writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toInt(), mapAttributesParam)
+                    writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toIntSafely(), mapAttributesParam)
                 } else {
                     emoneyInquiry.postValue(data.emoneyInquiry)
                 }
@@ -118,6 +120,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
                 }
+
             } catch (e: IOException) {
                 isoDep.close()
                 errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))

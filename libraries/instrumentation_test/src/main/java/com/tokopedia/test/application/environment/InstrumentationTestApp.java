@@ -16,7 +16,7 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -86,6 +86,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         PersistentCacheManager.init(this);
 
         TrackApp.initTrackApp(this);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+            new Cassava.Builder(this)
+                    .initialize();
+        }
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
@@ -105,9 +110,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
                 .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
                 .initialize(this, R.raw.dummy_description);
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
+
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -253,7 +256,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendEvent(String eventName, Map<String, Object> eventValue) {
-            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
+            Cassava.save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         }
 
         @Override
@@ -263,7 +266,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
-            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
+            Cassava.save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         }
     }
 

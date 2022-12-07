@@ -68,6 +68,13 @@ fun Date.decreaseHourBy(desiredHourToBeDecreased: Int): Date {
     return now.time
 }
 
+fun Date.decreaseMinuteBy(desiredMinuteBeDecreased: Int): Date {
+    val now = Calendar.getInstance()
+    now.time = this
+    now.add(Calendar.MINUTE, -desiredMinuteBeDecreased)
+    return now.time
+}
+
 fun Date.dateOnly(): Date {
     val calendar = Calendar.getInstance()
     calendar.time = this
@@ -160,4 +167,13 @@ fun Date.minuteDifference(): Long {
     val differenceInMillis = calendar.timeInMillis - now.timeInMillis
 
     return TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)
+}
+
+fun Date.daysDifference(date : Date): Long {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+
+    val differenceInMillis = calendar.timeInMillis - date.time
+
+    return TimeUnit.MILLISECONDS.toDays(differenceInMillis)
 }

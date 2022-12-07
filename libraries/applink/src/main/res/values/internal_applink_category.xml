@@ -5,6 +5,8 @@
     <string name="host_tradein" translatable="false">tradein</string>
     <string name="host_category_explore" translatable="false">category-explore</string>
     <string name="host_affiliate_toko" translatable="false">affiliate</string>
+    <string name="host_epharmacy" translatable="false">epharmacy</string>
+    <string name="applink_epharmacy_edu" translatable="false">/edu/.*\</string>
     <string name="path_final_price" translatable="false">/host_final_price</string>
     <string name="path_age_restriction" translatable="false">/age_restriction</string>
     <string name="path_tradein" translatable="false">/tradein</string>
@@ -16,6 +18,7 @@
     <string name="applink_title_find_native" >Find</string>
     <string name="applink_harga_final">Harga Final</string>
     <string name="applink_title_catalog">Katalog</string>
+    <string name="applink_title_e_pharmacy">EPharmacy</string>
     <string name="money_in">Langsung Laku</string>
     <string name="host_belanja_kategori" translatable="false">category_belanja</string>
     <string name="label_kategori">Belanja di Tokopedia</string>

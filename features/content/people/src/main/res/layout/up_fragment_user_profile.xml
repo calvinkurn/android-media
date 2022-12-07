@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/container_header"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Background"
     android:measureAllChildren="false">
 
-    <include layout="@layout/up_layout_user_profile_header" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <include layout="@layout/up_shimmer_user_profile_header" />
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/header_profile"
+            android:layout_width="0dp"
+            android:alpha="0"
+            android:layout_height="?actionBarSize"
+            android:background="@color/Unify_NN600"
+            android:elevation="@dimen/unify_space_4"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:elevation="@dimen/unify_space_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_is_show_shadow="true"
+            app:unify_header_transparent_mode="false" />
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/global_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/user_profile_error_margin" />
+        <ViewFlipper
+            android:id="@+id/view_flipper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</ViewFlipper>
+            <include
+                android:id="@+id/main_layout"
+                layout="@layout/up_layout_user_profile_header" />
+
+            <include layout="@layout/up_shimmer_user_profile_header" />
+
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/global_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/user_profile_error_margin" />
+
+        </ViewFlipper>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

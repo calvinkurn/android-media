@@ -13,5 +13,8 @@ data class TopAdsImageViewModel(
         var position: Int = 0,
         var shopId: String = "",
         var currentPage: String = "",
-        var kind: String = ""
+        var kind: String = "",
+        var index: Int = 0,
+        var ImpressHolder: ImageShop? = null,
+        var layoutType: String = "single"
 )

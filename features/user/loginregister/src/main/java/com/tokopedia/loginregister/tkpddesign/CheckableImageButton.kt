@@ -19,7 +19,7 @@ import androidx.customview.view.AbsSavedState
 @Deprecated("removed soon if unify component ready")
 class CheckableImageButton @JvmOverloads constructor(
         context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = R.attr.imageButtonStyle
-) : AppCompatImageButton(context, attrs, defStyleAttr), Checkable {
+) : AppCompatImageButton(context!!, attrs, defStyleAttr), Checkable {
 
     private var checked = false
     private var checkable = true

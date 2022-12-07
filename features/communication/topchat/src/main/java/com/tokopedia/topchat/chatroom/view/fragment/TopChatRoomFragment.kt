@@ -2,12 +2,17 @@ package com.tokopedia.topchat.chatroom.view.fragment
 
 import android.app.Activity.CLIPBOARD_SERVICE
 import android.app.Activity.RESULT_OK
-import android.content.*
+import android.content.BroadcastReceiver
 import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
@@ -37,20 +42,40 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
+import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.BaseChatUiModel.Builder.Companion.generateCurrentReplyTime
+import com.tokopedia.chat_common.data.BlockedStatus
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.InvoiceMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ProductMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
 import com.tokopedia.chat_common.util.IdentifierUtil
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imagepicker.common.*
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
+import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -58,13 +83,18 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -80,12 +110,14 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSe
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastReceiver
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_ATTACH_IMAGE
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -94,34 +126,66 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.adapter.util.CenterSmoothScroller
 import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReminderTickerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_REPLY
-import com.tokopedia.topchat.chatroom.view.custom.*
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
+import com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
+import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
+import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
-import com.tokopedia.topchat.chatroom.view.listener.*
+import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
+import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
+import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
+import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
+import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
+import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.*
+import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventSeenProductAttachment
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.trackSuccessDoBuyAndAtc
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.topchat.common.util.Utils.isFromBubble
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
@@ -129,38 +193,16 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.*
-import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
-import kotlin.math.abs
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
-import com.tokopedia.picker.common.MediaPicker
-import com.tokopedia.picker.common.PageSource
-import com.tokopedia.picker.common.types.ModeType
-import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
-import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
-import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
-import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.Locale
+import java.util.Stack
+import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * @author : Steven 29/11/18
@@ -177,7 +219,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
     FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
-    ReminderTickerViewHolder.Listener, ProductBundlingListener {
+    ReminderTickerViewHolder.Listener, ProductBundlingListener,
+    ChatTextAreaTabLayoutListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -239,6 +282,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
 
+    /**
+     * Ticker Reminder flag, only 1 ticker can exist in 1 session
+     */
+    private var isTickerNotShownYet = true
+
+    /*
+      * Bubble Chat Flag
+     */
+    private var isFromBubble = false
+
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
@@ -274,10 +327,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
+        initBubbleChatFlag()
     }
 
     private fun initSmoothScroller() {
         smoothScroller = CenterSmoothScroller(context)
+    }
+
+    private fun initBubbleChatFlag() {
+        isFromBubble = activity?.isFromBubble() == true
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        }
     }
 
     override fun onCreateView(
@@ -296,10 +357,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initComposeAreaMsg() {
-        composeMsgArea?.initLayout(this,this)
+        composeMsgArea?.initLayout(this, this)
     }
 
-    private fun getSrwFrameLayoutListener() : SrwFrameLayout.Listener {
+    private fun getSrwFrameLayoutListener(): SrwFrameLayout.Listener {
         return object : SrwFrameLayout.Listener {
             override fun trackViewSrw() {
                 analytics.eventViewSrw(shopId, session.userId)
@@ -321,7 +382,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun initUserLocation() {
         context?.let {
-            val userLocation = ChooseAddressUtils.getLocalizingAddressData(it) ?: return@let
+            val userLocation = ChooseAddressUtils.getLocalizingAddressData(it)
             viewModel.initUserLocation(userLocation)
         }
     }
@@ -449,8 +510,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     viewModel.isAttachmentPreviewReady()
         } else {
             !isSeller() && hasProductPreviewShown() &&
-                rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
-                (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
+                    rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
+                    (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
         }
     }
 
@@ -510,6 +571,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initChatTextAreaLayout()
     }
 
+    override fun onResume() {
+        super.onResume()
+        this.isFromBubble = activity?.isFromBubble() == true
+        markAsReadFromBubble()
+    }
+
+    private fun markAsReadFromBubble() {
+        if (isFromBubble) {
+            viewModel.isFromBubble = isFromBubble
+            val currentUnreadMsg = viewModel.unreadMsg.value.orZero()
+            if (currentUnreadMsg > Int.ZERO) {
+                viewModel.isOnStop = false
+                viewModel.markAsRead()
+                val replyId = (viewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
+                TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+            }
+        }
+    }
+
     private fun setupLifecycleObserver() {
         viewLifecycleOwner.lifecycle.addObserver(viewModel)
     }
@@ -558,8 +638,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun renderTickerReminderIfNotYet() {
-        val ticker = viewModel.srwTickerReminder.value
-        if (ticker != null && ticker is Success) {
+        val ticker = viewModel.tickerReminder.value
+        if (ticker != null && ticker is Success && isTickerNotShownYet) {
             onSuccessGetTickerReminder(ticker.data)
         }
     }
@@ -622,9 +702,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
             view, this, this, this,
-            this, this, this, this,
-            (activity as BaseChatToolbarActivity).getToolbar(), analytics
+            this, this, this,
+            this, this,
+            (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
+            it.isFromBubble = activity?.isFromBubble() == true
             topchatViewState = it
         }
     }
@@ -671,7 +753,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun trackClickUpdateStock(product: ProductAttachmentUiModel) {
-        analytics.trackClickUpdateStock(product)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickChangeStockFromBubble(product.productId)
+        } else {
+            analytics.trackClickUpdateStock(product)
+        }
     }
 
     override fun isOCCActive(): Boolean {
@@ -773,24 +859,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (isSeller()) {
             setupFirstTimeForSeller()
         }
+        viewModel.getTickerReminder(isSeller())
         interlocutorShopType = chatRoom.shopType
     }
 
     private fun setupFirstTimeForSeller() {
         viewModel.adjustInterlocutorWarehouseId(messageId)
-        if (!viewModel.isInTheMiddleOfThePage()) {
-            viewModel.getTickerReminder()
-        }
     }
 
     private fun reloadSrw() {
         if (!isSeller() && messageId.isNotBlank() &&
             topchatViewState?.hasProductPreviewShown() == true
-                && viewModel.isAttachmentPreviewReady()
+            && viewModel.isAttachmentPreviewReady()
         ) {
             val productIdCommaSeparated2 = viewModel.getProductIdPreview()
                 .joinToString(separator = ",")
             viewModel.getSmartReplyWidget(messageId, productIdCommaSeparated2)
+        } else if (topchatViewState?.getChatAreaShimmer()?.isVisible == true) {
+            topchatViewState?.shouldShowSrw = false
         }
     }
 
@@ -873,9 +959,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun goToDetailOpponent() {
-        if (opponentRole.toLowerCase() == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
+        if (opponentRole.lowercase(Locale.getDefault()) == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
             goToProfile(opponentId)
-        } else if (opponentRole.toLowerCase()
+        } else if (opponentRole.lowercase(Locale.getDefault())
                 .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP)
         ) {
             onGoToShop()
@@ -925,7 +1011,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
         analytics.trackClickImageAnnouncement(
-            uiModel.broadcastBlastId.toString(),
+            uiModel.broadcastBlastId,
             uiModel.attachmentId
         )
         super.onImageAnnouncementClicked(uiModel)
@@ -973,6 +1059,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
+
+        if (isFromBubble && !viewModel.isOnStop) {
+            val replyId = chatBubble?.replyId.orEmpty()
+            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+        }
+
+        renderTickerReminder(chatBubble)
+    }
+
+    private fun renderTickerReminder(chatBubble: BaseChatUiModel?) {
+        chatBubble?.tickerReminder?.let {
+            val reminderTickerUiModel = ReminderTickerUiModel.mapToReminderTickerUiModel(it)
+            if (isTickerNotShownYet) {
+                onSuccessGetTickerReminder(reminderTickerUiModel)
+            }
+        }
     }
 
     override fun loadData(page: Int) {}
@@ -1001,8 +1103,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         context?.let {
             val intent = TopChatInternalRouter.Companion.getAttachProductIntent(
                 context = it,
-                shopId = shopId.toString(),
-                shopName = "",
+                shopId = shopId,
                 isSeller = isSeller(),
                 warehouseId = viewModel.attachProductWarehouseId
             )
@@ -1106,7 +1207,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun addDummyMessage(visitable: Visitable<*>) { }
+    override fun addDummyMessage(visitable: Visitable<*>) {}
 
     override fun removeDummy(visitable: Visitable<*>) {
         topchatViewState?.removeDummy(visitable)
@@ -1269,14 +1370,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun showSnackbarError(stringResource: String) {
         view?.let {
-            Toaster.make(it, stringResource, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, stringResource, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
     private fun showSnackbarError(throwable: Throwable) {
         view?.let {
             val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
-            Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -1381,6 +1482,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             showToasterMsgFromUpdateStock(updateProductResult, productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
             viewModel.onGoingStockUpdate.remove(productId)
+
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickSaveStockFromBubble(productId?: "")
+            }
         } else {
             val errorMsg = data?.extras?.getString(EXTRA_UPDATE_MESSAGE) ?: return
             showToasterError(errorMsg)
@@ -1558,7 +1663,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         resultProducts?.let { products ->
             removeSrwBubble()
             removeSrwPreview()
-            topchatViewState?.showChatAreaShimmer()
+            if (isSrwNewDesign()) {
+                topchatViewState?.showChatAreaShimmer()
+            }
             val productIds = products.map { it.productId }
             viewModel.loadProductPreview(productIds)
         }
@@ -1628,10 +1735,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onSuccessClickBuyFromProductAttachment(element: AddToCartParam) {
-        analytics.trackSuccessDoBuyAndAtc(
+        trackSuccessDoBuyAndAtc(
             element, element.dataModel,
             topchatViewState?.chatRoomViewModel?.shopName ?: "",
-            element.getBuyEventAction()
+            element.getBuyEventAction(),
+            getUserSession().userId
         )
         val intent = RouteManager.getIntent(context, ApplinkConst.CART)
         startActivity(intent)
@@ -1649,10 +1757,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onSuccessClickATCFromProductAttachment(element: AddToCartParam) {
-        analytics.trackSuccessDoBuyAndAtc(
-            element, element.dataModel,
+        trackSuccessDoBuyAndAtc(
+            element,
+            element.dataModel,
             topchatViewState?.chatRoomViewModel?.shopName ?: "",
-            element.getAtcEventAction()
+            element.getAtcEventAction(),
+            getUserSession().userId
         )
         val msg = element.dataModel?.message?.getOrNull(0) ?: ""
         rvContainer?.let { view ->
@@ -1800,6 +1910,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
     }
 
+    override fun onClickHeaderMenu() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuBubble(session.shopId)
+        }
+    }
+
+    override fun onClickHeaderMenuItem(menuItemTitle: String) {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuItemBubble(menuItemTitle)
+        }
+    }
+
     private fun getChatReportUrl(): String {
         var url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
         if (isSeller()) {
@@ -1818,7 +1940,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
-        TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickVoucherFromBubble(session.shopId, data.voucher.voucherId)
+        } else {
+            TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        }
         if (data.isLockToProduct()) {
             goToMvcPage(data.applink)
         } else {
@@ -1834,14 +1960,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun goToMvcPage(applink: String) {
         //If seller in MA, show toaster
-        if(!GlobalConfig.isSellerApp() && isSeller()) {
+        if (!GlobalConfig.isSellerApp() && isSeller()) {
             view?.let {
                 val text = getStringResource(R.string.topchat_mvc_not_available)
                 Toaster.build(it, text).show()
             }
-        //If applink is empty or wrong applink in sellerapp, return
+            //If applink is empty or wrong applink in sellerapp, return
         } else if (applink.isEmpty() || GlobalConfig.isSellerApp() &&
-            !applink.contains(PREFIX_SELLER_APPLINK, ignoreCase = true)) {
+            !applink.contains(PREFIX_SELLER_APPLINK, ignoreCase = true)
+        ) {
             return
         } else {
             context?.let {
@@ -1866,7 +1993,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
-            finishActivity()
+            if (isFromBubble) {
+                return false
+            } else {
+                finishActivity()
+            }
         }
         return true
     }
@@ -1900,11 +2031,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroy() {
         super.onDestroy()
         unregisterUploadImageReceiver()
+        sendBubbleDismissTracker()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentUiModel) {
         if (seenAttachedProduct.add(element.productId)) {
-            analytics.eventSeenProductAttachment(requireContext(), element, session, amISeller)
+            eventSeenProductAttachment(element, session, amISeller)
         }
     }
 
@@ -1969,24 +2101,40 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachProduct(menu: AttachmentMenu) {
-        analytics.eventAttachProduct()
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentProductFromBubble(session.shopId)
+        } else {
+            analytics.eventAttachProduct()
+            analytics.trackChatMenuClicked(menu.label)
+        }
         onAttachProductClicked()
     }
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
-        analytics.eventPickImage()
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentImageFromBubble(session.shopId)
+        } else {
+            analytics.eventPickImage()
+            analytics.trackChatMenuClicked(menu.label)
+        }
         pickImageToUpload()
     }
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
-        analytics.trackChatMenuClicked(voucherMenu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentVoucherFromBubble(session.shopId)
+        } else {
+            analytics.trackChatMenuClicked(voucherMenu.label)
+        }
         pickVoucherToUpload()
     }
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentInvoiceFromBubble(session.shopId)
+        } else {
+            analytics.trackChatMenuClicked(menu.label)
+        }
         pickInvoiceToUpload()
     }
 
@@ -2031,38 +2179,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun requestNetworkAddToWishList(productId: String, success: () -> Unit) {
         context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) addToWishlistV2(productId, success)
-            else addToWishlist(productId, success)
-        }
-    }
-
-    private fun addToWishlist(productId: String, success: () -> Unit) {
-        viewModel.addToWishList(productId, session.userId, object : WishListActionListener {
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-            override fun onSuccessAddWishlist(productId: String?) {
-                success()
-                showSuccessToastWishList(R.string.title_topchat_success_atw)
-            }
-
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                if (errorMessage == null) return
-                view?.let {
-                    Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                }
-            }
-        })
-    }
-
-    private fun showSuccessToastWishList(@StringRes successMessageRes: Int) {
-        view?.let {
-            val successMessage = it.context.getString(successMessageRes)
-            Toaster.build(
-                it,
-                successMessage,
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL
-            ).show()
+            addToWishlistV2(productId, success)
         }
     }
 
@@ -2070,7 +2187,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.addToWishListV2(productId, session.userId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                 view?.let { v ->
-                    Toaster.build(v, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        v,
+                        ErrorHandler.getErrorMessage(context, throwable),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
 
@@ -2080,13 +2202,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             ) {
                 context?.let { context ->
                     view?.let { v ->
-                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                            result,
+                            context,
+                            v
+                        )
                     }
                 }
             }
 
             override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+            override fun onSuccessRemoveWishlist(
+                result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                productId: String
+            ) {
+            }
         })
     }
 
@@ -2098,65 +2228,46 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
         analytics.eventClickRemoveFromWishList(productId)
         context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) removeFromWishlistV2(productId)
-            else removeFromWishlist(productId, success)
+            removeFromWishlistV2(
+                productId
+            )
         }
     }
 
-    private fun removeFromWishlist(productId: String, success: () -> Unit) {
-        viewModel.removeFromWishList(productId, session.userId, object : WishListActionListener {
-            override fun onSuccessAddWishlist(productId: String?) {}
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                success()
-                view?.let {
-                    val successMessage = it.context.getString(R.string.title_topchat_success_rfw)
-                    Toaster.make(
-                        it,
-                        successMessage,
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_NORMAL
-                    )
-                }
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                if (errorMessage == null) return
-                view?.let {
-                    Toaster.make(
-                        it,
-                        errorMessage,
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR
-                    )
-                }
-            }
-        })
-    }
-
     private fun removeFromWishlistV2(productId: String) {
-        viewModel.removeFromWishListV2(productId, session.userId, object : WishlistV2ActionListener {
-            override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
-            override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
-
-            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                view?.let {
-                    val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it)
+        viewModel.removeFromWishListV2(
+            productId,
+            session.userId,
+            object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
                 }
-            }
 
-            override fun onSuccessRemoveWishlist(
-                result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                productId: String
-            ) {
-                context?.let { context ->
-                    view?.let { v ->
-                        AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    view?.let {
+                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it)
                     }
                 }
-            }
-        })
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    context?.let { context ->
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
+                                result,
+                                context,
+                                v
+                            )
+                        }
+                    }
+                }
+            })
     }
 
     override fun trackClickProductThumbnail(product: ProductAttachmentUiModel) {
@@ -2164,6 +2275,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onStickerOpened() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickStickerBubble()
+        }
         topchatViewState?.onStickerOpened()
     }
 
@@ -2450,6 +2564,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private fun sendBubbleDismissTracker() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventDismissBubbleChat(session.shopId, opponentId, messageId)
+        }
+    }
+
     override fun onClickSrwQuestion(question: QuestionUiModel) {
         if (viewModel.isInTheMiddleOfThePage()) {
             resetItemList()
@@ -2561,7 +2681,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun enableSendButton() {
         val chatSendButton = getChatSendButton()
-        chatSendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
+        chatSendButton?.background =
+            MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
         chatSendButton?.setOnClickListener {
             onSendButtonClicked()
         }
@@ -2721,7 +2842,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
         }
 
-        viewModel.srwTickerReminder.observe(viewLifecycleOwner) {
+        viewModel.tickerReminder.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
                 else -> {}
@@ -2805,6 +2926,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         onSuccessGetExistingChatFirstTime(
                             result.data.chatroomViewModel, result.data.chatReplies
                         )
+
+                        if (isFromBubble) {
+                            val replyId = (result.data.chatroomViewModel
+                                .listChat.getOrNull(Int.ZERO) as? BaseChatUiModel)?.replyId.orEmpty()
+                            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+                        }
                     } else {
                         onSuccessResetChatToFirstPage(
                             result.data.chatroomViewModel, result.data.chatReplies
@@ -2984,11 +3111,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onSuccessGetTickerReminder(
         data: ReminderTickerUiModel
     ) {
-        if (!data.enable) return
-        val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
+        if (!data.isEnable) return
+        val eligiblePosition = adapter.findTickerPosition(data.replyId)
         if (eligiblePosition == RecyclerView.NO_POSITION) return
         adapter.addElement(eligiblePosition, data)
-        viewModel.removeTicker()
+        isTickerNotShownYet = false
+        if (getFirstVisibleItemPosition() == 0 && eligiblePosition == 0) {
+            rv?.smoothScrollToPosition(eligiblePosition)
+        }
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -3044,12 +3174,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         ) { itemMenu, msg ->
             TopChatAnalyticsKt.eventClickMsgMenu(itemMenu.title)
             when (itemMenu.id) {
-                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
-                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
+                MENU_ID_REPLY -> replyBubble(msg, text)
+                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text, msg.replyId)
                 MENU_ID_DELETE_BUBBLE -> confirmDeleteBubble(msg)
             }
         }
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickLongHoldMessageFromBubble(msg.replyId)
+        } else {
+            TopChatAnalyticsKt.eventTapAndHoldBubbleChat(msg.replyId)
+        }
+    }
+
+    private fun replyBubble(msg: BaseChatUiModel, text: CharSequence) {
+        replyCompose?.composeReplyData(msg, text, true)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickReplySelectedMessageFromBubble(msg.replyId)
+        }
     }
 
     private fun confirmDeleteBubble(msg: BaseChatUiModel) {
@@ -3063,11 +3206,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     dismiss()
                 }
                 setPrimaryCTAClickListener {
-                    TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    if (isFromBubble) {
+                        TopChatAnalyticsKt.clickConfirmDeleteSelectedMessageFromBubble(msg.replyId)
+                    } else {
+                        TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    }
                     deleteBubble(msg)
                     dismiss()
                 }
             }.show()
+
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickDeleteSelectedMessageFromBubble(msg.replyId)
+            }
         }
     }
 
@@ -3084,12 +3235,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return shopId
     }
 
-    private fun copyToClipboard(text: CharSequence) {
+    private fun copyToClipboard(text: CharSequence, replyId: String) {
         val clipboard = context?.getSystemService(
             CLIPBOARD_SERVICE
         ) as? ClipboardManager
         val clip = ClipData.newPlainText(CLIPBOARD_CHAT, text)
         clipboard?.setPrimaryClip(clip)
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickCopySelectedMessageFromBubble(replyId)
+        }
     }
 
     override fun getUserName(senderId: String): String {
@@ -3148,9 +3303,38 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return widgets
     }
 
-    override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
-        viewModel.closeTickerReminder(element)
+    override fun trackSeenTicker(element: ReminderTickerUiModel) {
+        TopChatAnalyticsKt.eventViewTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+    }
+
+    override fun onClickLinkReminderTicker(element: ReminderTickerUiModel, linkUrl: String) {
+        TopChatAnalyticsKt.eventClickLinkTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+
+        if (linkUrl.isNotEmpty()) {
+            RouteManager.route(context, linkUrl)
+        }
+    }
+
+    override fun onCloseReminderTicker(element: ReminderTickerUiModel, position: Int) {
+        TopChatAnalyticsKt.eventClickCloseTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+        viewModel.closeTickerReminder(element, isSeller())
         adapter.removeViewHolder(element, position)
+        isTickerNotShownYet = true
     }
 
     private fun goToOCC() {
@@ -3162,25 +3346,101 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
-        TopChatAnalyticsKt.eventClickProductBundlingCta(
-            element.productBundling.bundleItem?.first()?.productId?: "",
-            element.productBundling.bundleId?: ""
-        )
+        if (element.isBroadcast()) {
+            element.productBundling.bundleItem?.let {
+                if (element.getBundleTypeMapped().isNotEmpty()) {
+                    TopChatAnalyticsKt.eventClickCtaOnProductBundlingBroadcast(
+                        element.blastId,
+                        element.productBundling.bundleStatus.toString(),
+                        element.productBundling.bundleId.toString(),
+                        it,
+                        element.getBundleTypeMapped(),
+                        "broadcast",
+                        getBroadcastSenderShopId(element),
+                        getBroadcastSenderShopName(element),
+                        session.userId
+                    )
+                }
+            }
+        } else {
+            TopChatAnalyticsKt.eventClickProductBundlingCta(
+                element.productBundling.bundleItem?.first()?.productId ?: "",
+                element.productBundling.bundleId ?: ""
+            )
+        }
+
         if (!element.productBundling.ctaBundling?.buttonAndroidLink.isNullOrEmpty()) {
             context?.let {
-                val intent = RouteManager.getIntent(it,
-                    element.productBundling.ctaBundling?.buttonAndroidLink)
+                val intent = RouteManager.getIntent(
+                    it,
+                    element.productBundling.ctaBundling?.buttonAndroidLink
+                )
                 startActivity(intent)
             }
         }
     }
 
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {
-        if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
-            TopChatAnalyticsKt.eventViewProductBundling(
-                element.productBundling.bundleItem?.first()?.productId?: "",
-                element.productBundling.bundleId?: ""
-            )
+        element.productBundling.bundleType
+        if (seenAttachmentProductBundling.add(element.productBundling.bundleId ?: "")) {
+            if (element.isBroadcast()) {
+                element.productBundling.bundleId?.let {
+                    TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
+                        it,
+                        element.productBundling.bundleStatus.toString(),
+                        element.productBundling.bundleId.toString(),
+                        getBroadcastSenderShopId(element),
+                        session.userId
+                    )
+                }
+            } else {
+                TopChatAnalyticsKt.eventViewProductBundling(
+                    element.productBundling.bundleItem?.first()?.productId ?: "",
+                    element.productBundling.bundleId ?: ""
+                )
+            }
+        }
+    }
+
+    override fun onClickProductBundlingImage(item: BundleItem, element: ProductBundlingUiModel) {
+        if (element.isBroadcast()) {
+            element.productBundling.bundleItem?.let {
+                if (element.getBundleTypeMapped().isNotEmpty()) {
+                    TopChatAnalyticsKt.eventClickProductAttachmentOnProductBundlingBroadcast(
+                        element.blastId,
+                        element.productBundling.bundleStatus.toString(),
+                        element.productBundling.bundleId.toString(),
+                        element.getBundleTypeMapped(),
+                        "broadcast",
+                        it,
+                        getBroadcastSenderShopId(element),
+                        session.userId
+                    )
+                }
+            }
+        }
+
+        if (item.androidUrl.isNotEmpty()) {
+            context?.let {
+                val intent = RouteManager.getIntent(it, item.androidUrl)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun getBroadcastSenderShopId(element: ProductBundlingUiModel): String {
+        return if (element.isSender) {
+            session.shopId
+        } else {
+            shopId
+        }
+    }
+
+    private fun getBroadcastSenderShopName(element: ProductBundlingUiModel): String {
+        return if (element.isSender) {
+            session.shopName
+        } else {
+            ""
         }
     }
 
@@ -3221,6 +3481,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
+    override fun onClickSRWTab() {
+        val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
+        TopChatAnalyticsKt.eventClickSRWTabChatTextAreaLayout(
+            productIds, getUserSession().userId, shopId
+        )
+    }
+
+    override fun onClickReplyTab() {
+        val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
+        TopChatAnalyticsKt.eventClickReplyTabChatTextAreaLayout(
+            productIds, getUserSession().userId, shopId
+        )
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
@@ -3245,7 +3519,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         const val AB_TEST_NEW_SRW = "srw_new_design"
         const val AB_TEST_OLD_SRW = "control_variant"
-        const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
+        const val ROLLENCE_ENABLE_MEDIA_PICKER = "and_chat_picker_v2"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

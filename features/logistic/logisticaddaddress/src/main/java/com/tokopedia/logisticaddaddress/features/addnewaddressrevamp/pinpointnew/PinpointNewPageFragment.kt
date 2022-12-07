@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,6 +52,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
@@ -138,6 +140,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var currentPostalCode: String? = ""
 
     private var isPolygon: Boolean = false
+    private var source: String? = ""
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -356,6 +359,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             currentPostalCode = it.getString(EXTRA_POSTAL_CODE)
             isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM)
             isEdit = it.getBoolean(EXTRA_IS_EDIT)
+            source = it.getString(PARAM_SOURCE, "")
         }
 
         if (!currentPlaceId.isNullOrEmpty()) {
@@ -949,6 +953,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             Intent(context, AddressFormActivity::class.java).apply {
                 putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
                 putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                putExtra(EXTRA_GMS_AVAILABILITY, true)
+                putExtra(PARAM_SOURCE, source)
                 startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
         } else {
@@ -1010,6 +1016,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putBoolean(EXTRA_IS_EDIT, extra.getBoolean(EXTRA_IS_EDIT))
                     putInt(EXTRA_DISTRICT_ID, extra.getInt(EXTRA_DISTRICT_ID))
                     putString(EXTRA_POSTAL_CODE, extra.getString(EXTRA_POSTAL_CODE))
+                    putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE))
                 }
             }
         }

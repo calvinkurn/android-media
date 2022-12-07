@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-import com.tokopedia.dg_transaction.testing.response.rest.DigitalCheckoutMockResponse
+import com.tokopedia.dg_transaction.testing.response.rest.DigitalRestCheckoutMockResponse
 import com.tokopedia.dg_transaction.testing.response.rest.RestRepositoryStub
 import com.tokopedia.digital_checkout.di.DigitalCartCheckoutQualifier
 import com.tokopedia.digital_checkout.di.DigitalCheckoutScope
@@ -49,7 +49,7 @@ class StubDigitalCheckoutModule {
     @DigitalCheckoutScope
     fun provideRestRepositoryStub(): RestRepositoryStub {
         return RestRepositoryStub().apply {
-            responses = DigitalCheckoutMockResponse().getMockResponse()
+            responses = DigitalRestCheckoutMockResponse().getMockResponse()
         }
     }
 

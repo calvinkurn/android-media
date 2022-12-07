@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.animation.LayoutTransition
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,9 +16,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingViewHolder(
-        itemView: View?,
-        private val listener: Listener,
-        private val navigator: BuyerOrderDetailNavigator
+    itemView: View?,
+    private val listener: Listener,
+    private val navigator: BuyerOrderDetailNavigator
 ): BaseToasterViewHolder<ProductListUiModel.ProductBundlingUiModel>(itemView), ProductBundlingItemAdapter.ViewHolder.Listener {
 
     companion object {
@@ -26,6 +27,7 @@ class ProductBundlingViewHolder(
         private const val PRODUCT_BUNDLING_IMAGE_ICON_URL = "https://images.tokopedia.net/img/android/others/ic_product_bundling.png"
     }
 
+    private val bundleItemAdapter = ProductBundlingItemAdapter(this)
     private val bundleItemDecoration by lazy {
         itemView?.context?.let {
             ProductBundlingItemDecoration(it)
@@ -39,19 +41,39 @@ class ProductBundlingViewHolder(
     private var bundlingPriceText: Typography? = null
 
     init {
-        itemView?.run {
-            containerLayout = findViewById(R.id.container_bom_detail_bundling)
-            bundlingNameText = findViewById(R.id.tv_bom_detail_bundling_name)
-            bundlingIconImage = findViewById(R.id.iv_bom_detail_bundling_icon)
-            bundlingItemRecyclerView = findViewById(R.id.rv_bom_detail_bundling)
-            bundlingPriceText = findViewById(R.id.tv_bom_detail_bundling_price_value)
-        }
+        bindViews()
+        setupBundleAdapter()
     }
 
     override fun bind(element: ProductListUiModel.ProductBundlingUiModel) {
         setupBundleHeader(element.bundleName, element.bundleIconUrl)
-        setupBundleAdapter(element.bundleItemList)
+        setupBundleItems(element.bundleItemList)
         setupBundleTotalPrice(element.totalPriceText)
+    }
+
+    override fun bind(
+        element: ProductListUiModel.ProductBundlingUiModel?,
+        payloads: MutableList<Any>
+    ) {
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val (oldItem, newItem) = it
+                if (oldItem is ProductListUiModel.ProductBundlingUiModel && newItem is ProductListUiModel.ProductBundlingUiModel) {
+                    containerLayout?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    if (oldItem.bundleName != newItem.bundleName || oldItem.bundleIconUrl != newItem.bundleIconUrl) {
+                        setupBundleHeader(newItem.bundleName, newItem.bundleIconUrl)
+                    }
+                    if (oldItem.bundleItemList != newItem.bundleItemList) {
+                        setupBundleItems(newItem.bundleItemList)
+                    }
+                    if (oldItem.totalPriceText != newItem.totalPriceText) {
+                        setupBundleTotalPrice(newItem.totalPriceText)
+                    }
+                    containerLayout?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    return
+                }
+            }
+        }
     }
 
     override fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String) {
@@ -74,6 +96,24 @@ class ProductBundlingViewHolder(
         BuyerOrderDetailTracker.eventClickSimilarProduct(uiModel.orderStatusId, uiModel.orderId)
     }
 
+    private fun bindViews() {
+        itemView.run {
+            containerLayout = findViewById(R.id.container_bom_detail_bundling)
+            bundlingNameText = findViewById(R.id.tv_bom_detail_bundling_name)
+            bundlingIconImage = findViewById(R.id.iv_bom_detail_bundling_icon)
+            bundlingItemRecyclerView = findViewById(R.id.rv_bom_detail_bundling)
+            bundlingPriceText = findViewById(R.id.tv_bom_detail_bundling_price_value)
+        }
+    }
+
+    private fun setupBundleAdapter() {
+        bundlingItemRecyclerView?.run {
+            layoutManager = LinearLayoutManager(itemView.context)
+            adapter = bundleItemAdapter
+            bundleItemDecoration?.let { addItemDecoration(it) }
+        }
+    }
+
     private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {
         bundlingNameText?.text = bundleName
         val iconUrl =
@@ -85,14 +125,8 @@ class ProductBundlingViewHolder(
         bundlingIconImage?.setImageUrl(iconUrl)
     }
 
-    private fun setupBundleAdapter(bundleItemList: List<ProductListUiModel.ProductUiModel>) {
-        bundlingItemRecyclerView?.run {
-            layoutManager = LinearLayoutManager(itemView.context)
-            adapter = ProductBundlingItemAdapter(this@ProductBundlingViewHolder, bundleItemList)
-            bundleItemDecoration?.let {
-                addItemDecoration(it)
-            }
-        }
+    private fun setupBundleItems(bundleItemList: List<ProductListUiModel.ProductUiModel>) {
+        bundleItemAdapter.setItems(bundleItemList)
     }
 
     private fun setupBundleTotalPrice(price: String) {
@@ -102,5 +136,4 @@ class ProductBundlingViewHolder(
     interface Listener {
         fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel)
     }
-
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/tokopediaLocalLoad"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl8"
+        android:visibility="gone"
+        tools:visibility="gone"
+        android:layout_marginHorizontal="@dimen/usercomponents_card_view_padding_remover"
+        app:unify_local_load_title="@string/usercomponents_failed_load_data"
+        app:unify_local_load_description="@string/usercomponents_failed_load_data_click_retry"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+        android:id="@+id/tokopediaPlusLoader"
+        layout="@layout/ui_tokopedia_plus_loading"
+        android:visibility="visible"
+        tools:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <include
+        android:id="@+id/tokopediaPlusComponent"
+        layout="@layout/ui_tokopedia_plus_component"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <include
+        android:id="@+id/tokopediaPlusCardComponent"
+        layout="@layout/ui_tokopedia_plus_card_component"
+        android:visibility="gone"
+        tools:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

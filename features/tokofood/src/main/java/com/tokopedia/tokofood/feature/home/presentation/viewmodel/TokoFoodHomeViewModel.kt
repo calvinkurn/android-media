@@ -1,12 +1,9 @@
 package com.tokopedia.tokofood.feature.home.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -19,6 +16,7 @@ import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodInputPinPoint
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodHomeMapper.addErrorState
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodHomeMapper.addMerchantTitle
@@ -39,6 +37,7 @@ import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeDynamicIco
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeTickerUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
+import com.tokopedia.tokofood.feature.home.presentation.sharedpref.TokofoodHomeSharedPref
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIconsUiModel
@@ -48,14 +47,32 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPU
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodUiState
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_ERROR
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_COMPONENT_DATA
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_DYNAMIC_CHANNEL_DATA
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_LOAD_MORE
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_REMOVE_TICKER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodDynamicChanelUseCase: TokoFoodHomeDynamicChannelUseCase,
     private val tokoFoodHomeUSPUseCase: TokoFoodHomeUSPUseCase,
@@ -65,25 +82,52 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
+    private val searchCoachmarkSharedPref: TokofoodHomeSharedPref,
     private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
-    val layoutList: LiveData<Result<TokoFoodListUiModel>>
-        get() = _homeLayoutList
-    val updatePinPointState: LiveData<Boolean>
-        get() = _updatePinPointState
-    val errorMessage:LiveData<String>
-        get() = _errorMessage
-    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
-        get() = _chooseAddress
-    val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
-        get() = _eligibleForAnaRevamp
+    private val _inputState = MutableSharedFlow<TokoFoodUiState>(Int.ONE)
+    private val _inputPinPointState = MutableSharedFlow<TokoFoodInputPinPoint>(Int.ONE)
 
-    private val _homeLayoutList = MutableLiveData<Result<TokoFoodListUiModel>>()
-    private val _updatePinPointState = MutableLiveData<Boolean>()
-    private val _errorMessage = MutableLiveData<String>()
-    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
-    private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
+    private val _flowChooseAddress = MutableSharedFlow<Result<GetStateChosenAddressResponse>>(Int.ONE)
+    private val _flowEligibleForAnaRevamp = MutableSharedFlow<Result<EligibleForAddressFeature>>(Int.ONE)
+    private val _flowShouldShowSearchCoachMark = MutableSharedFlow<Boolean>(Int.ONE)
+
+    init {
+        _inputState.tryEmit(TokoFoodUiState())
+    }
+
+    val flowLayoutList: SharedFlow<Result<TokoFoodListUiModel>> =
+        _inputState.flatMapConcat { inputState ->
+            getFlowHome(inputState).catch {
+                if (inputState.uiState == STATE_FETCH_DYNAMIC_CHANNEL_DATA)  emit(Fail(it))
+                else {
+                    removeMerchantMainTitle()
+                    emit(getRemovalProgressBar())
+                }
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
+
+    val flowUpdatePinPointState: SharedFlow<Result<Boolean>> =
+        _inputPinPointState.flatMapConcat {
+            flow {
+                emit(updatePinPoin(it.addressId, it.latitude, it.longitude))
+            }.catch {
+                emit(Fail(it))
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
+
+    val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _flowEligibleForAnaRevamp
+    val flowChooseAddress: SharedFlow<Result<GetStateChosenAddressResponse>> = _flowChooseAddress
+    val flowShouldShowSearchCoachMark: SharedFlow<Boolean> = _flowShouldShowSearchCoachMark
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
@@ -92,187 +136,306 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
+        private const val EMPTY_LOCATION = "0.0"
+        private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
+        private const val SOURCE = "tokofood"
     }
 
-    fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
-        launchCatchError(block = {
-            val isSuccess = withContext(dispatchers.io) {
-                keroEditAddressUseCase.execute(addressId, latitude, longitude)
+    private fun getFlowHome(inputState: TokoFoodUiState): Flow<Result<TokoFoodListUiModel>> {
+        return flow {
+            when (inputState.uiState) {
+                STATE_FETCH_DYNAMIC_CHANNEL_DATA -> {
+                    emit(getLoadingState())
+                    when {
+                        hasNoAddress(inputState.isLoggedIn, inputState.localCacheModel) -> {
+                            if (isAddressManuallyUpdate()){
+                                emit(getNoAddressState())
+                            } else {
+                                getChooseAddress(SOURCE)
+                            }
+                        }
+                        hasNoPinPoin(inputState.isLoggedIn, inputState.localCacheModel) -> {
+                            if (isAddressManuallyUpdate()){
+                                emit(getNoPinPointState())
+                            } else {
+                                getChooseAddress(SOURCE)
+                            }
+                        }
+                        else -> emit(getHomeLayout(inputState.localCacheModel))
+                    }
+                }
+                STATE_FETCH_COMPONENT_DATA -> {
+                    homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }
+                        .forEach {
+                            emit(getLayoutComponentData(it, inputState.localCacheModel))
+                        }
+                }
+                STATE_FETCH_LOAD_MORE -> {
+                    emit(getProgressBar())
+                    emit(getMerchantList(inputState.localCacheModel))
+                }
+                STATE_ERROR -> {
+                    emit(getErrorState(inputState.throwable))
+                }
+                STATE_REMOVE_TICKER -> {
+                    emit(getRemovalTickerWidget(inputState.visitableId))
+                }
             }
-            _updatePinPointState.postValue(isSuccess)
-        }){
-            _errorMessage.postValue(it.message)
+        }
+    }
+
+    fun setUpdatePinPoint(addressId: String, latitude: String, longitude: String) {
+        _inputPinPointState.tryEmit(
+            TokoFoodInputPinPoint(addressId, latitude, longitude)
+        )
+    }
+
+    fun setErrorState(throwable: Throwable) {
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_ERROR, throwable = throwable))
+    }
+
+    fun setRemoveTicker(id: String) {
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_REMOVE_TICKER, visitableId = id))
+    }
+
+    fun setLayoutComponentData(localCacheModel: LocalCacheModel?) {
+        localCacheModel?.let {
+            _inputState.tryEmit(
+                TokoFoodUiState(
+                    uiState = STATE_FETCH_COMPONENT_DATA,
+                    localCacheModel = it
+                )
+            )
+        }
+    }
+
+    fun setMerchantList(localCacheModel: LocalCacheModel?) {
+        localCacheModel?.let {
+            _inputState.tryEmit(
+                TokoFoodUiState(
+                    uiState = STATE_FETCH_LOAD_MORE,
+                    localCacheModel = it
+                )
+            )
+        }
+    }
+
+    fun setHomeLayout(localCacheModel: LocalCacheModel?, isLoggedIn: Boolean) {
+        localCacheModel?.let {
+            _inputState.tryEmit(
+                TokoFoodUiState(
+                    uiState = STATE_FETCH_DYNAMIC_CHANNEL_DATA,
+                    isLoggedIn = isLoggedIn,
+                    localCacheModel = localCacheModel
+                )
+            )
         }
     }
 
     fun checkUserEligibilityForAnaRevamp() {
         eligibleForAddressUseCase.eligibleForAddressFeature(
             {
-                _eligibleForAnaRevamp.postValue(Success(it.eligibleForRevampAna))
+                setEligibleForAnaRevamp(it.eligibleForRevampAna)
             },
             {
-                _eligibleForAnaRevamp.postValue(Fail(it))
+                setEligibleForAnaRevamp(it)
             },
             AddressConstant.ANA_REVAMP_FEATURE_ID
         )
     }
 
-    fun getChooseAddress(source: String){
+    fun getChooseAddress(source: String) {
         isAddressManuallyUpdated = true
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
-            _chooseAddress.postValue(Success(it))
-        },{
-            _chooseAddress.postValue(Fail(it))
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
+            setFlowChooseAddress(it)
+        }, {
+            setFlowChooseAddress(it)
         }, source)
     }
 
-    fun showLoadingState() {
+    fun getLoadingState(): Result<TokoFoodListUiModel> {
         setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.LOADING
+        val data = Success(
+            TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.LOADING
+            )
         )
-        _homeLayoutList.postValue(Success(data))
+        return data
     }
 
-    fun showNoPinPointState() {
+    fun getNoPinPointState(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoPinPointState()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.HIDE
+        val data = Success(
+            TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.HIDE
+            )
         )
-        _homeLayoutList.postValue(Success(data))
+        return data
     }
 
-    fun showNoAddressState() {
+    fun getNoAddressState(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoAddressState()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.HIDE
+        val data = Success(
+            TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.HIDE
+            )
         )
-        _homeLayoutList.postValue(Success(data))
+        return data
     }
 
-    fun showErrorState(throwable: Throwable) {
+    fun getErrorState(throwable: Throwable): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addErrorState(throwable)
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.HIDE
+        val data = Success(
+            TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.HIDE
+            )
         )
-        _homeLayoutList.postValue(Success(data))
+        return data
     }
 
-    fun showProgressBar() {
+    fun getProgressBar(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.addProgressBar()
         val data = TokoFoodListUiModel(
             getHomeVisitableList(),
             TokoFoodLayoutState.UPDATE
         )
-        _homeLayoutList.postValue(Success(data))
+        return Success(data)
     }
 
-    fun removeTickerWidget(id: String) {
-        launch(block = {
-            hasTickerBeenRemoved = true
-            homeLayoutItemList.removeItem(id)
+    fun getRemovalTickerWidget(id: String): Result<TokoFoodListUiModel> {
+        hasTickerBeenRemoved = true
+        homeLayoutItemList.removeItem(id)
 
-            val data = TokoFoodListUiModel(
+        val data = Success(
+            TokoFoodListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoFoodLayoutState.UPDATE
             )
+        )
 
-            _homeLayoutList.postValue(Success(data))
-        })
+        return data
     }
 
-    fun getHomeLayout(localCacheModel: LocalCacheModel) {
-        launchCatchError(block = {
-            homeLayoutItemList.clear()
-
-            val homeLayoutResponse = withContext(dispatchers.io) {
-                tokoFoodDynamicChanelUseCase.execute(localCacheModel)
-            }
-
-            homeLayoutItemList.mapHomeLayoutList(
-                homeLayoutResponse.response.data,
-                hasTickerBeenRemoved
-            )
-
-            val data = TokoFoodListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoFoodLayoutState.SHOW
-            )
-
-            _homeLayoutList.postValue(Success(data))
-            }){
-            _homeLayoutList.postValue(Fail(it))
+    suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<Boolean> {
+        val isSuccess = withContext(dispatchers.io) {
+            keroEditAddressUseCase.execute(addressId, latitude, longitude)
         }
+        return Success(isSuccess)
     }
 
-    fun getLayoutComponentData(localCacheModel: LocalCacheModel?){
-        launch {
-            homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }.forEach {
-                homeLayoutItemList.setStateToLoading(it)
+    private suspend fun getHomeLayout(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
+        homeLayoutItemList.clear()
 
-                if (it.layout is TokoFoodHomeLayoutUiModel) {
-                    getTokoFoodHomeComponent(it.layout, localCacheModel)
-                }
-
-                val data = TokoFoodListUiModel(
-                    items = getHomeVisitableList(),
-                    state = TokoFoodLayoutState.UPDATE
-                )
-
-                _homeLayoutList.postValue(Success(data))
-            }
+        val homeLayoutResponse = withContext(dispatchers.io) {
+            tokoFoodDynamicChanelUseCase.execute(localCacheModel)
         }
+
+        homeLayoutItemList.mapHomeLayoutList(
+            homeLayoutResponse.response.data,
+            hasTickerBeenRemoved
+        )
+
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.SHOW
+        )
+        return Success(data)
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel) {
-        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
-            showProgressBar()
-            getMerchantList(localCacheModel = localCacheModel)
+    private suspend fun getLayoutComponentData(
+        uiModel: TokoFoodItemUiModel,
+        localCacheModel: LocalCacheModel?
+    ): Result<TokoFoodListUiModel> {
+
+        homeLayoutItemList.setStateToLoading(uiModel)
+
+        if (uiModel.layout is TokoFoodHomeLayoutUiModel) {
+            getTokoFoodHomeComponent(uiModel.layout, localCacheModel)
+        }
+
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.UPDATE
+        )
+
+        return Success(data)
+    }
+
+    private suspend fun getMerchantList(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
+        val categoryResponse = withContext(dispatchers.io) {
+            tokoFoodMerchantListUseCase.execute(
+                localCacheModel = localCacheModel,
+                pageKey = pageKey
+            )
+        }
+
+        if (isInitialPageKey()) {
+            homeLayoutItemList.addMerchantTitle()
+        }
+
+        setPageKey(categoryResponse.data.nextPageKey)
+        homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+        homeLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
+        return Success(data)
+    }
+
+    private fun getRemovalProgressBar(): Result<TokoFoodListUiModel> {
+        homeLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
+        return Success(data)
+    }
+
+    fun onScrollProductList(
+        containsLastItemIndex: Int,
+        itemCount: Int,
+        localCacheModel: LocalCacheModel
+    ) {
+        if (shouldLoadMore(containsLastItemIndex, itemCount)) {
+            setMerchantList(localCacheModel = localCacheModel)
         }
     }
 
     fun isShownEmptyState(): Boolean {
         val layoutList = homeLayoutItemList.toMutableList()
         val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
-        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
+        val isEmptyStateShown =
+            layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
         return isEmptyStateShown || isError
     }
 
-    fun setPageKey(pageNew:String) {
+    fun setPageKey(pageNew: String) {
         pageKey = pageNew
     }
 
-    private fun getMerchantList(localCacheModel: LocalCacheModel) {
-        launchCatchError(block = {
-            val categoryResponse = withContext(dispatchers.io) {
-                tokoFoodMerchantListUseCase.execute(
-                    localCacheModel = localCacheModel,
-                    pageKey = pageKey)
-            }
-
-            if (isInitialPageKey()){
-                homeLayoutItemList.addMerchantTitle()
-            }
-
-            setPageKey(categoryResponse.data.nextPageKey)
-            homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
-            merchantListUpdate()
-        }){
-            removeMerchantMainTitle()
-            merchantListUpdate()
-        }
+    fun checkForSearchCoachMark() {
+        val hasSearchCoachMarkShown = searchCoachmarkSharedPref.getHasSearchCoachmarkShown()
+        _flowShouldShowSearchCoachMark.tryEmit(!hasSearchCoachMarkShown)
     }
 
-    private suspend fun getTokoFoodHomeComponent(item: TokoFoodHomeLayoutUiModel, localCacheModel: LocalCacheModel?) {
+    fun setSearchCoachMarkHasShown() {
+        searchCoachmarkSharedPref.setHasSearchCoachmarkShown(true)
+    }
+
+    private suspend fun getTokoFoodHomeComponent(
+        item: TokoFoodHomeLayoutUiModel,
+        localCacheModel: LocalCacheModel?
+    ) {
         when (item) {
             is TokoFoodHomeTickerUiModel -> getTickerDataAsync(item, localCacheModel).await()
             is TokoFoodHomeUSPUiModel -> getUSPDataAsync(item).await()
@@ -281,11 +444,14 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTickerDataAsync(item: TokoFoodHomeTickerUiModel, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
+    private suspend fun getTickerDataAsync(
+        item: TokoFoodHomeTickerUiModel,
+        localCacheModel: LocalCacheModel?
+    ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val tickerData = tokoFoodHomeTickerUseCase.execute(localCacheModel)
             homeLayoutItemList.mapTickerData(item, tickerData)
-        }){
+        }) {
             homeLayoutItemList.removeItem(item.id)
         }
     }
@@ -294,7 +460,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val uspData = tokoFoodHomeUSPUseCase.execute()
             homeLayoutItemList.mapUSPData(item, uspData)
-        }){
+        }) {
             homeLayoutItemList.removeItem(item.id)
         }
     }
@@ -303,7 +469,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val dynamicIcons = tokoFoodHomeDynamicIconsUseCase.execute(item.widgetParam)
             homeLayoutItemList.mapDynamicIcons(item, dynamicIcons)
-        }){
+        }) {
             homeLayoutItemList.removeItem(item.id)
         }
     }
@@ -320,20 +486,10 @@ class TokoFoodHomeViewModel @Inject constructor(
         return pageKey.equals(INITIAL_PAGE_KEY_MERCHANT)
     }
 
-    private fun removeMerchantMainTitle(){
-        if (isInitialPageKey()){
+    private fun removeMerchantMainTitle() {
+        if (isInitialPageKey()) {
             homeLayoutItemList.removeItem(MERCHANT_TITLE)
         }
-    }
-
-    private fun merchantListUpdate() {
-        homeLayoutItemList.removeProgressBar()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.LOAD_MORE
-        )
-
-        _homeLayoutList.postValue(Success(data))
     }
 
     private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
@@ -343,9 +499,50 @@ class TokoFoodHomeViewModel @Inject constructor(
         val hasNextPage = pageKey.isNotEmpty()
         val layoutList = homeLayoutItemList.toMutableList()
         val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
-        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
+        val isEmptyStateShown =
+            layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
         val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
 
         return scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError
     }
+
+    private fun setFlowChooseAddress(response: GetStateChosenAddressResponse) {
+        launch {
+            _flowChooseAddress.emit(Success(response))
+        }
+    }
+
+    private fun setFlowChooseAddress(throwable: Throwable) {
+        launch {
+            _flowChooseAddress.emit(Fail(throwable))
+        }
+    }
+
+    private fun setEligibleForAnaRevamp(response: EligibleForAddressFeature) {
+        launch {
+            _flowEligibleForAnaRevamp.emit(Success(response))
+        }
+    }
+
+    private fun setEligibleForAnaRevamp(throwable: Throwable) {
+        launch {
+            _flowEligibleForAnaRevamp.emit(Fail(throwable))
+        }
+    }
+
+    private fun hasNoAddress(isLoggedIn: Boolean, localCacheModel: LocalCacheModel): Boolean {
+        return isLoggedIn &&
+                (localCacheModel.address_id.isEmpty() ||
+                        localCacheModel.address_id == "0")
+    }
+
+    private fun hasNoPinPoin(isLoggedIn: Boolean, localCacheModel: LocalCacheModel): Boolean {
+        return isLoggedIn &&
+                (localCacheModel.lat.isEmpty() ||
+                        localCacheModel.long.isEmpty() ||
+                localCacheModel.lat.equals(EMPTY_LOCATION) ||
+                        localCacheModel.long.equals(EMPTY_LOCATION))
+    }
+
+    private fun isAddressManuallyUpdate(): Boolean = isAddressManuallyUpdated
 }

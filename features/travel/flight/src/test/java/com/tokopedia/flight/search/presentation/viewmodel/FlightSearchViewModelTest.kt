@@ -1104,7 +1104,7 @@ class FlightSearchViewModelTest {
     @Test
     fun fetchPromoList_shouldReturnSuccessEmpty() {
         // given
-        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS_EMPTY)
+        coEvery { flightLowestPriceUseCase.execute(any() as FlightDummyGqlInterfaceImpl, any()) } returns Success(PROMO_CHIPS_EMPTY)
         flightSearchViewModel.flightSearchPassData = defaultSearchData
 
         // when
@@ -1121,7 +1121,7 @@ class FlightSearchViewModelTest {
     @Test
     fun fetchPromoList_oneWay_shouldReturnSuccessNotEmpty() {
         // given
-        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS)
+        coEvery { flightLowestPriceUseCase.execute(any() as FlightDummyGqlInterfaceImpl, any()) } returns Success(PROMO_CHIPS)
         flightSearchViewModel.flightSearchPassData = defaultSearchData
 
         // when
@@ -1142,7 +1142,7 @@ class FlightSearchViewModelTest {
     @Test
     fun fetchPromoList_roundTrip_shouldReturnSuccessNotEmpty() {
         // given
-        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS)
+        coEvery { flightLowestPriceUseCase.execute(any() as FlightDummyGqlInterfaceImpl, any()) } returns Success(PROMO_CHIPS)
         flightSearchViewModel.flightSearchPassData = defaultSearchData
 
         // when
@@ -1162,7 +1162,7 @@ class FlightSearchViewModelTest {
     fun fetchPromoList_shouldReturnFail() {
         // given
         val fakeEntity = FlightSearchErrorEntity("1", "Error", "Error Dummy")
-        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } coAnswers {
+        coEvery { flightLowestPriceUseCase.execute(any() as FlightDummyGqlInterfaceImpl, any()) } coAnswers {
             throw FlightSearchThrowable().apply {
                 errorList = arrayListOf(fakeEntity)
             }

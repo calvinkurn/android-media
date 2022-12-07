@@ -7,6 +7,7 @@ import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -49,7 +50,7 @@ object EventPackageMapper {
         if (str.isNotBlank()) {
             val pattern = Pattern.compile("[^0-9]")
             val matcher: Matcher = pattern.matcher(str)
-            return matcher.replaceAll("").toInt()
+            return matcher.replaceAll("").toIntSafely()
         } else return -1
     }
 

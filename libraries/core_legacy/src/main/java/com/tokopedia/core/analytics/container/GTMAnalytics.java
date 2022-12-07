@@ -29,7 +29,7 @@ import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -302,7 +302,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 stacktrace.append(String.format("%s\n", ste.toString()));
             }
             Map<String, Object> logMap = Collections.singletonMap("stacktrace", stacktrace.toString());
-            GtmLogger.getInstance(context).save(logMap, null, AnalyticsSource.ERROR);
+            Cassava.save(logMap, null, AnalyticsSource.ERROR);
             if (!TextUtils.isEmpty(e.getMessage())) {
                 Map<String, String> map = new HashMap<>();
                 map.put("msg", e.getMessage());
@@ -913,7 +913,7 @@ public class GTMAnalytics extends ContextAnalytics {
             String name = eventName == null ? (String) values.get("event") : eventName;
             if (!isGtmV5) name += " (legacy_v4)";
             String source = (isGtmV5) ? AnalyticsSource.GTM : AnalyticsSource.LEGACY_GTM;
-            GtmLogger.getInstance(context).save(values, name, source);
+            Cassava.save(values, name, source);
             logEventSize(eventName, values);
             logEventForVerification(eventName, values);
             if (tetraDebugger != null) {

@@ -16,6 +16,8 @@ import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponRepository
+import com.tokopedia.discovery2.repository.contentCard.ContentCardGQLRepository
+import com.tokopedia.discovery2.repository.contentCard.ContentCardRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
@@ -26,6 +28,8 @@ import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRep
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponRepository
+import com.tokopedia.discovery2.repository.productbundling.ProductBundlingGQLRepository
+import com.tokopedia.discovery2.repository.productbundling.ProductBundlingRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
@@ -185,6 +189,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
+    fun provideProductBundlingRepository(): ProductBundlingRepository {
+        return ProductBundlingGQLRepository()
+    }
+
+    @Provides
     fun provideSectionRepository():SectionRepository{
         return SectionGQLRepository()
     }
@@ -224,4 +233,8 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
         )
     }
 
+    @Provides
+    fun provideContentCardGQLRepository(): ContentCardRepository {
+        return ContentCardGQLRepository()
+    }
 }

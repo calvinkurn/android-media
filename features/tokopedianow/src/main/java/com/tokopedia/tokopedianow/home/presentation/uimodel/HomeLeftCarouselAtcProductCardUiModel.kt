@@ -20,7 +20,9 @@ data class HomeLeftCarouselAtcProductCardUiModel(
     var recommendationType: String = "",
     var warehouseId: String = "",
     var campaignCode: String = "",
-    val productCardModel: ProductCardModel
+    val categoryBreadcrumbs: String = "",
+    val productCardModel: ProductCardModel,
+    val position: Int = 0
 ): Visitable<HomeLeftCarouselAtcProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: HomeLeftCarouselAtcProductCardTypeFactory): Int {
         return typeFactory.type(this)

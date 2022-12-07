@@ -153,7 +153,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
     }
 
     private fun handlePageMode() {
-        if (pageMode == PageMode.UPDATE) {
+        if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
             binding?.btnDraft?.gone()
         }
     }

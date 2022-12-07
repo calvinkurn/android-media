@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.PROJECT_ID
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
@@ -69,7 +70,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     fun getAnnouncementInformation() {
         launchCatchError(block = {
             affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
+                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY)
         }, onError = {
             it.printStackTrace()
         })
@@ -91,7 +92,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     fun getAffiliateTransactionHistory(page: Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt() ?: 0, page).getAffiliateTransactionHistory?.data?.let {
+            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt(), page).getAffiliateTransactionHistory?.data?.let {
                 hasNext = it.hasNext
                 convertDataToVisitables(it)?.let { visitables ->
                     affiliateDataList.value = visitables

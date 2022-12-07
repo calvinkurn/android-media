@@ -17,6 +17,7 @@ import com.tokopedia.config.GlobalConfig
 object DeepLinkMapperProductManage {
 
     const val QUERY_PARAM_FILTER = "filter"
+    const val QUERY_PARAM_TAB = "tab"
     const val QUERY_PARAM_SEARCH = "search"
     const val QUERY_PARAM_ENABLE_MULTI_EDIT = "multi_edit"
     const val QUERY_PARAM_ADD_AS_FEATURED = "add_as_featured"
@@ -49,6 +50,7 @@ object DeepLinkMapperProductManage {
         val filterId = uri.getQueryParameter(QUERY_PARAM_FILTER).orEmpty()
         val shouldRedirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
+        val tab = uri.getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp) {
             val param: HashMap<String, String> = hashMapOf()
             when {
@@ -57,6 +59,9 @@ object DeepLinkMapperProductManage {
                 }
                 searchKeyword.isNotBlank() -> {
                     param[QUERY_PARAM_SEARCH] = searchKeyword
+                }
+                tab.isNotBlank() -> {
+                    param[QUERY_PARAM_TAB] = tab
                 }
             }
             UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST, param)

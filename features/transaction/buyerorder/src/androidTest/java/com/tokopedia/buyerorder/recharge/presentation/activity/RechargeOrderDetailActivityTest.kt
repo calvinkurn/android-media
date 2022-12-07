@@ -13,7 +13,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.R
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -36,7 +35,6 @@ class RechargeOrderDetailActivityTest {
     val activityRule = object : IntentsTestRule<RechargeOrderDetailActivity>(RechargeOrderDetailActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse {
                 addMockResponse(
                         KEY_CONTAINS_ORDER_DETAILS,
@@ -77,7 +75,6 @@ class RechargeOrderDetailActivityTest {
     val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Test
     fun validateAnalyticsOrderDetail() {

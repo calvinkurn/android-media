@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="page_name_wishlist">Wishlist</string>
+    <string name="page_name_wishlist_collection">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
+    <string name="page_name_wishlist_edit">Ubah Wishlist</string>
+    <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
     <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
     <string name="hint_cari_wishlist">Cari di Wishlist</string>
     <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>
     <string name="wishlist_manage_label">Atur</string>
+    <string name="wishlist_select_item_option_label">Pilih Barang</string>
+    <string name="wishlist_add_label_toolbar">Tambah Barang ke Koleksi</string>
     <string name="wishlist_cancel_manage_label">Batal</string>
     <string name="wishlist_save_label">Simpan</string>
     <string name="wishlist_delete_label">Hapus</string>
@@ -28,9 +34,15 @@
     <string name="wishlist_v2_delete_msg_default">Barang telah dihapus dari Wishlist.</string>
     <string name="wishlist_v2_bulk_delete_msg_toaster">%d barang telah dihapus dari Wishlist.</string>
     <string name="wishlist_v2_popup_delete_bulk_title">Yakin hapus %d barang ini dari Wishlist?</string>
+    <string name="wishlist_collection_popup_delete_bulk_title">Hapus %d barang dari Wishlist?</string>
+    <string name="wishlist_v2_popup_delete_bulk_desc">Barang akan terhapus juga dari semua Koleksi.</string>
     <string name="wishlist_v2_delete_text">Hapus</string>
+    <string name="add_collection_text">Simpan ke Koleksi</string>
     <string name="wishlist_v2_barang_label">barang</string>
     <string name="wishlist_v2_delete_text_counter">Hapus (%d)</string>
+    <string name="add_collection_text_counter">Simpan ke Koleksi (%d)</string>
+    <string name="add_collection_bulk_from_other_collection_default_label">Simpan ke Wishlist Saya</string>
+    <string name="add_collection_bulk_from_other_collection_label">Simpan ke Wishlist Saya (%d)</string>
     <string name="wishlist_v2_common_error_msg">Terjadi kesalahan, mohon dicoba kembali</string>
     <string name="wishlist_v2_share_text">Coba cek ini, deh: \"%1s\" %2s di toko %3s Tokopedia. Bisa bebas ongkir, lho.</string>
     <string name="wishlist_v2_failed_to_get_information">Informasi gagal dimuat</string>
@@ -39,8 +51,76 @@
     <string name="on_error_observing_wishlist_data_string_builder">Error observingWishlistData(). userId: %1$s | %2$s | %3$s</string>
     <string name="on_error_observing_delete_wishlist_v2_string_builder">Error observingDeleteWishlistV2(). userId: %1$s | %2$s | %3$s</string>
     <string name="on_error_observing_bulk_delete_wishlist_v2_string_builder">Error observingBulkDeleteWishlistV2(). userId: %1$s | %2$s | %3$s</string>
+    <string name="on_error_observing_add_bulk_wishlist_string_builder">Error observingAddBulkWishlist(). userId: %1$s | %2$s | %3$s</string>
     <string name="on_error_observing_atc_string_builder">Error observingAtc(). userId: %1$s | %2$s | %3$s</string>
 
     <string name="wishlist_v2_terlama_disimpan">Wishlist sudah diurutkan dari barang yang terlama disimpan.</string>
     <string name="wishlist_v2_default_message_deletion_progress">Wishlist kamu lagi dibersihkan. Sambil menunggu, kamu tetap bisa beraktivitas di Tokopedia. ⏳ </string>
+
+    <string name="collection_label_new">Koleksi Baru</string>
+    <string name="wishlist_common_error_msg">Terjadi kesalahan, mohon dicoba kembali</string>
+    <string name="collection_bottomsheet_label">Nama Koleksi</string>
+    <string name="collection_create_bottomsheet_button_label">Buat Koleksi</string>
+    <string name="collection_create_bottomsheet_title">Buat koleksi baru</string>
+    <string name="collection_create_bottomsheet_name_error">Kamu sudah punya koleksi dengan nama ini</string>
+    <string name="collection_item_kebab_menu_1">Ubah Nama Koleksi</string>
+    <string name="collection_item_kebab_menu_2">Hapus Koleksi</string>
+    <string name="collection_settings_menu">Atur Barang dalam Koleksi</string>
+    <string name="collection_coachmark_see_all_wishlist">Lihat semua barang di Wishlist-mu di sini. Ada juga fitur buat cek barang termurah, lagi diskon, dll.</string>
+    <string name="collection_coachmark_create_collection">Baru! Pakai fitur “Koleksi”, buat mengelompokkan barang di Wishlist sesuai keinginanmu.</string>
+    <string name="collection_coachmark_try_create_wishlist">Coba</string>
+    <string name="collection_coachmark_back">Balik</string>
+    <string name="collection_coachmark_finish">Selesai</string>
+    <string name="collection_coachmark_lanjut">Lanjut</string>
+    <string name="update_collection_bottomsheet_title">Ubah nama Koleksi</string>
+    <string name="update_collection_bottomsheet_button">Simpan Perubahan</string>
+    <string name="update_collection_access_confirmation">Siapa yang boleh lihat Koleksi ini?</string>
+    <string name="collection_access_private">Hanya saya</string>
+    <string name="collection_access_private_label">Pribadi</string>
+
+    <string name="wishlist_collection_detail_delete_confirmation_title">Hapus Koleksi \"%s\"?</string>
+    <string name="wishlist_collection_detail_delete_confirmation_desc">Barang dalam koleksi ini akan tetap tersimpan di Wishlist kamu.</string>
+    <string name="collection_item_delete_confirmation_title">Hapus barang dari Wishlist?</string>
+    <string name="collection_item_delete_confirmation_desc">Barang akan terhapus juga dari semua Koleksi.</string>
+    <string name="collection_item_add_bulk_confirmation_title">Tambahkan %d barang ke Koleksi %s?</string>
+    <string name="collection_item_add_bulk_from_other_collection_confirmation_title">Simpan %d barang ke Koleksi kamu?</string>
+
+    <string name="single_collection_inside_delete_confirmation_title">Hapus barang</string>
+    <string name="collection_inside_delete_confirmation_title">Hapus %d barang</string>
+    <string name="collection_inside_delete_confirmation_desc">Jika hapus dari Koleksi saja, barang akan tetap tersimpan di Wishlist.</string>
+    <string name="collection_inside_delete_confirmation_button_primary">Hapus dari Koleksi Saja</string>
+    <string name="collection_inside_delete_confirmation_button_secondary">Hapus dari Semua Wishlist</string>
+
+    <string name="collection_onboarding_title">Wishlist hadir dengan tampilan baru!</string>
+    <string name="collection_onboarding_desc">Makin mudah dan seru untuk mengatur barang yang kamu simpan.</string>
+    <string name="collection_onboarding_btn_primary">Yuk, Kenalan!</string>
+    <string name="collection_onboarding_btn_secondary">Lewati</string>
+
+    <string name="collection_save_to_existing_collection">Simpan</string>
+    <string name="collection_ticker_oos">Kamu akan mendapatkan notifikasi saat stok kembali.</string>
+    <string name="collection_CTA_lihat">Lihat</string>
+    <string name="collection_CTA_oke">Oke</string>
+
+    <string name="collection_select_all">Pilih Semua</string>
+    <string name="collection_bulk_add_default">Tambahkan ke Koleksi</string>
+    <string name="collection_bulk_add">Tambahkan ke Koleksi (%d)</string>
+    <string name="collection_bulk_add_button">Tambahkan</string>
+
+    <string name="sharing_collection_confirmation_title">Bagikan Koleksi pribadi ini?</string>
+    <string name="sharing_collection_confirmation_desc">Nanti orang lain akan bisa lihat Koleksi ini dan namamu. Mereka juga bisa menyalin Koleksi ini untuk Wishlist-nya sendiri.</string>
+    <string name="sharing_collection_primary_button">Bagikan</string>
+
+    <string name="sharing_collection_desc">Coba cek Koleksi %s, yuk! Ada barang-barang menarik yang sudah aku pilihin di sini.</string>
+
+    <string name="collection_edit_back_dialog_confirmation_title">Mau balik tanpa menyimpan?</string>
+    <string name="collection_edit_back_dialog_confirmation_desc">Perubahan yang kamu buat akan dibatalkan, lho.</string>
+    <string name="collection_edit_back_dialog_confirmation_primary_button">Balik</string>
+    <string name="collection_edit_back_dialog_confirmation_secondary_button">Tetap di Sini</string>
+
+    <string name="collection_coachmark_wishlist_sharing_1">Bagikan Koleksi, yuk! Klik menu ini untuk mulai kasih inspirasi lewat isi Koleksimu.</string>
+    <string name="collection_coachmark_wishlist_sharing_2">Bagikan link Koleksi pilihanmu dengan menu ini, ya. Supaya temanmu bisa lihat isinya.</string>
+    <string name="collection_coachmark_wishlist_detail">Kamu juga bisa bagikan Koleksi dengan klik icon di halaman Koleksimu, lho.</string>
+
+    <string name="collection_privacy_message">Cuma kamu yang bisa melihat Koleksi ini, kecuali kalau kamu membagikannya ke orang lain.</string>
+    <string name="collection_other_select_items_label">Pilih Barang (%s)</string>
 </resources>

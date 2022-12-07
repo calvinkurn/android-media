@@ -8,10 +8,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common_entertainment.data.Outlet;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.RevampCheckoutDealsFragment;
-import com.tokopedia.digital_deals.view.model.Outlet;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 

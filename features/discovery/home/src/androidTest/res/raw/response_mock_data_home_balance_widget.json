@@ -1,0 +1,25 @@
+[
+  {
+    "data": {
+      "getHomeBalanceWidget": {
+        "balances": [
+          {
+            "title": "GoPay",
+            "type": "gopay",
+            "data": ""
+          },
+          {
+            "title": "Rewards",
+            "type": "rewards",
+            "data": ""
+          },
+          {
+            "title": "Langganan",
+            "type": "subscription",
+            "data": "{\"ResultStatus\":{\"Code\":\"200\",\"Message\":[\"Success\"],\"Reason\":\"OK\"},\"DrawerList\":[{\"IconImageURL\":\"https://images.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png\",\"RedirectURL\":\"\",\"RedirectAppLink\":\"\",\"SectionContent\":[{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"GoToPlus\",\"Color\":\"#31353B\",\"IsBold\":true},\"TagAttributes\":{}},{\"Type\":\"text\",\"TextAttributes\":{\"Text\":\"Subscribe Now\",\"Color\":\"#03ac0e\"},\"TagAttributes\":{}}]}],\"CoachMarkList\":[{\"Type\":\"not_subscriber\",\"CoachMark\":[{\"IsShown\":true,\"Title\":\"Your loyalty levels have been maximized!\",\"Content\":\"Awesome! You leveled up to Juragan on GoClub because you're Platinum\",\"CTA\":{}}]}],\"IsShown\":true}"
+          }
+        ]
+      }
+    }
+  }
+]

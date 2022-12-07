@@ -16,16 +16,13 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
-import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
-import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
@@ -38,7 +35,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +91,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 Log.d("force_logout_v2", intent.getStringExtra("title"));
             }
         };
-        checkAppUpdateAndInApp();
     }
 
     @Override
@@ -226,6 +221,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
+        removeTokoChat();
         DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
@@ -259,6 +255,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(this);
         userSession.logoutSession();
+        removeTokoChat();
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -344,55 +341,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
-    public void checkAppUpdateAndInApp() {
-        WeakReference<BaseActivity> activityReference = new WeakReference<>(this);
-        AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
-            if (!isOnProgress) {
-                checkAppUpdateRemoteConfig(activityReference);
+    protected void removeTokoChat() {
+        if (getApplication() instanceof BaseMainApplication) {
+            TokoChatConnection tokoChatConnection = ((BaseMainApplication) getApplication()).getTokoChatConnection();
+            if (tokoChatConnection != null) {
+                tokoChatConnection.disconnect();
             }
-            return null;
-        });
-    }
-
-    private void checkAppUpdateRemoteConfig(WeakReference<BaseActivity> activityReference) {
-        BaseActivity context = activityReference.get();
-        if (context != null) {
-            ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(context);
-            appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
-                @Override
-                public void onNeedUpdate(DetailUpdate detail) {
-                    BaseActivity activity = activityReference.get();
-                    if (!isFinishing() && activity != null) {
-                        AppUpdateDialogBuilder appUpdateDialogBuilder =
-                                new AppUpdateDialogBuilder(
-                                        activity,
-                                        detail,
-                                        new AppUpdateDialogBuilder.Listener() {
-                                            @Override
-                                            public void onPositiveButtonClicked(DetailUpdate detail) {
-                                                /* no op */
-                                            }
-
-                                            @Override
-                                            public void onNegativeButtonClicked(DetailUpdate detail) {
-                                                /* no op */
-                                            }
-                                        }
-                                );
-                        appUpdateDialogBuilder.getAlertDialog().show();
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Timber.d(e);
-                }
-
-                @Override
-                public void onNotNeedUpdate() {
-                    /* no op */
-                }
-            });
         }
     }
 }

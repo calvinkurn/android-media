@@ -32,6 +32,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation projectOrAar(rootProject.ext.libraries.track)
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

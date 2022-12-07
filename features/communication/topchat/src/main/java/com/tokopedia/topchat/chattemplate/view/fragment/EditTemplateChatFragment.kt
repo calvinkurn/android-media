@@ -72,10 +72,10 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
         arguments?.let {
             if (it.getInt(InboxMessageConstant.PARAM_NAV) == 1) {
                 allowDelete = DISABLE_DELETE
-                item.icon.alpha = DISABLE_DELETE
+                item.icon?.alpha = DISABLE_DELETE
             } else {
                 allowDelete = ENABLE_DELETE
-                item.icon.alpha = ENABLE_DELETE
+                item.icon?.alpha = ENABLE_DELETE
             }
         }
     }
@@ -184,7 +184,7 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
         if (can) {
             proceed?.background?.setColorFilter(
                 MethodChecker.getColor(
-                    activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    activity, com.tokopedia.unifyprinciples.R.color.Unify_G500
                 ), PorterDuff.Mode.SRC_IN
             )
             proceed?.setTextColor(
@@ -195,12 +195,12 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
         } else {
             proceed?.background?.setColorFilter(
                 MethodChecker.getColor(
-                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N100
+                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N50
                 ), PorterDuff.Mode.SRC_IN
             )
             proceed?.setTextColor(
                 MethodChecker.getColor(
-                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N200
+                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_20
                 )
             )
         }

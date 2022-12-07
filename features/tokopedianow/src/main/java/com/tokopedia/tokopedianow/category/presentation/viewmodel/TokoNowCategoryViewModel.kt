@@ -165,7 +165,9 @@ class TokoNowCategoryViewModel @Inject constructor (
                 repurchaseWidget = categoryModel.tokonowRepurchaseWidget,
         )
 
-        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
+        val isActive = categoryModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive
+
+        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct,isActive)
 
         sendOpenScreenTrackingUrl(categoryModel)
         setSharingModel(categoryModel)
@@ -251,7 +253,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         val categoryList = getCategoryList()
 
         updateCategoryUIModel(
-                categoryItemListUIModel = HomeCategoryMapper.mapToCategoryList(categoryList, warehouseId),
+                categoryItemListUIModel = HomeCategoryMapper.mapToCategoryList(categoryList, warehouseId, CATEGORY_GRID_TITLE),
                 categoryUIModelState = TokoNowLayoutState.SHOW,
         )
     }

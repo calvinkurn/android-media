@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 
 /**
  * Created by nathan on 2/6/18.
@@ -28,7 +28,7 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var isPo: Boolean = false
     var isFreeReturn: Boolean = false
     var isWishList: Boolean = false
-    var productUrl: String? = null
+    var productUrl: String = ""
     var isShowWishList: Boolean = false
     var isSoldOut: Boolean = false
     var isShowFreeOngkir: Boolean = false
@@ -64,7 +64,7 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
         imageUrl = shopProduct.productImage
         imageUrl300 = shopProduct.productImage300
         imageUrl700 = shopProduct.productImage700
-        productUrl = shopProduct.productUrl
+        productUrl = shopProduct.productUrl.orEmpty()
         rating = shopProduct.rating
         isPo = TextApiUtils.isValueTrue(shopProduct.productPreorder)
         totalReview = shopProduct.productReviewCount
@@ -98,7 +98,7 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
         name = gmFeaturedProduct.name.orEmpty()
         displayedPrice = gmFeaturedProduct.price?.toString().orEmpty()
         imageUrl = gmFeaturedProduct.imageUri
-        productUrl = gmFeaturedProduct.uri
+        productUrl = gmFeaturedProduct.uri.orEmpty()
 
         totalReview = gmFeaturedProduct.totalReview
         rating = gmFeaturedProduct.rating
@@ -117,5 +117,4 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
         private val LABEL_PERCENTAGE = "%"
         const val THRESHOLD_VIEW_COUNT = 1000
     }
-
 }

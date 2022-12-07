@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_product_featured_width"
-    android:layout_height="@dimen/play_product_featured_placeholder_height"
+    android:layout_width="@dimen/play_product_carousel_width"
+    android:layout_height="@dimen/play_product_carousel_height"
     app:rcl_cornerRadius="@dimen/play_featured_product_radius"
     >
 
@@ -24,10 +24,10 @@
         android:id="@+id/cl_price_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/Unify_N0"
         >
 
         <View

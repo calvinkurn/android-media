@@ -4,16 +4,18 @@ import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
-import com.tokopedia.chatbot.data.ConnectionDividerViewModel
-import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
-import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
-import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
-import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
-import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
-import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyListUiModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
+import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
 /**
@@ -24,37 +26,40 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onCheckToHideQuickReply(visitable: Visitable<*>)
 
-    fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel)
+    fun onReceiveQuickReplyEvent(visitable: QuickReplyListUiModel)
 
-    fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleViewModel)
+    fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleUiModel)
 
-    fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel)
+    fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingUiModel)
 
     fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel)
 
-    fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
-                            chatRatingViewModel : ChatRatingViewModel,
-                            activity: Activity)
+    fun removeInvoiceCarousel()
 
-    fun onClickReasonRating()
+    fun onSuccessSendRating(
+        element: SendRatingPojo,
+        rating: Int,
+        chatRatingUiModel: ChatRatingUiModel,
+        activity: Activity
+    )
 
     fun onImageUpload(it: ImageUploadUiModel)
 
+    fun onVideoUpload(it: VideoUploadUiModel)
+
     fun scrollToBottom()
 
-    fun showDividerViewOnConnection(connectionDividerViewModel: ConnectionDividerViewModel)
-
-    fun showLiveChatSeprator(chatSepratorViewModel: ChatSepratorViewModel)
+    fun showLiveChatSeprator(chatSepratorUiModel: ChatSepratorUiModel)
 
     fun hideEmptyMessage(visitable: Visitable<*>)
 
-    fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>)
+    fun showLiveChatQuickReply(quickReplyList: List<QuickReplyUiModel>)
 
-    fun hideActionBubble(model: ChatActionSelectionBubbleViewModel)
+    fun hideActionBubble(model: ChatActionSelectionBubbleUiModel)
 
-    fun hideOptionList(model: HelpFullQuestionsViewModel)
+    fun hideOptionList(model: HelpFullQuestionsUiModel)
 
-    fun hideCsatOptionList(model: CsatOptionsViewModel)
+    fun hideCsatOptionList(model: CsatOptionsUiModel)
 
     fun hideActionBubbleOnSenderMsg()
 
@@ -68,10 +73,23 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun clearChatOnLoadChatHistory()
 
-    fun clearDuplicate(list: List<Visitable<*>>):ArrayList<Visitable<*>>
+    fun clearDuplicate(list: List<Visitable<*>>): ArrayList<Visitable<*>>
 
     fun handleReplyBox(isEnable: Boolean)
 
-    fun hideQuickReplyOnClick()
+    fun showRetryUploadVideos(it: VideoUploadUiModel)
 
+    fun onSendingMessage(it: MessageUiModel)
+
+    fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String,
+        parentReply: ParentReply?
+    )
+    fun hideDummyVideoAttachment()
+
+    fun hideQuickReplyOnClick()
 }

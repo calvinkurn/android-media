@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.product.addedit.detail.domain.model.BlacklistKeyword
 import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidation
 import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidationResponse
@@ -27,6 +28,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertFalse
 
@@ -87,7 +89,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         )
 
         val colorVariantDetailTest1 = variantDetailsTest[0]
-        val colorVariantDetailTest2 = variantDetailsTest[1].apply { variantID = 1 }
+        val colorVariantDetailTest2 = variantDetailsTest[1].apply { variantID = 1.toBigInteger() }
         val colorVariantDetailsTest = listOf(colorVariantDetailTest1, colorVariantDetailTest2)
 
         spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
@@ -647,7 +649,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val expectedVariantData = VariantDetail()
         viewModel.updateVariantDataMap(layoutPosition, expectedVariantData)
         assert(viewModel.getVariantData(layoutPosition) == expectedVariantData)
-        assert(viewModel.getVariantData(9999).variantID == 0)
+        assert(viewModel.getVariantData(9999).variantID == 0.toBigInteger())
     }
 
     @Test
@@ -666,7 +668,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `product variant photos should ignore set value when the variant type is not color`() {
-        val selectedVariantDetail = VariantDetail(variantID = 9999999)
+        val selectedVariantDetail = VariantDetail(variantID = 9999999.toBigInteger())
         viewModel.showProductVariantPhotos(selectedVariantDetail)
         assert(viewModel.isVariantPhotosVisible.value == null)
 
@@ -827,7 +829,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         productInputModel.variantInputModel.selections = listOf(selectionInputModel1)
         val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
         val selectedVariantDetail = selectedVariantDetails.first()
-        assert(selectedVariantDetail.variantID == expectedVariantId)
+        assert(selectedVariantDetail.variantID == expectedVariantId.toBigInteger())
         assert(selectedVariantDetail.identifier == expectedIdentifier)
         assert(selectedVariantDetail.name == expectedName)
         assert(selectedVariantDetail.units == expectedUnits)
@@ -835,8 +837,8 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `view model should be able to remove selected variant detail from collection`() {
-        val selectedVariantDetail1 = VariantDetail(variantID = 10)
-        val selectedVariantDetail2 = VariantDetail(variantID = 20)
+        val selectedVariantDetail1 = VariantDetail(variantID = 10.toBigInteger())
+        val selectedVariantDetail2 = VariantDetail(variantID = 20.toBigInteger())
         viewModel.setSelectedVariantDetails(mutableListOf(selectedVariantDetail1, selectedVariantDetail2))
         viewModel.removeSelectedVariantDetails(selectedVariantDetail1)
         assert(viewModel.getSelectedVariantDetails().size == 1)
@@ -1010,5 +1012,29 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
             assertEquals(1, it.products[1].combination[0])
             assertEquals(0, it.products[1].combination[1])
         }
+    }
+
+    @Test
+    fun `cleanUrlOrPathPicture with expected output is on edited url`(){
+        val editedPhotoAddress = arrayListOf("/0/tkpd/1")
+        val originalPhotoAddress = arrayListOf("")
+        val params = PickerResult(editedImages = editedPhotoAddress, originalPaths = originalPhotoAddress)
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals(actualResult, "/0/tkpd/1")
+    }
+
+    @Test
+    fun `cleanUrlOrPathPicture with expected output is on original url`(){
+        val editedPhotoAddress = arrayListOf("")
+        val originalPhotoAddress = arrayListOf("0/tkpd/chace/1")
+        val params = PickerResult(editedImages = editedPhotoAddress,originalPaths= originalPhotoAddress)
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals("0/tkpd/chace/1",actualResult)
+    }
+    @Test
+    fun `cleanUrlOrPathPicture when it is null`(){
+        val params = PickerResult()
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals(null,actualResult)
     }
 }

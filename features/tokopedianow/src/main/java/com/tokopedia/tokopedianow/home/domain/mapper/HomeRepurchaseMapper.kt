@@ -5,6 +5,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.ProductCardModel.NonVariant
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
@@ -34,22 +35,26 @@ object HomeRepurchaseMapper {
         miniCartData: MiniCartSimplifiedData? = null
     ): TokoNowRepurchaseUiModel {
         val state = TokoNowLayoutState.SHOW
-        val productList = mapToProductCardUiModel(response, miniCartData)
+        val productList = mapToProductCardUiModel(item.id, response, miniCartData)
         return item.copy(title = response.title, productList = productList, state = state)
     }
 
     private fun mapToProductCardUiModel(
+        channelId: String,
         response: RepurchaseData,
         miniCartData: MiniCartSimplifiedData? = null
     ): List<TokoNowProductCardUiModel> {
-        return response.products.map {
+        return response.products.mapIndexed { index, repurchaseProduct ->
             TokoNowProductCardUiModel(
-                it.id,
-                it.shop.id,
-                it.maxOrder,
-                it.parentProductId,
-                createProductCardModel(it, miniCartData),
-                TokoNowLayoutType.REPURCHASE_PRODUCT
+                channelId,
+                repurchaseProduct.id,
+                repurchaseProduct.shop.id,
+                repurchaseProduct.maxOrder,
+                repurchaseProduct.parentProductId,
+                createProductCardModel(repurchaseProduct, miniCartData),
+                TokoNowLayoutType.REPURCHASE_PRODUCT,
+                index + ADDITIONAL_POSITION,
+                response.title
             )
         }
     }

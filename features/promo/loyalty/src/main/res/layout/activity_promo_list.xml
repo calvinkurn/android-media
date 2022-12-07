@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -39,14 +38,13 @@
                 app:layout_constraintStart_toEndOf="@+id/shimmer_back"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_2"
-                tools:layout_height="@dimen/dp_56" />
+                tools:layout_height="56dp" />
         </androidx.appcompat.widget.Toolbar>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_75"
-            android:background="@color/Unify_N0"
+            android:layout_height="75dp"
             app:tabIndicatorColor="@color/Unify_G500"
             app:tabIndicatorHeight="3dp"
             app:tabMode="fixed"
@@ -57,7 +55,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:background="@color/Unify_N75" />
 
     </com.google.android.material.appbar.AppBarLayout>

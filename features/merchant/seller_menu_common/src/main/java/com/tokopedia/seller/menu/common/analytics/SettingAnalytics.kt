@@ -1,6 +1,7 @@
 package com.tokopedia.seller.menu.common.analytics
 
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.track.TrackApp
@@ -112,20 +113,6 @@ fun sendEventClickStatisticMenuItem(userId: String) {
         SettingTrackingConstant.SELLER_APP_LAINNYA,
         SettingTrackingConstant.CLICK_MENU_STATISTIC,
         ""
-    )
-    event[SettingTrackingConstant.KEY_BUSINESS_UNIT] = SettingTrackingConstant.PHYSICAL_GOODS
-    event[SettingTrackingConstant.KEY_CURRENT_SITE] = SettingTrackingConstant.TOKOPEDIASELLER
-    event[SettingTrackingConstant.USER_ID] = userId
-
-    TrackApp.getInstance().gtm.sendGeneralEvent(event)
-}
-
-fun sendEventClickPrintingMenuItem(userId: String) {
-    val event = TrackAppUtils.gtmData(
-        SettingTrackingConstant.CLICK_PRINTING,
-        SettingTrackingConstant.OTHERS_TAB,
-        SettingTrackingConstant.ACTION_CLICK_PRINTING,
-        SettingTrackingConstant.LABEL_CLICK_PRINTING
     )
     event[SettingTrackingConstant.KEY_BUSINESS_UNIT] = SettingTrackingConstant.PHYSICAL_GOODS
     event[SettingTrackingConstant.KEY_CURRENT_SITE] = SettingTrackingConstant.TOKOPEDIASELLER
@@ -306,6 +293,36 @@ object NewOtherMenuTracking {
             eventAction = SettingTrackingConstant.VIEW_ON_SHARING_CHANNEL,
             eventLabel = SettingTrackingConstant.LAINNYA
         )
+    }
+
+    fun sendEventImpressionTokoPlus() {
+        val event = TrackAppUtils.gtmData(
+            SettingTrackingConstant.VIEW_PG_IRIS,
+            SettingTrackingConstant.OTHERS_TAB,
+            SettingTrackingConstant.IMPRESSION_TOKOPEDIA_PLUS,
+            String.EMPTY
+        )
+
+        event[SettingTrackingConstant.KEY_TRACKER_ID] = SettingTrackingConstant.TOKO_PLUS_IMPRESSION_TRACKER_ID
+        event[SettingTrackingConstant.KEY_BUSINESS_UNIT] = SettingTrackingConstant.PHYSICAL_GOODS_
+        event[SettingTrackingConstant.KEY_CURRENT_SITE] = SettingTrackingConstant.TOKOPEDIA_MARKETPLACE
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun sendEventClickTokoPlus() {
+        val event = TrackAppUtils.gtmData(
+            SettingTrackingConstant.CLICK_PG,
+            SettingTrackingConstant.OTHERS_TAB,
+            SettingTrackingConstant.CLICK_TOKOPEDIA_PLUS,
+            String.EMPTY
+        )
+
+        event[SettingTrackingConstant.KEY_TRACKER_ID] = SettingTrackingConstant.TOKO_PLUS_CLICK_TRACKER_ID
+        event[SettingTrackingConstant.KEY_BUSINESS_UNIT] = SettingTrackingConstant.PHYSICAL_GOODS_
+        event[SettingTrackingConstant.KEY_CURRENT_SITE] = SettingTrackingConstant.TOKOPEDIA_MARKETPLACE
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
     private fun sendLainnyaShareEvent(shopId: String,

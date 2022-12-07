@@ -1,5 +1,6 @@
 package com.tokopedia.logisticorder.view.livetracking
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.net.Uri
@@ -33,7 +34,9 @@ class LiveTrackingFragment : BaseWebViewFragment() {
             webview?.loadUrl(trackingUrl)
             val callIntent = Intent(ACTION_DIAL)
             callIntent.data = Uri.parse(url)
-            startActivity(callIntent)
+            try {
+                startActivity(callIntent)
+            } catch (e: ActivityNotFoundException) {}
         }
         return super.shouldOverrideUrlLoading(webView, url)
     }

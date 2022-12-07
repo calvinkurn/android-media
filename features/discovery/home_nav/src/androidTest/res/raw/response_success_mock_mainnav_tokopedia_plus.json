@@ -1,0 +1,15 @@
+[
+  {
+    "data": {
+      "tokopediaPlusWidget": {
+        "isShown": true,
+        "iconImageURL": "https://images.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png",
+        "title": "Selamat jadi pelanggan Plus!",
+        "subtitle": "Gratis ongkir sepuasnya dan banyak untungd",
+        "url": "https://www.tokopedia.com/rewards",
+        "applink": "tokopedia://rewards",
+        "isSubscriber": true
+      }
+    }
+  }
+]

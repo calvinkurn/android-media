@@ -11,89 +11,89 @@ sealed class ProductMenuUiModel(
     @StringRes val title: Int,
     val icon: Int,
     val newTagEndMillis: Long?,
-    open val product: ProductUiModel
-): Visitable<ProductMenuAdapterFactory> {
+    open val product: ProductUiModel,
+    val limitFromShopModerate: Boolean = false
+) : Visitable<ProductMenuAdapterFactory> {
 
     companion object {
         // Wed Apr 14 2022 00:00:00
         private const val PRODUCT_COUPON_END_DATE = 1649869200000
     }
 
-    data class Preview(override val product: ProductUiModel): ProductMenuUiModel(
+    data class Preview(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_preview_menu,
         IconUnify.VISIBILITY,
         null,
         product
     )
 
-    data class Duplicate(override val product: ProductUiModel): ProductMenuUiModel(
+    data class Duplicate(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_duplicate_product_menu,
         IconUnify.COPY,
         null,
-        product
+        product,
+        product.isShopModerate
     )
 
-    data class StockReminder(override val product: ProductUiModel): ProductMenuUiModel(
+    data class StockReminder(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_stock_reminder_menu,
         IconUnify.BELL,
         null,
-        product
+        product,
+        product.isShopModerate
     )
 
-    data class Delete(override val product: ProductUiModel): ProductMenuUiModel(
+    data class Delete(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_menu_delete_product,
         IconUnify.DELETE,
         null,
         product
     )
 
-    data class SetTopAds(override val product: ProductUiModel): ProductMenuUiModel(
+    data class SetTopAds(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_set_promo_ads_menu,
         IconUnify.SPEAKER,
         null,
-        product
+        product,
+        product.isShopModerate
     )
 
-    data class SeeTopAds(override val product: ProductUiModel): ProductMenuUiModel(
+    data class SeeTopAds(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_see_promo_ads_menu,
         IconUnify.SPEAKER,
         null,
         product
     )
 
-    data class CreateBroadcastChat(override val product: ProductUiModel): ProductMenuUiModel(
-            R.string.product_manage_create_broadcast_chat,
-            R.drawable.ic_bc_chat,
+    data class CreateBroadcastChat(override val product: ProductUiModel) : ProductMenuUiModel(
+        R.string.product_manage_create_broadcast_chat,
+        R.drawable.ic_bc_chat,
         null,
-            product
+        product,
+        product.isShopModerate
     )
 
-    data class SetCashBack(override val product: ProductUiModel): ProductMenuUiModel(
-        R.string.product_manage_menu_set_cashback,
-        IconUnify.DISCOUNT,
-        null,
-        product
-    )
-
-    data class SetFeaturedProduct(override val product: ProductUiModel): ProductMenuUiModel(
+    data class SetFeaturedProduct(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_set_featured_menu,
         IconUnify.STAR_CIRCLE,
         null,
-        product
+        product,
+        product.isShopModerate
     )
 
-    data class RemoveFeaturedProduct(override val product: ProductUiModel): ProductMenuUiModel(
+    data class RemoveFeaturedProduct(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_remove_featured_menu,
         IconUnify.STAR_CIRCLE,
         null,
         product
     )
 
-    data class CreateProductCoupon(override val product: ProductUiModel): ProductMenuUiModel(
+    data class CreateProductCoupon(override val product: ProductUiModel) : ProductMenuUiModel(
         R.string.product_manage_create_product_coupon,
         IconUnify.DISCOUNT,
         PRODUCT_COUPON_END_DATE,
-        product
+        product,
+        product.isShopModerate
     )
 
     override fun type(typeFactory: ProductMenuAdapterFactory): Int {

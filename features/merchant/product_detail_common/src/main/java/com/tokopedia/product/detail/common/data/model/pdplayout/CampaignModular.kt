@@ -2,8 +2,7 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
 import com.google.gson.annotations.SerializedName
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 data class CampaignModular(
@@ -30,7 +29,7 @@ data class CampaignModular(
         @SerializedName("originalPrice")
         val originalPrice: Double = 0.0,
         @SerializedName("percentageAmount")
-        val percentageAmount: Int = 0,
+        val percentageAmount: Float = 0f,
         @SerializedName("startDate")
         val startDate: String = "",
         @SerializedName("stock")
@@ -46,19 +45,21 @@ data class CampaignModular(
         @SerializedName("background")
         val background: String = "",
         @SerializedName("paymentInfoWording")
-        val paymentInfoWording:String = ""
+        val paymentInfoWording: String = ""
 ) {
 
     companion object {
         private const val ONE_THOUSAND = 1000L
     }
 
+    @Transient
     var discountedPriceFmt: String = ""
-    var originalPriceFmt:String = ""
+    @Transient
+    var originalPriceFmt: String = ""
 
     private fun timeIsUnder1Day(): Boolean {
         return try {
-            val endDateLong = endDateUnix.toLongOrNull()?:0
+            val endDateLong = endDateUnix.toLongOrNull() ?: 0
             val endDateMillis = endDateLong * ONE_THOUSAND
             val endDate = Date(endDateMillis)
             val now = System.currentTimeMillis()

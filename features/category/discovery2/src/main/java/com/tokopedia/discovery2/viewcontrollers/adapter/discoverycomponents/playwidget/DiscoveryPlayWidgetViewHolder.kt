@@ -4,12 +4,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.play.widget.PlayWidgetViewHolder
-import com.tokopedia.play.widget.analytic.global.model.PlayWidgetDiscoveryAnalyticModel
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -63,11 +63,23 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
                     (fragment as DiscoveryFragment).openLoginScreen(discoveryPlayWidgetViewModel.position)
             })
 
+            discoveryPlayWidgetViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, {
+                if(it){
+                    (fragment as DiscoveryFragment).reSync()
+                }
+            })
+            discoveryPlayWidgetViewModel.hideSectionLD.observe(fragment.viewLifecycleOwner, { sectionId ->
+                (fragment as DiscoveryFragment).handleHideSection(sectionId)
+            })
         }
     }
 
     private fun showToast(message: String, type: Int = Toaster.TYPE_NORMAL) {
-        Toaster.build(itemView, message, Toast.LENGTH_SHORT, type).show()
+        fragment.activity?.let {
+            SnackbarManager.getContentView(it)
+        }?.let { contentView ->
+            Toaster.build(contentView, message, Toast.LENGTH_SHORT, type).show()
+        }
     }
 
     override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
@@ -80,6 +92,8 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
             discoveryPlayWidgetViewModel.getPlayWidgetUILiveData().removeObservers(it)
             discoveryPlayWidgetViewModel.reminderObservable.removeObservers(it)
             discoveryPlayWidgetViewModel.reminderLoginEvent.removeObservers(it)
+            discoveryPlayWidgetViewModel.getSyncPageLiveData().removeObservers(it)
+            discoveryPlayWidgetViewModel.hideSectionLD.removeObservers(it)
         }
     }
 

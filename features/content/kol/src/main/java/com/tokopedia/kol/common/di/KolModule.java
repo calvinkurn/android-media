@@ -25,11 +25,9 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase;
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase;
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase;
+import com.tokopedia.wishlistcommon.domain.GetProductIsWishlistedUseCase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -145,18 +143,6 @@ public class KolModule {
     @Provides
     public CoroutineDispatcher provideDispatcher(){
         return Dispatchers.getMain();
-    }
-
-    @KolScope
-    @Provides
-    public AddWishListUseCase provideAddWishListUseCase(@ApplicationContext Context context){
-        return new AddWishListUseCase(context);
-    }
-
-    @KolScope
-    @Provides
-    public RemoveWishListUseCase provideRemoveWishListUseCase(@ApplicationContext Context context){
-        return new RemoveWishListUseCase(context);
     }
 
     @KolScope

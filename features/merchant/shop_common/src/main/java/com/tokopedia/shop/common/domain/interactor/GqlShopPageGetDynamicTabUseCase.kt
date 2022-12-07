@@ -40,19 +40,38 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_EXT_PARAM = "extParam"
         private const val QUERY_NAME = "ShopPageGetDynamicTabQuery"
+        private const val KEY_DISTRICT_ID = "districtId"
+        private const val KEY_CITY_ID = "cityId"
+        private const val KEY_LATITUDE = "latitude"
+        private const val KEY_LONGITUDE = "longitude"
 
         @JvmStatic
-        fun createParams(shopId: Int, extParam: String): RequestParams =
+        fun createParams(
+            shopId: Int,
+            extParam: String,
+            districtId: String,
+            cityId: String,
+            latitude: String,
+            longitude: String
+        ): RequestParams =
             RequestParams.create().apply {
                 putObject(PARAM_SHOP_ID, shopId)
                 putObject(PARAM_EXT_PARAM, extParam)
+                putObject(KEY_DISTRICT_ID, districtId)
+                putObject(KEY_CITY_ID, cityId)
+                putObject(KEY_LATITUDE, latitude)
+                putObject(KEY_LONGITUDE, longitude)
             }
 
         const val QUERY = """
-            query shopPageGetDynamicTab(${'$'}shopID: Int!, ${'$'}extParam: String!){
+            query shopPageGetDynamicTab(${'$'}shopID: Int!, ${'$'}extParam: String!, ${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String){
               shopPageGetDynamicTab(
                 shopID: ${'$'}shopID,
-                extParam: ${'$'}extParam
+                extParam: ${'$'}extParam,
+                districtID: ${'$'}districtId,
+                cityID: ${'$'}cityId,
+                latitude: ${'$'}latitude,
+                longitude: ${'$'}longitude
               ){
                 tabData {
                   name
@@ -93,6 +112,10 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                             errMsgBrokenLink
                             etalaseID
                             isShowEtalaseName
+                            data {
+                                linkID
+                                linkType
+                            }
                           }
                         }
                       }

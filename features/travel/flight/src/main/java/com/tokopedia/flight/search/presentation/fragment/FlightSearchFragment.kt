@@ -50,6 +50,7 @@ import com.tokopedia.flight.search.presentation.util.unselect
 import com.tokopedia.flight.search.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -64,10 +65,11 @@ import javax.inject.Inject
 /**
  * @author by furqan on 06/04/2020
  */
-open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSearchAdapterTypeFactory>(),
-        FlightSearchAdapterTypeFactory.OnFlightSearchListener,
-        FlightFilterBottomSheet.FlightFilterBottomSheetListener,
-        FlightDetailBottomSheet.Listener {
+open class FlightSearchFragment :
+    BaseListFragment<FlightJourneyModel, FlightSearchAdapterTypeFactory>(),
+    FlightSearchAdapterTypeFactory.OnFlightSearchListener,
+    FlightFilterBottomSheet.FlightFilterBottomSheetListener,
+    FlightDetailBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -93,9 +95,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val viewRoot = inflater.inflate(getLayout(), container, false)
-        viewRoot.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         promoChipsWidget = viewRoot.findViewById(R.id.flight_promo_chips_view)
         return viewRoot
     }
@@ -122,17 +127,17 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     if (it.throwable is FlightSearchThrowable) {
                         val errors = (it.throwable as FlightSearchThrowable).errorList
                         for (error in errors) {
-                            if (error.id.toInt() == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND.value) {
+                            if (error.id.toIntSafely() == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND.value) {
                                 showNoRouteFlightEmptyState(error.title)
                                 flightSearchViewModel.sendProductNotFoundTrack()
                                 break
-                            }else{
+                            } else {
                                 val flightSearchThrow = Throwable(error.title)
                                 showGetListError(flightSearchThrow)
                                 break
                             }
                         }
-                    }else{
+                    } else {
                         showGetListError(Throwable())
                     }
                 }
@@ -145,10 +150,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
         flightSearchViewModel.selectedJourney.observe(viewLifecycleOwner, {
             it?.let { flightSearchSelectedModel ->
-                navigateToTheNextPage(flightSearchSelectedModel.journeyModel.id,
-                        flightSearchSelectedModel.journeyModel.term,
-                        flightSearchSelectedModel.priceModel,
-                        flightSearchSelectedModel.journeyModel.isBestPairing)
+                navigateToTheNextPage(
+                    flightSearchSelectedModel.journeyModel.id,
+                    flightSearchSelectedModel.journeyModel.term,
+                    flightSearchSelectedModel.priceModel,
+                    flightSearchSelectedModel.journeyModel.isBestPairing
+                )
             }
         })
 
@@ -185,18 +192,20 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     override fun getAdapterTypeFactory(): FlightSearchAdapterTypeFactory =
-            FlightSearchAdapterTypeFactory(this)
+        FlightSearchAdapterTypeFactory(this)
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
         adapter.errorNetworkModel.iconDrawableRes = R.drawable.ic_flight_empty_state
-        adapter.errorNetworkModel.errorMessage = throwable?.message ?: ErrorHandler.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.errorMessage =
+            throwable?.message ?: ErrorHandler.getErrorMessage(context, throwable)
         adapter.errorNetworkModel.subErrorMessage = ErrorHandler.getErrorMessage(context, throwable)
         adapter.errorNetworkModel.onRetryListener = this
         adapter.showErrorNetwork()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> {
-        val adapter: BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> = super.createAdapterInstance()
+        val adapter: BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> =
+            super.createAdapterInstance()
 
         val errorNetworkModel: ErrorNetworkModel = adapter.errorNetworkModel
         errorNetworkModel.iconDrawableRes = R.drawable.ic_flight_empty_state
@@ -212,8 +221,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun initInjector() {
         if (!::flightSearchComponent.isInitialized) {
             flightSearchComponent = DaggerFlightSearchComponent.builder()
-                    .flightComponent(FlightComponentInstance.getFlightComponent(requireActivity().application))
-                    .build()
+                .flightComponent(FlightComponentInstance.getFlightComponent(requireActivity().application))
+                .build()
         }
         flightSearchComponent.inject(this)
     }
@@ -293,8 +302,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             flightDetailBottomSheet.setDetailModel(flightDetailModel)
             flightDetailBottomSheet.setShowSubmitButton(true)
             flightDetailBottomSheet.listener = this
-            flightDetailBottomSheet.setShowListener { flightDetailBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-            flightDetailBottomSheet.show(requireFragmentManager(), FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET)
+            flightDetailBottomSheet.setShowListener {
+                flightDetailBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+            flightDetailBottomSheet.show(
+                requireFragmentManager(),
+                FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET
+            )
         }
     }
 
@@ -310,7 +324,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         // need for return page
     }
 
-    override fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?, statisticPricePair: Pair<Int, Int>) {
+    override fun onSaveFilter(
+        sortOption: Int,
+        flightFilterModel: FlightFilterModel?,
+        statisticPricePair: Pair<Int, Int>
+    ) {
         flightSearchViewModel.selectedSortOption = sortOption
         flightSearchViewModel.priceFilterStatistic = statisticPricePair
         flightFilterModel?.let {
@@ -336,8 +354,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         val emptyResultViewModel = EmptyResultModel()
         emptyResultViewModel.iconRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_404
         if (flightSearchViewModel.isInFilterMode) {
-            emptyResultViewModel.title = getString(R.string.flight_there_is_zero_flight_for_the_filter_title)
-            emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter_description
+            emptyResultViewModel.title =
+                getString(R.string.flight_there_is_zero_flight_for_the_filter_title)
+            emptyResultViewModel.contentRes =
+                R.string.flight_there_is_zero_flight_for_the_filter_description
             emptyResultViewModel.buttonTitleRes = R.string.reset_filter
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyButtonClicked() {
@@ -345,18 +365,24 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 }
             }
         } else if (flightSearchViewModel.filterModel.departureArrivalTime.isNotEmpty()) {
-            emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_for_return_title)
-            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_for_return_description
-            emptyResultViewModel.buttonTitleRes = R.string.flight_search_there_is_no_flight_available_for_return_button_label
+            emptyResultViewModel.title =
+                getString(R.string.flight_there_is_no_flight_available_for_return_title)
+            emptyResultViewModel.contentRes =
+                R.string.flight_there_is_no_flight_available_for_return_description
+            emptyResultViewModel.buttonTitleRes =
+                R.string.flight_search_there_is_no_flight_available_for_return_button_label
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyButtonClicked() {
                     activity?.finish()
                 }
             }
         } else {
-            emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_title)
-            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
-            emptyResultViewModel.buttonTitleRes = R.string.flight_search_change_search_empty_button_label
+            emptyResultViewModel.title =
+                getString(R.string.flight_there_is_no_flight_available_title)
+            emptyResultViewModel.contentRes =
+                R.string.flight_there_is_no_flight_available_description
+            emptyResultViewModel.buttonTitleRes =
+                R.string.flight_search_change_search_empty_button_label
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyButtonClicked() {
                     (activity as FlightSearchActivity).showChangeSearchBottomSheet()
@@ -367,7 +393,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
-    override fun onSelectedFromDetail(detailBottomSheet: FlightDetailBottomSheet, selectedId: String) {
+    override fun onSelectedFromDetail(
+        detailBottomSheet: FlightDetailBottomSheet,
+        selectedId: String
+    ) {
         flightSearchViewModel.onSearchItemClicked(selectedId = selectedId)
         if (detailBottomSheet.isAdded && detailBottomSheet.isVisible) detailBottomSheet.dismiss()
     }
@@ -392,7 +421,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
 
         flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
-                getDepartureAirport(), getArrivalAirport())
+            getDepartureAirport(), getArrivalAirport()
+        )
         flightSearchViewModel.initialize(true, isReturnTrip())
         flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
     }
@@ -403,15 +433,18 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             flightSearchViewModel = viewModelProvider.get(FlightSearchViewModel::class.java)
 
             arguments?.let { args ->
-                args.getParcelable<FlightSearchPassDataModel>(FlightSearchActivity.EXTRA_PASS_DATA)?.let {
-                    flightSearchViewModel.flightSearchPassData = it
-                }
+                args.getParcelable<FlightSearchPassDataModel>(FlightSearchActivity.EXTRA_PASS_DATA)
+                    ?.let {
+                        flightSearchViewModel.flightSearchPassData = it
+                    }
                 flightSearchViewModel.isCombineDone = args.getBoolean(EXTRA_IS_COMBINE_DONE, false)
             }
 
             flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
-            flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
-                    getDepartureAirport(), getArrivalAirport())
+            flightSearchViewModel.flightAirportCombine =
+                flightSearchViewModel.buildAirportCombineModel(
+                    getDepartureAirport(), getArrivalAirport()
+                )
             flightSearchViewModel.generateSearchStatistics()
             flightSearchViewModel.initialize(true, isReturnTrip())
             flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
@@ -420,15 +453,17 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     open fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel =
-            filterModel.also {
-                it.canFilterFreeRapidTest = it.freeRapidTestLabel.isNotEmpty()
-                it.canFilterSeatDistancing = it.freeRapidTestLabel.isNotEmpty()
-                it.departureArrivalTime = ""
-            }
+        filterModel.also {
+            it.canFilterFreeRapidTest = it.freeRapidTestLabel.isNotEmpty()
+            it.canFilterSeatDistancing = it.freeRapidTestLabel.isNotEmpty()
+            it.departureArrivalTime = ""
+        }
 
-    open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
+    open fun getDepartureAirport(): FlightAirportModel =
+        flightSearchViewModel.flightSearchPassData.departureAirport
 
-    open fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.arrivalAirport
+    open fun getArrivalAirport(): FlightAirportModel =
+        flightSearchViewModel.flightSearchPassData.arrivalAirport
 
     open fun getFlightSearchTicker(): Ticker = flight_search_ticker
 
@@ -498,7 +533,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     private fun setupSwipeRefresh() {
-        val swipeRefreshLayout = requireView().findViewById<SwipeToRefresh>(swipeRefreshLayoutResourceId)
+        val swipeRefreshLayout =
+            requireView().findViewById<SwipeToRefresh>(swipeRefreshLayoutResourceId)
         swipeRefreshLayout.setSwipeDistance()
         swipeRefreshLayout.setOnRefreshListener {
             hideLoading()
@@ -521,9 +557,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     private fun showFilterSortBottomSheet() {
-        val flightFilterBottomSheet = FlightFilterBottomSheet.getInstance(flightSearchViewModel.selectedSortOption, flightSearchViewModel.filterModel)
+        val flightFilterBottomSheet = FlightFilterBottomSheet.getInstance(
+            flightSearchViewModel.selectedSortOption,
+            flightSearchViewModel.filterModel
+        )
         flightFilterBottomSheet.listener = this
-        flightFilterBottomSheet.setShowListener { flightFilterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        flightFilterBottomSheet.setShowListener {
+            flightFilterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
         flightFilterBottomSheet.show(requireFragmentManager(), FlightFilterBottomSheet.TAG_FILTER)
     }
 
@@ -539,16 +580,20 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         if (filterItems.size < flightSearchViewModel.getQuickFilterItemSize()) {
 
             if (flightSearchViewModel.isFilterModelInitialized() &&
-                    flightSearchViewModel.filterModel.canFilterSeatDistancing) {
-                val quickSeatDistancingFilter = SortFilterItem(flightSearchViewModel.filterModel.seatDistancingLabel)
+                flightSearchViewModel.filterModel.canFilterSeatDistancing
+            ) {
+                val quickSeatDistancingFilter =
+                    SortFilterItem(flightSearchViewModel.filterModel.seatDistancingLabel)
                 quickSeatDistancingFilter.listener = {
                     if (flightSearchViewModel.isFilterModelInitialized() &&
-                            flightSearchViewModel.filterModel.canFilterSeatDistancing &&
-                            flightSearchViewModel.filterModel.seatDistancingLabel.isNotEmpty()) {
+                        flightSearchViewModel.filterModel.canFilterSeatDistancing &&
+                        flightSearchViewModel.filterModel.seatDistancingLabel.isNotEmpty()
+                    ) {
                         flightSearchViewModel.filterModel.isSeatDistancing = false
                         quickSeatDistancingFilter.unselect()
                     } else if (flightSearchViewModel.isFilterModelInitialized() &&
-                            flightSearchViewModel.filterModel.canFilterSeatDistancing) {
+                        flightSearchViewModel.filterModel.canFilterSeatDistancing
+                    ) {
                         flightSearchViewModel.filterModel.isSeatDistancing = true
                         quickSeatDistancingFilter.select()
                     }
@@ -561,16 +606,20 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             }
 
             if (flightSearchViewModel.isFilterModelInitialized() &&
-                    flightSearchViewModel.filterModel.canFilterFreeRapidTest) {
-                val quickFreeRapidTestFilter = SortFilterItem(flightSearchViewModel.filterModel.freeRapidTestLabel)
+                flightSearchViewModel.filterModel.canFilterFreeRapidTest
+            ) {
+                val quickFreeRapidTestFilter =
+                    SortFilterItem(flightSearchViewModel.filterModel.freeRapidTestLabel)
                 quickFreeRapidTestFilter.listener = {
                     if (flightSearchViewModel.isFilterModelInitialized() &&
-                            flightSearchViewModel.filterModel.canFilterFreeRapidTest &&
-                            flightSearchViewModel.filterModel.freeRapidTestLabel.isNotEmpty()) {
+                        flightSearchViewModel.filterModel.canFilterFreeRapidTest &&
+                        flightSearchViewModel.filterModel.freeRapidTestLabel.isNotEmpty()
+                    ) {
                         flightSearchViewModel.filterModel.isFreeRapidTest = false
                         quickFreeRapidTestFilter.unselect()
                     } else if (flightSearchViewModel.isFilterModelInitialized() &&
-                            flightSearchViewModel.filterModel.canFilterFreeRapidTest) {
+                        flightSearchViewModel.filterModel.canFilterFreeRapidTest
+                    ) {
                         flightSearchViewModel.filterModel.isFreeRapidTest = true
                         quickFreeRapidTestFilter.select()
                     }
@@ -585,7 +634,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             val quickDirectFilter = SortFilterItem(getString(R.string.direct))
             quickDirectFilter.listener = {
                 if (flightSearchViewModel.isFilterModelInitialized() &&
-                        flightSearchViewModel.filterModel.transitTypeList.contains(TransitEnum.DIRECT)) {
+                    flightSearchViewModel.filterModel.transitTypeList.contains(TransitEnum.DIRECT)
+                ) {
                     flightSearchViewModel.filterModel.transitTypeList.remove(TransitEnum.DIRECT)
                     quickDirectFilter.unselect()
                 } else if (flightSearchViewModel.isFilterModelInitialized()) {
@@ -598,10 +648,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 fetchSortAndFilterData()
             }
 
-            val quickBaggageFilter = SortFilterItem(getString(R.string.flight_search_filter_baggage_label))
+            val quickBaggageFilter =
+                SortFilterItem(getString(R.string.flight_search_filter_baggage_label))
             quickBaggageFilter.listener = {
                 if (flightSearchViewModel.isFilterModelInitialized() &&
-                        flightSearchViewModel.filterModel.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
+                    flightSearchViewModel.filterModel.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)
+                ) {
                     flightSearchViewModel.filterModel.facilityList.remove(FlightFilterFacilityEnum.BAGGAGE)
                     quickBaggageFilter.unselect()
                 } else if (flightSearchViewModel.isFilterModelInitialized()) {
@@ -614,10 +666,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 fetchSortAndFilterData()
             }
 
-            val quickMealFilter = SortFilterItem(getString(R.string.flight_search_filter_meal_label))
+            val quickMealFilter =
+                SortFilterItem(getString(R.string.flight_search_filter_meal_label))
             quickMealFilter.listener = {
                 if (flightSearchViewModel.isFilterModelInitialized() &&
-                        flightSearchViewModel.filterModel.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
+                    flightSearchViewModel.filterModel.facilityList.contains(FlightFilterFacilityEnum.MEAL)
+                ) {
                     flightSearchViewModel.filterModel.facilityList.remove(FlightFilterFacilityEnum.MEAL)
                     quickMealFilter.unselect()
                 } else if (flightSearchViewModel.isFilterModelInitialized()) {
@@ -630,10 +684,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 fetchSortAndFilterData()
             }
 
-            val quickTransitFilter = SortFilterItem(getString(R.string.flight_search_filter_transit))
+            val quickTransitFilter =
+                SortFilterItem(getString(R.string.flight_search_filter_transit))
             quickTransitFilter.listener = {
                 if (flightSearchViewModel.isFilterModelInitialized() &&
-                        flightSearchViewModel.filterModel.transitTypeList.contains(TransitEnum.ONE)) {
+                    flightSearchViewModel.filterModel.transitTypeList.contains(TransitEnum.ONE)
+                ) {
                     flightSearchViewModel.filterModel.transitTypeList.remove(TransitEnum.ONE)
                     quickTransitFilter.unselect()
                 } else if (flightSearchViewModel.isFilterModelInitialized()) {
@@ -658,72 +714,88 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         if (flightSearchViewModel.isFilterModelInitialized()) {
             flightSearchViewModel.filterModel.let {
                 val quickFilterAdditionalOrder =
-                        if (it.canFilterFreeRapidTest && it.canFilterSeatDistancing) {
-                            if (it.isSeatDistancing) {
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.select()
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.select()
-                            } else {
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.unselect()
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
-                            }
-
-                            if (it.isFreeRapidTest) {
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.select()
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.select()
-                            } else {
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.unselect()
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
-                            }
-
-                            QUICK_FILTER_ADDITIONAL_TWO_ORDER
-                        } else if (it.canFilterFreeRapidTest || it.canFilterSeatDistancing) {
-                            if (it.canFilterSeatDistancing && it.isSeatDistancing) {
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.select()
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.select()
-                            } else {
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.unselect()
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
-                            }
-
-                            if (it.canFilterFreeRapidTest && it.isFreeRapidTest) {
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.select()
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.select()
-                            } else {
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.unselect()
-                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
-                            }
-
-                            QUICK_FILTER_ADDITIONAL_ONE_ORDER
+                    if (it.canFilterFreeRapidTest && it.canFilterSeatDistancing) {
+                        if (it.isSeatDistancing) {
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)
+                                ?.select()
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.select()
                         } else {
-                            QUICK_FILTER_NO_ADDITIONAL
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)
+                                ?.unselect()
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
                         }
 
+                        if (it.isFreeRapidTest) {
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)
+                                ?.select()
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.select()
+                        } else {
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)
+                                ?.unselect()
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
+                        }
+
+                        QUICK_FILTER_ADDITIONAL_TWO_ORDER
+                    } else if (it.canFilterFreeRapidTest || it.canFilterSeatDistancing) {
+                        if (it.canFilterSeatDistancing && it.isSeatDistancing) {
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)
+                                ?.select()
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.select()
+                        } else {
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)
+                                ?.unselect()
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
+                        }
+
+                        if (it.canFilterFreeRapidTest && it.isFreeRapidTest) {
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)
+                                ?.select()
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.select()
+                        } else {
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)
+                                ?.unselect()
+                            flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
+                        }
+
+                        QUICK_FILTER_ADDITIONAL_ONE_ORDER
+                    } else {
+                        QUICK_FILTER_NO_ADDITIONAL
+                    }
+
                 if (it.transitTypeList.contains(TransitEnum.DIRECT)) {
-                    flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)?.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)
+                        ?.select()
                     flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.select()
                 } else {
-                    flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)?.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)
+                        ?.unselect()
                     flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
-                    flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)?.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)
+                        ?.select()
                     flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.select()
                 } else {
-                    flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)?.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)
+                        ?.unselect()
                     flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
-                    flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)?.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)
+                        ?.select()
                     flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.select()
                 } else {
-                    flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)?.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)
+                        ?.unselect()
                     flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.unselect()
                 }
                 if (it.transitTypeList.contains(TransitEnum.ONE)) {
-                    flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)?.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)
+                        ?.select()
                     flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.select()
                 } else {
-                    flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)?.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)
+                        ?.unselect()
                     flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.unselect()
                 }
             }
@@ -732,12 +804,16 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
     }
 
-    private fun navigateToTheNextPage(selectedId: String, selectedTerm: String,
-                                      fareModel: FlightPriceModel, isBestPairing: Boolean) {
+    private fun navigateToTheNextPage(
+        selectedId: String, selectedTerm: String,
+        fareModel: FlightPriceModel, isBestPairing: Boolean
+    ) {
         onFlightSearchFragmentListener?.let {
-            it.selectFlight(selectedId, selectedTerm, fareModel,
-                    isBestPairing, flightSearchViewModel.isCombineDone,
-                    flightSearchViewModel.flightSearchPassData.searchRequestId)
+            it.selectFlight(
+                selectedId, selectedTerm, fareModel,
+                isBestPairing, flightSearchViewModel.isCombineDone,
+                flightSearchViewModel.flightSearchPassData.searchRequestId
+            )
         }
     }
 
@@ -758,7 +834,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         emptyResultViewModel.iconRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_404
         emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_title)
         emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
-        emptyResultViewModel.buttonTitleRes = R.string.flight_search_change_search_empty_button_label
+        emptyResultViewModel.buttonTitleRes =
+            R.string.flight_search_change_search_empty_button_label
         emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
             override fun onEmptyButtonClicked() {
                 (activity as FlightSearchActivity).showChangeSearchBottomSheet()
@@ -810,8 +887,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     interface OnFlightSearchFragmentListener {
-        fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
-                         isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
+        fun selectFlight(
+            selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
+            isBestPairing: Boolean, isCombineDone: Boolean, requestId: String
+        )
 
         fun changeDate(flightSearchPassDataModel: FlightSearchPassDataModel)
     }
@@ -845,10 +924,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val FLIGHT_QUICK_SEAT_DISTANCING = "Seat Distancing"
 
         fun newInstance(flightSearchPassDataModel: FlightSearchPassDataModel): FlightSearchFragment =
-                FlightSearchFragment().also {
-                    it.arguments = Bundle().apply {
-                        putParcelable(FlightSearchActivity.EXTRA_PASS_DATA, flightSearchPassDataModel)
-                    }
+            FlightSearchFragment().also {
+                it.arguments = Bundle().apply {
+                    putParcelable(FlightSearchActivity.EXTRA_PASS_DATA, flightSearchPassDataModel)
                 }
+            }
     }
 }

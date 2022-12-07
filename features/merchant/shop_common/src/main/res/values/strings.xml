@@ -36,6 +36,6 @@
 
     <!--product bundle widget common-->
     <string name="product_bundle_action_button_text">Lihat Paket</string>
-    <string name="product_bundle_bundle_sold">Terjual %d paket</string>
+    <string name="product_bundle_bundle_sold">Terjual %d</string>
 
 </resources>

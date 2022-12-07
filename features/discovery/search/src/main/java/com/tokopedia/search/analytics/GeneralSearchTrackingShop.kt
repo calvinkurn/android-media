@@ -5,4 +5,5 @@ data class GeneralSearchTrackingShop(
     val pageSource: String,
     val relatedKeyword: String,
     val searchFilter: String,
+    val externalReference: String,
 )

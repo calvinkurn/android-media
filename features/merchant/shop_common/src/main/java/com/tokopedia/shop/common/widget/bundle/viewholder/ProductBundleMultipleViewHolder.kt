@@ -48,10 +48,10 @@ class ProductBundleMultipleViewHolder(
 
     init {
         viewBinding?.apply {
-            typographyBundleName = tvBundleName
+            typographyBundleName = bundleWidgetHeaderContainer.tvBundleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
-            typographyBundlePreOrder = tvBundlePreorder
+            typographyBundlePreOrder = bundleWidgetHeaderContainer.tvBundlePreorder
             labelBundleDiscount = labelDiscountBundle
             typographyBundleProductSavingAmount = tvSavingAmountPriceWording
             buttonAtc = btnBundleAtc
@@ -77,28 +77,32 @@ class ProductBundleMultipleViewHolder(
         initPreorderAndSoldItem(bundleDetail)
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
         initBundleProductsRecyclerView(bundleDetail.products.size, bundle, bundleDetail)
-        initActionButton(bundleDetail.isPreOrder)
+        initActionButton(bundle.actionButtonText, bundleDetail.isPreOrder)
         initListener(bundle, bundleDetail, bundleDetail.products)
     }
 
     private fun initPreorderAndSoldItem(bundleDetail: BundleDetailUiModel) {
-        if (bundleDetail.isPreOrder) {
-            typographyBundlePreOrder?.text = bundleDetail.preOrderInfo
-        } else {
-            typographyBundlePreOrder?.text =
-                itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+        typographyBundlePreOrder?.text = when {
+            bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
+            bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
+            else -> itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
         }
     }
 
     private fun initShopInfo(shopInfo: BundleShopUiModel?, bundleName: String) {
         val hasShopInfo = shopInfo != null
-        viewBinding?.apply {
+        viewBinding?.bundleWidgetHeaderContainer?.apply {
             iconShop.isVisible = hasShopInfo
             tvShopName.isVisible = hasShopInfo
             tvBundleName.isVisible = hasShopInfo
             tvBundleNameLarge.isVisible = !hasShopInfo
             if (hasShopInfo) {
-                iconShop.loadImage(shopInfo?.shopIconUrl)
+                if(!shopInfo?.shopIconUrl.isNullOrEmpty()) {
+                    iconShop.visibility = View.VISIBLE
+                    iconShop.loadImage(shopInfo?.shopIconUrl)
+                }else{
+                    iconShop.visibility = View.GONE
+                }
                 tvShopName.text = shopInfo?.shopName
             } else {
                 tvBundleNameLarge.text = bundleName
@@ -128,8 +132,10 @@ class ProductBundleMultipleViewHolder(
         constraintSet.applyTo(widgetContainer)
     }
 
-    private fun initActionButton(isPreOrder: Boolean) {
-        buttonAtc?.text = if (isPreOrder) {
+    private fun initActionButton(atcButtonText: String?, isPreOrder: Boolean) {
+        buttonAtc?.text = if (atcButtonText != null) {
+            atcButtonText
+        } else if (isPreOrder) {
             itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
         } else {
             itemView.context.getString(R.string.product_bundle_action_button_text)

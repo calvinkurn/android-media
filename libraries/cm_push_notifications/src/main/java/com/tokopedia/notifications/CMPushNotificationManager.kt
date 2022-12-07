@@ -14,21 +14,20 @@ import com.tokopedia.logger.ServerLogger.log
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.notification.common.PushNotificationApi
-import com.tokopedia.notification.common.utils.NotificationValidationManager
-import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
-import com.tokopedia.notifications.common.PayloadConverter.advanceTargetNotification
-import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle
+import com.tokopedia.notifications.common.CMRemoteConfigUtils
+import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.data.AmplificationDataSource
 import com.tokopedia.notifications.inApp.CMInAppManager
-import com.tokopedia.notifications.model.NotificationMode
-import com.tokopedia.notifications.utils.NotificationSettingsUtils
+import com.tokopedia.notifications.payloadProcessor.InAppPayloadPreprocessorUseCase
+import com.tokopedia.notifications.payloadProcessor.NotificationPayloadPreProcessorUseCase
+import com.tokopedia.notifications.push.PushController
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -53,7 +52,6 @@ class CMPushNotificationManager : CoroutineScope {
     private val remoteDelaySeconds: Long
         get() = cmRemoteConfigUtils.getLongRemoteConfig("app_token_send_delay", 60)
 
-
     private val isForegroundTokenUpdateEnabled: Boolean
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true)
 
@@ -61,18 +59,24 @@ class CMPushNotificationManager : CoroutineScope {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_CM_PUSH_ENABLE, true) || BuildConfig.DEBUG
 
     private val isInAppEnable: Boolean
-        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
-                true) || BuildConfig.DEBUG
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(
+            CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
+            true
+        ) || BuildConfig.DEBUG
 
     private var aidlApiBundle: Bundle? = null
 
     val cmPushEndTimeInterval: Long
-        get() = cmRemoteConfigUtils.getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
-                HOURS_24_IN_MILLIS * 7)
+        get() = cmRemoteConfigUtils.getLongRemoteConfig(
+            CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
+            HOURS_24_IN_MILLIS * 7
+        )
 
     val sellerAppCmAddTokenEnabled: Boolean
-        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
-                false)
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(
+            CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
+            false
+        )
 
     /**
      * initialization of push notification library
@@ -86,16 +90,21 @@ class CMPushNotificationManager : CoroutineScope {
         initGraphql(application)
 
         PushNotificationApi.bindService(
-                applicationContext,
-                ::onAidlReceive,
-                ::onAidlError
+            applicationContext,
+            ::onAidlReceive,
+            ::onAidlError
         )
 
         getAmplificationPushData(application)
     }
 
     private fun initGraphql(application: Application) {
-        val authenticator = TkpdAuthenticatorGql(application, application as NetworkRouter, UserSession(application), RefreshTokenGql())
+        val authenticator = TkpdAuthenticatorGql(
+            application,
+            application as NetworkRouter,
+            UserSession(application),
+            RefreshTokenGql()
+        )
         GraphqlClient.init(application, authenticator)
     }
 
@@ -120,7 +129,10 @@ class CMPushNotificationManager : CoroutineScope {
     }
 
     private fun getAmplificationRemoteConfig(): Boolean {
-        return cmRemoteConfigUtils.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_AMPLIFICATION, false)
+        return cmRemoteConfigUtils.getBooleanRemoteConfig(
+            RemoteConfigKey.ENABLE_AMPLIFICATION,
+            false
+        )
     }
 
     private fun onAidlReceive(tag: String, bundle: Bundle?) {
@@ -136,7 +148,6 @@ class CMPushNotificationManager : CoroutineScope {
      */
     fun refreshFCMTokenFromForeground(token: String?, isForce: Boolean?) {
         try {
-
             if (::applicationContext.isInitialized && token != null && isForegroundTokenUpdateEnabled) {
                 Timber.d("token: $token")
                 if (TextUtils.isEmpty(token)) {
@@ -189,7 +200,7 @@ class CMPushNotificationManager : CoroutineScope {
             if (null != extras && extras.containsKey(SOURCE)) {
                 val confirmationValue = extras[SOURCE]
                 return confirmationValue == FCM_EXTRA_CONFIRMATION_VALUE ||
-                        confirmationValue == SOURCE_VALUE
+                    confirmationValue == SOURCE_VALUE
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: isFromCMNotificationPlatform", e)
@@ -205,98 +216,111 @@ class CMPushNotificationManager : CoroutineScope {
      */
     fun handlePushPayload(remoteMessage: RemoteMessage?) {
         if (remoteMessage == null) return
-
         val data = remoteMessage.data
+
         val dataString = data.toString()
 
         try {
             if (isFromCMNotificationPlatform(data)) {
                 val confirmationValue = data[SOURCE]
-                val bundle = convertMapToBundle(data)
-
                 if (confirmationValue.equals(SOURCE_VALUE) && isInAppEnable) {
-                    CMInAppManager.getInstance().handleCMInAppPushPayload(remoteMessage)
+                    handleInAppFCMPayload(data)
                 } else if (isPushEnable) {
-                    validateAndRenderNotification(bundle)
-                } else if (!(confirmationValue.equals(SOURCE_VALUE) || confirmationValue.equals(FCM_EXTRA_CONFIRMATION_VALUE))){
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                            mapOf("type" to "validation", "reason" to "not_cm_source", "data" to dataString.take(CMConstant.TimberTags.MAX_LIMIT)))
+                    handleNotificationFCMPayload(data)
+                } else if (!(
+                    confirmationValue.equals(SOURCE_VALUE) || confirmationValue.equals(
+                            FCM_EXTRA_CONFIRMATION_VALUE
+                        )
+                    )
+                ) {
+                    ServerLogger.log(
+                        Priority.P2,
+                        "CM_VALIDATION",
+                        mapOf(
+                            "type" to "validation",
+                            "reason" to "not_cm_source",
+                            "data" to dataString.take(CMConstant.TimberTags.MAX_LIMIT)
+                        )
+                    )
                 }
             }
         } catch (e: Exception) {
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "exception",
-                            "err" to Log.getStackTraceString(e)
-                            .take(CMConstant.TimberTags.MAX_LIMIT),
-                            "data" to dataString.take(CMConstant.TimberTags.MAX_LIMIT)))
-        }
-    }
-
-    private fun validateAndRenderNotification(notification: Bundle) {
-
-        checkAndSendEvent(notification)
-        // aidlApiBundle : the data comes from AIDL service (including userSession data from another app)
-        aidlApiBundle?.let { aidlBundle ->
-
-            /*
-            * getting the smart push notification data from payload such as:
-            * mainAppPriority
-            * sellerAppPriority
-            * advanceTarget
-            * */
-            val targeting = advanceTargetNotification(notification)
-
-            // the smart push notification validators
-            NotificationValidationManager(applicationContext, targeting).validate(aidlBundle, {
-                renderPushNotification(notification)
-            }, {
-                // set cancelled notification if isn't notified
-                PushController(applicationContext).cancelPushNotification(notification)
-            })
-
-        }?: renderPushNotification(notification) // render as usual if there's no data from AIDL service
-    }
-
-    private fun checkAndSendEvent(notification: Bundle) {
-        val baseNotificationModel = PayloadConverter.convertToBaseModel(notification)
-        if (baseNotificationModel.notificationMode != NotificationMode.OFFLINE) {
-            if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH) {
-                IrisAnalyticsEvents.sendPushEvent(
-                    applicationContext,
-                    IrisAnalyticsEvents.PUSH_RECEIVED,
-                    baseNotificationModel
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "exception",
+                    "err" to Log.getStackTraceString(e)
+                        .take(CMConstant.TimberTags.MAX_LIMIT),
+                    "data" to dataString.take(CMConstant.TimberTags.MAX_LIMIT)
                 )
-            } else {
-                when (NotificationSettingsUtils(applicationContext).checkNotificationsModeForSpecificChannel(
-                    baseNotificationModel.channelName
-                )) {
-                    NotificationSettingsUtils.NotificationMode.ENABLED -> {
-                        IrisAnalyticsEvents.sendPushEvent(
-                            applicationContext,
-                            IrisAnalyticsEvents.PUSH_RECEIVED,
-                            baseNotificationModel
-                        )
-                    }
-                    NotificationSettingsUtils.NotificationMode.DISABLED,
-                    NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
-                        IrisAnalyticsEvents.sendPushEvent(
-                            applicationContext,
-                            IrisAnalyticsEvents.DEVICE_NOTIFICATION_OFF,
-                            baseNotificationModel
-                        )
-                    }
-                }
-            }
+            )
         }
     }
 
-    private fun renderPushNotification(bundle: Bundle) {
-        PushController(applicationContext).handleNotificationBundle(bundle)
+    private fun handleNotificationFCMPayload(map: Map<String, String>) {
+        NotificationPayloadPreProcessorUseCase().getBaseNotificationModel(
+            map,
+            onSuccess = { baseNotificationModel, advanceTargetingData ->
+                PushController(applicationContext).handleProcessedPushPayload(
+                    aidlApiBundle,
+                    baseNotificationModel,
+                    advanceTargetingData
+                )
+            },
+            onError = {
+                // todo for server logging
+            }
+        )
     }
+
+    fun handleNotificationJsonPayload(payloadString: String, isAmplification: Boolean) {
+        NotificationPayloadPreProcessorUseCase().getBaseNotificationModel(
+            payloadString,
+            isAmplification,
+            onSuccess = { baseNotificationModel, advanceTargetingData ->
+                PushController(applicationContext).handleProcessedPushPayload(
+                    aidlApiBundle,
+                    baseNotificationModel,
+                    advanceTargetingData
+                )
+            },
+            onError = {
+                // todo for server logging
+            }
+        )
+    }
+
+    /*Handle InAPP payload from FCM and GQL start*/
+    private fun handleInAppFCMPayload(map: Map<String, String>) {
+        InAppPayloadPreprocessorUseCase().getCMInAppModel(
+            map,
+            onSuccess = { cmInApp ->
+                CMInAppManager.getInstance().handleCMInAppPushPayload(cmInApp)
+            },
+            onError = {
+                // todo for server logging
+            }
+        )
+    }
+
+    fun handleInAppJsonPayload(payloadString: String, isAmplification: Boolean) {
+        InAppPayloadPreprocessorUseCase().getCMInAppModel(
+            payloadString,
+            isAmplification,
+            onSuccess = { cmInApp ->
+                CMInAppManager.getInstance().handleCMInAppPushPayload(cmInApp)
+            },
+            onError = {
+                // todo for server logging
+            }
+        )
+    }
+    /*Handle InAPP payload from FCM and GQL End*/
 
     companion object {
+
         @JvmStatic
         val instance: CMPushNotificationManager = CMPushNotificationManager()
     }
-
 }

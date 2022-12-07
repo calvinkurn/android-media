@@ -6,9 +6,9 @@
         "drawerList": [
           {
             "type": "Coupon",
-            "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/kupon-saya.png",
-            "redirectURL": "https://www.tokopedia.com/rewards/kupon-saya",
-            "redirectAppLink": "tokopedia://rewards/kupon-saya",
+            "iconImageURL": "https://images.tokopedia.net/img/blog/promo/2021/04/kupon-saya.png",
+            "redirectURL": "",
+            "redirectAppLink": "",
             "sectionContent": [
               {
                 "type": "text",
@@ -38,7 +38,7 @@
           },
           {
             "type": "BBO",
-            "iconImageURL": "https://ecs7.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png",
+            "iconImageURL": "https://images.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png",
             "redirectURL": "https://164-staging-feature.tokopedia.com/install-app/bbo",
             "redirectAppLink": "tokopedia://cart",
             "sectionContent": [
@@ -70,7 +70,7 @@
           },
           {
             "type": "TokoPoints",
-            "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/tokopoints.png",
+            "iconImageURL": "https://images.tokopedia.net/img/blog/promo/2021/04/tokopoints.png",
             "redirectURL": "https://staging.tokopedia.com/points-center",
             "redirectAppLink": "tokopedia://webview?url=https://staging.tokopedia.com/points-center",
             "sectionContent": [

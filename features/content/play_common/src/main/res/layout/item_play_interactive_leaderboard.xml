@@ -43,7 +43,6 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:gravity="start"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
@@ -53,7 +52,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_winner"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_goneMarginTop="0dp"
+        app:layout_goneMarginTop="@dimen/spacing_lvl3"
         app:typographyType="body_3"
         tools:text="Dari 100 peserta game"
         tools:visibility="visible" />
@@ -93,7 +92,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:gravity="start"
         android:textColor="@color/Unify_N300"
         android:textSize="@dimen/fontSize_lvl2"
@@ -119,38 +117,6 @@
         app:layout_constraintTop_toTopOf="@+id/tv_leaderboard_title"
         tools:visibility="gone" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iv_reward"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:padding="@dimen/spacing_lvl2"
-        android:background="@drawable/bg_leaderboard_reward"
-        android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_N0"
-        app:icon_color_night_enable="@color/Unify_N0"
-        app:icon_name="GIFT"
-        app:layout_goneMarginTop="@dimen/play_dp_10"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timer_ends_in"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_reward"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_reward"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_reward"
-        app:layout_constraintTop_toTopOf="@+id/iv_reward"
-        app:typographyType="heading_5"
-        tools:text="BULU MATA KUCING ANGGORA"
-        tools:visibility="visible" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_choices"
         android:layout_width="0dp"
@@ -164,7 +130,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_reward"
+        app:layout_constraintTop_toBottomOf="@+id/timer_ends_in"
         tools:itemCount="2"
         tools:listitem="@layout/item_quiz_choice"
         tools:visibility="visible" />

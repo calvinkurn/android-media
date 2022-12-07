@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
@@ -51,7 +52,7 @@ class AddBodFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addBodViewModel by lazy { viewModelProvider.get(AddBodViewModel::class.java) }
 
-    private var minDate: Calendar = GregorianCalendar(1900, 0, 1)
+    private var minDate: Calendar = GregorianCalendar(MIN_GREGORIAN_YEAR, MIN_GREGORIAN_MONTH, MIN_GREGORIAN_DAY)
     private lateinit var maxDate: Calendar
     private lateinit var defaultDate: Calendar
 
@@ -126,7 +127,7 @@ class AddBodFragment : BaseDaggerFragment() {
 	val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", LocaleUtils.getIDLocale())
 	val date = simpleDateFormat.parse(selectedDate)
 	val stringDate = simpleDateFormat.format(date)
-	val bod = arguments?.getString(ApplinkConstInternalGlobal.PARAM_BOD)
+	val bod = arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_BOD)
 	btnSave.isEnabled = stringDate != bod
     }
 
@@ -167,14 +168,14 @@ class AddBodFragment : BaseDaggerFragment() {
     }
 
     private fun initVar() {
-	val bod = arguments?.getString(ApplinkConstInternalGlobal.PARAM_BOD)
+	val bod = arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_BOD)
 	if (!bod.isNullOrEmpty()) {
 	    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", LocaleUtils.getIDLocale())
 	    defaultDate.time = simpleDateFormat.parse(bod)
 	    selectedDate = bod
 	    setChoosenDateFormat(bod)
 	} else {
-	    defaultDate.add(Calendar.YEAR, -17)
+	    defaultDate.add(Calendar.YEAR, MINUS_17)
 	}
     }
 
@@ -230,16 +231,20 @@ class AddBodFragment : BaseDaggerFragment() {
 	progressBar.visibility = View.GONE
     }
 
-    companion object {
+	companion object {
+		private const val MIN_GREGORIAN_YEAR = 1900
+		private const val MIN_GREGORIAN_MONTH = 0
+		private const val MIN_GREGORIAN_DAY = 1
+		private const val MINUS_17 = -17
 
-	const val TAG = "addDobFragment"
-	val EXTRA_PROFILE_SCORE = "profile_score"
-	val EXTRA_BOD = "bod"
+		const val TAG = "addDobFragment"
+		val EXTRA_PROFILE_SCORE = "profile_score"
+		val EXTRA_BOD = "bod"
 
-	fun createInstance(bundle: Bundle): AddBodFragment {
-	    val fragment = AddBodFragment()
-	    fragment.arguments = bundle
-	    return fragment
+		fun createInstance(bundle: Bundle): AddBodFragment {
+			val fragment = AddBodFragment()
+			fragment.arguments = bundle
+			return fragment
+		}
 	}
-    }
 }

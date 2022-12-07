@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.orderdetail.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -16,7 +17,7 @@ import javax.inject.Inject
  */
 
 class GetHotelOrderDetailUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
-    suspend fun execute(rawQuery: String, orderId: String, orderCategory: String,
+    suspend fun execute(rawQuery: GqlQueryInterface, orderId: String, orderCategory: String,
                         fromCloud: Boolean): Result<HotelOrderDetail>{
         val params = mapOf(PARAM_ORDER_ID to orderId,
                 PARAM_ORDER_CATEGORY_STR to orderCategory)

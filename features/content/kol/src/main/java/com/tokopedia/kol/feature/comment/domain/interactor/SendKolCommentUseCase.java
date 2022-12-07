@@ -30,9 +30,9 @@ public class SendKolCommentUseCase extends UseCase<SendKolCommentDomain> {
         return kolCommentSource.sendComment(requestParams);
     }
 
-    public static RequestParams getParam(int id, String comment) {
+    public static RequestParams getParam(long id, String comment) {
         RequestParams params = RequestParams.create();
-        params.putInt(PARAM_ID, id);
+        params.putLong(PARAM_ID, id);
         params.putString(PARAM_COMMENT, comment);
         return params;
     }

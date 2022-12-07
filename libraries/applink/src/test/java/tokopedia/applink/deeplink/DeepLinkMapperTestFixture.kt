@@ -8,8 +8,8 @@ import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
-import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -29,7 +29,7 @@ open class DeepLinkMapperTestFixture {
     @Before
     open fun setup() {
         context = ApplicationProvider.getApplicationContext()
-        mockkObject(DeeplinkMapperUohOrder)
+        mockkObject(DeeplinkMapperUoh)
         mockkObject(DeeplinkMapperMerchant)
         mockkObject(DeeplinkMapperHome)
         mockkObject(DeeplinkMapperAccount)
@@ -86,10 +86,11 @@ open class DeepLinkMapperTestFixture {
         }
     }
 
-    protected fun foodRollenceEnabler(){
+    protected fun tokochatRollenceEnabler(result: String = RollenceKey.KEY_ROLLENCE_TOKOCHAT) {
         every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_FOOD, "")
-        } returns RollenceKey.KEY_ROLLENCE_FOOD
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_TOKOCHAT, "")
+        } returns result
     }
 }
 

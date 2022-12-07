@@ -1,18 +1,31 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -26,6 +39,7 @@ class GetOccCartMapper @Inject constructor() {
     fun mapGetOccCartDataToOrderData(data: GetOccCartData): OrderData {
         val groupShop = data.groupShop.first()
         val orderCart = OrderCart().apply {
+            cartData = data.cartData
             cartString = groupShop.cartString
             paymentProfile = groupShop.paymentProfile
             shop = generateOrderShop(groupShop)
@@ -47,7 +61,8 @@ class GetOccCartMapper @Inject constructor() {
                 popUpMessage = data.popUpMessage,
                 totalProductPrice = data.totalProductPrice,
                 profileCode = data.paymentAdditionalData.profileCode,
-                popUp = mapPopUp(data.popUp)
+                popUp = mapPopUp(data.popUp),
+                imageUpload = mapImageUpload(data.imageUpload)
         )
     }
 
@@ -107,11 +122,8 @@ class GetOccCartMapper @Inject constructor() {
             cityName = if (groupShop.warehouse.isFulfillment) groupShop.tokoCabangInfo.message else groupShop.shipmentInformation.shopLocation
             isFreeOngkirExtra = groupShop.shipmentInformation.freeShippingExtra.eligible
             isFreeOngkir = groupShop.shipmentInformation.freeShipping.eligible
-            freeOngkirImg = when {
-                isFreeOngkirExtra -> groupShop.shipmentInformation.freeShippingExtra.badgeUrl
-                isFreeOngkir -> groupShop.shipmentInformation.freeShipping.badgeUrl
-                else -> ""
-            }
+            freeOngkirImg = groupShop.shipmentInformation.freeShippingGeneral.badgeUrl
+            isFreeOngkirPlus = groupShop.shipmentInformation.freeShippingGeneral.isBoTypePlus()
             preOrderLabel = if (groupShop.shipmentInformation.preorder.isPreorder) groupShop.shipmentInformation.preorder.duration else ""
             shopAlertMessage = shop.shopAlertMessage
             shopTicker = shop.shopTicker
@@ -161,6 +173,7 @@ class GetOccCartMapper @Inject constructor() {
             weightActual = product.productWeightActual
             isFreeOngkirExtra = product.freeShippingExtra.eligible
             isFreeOngkir = product.freeShipping.eligible
+            freeShippingName = product.freeShippingGeneral.boName
             wholesalePriceList = mapWholesalePrice(product.wholesalePrice)
             maxCharNote = data.maxCharNote
             placeholderNote = data.placeholderNote
@@ -190,6 +203,7 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
             addOn = mapAddOns(product.addOns)
+            ethicalDrug = mapEthicalDrug(product.ethicalDrug)
         }
         return orderProduct
     }
@@ -560,6 +574,24 @@ class GetOccCartMapper @Inject constructor() {
                 packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
                 onlyGreetingCard = addOnWording.onlyGreetingCard,
                 invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
+        )
+    }
+
+    private fun mapEthicalDrug(ethicalDrugResponse: EthicalDrugResponse): EthicalDrugDataModel {
+        return EthicalDrugDataModel(
+            needPrescription = ethicalDrugResponse.needPrescription,
+            iconUrl = ethicalDrugResponse.iconUrl,
+            text = ethicalDrugResponse.text
+        )
+    }
+
+    private fun mapImageUpload(imageUploadResponse: ImageUploadResponse): ImageUploadDataModel {
+        return ImageUploadDataModel(
+            showImageUpload = imageUploadResponse.showImageUpload,
+            text = imageUploadResponse.text,
+            leftIconUrl = imageUploadResponse.leftIconUrl,
+            checkoutId = imageUploadResponse.checkoutId,
+            frontEndValidation = imageUploadResponse.frontEndValidation,
         )
     }
 }

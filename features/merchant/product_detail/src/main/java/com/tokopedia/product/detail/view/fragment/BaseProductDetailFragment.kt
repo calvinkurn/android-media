@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -17,7 +18,9 @@ import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
+import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -35,6 +38,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     private var rvPdp: RecyclerView? = null
     private var swipeToRefresh: SwipeRefreshLayout? = null
+    protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
 
     protected abstract fun createAdapterInstance(): ProductDetailAdapter
 
@@ -85,7 +89,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
             productAdapter?.submitList(visitables)
-            binding?.pdpNavigation?.updateItemPosition()
         }
     }
 
@@ -94,7 +97,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     fun renderPageError(errorModel: PageErrorDataModel) {
-        context?.let { ctx ->
+        context?.let { _ ->
             productAdapter?.showError(errorModel)
             swipeToRefresh?.let {
                 it.isEnabled = false
@@ -157,12 +160,52 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     private fun setupRecyclerView(view: View) {
-        rvPdp = view.findViewById(R.id.rv_pdp)
-        rvPdp?.isNestedScrollingEnabled = false
-        rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-        rvPdp?.itemAnimator = null
-        showLoading()
+        val rv = view.findViewById<RecyclerView>(R.id.rv_pdp) ?: return
 
-        rvPdp?.adapter = productAdapter
+        rv.apply {
+            isNestedScrollingEnabled = false
+            itemAnimator = null
+            layoutManager = CenterLayoutManager(view.context).apply {
+                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+            }
+            adapter = productAdapter
+            addItemDecoration(RecommendationItemDecoration())
+        }
+        rvPdp = rv
+        showLoading()
     }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && productAdapter?.shouldRedrawLayout == true) {
+                rvPdp?.post {
+                    (recyclerView.layoutManager as CenterLayoutManager).invalidateSpanAssignments()
+                    recyclerView.invalidateItemDecorations()
+                }
+            }
+        }
+    }
+
+    protected fun addEndlessScrollListener(loadMore: (page: Int) -> Unit) {
+        if (endlessScrollListener != null) return
+
+        val rv = rvPdp ?: return
+        endlessScrollListener = object : EndlessRecyclerViewScrollListener(rv.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                loadMore.invoke(page)
+            }
+        }.also { rv.addOnScrollListener(it) }
+        rv.addOnScrollListener(scrollListener)
+    }
+
+    protected fun removeEndlessScrollListener() {
+        val rv = rvPdp ?: return
+        val scrollListener = endlessScrollListener ?: return
+        rv.removeOnScrollListener(scrollListener)
+        endlessScrollListener = null
+    }
+
+    protected fun getProductDetailActivity() = activity as? ProductDetailActivity
 }

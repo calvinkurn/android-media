@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/unify_space_16"
+    android:layout_marginTop="@dimen/unify_space_8"
+    android:layout_marginEnd="@dimen/unify_space_16">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgCampaignStatusIndicator"
+            android:layout_width="@dimen/ribbon_width"
+            android:layout_height="@dimen/ribbon_height"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgCampaignStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="@+id/imgCampaignStatusIndicator"
+            app:layout_constraintStart_toEndOf="@id/imgCampaignStatusIndicator"
+            app:layout_constraintTop_toTopOf="@+id/imgCampaignStatusIndicator"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Belum Daftar Produk" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgCampaignName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toEndOf="@+id/imgFlashSale"
+            app:layout_constraintTop_toTopOf="@+id/imgFlashSale"
+            app:typographyType="display_2"
+            tools:text="Serba Diskon 1" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgFlashSale"
+            tools:background="@color/Unify_NN200"
+            android:layout_marginTop="@dimen/unify_space_24"
+            android:layout_width="@dimen/unify_space_64"
+            android:layout_height="@dimen/unify_space_64"
+            android:layout_marginStart="@dimen/unify_space_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tpgCampaignStatus" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgPeriod"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:textColor="@color/Unify_NN600"
+            tools:text="10 Jul 2022 00:00 WIB - 23:59 WIB"
+            app:layout_constraintEnd_toEndOf="@+id/tpgCampaignName"
+            app:layout_constraintStart_toStartOf="@+id/tpgCampaignName"
+            app:layout_constraintTop_toBottomOf="@+id/tpgCampaignName"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:text="@string/stfs_registration_ends_in"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgFlashSale"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tpgDescription"
+            app:layout_constraintTop_toBottomOf="@+id/tpgDescription"
+            app:timer_unify_single_type="day"
+            app:timer_unify_single_variant="informative" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnAddProduct"
+            android:layout_width="@dimen/flash_sale_list_button_width"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:text="@string/stfs_register"
+            app:layout_constraintBottom_toBottomOf="@+id/timer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tpgDescription"
+            app:unifyButtonSize="small" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader"
+            android:layout_width="@dimen/unify_space_48"
+            android:layout_height="@dimen/unify_space_48"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/unify_space_16"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

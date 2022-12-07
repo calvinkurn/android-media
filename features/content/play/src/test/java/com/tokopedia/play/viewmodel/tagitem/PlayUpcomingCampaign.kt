@@ -15,12 +15,14 @@ import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
+import com.tokopedia.play.view.uimodel.event.LoginEvent
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -59,14 +61,15 @@ class PlayUpcomingCampaign {
             productList = listOf(),
             config = ProductSectionUiModel.Section.ConfigUiModel(
                 type = ProductSectionType.Upcoming,
-                startTime = "",
-                endTime = "",
-                serverTime = "",
+                controlTime = DateUtil.getCurrentDate(),
+                startTime = null,
+                endTime = null,
+                serverTime = null,
                 timerInfo = "Dimulai dalam",
                 background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
-                    imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
+                    imageUrl = "\"https://images.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                 title = "L'oreal New Launch",
-                reminder = if(reminder) PlayUpcomingBellStatus.On(campaignId) else PlayUpcomingBellStatus.Off(campaignId)
+                reminder = if(reminder) PlayUpcomingBellStatus.On else PlayUpcomingBellStatus.Off,
             ),
             id = campaignId.toString()
         )
@@ -92,7 +95,7 @@ class PlayUpcomingCampaign {
             } thenVerify {
                 withState {
                     tagItems.product.productSectionList.forEach {
-                        if (it is ProductSectionUiModel.Section) it.config.reminder.assertEqualTo(PlayUpcomingBellStatus.Off(campaignId))
+                        if (it is ProductSectionUiModel.Section) it.config.reminder.assertEqualTo(PlayUpcomingBellStatus.Off)
                     }
                 }
             }
@@ -112,7 +115,7 @@ class PlayUpcomingCampaign {
         } thenVerify {
             withState {
                 tagItems.product.productSectionList.first().apply {
-                    if (this is ProductSectionUiModel.Section) config.reminder.assertEqualTo(PlayUpcomingBellStatus.On(campaignId))
+                    if (this is ProductSectionUiModel.Section) config.reminder.assertEqualTo(PlayUpcomingBellStatus.On)
                 }
             }
         }
@@ -122,7 +125,7 @@ class PlayUpcomingCampaign {
     fun `given user is logged in and has not reminded upco campaign, when click remind, the campaign should be reminded`() {
         every { mockRepo.getChannelData(any()) } returns generateMockProduct(false)
         coEvery { mockRepo.checkUpcomingCampaign(any()) } returns false
-        coEvery { mockRepo.subscribeUpcomingCampaign(any(),any()) } returns Pair(true, "")
+        coEvery { mockRepo.subscribeUpcomingCampaign(any(),any()) } returns PlayViewerTagItemRepository.CampaignReminder(true, "")
 
         coroutineTestRule.runBlockingTest {
             givenPlayViewModelRobot(
@@ -138,7 +141,7 @@ class PlayUpcomingCampaign {
             } thenVerify {
                 withState {
                     tagItems.product.productSectionList.first().apply {
-                        if (this is ProductSectionUiModel.Section) config.reminder.assertEqualTo(PlayUpcomingBellStatus.On(campaignId))
+                        if (this is ProductSectionUiModel.Section) config.reminder.assertEqualTo(PlayUpcomingBellStatus.On)
                     }
                 }
             }
@@ -149,7 +152,7 @@ class PlayUpcomingCampaign {
     fun `given user is logged in and has reminded upco campaign, when click unremind, the campaign should be not reminded`() {
         every { mockRepo.getChannelData(any()) } returns generateMockProduct(true)
         coEvery { mockRepo.checkUpcomingCampaign(any()) } returns false
-        coEvery { mockRepo.subscribeUpcomingCampaign(any(),any()) } returns Pair(true, "")
+        coEvery { mockRepo.subscribeUpcomingCampaign(any(),any()) } returns PlayViewerTagItemRepository.CampaignReminder(false, "")
 
         coroutineTestRule.runBlockingTest {
             givenPlayViewModelRobot(
@@ -165,7 +168,7 @@ class PlayUpcomingCampaign {
             } thenVerify {
                 withState {
                     tagItems.product.productSectionList.first().apply {
-                        if (this is ProductSectionUiModel.Section) config.reminder.assertEqualTo(PlayUpcomingBellStatus.Off(campaignId))
+                        if (this is ProductSectionUiModel.Section) config.reminder.assertEqualTo(PlayUpcomingBellStatus.Off)
                     }
                 }
             }
@@ -187,8 +190,8 @@ class PlayUpcomingCampaign {
                 submitAction(SendUpcomingReminder(generateMockSection(false).first()))
             } thenVerify { event ->
                 event.isEqualToIgnoringFields(
-                    OpenPageEvent(applink = ApplinkConst.LOGIN),
-                    OpenPageEvent::requestCode
+                    LoginEvent {},
+                    LoginEvent::afterSuccess,
                 )
             }
         }

@@ -16,6 +16,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.common.OtpUtils.removeErrorCode
 import com.tokopedia.profilecompletion.R
@@ -55,253 +56,246 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     private var validateToken: String = ""
 
     override fun getScreenName(): String {
-	return ""
+        return ""
     }
 
     override fun initInjector() {
-	getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-	super.onCreate(savedInstanceState)
-	ColorUtils.setBackgroundColor(context, activity)
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
     }
 
     override fun onCreateView(
-	inflater: LayoutInflater,
-	container: ViewGroup?,
-	savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-	splitCompatInstall()
-	return try {
-	    inflater.inflate(R.layout.fragment_add_phone, container, false)
-	} catch (e: Throwable) {
-	    e.printStackTrace()
-	    null
-	}
+        splitCompatInstall()
+        return try {
+            inflater.inflate(R.layout.fragment_add_phone, container, false)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            null
+        }
     }
 
     override fun onFragmentBackPressed(): Boolean {
-	tracker.trackClickOnBtnBackAddPhone()
-	return super.onFragmentBackPressed()
+        tracker.trackClickOnBtnBackAddPhone()
+        return super.onFragmentBackPressed()
     }
 
     private fun splitCompatInstall() {
-	activity?.let {
-	    SplitCompat.installActivity(it)
-	}
+        activity?.let {
+            SplitCompat.installActivity(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-	super.onViewCreated(view, savedInstanceState)
-	setListener()
-	setObserver()
-	buttonSubmit.isEnabled = false
-	presetView()
+        super.onViewCreated(view, savedInstanceState)
+        setListener()
+        setObserver()
+        buttonSubmit.isEnabled = false
+        presetView()
     }
 
     private fun presetView() {
-	arguments?.getString(AddPhoneActivity.PARAM_PHONE_NUMBER)?.let { phone ->
-	    etPhone.editText.setText(phone)
-	}
+        arguments?.getString(AddPhoneActivity.PARAM_PHONE_NUMBER)?.let { phone ->
+            etPhone.editText.setText(phone)
+        }
     }
 
     private fun setListener() {
-	etPhone?.editText?.addTextChangedListener(object : TextWatcher {
-	    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+        etPhone?.editText?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
-	    }
+            }
 
-	    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-		if (s.isNotEmpty()) {
-		    setErrorText("")
-		} else {
-		    setErrorText(getString(R.string.error_cant_empty))
-		    buttonSubmit.isEnabled = false
-		}
-	    }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setErrorText("")
+                } else {
+                    setErrorText(getString(R.string.error_cant_empty))
+                    buttonSubmit.isEnabled = false
+                }
+            }
 
-	    override fun afterTextChanged(s: Editable) {
+            override fun afterTextChanged(s: Editable) {
 
-	    }
-	})
+            }
+        })
 
-	etPhone?.setOnFocusChangeListener { view, hasFocus ->
-	    if (hasFocus && !isOnclickEventTriggered) {
-		isOnclickEventTriggered = true
+        etPhone?.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && !isOnclickEventTriggered) {
+                isOnclickEventTriggered = true
 
-		phoneNumberTracker.clickOnInputPhoneNumber()
-	    }
-	}
+                phoneNumberTracker.clickOnInputPhoneNumber()
+            }
+        }
 
-	buttonSubmit?.setOnClickListener {
-	    val phone = etPhone?.editText?.text.toString()
-	    if (phone.isBlank()) {
-		setErrorText(getString(R.string.error_field_required))
-		phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
-	    } else if (!isValidPhone(phone)) {
-		setErrorText(getString(R.string.wrong_phone_format))
-		phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
-	    } else {
-		showLoading()
-		viewModel.userProfileValidate(phone)
-	    }
-	}
+        buttonSubmit?.setOnClickListener {
+            val phone = etPhone?.editText?.text.toString()
+            if (phone.isBlank()) {
+                setErrorText(getString(R.string.error_field_required))
+                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.add_phone_wrong_phone_format))
+            } else if (!isValidPhone(phone)) {
+                setErrorText(getString(R.string.add_phone_wrong_phone_format))
+                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.add_phone_wrong_phone_format))
+            } else {
+                showLoading()
+                storeLocalSession(phone, false)
+                viewModel.userProfileValidate(phone)
+            }
+        }
     }
 
     private fun goToVerificationActivity() {
-	val phone = etPhone?.editText?.text.toString().trim()
-	val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-	val bundle = Bundle()
-	bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
-	bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
-	bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
-	bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
-	bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        val phone = etPhone?.editText?.text.toString().trim()
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
 
-	intent.putExtras(bundle)
-	startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
     }
 
     private fun setErrorText(s: String) {
-	if (TextUtils.isEmpty(s)) {
-	    etPhone.isInputError = false
-	    etPhone.setMessage(getString(R.string.sample_phone))
-	    buttonSubmit?.isEnabled = true
-	} else {
-	    etPhone.isInputError = true
-	    etPhone.setMessage(s)
-	    buttonSubmit?.isEnabled = false
-	}
+        if (TextUtils.isEmpty(s)) {
+            etPhone.isInputError = false
+            etPhone.setMessage(getString(R.string.add_phone_sample_phone))
+            buttonSubmit?.isEnabled = true
+        } else {
+            etPhone.isInputError = true
+            etPhone.setMessage(s)
+            buttonSubmit?.isEnabled = false
+        }
     }
 
     private fun isValidPhone(phone: String): Boolean {
-	return android.util.Patterns.PHONE.matcher(phone).matches()
+        return android.util.Patterns.PHONE.matcher(phone).matches()
     }
 
     private fun setObserver() {
-	viewModel.addPhoneResponse.observe(
-	    viewLifecycleOwner,
-	    Observer {
-		when (it) {
-		    is Success -> onSuccessAddPhone(it.data)
-		    is Fail -> onErrorAddPhone(it.throwable)
+		viewModel.addPhoneResponse.observe(viewLifecycleOwner) {
+			when (it) {
+				is Success -> onSuccessAddPhone(it.data)
+				is Fail -> onErrorAddPhone(it.throwable)
+			}
 		}
-	    }
-	)
 
-	viewModel.userValidateResponse.observe(
-	    viewLifecycleOwner,
-	    Observer {
-		when (it) {
-		    is Success -> onSuccessUserValidate(it.data)
-		    is Fail -> onErrorUserValidate(it.throwable)
+		viewModel.userValidateResponse.observe(viewLifecycleOwner) {
+			when (it) {
+				is Success -> onSuccessUserValidate(it.data)
+				is Fail -> onErrorUserValidate(it.throwable)
+			}
 		}
-	    }
-	)
-
-    }
+	}
 
     private fun onErrorUserValidate(throwable: Throwable) {
-	dismissLoading()
-	phoneNumberTracker.clickOnButtonNext(
-	    false,
-	    ErrorHandler.getErrorMessage(context, throwable).removeErrorCode()
-	)
-	setErrorText(ErrorHandler.getErrorMessage(context, throwable))
+        dismissLoading()
+        phoneNumberTracker.clickOnButtonNext(
+            false,
+            ErrorHandler.getErrorMessage(context, throwable).removeErrorCode()
+        )
+        setErrorText(ErrorHandler.getErrorMessage(context, throwable))
     }
 
     private fun onSuccessUserValidate(pojo: UserValidatePojo) {
-	if (pojo.userProfileValidate.isValid) {
-	    phoneNumberTracker.clickOnButtonNext(true, pojo.userProfileValidate.message)
-	    goToVerificationActivity()
-	}
+        if (pojo.userProfileValidate.isValid) {
+            phoneNumberTracker.clickOnButtonNext(true, pojo.userProfileValidate.message)
+            goToVerificationActivity()
+        }
     }
 
     private fun onErrorAddPhone(throwable: Throwable) {
-	dismissLoading()
-	view?.let {
-	    phoneNumberTracker.clickOnButtonNext(
-		false,
-		ErrorHandler.getErrorMessage(context, throwable).removeErrorCode()
-	    )
-	    Toaster.make(
-		it,
-		ErrorHandler.getErrorMessage(context, throwable),
-		Toaster.LENGTH_LONG,
-		Toaster.TYPE_ERROR
-	    )
-	}
+        dismissLoading()
+        view?.let {
+            phoneNumberTracker.clickOnButtonNext(
+                false,
+                ErrorHandler.getErrorMessage(context, throwable).removeErrorCode()
+            )
+            Toaster.make(
+                it,
+                ErrorHandler.getErrorMessage(context, throwable),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            )
+        }
     }
 
     open fun onSuccessAddPhone(result: AddPhoneResult) {
-	dismissLoading()
-	storeLocalSession(result.phoneNumber)
-	activity?.run {
-	    val intent = Intent()
-	    val bundle = Bundle()
-	    bundle.putInt(EXTRA_PROFILE_SCORE, result.addPhonePojo.data.completionScore)
-	    bundle.putString(EXTRA_PHONE, result.phoneNumber)
-	    bundle.putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
-	    intent.putExtras(bundle)
-	    setResult(Activity.RESULT_OK, intent)
-	    finish()
-	}
+        dismissLoading()
+        storeLocalSession(result.phoneNumber, true)
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putInt(EXTRA_PROFILE_SCORE, result.addPhonePojo.data.completionScore)
+            bundle.putString(EXTRA_PHONE, result.phoneNumber)
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+            intent.putExtras(bundle)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
-    protected fun storeLocalSession(phone: String) {
-	userSession.setIsMSISDNVerified(true)
-	userSession.phoneNumber = phone
+    protected fun storeLocalSession(phone: String, isVerified: Boolean) {
+        userSession.setIsMSISDNVerified(isVerified)
+        userSession.phoneNumber = phone
     }
 
     private fun showLoading() {
-	mainView?.visibility = View.GONE
-	progressBar?.visibility = View.VISIBLE
+        mainView?.visibility = View.GONE
+        progressBar?.visibility = View.VISIBLE
     }
 
     protected fun dismissLoading() {
-	mainView?.visibility = View.VISIBLE
-	progressBar?.visibility = View.GONE
+        mainView?.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-	val phone = etPhone.editText.text.toString()
-	viewModel.mutateAddPhone(phone.trim())
+		val phone = etPhone.editText.text.toString()
+		viewModel.mutateAddPhone(phone.trim(), validateToken)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-	super.onActivityResult(requestCode, resultCode, data)
-	if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
-	    validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
-	    onSuccessVerifyPhone(data)
-	} else {
-	    dismissLoading()
-	}
-    }
-
-    companion object {
-	const val EXTRA_PROFILE_SCORE = "profile_score"
-	const val EXTRA_PHONE = "phone"
-
-	const val REQUEST_COTP_PHONE_VERIFICATION = 101
-	const val OTP_TYPE_PHONE_VERIFICATION = 11
-
-	fun createInstance(bundle: Bundle): AddPhoneFragment {
-	    val fragment = AddPhoneFragment()
-	    fragment.arguments = bundle
-	    return fragment
-	}
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
+            validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
+            onSuccessVerifyPhone(data)
+        } else {
+            dismissLoading()
+        }
     }
 
     override fun onDestroy() {
-	super.onDestroy()
-	try {
-	    viewModel.addPhoneResponse.removeObservers(this)
-	    viewModel.userValidateResponse.removeObservers(this)
-	    viewModel.flush()
-	} catch (e: Throwable) {
-	    e.printStackTrace()
-	}
+		super.onDestroy()
+		try {
+			viewModel.addPhoneResponse.removeObservers(this)
+			viewModel.userValidateResponse.removeObservers(this)
+			viewModel.flush()
+		} catch (e: Throwable) {
+			e.printStackTrace()
+		}
     }
 
+	companion object {
+		const val EXTRA_PROFILE_SCORE = "profile_score"
+		const val EXTRA_PHONE = "phone"
+
+		const val REQUEST_COTP_PHONE_VERIFICATION = 101
+		const val OTP_TYPE_PHONE_VERIFICATION = 11
+
+		fun createInstance(bundle: Bundle): AddPhoneFragment {
+			val fragment = AddPhoneFragment()
+			fragment.arguments = bundle
+			return fragment
+		}
+	}
 }

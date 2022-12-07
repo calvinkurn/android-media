@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="2dp"
     android:layout_marginTop="@dimen/dp_3"
-    android:layout_marginRight="2dp">
+    android:layout_marginRight="2dp"
+    android:background="@color/chatbot_dms_quick_reply_bg"
+    android:layout_marginLeft="2dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dummy"
@@ -18,16 +19,17 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/interactive_label_template_chat"
+        android:minHeight="@dimen/unify_space_32"
         android:gravity="center"
-        android:minHeight="@dimen/dp_32"
-        android:paddingLeft="10dp"
-        android:paddingTop="8dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="8dp"
+        android:background="@drawable/interactive_label_template_chat"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_8"
+        android:paddingLeft="@dimen/dp_chatbot_10"
+        android:paddingRight="@dimen/dp_chatbot_10"
         android:singleLine="true"
-        android:textColor="@color/tkpd_main_green"
         app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_G400"
         tools:text="Maafm" />
 
 </LinearLayout>

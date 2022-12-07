@@ -8,7 +8,9 @@ import dagger.Component
  * Created by zulfikarrahman on 10/24/17.
  */
 @FlightAirportScope
-@Component(modules = [FlightAirportModule::class, FlightAirportViewModelModule::class],
+@Component(modules = [
+        FlightAirportViewModelModule::class,
+        FlightAirportModule::class],
         dependencies = [FlightComponent::class])
 interface FlightAirportComponent {
 

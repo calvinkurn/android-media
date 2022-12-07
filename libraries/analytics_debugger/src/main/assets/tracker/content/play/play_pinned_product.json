@@ -1,0 +1,122 @@
+{
+  "readme": "Play - Pinned Product",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item_list",
+      "eventAction": "view on pinned featured product",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is rilisan spesial (true|false)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/groupchat - featured product",
+      "items": [
+        {
+          "index": "\\d+(.\\d+)?",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click pinned featured product tagging",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is rilisan spesial (true|false)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/groupchat - featured product",
+      "items": [
+        {
+          "index": "\\d+(.\\d+)?",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "click buy pinned product",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is rilisan spesial (true|false) - beli langsung (true|false)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "category_id": ".*",
+          "dimension40": "/groupchat - featured product",
+          "dimension45": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": "\\d+(.\\d+)?",
+          "quantity": "\\d+(.\\d+)?",
+          "shop_id": "\\d+",
+          "shop_name": ".*",
+          "shop_type": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "click atc pinned product",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is rilisan spesial (true|false)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "category_id": ".*",
+          "dimension40": "/groupchat - featured product",
+          "dimension45": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": "\\d+(.\\d+)?",
+          "quantity": "\\d+(.\\d+)?",
+          "shop_id": "\\d+",
+          "shop_name": ".*",
+          "shop_type": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - pinned lihat keranjang",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - pinned lihat keranjang",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    }
+  ]
+}

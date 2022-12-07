@@ -13,9 +13,6 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -37,12 +34,6 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
-    lateinit var removeWishListUseCase: RemoveWishListUseCase
-
-    @RelaxedMockK
     lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
@@ -55,8 +46,7 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     lateinit var addToCartUseCase: AddToCartUseCase
 
     private val viewModel by lazy {
-        AddToCartDoneViewModel(userSessionInterface, addWishListUseCase,
-                removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase,
+        AddToCartDoneViewModel(userSessionInterface, addToWishlistV2UseCase, deleteWishlistV2UseCase,
                 getRecommendationUseCase, addToCartUseCase, CoroutineTestDispatchersProvider)
     }
 
@@ -118,67 +108,6 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         }
 
         Assert.assertTrue((viewModel.recommendationProduct.value as Success).data.isEmpty())
-    }
-
-    @Test
-    fun `success add product to wishlist`() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishList(productId) { it, throwable ->
-            Assert.assertEquals(it, true)
-            Assert.assertEquals(throwable, null)
-        }
-    }
-
-    @Test
-    fun `error add product to wishlist`() {
-        val productId = ""
-        val errorMessage = "hehe"
-
-        every {
-            (addWishListUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(errorMessage, productId)
-        }
-
-        viewModel.addWishList(productId) { it, throwable ->
-            Assert.assertEquals(it, false)
-            Assert.assertTrue(throwable?.message == errorMessage)
-        }
-    }
-
-    @Test
-    fun `success remove product to wishlist`() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.removeWishList(productId) { it, throwable ->
-            Assert.assertEquals(it, true)
-            Assert.assertEquals(throwable, null)
-        }
-    }
-
-    @Test
-    fun `error remove product to wishlist`() {
-        val productId = "123"
-        val errorMessage = "hehe"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorRemoveWishlist(errorMessage, productId)
-        }
-
-        viewModel.removeWishList(productId) { it, throwable ->
-            Assert.assertEquals(it, false)
-            Assert.assertTrue(throwable?.message == errorMessage)
-        }
     }
 
     @Test

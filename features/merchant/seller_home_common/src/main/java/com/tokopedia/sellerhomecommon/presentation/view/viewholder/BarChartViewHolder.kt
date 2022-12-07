@@ -39,7 +39,6 @@ class BarChartViewHolder(
         ShcBarChartWidgetBinding.bind(itemView)
     }
     private val emptyStateBinding by lazy { binding.shcBarChartEmptyState }
-    private val errorStateBinding by lazy { binding.shcBarChartErrorState }
     private val loadingStateBinding by lazy { binding.shcBarChartLoadingState }
 
     private var showAnimation: ValueAnimator? = null
@@ -79,7 +78,7 @@ class BarChartViewHolder(
     private fun setOnLoading() {
         with(binding) {
             loadingStateBinding.shimmerWidgetCommon.visible()
-            errorStateBinding.commonWidgetErrorState.gone()
+            shcBarChartErrorState.gone()
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
@@ -91,23 +90,21 @@ class BarChartViewHolder(
     private fun setonError(element: BarChartWidgetUiModel) {
         with(binding) {
             loadingStateBinding.shimmerWidgetCommon.gone()
-            errorStateBinding.commonWidgetErrorState.visible()
+            shcBarChartErrorState.visible()
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
             luvShcBarChart.gone()
             emptyStateBinding.shcBarChartEmptyState.gone()
-
-            ImageHandler.loadImageWithId(
-                errorStateBinding.imgWidgetOnError,
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-            )
+            shcBarChartErrorState.setOnReloadClicked {
+                listener.onReloadWidget(element)
+            }
         }
     }
 
     private fun setOnSuccess(element: BarChartWidgetUiModel) {
         loadingStateBinding.shimmerWidgetCommon.gone()
-        errorStateBinding.commonWidgetErrorState.gone()
+        binding.shcBarChartErrorState.gone()
 
         showEmptyState = showEmpty(element)
 
@@ -375,18 +372,18 @@ class BarChartViewHolder(
         if (!emptyStateBinding.shcBarChartEmptyState.isVisible) return
         hideAnimation = emptyStateBinding.shcBarChartEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 emptyStateBinding.shcBarChartEmptyState.gone()
                 hideAnimation?.removeListener(this)
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 hideAnimation?.removeListener(this)
             }
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 

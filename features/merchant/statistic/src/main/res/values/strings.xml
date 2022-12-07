@@ -6,13 +6,13 @@
     <string name="stc_other_menu">Menu Lainnya</string>
     <string name="stc_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="stc_reload">Muat ulang</string>
-    <string name="stc_change_date_range">Ubah Rentang Waktu</string>
+    <string name="stc_change_date_range">Ubah rentang waktu</string>
     <string name="stc_last_n_days">%1$d hari terakhir</string>
     <string name="stc_last_n_days_cc">%1$d Hari Terakhir</string>
     <string name="stc_today_real_time">Hari ini (real time)</string>
-    <string name="stc_per_day">Per Hari</string>
-    <string name="stc_per_week">Per Minggu</string>
-    <string name="stc_per_month">Per Bulan</string>
+    <string name="stc_per_day">Per hari</string>
+    <string name="stc_per_week">Per minggu</string>
+    <string name="stc_per_month">Pilih bulan</string>
     <string name="stc_you_havent_access_this_page">Kamu tidak memiliki akses ke halaman Wawasan Toko. Akses hanya bisa diberikan oleh pemilik toko.</string>
     <string name="stc_today_fmt">Hari Ini (%1$s 00:00 - %2$s)</string>
     <string name="stc_shop">Toko</string>

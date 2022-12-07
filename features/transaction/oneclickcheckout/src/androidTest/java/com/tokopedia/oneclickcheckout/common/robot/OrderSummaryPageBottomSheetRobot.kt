@@ -8,7 +8,9 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
@@ -48,7 +50,7 @@ class OrderPriceSummaryBottomSheetRobot {
         onView(withId(R.id.tv_total_shipping_price_value)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (isBbo) {
-                assertEquals("Bebas Ongkir", (view as Typography).text)
+                assertEquals("Rp0", (view as Typography).text)
             } else {
                 assertEquals(shippingPrice, (view as Typography).text)
             }
@@ -75,10 +77,11 @@ class OrderPriceSummaryBottomSheetRobot {
         if (paymentFeeDetails.isEmpty() && !isInstallment) {
             onView(withId(R.id.divider_transaction_fee)).check(matches(not(isDisplayed())))
             onView(withId(R.id.tv_transaction_fee)).check(matches(not(isDisplayed())))
-        }
-        else {
+        } else {
             onView(withId(R.id.divider_transaction_fee)).check(matches(isDisplayed()))
             onView(withId(R.id.tv_transaction_fee)).check(matches(isDisplayed()))
+            // Wait for bottom sheet window to be focused
+            Thread.sleep(1000)
             onView(withId(R.id.ll_payment_fee)).check { view, _ ->
                 val llPaymentFee = (view as ViewGroup)
                 for (i in 0 until llPaymentFee.childCount) {
@@ -87,15 +90,13 @@ class OrderPriceSummaryBottomSheetRobot {
                     assertEquals(orderPaymentFee.title, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_label).text.toString())
                     if (orderPaymentFee.showTooltip) {
                         assertEquals(View.VISIBLE, clPaymentFeeView.findViewById<IconUnify>(R.id.img_payment_fee_info).visibility)
-                    }
-                    else {
+                    } else {
                         assertEquals(View.GONE, clPaymentFeeView.findViewById<IconUnify>(R.id.img_payment_fee_info).visibility)
                     }
                     if (orderPaymentFee.showSlashed) {
                         assertEquals(View.VISIBLE, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).visibility)
                         assertEquals(CurrencyFormatUtil.convertPriceValueToIdrFormat(orderPaymentFee.slashedFee, false).removeDecimalSuffix(), clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).text.toString())
-                    }
-                    else {
+                    } else {
                         assertEquals(View.INVISIBLE, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).visibility)
                     }
                     assertEquals(CurrencyFormatUtil.convertPriceValueToIdrFormat(orderPaymentFee.fee, false).removeDecimalSuffix(), clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
@@ -126,6 +127,8 @@ class OrderPriceSummaryBottomSheetRobot {
                 clPaymentFeeView.findViewById<IconUnify>(R.id.img_payment_fee_info).performClick()
             }
         }
+        // Wait for bottom sheet to fully appear
+        Thread.sleep(1000)
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 

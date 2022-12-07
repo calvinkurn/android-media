@@ -9,6 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Created by jegul on 2019-11-04
@@ -27,6 +28,11 @@ object DeeplinkMapperContent {
      * Replace "tokopedia" scheme to "tokopedia-android-internal"
      * This method keeps the query parameters intact on the deeplink
      */
+    fun getProfileDeeplink(deepLink: String): String {
+        return if (GlobalConfig.isSellerApp()) getProfileSellerAppDeepLink()
+        else getRegisteredNavigation(deepLink)
+    }
+
     fun getRegisteredNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
@@ -38,9 +44,6 @@ object DeeplinkMapperContent {
 
     fun getKolDeepLink(deepLink: String): String {
         when {
-            deepLink.startsWith(ApplinkConst.CONTENT_CREATE_POST) -> {
-                return ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST
-            }
             deepLink.startsWithPattern(ApplinkConst.KOL_COMMENT) -> {
                 return deepLink.replace(ApplinkConst.KOL_COMMENT.substringBefore("{"), ApplinkConstInternalContent.COMMENT.substringBefore("{")).plus(ApplinkConstInternalContent.COMMENT_EXTRA_PARAM)
             }
@@ -74,14 +77,6 @@ object DeeplinkMapperContent {
             return deepLink.replace(regexExp, INTERNAL_FEED_CREATION_SHOP_SEARCH)
         }
 
-        when {
-            deepLink.startsWith(ApplinkConst.CONTENT_CREATE_POST) ||
-                    deepLink.startsWithPattern(ApplinkConst.CONTENT_DRAFT_POST) ||
-                    deepLink.startsWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) ||
-                    deepLink.startsWithPattern(ApplinkConst.AFFILIATE_DRAFT_POST) -> {
-                return getRegisteredNavigation(deepLink)
-            }
-        }
         return deepLink
     }
 
@@ -91,5 +86,12 @@ object DeeplinkMapperContent {
 
     private fun handleNavigationPlay(uri: Uri): String {
         return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
+    }
+
+    /**
+     * For easier hansel purpose
+     */
+    private fun getProfileSellerAppDeepLink(): String {
+        return ApplinkConstInternalContent.INTERNAL_FEATURE_PREVENTION
     }
 }

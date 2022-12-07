@@ -99,8 +99,10 @@
     <string name="content_desc_search_back_button">button back</string>
     <string name="content_desc_search_icon_search">search icon</string>
     <string name="content_desc_search_optionListCardImageSalesRatingFloat">inspiration carousel option rating</string>
+    <string name="content_desc_search_carousel_icon_subtitle">subtitle icon</string>
 
     <string name="search_add_to_cart_success">Sukses menambah ke keranjang</string>
+    <string name="search_see_cart">Lihat</string>
 
     <string name="search_result_global_search_text">Belum nemu barang yang cocok?</string>
     <string name="search_result_global_search_button_text">Cari di Tokopedia</string>
@@ -109,4 +111,6 @@
     <string name="search_last_filter_use_filter">Gunakan Filter</string>
 
     <string name="search_quick_filter_dropdown_apply_button_text">Terapkan</string>
+    
+    <string name="search_same_session_recommendation_hide_recommendation">Rekomendasi disembunyikan</string>
 </resources>

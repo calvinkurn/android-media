@@ -15,6 +15,7 @@ private const val LIMIT_DETAIL = 30
 const val FEED_X_GET_ACTIVITY_PRODUCTS_QUERY: String = """
 query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
   feedXGetActivityProducts(req:${'$'}req){
+    hasVoucher
     products{
           id
           shopID
@@ -32,11 +33,31 @@ query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
           priceOriginalFmt
           priceDiscount
           priceDiscountFmt
+          priceMasked
+          priceMaskedFmt
+          stockWording
+          stockSoldPercentage
+          cartable
           totalSold
           isBebasOngkir
           bebasOngkirStatus
           bebasOngkirURL
           mods
+        }
+        isFollowed
+        contentType
+        campaign{
+          id
+          status
+          name
+          shortName
+          startTime
+          endTime
+          restrictions{
+          label
+          isActive
+          __typename
+          }
         }
     nextCursor
   }

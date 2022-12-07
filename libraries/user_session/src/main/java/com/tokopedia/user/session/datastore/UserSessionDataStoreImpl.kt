@@ -545,7 +545,5 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         const val HEX_BINARY = 0xff
         const val HEX_FORMAT = "%02x"
         const val MD5_ALGORITHM = "MD5"
-        const val USER_SESSION_AB_TEST_KEY = "and_data_store_v3"
-        val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
     }
 }

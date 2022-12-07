@@ -18,9 +18,10 @@ import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -43,6 +44,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private val refreshPage: MutableLiveData<Boolean> = MutableLiveData()
     private val _hideShimmer = SingleLiveEvent<Boolean>()
     private val _showErrorState = SingleLiveEvent<Boolean>()
+    private var isDarkMode: Boolean = false
 
     @Inject
     lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
@@ -60,9 +62,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         bannerData.value = components
         pushBannerStatus.value = Pair(Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS, "")
         pushBannerSubscription.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
-
     }
-
 
     fun getComponentData(): LiveData<ComponentsItem> = bannerData
     fun getPushBannerStatusData(): LiveData<Pair<Int, String>> = pushBannerStatus
@@ -83,22 +83,21 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private fun fetchBannerData() {
         if (components.properties?.dynamic == true) {
             launchCatchError(block = {
-
-                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
+                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, isDarkMode)) {
                     if (components.data.isNullOrEmpty()) {
                         _hideShimmer.value = true
                     }
                     bannerData.value = components
                 }
             }, onError = {
-                components.noOfPagesLoaded = 1
-                if (it is UnknownHostException || it is SocketTimeoutException) {
-                    components.verticalProductFailState = true
-                    _showErrorState.value = true
-                } else {
-                    _hideShimmer.value = true
-                }
-            })
+                    components.noOfPagesLoaded = 1
+                    if (it is UnknownHostException || it is SocketTimeoutException) {
+                        components.verticalProductFailState = true
+                        _showErrorState.value = true
+                    } else {
+                        _hideShimmer.value = true
+                    }
+                })
         }
     }
 
@@ -134,8 +133,12 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                 val item = listItem[position]
                 (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
                     ?.setPrimaryClip(ClipData.newPlainText(PROMO_CODE, item.code))
-                if (!item.applinks.isNullOrEmpty()) applinkCheck.value =
-                    item.applinks else applinkCheck.value = ""
+                if (!item.applinks.isNullOrEmpty()) {
+                    applinkCheck.value =
+                        item.applinks
+                } else {
+                    applinkCheck.value = ""
+                }
             }
         } catch (e: Exception) {
             Utils.logException(e)
@@ -156,12 +159,15 @@ class MultiBannerViewModel(val application: Application, var components: Compone
             launchCatchError(block = {
                 val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(getCampaignId(position))
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
-                    pushBannerStatus.value = Pair(position, pushSubscriptionResponse.notifierSetReminder.errorMessage
-                            ?: "")
+                    pushBannerStatus.value = Pair(
+                        position,
+                        pushSubscriptionResponse.notifierSetReminder.errorMessage
+                            ?: ""
+                    )
                 }
             }, onError = {
-                it.printStackTrace()
-            })
+                    it.printStackTrace()
+                })
         } else {
             showLogin.value = true
         }
@@ -188,16 +194,16 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                     pushBannerSubscription.value = position
                 }
             }, onError = {
-                it.printStackTrace()
-            })
+                    it.printStackTrace()
+                })
         }
     }
 
-    private fun getCampaignId(position: Int): Int {
+    private fun getCampaignId(position: Int): Long {
         bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
             val parameterList: List<String>? = listItem[position].paramsMobile?.split("=")
             if (parameterList != null && parameterList.size >= 2) {
-                return parameterList[1].toIntOrZero()
+                return parameterList[1].toLongOrZero()
             }
         }
         return 0
@@ -210,8 +216,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                 pushBannerSubscription.value = position
             }
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     fun getComponentPosition() = position
@@ -224,7 +230,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         fetchBannerData()
     }
 
-    fun setComponentPromoNameForCoupons(bannerName: String, data: List<DataItem>){
+    fun setComponentPromoNameForCoupons(bannerName: String, data: List<DataItem>) {
         data.forEach {
             if (it.action == BANNER_ACTION_CODE) {
                 when (bannerName) {
@@ -233,6 +239,11 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                     ComponentNames.DoubleBanner.componentName -> it.componentPromoName = DOUBLE_PROMO_CODE
                 }
             }
+        }
+    }
+    fun checkForDarkMode(context: Context?) {
+        if (context != null) {
+            isDarkMode = context.isDarkMode()
         }
     }
 }

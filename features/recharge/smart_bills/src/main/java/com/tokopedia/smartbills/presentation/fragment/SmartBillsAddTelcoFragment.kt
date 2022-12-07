@@ -29,7 +29,7 @@ import com.tokopedia.common.topupbills.view.bottomsheet.callback.AddSmartBillsIn
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
@@ -127,7 +127,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     private fun getPrefixTelco(){
-        viewModel.getPrefixAddTelco(menuId.toIntOrZero())
+        viewModel.getPrefixAddTelco(menuId.toIntSafely())
     }
 
     private fun onInputNumberChanged(inputNumber: String){
@@ -289,7 +289,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                 ) {
                                     val position = "1"
                                     commonTopUpBillsAnalytic.clickDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldWrapper.hint.toString(), position)
-                                    SmartBillsNominalBottomSheet.newInstance(isRequestNominal, catalogProduct, menuId.toIntOrZero(),
+                                    SmartBillsNominalBottomSheet.newInstance(isRequestNominal, catalogProduct, menuId.toIntSafely(),
                                             categoryId.orEmpty(), operatorActive.id, getNumber(), object : SmartBillsGetNominalCallback {
                                         override fun onProductClicked(rechargeProduct: RechargeProduct) {
                                             renderSelectedProduct(rechargeProduct)
@@ -369,7 +369,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 } else if (isPrepaid()) {
                     if (!selectedProduct?.id.isNullOrEmpty()){
                         isButtonTelcoLoading(true)
-                        addBills(selectedProduct?.id.toIntOrZero(), getNumber())
+                        addBills(selectedProduct?.id.toIntSafely(), getNumber())
                     }
                 }
             }
@@ -415,7 +415,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
             override fun onInquiryClicked() {
                 commonTopUpBillsAnalytic.clickAddInquiry(CategoryTelcoType.getCategoryString(categoryId))
-                addBills(attribute.productId.toIntOrZero(), attribute.clientNumber)
+                addBills(attribute.productId.toIntSafely(), attribute.clientNumber)
             }
 
             override fun onInquiryClose() {
