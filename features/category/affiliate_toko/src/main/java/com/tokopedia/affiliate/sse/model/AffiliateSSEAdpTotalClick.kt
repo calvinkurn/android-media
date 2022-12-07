@@ -8,9 +8,9 @@ data class AffiliateSSEAdpTotalClick(
     @SerializedName("day_range")
     val dayRange: Int? = null,
     @SerializedName("data")
-    val data: ClickData? = null
+    val data: Data? = null
 ) {
-    data class ClickData(
+    data class Data(
         @SerializedName("metric_type")
         val metricType: String? = null,
         @SerializedName("metric_value")

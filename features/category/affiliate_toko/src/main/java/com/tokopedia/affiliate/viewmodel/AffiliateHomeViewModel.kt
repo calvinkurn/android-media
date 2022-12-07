@@ -21,8 +21,6 @@ import com.tokopedia.affiliate.sse.AffiliateSSE
 import com.tokopedia.affiliate.sse.AffiliateSSEMapper
 import com.tokopedia.affiliate.sse.AffiliateSSEPageSource
 import com.tokopedia.affiliate.sse.model.AffiliateSSEAction
-import com.tokopedia.affiliate.sse.model.AffiliateSSEAdpTotalClick
-import com.tokopedia.affiliate.sse.model.AffiliateSSEAdpTotalClickItem
 import com.tokopedia.affiliate.sse.model.AffiliateSSECloseReason
 import com.tokopedia.affiliate.sse.model.AffiliateSSEResponse
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
@@ -94,26 +92,32 @@ class AffiliateHomeViewModel @Inject constructor(
         ) == AFFILIATE_SHOP_ADP
 
     fun getAffiliateValidateUser() {
-        launchCatchError(block = {
-            validateUserdata.value =
-                affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
-            progressBar.value = false
-        }, onError = {
+        launchCatchError(
+            block = {
+                validateUserdata.value =
+                    affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+                progressBar.value = false
+            },
+            onError = {
                 progressBar.value = false
                 it.printStackTrace()
                 errorMessage.value = it
-            })
+            }
+        )
     }
 
     fun getAnnouncementInformation() {
-        launchCatchError(block = {
-            affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
-                    PAGE_ANNOUNCEMENT_HOME
-                )
-        }, onError = {
+        launchCatchError(
+            block = {
+                affiliateAnnouncement.value =
+                    affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
+                        PAGE_ANNOUNCEMENT_HOME
+                    )
+            },
+            onError = {
                 it.printStackTrace()
-            })
+            }
+        )
     }
 
     fun getAffiliatePerformance(page: Int, isFullLoad: Boolean = false) {
@@ -140,7 +144,9 @@ class AffiliateHomeViewModel @Inject constructor(
                         noMoreDataAvailable.value = false
                         lastSelectedChip = null
                         performanceList =
-                            affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
+                            affiliateUserPerformanceUseCase.affiliateUserperformance(
+                                selectedDateValue
+                            )
                     }
                 }
                 if (!isFullLoad) shimmerVisibility.value = true
@@ -292,16 +298,16 @@ class AffiliateHomeViewModel @Inject constructor(
     /**
      * SSE
      */
-    fun startSSE(channelId: String) {
+    fun startSSE() {
         sseJob?.cancel()
         sseJob = viewModelScope.launch {
-            connectSSE(channelId, AffiliateSSEPageSource.AffiliateADP.source)
+            connectSSE(AffiliateSSEPageSource.AffiliateADP.source)
             affiliateSSE.listen().collect {
                 when (it) {
-                    is AffiliateSSEAction.Message -> handleSSEMessage(it.message, channelId)
+                    is AffiliateSSEAction.Message -> handleSSEMessage(it.message)
                     is AffiliateSSEAction.Close -> {
                         if (it.reason == AffiliateSSECloseReason.ERROR) {
-                            connectSSE(channelId, AffiliateSSEPageSource.AffiliateADP.source)
+                            connectSSE(AffiliateSSEPageSource.AffiliateADP.source)
                         }
                     }
                 }
@@ -309,32 +315,21 @@ class AffiliateHomeViewModel @Inject constructor(
         }
     }
 
-    private fun connectSSE(channelId: String, pageSource: String) {
-        affiliateSSE.connect(channelId, pageSource)
+    private fun connectSSE(pageSource: String) {
+        affiliateSSE.connect(pageSource)
     }
 
-    private fun stopSSE() {
+    fun stopSSE() {
         sseJob?.cancel()
         affiliateSSE.close()
     }
 
-    private suspend fun handleSSEMessage(message: AffiliateSSEResponse, channelId: String) {
+    private suspend fun handleSSEMessage(message: AffiliateSSEResponse) {
         val result = withContext(dispatchers.computation) {
             val sseMapper = AffiliateSSEMapper(message)
             sseMapper.mapping()
         }
-
-        when (result) {
-            is AffiliateSSEAdpTotalClickItem -> handleUpdateChannelStatus(message, channelId)
-            is AffiliateSSEAdpTotalClick -> handleUpdateChannelStatus(message, channelId)
-        }
-    }
-
-    private fun handleUpdateChannelStatus(changedChannelId: AffiliateSSEResponse, currentChannelId: String) {
-        if (changedChannelId.event == currentChannelId) {
-//            _upcomingState.emit(PlayUpcomingState.WatchNow)
-            stopSSE()
-        }
+        // TODO ui state update
     }
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility

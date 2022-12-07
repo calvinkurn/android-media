@@ -29,14 +29,12 @@ class AffiliateSSEImpl @Inject constructor(
     private var sse: ServerSentEvent? = null
     private var sseFlow = MutableSharedFlow<AffiliateSSEAction>(extraBufferCapacity = 100)
 
-    override fun connect(channelId: String, pageSource: String) {
+    override fun connect(pageSource: String) {
         SSELogger.getInstance(context)
-            .init(buildGeneralInfo(channelId, userSession.gcToken, pageSource).toString())
+            .init(buildGeneralInfo(userSession.gcToken, pageSource).toString())
         SSELogger.getInstance(context).send("SSE Connecting...")
 
-        var url =
-            "https://sse-staging.tokopedia.com/$AFFILIATE_SSE?page_source=$pageSource&channel_id=$channelId"
-        if (userSession.gcToken.isNotEmpty()) url += "&token=${userSession.gcToken}"
+        val url = "https://sse-staging.tokopedia.com/$AFFILIATE_SSE?page_source=$pageSource"
 
         val request = Request.Builder().get().url(url)
             .header("Origin", TokopediaUrl.getInstance().WEB)
@@ -58,7 +56,14 @@ class AffiliateSSEImpl @Inject constructor(
                     event: String,
                     message: String
                 ) {
-                    sseFlow.tryEmit(AffiliateSSEAction.Message(AffiliateSSEResponse(event = event, message = message)))
+                    sseFlow.tryEmit(
+                        AffiliateSSEAction.Message(
+                            AffiliateSSEResponse(
+                                event = event,
+                                message = message
+                            )
+                        )
+                    )
                     SSELogger.getInstance(context).send(event, message)
                 }
 
@@ -97,18 +102,17 @@ class AffiliateSSEImpl @Inject constructor(
     }
 
     private fun buildGeneralInfo(
-        channelId: String,
         gcToken: String,
         pageSource: String
     ): Map<String, String> {
         return mapOf(
-            "channelId" to channelId.ifEmpty { "\"\"" },
+            "Authorization" to gcToken.ifEmpty { "\"\"" },
             "gcToken" to gcToken.ifEmpty { "\"\"" },
             "pageSource" to pageSource.ifEmpty { "\"\"" }
         )
     }
 
     private companion object {
-        const val AFFILIATE_SSE = "sse/connect"
+        const val AFFILIATE_SSE = "affiliate/sse/connect"
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.sse
 
 import com.google.gson.Gson
+import com.tokopedia.affiliate.sse.model.AffiliateSSEAdpTotalClick
 import com.tokopedia.affiliate.sse.model.AffiliateSSEAdpTotalClickItem
 import com.tokopedia.affiliate.sse.model.AffiliateSSEResponse
 import com.tokopedia.config.GlobalConfig
@@ -12,14 +13,23 @@ class AffiliateSSEMapper(private val response: AffiliateSSEResponse) {
 
     fun mapping(): Any? {
         return when (response.event) {
-            AffiliateSSEType.TrafficClickAdp.type -> mapTrafficClick()
-            AffiliateSSEType.TrafficClickAdpItem.type -> mapTrafficClick()
+            AffiliateSSEType.AffiliateSSE.type -> mapAffiliateSSE()
             else -> null
         }
     }
 
-    private fun mapTrafficClick(): AffiliateSSEAdpTotalClickItem? {
-        return convertToModel(response.message, AffiliateSSEAdpTotalClickItem::class.java)
+    private fun mapAffiliateSSE(): Any? {
+        return when {
+            response.message.contains("TRAFFIC_CLICK_ADP_ITEM") -> convertToModel(
+                response.message,
+                AffiliateSSEAdpTotalClickItem::class.java
+            )
+            response.message.contains("TRAFFIC_CLICK_ADP") -> convertToModel(
+                response.message,
+                AffiliateSSEAdpTotalClick::class.java
+            )
+            else -> null
+        }
     }
 
     private fun <T> convertToModel(message: String, classOfT: Class<T>): T? {

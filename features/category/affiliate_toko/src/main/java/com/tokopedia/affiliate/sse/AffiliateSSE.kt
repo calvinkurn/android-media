@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AffiliateSSE {
 
-    fun connect(channelId: String, pageSource: String)
+    fun connect(pageSource: String)
 
     fun close()
 
