@@ -455,7 +455,7 @@ class ProductManageViewModel @Inject constructor(
                                 GetStatusShopUseCase.createRequestParams(shopId.toIntSafely())
                             getStatusShop.executeOnBackground()
                         } catch (ex: Exception) {
-                            null
+                            StatusInfo(String.EMPTY, String.EMPTY, String.EMPTY, String.EMPTY)
                         }
                     }
                     productAccess.await() to shopStatusResponse.await()
