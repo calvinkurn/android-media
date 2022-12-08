@@ -17,11 +17,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShippingEditorViewModel @Inject constructor(
-        private val repo: ShopLocationRepository,
-        private val shippingEditorRepo: ShippingEditorRepository,
-        private val mapper: ShippingEditorMapper,
-        private val validateShippingMapper: ValidateShippingNewMapper,
-        private val detailMapper: ShipperDetailMapper) : ViewModel() {
+    private val repo: ShopLocationRepository,
+    private val shippingEditorRepo: ShippingEditorRepository,
+    private val mapper: ShippingEditorMapper,
+    private val validateShippingMapper: ValidateShippingNewMapper,
+    private val detailMapper: ShipperDetailMapper
+) : ViewModel() {
 
     private val _shopWhitelist = MutableLiveData<ShippingEditorState<ShopLocWhitelist>>()
     val shopWhitelist: LiveData<ShippingEditorState<ShopLocWhitelist>>
@@ -58,22 +59,24 @@ class ShippingEditorViewModel @Inject constructor(
     fun getShipperList(shopId: Long) {
         _shipperList.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorGetShipperData) {
-            val getShipperListData =  shippingEditorRepo.getShippingEditor(shopId)
-            _shipperList.value = ShippingEditorState.Success(mapper.mapShipperList(getShipperListData))
+            val getShipperListData = shippingEditorRepo.getShippingEditor(shopId)
+            val model = mapper.mapShipperList(getShipperListData)
+            getShipperTickerList(shopId, model)
         }
     }
 
-    fun getShipperTickerList(shopId: Long) {
+    fun getShipperTickerList(shopId: Long, shipperList: ShipperListModel) {
         _shipperTickerList.value = ShippingEditorState.Loading
-        viewModelScope.launch(onErrorGetShipperTicker) {
+        viewModelScope.launch(getOnErrorGetShipperTicker(shipperList)) {
             val getShipperTickerData = shippingEditorRepo.getShippingEditorShipperTicker(shopId)
             val data = mapper.mapShipperTickerList(getShipperTickerData)
+            _shipperList.value = ShippingEditorState.Success(mapper.combineTickerAndShipperList(shipperList, data))
             _shipperTickerList.value = ShippingEditorState.Success(data)
         }
     }
 
     fun getShipperDetail() {
-        _shipperDetail.value  = ShippingEditorState.Loading
+        _shipperDetail.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorGetShipperDetails) {
             val getShipperDetail = shippingEditorRepo.getShipperDetails()
             val data = detailMapper.mapShipperDetails(getShipperDetail.ongkirShippingEditorGetShipperDetail.data)
@@ -82,7 +85,7 @@ class ShippingEditorViewModel @Inject constructor(
     }
 
     fun validateShippingEditor(shopId: Long, activatedSpIds: String) {
-        _validateDataShipper.value  = ShippingEditorState.Loading
+        _validateDataShipper.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorValidateShippingEditor) {
             val getValidateData = shippingEditorRepo.validateShippingEditor(shopId, activatedSpIds)
             _validateDataShipper.value = ShippingEditorState.Success(validateShippingMapper.mapShippingEditorData(getValidateData.ongkirShippingEditorPopup.data))
@@ -90,7 +93,7 @@ class ShippingEditorViewModel @Inject constructor(
     }
 
     fun saveShippingData(shopId: Long, activatedSpIds: String, featuresId: String?) {
-        _saveShippingData.value  = ShippingEditorState.Loading
+        _saveShippingData.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorSaveShippingEditor) {
             val saveShippingEditor = shippingEditorRepo.saveShippingEditor(shopId, activatedSpIds, featuresId)
             _saveShippingData.value = ShippingEditorState.Success(saveShippingEditor.saveShippingEditor)
@@ -105,7 +108,8 @@ class ShippingEditorViewModel @Inject constructor(
         _shipperList.value = ShippingEditorState.Fail(e, "")
     }
 
-    private val onErrorGetShipperTicker = CoroutineExceptionHandler { _, e ->
+    private fun getOnErrorGetShipperTicker(shipperList: ShipperListModel) = CoroutineExceptionHandler { _, e ->
+        _shipperList.value = ShippingEditorState.Success(shipperList)
         _shipperTickerList.value = ShippingEditorState.Fail(e, "")
     }
 

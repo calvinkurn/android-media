@@ -74,6 +74,7 @@ class ShippingEditorViewModelTest {
     @Test
     fun `Get shipper list success`() {
         coEvery { shippingEditorRepo.getShippingEditor(any()) } returns GetShipperListResponse()
+        coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } returns GetShipperTickerResponse()
         shippingEditorViewModel.getShipperList(1234)
         verify { shipperListObserver.onChanged(match { it is ShippingEditorState.Success }) }
     }
@@ -88,15 +89,16 @@ class ShippingEditorViewModelTest {
     @Test
     fun `Get shipper ticker list success`() {
         coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } returns GetShipperTickerResponse()
-        shippingEditorViewModel.getShipperTickerList(1234)
+        shippingEditorViewModel.getShipperTickerList(1234, ShipperListModel())
         verify { shipperTickerListObserver.onChanged(match { it is ShippingEditorState.Success }) }
     }
 
     @Test
     fun `Get shipper ticker list failed`() {
         coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } throws defaultThrowable
-        shippingEditorViewModel.getShipperTickerList(1234)
+        shippingEditorViewModel.getShipperTickerList(1234, ShipperListModel())
         verify { shipperTickerListObserver.onChanged(match { it is ShippingEditorState.Fail }) }
+        verify { shipperListObserver.onChanged(match { it is ShippingEditorState.Success }) }
     }
 
     @Test

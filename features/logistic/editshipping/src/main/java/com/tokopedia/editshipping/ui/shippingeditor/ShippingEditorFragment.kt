@@ -246,7 +246,6 @@ class ShippingEditorFragment :
             Observer {
                 when (it) {
                     is ShippingEditorState.Success -> {
-                        viewModel.getShipperTickerList(userSession.shopId.toLong())
                         updateData(it.data.shippers)
                         renderTicker(it.data.ticker)
                         showOnBoarding()
@@ -277,7 +276,6 @@ class ShippingEditorFragment :
                         shippingEditorLayout?.visible()
                         btnSaveShipper?.visible()
                         globalErrorLayout?.gone()
-                        updateTickerData(it.data)
                         updateHeaderTickerData(it.data.headerTicker)
                     }
                 }
@@ -334,11 +332,6 @@ class ShippingEditorFragment :
     private fun updateData(data: ShipperGroupModel) {
         shippingEditorOnDemandAdapter.updateData(data.onDemand)
         shippingEditorConventionalAdapter.updateData(data.conventional)
-    }
-
-    private fun updateTickerData(data: ShipperTickerModel) {
-        shippingEditorOnDemandAdapter.setTickerData(data)
-        shippingEditorConventionalAdapter.setTickerData(data)
     }
 
     private fun updateBottomsheetData(data: ShipperDetailModel) {

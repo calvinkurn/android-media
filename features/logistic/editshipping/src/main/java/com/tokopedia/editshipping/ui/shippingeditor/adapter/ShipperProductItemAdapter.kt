@@ -1,8 +1,10 @@
 package com.tokopedia.editshipping.ui.shippingeditor.adapter
 
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -11,8 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShipperProductItemAdapter(private var listener: ShipperProductItemListener) : RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
 
-    interface ShipperProductItemListener {
-    }
+    interface ShipperProductItemListener
 
     interface ShipperProductUncheckedListener {
         fun uncheckedProduct()
@@ -22,7 +23,7 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         this.shipperProductUncheckedListener = listener
     }
 
-    private var shipperProductUncheckedListener : ShipperProductUncheckedListener? = null
+    private var shipperProductUncheckedListener: ShipperProductUncheckedListener? = null
 
     private var shipperProduct = mutableListOf<ShipperProductModel>()
 
@@ -50,13 +51,13 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
     }
 
     fun updateChecked(checked: Boolean) {
-        shipperProduct.forEach {
+        shipperProduct.filter { it.isAvailable }.forEach {
             it.isActive = checked
         }
         notifyDataSetChanged()
     }
 
-    inner class ShipperProductOnDemandViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ShipperProductOnDemandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val shipperProductName = itemView.findViewById<Typography>(R.id.shipper_product_name)
         val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
         private val divider = itemView.findViewById<View>(R.id.divider_shipment)
@@ -66,16 +67,47 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         }
 
         private fun setItemData(data: ShipperProductModel) {
-            val lastItem = shipperProduct.last()
-            shipperProductName.text = data.shipperProductName
-            shipperProductCb.isChecked = data.isActive
-            if (data == lastItem) {
-                divider.visibility = View.GONE
-            }
+            setShipperProductName(data)
+            setShipperProductEnableState(data)
+            setCheckBoxCheckedState(data)
+            setDivider(data)
+            setCheckBoxListener(data)
+        }
 
+        private fun setCheckBoxListener(data: ShipperProductModel) {
             shipperProductCb?.setOnCheckedChangeListener { _, isChecked ->
                 data.isActive = isChecked
                 activeProductChecker(isChecked)
+            }
+        }
+
+        private fun setShipperProductName(data: ShipperProductModel) {
+            shipperProductName.text = data.shipperProductName
+        }
+
+        private fun setDivider(data: ShipperProductModel) {
+            val lastItem = shipperProduct.last()
+            if (data == lastItem) {
+                divider.visibility = View.GONE
+            }
+        }
+
+        private fun setCheckBoxCheckedState(data: ShipperProductModel) {
+            if (data.isAvailable) {
+                shipperProductCb.isEnabled = true
+                shipperProductCb.isChecked = data.isActive
+            } else {
+                shipperProductCb.isEnabled = false
+            }
+        }
+
+        private fun setShipperProductEnableState(data: ShipperProductModel) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (data.isAvailable) {
+                    itemView.rootView.foreground = MethodChecker.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
+                } else {
+                    itemView.rootView.foreground = MethodChecker.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
+                }
             }
         }
 

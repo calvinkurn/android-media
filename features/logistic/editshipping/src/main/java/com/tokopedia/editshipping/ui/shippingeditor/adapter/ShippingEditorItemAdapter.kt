@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
-import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.editshipping.util.EditShippingConstant.KURIR_REKOMENDASI_SHIPPER_ID
 import com.tokopedia.iconunify.IconUnify
@@ -25,7 +24,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
-class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener): RecyclerView.Adapter<ShippingEditorItemAdapter.ShippingEditorOnDemandViewHolder>() {
+class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener) : RecyclerView.Adapter<ShippingEditorItemAdapter.ShippingEditorOnDemandViewHolder>() {
 
     var shipperModels = mutableListOf<ShipperModel>()
 
@@ -52,18 +51,6 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
         notifyDataSetChanged()
     }
 
-    fun setTickerData(data: ShipperTickerModel) {
-        data.courierTicker.forEach {
-            val onDemandModel = shipperModels.find { onDemand ->
-                onDemand.shipperId == it.shipperId
-            }
-            onDemandModel?.tickerState = it.tickerState
-            onDemandModel?.isAvailable = it.isAvailable
-            onDemandModel?.warehouseModel = it.warehouses
-        }
-        notifyDataSetChanged()
-    }
-
     fun getActiveSpIds(): List<String> {
         val activatedListIds = mutableListOf<String>()
         shipperModels.forEach { courier ->
@@ -72,7 +59,6 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
                     activatedListIds.add(product.shipperProductId)
                 }
             }
-
         }
         return activatedListIds
     }
@@ -95,7 +81,7 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
         return RecyclerView.NO_POSITION
     }
 
-    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener): RecyclerView.ViewHolder(itemView) {
+    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener) : RecyclerView.ViewHolder(itemView) {
         private val productItemAdapter = ShipperProductItemAdapter(productItemListener)
         private val featureItemAdapter = ShipperFeatureAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
@@ -129,14 +115,13 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
 
             shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
                 data.isActive = isChecked
-                data.shipperProduct.forEach { it.isActive = isChecked }
+                data.shipperProduct.filter { it.isAvailable }.forEach { it.isActive = isChecked }
             }
         }
 
         private fun setCheckboxEnableState(data: ShipperModel) {
-            if (data.tickerState == EditShippingConstant.TICKER_STATE_UNAVAILABLE) {
+            if (!data.isAvailable) {
                 flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
-                data.isActive = false
                 shipmentItemCb.isEnabled = false
             } else {
                 flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
@@ -160,8 +145,7 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
                 shipmentItemImage.gone()
             }
 
-
-            if(data.textPromo.isEmpty()) {
+            if (data.textPromo.isEmpty()) {
                 couponLayout.visibility = View.GONE
             } else {
                 couponLayout.visibility = View.VISIBLE
@@ -178,15 +162,14 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_WARNING
                     tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseModel?.size))
-                    tickerShipper.setDescriptionClickEvent(object: TickerCallback {
+                    tickerShipper.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             listener.onShipperTickerClicked(data)
                         }
 
                         override fun onDismiss() {
-                            //no-op
+                            // no-op
                         }
-
                     })
                 }
                 else -> {
@@ -229,9 +212,6 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
 
         private fun setItemChecked(data: ShipperModel) {
             setCheckboxEnableState(data)
-            if (data.tickerState == EditShippingConstant.TICKER_STATE_UNAVAILABLE) {
-                productItemAdapter?.updateChecked(data.isActive)
-            }
 
             shipmentItemCb.isChecked = data.isActive
             if (shipmentItemCb.isChecked) {
@@ -251,14 +231,12 @@ class ShippingEditorItemAdapter(private val listener: ShippingEditorItemAdapterL
             }
         }
 
-        private fun initUncheckedListener(){
+        private fun initUncheckedListener() {
             productItemAdapter.setupUncheckedListener(object : ShipperProductItemAdapter.ShipperProductUncheckedListener {
                 override fun uncheckedProduct() {
                     shipmentItemCb.isChecked = false
                 }
             })
         }
-
     }
-
 }
