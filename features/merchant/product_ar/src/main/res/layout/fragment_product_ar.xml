@@ -68,7 +68,7 @@
         tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/rv_ar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_compare_icon" />
+        app:srcCompat="@drawable/ic_compare_disabled" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_1"
