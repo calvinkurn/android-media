@@ -114,7 +114,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         setEduCenterBottomSheet()
         setupStopConfirmationDialog()
         setupObservables()
-        setuoObserveDeleteUiEffect()
+        setupObserveDeleteUiEffect()
     }
 
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
@@ -178,7 +178,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         }
     }
 
-    private fun setuoObserveDeleteUiEffect() {
+    private fun setupObserveDeleteUiEffect() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.deleteUIEffect.collect {
                 when (it) {
@@ -492,7 +492,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         )
     }
 
-    fun showSuccessToaster(message : String){
+    private fun showSuccessToaster(message : String){
         view?.let { view ->
             Toaster.build(
                 view,
