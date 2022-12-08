@@ -1,6 +1,5 @@
 package com.tokopedia.atc_common.data.model.request
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -11,7 +10,6 @@ data class AddToCartOcsRequestParams(
         @SerializedName("product_id")
         var productId: Long = 0,
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
         var shopId: Int = 0,
 
@@ -21,11 +19,9 @@ data class AddToCartOcsRequestParams(
         @SerializedName("notes")
         var notes: String = "",
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
         var warehouseId: Int = 0,
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("customer_id")
         var customerId: Int = 0,
 
@@ -41,7 +37,6 @@ data class AddToCartOcsRequestParams(
         @SerializedName("is_trade_in")
         var isTradeIn: Boolean = false,
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_price")
         var shippingPrice: Int = 0,
 

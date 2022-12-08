@@ -1,6 +1,5 @@
 package com.tokopedia.atc_common.domain.model.response
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class AtcMultiData (
@@ -40,11 +39,9 @@ data class AtcMultiData (
                     @SerializedName("notes")
                     val notes: String = "",
 
-                    @SuppressLint("Invalid Data Type")
                     @SerializedName("shop_id")
                     val shopId: Int = -1,
 
-                    @SuppressLint("Invalid Data Type")
                     @SerializedName("customer_id")
                     val customerId: Int = -1
             )

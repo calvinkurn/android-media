@@ -1,6 +1,5 @@
 package com.tokopedia.atc_common.domain.model.request
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -13,7 +12,6 @@ data class AddToCartMultiParam(
         @SerializedName("product_name")
         val productName: String = "",
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("product_price")
         val productPrice: Long = -1,
 
@@ -23,15 +21,12 @@ data class AddToCartMultiParam(
         @SerializedName("notes")
         val notes: String = "",
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
         val shopId: Int = -1,
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("customer_id")
         val custId: Int = -1,
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
         val warehouseId: Int = -1,
 
