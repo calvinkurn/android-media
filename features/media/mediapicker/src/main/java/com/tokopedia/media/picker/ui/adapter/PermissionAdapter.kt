@@ -1,9 +1,6 @@
 package com.tokopedia.media.picker.ui.adapter
 
 import android.Manifest.permission.*
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +10,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemRuntimePermissionBinding
+import com.tokopedia.media.picker.utils.goToSettings
 import com.tokopedia.media.picker.utils.permission.PermissionModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -59,13 +57,7 @@ class PermissionAdapter constructor(
         }
 
         private fun openAppSettings() {
-            context.startActivity(
-                Intent().apply {
-                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                    data = Uri.parse("package:" + context.packageName)
-                    addCategory(Intent.CATEGORY_DEFAULT)
-                }
-            )
+            context.startActivity(context.goToSettings())
         }
 
         private fun setPermissionState(isGranted: Boolean) {

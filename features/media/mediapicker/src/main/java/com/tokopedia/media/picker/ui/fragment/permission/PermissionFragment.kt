@@ -14,7 +14,10 @@ import com.tokopedia.media.R
 import com.tokopedia.media.databinding.FragmentPermissionBinding
 import com.tokopedia.media.picker.ui.adapter.PermissionAdapter
 import com.tokopedia.media.picker.ui.adapter.decoration.ItemDividerDecoration
-import com.tokopedia.media.picker.utils.permission.*
+import com.tokopedia.media.picker.utils.permission.PermissionManager
+import com.tokopedia.media.picker.utils.permission.PermissionModel
+import com.tokopedia.media.picker.utils.permission.PermissionRequestCallback
+import com.tokopedia.media.picker.utils.permission.isGranted
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -32,7 +35,7 @@ open class PermissionFragment @Inject constructor(
         )[PermissionViewModel::class.java]
     }
 
-    private lateinit var permissionManager: PermissionManager
+    private var permissionManager: PermissionManager? = null
     private val mPermissionList = mutableListOf<PermissionModel>()
     private val mAdapter by lazy { PermissionAdapter(mPermissionList) }
 
@@ -65,6 +68,14 @@ open class PermissionFragment @Inject constructor(
         initObservable()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (listener?.isRootPermissionGranted() == false) {
+            viewModel.getDynamicPermissionList()
+        }
+    }
+
     override fun onGranted(permissions: List<String>) {
         updateUiState(permissions)
         if (permissions.size == mPermissionList.size) {
@@ -85,8 +96,6 @@ open class PermissionFragment @Inject constructor(
     }
 
     private fun initObservable() {
-        lifecycle.addObserver(viewModel)
-
         viewModel.dynamicWording.observe(viewLifecycleOwner) {
             mTitle = getString(it.first)
             mMessage = getString(it.second)
@@ -106,10 +115,8 @@ open class PermissionFragment @Inject constructor(
 
         viewModel.permissionCodeName.observe(viewLifecycleOwner) { permissions ->
             if (listener?.isRootPermissionGranted() == false) {
-                binding?.permissionPage?.show()
-
-                onShowDialog(permissions, mTitle, mMessage)
                 updateUiState(permissions)
+                onShowDialog(permissions, mTitle, mMessage)
             } else {
                 listener?.onPermissionGranted()
             }
@@ -117,6 +124,10 @@ open class PermissionFragment @Inject constructor(
     }
 
     private fun updateUiState(permissions: List<String>) {
+        if (permissions.size <= mPermissionList.size && isPermissionDialogShown) {
+            binding?.permissionPage?.show()
+        }
+
         permissions.forEach {
             val isGranted = isGranted(requireContext(), it)
             mAdapter.updateState(it, isGranted)
@@ -144,7 +155,7 @@ open class PermissionFragment @Inject constructor(
             setOverlayClose(false)
 
             setPrimaryCTAClickListener {
-                permissionManager.requestPermissions(
+                permissionManager?.requestPermissions(
                     permissionCodeNameList,
                     PERMISSION_REQUEST_CODE
                 )
@@ -156,7 +167,7 @@ open class PermissionFragment @Inject constructor(
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            permissionManager.onRequestPermissionsResult(permissions, grantResults)
+            permissionManager?.onRequestPermissionsResult(permissions, grantResults)
         }
     }
 

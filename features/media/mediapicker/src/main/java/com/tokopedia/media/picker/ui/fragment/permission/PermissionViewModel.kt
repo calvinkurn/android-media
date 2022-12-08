@@ -1,17 +1,20 @@
 package com.tokopedia.media.picker.ui.fragment.permission
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.tokopedia.media.R
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.utils.permission.PermissionModel
 import com.tokopedia.media.picker.utils.permission.permissions
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import javax.inject.Inject
 
 class PermissionViewModel @Inject constructor(
     private val cacheManager: ParamCacheManager
-) : ViewModel(), LifecycleObserver {
+) : ViewModel() {
 
     /*
     * will return a dynamic wording of permission
@@ -37,7 +40,6 @@ class PermissionViewModel @Inject constructor(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun getDynamicPermissionList() {
         _permissionList.value = permissions(
             cacheManager.get().pageType(),
