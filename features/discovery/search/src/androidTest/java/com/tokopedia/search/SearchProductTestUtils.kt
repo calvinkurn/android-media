@@ -89,24 +89,6 @@ internal fun createInspirationCardListener(): InspirationCardListener {
     }
 }
 
-internal fun createInspirationCarouselListener(): InspirationCarouselListener {
-    return object: InspirationCarouselListener {
-        override fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselChipsClicked(inspirationCarouselAdapterPosition: Int, inspirationCarouselViewModel: InspirationCarouselDataView, inspirationCarouselOption: InspirationCarouselDataView.Option) {}
-
-    }
-}
-
 internal fun createBroadMatchListener(): BroadMatchListener {
     return object: BroadMatchListener {
         override fun onBroadMatchImpressed(broadMatchItemDataView: BroadMatchDataView) {}

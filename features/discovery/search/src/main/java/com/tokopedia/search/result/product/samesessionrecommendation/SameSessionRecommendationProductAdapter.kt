@@ -3,8 +3,8 @@ package com.tokopedia.search.result.product.samesessionrecommendation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
 
 class SameSessionRecommendationProductAdapter(
     private val listener: InspirationCarouselListener,

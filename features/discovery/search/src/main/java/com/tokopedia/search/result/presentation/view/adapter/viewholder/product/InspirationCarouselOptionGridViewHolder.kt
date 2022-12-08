@@ -9,7 +9,7 @@ import com.tokopedia.search.databinding.SearchInspirationCarouselOptionGridBindi
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationCarouselOptionGridViewHolder(

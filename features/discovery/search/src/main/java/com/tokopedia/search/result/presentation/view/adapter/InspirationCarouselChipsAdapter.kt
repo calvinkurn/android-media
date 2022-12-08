@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselChipsItemViewHolder
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
 
 class InspirationCarouselChipsAdapter(
     private val inspirationCarouselAdapterPosition: Int,

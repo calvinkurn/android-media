@@ -60,11 +60,7 @@ import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.search.result.product.inspirationcarousel.*
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
@@ -163,6 +159,7 @@ class ProductListPresenter @Inject constructor(
     private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
+    private val inspirationCarouselView: InspirationCarouselView,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -1658,10 +1655,10 @@ class ProductListPresenter @Inject constructor(
 
         when(product.layout) {
             LAYOUT_INSPIRATION_CAROUSEL_GRID ->
-                view.trackEventImpressionInspirationCarouselGridItem(product)
+                inspirationCarouselView.trackEventImpressionInspirationCarouselGridItem(product)
             LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
-                view.trackEventImpressionInspirationCarouselChipsItem(product)
-            else -> view.trackEventImpressionInspirationCarouselListItem(product)
+                inspirationCarouselView.trackEventImpressionInspirationCarouselChipsItem(product)
+            else -> inspirationCarouselView.trackEventImpressionInspirationCarouselListItem(product)
         }
     }
 
@@ -1683,10 +1680,10 @@ class ProductListPresenter @Inject constructor(
 
         when(product.layout) {
             LAYOUT_INSPIRATION_CAROUSEL_GRID ->
-                view.trackEventClickInspirationCarouselGridItem(product)
+                inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
             LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
-                view.trackEventClickInspirationCarouselChipsItem(product)
-            else -> view.trackEventClickInspirationCarouselListItem(product)
+                inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
+            else -> inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
         }
 
         if(product.isOrganicAds) sendTrackingClickInspirationCarouselAds(product)
@@ -1731,7 +1728,7 @@ class ProductListPresenter @Inject constructor(
 
         changeActiveInspirationCarouselChips(inspirationCarouselViewModel, clickedInspirationCarouselOption)
 
-        view.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
+        inspirationCarouselView.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
         view.refreshItemAtIndex(adapterPosition)
 
         if (clickedInspirationCarouselOption.hasProducts()) return

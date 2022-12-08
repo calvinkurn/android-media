@@ -146,4 +146,21 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
         )
     }
+
+    override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
+
+    }
+
+    override fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product) {
+
+    }
+
+    override fun onInspirationCarouselChipsClick(
+        adapterPosition: Int,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        searchParameter: Map<String, Any>
+    ) {
+
+    }
 }

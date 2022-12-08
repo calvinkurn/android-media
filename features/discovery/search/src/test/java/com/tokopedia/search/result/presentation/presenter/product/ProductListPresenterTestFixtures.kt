@@ -213,6 +213,7 @@ internal open class ProductListPresenterTestFixtures {
             ),
             dynamicFilterModel,
             bottomSheetFilterPresenter,
+            inspirationCarouselView,
         )
         productListPresenter.attachView(productListView)
     }

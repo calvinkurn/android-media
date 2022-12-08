@@ -24,4 +24,10 @@ abstract class InspirationCarouselModule {
     abstract fun provideInspirationCarouselPresenter(
         delegate: InspirationCarouselPresenterDelegate
     ): InspirationCarouselPresenter
+
+    @Binds
+    @SearchScope
+    abstract fun provideInspirationCarouselListener(
+        delegate: InspirationCarouselListenerDelegate
+    ): InspirationCarouselListener
 }

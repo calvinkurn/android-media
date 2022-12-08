@@ -10,7 +10,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselOptionGridViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselOptionInfoViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselOptionListViewHolder
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
 
 class InspirationCarouselOptionAdapterTypeFactory(
         private val listener: InspirationCarouselListener

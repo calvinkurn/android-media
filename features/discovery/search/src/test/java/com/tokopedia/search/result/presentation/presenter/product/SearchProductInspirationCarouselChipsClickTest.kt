@@ -101,7 +101,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
     private fun `Then verify tracking chips click`(clickedInspirationCarouselOption: InspirationCarouselDataView.Option) {
         verify {
-            productListView.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
+            inspirationCarouselView.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
         }
     }
 
