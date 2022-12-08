@@ -48,7 +48,12 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         return Pair(list,null)
     }
 
-    private fun getRecommendationRequestParam(page: String, componentId: String, pageName: String, queryParam : String = ""): GetRecommendationRequestParam {
+    private fun getRecommendationRequestParam(
+        page: String,
+        componentId: String,
+        pageName: String,
+        queryParam: String = ""
+    ): GetRecommendationRequestParam {
         return GetRecommendationRequestParam(
                 pageNumber = page.toIntOrZero(),
 //                pageName = if(isBestSeller) "category_best_seller" else "category_page",

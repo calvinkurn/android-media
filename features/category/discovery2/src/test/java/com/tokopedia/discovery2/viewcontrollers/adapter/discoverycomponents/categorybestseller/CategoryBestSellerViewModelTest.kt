@@ -3,7 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cat
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.datamapper.getComponent
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +12,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.*
-import kotlin.collections.ArrayList
 
 class CategoryBestSellerViewModelTest{
 
@@ -53,6 +52,7 @@ class CategoryBestSellerViewModelTest{
             val error = Error("error")
             every { componentsItem.id } returns "s"
             every { componentsItem.pageEndPoint } returns "s"
+            every { componentsItem.properties } returns null
             coEvery {
                 viewModel.productCardsUseCase.loadFirstPageComponents(
                     any(),
@@ -74,6 +74,7 @@ class CategoryBestSellerViewModelTest{
             every { componentsItem.id } returns "s"
             every { componentsItem.pageEndPoint } returns "s"
             every { componentsItem.getComponentsItem() } returns list
+            every { componentsItem.properties } returns null
             coEvery {
                 viewModel.productCardsUseCase.loadFirstPageComponents(
                     any(),
@@ -86,6 +87,66 @@ class CategoryBestSellerViewModelTest{
 
             Assert.assertEquals(viewModel.getProductLoadState().value, true)
         }
+    }
+
+    @Test
+    fun onUpdateComponent(){
+        val list = mockk<ArrayList<ComponentsItem>>()
+        every { componentsItem.id } returns "s"
+        every { componentsItem.pageEndPoint } returns "s"
+        every { componentsItem.getComponentsItem() } returns list
+        every { componentsItem.properties } returns null
+        coEvery {
+            viewModel.productCardsUseCase.loadFirstPageComponents(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
+
+        viewModel.onAttachToViewHolder()
+        assert(viewModel.getBackgroundImage().value == null)
+    }
+
+    @Test
+    fun `backgroundImage not present`(){
+        val list = mockk<ArrayList<ComponentsItem>>()
+        every { componentsItem.id } returns "s"
+        every { componentsItem.pageEndPoint } returns "s"
+        every { componentsItem.getComponentsItem() } returns list
+        val mockProperties = mockk<Properties>()
+        every { componentsItem.properties } returns mockProperties
+        every { mockProperties.backgroundImageUrl } returns "url"
+        coEvery {
+            viewModel.productCardsUseCase.loadFirstPageComponents(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
+
+        viewModel.onAttachToViewHolder()
+        assert(viewModel.getBackgroundImage().value == "url")
+
+    }
+
+    @Test
+    fun `backgroundImage is present`(){
+        val list = mockk<ArrayList<ComponentsItem>>()
+        every { componentsItem.id } returns "s"
+        every { componentsItem.pageEndPoint } returns "s"
+        every { componentsItem.getComponentsItem() } returns list
+        every { componentsItem.properties } returns null
+        coEvery {
+            viewModel.productCardsUseCase.loadFirstPageComponents(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
+
+        viewModel.onAttachToViewHolder()
+        assert(viewModel.getComponentData().value === componentsItem)
     }
 
     /**************************** onAttachToViewHolder() *******************************************/

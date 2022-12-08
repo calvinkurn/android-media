@@ -627,7 +627,7 @@ fun getPageInfo(pageName: String): PageInfo {
     return PageInfo()
 }
 
-fun getAdditionalInfo(pageName: String) : AdditionalInfo ? {
+fun getAdditionalInfo(pageName: String): AdditionalInfo? {
     return discoveryPageData[pageName]?.additionalInfo
 }
 

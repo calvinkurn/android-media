@@ -174,12 +174,12 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             componentsItems.data?.firstOrNull()?.let {
                 if(getProductName(it.typeProductCard) ==  PRODUCT_CARD_CAROUSEL) {
                     it.productId?.let { productId ->
-                        if(componentsItems.parentComponentName == ComponentNames.CategoryBestSeller.componentName) {
+                        if (componentsItems.parentComponentName == ComponentNames.CategoryBestSeller.componentName) {
                             if (!viewedBestSellerProductsSet.contains(productId)) {
                                 viewedBestSellerProductsSet.add(productId)
                                 trackEventImpressionProductCard(componentsItems)
                             }
-                        }else if(componentsItems.parentComponentName == ComponentNames.CLPFeaturedProducts.componentName) {
+                        } else if (componentsItems.parentComponentName == ComponentNames.CLPFeaturedProducts.componentName) {
                             if (!viewedPromoProductsSet.contains(productId)) {
                                 viewedPromoProductsSet.add(productId)
                                 trackEventImpressionFeaturedProductCard(componentsItems)
@@ -224,7 +224,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             KEY_IMPRESSIONS to list
         )
         var level = ""
-        var subCategoryID  = ""
+        var subCategoryID = ""
         var productGroupId = ""
         getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
             val catLevel = it[KEY_TREE].toIntOrZero()
@@ -284,7 +284,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 )
             )
             var level = ""
-            var subCategoryID  = ""
+            var subCategoryID = ""
             var productGroupId = ""
             getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
                 val catLevel = it[KEY_TREE].toIntOrZero()
@@ -367,7 +367,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     }
 
     override fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {
-        if(componentsItems.parentComponentName == ComponentNames.CLPFeaturedProducts.componentName){
+        if (componentsItems.parentComponentName == ComponentNames.CLPFeaturedProducts.componentName) {
             trackFeaturedProductCardClick(componentsItems)
             return
         }
@@ -512,7 +512,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
 
     override fun trackPromoLihat(componentsItems: ComponentsItem) {
         var level = ""
-        var subCategoryID  = ""
+        var subCategoryID = ""
         var productGroupId = ""
         getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
             val catLevel = it[KEY_TREE].toIntOrZero()

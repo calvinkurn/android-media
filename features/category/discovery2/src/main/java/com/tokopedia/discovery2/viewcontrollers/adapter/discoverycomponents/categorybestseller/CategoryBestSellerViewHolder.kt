@@ -32,7 +32,7 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
     private lateinit var categoryBestSellerViewModel: CategoryBestSellerViewModel
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator(fragment.context?.resources?.getDimensionPixelSize(R.dimen.dp_12))
     private var backgroundImage: ImageView = itemView.findViewById(R.id.background_image)
-    private var componentsItem : ComponentsItem? = null
+    private var componentsItem: ComponentsItem? = null
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
@@ -61,9 +61,9 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
             categoryBestSellerViewModel.getBackgroundImage().observe(lifecycle, {
-                if(it.isNullOrEmpty()){
+                if (it.isNullOrEmpty()) {
                     backgroundImage.hide()
-                }else{
+                } else {
                     backgroundImage.loadImageWithoutPlaceholder(it)
                     backgroundImage.show()
                 }

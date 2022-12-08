@@ -489,8 +489,12 @@ class DiscoveryHomeFactory {
                 ::CategoryBestSellerViewModel
             )
 
-            //Category Best Seller
-            initializeComponent(ComponentsList.CLPFeatureProducts, ::CategoryBestSellerViewHolder, ::CategoryBestSellerViewModel)
+            // Category Best Seller
+            initializeComponent(
+                ComponentsList.CLPFeatureProducts,
+                ::CategoryBestSellerViewHolder,
+                ::CategoryBestSellerViewModel
+            )
 
             //Topads Headline View
             initializeComponent(
