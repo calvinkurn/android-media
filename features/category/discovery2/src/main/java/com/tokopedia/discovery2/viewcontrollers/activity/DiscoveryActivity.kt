@@ -228,3 +228,4 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
 }
+

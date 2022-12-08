@@ -33,6 +33,16 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <ViewStub
+        android:id="@+id/view_pull_refresh"
+        android:inflatedId="@+id/view_pull_refresh"
+        android:layout="@layout/view_stub_pull_refresh_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/view_empty"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <ViewStub
         android:id="@+id/view_choose_address"
         android:inflatedId="@+id/view_choose_address"
         android:layout="@layout/view_stub_choose_address"
@@ -44,7 +54,7 @@
         android:layout_marginTop="5dp"
         android:visibility="gone"
         tools:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@+id/view_empty"
+        app:layout_constraintTop_toBottomOf="@+id/view_pull_refresh"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 

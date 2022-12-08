@@ -23,7 +23,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         val bundle = Bundle().apply {
             putString(PARAM_POST_ID, postId())
-            putString(PARAM_SOURCE, getSource())
+            putString(PARAM_ENTRY_POINT, getSource())
             putInt(PARAM_POSITION, getPosition())
             putString(PARAM_VISITED_USER_ID, getVisitedUserID())
             putString(PARAM_VISITED_USER_ENCRYPTED_ID, getVisitedUserEncryptedID())
@@ -54,7 +54,19 @@ class ContentDetailActivity : BaseSimpleActivity() {
     }
 
     private fun getSource(): String {
-        return intent?.extras?.getString(PARAM_SOURCE) ?: SHARE_LINK
+        return if (checkSourceIsPushNotication()) {
+            return SOURCE_PUSH_NOTIFICATION
+        } else {
+            intent?.extras?.getString(PARAM_ENTRY_POINT) ?: SHARE_LINK
+        }
+    }
+
+    private fun checkSourceIsPushNotication(): Boolean {
+        return intent?.extras?.getString(PARAM_UTM_MEDIUM).isNullOrEmpty()
+            .not() && intent?.extras?.getString(PARAM_UTM_MEDIUM)?.contains(
+            PARAM_PUSH_NOTIFICATION,
+            true
+        ) ?: false
     }
 
     private fun getPosition(): Int {
@@ -83,7 +95,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         when {
-            getSource() == SHARE_LINK -> goToFeed()
+            getSource() == SHARE_LINK || getSource() == PARAM_PUSH_NOTIFICATION -> goToFeed()
             getSource() == SOURCE_USER_PROFILE -> {
                 setResultBeforeFinish()
                 supportFinishAfterTransition()
@@ -110,7 +122,10 @@ class ContentDetailActivity : BaseSimpleActivity() {
     companion object {
         const val PARAM_POST_ID = "post_id"
         const val DEFAULT_POST_ID = "0"
-        const val PARAM_SOURCE = "source"
+        const val PARAM_ENTRY_POINT = "entry_point"
+        const val PARAM_UTM_MEDIUM = "utm_medium"
+        const val PARAM_PUSH_NOTIFICATION = "push"
+        const val SOURCE_PUSH_NOTIFICATION = "push_notification"
         const val SHARE_LINK = "share_link"
         const val PARAM_POSITION = "position"
         const val PARAM_VISITED_USER_ID = "visited_user_id"
