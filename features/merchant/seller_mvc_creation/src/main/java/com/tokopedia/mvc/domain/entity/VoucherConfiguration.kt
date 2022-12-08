@@ -19,4 +19,6 @@ data class VoucherConfiguration(
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val isVoucherPublic: Boolean = false,
     val voucherName: String = "",
+    val voucherCodePrefix: String = "",
+    val voucherCode: String = ""
 ) : Parcelable

@@ -1,24 +1,24 @@
 package com.tokopedia.mvc.presentation.creation.step1
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.mvc.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherCreationStepOneBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneAction
+import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
 import com.tokopedia.mvc.presentation.creation.step2.VoucherCreationStepTwoActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -72,7 +72,8 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = SmvcFragmentVoucherCreationStepOneBinding.inflate(inflater, container, false)
@@ -89,6 +90,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
         setupView()
         observeUiState()
         observeUiAction()
+        setVoucherType(voucherConfiguration.isVoucherProduct)
     }
 
     private fun observeUiState() {
@@ -204,7 +206,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
     }
 
     private fun showChangeVoucherTypeConfirmationDialog() {
-        //TODO: implement dialog
+        // TODO: implement dialog
     }
 
     private fun showError(error: Throwable) {

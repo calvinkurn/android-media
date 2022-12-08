@@ -3,8 +3,8 @@ package com.tokopedia.mvc.presentation.creation.step2.helper
 import android.content.Context
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import javax.inject.Inject
 import com.tokopedia.mvc.R
+import javax.inject.Inject
 
 class ErrorMessageHelper @Inject constructor(@ApplicationContext private val context: Context) {
 
@@ -16,10 +16,10 @@ class ErrorMessageHelper @Inject constructor(@ApplicationContext private val con
         }
     }
 
-    fun getVoucherNameErrorMessage(voucherName: String): String {
-        return if (voucherName.count() in 1 .. 4 ) {
+    fun getVoucherInputErrorMessage(input: String): String {
+        return if (input.count() in 1..4) {
             getString(R.string.smvc_input_count_error)
-        } else if (voucherName.isEmpty()) {
+        } else if (input.isEmpty()) {
             getString(R.string.smvc_input_empty_error)
         } else {
             ""

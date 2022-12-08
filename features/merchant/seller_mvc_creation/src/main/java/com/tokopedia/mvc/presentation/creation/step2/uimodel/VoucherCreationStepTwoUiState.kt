@@ -10,6 +10,8 @@ data class VoucherCreationStepTwoUiState(
     val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(),
     val isVoucherNameError: Boolean = false,
     val voucherNameErrorMsg: String = "",
+    val isVoucherCodeError: Boolean = false,
+    val voucherCodeErrorMsg: String = "",
     val error: Throwable? = null
 ) {
     fun isInputValid(): Boolean = !isVoucherNameError

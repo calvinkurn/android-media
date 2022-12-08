@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.doOnTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherCreationStepTwoBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherCodeSectionBinding
@@ -114,11 +116,15 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     private fun handleUiState(state: VoucherCreationStepTwoUiState) {
         renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
         renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
+        renderVoucherCodeValidation(state.isVoucherCodeError, state.voucherCodeErrorMsg)
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
         when (action) {
             is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
+            is VoucherCreationStepTwoAction.ContinueToNextStep -> TODO()
+            is VoucherCreationStepTwoAction.ValidateVoucherNameInput -> TODO()
+            is VoucherCreationStepTwoAction.ShowError -> TODO()
         }
     }
 
@@ -144,6 +150,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
         setupHeader()
         setupVoucherTargetSection()
         setupVoucherNameSection()
+        setupVoucherCodeSection()
     }
 
     private fun setupHeader() {
@@ -209,6 +216,9 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     }
 
     private fun setVoucherPublicSelected() {
+        binding?.run {
+            viewVoucherCode.gone()
+        }
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = true
             viewVoucherTargetPrivate.isActive = false
@@ -216,6 +226,9 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     }
 
     private fun setVoucherPrivateSelected() {
+        binding?.run {
+            viewVoucherCode.visible()
+        }
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = false
             viewVoucherTargetPrivate.isActive = true
@@ -247,6 +260,35 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
         voucherNameSectionBinding?.run {
             tfVoucherName.isInputError = isVoucherNameError
             tfVoucherName.setMessage(voucherNameErrorMsg)
+        }
+    }
+
+    // Voucher code section
+    private fun setupVoucherCodeSection() {
+        binding?.run {
+            if (viewVoucherCode.parent != null) {
+                viewVoucherCode.inflate()
+            }
+        }
+
+        voucherCodeSectionBinding?.run {
+            tfVoucherCode.prependText(voucherConfiguration.voucherCodePrefix)
+            tfVoucherCode.editText.setText(voucherConfiguration.voucherCode)
+            tfVoucherCode.editText.doOnTextChanged { text ->
+                viewModel.processEvent(
+                    VoucherCreationStepTwoEvent.OnVoucherCodeChanged(text)
+                )
+            }
+        }
+    }
+
+    private fun renderVoucherCodeValidation(
+        isVoucherCodeError: Boolean,
+        voucherCodeErrorMsg: String
+    ) {
+        voucherCodeSectionBinding?.run {
+            tfVoucherCode.isInputError = isVoucherCodeError
+            tfVoucherCode.setMessage(voucherCodeErrorMsg)
         }
     }
 }

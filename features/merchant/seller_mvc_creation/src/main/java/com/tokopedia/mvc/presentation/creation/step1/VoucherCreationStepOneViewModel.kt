@@ -7,8 +7,8 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneAction
+import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -73,7 +73,8 @@ class VoucherCreationStepOneViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             voucherConfiguration = it.voucherConfiguration.copy(
-                                isVoucherProduct = isVoucherProduct
+                                isVoucherProduct = isVoucherProduct,
+                                voucherCodePrefix = metadata.prefixVoucherCode
                             )
                         )
                     }
@@ -85,7 +86,6 @@ class VoucherCreationStepOneViewModel @Inject constructor(
                         )
                     )
                 }
-
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }

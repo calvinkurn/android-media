@@ -29,6 +29,10 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
     private val currentState: VoucherCreationStepTwoUiState
         get() = _uiState.value
 
+    init {
+        handleVoucherInputValidation()
+    }
+
     fun processEvent(event: VoucherCreationStepTwoEvent) {
         when (event) {
             is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
@@ -37,6 +41,7 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(event.isPublic)
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep(currentState.voucherConfiguration)
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
+            is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
             is VoucherCreationStepTwoEvent.ValidateVoucherInput -> {}
         }
     }
@@ -65,8 +70,11 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    isVoucherPublic = isPublic
-                )
+                    isVoucherPublic = isPublic,
+                    voucherCode = ""
+                ),
+                isVoucherCodeError = false,
+                voucherCodeErrorMsg = ""
             )
         }
     }
@@ -80,14 +88,23 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
         handleVoucherInputValidation()
     }
 
+    private fun handleVoucherCodeChanges(voucherCode: String) {
+        _uiState.update {
+            it.copy(
+                voucherConfiguration = it.voucherConfiguration.copy(voucherCode = voucherCode)
+            )
+        }
+        handleVoucherInputValidation()
+    }
+
     private fun handleVoucherInputValidation() {
         val voucherConfiguration = currentState.voucherConfiguration
         _uiState.update {
             it.copy(
-                isVoucherNameError = ErrorHelper.getVoucherNameErrorStatus(voucherConfiguration.voucherName),
-                voucherNameErrorMsg = errorMessageHelper.getVoucherNameErrorMessage(
-                    voucherConfiguration.voucherName
-                )
+                isVoucherNameError = ErrorHelper.getVoucherInputErrorStatus(voucherConfiguration.voucherName),
+                voucherNameErrorMsg = errorMessageHelper.getVoucherInputErrorMessage(voucherConfiguration.voucherName),
+                isVoucherCodeError = ErrorHelper.getVoucherInputErrorStatus(voucherConfiguration.voucherCode),
+                voucherCodeErrorMsg = errorMessageHelper.getVoucherInputErrorMessage(voucherConfiguration.voucherCode)
             )
         }
     }

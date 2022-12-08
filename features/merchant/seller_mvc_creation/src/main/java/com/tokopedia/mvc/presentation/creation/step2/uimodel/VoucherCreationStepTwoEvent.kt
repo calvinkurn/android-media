@@ -8,5 +8,6 @@ sealed class VoucherCreationStepTwoEvent {
     object TapBackButton : VoucherCreationStepTwoEvent()
     data class ChooseVoucherTarget(val isPublic: Boolean) : VoucherCreationStepTwoEvent()
     data class OnVoucherNameChanged(val voucherName: String) : VoucherCreationStepTwoEvent()
+    data class OnVoucherCodeChanged(val voucherCode: String) : VoucherCreationStepTwoEvent()
     data class ValidateVoucherInput(val voucherConfiguration: VoucherConfiguration) : VoucherCreationStepTwoEvent()
 }
