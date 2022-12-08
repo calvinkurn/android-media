@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -1380,6 +1379,9 @@ class AddEditProductDetailFragment :
                 disabledCategoryInfoView?.bringToFront()
                 disabledCategoryInfoView?.visible()
             }
+        }
+        viewModel.productMigrateStatusError.observe(viewLifecycleOwner) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
         }
     }
 
