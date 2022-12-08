@@ -43,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="@id/lvu_product_category_rec"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/lvu_product_category_rec"
-        app:srcCompat="@drawable/ic_information" />
+        app:srcCompat="@drawable/ic_aep_information" />
 
     <com.tokopedia.unifycomponents.list.ListUnify
         android:id="@+id/lvu_product_category_rec"
