@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,31 +9,37 @@
         android:id="@+id/pdp_selly_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tiba 12:00 - 14:00"
         android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3" />
+        app:typographyType="display_3"
+        tools:text=" • Tiba 12:00 - 14:00"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/pdp_selly_price"
+        android:id="@+id/pdp_selly_final_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rp0"
         android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBaselineOf="@id/pdp_selly_time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="display_3" />
+        app:typographyType="display_3"
+        tools:text="Rp0"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/pdp_selly_price_og"
+        android:id="@+id/pdp_selly_real_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:text="Rp10.000"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBaseline_toBaselineOf="@id/pdp_selly_price"
-        app:layout_constraintEnd_toStartOf="@id/pdp_selly_price"
-        app:typographyType="display_3" />
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@id/pdp_selly_final_price"
+        app:layout_constraintEnd_toStartOf="@id/pdp_selly_final_price"
+        app:typographyType="display_3"
+        tools:text="Rp10.000"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
