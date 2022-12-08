@@ -6,7 +6,7 @@ data class PdpParamModel(
     val productId: String = "",
     val isBebasOngkir: Boolean = false,
     val bebasOngkirType: String = "",
-    val productImageUrl: String = "",
+    var productImageUrl: String = "",
     val productPrice: Long = 0,
     val productRating: Float = 0f,
     val productTitle: String = "",

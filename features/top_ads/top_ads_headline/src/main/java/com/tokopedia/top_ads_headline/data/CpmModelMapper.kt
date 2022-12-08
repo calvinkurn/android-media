@@ -9,7 +9,7 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-private const val SHOP_BADGE = "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+private const val SHOP_BADGE = "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
 
 class CpmModelMapper @Inject constructor(@ApplicationContext private val context: Context,
                                          private val userSession: UserSessionInterface) {
@@ -65,7 +65,7 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
                 name = it.productName
                 priceFormat = it.productPrice
                 applinks = it.productUri
-                countReviewFormat = it.productReviewCount.toString()
+                countReviewFormat = it.productReviewCount
                 productRating = it.productRating
                 imageProduct = ImageProduct().apply {
                     id = it.productID

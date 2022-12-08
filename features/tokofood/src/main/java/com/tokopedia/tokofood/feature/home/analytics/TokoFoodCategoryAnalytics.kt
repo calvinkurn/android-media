@@ -36,7 +36,8 @@ class TokoFoodCategoryAnalytics: BaseTrackerConst() {
             putString(TrackAppUtils.EVENT_ACTION,
                 TokoFoodAnalytics.EVENT_ACTION_CLICK_MERCHANT_LIST
             )
-            putString(TrackAppUtils.EVENT_LABEL, "")
+            putString(TrackAppUtils.EVENT_LABEL, "${merchant.additionalData.topTextBanner} - ${merchant.promo}")
+            putString(TokoFoodAnalyticsConstants.TRACKER_ID, TokoFoodAnalyticsConstants.TRACKER_ID_32008)
         }
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
         eventDataLayer.selectContent(userId, destinationId)

@@ -30,8 +30,8 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
     private val mMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
     private val mVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
 
-    private val mValueListLiveData = MutableLiveData<Array<Int>>()
-    val valueListLiveData : LiveData<Array<Int>>
+    private val mValueListLiveData = MutableLiveData<IntArray>()
+    val valueListLiveData : LiveData<IntArray>
         get() = mValueListLiveData
     private val mErrorPairListLiveData = MutableLiveData<Array<Pair<Boolean, String>?>>()
     val errorPairListLiveData : LiveData<Array<Pair<Boolean, String>?>>
@@ -74,7 +74,7 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
             }
             mIsFirstTimeDraw.value = false
         }
-        mValueListLiveData.value = arrayOf(
+        mValueListLiveData.value = intArrayOf(
                 mFreeDeliveryAmountLiveData.value.toZeroIfNull(),
                 mMinimumPurchaseLiveData.value.toZeroIfNull(),
                 mVoucherQuotaLiveData.value.toZeroIfNull()

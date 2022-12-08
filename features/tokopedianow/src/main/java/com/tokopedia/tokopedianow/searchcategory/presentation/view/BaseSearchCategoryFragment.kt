@@ -73,6 +73,7 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
+import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -85,6 +86,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
@@ -129,7 +131,8 @@ abstract class BaseSearchCategoryFragment:
     TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener,
     TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
-    TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener {
+    TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener,
+    TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener{
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -232,6 +235,10 @@ abstract class BaseSearchCategoryFragment:
         )
 
         configureToolbarBackgroundInteraction()
+    }
+
+    private fun updateToolbarNotification(update: Boolean) {
+        if(update) navToolbar?.updateNotification()
     }
 
     protected open val isDisableSearchBarDefaultGtmTracker: Boolean
@@ -531,6 +538,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
         getViewModel().setUserPreferenceLiveData.observe(::setUserPreferenceData)
         getViewModel().querySafeLiveData.observe(::showDialogAgeRestriction)
+        getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -715,6 +723,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        getViewModel().updateToolbarNotification()
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
         recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
@@ -1191,5 +1200,11 @@ abstract class BaseSearchCategoryFragment:
             override fun onLoginPreverified() {}
 
         })
+    }
+
+    override fun onFeedbackCtaClicked() {
+        TokoNowProductFeedbackBottomSheet().also {
+            it.showBottomSheet(activity?.supportFragmentManager,view)
+        }
     }
 }

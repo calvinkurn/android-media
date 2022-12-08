@@ -7,6 +7,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.StockBarDataView
 
 class InspirationCarouselProductDataViewMapper {
 
@@ -66,7 +67,8 @@ class InspirationCarouselProductDataViewMapper {
                 bundleId = product.bundleId,
                 parentId = product.parentId,
                 minOrder = product.minOrder,
-                trackingOption = trackingOption
+                trackingOption = trackingOption,
+                StockBarDataView.create(product.stockBar),
             )
         }
     }

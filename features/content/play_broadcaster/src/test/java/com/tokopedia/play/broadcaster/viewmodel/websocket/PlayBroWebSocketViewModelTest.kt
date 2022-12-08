@@ -15,7 +15,7 @@ import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -54,7 +54,8 @@ class PlayBroWebSocketViewModelTest {
 
     @Before
     fun setUp() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
     }
 
     @Test
@@ -111,8 +112,10 @@ class PlayBroWebSocketViewModelTest {
             robot.executeViewModelPrivateFunction("startWebSocket")
             fakePlayWebSocket.fakeEmitMessage(mockChatString)
             val result = robot.getViewModel().observableChatList.getOrAwaitValue()
+            val resultNewChat = robot.getViewModel().observableNewChat.getOrAwaitValue()
 
             result.assertEqualTo(listOf(mockChat))
+            resultNewChat.peekContent().assertEqualTo(result.last())
         }
     }
 
@@ -129,7 +132,7 @@ class PlayBroWebSocketViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 robot.executeViewModelPrivateFunction("startWebSocket")
                 fakePlayWebSocket.fakeEmitMessage(mockPinnedMessageString)
             }
@@ -223,7 +226,7 @@ class PlayBroWebSocketViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 robot.executeViewModelPrivateFunction("startWebSocket")
                 fakePlayWebSocket.fakeEmitMessage(mockProductTagString)
             }
@@ -259,7 +262,7 @@ class PlayBroWebSocketViewModelTest {
     fun `when user received new channel interactive scheduled event, it should emit scheduled interactive`() {
         val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel()
 
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
 
         val mockChannelInteractiveString = webSocketUiModelBuilder.buildChannelInteractiveString()
 
@@ -272,7 +275,7 @@ class PlayBroWebSocketViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
 
                 //TODO() = please check
                 //val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
@@ -336,12 +339,12 @@ class PlayBroWebSocketViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 this.executeViewModelPrivateFunction("startWebSocket")
                 fakePlayWebSocket.fakeEmitMessage(mockUnknownQuizString)
             }
-            Assertions.assertThat(state.interactive)
-                .isInstanceOf(InteractiveUiModel.Unknown::class.java)
+            Assertions.assertThat(state.game)
+                .isInstanceOf(GameUiModel.Unknown::class.java)
         }
     }
 }

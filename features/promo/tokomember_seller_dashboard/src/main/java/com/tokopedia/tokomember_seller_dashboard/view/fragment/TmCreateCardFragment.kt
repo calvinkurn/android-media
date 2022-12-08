@@ -1,7 +1,9 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,13 +21,17 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokomember_common_widget.TokomemberShopView
 import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.EditCardCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.Card
@@ -49,6 +55,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
@@ -84,6 +91,10 @@ const val PROGRESS_25 = 25
 class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
     TokomemberCardBgAdapterListener, BottomSheetClickListener {
 
+    private var editCardCallback: EditCardCallback? = null
+
+    private var cardTemplateId = ""
+    private var actionType: Int = 0
     private var tmTracker: TmTracker? = null
     private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
     @Inject
@@ -137,6 +148,8 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         tmTracker = TmTracker()
         observeViewModel()
         shopID = arguments?.getInt(BUNDLE_SHOP_ID)?:0
+        actionType = arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0
+
         tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
         renderHeader()
     }
@@ -155,7 +168,8 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                  }
                  TokoLiveDataResult.STATUS.SUCCESS -> {
                     mCardBgTemplateList.addAll(it.data?.cardTemplateImageList as ArrayList<CardTemplateImageListItem>)
-                    renderCardUi(it.data)
+                     cardTemplateId = it.data.cardTemplate?.id.toString()
+                     renderCardUi(it.data)
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     handleErrorUiOnErrorData()
@@ -199,7 +213,16 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                      if(it.data?.membershipCreateEditCard?.resultStatus?.code == "200") {
                          inToolsCardId = it.data.membershipCreateEditCard.intoolsCard?.id ?: 0
                          closeLoadingDialog()
-                         openProgramCreationPage()
+                         if(actionType == ProgramActionType.EDIT) {
+//                             editCardCallback?.cardEdit()
+                             val intent = Intent()
+                             intent.putExtra("REFRESH_STATE", REFRESH)
+                             activity?.setResult(Activity.RESULT_OK, intent)
+                             activity?.finish()
+                         }
+                         else {
+                             openProgramCreationPage()
+                         }
                      } else{
                          closeLoadingDialog()
                          handleErrorUiOnUpdate()
@@ -268,21 +291,45 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         renderCardCarousel(data)
         btnContinueCard?.setOnClickListener {
 
-            mTmCardModifyInput =  TmCardModifyInput(
-                apiVersion = "3.0.0",
-                isMerchantCard = true,
-                intoolsShop = IntoolsShop(id = shopID),
-                cardTemplate = CardTemplate(
-                    fontColor = "#FFFFFF",
-                    backgroundImgUrl = shopViewPremium?.getCardBackgroundImageUrl()
-                ),
-                card = Card(
-                    shopID = arguments?.getInt(BUNDLE_SHOP_ID),
-                    name = shopViewPremium?.getCardShopName(),
-                    numberOfLevel = 2
+            if(actionType == ProgramActionType.EDIT){
+                //TODO need to ask for request from BE
+                mTmCardModifyInput = TmCardModifyInput(
+                    apiVersion = "3.0.0",
+                    isMerchantCard = true,
+                    intoolsShop = IntoolsShop(id = shopID),
+                    cardTemplate = CardTemplate(
+                        id = cardTemplateId.toIntSafely(),
+                        cardID = arguments?.getInt(BUNDLE_CARD_ID),
+                        fontColor = "#FFFFFF",
+                        backgroundImgUrl = shopViewPremium?.getCardBackgroundImageUrl()
+                    ),
+                    card = Card(
+                        id = arguments?.getInt(BUNDLE_CARD_ID),
+                        tierGroupID = 0,
+                        shopID = arguments?.getInt(BUNDLE_SHOP_ID),
+                        name = shopViewPremium?.getCardShopName(),
+                        numberOfLevel = 2
+                    )
                 )
-            )
-            tmTracker?.clickCardCreationButton(shopID.toString())
+                tmTracker?.clickEditCardSimpanCta(shopID.toString())
+            }
+            else {
+                mTmCardModifyInput = TmCardModifyInput(
+                    apiVersion = "3.0.0",
+                    isMerchantCard = true,
+                    intoolsShop = IntoolsShop(id = shopID),
+                    cardTemplate = CardTemplate(
+                        fontColor = "#FFFFFF",
+                        backgroundImgUrl = shopViewPremium?.getCardBackgroundImageUrl()
+                    ),
+                    card = Card(
+                        shopID = arguments?.getInt(BUNDLE_SHOP_ID),
+                        name = shopViewPremium?.getCardShopName(),
+                        numberOfLevel = 2
+                    )
+                )
+                tmTracker?.clickCardCreationButton(shopID.toString())
+            }
             proceedIntroLogic(mTmCardModifyInput)
         }
     }
@@ -357,19 +404,33 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
 
     private fun renderHeader() {
         headerCard?.apply {
-            title = HEADER_TITLE
-            subtitle = HEADER_DESC
             isShowBackButton = true
-            setNavigationOnClickListener {
-                tmTracker?.clickCardCreationBack(shopID.toString())
-                activity?.onBackPressed()
+            if (actionType == ProgramActionType.EDIT) {
+                title = HEADER_TITLE_EDIT
+                setNavigationOnClickListener {
+                    tmTracker?.clickCardCreationBack(shopID.toString())
+                    activity?.finish()
+                }
+                progressCard?.hide()
+                btnContinueCard.text = "Simpan"
+                arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
+            }
+            else {
+                btnContinueCard.text = "Buat Kartu"
+                title = HEADER_TITLE
+                subtitle = HEADER_DESC
+                setNavigationOnClickListener {
+                    tmTracker?.clickCardCreationBack(shopID.toString())
+                    activity?.onBackPressed()
+                }
+                progressCard?.apply {
+                    progressBarColorType = ProgressBarUnify.COLOR_GREEN
+                    progressBarHeight = ProgressBarUnify.SIZE_SMALL
+                    setValue(PROGRESS_25, false)
+                }
             }
         }
-        progressCard?.apply {
-            progressBarColorType = ProgressBarUnify.COLOR_GREEN
-            progressBarHeight = ProgressBarUnify.SIZE_SMALL
-            setValue(PROGRESS_25, false)
-        }
+
     }
 
     private fun renderCardCarousel(data: CardDataTemplate) {
@@ -511,9 +572,14 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         }
     }
 
+    fun setCardEditCallback(editCardCallback: EditCardCallback){
+        this.editCardCallback = editCardCallback
+    }
+
     companion object {
         const val TAG_CARD_CREATE = "CARD_CREATE"
         const val HEADER_TITLE = "Daftar TokoMember"
+        const val HEADER_TITLE_EDIT = "Ubah Kartu"
         const val HEADER_DESC = "Langkah 1 dari 4 "
         const val DATA = 1
         const val SHIMMER = 0

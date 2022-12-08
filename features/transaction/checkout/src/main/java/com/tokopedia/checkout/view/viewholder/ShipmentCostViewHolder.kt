@@ -69,6 +69,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mLinearLayoutCrossSell.removeAllViews()
             mLinearLayoutCrossSell.visibility = View.GONE
         } else {
+            mLinearLayoutCrossSell.removeAllViews()
             shipmentCost.listCrossSell.forEach { crossSell ->
                 val itemCrossSellView = layoutInflater.inflate(R.layout.item_summary_transaction_cross_sell, null, false) as RelativeLayout
 
@@ -77,10 +78,9 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
 
                 val crossSellItemPrice = itemCrossSellView.findViewById<Typography>(R.id.tv_cross_sell_price)
                 crossSellItemPrice.text = getPriceFormat(crossSellItemLabel, crossSellItemPrice, crossSell.crossSellModel.price.toDouble())
-                mLinearLayoutCrossSell.removeAllViews()
                 mLinearLayoutCrossSell.addView(itemCrossSellView)
-                mLinearLayoutCrossSell.visibility = View.VISIBLE
             }
+            mLinearLayoutCrossSell.visibility = View.VISIBLE
         }
         mTvEmasPrice.text = getPriceFormat(mTvEmasLabel, mTvEmasPrice, shipmentCost.emasPrice)
         mTvTradeInPrice.text = String.format(mTvTradeInPrice.context.getString(R.string.promo_format),

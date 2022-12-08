@@ -10,7 +10,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
@@ -39,6 +39,12 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         id = "2773621125",
         name = "Edifier R1080BT Wireless Bluetooth Small Speaker Subwoofer 2.0 Wooden",
         parentId = "123123",
+    )
+
+    private val clickedProductAdsTest = InspirationCarouselDataView.Option.Product(
+        id = "3747018003",
+        name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
+        isOrganicAds = true,
     )
 
     private val expectedType = "same_shop"
@@ -114,6 +120,13 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         )
     }
 
+    private fun `When user click add to cart non variant product ads`() {
+        productListPresenter.onListAtcItemAddToCart(
+            clickedProductAdsTest,
+            expectedType
+        )
+    }
+
     private fun `When user click add to cart with variant`() {
         productListPresenter.onListAtcItemAddToCart(
             clickedProductWithVariantTest,
@@ -146,7 +159,22 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
         `Then verify searchbar notification updated`()
         `Then verify toaster has opened`()
-        `Then verify item click and add to card has been fired`()
+        `Then verify item click and add to card has been tracked`(clickedProductTest)
+    }
+
+    @Test
+    fun `User click add to cart non variant product ads and success`() {
+        val searchProductModel: SearchProductModel = inspirationListAtc.jsonToObject()
+
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+        `Given Load Data`()
+        `Given Add to cart is succeed`()
+
+        `When user click add to cart non variant product ads`()
+
+        `Then verify searchbar notification updated`()
+        `Then verify toaster has opened`()
+        `Then verify item click and add to card has been tracked`(clickedProductAdsTest)
     }
 
     private fun `Given Add to cart is succeed`() {
@@ -170,10 +198,12 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         }
     }
 
-    private fun `Then verify item click and add to card has been fired`() {
-        val expectedTrackData = InspirationCarouselTrackingUnification.Data(
+    private fun `Then verify item click and add to card has been tracked`(
+        expectedProduct: InspirationCarouselDataView.Option.Product
+    ) {
+        val expectedTrackData = InspirationCarouselTracking.Data(
             "",
-            clickedProductTest,
+            expectedProduct,
             "",
             expectedAtcSuccessResponse.data.cartId,
             expectedAtcSuccessResponse.data.quantity,
@@ -182,6 +212,12 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         verify {
             inspirationListAtcView.trackItemClick(expectedTrackData)
             inspirationListAtcView.trackAddToCart(expectedTrackData)
+        }
+    }
+
+    private fun `Then Verify TopAds Click Url Hit`() {
+        verify {
+            inspirationListAtcView.trackAdsClick(clickedProductAdsTest)
         }
     }
 

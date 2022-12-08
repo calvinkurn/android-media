@@ -3,7 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.model
 import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 
-abstract class BaseCopyableKeyValueUiModel: BaseVisitableUiModel {
+abstract class BaseCopyableKeyValueUiModel : BaseVisitableUiModel {
 
     abstract val copyableText: String
     abstract val copyLabel: StringRes

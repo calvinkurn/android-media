@@ -68,6 +68,8 @@ class GetTableDataUseCase(
                       columns {
                         value
                         type
+                        meta
+                        iconUrl
                       }
                       id
                     }

@@ -595,6 +595,25 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
+    fun updateProductPhotos(imagePickerResult: MutableList<String>, originalImageUrl: MutableList<String>): DetailInputModel {
+        val cleanResult = clearProductPhotoUrl(imagePickerResult, originalImageUrl)
+        val pictureList = productInputModel.detailInputModel.pictureList.filter {
+            cleanResult.contains(it.urlOriginal)
+        }
+
+        val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
+            pictureList.find { it.urlOriginal == cleanResult[index] }?.urlThumbnail
+                ?: urlOrPath
+        }
+
+        this.productPhotoPaths = imageUrlOrPathList.toMutableList()
+
+        return DetailInputModel().apply {
+            this.pictureList = pictureList
+            this.imageUrlOrPathList = imageUrlOrPathList
+        }
+    }
+
     fun updateProductShowCases(selectedShowcaseList: ArrayList<ShowcaseItemPicker>) {
         productShowCases = selectedShowcaseList
     }
@@ -880,6 +899,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun isFreeOfServiceFee(totalTxSuccess: Int, shopTier: Int): Boolean {
         // shopTier => from shop service; do not use commission info shop type in this function
+        if (shopTier == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE) return true
         return shopTier == ShopStatusLevelDef.LEVEL_REGULAR && totalTxSuccess <= SERVICE_FEE_LIMIT
     }
 
@@ -906,5 +926,23 @@ class AddEditProductDetailViewModel @Inject constructor(
                 imagePickerResult[index]
             }
         }
+    }
+
+    private fun clearProductPhotoUrl(
+        imagePickerResult: MutableList<String>,
+        originalImageUrl: MutableList<String>,
+    ): ArrayList<String>{
+        val resultCleaner = arrayListOf<String>()
+        imagePickerResult.forEachIndexed { index, uriEditImage ->
+            when {
+                uriEditImage.isNotEmpty() -> {
+                    resultCleaner.add(uriEditImage)
+                }
+                else -> {
+                    resultCleaner.add(originalImageUrl[index])
+                }
+            }
+        }
+        return resultCleaner
     }
 }

@@ -12,24 +12,43 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banned.BannedProductsView
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenterDelegate
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterView
+import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProviderDelegate
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.safesearch.MutableSafeSearchPreference
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
+import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
+import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
+import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
+import com.tokopedia.search.result.product.wishlist.WishlistView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
+import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -50,6 +69,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchProductCommonResponseJSON = "searchproduct/common-response.json"
     protected val searchProductFirstPageJSON = "searchproduct/loaddata/first-page.json"
     protected val searchProductSecondPageJSON = "searchproduct/loaddata/second-page.json"
+    protected val className = "SearchClassName"
 
     protected val productListView = mockk<ProductListSectionContract.View>(relaxed = true)
     protected val searchProductFirstPageUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
@@ -74,7 +94,10 @@ internal open class ProductListPresenterTestFixtures {
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val bannedProductsView = mockk<BannedProductsView>(relaxed = true)
-    protected val pagination = PaginationImpl()
+    protected val broadMatchView = mockk<BroadMatchView>(relaxed = true)
+    protected val wishlistView = mockk<WishlistView>(relaxed = true)
+    protected val inspirationCarouselDynamicProductView =
+        mockk<InspirationCarouselDynamicProductView>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -92,15 +115,33 @@ internal open class ProductListPresenterTestFixtures {
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
     protected val inspirationListAtcView = mockk<InspirationListAtcView>(relaxed = true)
+    protected val classNameProvider = mockk<ClassNameProvider> {
+        every { className } returns this@ProductListPresenterTestFixtures.className
+    }
+    protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
+    protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
+    protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
+    protected val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
+    protected val bottomSheetFilterView = mockk<BottomSheetFilterView>(relaxed = true)
+    private val pagination = PaginationImpl()
+    private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
+    private val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
+    protected val bottomSheetFilterPresenter = BottomSheetFilterPresenterDelegate(
+        bottomSheetFilterView,
+        queryKeyProvider,
+        requestParamsGenerator,
+        chooseAddressPresenterDelegate,
+        { getProductCountUseCase },
+        { getDynamicFilterUseCase },
+        dynamicFilterModel,
+    )
+    protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
 
-    protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
     open fun setUp() {
-        val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
-        val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
-        sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
+        val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
             sameSessionRecommendationUseCase,
@@ -108,6 +149,7 @@ internal open class ProductListPresenterTestFixtures {
             queryKeyProvider,
             productFilterIndicator,
         )
+        val suggestionPresenter = SuggestionPresenter()
 
         val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
             addToCartUseCase,
@@ -115,6 +157,12 @@ internal open class ProductListPresenterTestFixtures {
             inspirationListAtcView,
             searchParameterProvider,
         )
+        val tickerPresenter = TickerPresenterDelegate()
+        val safeSearchPresenter = SafeSearchPresenterDelegate(
+            safeSearchPreference,
+            safeSearchView,
+        )
+        val topAdsImageViewPresenter = TopAdsImageViewPresenterDelegate()
 
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
@@ -127,6 +175,7 @@ internal open class ProductListPresenterTestFixtures {
             { getLocalSearchRecommendationUseCase },
             { getInspirationCarouselChipsProductsUseCase },
             { saveLastFilterUseCase },
+            addToCartUseCase,
             topAdsUrlHitter,
             testSchedulersProvider,
             topAdsHeadlineHelper,
@@ -142,6 +191,28 @@ internal open class ProductListPresenterTestFixtures {
             sameSessionRecommendationPresenterDelegate,
             BannedProductsPresenterDelegate(bannedProductsView, viewUpdater),
             inspirationListAtcPresenterDelegate,
+            BroadMatchPresenterDelegate(
+                broadMatchView,
+                inspirationCarouselDynamicProductView,
+                viewUpdater,
+                topAdsUrlHitter,
+                classNameProvider,
+                applinkModifier,
+                pagination,
+                suggestionPresenter,
+            ),
+            suggestionPresenter,
+            tickerPresenter,
+            safeSearchPresenter,
+            topAdsImageViewPresenter,
+            WishlistPresenterDelegate(wishlistView),
+            InspirationWidgetPresenterDelegate(),
+            InspirationCarouselPresenterDelegate(
+                inspirationCarouselView,
+                inspirationListAtcPresenterDelegate,
+            ),
+            dynamicFilterModel,
+            bottomSheetFilterPresenter,
         )
         productListPresenter.attachView(productListView)
     }
@@ -180,6 +251,7 @@ internal open class ProductListPresenterTestFixtures {
                     expectedOrganicProductPosition,
                     "",
                     searchProductModel.getProductListType(),
+                    searchProductModel.isShowButtonAtc,
                 )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
@@ -208,6 +280,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.productName shouldBe topAdsProduct.product.name
         productItem.applink shouldBe topAdsProduct.applinks
         productItem.customVideoURL shouldBe topAdsProduct.product.customVideoUrl
+        productItem.priceRange shouldBe topAdsProduct.product.priceRange
     }
 
     protected fun Visitable<*>.assertOrganicProduct(
@@ -215,6 +288,7 @@ internal open class ProductListPresenterTestFixtures {
         position: Int,
         expectedPageTitle: String = "",
         productListType: String = "",
+        isShowButtonAtc: Boolean = false,
     ) {
         val productItem = this as ProductItemDataView
 
@@ -239,6 +313,9 @@ internal open class ProductListPresenterTestFixtures {
         productItem.minOrder shouldBe organicProduct.minOrder
         productItem.pageTitle shouldBe expectedPageTitle
         productItem.productListType shouldBe productListType
+        productItem.showButtonAtc shouldBe isShowButtonAtc
+        productItem.parentId shouldBe organicProduct.parentId
+        productItem.priceRange shouldBe organicProduct.priceRange
     }
 
     @Suppress("UNCHECKED_CAST")

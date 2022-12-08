@@ -19,7 +19,8 @@ class BuyerOrderDetailFragmentStub : BuyerOrderDetailFragment() {
             courierInfoViewHolderListener = this,
             productViewListener = this,
             navigator = navigator,
-            buyerOrderDetailBindRecomWidgetListener = this
+            buyerOrderDetailBindRecomWidgetListener = this,
+            orderResolutionListener = this
         )
     }
 

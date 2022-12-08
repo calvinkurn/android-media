@@ -3,7 +3,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Toolbar.Transparent.White" parent="Toolbar.Green">
-        <item name="android:background">#33ffffff</item>
+        <item name="android:background">@color/Unify_Static_White_20</item>
     </style>
 
 </resources>

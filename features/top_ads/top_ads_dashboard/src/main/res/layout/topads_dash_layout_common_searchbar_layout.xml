@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_NN0"
     android:orientation="horizontal">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
@@ -52,7 +52,7 @@
             android:background="@drawable/topads_dash_filter_bubble"
             android:gravity="center"
             android:padding="2dp"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_NN0"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnFilter"
@@ -67,7 +67,7 @@
         android:layout_width="1dp"
         android:layout_height="40dp"
         android:layout_marginStart="4dp"
-        android:background="@color/topads_common_line_color"
+        android:background="@color/Unify_N75"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/search_filter_layout"
         app:layout_constraintEnd_toStartOf="@id/btnAddItem"

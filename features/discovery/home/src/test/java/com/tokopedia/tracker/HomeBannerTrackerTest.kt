@@ -21,7 +21,7 @@
 //            brandId = "",
 //            categoryPersona = "",
 //            title = "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-//            imageUrl = "https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg",
+//            imageUrl = "https://images.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg",
 //            redirectUrl = "https://www.tokopedia.com/discovery/salam-donasicovid19",
 //            applink = "tokopedia://discovery/salam-donasicovid19",
 //            topadsViewUrl = "",
@@ -120,7 +120,7 @@
 //                                        "position","-1",
 //                                        "promo_id", "",
 //                                        "creative","X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-//                                        "creative_url","https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg"
+//                                        "creative_url","https://images.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg"
 //                                )
 //                        )
 //                        )
@@ -158,7 +158,7 @@
 //                                "position","-1",
 //                                "promo_id", "",
 //                                "creative","X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-//                                "creative_url","https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg"
+//                                "creative_url","https://images.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg"
 //                        )
 //                )
 //                )

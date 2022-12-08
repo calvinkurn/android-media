@@ -47,6 +47,7 @@ import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 
 fun createViewModel (
         getProfileDataUseCase: GetProfileDataUseCase? = null,
@@ -120,7 +121,7 @@ fun createViewModel (
         coEvery { it.invoke(any()) }.answers { TokopediaPlusResponseDataModel() }
     }
 
-    return MainNavViewModel(
+    return spyk(MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
             clientMenuGenerator = clientMenuGeneratorMock,
             userSession = userSessionMock,
@@ -136,7 +137,7 @@ fun createViewModel (
             getWishlistNavUseCase = getWishlistUseCaseMock,
             getReviewProductUseCase = getReviewProductUseCaseMock,
             getTokopediaPlusUseCase = getTokopediaPlusUseCaseMock
-    )
+    ), recordPrivateCalls = true)
 }
 
 fun createProfileDataUseCase (

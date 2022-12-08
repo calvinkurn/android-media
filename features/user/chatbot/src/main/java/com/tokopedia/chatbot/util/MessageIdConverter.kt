@@ -18,6 +18,6 @@ private fun logRequest(messageId : String?) {
     val map: MutableMap<String, String> = HashMap()
     map["type"] = "request"
     map["messageId"] = messageId ?: ""
-    map["reason"] = "Invalid UserId"
+    map["reason"] = "Invalid MessageId"
     ServerLogger.log(Priority.P2, CHATBOT_MESSAGE_ID, map)
 }
