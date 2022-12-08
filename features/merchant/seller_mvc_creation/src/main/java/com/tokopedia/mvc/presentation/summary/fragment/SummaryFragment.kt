@@ -9,9 +9,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -50,6 +49,8 @@ class SummaryFragment: BaseDaggerFragment(),
     companion object {
         private const val CORNER_RADIUS_HEADER = 16
         private const val TNC_LINK = "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
+        private const val VOUCHER_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/mvc/mvc_voucher.png"
+        private const val UPLOAD_ERROR_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/error_upload_coupon.png"
         @JvmStatic
         fun newInstance(
             pageMode: PageMode,
@@ -270,6 +271,24 @@ class SummaryFragment: BaseDaggerFragment(),
             getString(R.string.smvc_summary_page_product_coupon_text)
         else
             getString(R.string.smvc_summary_page_shop_coupon_text)
+    }
+
+    private fun showErrorDialog() {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+            setImageUrl(UPLOAD_ERROR_IMAGE_URL)
+            setTitle(context.getString(R.string.smvc_summary_page_error_dialog_title))
+            setDescription(context.getString(R.string.smvc_summary_page_error_dialog_desc))
+            setPrimaryCTAText(context.getString(R.string.smvc_summary_page_error_dialog_positive_action))
+            setSecondaryCTAText(context.getString(R.string.smvc_summary_page_error_dialog_negative_action))
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+                activity?.finish()
+            }
+            show()
+        }
     }
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
