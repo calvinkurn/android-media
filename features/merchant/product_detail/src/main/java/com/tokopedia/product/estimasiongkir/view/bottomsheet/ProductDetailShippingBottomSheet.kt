@@ -130,16 +130,12 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
         viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) { result ->
             result.doSuccessOrFail({
-                shippingAdapter?.submitList(it.data+dummySelly)
+                shippingAdapter?.submitList(it.data)
             }) { throwable ->
                 showError(throwable)
             }
         }
     }
-
-    private val dummySelly = listOf(
-        ProductShippingSellyDataModel()
-    )
 
     private fun showError(it: Throwable) {
         val errorType = if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {

@@ -6,12 +6,16 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ItemProductShippingSellyBinding
+import com.tokopedia.product.detail.databinding.ItemSellyDateBinding
 import com.tokopedia.product.detail.databinding.ItemSellyTimeBinding
 import com.tokopedia.product.estimasiongkir.data.model.shipping.Product
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.Service
 
 class ProductShippingSellyViewHolder(
     view: View
@@ -24,56 +28,86 @@ class ProductShippingSellyViewHolder(
     private val binding = ItemProductShippingSellyBinding.bind(view)
     private val context = view.context
 
+    private val layoutInflater by lazy { LayoutInflater.from(context) }
+    private val grayColor by lazy {
+        MethodChecker.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+    }
 
     override fun bind(element: ProductShippingSellyDataModel) = with(binding) {
-
-        val title = element.title
-        pdpSellyTitle.showIfWithBlock(title.isNotEmpty()) {
-            text = title
+        val services = element.services
+        element.services.forEach { service ->
+            val serviceView = renderService(service)
+            pdpSellyDateList.addView(serviceView)
         }
+        pdpSellyTitle.showWithCondition(services.isNotEmpty())
+    }
 
-        val scheduledDate = element.scheduledDate
+    private fun renderService(
+        service: Service
+    ) = ItemSellyDateBinding.inflate(layoutInflater).apply {
+        val scheduledDate = service.scheduledDate
         pdpSellyDate.showIfWithBlock(scheduledDate.isNotEmpty()) {
             text = scheduledDate
         }
 
-        val products = element.products
-        if (element.isAvailable) renderAvailableDate(products)
+        val products = service.products
+        if (service.isAvailable) renderAvailableDate(this, products)
         else renderNotAvailableDate(this, products)
-    }
+    }.root
 
     /**
      * Render Available & Recommend Date
      */
-    private fun renderAvailableDate(products: List<Product>) {
-        renderScheduledTimes(products.filter { it.isRecommend })
+    private fun renderAvailableDate(binding: ItemSellyDateBinding, products: List<Product>) {
+        renderScheduledTimes(binding, products.filter { it.isRecommend })
     }
 
     private fun renderNotAvailableDate(
-        binding: ItemProductShippingSellyBinding,
+        binding: ItemSellyDateBinding,
         products: List<Product>
     ) = with(binding) {
 
         pdpSellyExpandableButton.hide()
+        pdpSellyDate.setTextColor(grayColor)
 
-        val grayColor = com.tokopedia.unifyprinciples.R.color.Unify_NN400
-        val color = MethodChecker.getColor(context, grayColor)
-        pdpSellyTitle.setTextColor(color)
+        val product = products.firstOrNull() ?: return@with
 
-        val product = products.firstOrNull() ?: return
-        renderScheduledTimes(listOf(product))
-    }
 
-    private fun renderScheduledTimes(products: List<Product>) {
-        products.forEach { product ->
-            val childView = renderChildView(product)
-            binding.pdpSellyTimeList.addView(childView)
+        pdpSellyAdditionalMessage.apply {
+            root.show()
+            val scheduledTime = product.scheduledTime
+            pdpSellyTime.showIfWithBlock(scheduledTime.isNotEmpty()) {
+                text = scheduledTime
+            }
+
+            val messageText = product.text
+            pdpSellyFinalPrice.showIfWithBlock(messageText.isNotEmpty()) {
+                text = messageText
+            }
+
+            listOf(
+                pdpSellyTime,
+                pdpSellyFinalPrice
+            ).forEach { it.setTextColor(grayColor) }
         }
     }
 
-    private fun renderChildView(product: Product): View = ItemSellyTimeBinding.inflate(
-        LayoutInflater.from(context)
-    ).apply {
+    private fun renderScheduledTimes(
+        binding: ItemSellyDateBinding,
+        products: List<Product>
+    ) = with(binding) {
+        products.forEach { product ->
+            val childView = renderChildView(product)
+            pdpSellyTimeList.addView(childView)
+        }
+    }
+
+    private fun renderChildView(
+        product: Product
+    ) = ItemSellyTimeBinding.inflate(layoutInflater).apply {
         if (product.isAvailable) renderAvailableTime(this, product)
         else renderNotAvailableTime(this, product)
     }.root
@@ -107,16 +141,13 @@ class ProductShippingSellyViewHolder(
 
         val scheduledTime = product.scheduledTime
         pdpSellyTime.showIfWithBlock(scheduledTime.isNotEmpty()) {
-            text = scheduledTime
+            text = context.getString(R.string.location_dot_builder, scheduledTime)
         }
 
         val messageText = product.text
         pdpSellyFinalPrice.showIfWithBlock(messageText.isNotEmpty()) {
             text = messageText
         }
-
-        val grayColor = com.tokopedia.unifyprinciples.R.color.Unify_NN400
-        val color = MethodChecker.getColor(context, grayColor)
 
         val typographies = listOf(
             pdpSellyTime,
@@ -125,7 +156,7 @@ class ProductShippingSellyViewHolder(
         )
 
         typographies.forEach { typography ->
-            typography.setTextColor(color)
+            typography.setTextColor(grayColor)
         }
     }
 }

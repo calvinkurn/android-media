@@ -4,10 +4,7 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactory
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 
 data class ProductShippingSellyDataModel(
-    val title: String = "",
-    val scheduledDate: String = "",
-    val isAvailable: Boolean = false,
-    val products: List<Product> = emptyList()
+    val services: List<Service> = emptyList()
 ) : ProductShippingVisitable {
     override fun uniqueId(): Long = 0L
 
@@ -15,6 +12,12 @@ data class ProductShippingSellyDataModel(
 
     override fun type(typeFactory: ProductShippingFactory): Int = typeFactory.type(this)
 }
+
+data class Service(
+    val scheduledDate: String = "",
+    val isAvailable: Boolean = false,
+    val products: List<Product> = emptyList()
+)
 
 data class Product(
     val scheduledTime: String = "",
