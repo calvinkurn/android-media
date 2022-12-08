@@ -37,4 +37,6 @@ object ApplinkConstInternalLogistic {
     const val PARAM_SOURCE = "source"
 
     const val MANAGE_ADDRESS_FROM_ACCOUNT = "$MANAGE_ADDRESS?$PARAM_SOURCE=account"
+
+    const val FIND_NEW_DRIVER = "$INTERNAL_LOGISTIC/findnewdriver"
 }
