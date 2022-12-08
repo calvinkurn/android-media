@@ -26,9 +26,9 @@ class VoucherDetailActivity : BaseSimpleActivity() {
     }
 
     private val voucherId by lazy {
-        val appLinkData = RouteManager.getIntent(this, intent?.data.toString()).data
-        if (appLinkData?.pathSegments?.isNotEmpty() == true) {
-            appLinkData.pathSegments?.getOrNull(VOUCHER_ID_SEGMENT)?.toLong().orZero()
+        val appLinkData = RouteManager.getIntent(this, intent?.data?.toString().orEmpty() ).data
+        if (appLinkData?.pathSegments.orEmpty().isNotEmpty()) {
+            appLinkData?.pathSegments?.getOrNull(VOUCHER_ID_SEGMENT)?.toLong().orZero()
         } else {
             intent?.extras?.getLong(BundleConstant.BUNDLE_VOUCHER_ID).orZero()
         }
