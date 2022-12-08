@@ -14,7 +14,7 @@ import javax.inject.Inject
 class ShopStateInfoMapper @Inject constructor() {
 
     companion object {
-        private const val TOAST: Long = 0
+        private const val TOAST: Long = 1
     }
 
     fun mapToUiModel(data: GetShopStateInfoResponse): ShopStateInfoUiModel {

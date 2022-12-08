@@ -1829,9 +1829,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val info = it.data
                 setViewBackgroundNewSeller(info.isNewSellerState)
                 if (info.subtitle.isBlank()) return@observe
-                when (info.subType) {
-                    ShopStateInfoUiModel.SubType.TOAST -> showShopStateToaster(info)
-                    ShopStateInfoUiModel.SubType.POPUP -> showShopStatePopup(info)
+
+                if (info.subType == ShopStateInfoUiModel.SubType.TOAST) {
+                    showShopStateToaster(info)
+                } else if (info.subType == ShopStateInfoUiModel.SubType.POPUP) {
+                    showShopStatePopup(info)
                 }
             }
         }

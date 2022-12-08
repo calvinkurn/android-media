@@ -14,7 +14,7 @@ data class ShopStateInfoUiModel(
     val button: Button = Button(),
     val buttonAlt: Button = Button(),
     val dataSign: String = String.EMPTY,
-    val subType: SubType = SubType.TOAST,
+    val subType: SubType = SubType.NONE,
     val isNewSellerState: Boolean = false,
 ) {
     data class Button(
@@ -23,6 +23,6 @@ data class ShopStateInfoUiModel(
     )
 
     enum class SubType {
-        TOAST, POPUP
+        NONE, TOAST, POPUP
     }
 }
