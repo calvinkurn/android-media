@@ -9,7 +9,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -19,20 +18,15 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSimilarProductsBinding
 import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapter
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapterTypeFactory
-import com.tokopedia.tokopedianow.similarproduct.analytic.SimilarProductAnalytics
-import com.tokopedia.tokopedianow.similarproduct.di.component.DaggerSimilarProductComponent
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.tokopedianow.similarproduct.viewholder.SimilarProductViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import javax.inject.Inject
 
-class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnalytics {
+class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
 
     companion object {
 
@@ -55,17 +49,10 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowSimilarProductsBinding>()
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var chooseAddressWrapper: ChooseAddressWrapper
-
     private val adapter by lazy {
         SimilarProductAdapter(
             SimilarProductAdapterTypeFactory(
-                productListener = productListener,
-                this
+                productListener = productListener
             )
         )
     }
@@ -83,7 +70,6 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
         binding = BottomsheetTokopedianowSimilarProductsBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         configureBottomSheet()
-        injectDependencies()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -97,32 +83,12 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
         activity?.finish()
     }
 
-    override fun trackClickProduct(
-        product: SimilarProductUiModel
-    ) {
-        listener?.trackClickProduct(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product.id, items as ArrayList<SimilarProductUiModel>)
-    }
-
-    override fun trackClickAddToCart(
-        product: SimilarProductUiModel
-    ) {
-        listener?.trackClickAddToCart(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product, items as ArrayList<SimilarProductUiModel>)
-    }
-
-    private fun injectDependencies() {
-        DaggerSimilarProductComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
-    }
-
     private fun configureBottomSheet() {
         clearContentPadding = true
         showCloseIcon = true
         isHideable = true
         showKnob = true
         setCloseClickListener {
-            listener?.trackClickCloseBottomsheet(chooseAddressWrapper.getChooseAddressData().warehouse_id, triggerProductId, items as ArrayList<SimilarProductUiModel>)
             dismiss()
         }
     }

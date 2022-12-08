@@ -1055,9 +1055,7 @@ class TokoNowRepurchaseFragment:
 
     private fun createSimilarProductCallback(): SimilarProductCallback {
         return SimilarProductCallback(
-            analytics = analytics,
-            warehouseId = localCacheModel?.warehouse_id.orEmpty(),
-            userId = userSession.userId
+            analytics = analytics
         )
     }
 }

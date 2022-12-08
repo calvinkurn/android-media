@@ -307,7 +307,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
     }
 
     @Test
-    fun `while adding product to cart if, it will do nothing`() {
+    fun `while adding product to cart if product list size is not more than position, it will do nothing`() {
         val position = 10
         val quantity = 0
         val shopId = "12221"

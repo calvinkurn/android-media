@@ -1130,10 +1130,6 @@ abstract class BaseSearchCategoryFragment:
     )
 
     protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : SimilarProductCallback {
-        return SimilarProductCallback(
-            warehouseId = getViewModel().warehouseId,
-            userId = userSession.userId.toString(),
-            isCategoryPage = isCategoryPage
-        )
+        return SimilarProductCallback(isCategoryPage)
     }
 }

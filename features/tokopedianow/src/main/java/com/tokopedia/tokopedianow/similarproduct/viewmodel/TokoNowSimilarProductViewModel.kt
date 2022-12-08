@@ -9,6 +9,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
@@ -23,14 +24,14 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TokoNowSimilarProductViewModel @Inject constructor(
+    private val getSimilarProductUseCase: GetSimilarProductUseCase,
+    private val chooseAddressWrapper: ChooseAddressWrapper,
+    private val userSession: UserSessionInterface,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-    private val getSimilarProductUseCase: GetSimilarProductUseCase,
-    private val chooseAddressWrapper: ChooseAddressWrapper,
     addressData: TokoNowLocalAddress,
-    userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
@@ -49,6 +50,11 @@ class TokoNowSimilarProductViewModel @Inject constructor(
         get() = _visitableItems
     val similarProductList: LiveData<List<RecommendationItem?>>
         get() = _similarProductList
+
+    val userId: String
+        get() = userSession.userId
+    val isLoggedIn: Boolean
+        get() = userSession.isLoggedIn
 
     var warehouseId: String = ""
         private set
@@ -99,9 +105,9 @@ class TokoNowSimilarProductViewModel @Inject constructor(
         _visitableItems.postValue(layoutItemList)
     }
 
-    fun getSimilarProductList(userId: Int, productIds: String){
+    fun getSimilarProductList(productIds: String){
         launchCatchError( block = {
-            val response = getSimilarProductUseCase.execute(userId, productIds, appendChooseAddressParams())
+            val response = getSimilarProductUseCase.execute(userId.toIntOrZero(), productIds, appendChooseAddressParams())
             _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation)
         }, onError = {
         })

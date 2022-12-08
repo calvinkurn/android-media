@@ -11,15 +11,14 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
 import com.tokopedia.tokopedianow.similarproduct.bottomsheet.TokoNowSimilarProductBottomSheet
 import com.tokopedia.tokopedianow.similarproduct.di.component.DaggerSimilarProductComponent
@@ -30,7 +29,6 @@ import com.tokopedia.tokopedianow.similarproduct.viewmodel.TokoNowSimilarProduct
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.SimilarProductListener,
@@ -40,10 +38,10 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         private const val REQUEST_CODE_LOGIN = 101
         private const val QUANTITY_ZERO = 0
 
-        fun newInstance(products: String?): TokoNowSimilarProductFragment {
+        fun newInstance(productId: String?): TokoNowSimilarProductFragment {
             return TokoNowSimilarProductFragment().apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_SIMILAR_PRODUCT_ID, products)
+                    putString(EXTRA_SIMILAR_PRODUCT_ID, productId)
                 }
             }
         }
@@ -51,14 +49,14 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     private var listener: SimilarProductListener? = null
 
     @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
     lateinit var viewModel : TokoNowSimilarProductViewModel
 
     private val productList = ArrayList<SimilarProductUiModel>()
 
     private var bottomSheet: TokoNowSimilarProductBottomSheet? = null
+
+    private val productIdTriggered: String
+        get() = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").orEmpty()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,16 +67,11 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         observeLiveData()
         super.onViewCreated(view, savedInstanceState)
         setupBottomSheet()
 
-        arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "")?.let {
-            viewModel.getSimilarProductList(userSession.userId.toIntOrZero(),
-                it
-            )
-        }
+        viewModel.getSimilarProductList(productIdTriggered)
     }
 
     override fun onAttach(context: Context) {
@@ -102,7 +95,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
-        if(userSession.isLoggedIn) {
+        if(viewModel.isLoggedIn) {
             viewModel.onQuantityChanged(productId, shopId, quantity)
         } else {
             goToLoginPage()
@@ -110,11 +103,30 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        if(userSession.isLoggedIn) {
+        if(viewModel.isLoggedIn) {
             viewModel.addItemToCart(productId, shopId, quantity)
         } else {
             goToLoginPage()
         }
+    }
+
+    override fun onProductClicked(product: SimilarProductUiModel) {
+        goToProductDetailPage(product)
+        listener?.trackClickProduct(
+            userId = viewModel.userId,
+            warehouseId = viewModel.warehouseId,
+            similarProduct = product,
+            productIdTriggered = productIdTriggered
+        )
+    }
+
+    override fun onProductImpressed(product: SimilarProductUiModel) {
+        listener?.trackImpressionBottomSheet(
+            userId = viewModel.userId,
+            warehouseId = viewModel.warehouseId,
+            similarProduct = product,
+            productIdTriggered = productIdTriggered
+        )
     }
 
     override fun onResume() {
@@ -124,6 +136,10 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         viewModel.getMiniCart()
+    }
+
+    private fun goToProductDetailPage(item: SimilarProductUiModel) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
     }
 
     private fun setupBottomSheet() {
@@ -136,6 +152,13 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
             triggerProductId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString()
         }
 
+        bottomSheet?.setOnDismissListener {
+            listener?.trackClickCloseBottomsheet(
+                userId = viewModel.userId,
+                warehouseId = viewModel.warehouseId,
+                productIdTriggered = productIdTriggered
+            )
+        }
         bottomSheet?.show(childFragmentManager)
         bottomSheet?.setListener(listener)
     }
@@ -159,8 +182,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
                 // show no products ui
                 bottomSheet?.showEmptyProductListUi()
             }
-            trackImpression()
-
+            trackAction()
         }
 
         observe(viewModel.visitableItems) {
@@ -255,21 +277,20 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
-    private fun trackImpression() {
-            if(productList.isNotEmpty()) {
-                listener?.trackImpressionBottomSheet(
-                    userId = userSession.userId,
-                    warehouseId = viewModel.warehouseId,
-                    productId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString(),
-                    similarProducts = productList,
-                )
-            }
-            else{
-                listener?.trackImpressionEmptyState(
-                    warehouseId = viewModel.warehouseId,
-                    productId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString()
-                )
-            }
+    private fun trackAction() {
+        listener?.trackClickSimilarProductBtn(
+            userId = viewModel.userId,
+            warehouseId = viewModel.warehouseId,
+            productIdTriggered = productIdTriggered
+        )
+
+        if(productList.isEmpty()) {
+            listener?.trackImpressionEmptyState(
+                userId = viewModel.userId,
+                warehouseId = viewModel.warehouseId,
+                productIdTriggered = productIdTriggered
+            )
+        }
     }
 
     private fun injectDependencies() {
