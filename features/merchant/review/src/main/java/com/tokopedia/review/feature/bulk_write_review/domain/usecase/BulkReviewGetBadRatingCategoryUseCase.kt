@@ -2,15 +2,12 @@ package com.tokopedia.review.feature.bulk_write_review.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.review.feature.bulk_write_review.domain.model.RequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetBadRatingCategoryRequestState
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
-import com.tokopedia.review.feature.createreputation.model.BadRatingCategoriesResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
-
-typealias BulkReviewGetBadRatingCategoryRequestState = RequestState<BadRatingCategoriesResponse>
 
 class BulkReviewGetBadRatingCategoryUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers,
@@ -22,9 +19,9 @@ class BulkReviewGetBadRatingCategoryUseCase @Inject constructor(
     override suspend fun execute(
         params: Unit
     ): Flow<BulkReviewGetBadRatingCategoryRequestState> = flow {
-        emit(RequestState.Requesting)
-        emit(RequestState.Complete.Success(useCase.executeOnBackground()))
+        emit(BulkReviewGetBadRatingCategoryRequestState.Requesting())
+        emit(BulkReviewGetBadRatingCategoryRequestState.Complete.Success(useCase.executeOnBackground()))
     }.catch {
-        emit(RequestState.Complete.Error(it))
+        emit(BulkReviewGetBadRatingCategoryRequestState.Complete.Error(it))
     }
 }

@@ -2,9 +2,8 @@ package com.tokopedia.review.feature.bulk_write_review.presentation.mapper
 
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormResponse
-import com.tokopedia.review.feature.bulk_write_review.domain.model.RequestState
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewMiniActionUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewMiniActionUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewMiniActionsUiState
@@ -20,7 +19,7 @@ class BulkReviewMiniActionsUiStateMapper @Inject constructor() {
         bulkReviewMediaPickerUiState: Map<String, CreateReviewMediaPickerUiState>
     ): Map<String, BulkReviewMiniActionsUiState> {
         return when (getFormRequestState) {
-            is RequestState.Complete.Success -> {
+            is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
                     *getFormRequestState.result.reviewForm?.map { reviewForm ->
                         mapMiniActionsUiState(

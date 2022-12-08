@@ -6,8 +6,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.feature.bulk_write_review.domain.model.RequestState
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetFormRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemMediaUploadBatchNumberUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
@@ -23,7 +22,7 @@ class BulkReviewMediaPickerUiStateMapper @Inject constructor() {
         reviewItemsUploadBatchNumber: List<BulkReviewItemMediaUploadBatchNumberUiModel>
     ): Map<String, CreateReviewMediaPickerUiState> {
         return when (getFormRequestState) {
-            is RequestState.Complete.Success -> {
+            is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
                     *getFormRequestState.result.reviewForm?.map { reviewForm ->
                         val inboxID = reviewForm.inboxID.orEmpty()
@@ -92,7 +91,8 @@ class BulkReviewMediaPickerUiStateMapper @Inject constructor() {
                                 }
                             } else {
                                 CreateReviewMediaPickerUiState.SuccessUpload(
-                                    mediaItems = reviewItemMediaItems, poem = reviewItemPoem
+                                    mediaItems = reviewItemMediaItems,
+                                    poem = reviewItemPoem
                                 )
                             }
                         }

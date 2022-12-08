@@ -1,8 +1,7 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.mapper
 
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormResponse
-import com.tokopedia.review.feature.bulk_write_review.domain.model.RequestState
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemBadRatingCategoryUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryUiState
 import javax.inject.Inject
@@ -13,7 +12,7 @@ class BulkReviewBadRatingCategoryUiStateMapper @Inject constructor() {
         reviewItemsBadRatingCategory: List<BulkReviewItemBadRatingCategoryUiModel>
     ): Map<String, BulkReviewBadRatingCategoryUiState> {
         return when (getFormRequestState) {
-            is RequestState.Complete.Success -> {
+            is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
                     *getFormRequestState.result.reviewForm?.map { reviewForm ->
                         mapBulkReviewBadRatingCategoryUiState(

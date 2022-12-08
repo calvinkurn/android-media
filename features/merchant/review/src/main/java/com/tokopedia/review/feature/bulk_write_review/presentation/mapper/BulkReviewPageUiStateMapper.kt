@@ -1,14 +1,12 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.mapper
 
-import com.tokopedia.review.feature.bulk_write_review.domain.model.RequestState
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetBadRatingCategoryRequestState
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetFormRequestState
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewSubmitRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetBadRatingCategoryRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestState
 import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.typefactory.BulkReviewAdapterTypeFactory
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewVisitable
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewPageUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewStickyButtonUiState
-import com.tokopedia.review.feature.createreputation.model.BadRatingCategoriesResponse
 import javax.inject.Inject
 
 class BulkReviewPageUiStateMapper @Inject constructor() {
@@ -21,15 +19,17 @@ class BulkReviewPageUiStateMapper @Inject constructor() {
         getBadRatingCategoryRequestState: BulkReviewGetBadRatingCategoryRequestState
     ): BulkReviewPageUiState {
         return when (getFormRequestState) {
-            is RequestState.Complete.Error -> mapOnBulkReviewPageError(getFormRequestState.throwable)
-            is RequestState.Complete.Success -> mapOnGetFormSuccess(
+            is BulkReviewGetFormRequestState.Complete.Error -> mapOnBulkReviewPageError(
+                getFormRequestState.throwable
+            )
+            is BulkReviewGetFormRequestState.Complete.Success -> mapOnGetFormSuccess(
                 shouldSubmitReview,
                 submitBulkReviewRequestState,
                 bulkReviewVisitableList,
                 bulkReviewStickyButtonUiState,
                 getBadRatingCategoryRequestState
             )
-            is RequestState.Requesting -> mapOnBulkReviewPageLoading()
+            is BulkReviewGetFormRequestState.Requesting -> mapOnBulkReviewPageLoading()
         }
     }
 
@@ -38,17 +38,17 @@ class BulkReviewPageUiStateMapper @Inject constructor() {
         submitBulkReviewRequestState: BulkReviewSubmitRequestState,
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         bulkReviewStickyButtonUiState: BulkReviewStickyButtonUiState,
-        badRatingCategoryRequestState: RequestState<BadRatingCategoriesResponse>
+        badRatingCategoryRequestState: BulkReviewGetBadRatingCategoryRequestState
     ): BulkReviewPageUiState {
         return when (badRatingCategoryRequestState) {
-            is RequestState.Complete.Error -> mapOnBulkReviewPageError(badRatingCategoryRequestState.throwable)
-            is RequestState.Complete.Success -> mapOnBulkReviewPageSuccess(
+            is BulkReviewGetBadRatingCategoryRequestState.Complete.Error -> mapOnBulkReviewPageError(badRatingCategoryRequestState.throwable)
+            is BulkReviewGetBadRatingCategoryRequestState.Complete.Success -> mapOnBulkReviewPageSuccess(
                 shouldSubmitReview,
                 submitBulkReviewRequestState,
                 bulkReviewVisitableList,
                 bulkReviewStickyButtonUiState
             )
-            is RequestState.Requesting -> mapOnBulkReviewPageLoading()
+            is BulkReviewGetBadRatingCategoryRequestState.Requesting -> mapOnBulkReviewPageLoading()
         }
     }
 
@@ -66,7 +66,7 @@ class BulkReviewPageUiStateMapper @Inject constructor() {
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         bulkReviewStickyButtonUiState: BulkReviewStickyButtonUiState
     ): BulkReviewPageUiState {
-        return if (shouldSubmitReview && submitBulkReviewRequestState is RequestState.Requesting) {
+        return if (shouldSubmitReview && submitBulkReviewRequestState is BulkReviewSubmitRequestState.Requesting) {
             BulkReviewPageUiState.Submitting
         } else {
             BulkReviewPageUiState.Showing(

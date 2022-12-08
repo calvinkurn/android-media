@@ -1,7 +1,12 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -12,13 +17,13 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.bulk_write_review.di.qualifier.BulkReviewGson
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetBadRatingCategoryRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestParam
-import com.tokopedia.review.feature.bulk_write_review.domain.model.RequestState
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetBadRatingCategoryRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetBadRatingCategoryUseCase
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetFormUseCase
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewSubmitRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewSubmitUseCase
 import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.typefactory.BulkReviewAdapterTypeFactory
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewBadRatingCategoryMapper
@@ -61,6 +66,7 @@ import com.tokopedia.review.feature.createreputation.presentation.viewmodel.Medi
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.MediaUploadResultMap
 import com.tokopedia.review.feature.createreputation.util.CreateReviewMapper
 import com.tokopedia.reviewcommon.extension.combine
+import com.tokopedia.reviewcommon.extension.get
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -86,6 +92,7 @@ import java.io.File
 import javax.inject.Inject
 
 class BulkReviewViewModel @Inject constructor(
+    private val coroutineDispatchers: CoroutineDispatchers,
     private val getFormUseCase: BulkReviewGetFormUseCase,
     private val getBadRatingCategoryUseCase: BulkReviewGetBadRatingCategoryUseCase,
     private val uploaderUseCase: UploaderUseCase,
@@ -100,7 +107,8 @@ class BulkReviewViewModel @Inject constructor(
     private val bulkReviewVisitableMapper: BulkReviewVisitableMapper,
     private val bulkReviewStickyButtonMapper: BulkReviewStickyButtonMapper,
     private val bulkReviewPageUiStateMapper: BulkReviewPageUiStateMapper,
-    private val bulkReviewBadRatingCategoryMapper: BulkReviewBadRatingCategoryMapper
+    private val bulkReviewBadRatingCategoryMapper: BulkReviewBadRatingCategoryMapper,
+    @BulkReviewGson private val gson: Gson
 ) : ViewModel() {
 
     companion object {
@@ -108,25 +116,38 @@ class BulkReviewViewModel @Inject constructor(
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
         private const val MIN_REVIEW_ITEM = 1
+        private const val SAVE_STATE_KEY_GET_FORM_REQUEST_STATE = "getFormRequestState"
+        private const val SAVE_STATE_KEY_GET_BAD_RATING_CATEGORY_REQUEST_STATE = "getBadRatingCategoryRequestState"
+        private const val SAVE_STATE_KEY_SUBMIT_BULK_REVIEW_REQUEST_STATE = "submitBulkReviewRequestState"
+        private const val SAVE_STATE_KEY_REMOVED_REVIEW_ITEMS_INBOX_ID = "removedReviewItemsInboxID"
+        private const val SAVE_STATE_KEY_REVIEW_ITEMS_RATING = "reviewItemsRating"
+        private const val SAVE_STATE_KEY_REVIEW_ITEMS_BAD_RATING_CATEGORY = "reviewItemsBadRatingCategory"
+        private const val SAVE_STATE_KEY_REVIEW_ITEMS_TESTIMONY = "reviewItemsTestimony"
+        private const val SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_URIS = "reviewItemsMediaUris"
+        private const val SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_UPLOAD_RESULTS = "reviewItemsMediaUploadResults"
+        private const val SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_UPLOAD_BATCH_NUMBER = "reviewItemsMediaUploadBatchNumber"
+        private const val SAVE_STATE_KEY_ANONYMOUS = "anonymous"
+        private const val SAVE_STATE_KEY_SHOULD_SUBMIT_REVIEW = "shouldSubmitReview"
+        private const val SAVE_STATE_KEY_ACTIVE_MEDIA_PICKER_INBOX_ID = "activeMediaPickerInboxID"
     }
 
     // region stateflow that need to be saved and restored
-    private val getFormRequestState = MutableStateFlow<BulkReviewGetFormRequestState>(RequestState.Requesting)
-    private val getBadRatingCategoryRequestState = MutableStateFlow<BulkReviewGetBadRatingCategoryRequestState>(RequestState.Requesting)
-    private val submitBulkReviewRequestState = MutableStateFlow<BulkReviewSubmitRequestState>(RequestState.Requesting)
+    private val getFormRequestState = MutableStateFlow<BulkReviewGetFormRequestState>(BulkReviewGetFormRequestState.Requesting())
+    private val getBadRatingCategoryRequestState = MutableStateFlow<BulkReviewGetBadRatingCategoryRequestState>(BulkReviewGetBadRatingCategoryRequestState.Requesting())
+    private val submitBulkReviewRequestState = MutableStateFlow<BulkReviewSubmitRequestState>(BulkReviewSubmitRequestState.Requesting())
     private val removedReviewItemsInboxID = MutableStateFlow(emptySet<String>())
     private val reviewItemsRating = MutableStateFlow(emptyList<BulkReviewItemRatingUiModel>())
     private val reviewItemsBadRatingCategory = MutableStateFlow(emptyList<BulkReviewItemBadRatingCategoryUiModel>())
     private val reviewItemsTestimony = MutableStateFlow(emptyList<BulkReviewItemTestimonyUiModel>())
     private val reviewItemsMediaUris = MutableStateFlow(emptyList<BulkReviewItemMediaUrisUiModel>())
-    private val reviewItemsMediaUploadJobs = MutableStateFlow(emptyList<BulkReviewItemMediaUploadJobsUiModel>())
     private val reviewItemsMediaUploadResults = MutableStateFlow(emptyList<BulkReviewItemMediaUploadResultsUiModel>())
-    private val reviewItemsUploadBatchNumber = MutableStateFlow(emptyList<BulkReviewItemMediaUploadBatchNumberUiModel>())
+    private val reviewItemsMediaUploadBatchNumber = MutableStateFlow(emptyList<BulkReviewItemMediaUploadBatchNumberUiModel>())
     private val anonymous = MutableStateFlow(false)
     private val shouldSubmitReview = MutableStateFlow(false)
     private var activeMediaPickerInboxID = ""
 
     // endregion stateflow that need to be saved and restored
+    private val reviewItemsMediaUploadJobs = MutableStateFlow(emptyList<BulkReviewItemMediaUploadJobsUiModel>())
     private val reviewItemsProductInfoUiState = getFormRequestState.mapLatest(
         ::mapProductInfoUiState
     ).stateIn(
@@ -167,7 +188,7 @@ class BulkReviewViewModel @Inject constructor(
         reviewItemsMediaUris,
         reviewItemsMediaUploadResults,
         reviewItemsMediaUploadJobs,
-        reviewItemsUploadBatchNumber,
+        reviewItemsMediaUploadBatchNumber,
         ::mapMediaItems
     ).stateIn(
         scope = viewModelScope,
@@ -193,7 +214,7 @@ class BulkReviewViewModel @Inject constructor(
         getFormRequestState,
         reviewItemsMediaPickerItems,
         reviewItemsMediaPickerPoem,
-        reviewItemsUploadBatchNumber,
+        reviewItemsMediaUploadBatchNumber,
         ::mapMediaPickerUiState
     ).stateIn(
         scope = viewModelScope,
@@ -273,20 +294,9 @@ class BulkReviewViewModel @Inject constructor(
         handleSubmitReviews()
     }
 
-    fun getForms() {
-        viewModelScope.launch {
-            getFormUseCase(userSession.userId).collectLatest { requestState ->
-                getFormRequestState.value = requestState
-            }
-        }
-    }
-
-    fun getBadRatingCategory() {
-        viewModelScope.launch {
-            getBadRatingCategoryUseCase(Unit).collectLatest { requestState ->
-                getBadRatingCategoryRequestState.value = requestState
-            }
-        }
+    fun getData() {
+        getForms()
+        getBadRatingCategory()
     }
 
     fun onRemoveReviewItem(inboxID: String) {
@@ -454,10 +464,182 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     fun onBackPressed(): Boolean {
-        return if (shouldSubmitReview.value && submitBulkReviewRequestState.value is RequestState.Requesting) {
+        return if (shouldSubmitReview.value && submitBulkReviewRequestState.value is BulkReviewSubmitRequestState.Requesting) {
             showCancelReviewSubmissionDialog()
             true
-        } else false
+        } else {
+            false
+        }
+    }
+
+    fun onSaveInstanceState(saveInstanceCacheManager: CacheManager) {
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_GET_FORM_REQUEST_STATE,
+            gson.toJson(getFormRequestState.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_GET_BAD_RATING_CATEGORY_REQUEST_STATE,
+            gson.toJson(getBadRatingCategoryRequestState.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_SUBMIT_BULK_REVIEW_REQUEST_STATE,
+            gson.toJson(submitBulkReviewRequestState.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_REMOVED_REVIEW_ITEMS_INBOX_ID,
+            gson.toJson(removedReviewItemsInboxID.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_REVIEW_ITEMS_RATING,
+            gson.toJson(reviewItemsRating.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_REVIEW_ITEMS_BAD_RATING_CATEGORY,
+            gson.toJson(reviewItemsBadRatingCategory.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_REVIEW_ITEMS_TESTIMONY,
+            gson.toJson(reviewItemsTestimony.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_URIS,
+            gson.toJson(reviewItemsMediaUris.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_UPLOAD_RESULTS,
+            gson.toJson(reviewItemsMediaUploadResults.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_UPLOAD_BATCH_NUMBER,
+            gson.toJson(reviewItemsMediaUploadBatchNumber.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_ANONYMOUS,
+            gson.toJson(anonymous.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_SHOULD_SUBMIT_REVIEW,
+            gson.toJson(shouldSubmitReview.value)
+        )
+        saveInstanceCacheManager.put(
+            SAVE_STATE_KEY_ACTIVE_MEDIA_PICKER_INBOX_ID,
+            gson.toJson(activeMediaPickerInboxID)
+        )
+    }
+
+    fun onRestoreInstanceState(saveInstanceCacheManager: CacheManager) {
+        viewModelScope.launch(coroutineDispatchers.io) {
+            val savedGetFormRequestState = saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
+                customId = SAVE_STATE_KEY_GET_FORM_REQUEST_STATE,
+                type = BulkReviewGetFormRequestState::class.java,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedGetBadRatingCategoryRequestState = saveInstanceCacheManager.get<BulkReviewGetBadRatingCategoryRequestState>(
+                customId = SAVE_STATE_KEY_GET_BAD_RATING_CATEGORY_REQUEST_STATE,
+                type = BulkReviewGetBadRatingCategoryRequestState::class.java,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedSubmitBulkReviewRequestState = saveInstanceCacheManager.get<BulkReviewSubmitRequestState>(
+                customId = SAVE_STATE_KEY_SUBMIT_BULK_REVIEW_REQUEST_STATE,
+                type = BulkReviewSubmitRequestState::class.java,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedRemovedReviewItemsInboxID = saveInstanceCacheManager.get<Set<String>>(
+                customId = SAVE_STATE_KEY_REMOVED_REVIEW_ITEMS_INBOX_ID,
+                type = object : TypeToken<HashSet<String>>() {}.type,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedReviewItemsRating = saveInstanceCacheManager.get<List<BulkReviewItemRatingUiModel>>(
+                customId = SAVE_STATE_KEY_REVIEW_ITEMS_RATING,
+                type = object : TypeToken<ArrayList<BulkReviewItemRatingUiModel>>() {}.type,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedReviewItemsBadRatingCategory = saveInstanceCacheManager.get<List<BulkReviewItemBadRatingCategoryUiModel>>(
+                customId = SAVE_STATE_KEY_REVIEW_ITEMS_BAD_RATING_CATEGORY,
+                type = object : TypeToken<ArrayList<BulkReviewItemBadRatingCategoryUiModel>>() {}.type,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedReviewItemsTestimony = saveInstanceCacheManager.get<List<BulkReviewItemTestimonyUiModel>>(
+                customId = SAVE_STATE_KEY_REVIEW_ITEMS_TESTIMONY,
+                type = object : TypeToken<ArrayList<BulkReviewItemTestimonyUiModel>>() {}.type,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedReviewItemsMediaUris = saveInstanceCacheManager.get<List<BulkReviewItemMediaUrisUiModel>>(
+                customId = SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_URIS,
+                type = object : TypeToken<ArrayList<BulkReviewItemMediaUrisUiModel>>() {}.type,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedReviewItemsMediaUploadResults = saveInstanceCacheManager.get<List<BulkReviewItemMediaUploadResultsUiModel>>(
+                customId = SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_UPLOAD_RESULTS,
+                type = object : TypeToken<ArrayList<BulkReviewItemMediaUploadResultsUiModel>>() {}.type,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedReviewItemsMediaUploadBatchNumber = saveInstanceCacheManager.get<List<BulkReviewItemMediaUploadBatchNumberUiModel>>(
+                customId = SAVE_STATE_KEY_REVIEW_ITEMS_MEDIA_UPLOAD_BATCH_NUMBER,
+                type = object : TypeToken<ArrayList<BulkReviewItemMediaUploadBatchNumberUiModel>>() {}.type,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedAnonymous = saveInstanceCacheManager.get<Boolean>(
+                customId = SAVE_STATE_KEY_ANONYMOUS,
+                type = Boolean::class.java,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedShouldSubmitReview = saveInstanceCacheManager.get<Boolean>(
+                customId = SAVE_STATE_KEY_SHOULD_SUBMIT_REVIEW,
+                type = Boolean::class.java,
+                defaultValue = null,
+                gson = gson
+            )
+            val savedActiveMediaPickerInboxID = saveInstanceCacheManager.get<String>(
+                customId = SAVE_STATE_KEY_ACTIVE_MEDIA_PICKER_INBOX_ID,
+                type = String::class.java,
+                defaultValue = null,
+                gson = gson
+            )
+            Log.d("ReviewLog", "--------------------------------------------------------------------")
+            if (
+                savedGetFormRequestState is BulkReviewGetFormRequestState &&
+                savedGetBadRatingCategoryRequestState is BulkReviewGetBadRatingCategoryRequestState &&
+                savedSubmitBulkReviewRequestState is BulkReviewSubmitRequestState &&
+                savedRemovedReviewItemsInboxID != null &&
+                savedReviewItemsRating != null &&
+                savedReviewItemsBadRatingCategory != null &&
+                savedReviewItemsTestimony != null &&
+                savedReviewItemsMediaUris != null &&
+                savedReviewItemsMediaUploadResults != null &&
+                savedReviewItemsMediaUploadBatchNumber != null &&
+                savedAnonymous != null &&
+                savedShouldSubmitReview != null &&
+                savedActiveMediaPickerInboxID != null
+            ) {
+                getFormRequestState.value = savedGetFormRequestState
+                getBadRatingCategoryRequestState.value = savedGetBadRatingCategoryRequestState
+                submitBulkReviewRequestState.value = savedSubmitBulkReviewRequestState
+                removedReviewItemsInboxID.value = savedRemovedReviewItemsInboxID
+                reviewItemsRating.value = savedReviewItemsRating
+                reviewItemsBadRatingCategory.value = savedReviewItemsBadRatingCategory
+                reviewItemsTestimony.value = savedReviewItemsTestimony
+                reviewItemsMediaUris.value = savedReviewItemsMediaUris
+                reviewItemsMediaUploadResults.value = savedReviewItemsMediaUploadResults
+                reviewItemsMediaUploadBatchNumber.value = savedReviewItemsMediaUploadBatchNumber
+                anonymous.value = savedAnonymous
+                shouldSubmitReview.value = savedShouldSubmitReview
+                activeMediaPickerInboxID = savedActiveMediaPickerInboxID
+            } else {
+                getData()
+            }
+        }
     }
 
     fun findFocusedReviewItemVisitable(): Pair<Int, BulkReviewItemUiModel>? {
@@ -599,7 +781,7 @@ class BulkReviewViewModel @Inject constructor(
         bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>
     ): List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>> {
         return when (getFormRequestState) {
-            is RequestState.Complete.Success -> bulkReviewVisitableMapper.map(
+            is BulkReviewGetFormRequestState.Complete.Success -> bulkReviewVisitableMapper.map(
                 productRevGetBulkForm = getFormRequestState.result,
                 removedReviewItem = removedReviewItem,
                 bulkReviewProductInfoUiState = bulkReviewProductInfoUiState,
@@ -624,7 +806,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     private fun observeMediaUrisForUpload() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatchers.io) {
             reviewItemsMediaUris.collectLatest { reviewItemsMediaUris ->
                 reviewItemsMediaUris.forEach { reviewItemMediaUris ->
                     tryUploadMedia(reviewItemMediaUris)
@@ -634,9 +816,9 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     private fun observeSubmitReviewsResult() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatchers.io) {
             submitBulkReviewRequestState.collectLatest { submitBulkReviewRequestState ->
-                if (submitBulkReviewRequestState is RequestState.Complete.Success) {
+                if (submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Success) {
                     if (submitBulkReviewRequestState.result.success == false) {
                         val bulkReviewItems = bulkReviewVisitableList.value
                             .filterIsInstance<BulkReviewItemUiModel>()
@@ -658,7 +840,7 @@ class BulkReviewViewModel @Inject constructor(
                         }
                     }
                     dismissCancelReviewSubmissionDialog()
-                } else if (submitBulkReviewRequestState is RequestState.Complete.Error) {
+                } else if (submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Error) {
                     enqueueToasterFailedSubmitReviews()
                     dismissCancelReviewSubmissionDialog()
                 }
@@ -667,7 +849,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     private fun handleMediaPickerErrorToasterQueue() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatchers.io) {
             reviewItemsMediaPickerUiState.collectLatest {
                 it.values.forEach { uiState ->
                     if (uiState is CreateReviewMediaPickerUiState.FailedUpload && uiState.shouldQueueToaster) {
@@ -679,7 +861,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     private fun handleSubmitReviews() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatchers.io) {
             shouldSubmitReview.collectLatest { shouldSubmitReview ->
                 if (shouldSubmitReview) {
                     mapSubmitReviewParams(
@@ -720,7 +902,9 @@ class BulkReviewViewModel @Inject constructor(
                         rating = ratingUiState.rating,
                         reviewText = if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
                             textAreaUiState.text
-                        } else "",
+                        } else {
+                            ""
+                        },
                         isAnonymous = anonymous,
                         attachmentIDs = if (mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
                             mediaPickerUiState
@@ -729,7 +913,9 @@ class BulkReviewViewModel @Inject constructor(
                                 .map { mediaItem ->
                                     mediaItem.uploadId
                                 }
-                        } else emptyList(),
+                        } else {
+                            emptyList()
+                        },
                         utmSource = "",
                         badRatingCategoryIDs = if (badRatingCategoryUiState is BulkReviewBadRatingCategoryUiState.Showing) {
                             badRatingCategoryUiState
@@ -740,7 +926,9 @@ class BulkReviewViewModel @Inject constructor(
                                 .map { badRatingCategory ->
                                     badRatingCategory.id
                                 }
-                        } else emptyList(),
+                        } else {
+                            emptyList()
+                        },
                         videoAttachments = if (mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
                             mediaPickerUiState
                                 .mediaItems
@@ -751,7 +939,9 @@ class BulkReviewViewModel @Inject constructor(
                                         url = mediaItem.remoteUrl
                                     )
                                 }
-                        } else emptyList(),
+                        } else {
+                            emptyList()
+                        },
                         orderID = ""
                     )
                 } else {
@@ -843,7 +1033,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     private fun startNewUploadMediaJob(inboxID: String, uri: String): Job {
-        return viewModelScope.launchCatchError(block = {
+        return viewModelScope.launchCatchError(context = coroutineDispatchers.io, block = {
             val filePath = File(uri)
             val params = uploaderUseCase.createParams(
                 sourceId = getUploadSourceId(uri),
@@ -1301,7 +1491,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     private fun incrementReviewItemMediaUploadBatchNumber(inboxID: String) {
-        reviewItemsUploadBatchNumber.update {
+        reviewItemsMediaUploadBatchNumber.update {
             it.toMutableList().apply {
                 find { reviewItemUploadBatchNumber ->
                     reviewItemUploadBatchNumber.inboxID == inboxID
@@ -1335,6 +1525,22 @@ class BulkReviewViewModel @Inject constructor(
                     remove(previousReviewItemMediaUris)
                     add(previousReviewItemMediaUris.copy(shouldResetFailedUploadStatus = true))
                 }
+            }
+        }
+    }
+
+    private fun getForms() {
+        viewModelScope.launch(coroutineDispatchers.io) {
+            getFormUseCase(userSession.userId).collectLatest { requestState ->
+                getFormRequestState.value = requestState
+            }
+        }
+    }
+
+    private fun getBadRatingCategory() {
+        viewModelScope.launch(coroutineDispatchers.io) {
+            getBadRatingCategoryUseCase(Unit).collectLatest { requestState ->
+                getBadRatingCategoryRequestState.value = requestState
             }
         }
     }

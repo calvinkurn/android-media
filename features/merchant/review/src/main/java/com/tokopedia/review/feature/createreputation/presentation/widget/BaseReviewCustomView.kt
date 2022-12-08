@@ -14,9 +14,10 @@ import android.view.animation.DecelerateInterpolator
 import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.BaseCustomView
 
-abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
+abstract class BaseReviewCustomView<VB : ViewBinding> @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
@@ -52,12 +53,14 @@ abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
     private var hideAnimator: Animator? = null
 
     protected open fun calculateWrapHeight(): Int {
-        val matchParentMeasureSpec = (binding.root.parent as? View)?.let {
-            MeasureSpec.makeMeasureSpec((binding.root.parent as View).width, MeasureSpec.EXACTLY)
-        } ?: MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
-        val wrapContentMeasureSpec = MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
-        binding.root.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
-        return binding.root.measuredHeight
+        return runCatching {
+            val matchParentMeasureSpec = (binding.root.parent as? View)?.let { parent ->
+                MeasureSpec.makeMeasureSpec(parent.width, MeasureSpec.EXACTLY)
+            } ?: MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
+            val wrapContentMeasureSpec = MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
+            binding.root.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+            binding.root.measuredHeight
+        }.getOrNull().orZero()
     }
 
     protected fun updateRootHeight(height: Int) {
@@ -77,7 +80,7 @@ abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
             if (onAnimationStart == null && onAnimationEnd == null) {
                 removeAllListeners()
             } else {
-                addListener(object: Animator.AnimatorListener {
+                addListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator?) {
                         onAnimationStart?.invoke()
                     }
@@ -113,9 +116,12 @@ abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
         Handler(Looper.getMainLooper()).post {
             hideAnimator?.cancel()
             val measuredWrapHeight = calculateWrapHeight()
-            val animator = arrayOf(createHeightAnimator(end = measuredWrapHeight), createAlphaAnimator(
-                MAX_ALPHA
-            ))
+            val animator = arrayOf(
+                createHeightAnimator(end = measuredWrapHeight),
+                createAlphaAnimator(
+                    MAX_ALPHA
+                )
+            )
             showAnimator = createAnimatorSet(
                 *animator,
                 onAnimationStart = onAnimationStart,

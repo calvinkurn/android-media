@@ -22,6 +22,10 @@ class WidgetBulkReviewRating @JvmOverloads constructor(
         true
     )
 
+    init {
+        binding.reviewFormRating.resetStars()
+    }
+
     fun updateUiState(uiState: BulkReviewRatingUiState) {
         when (uiState) {
             is BulkReviewRatingUiState.Hidden -> {

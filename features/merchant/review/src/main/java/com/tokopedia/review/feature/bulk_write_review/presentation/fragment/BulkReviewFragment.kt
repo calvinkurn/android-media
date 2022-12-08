@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -82,6 +83,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         private const val MAX_VIDEO_SIZE_BYTE = 250L * 1024L * 1024L
         private const val REQUEST_CODE_IMAGE = 111
         private const val BULK_REVIEW_COACH_MARK_TAG = "BULK_REVIEW_COACH_MARK_TAG"
+        private const val BULK_REVIEW_KEY_CACHE_MANAGER_ID = "bulkReviewCacheManagerId"
     }
 
     @Inject
@@ -148,6 +150,15 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activityResultHandler.handleResult(requestCode, resultCode, data)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        context?.let { context ->
+            val cacheManager = SaveInstanceCacheManager(context = context, generateObjectId = true)
+            viewModel.onSaveInstanceState(cacheManager)
+            outState.putString(BULK_REVIEW_KEY_CACHE_MANAGER_ID, cacheManager.id)
+        }
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -225,8 +236,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
             false
         }
         binding?.globalErrorBulkReview?.setActionClickListener {
-            viewModel.getForms()
-            viewModel.getBadRatingCategory()
+            viewModel.getData()
         }
     }
 
@@ -267,9 +277,13 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     }
 
     private fun initUiState(savedInstanceState: Bundle?) {
-        // TODO: Handle restoration
-        viewModel.getForms()
-        viewModel.getBadRatingCategory()
+        if (savedInstanceState == null) {
+            viewModel.getData()
+        } else {
+            val cacheManagerId = savedInstanceState.getString(BULK_REVIEW_KEY_CACHE_MANAGER_ID).orEmpty()
+            val cacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+            viewModel.onRestoreInstanceState(cacheManager)
+        }
     }
 
     private fun collectBulkReviewPageUiState() {

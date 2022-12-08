@@ -2,9 +2,8 @@ package com.tokopedia.review.feature.bulk_write_review.presentation.mapper
 
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormResponse
-import com.tokopedia.review.feature.bulk_write_review.domain.model.RequestState
-import com.tokopedia.review.feature.bulk_write_review.domain.usecase.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemTestimonyUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewRatingUiState
@@ -22,7 +21,7 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>
     ): Map<String, BulkReviewTextAreaUiState> {
         return when (getFormRequestState) {
-            is RequestState.Complete.Success -> {
+            is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
                     *getFormRequestState.result.reviewForm?.map { reviewForm ->
                         mapTextAreaUiState(
