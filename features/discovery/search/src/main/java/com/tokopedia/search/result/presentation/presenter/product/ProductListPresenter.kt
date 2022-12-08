@@ -58,6 +58,7 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
@@ -67,7 +68,6 @@ import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATIO
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
-import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.localsearch.EMPTY_LOCAL_SEARCH_RESPONSE_CODE
@@ -93,12 +93,10 @@ import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenter
-import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getUserId
 import com.tokopedia.search.utils.getValueString
@@ -118,7 +116,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
@@ -164,17 +161,20 @@ class ProductListPresenter @Inject constructor(
     wishlistPresenterDelegate: WishlistPresenterDelegate,
     private val inspirationWidgetPresenter: InspirationWidgetPresenterDelegate,
     private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
+    dynamicFilterModelProvider: DynamicFilterModelProvider,
+    bottomSheetFilterPresenter: BottomSheetFilterPresenter,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
-    DynamicFilterModelProvider,
+    DynamicFilterModelProvider by dynamicFilterModelProvider,
     LastFilterPresenter by lastFilterPresenterDelegate,
     InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
     BroadMatchPresenter by broadMatchDelegate,
     TickerPresenter by tickerPresenter,
     SafeSearchPresenter by safeSearchPresenter,
-    WishlistPresenter by wishlistPresenterDelegate {
+    WishlistPresenter by wishlistPresenterDelegate,
+    BottomSheetFilterPresenter by bottomSheetFilterPresenter {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -196,8 +196,6 @@ class ProductListPresenter @Inject constructor(
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
-    override var isBottomSheetFilterEnabled = true
-        private set
     private var hasLoadData = false
     private var responseCode = ""
     private var navSource = ""
@@ -212,8 +210,6 @@ class ProductListPresenter @Inject constructor(
 
     private var productList = mutableListOf<Visitable<*>>()
     override val quickFilterList = mutableListOf<Filter>()
-    override var dynamicFilterModel: DynamicFilterModel? = null
-        private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
     private var suggestionKeyword = ""
@@ -889,7 +885,6 @@ class ProductListPresenter @Inject constructor(
                 }
         )
     }
-
 
     private fun getViewToShowProductList(
             searchParameter: Map<String, Any>,
@@ -1654,109 +1649,6 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region BottomSheet Filter
-    override fun getProductCount(mapParameter: Map<String, String>?) {
-        if (isViewNotAttached) return
-        if (mapParameter == null) {
-            view.setProductCount("0")
-            return
-        }
-
-        val getProductCountRequestParams = requestParamsGenerator.createGetProductCountRequestParams(
-            mapParameter,
-            chooseAddressDelegate.getChooseAddressParams(),
-        )
-        val getProductCountSubscriber = createGetProductCountSubscriber()
-        getProductCountUseCase.get().execute(getProductCountRequestParams, getProductCountSubscriber)
-    }
-
-    private fun createGetProductCountSubscriber(): Subscriber<String> {
-        return object : Subscriber<String>() {
-            override fun onCompleted() { }
-
-            override fun onError(e: Throwable) {
-                setProductCount("0")
-            }
-
-            override fun onNext(productCountText: String) {
-                setProductCount(productCountText)
-            }
-        }
-    }
-
-    private fun setProductCount(productCountText: String) {
-        if (isViewNotAttached) return
-
-        view.setProductCount(productCountText)
-    }
-
-    override fun openFilterPage(searchParameter: Map<String, Any>?) {
-        if (isViewNotAttached || searchParameter == null) return
-        if (!isBottomSheetFilterEnabled) return
-
-        isBottomSheetFilterEnabled = false
-
-        view.sendTrackingOpenFilterPage()
-        view.openBottomSheetFilter(dynamicFilterModel)
-
-        if (dynamicFilterModel == null) {
-            val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
-                searchParameter,
-                chooseAddressDelegate.getChooseAddressParams(),
-            )
-            getDynamicFilterUseCase.get().execute(
-                    getDynamicFilterRequestParams,
-                    createGetDynamicFilterModelSubscriber()
-            )
-        }
-    }
-
-    private fun createGetDynamicFilterModelSubscriber(): Subscriber<DynamicFilterModel> {
-        return object : Subscriber<DynamicFilterModel>() {
-            override fun onCompleted() { }
-
-            override fun onNext(dynamicFilterModel: DynamicFilterModel) {
-                handleGetDynamicFilterSuccess(dynamicFilterModel)
-            }
-
-            override fun onError(e: Throwable) {
-                handleGetDynamicFilterFailed()
-            }
-        }
-    }
-
-    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
-        if (!dynamicFilterModel.isEmpty()) {
-            this.dynamicFilterModel = dynamicFilterModel
-            getViewToSetDynamicFilterModel(dynamicFilterModel)
-        } else {
-            handleGetDynamicFilterFailed()
-        }
-    }
-
-    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
-        if (isViewNotAttached) return
-
-        view.setDynamicFilter(dynamicFilterModel)
-    }
-
-    private fun handleGetDynamicFilterFailed() {
-        getViewToSetDynamicFilterModel(createSearchProductDefaultFilter())
-    }
-
-    override fun onBottomSheetFilterDismissed() {
-        isBottomSheetFilterEnabled = true
-    }
-
-    override fun onApplySortFilter(mapParameter: Map<String, Any>) {
-        val keywordFromFilter = mapParameter[SearchApiConst.Q] ?: ""
-        val currentKeyword = view?.queryKey ?: ""
-
-        if (currentKeyword != keywordFromFilter)
-            dynamicFilterModel = null
-    }
-    //endregion
-
     //region Inspiration Carousel
     override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
         if (isViewNotAttached) return
@@ -1822,7 +1714,7 @@ class ProductListPresenter @Inject constructor(
     private fun refreshData() {
         if (isViewNotAttached) return
 
-        dynamicFilterModel = null
+        clearDynamicFilter()
 
         view.reloadData()
     }

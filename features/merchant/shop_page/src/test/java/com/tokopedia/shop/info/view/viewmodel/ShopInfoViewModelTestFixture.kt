@@ -2,12 +2,12 @@ package com.tokopedia.shop.info.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,6 +43,7 @@ abstract class ShopInfoViewModelTestFixture {
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
     }
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)

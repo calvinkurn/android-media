@@ -78,7 +78,7 @@ import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditPro
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
-import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_TICKER_NOTIFY_ME
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_STOCK_AVAILABLE
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.Data
@@ -925,7 +925,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetStatusShop_thenReturn(StatusInfo("3", "", "", ""))
             onGetTickerData_thenReturn(listOf(mockk()))
-            onGetIsShowNotifyMeTicker(true)
+            onGetIsShowStockAvailableTicker(true)
 
             viewModel.getProductManageAccess()
             viewModel.getTickerData()
@@ -961,7 +961,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(listOf(mockk()))
-            onGetIsShowNotifyMeTicker(true)
+            onGetIsShowStockAvailableTicker(true)
 
             viewModel.getTickerData()
             viewModel.getProductList(shopId)
@@ -1080,7 +1080,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
-            onGetIsShowNotifyMeTicker(true)
+            onGetIsShowStockAvailableTicker(true)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetProductList_thenReturn(productListData)
             onGetTickerData_thenReturn(listOf(mockk()))
@@ -2885,9 +2885,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         } returns tickerData
     }
 
-    private fun onGetIsShowNotifyMeTicker(isShow: Boolean) {
+    private fun onGetIsShowStockAvailableTicker(isShow: Boolean) {
         every {
-            remoteConfigImpl.getBoolean(ENABLE_TICKER_NOTIFY_ME)
+            remoteConfigImpl.getBoolean(ENABLE_STOCK_AVAILABLE)
         } returns isShow
     }
 

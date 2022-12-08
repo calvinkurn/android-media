@@ -23,3 +23,6 @@ const val PICKER_TO_EDITOR_ROLLENCE = "android_editor"
 
 // picker new relic tag
 const val PICKER_SAVE_GALLERY = "PICKER_SAVE_GALLERY"
+
+// picker file name code for file from url
+const val PICKER_URL_FILE_CODE = "PickerImageUrl_"

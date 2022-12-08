@@ -34,7 +34,10 @@
         android:id="@+id/tv_buyer_order_detail_product_insurance_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/iv_buyer_order_detail_product_insurance_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -87,6 +90,13 @@
         app:typographyType="body_3"
         tools:text="43 Size. Packing rapi plis." />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_product_info_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="ivBuyerOrderDetailProductThumbnail,tvBuyerOrderDetailProductPriceQuantity,tvBuyerOrderDetailProductNote" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerBuyerOrderDetailProduct"
         android:layout_width="match_parent"
@@ -94,7 +104,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:background="@color/buyer_order_detail_dms_thin_divider"
-        app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailProductNote" />
+        app:layout_constraintTop_toBottomOf="@id/barrier_product_info_bottom" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailTotalProductPriceLabel"

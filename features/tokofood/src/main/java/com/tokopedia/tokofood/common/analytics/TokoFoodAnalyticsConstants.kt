@@ -123,5 +123,21 @@ object TokoFoodAnalyticsConstants {
     const val TRACKER_ID_36853 = "36853"
     const val VIEW_MERCHANT_CARD_IN_SRP_TOKOFOOD = "view merchant card in SRP tokofood"
     const val TRACKER_ID_36854 = "36854"
+    const val VIEW_COACHMARK = "view coachmark"
+    const val TRACKER_ID_39609 = "39609"
+    const val COMPONENT_SEARCH_BAR = "component:search_bar"
+    const val TITLE_PREFIX = "title:"
+    const val SUBTITLE_PREFIX = "subtitle:"
+
+    //tokochat trackers
+    const val TOKOCHAT_ORDER_DETAIL = "tokochat order detail"
+    const val CLICK_CHAT_FROM_ORDER_DETAIL = "click chat from order detail"
+
+    const val TRACKER_ID_39065 = "39065"
+    const val BUYER = "buyer"
+    const val TOKOFOOD_SOURCE = "Tokofood"
+
+
+    const val COMMUNICATION = "communication"
 
 }
