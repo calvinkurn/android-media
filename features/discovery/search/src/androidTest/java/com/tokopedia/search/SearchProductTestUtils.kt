@@ -18,7 +18,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
@@ -26,7 +25,6 @@ import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListener

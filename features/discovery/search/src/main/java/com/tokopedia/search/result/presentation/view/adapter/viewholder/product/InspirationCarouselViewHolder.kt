@@ -24,7 +24,11 @@ import com.tokopedia.search.result.presentation.view.adapter.InspirationCarousel
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.InspirationCarouselChipsListItemDecoration
-import com.tokopedia.search.result.product.inspirationcarousel.*
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
