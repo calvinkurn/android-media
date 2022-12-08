@@ -33,10 +33,10 @@ class ItemStatusPMViewHolder(
         setupIconClickListener()
         setupItemPowerMerchant(element)
         setupBackgroundColor()
-        setupBenefits(element)
+        setupBenefits()
     }
 
-    private fun setupBenefits(element: ItemStatusPMUiModel) {
+    private fun setupBenefits() {
         binding?.run {
             setupBenefitItems()
             rvSsPmSectionBenefits.layoutManager = LinearLayoutManager(root.context)
@@ -46,10 +46,6 @@ class ItemStatusPMViewHolder(
 
     private fun setupBenefitItems() {
         val items = listOf(
-            ItemParentBenefitUiModel(
-                iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_1,
-                titleResources = R.string.title_item_rm_section_pm_benefit_2
-            ),
             ItemParentBenefitUiModel(
                 iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_2,
                 titleResources = R.string.title_item_rm_section_pm_benefit_4
