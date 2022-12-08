@@ -29,6 +29,7 @@
             android:name=".view.activity.TradeInHomePageActivity"
             android:label="@string/tukar_tambah"
             android:launchMode="singleTask"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -49,6 +50,7 @@
         <activity
             android:name=".view.activity.TradeInPromoActivity"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
         </activity>
         <activity

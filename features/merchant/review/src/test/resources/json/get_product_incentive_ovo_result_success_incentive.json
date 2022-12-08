@@ -18,15 +18,15 @@
       "amount": 200,
       "illustration_list": [
         {
-          "image_url": "https://ecs7.tokopedia.net/android/others/ic_add_rating_incentive_tnc.png",
+          "image_url": "https://images.tokopedia.net/android/others/ic_add_rating_incentive_tnc.png",
           "text": "Kasih rating buat belanjaanmu"
         },
         {
-          "image_url": "https://ecs7.tokopedia.net/android/others/ic_add_photo_incentive_tnc.png",
+          "image_url": "https://images.tokopedia.net/android/others/ic_add_photo_incentive_tnc.png",
           "text": "Lanjut foto barang, min. 1"
         },
         {
-          "image_url": "https://ecs7.tokopedia.net/android/others/ic_add_review_incentive_tnc.png",
+          "image_url": "https://images.tokopedia.net/android/others/ic_add_review_incentive_tnc.png",
           "text": "Tulis ulasan min. 40 karakter"
         }
       ]

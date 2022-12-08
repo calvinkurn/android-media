@@ -37,6 +37,7 @@
     <string name="label_oops">Oopppsss..</string>
     <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang Anda cari.</string>
     <string name="label_button_change_search">Ganti Pencarian</string>
+    <string name="label_find_address">Cari Alamat</string>
 
     <!--Content Description-->
     <string name="content_desc_rb_check_address">radio pilih alamat</string>
@@ -123,7 +124,44 @@
     <string name="add_address_success">Alamat berhasil ditambahkan!</string>
     <string name="title_ticker_shop_setting">Atur lokasi toko di halaman Pengiriman</string>
     <string name="desc_ticker_shop_setting"><![CDATA[Sekarang kamu bisa mengatur lokasi tokomu langsung di <a href="">Halaman Pengiriman</a>.]]></string>
+    <string name="share_address_confirmation_title">Bagikan alamat kamu?</string>
+    <string name="share_address_confirmation_description"><![CDATA[Kamu akan membagikan alamat ke %s. <b>Untuk keamanan datamu, Pastikan nama akun Tokopedia teman kamu sudah benar</b>, ya.]]></string>
+    <string name="desc_your_friend">temanmu</string>
+    <string name="share_address_confirmation_tnc_content">Dengan klik Bagikan Sekarang, saya setuju untuk membagikan alamat sesuai dengan </string>
+    <string name="share_address_confirmation_tnc_link">Kebijakan Privasi</string>
+    <string name="select_all">Pilih Semua</string>
+    <string name="btn_save">Simpan</string>
+    <string name="btn_save_with_total">Simpan (%1$s)</string>
+    <string name="btn_delete">Hapus</string>
+    <string name="title_item_request_address">Minta alamat ke teman kamu</string>
+    <string name="subtitle_item_request_address">Lebih mudah dan cepat mendapatkan alamat teman cukup klik di sini.</string>
+    <string name="success_delete_share_address">Alamat berhasil dihapus!</string>
+    <string name="action_cancel_delete_address">Batalkan</string>
+    <string name="success_share_address">Alamat berhasil dibagikan</string>
+    <string name="success_request_address">Alamat berhasil direquest!</string>
+    <string name="btn_yes_share">Ya, Bagikan</string>
+    <string name="btn_no">Tidak</string>
+    <string name="title_select_share_address">Pilih Alamat Untuk Dibagikan</string>
+    <string name="btn_share_adddress">Bagikan Alamat</string>
+    <string name="title_failed_saved_share_address_from_notif">Oops, alamat gagal disimpan</string>
+    <string name="description_failed_saved_share_address_from_notif">Pastikan alamatnya belum pernah kamu simpan dan link dari temanmu masih aktif, ya.</string>
 
     <!--    remove address-->
     <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>
+
+<!--    tab layout label-->
+    <string name="tablayout_label_main">Semua Alamat</string>
+    <string name="tablayout_label_from_friend">Dari teman</string>
+    <string name="tablayout_label_from_friend_with_value">Dari teman (+%1$s)</string>
+
+    <string name="share_address_bottom_sheet_title_share">Bagikan ke teman kamu</string>
+    <string name="share_address_bottom_sheet_title_request">Minta alamat ke teman kamu</string>
+    <string name="share_address_bottom_sheet_email_or_phone_number">Email / No Hp</string>
+    <string name="share_address_bottom_sheet_description">Dengan klik Kirim, kamu setuju membagikan informasi alamat kamu ke orang lain.</string>
+    <string name="request_address_bottom_sheet_description">Dengan klik Minta Alamat, kamu setuju menggunakan kontak teman kamu untuk dimintakan alamat.</string>
+    <string name="request_address_bottom_sheet_btn_request">Minta Alamat</string>
+    <string name="share_address_bottom_sheet_btn_send">Kirim</string>
+    <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
+    <string name="contact_not_found">Kontak tidak ditemukan</string>
+
 </resources>

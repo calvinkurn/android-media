@@ -17,14 +17,14 @@ import com.google.android.exoplayer2.source.UnrecognizedInputFormatException
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kol.R
 import kotlinx.android.synthetic.main.media_player_view.*
-import com.tokopedia.videoplayer.state.VideoSourceProtocol
+import com.tokopedia.kol.common.player.VideoSourceProtocol
+import com.tokopedia.kol.common.player.RepeatMode.REPEAT_MODE_OFF
 import java.io.File
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.videoplayer.state.RepeatMode
 
 
 class MediaHolderFragment : BaseDaggerFragment() {
@@ -204,7 +204,7 @@ class MediaHolderFragment : BaseDaggerFragment() {
                     DefaultRenderersFactory(requireContext()), trackSelector, loadControl)
 
             video_player.player = mExoPlayer
-            mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
+            mExoPlayer?.repeatMode = REPEAT_MODE_OFF
             mExoPlayer?.playWhenReady = isReadyPlayed
             val isHasStartPosition = currentWindowIndex != C.INDEX_UNSET
             if (isHasStartPosition) {

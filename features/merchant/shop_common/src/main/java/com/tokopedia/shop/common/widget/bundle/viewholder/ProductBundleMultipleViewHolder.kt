@@ -97,7 +97,12 @@ class ProductBundleMultipleViewHolder(
             tvBundleName.isVisible = hasShopInfo
             tvBundleNameLarge.isVisible = !hasShopInfo
             if (hasShopInfo) {
-                iconShop.loadImage(shopInfo?.shopIconUrl)
+                if(!shopInfo?.shopIconUrl.isNullOrEmpty()) {
+                    iconShop.visibility = View.VISIBLE
+                    iconShop.loadImage(shopInfo?.shopIconUrl)
+                }else{
+                    iconShop.visibility = View.GONE
+                }
                 tvShopName.text = shopInfo?.shopName
             } else {
                 tvBundleNameLarge.text = bundleName

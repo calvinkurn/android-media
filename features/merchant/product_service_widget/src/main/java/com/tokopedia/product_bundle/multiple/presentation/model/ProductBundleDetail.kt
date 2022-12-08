@@ -1,6 +1,7 @@
 package com.tokopedia.product_bundle.multiple.presentation.model
 
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 class ProductBundleDetail(
     val productId: Long = 0L,
@@ -16,4 +17,8 @@ class ProductBundleDetail(
     val warehouseId: String = "0"
 ) {
     val hasVariant: Boolean = productVariant?.hasVariant ?: false
+
+    fun VariantChild?.getVariantPicture(): String {
+        return this?.picture?.url100.orEmpty()
+    }
 }

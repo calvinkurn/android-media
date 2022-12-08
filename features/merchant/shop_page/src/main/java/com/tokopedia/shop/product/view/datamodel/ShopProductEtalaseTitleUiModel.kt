@@ -8,8 +8,8 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
  */
 
 data class ShopProductEtalaseTitleUiModel(
-        var etalaseName: String,
-        var etalaseBadge: String
+    var etalaseName: String,
+    var etalaseBadge: String
 ) : BaseShopProductViewModel {
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {

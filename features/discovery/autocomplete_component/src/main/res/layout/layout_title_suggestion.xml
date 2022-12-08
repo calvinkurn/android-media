@@ -9,14 +9,14 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/suggestionTitleTextView"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_22"
+        android:layout_height="18dp"
         android:layout_centerVertical="true"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="display_1"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Title" />
 </RelativeLayout>
