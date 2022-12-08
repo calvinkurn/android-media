@@ -50,8 +50,13 @@ import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import timber.log.Timber
 import javax.inject.Inject
 
-class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
-    PlaySlotTabCallback, SwipeRefreshLayout.OnRefreshListener, FeedPlusTabParentFragment {
+class VideoTabFragment :
+    PlayWidgetListener,
+    BaseDaggerFragment(),
+    PlayWidgetAnalyticListener,
+    PlaySlotTabCallback,
+    SwipeRefreshLayout.OnRefreshListener,
+    FeedPlusTabParentFragment {
 
     private var rvWidget: FeedPlayStickyHeaderRecyclerView? = null
     private var swipeToRefresh: SwipeToRefresh? = null
@@ -151,24 +156,31 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         super.onActivityCreated(savedInstanceState)
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         playFeedVideoTabViewModel.run {
-            reminderObservable.observe(viewLifecycleOwner, Observer {
-                when (it) {
-                    is Success -> onSuccessReminderSet(it.data)
-                    else -> {
-                        showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
+            reminderObservable.observe(
+                viewLifecycleOwner,
+                Observer {
+                    when (it) {
+                        is Success -> onSuccessReminderSet(it.data)
+                        else -> {
+                            showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
+                        }
                     }
                 }
-            })
+            )
 
-            playWidgetReminderEvent.observe(viewLifecycleOwner,  {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
-            })
-            getPlayInitialDataRsp.observe(lifecycleOwner,  {
+            playWidgetReminderEvent.observe(viewLifecycleOwner) {
+                startActivityForResult(
+                    RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME
+                )
+            }
+            getPlayInitialDataRsp.observe(lifecycleOwner) {
                 when (it) {
                     is Success -> {
                         setAdapter()
                         playWidgetAnalyticsListenerImp.filterCategory =
-                            FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot).firstOrNull()?.items?.firstOrNull()?.label ?: ""
+                            FeedPlayVideoTabMapper.getTabData(it.data.playGetContentSlot)
+                                .firstOrNull()?.items?.firstOrNull()?.label ?: ""
                         onSuccessInitialPlayTabData(
                             it.data.playGetContentSlot
                         )
@@ -176,10 +188,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                     is Fail -> {
                         hideLoading()
                         Timber.e(it.throwable)
-
                     }
                 }
-            })
+            }
             getPlayDataForSlotRsp.observe(lifecycleOwner) {
                 hideLoading()
                 when (it) {
@@ -190,11 +201,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                     }
                     is Fail -> {
                         Timber.e(it.throwable)
-
                     }
                 }
             }
-            getPlayDataRsp.observe(lifecycleOwner,  {
+            getPlayDataRsp.observe(lifecycleOwner) {
                 hideLoading()
                 when (it) {
                     is Success -> {
@@ -204,11 +214,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                     }
                     is Fail -> {
                         Timber.e(it.throwable)
-
                     }
                 }
-            })
-
+            }
         }
     }
 
@@ -244,14 +252,13 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             adapter = VideoTabAdapter(
                 playWidgetCoordinator,
                 this@VideoTabFragment,
-                requireActivity(),
+                requireActivity()
             ).also {
                 setAdapter(it)
             }
         }
     }
     private fun onSuccessInitialPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
-
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(
@@ -259,12 +266,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 playDataResponse.data,
                 playDataResponse.meta,
                 shopId = userSession.shopId,
-                playWidgetPreference = playWidgetPreference,
+                playWidgetPreference = playWidgetPreference
             )
         )
     }
     private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
-
         swipeToRefresh?.isEnabled = true
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
@@ -273,17 +279,17 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 playDataResponse.data,
                 playDataResponse.meta,
                 shopId = userSession.shopId,
-                playWidgetPreference = playWidgetPreference,
+                playWidgetPreference = playWidgetPreference
             )
         )
-
     }
 
     private fun onSuccessPlayTabDataFromChipClick(
         playDataResponse: PlayGetContentSlotResponse
     ) {
-        if (adapter.slotPosition == null)
+        if (adapter.slotPosition == null) {
             adapter.updateSlotPosition()
+        }
         adapter.slotPosition?.let { rvWidget?.scrollToPosition(it) }
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
@@ -291,11 +297,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             playDataResponse.data,
             playDataResponse.meta,
             shopId = userSession.shopId,
-            playWidgetPreference = playWidgetPreference,
+            playWidgetPreference = playWidgetPreference
         )
 
         adapter.updateList(mappedData, playFeedVideoTabViewModel.currentSourceId, playFeedVideoTabViewModel.currentSourceType, playWidgetAnalyticsListenerImp.filterCategory)
-
     }
 
     override fun onToggleReminderClicked(
@@ -305,10 +310,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         position: Int
     ) {
         playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(channelId, reminderType, position)
-
     }
-
-
 
     override fun onToggleReminderClicked(
         view: PlayWidgetMediumView,
@@ -330,9 +332,13 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     }
 
     private fun playWidgetOnVisibilityChanged(
-        isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(
-            Lifecycle.State.RESUMED
-        ),
+        isViewResumed: Boolean = if (view == null) {
+            false
+        } else {
+            viewLifecycleOwner.lifecycle.currentState.isAtLeast(
+                Lifecycle.State.RESUMED
+            )
+        },
         isUserVisibleHint: Boolean = userVisibleHint,
         isParentHidden: Boolean = parentFragment?.isHidden ?: true
     ) {
@@ -342,8 +348,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             if (isViewVisible) {
                 playWidgetCoordinator.onResume()
                 autoplayJumboWidget()
+            } else {
+                playWidgetCoordinator.onPause()
             }
-            else playWidgetCoordinator.onPause()
         }
     }
 
@@ -354,12 +361,12 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         )
     }
 
-
-    //click listener for tab menu slot
+    // click listener for tab menu slot
     override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
         playWidgetAnalyticsListenerImp.filterCategory = item.label
-        if (rvWidget?.isStickyRecyclerViewIsEnabled() == true)
+        if (rvWidget?.isStickyRecyclerViewIsEnabled() == true) {
             adapter.updateSlotTabViewHolderState()
+        }
         analyticListener.clickOnFilterChipsInVideoTab(item.label)
         callAPiOnTabCLick(item)
     }
@@ -379,45 +386,42 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 rvWidget?.setShouldShowStickyHeaderValue(false, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
                 if (dy > THRESHOLD_SCROLL_ZERO) {
                     // Scrolling up
-                        isScrollingUp = true
-                    if (dy > THRESHOLD_SCROLL_TEN)
-                    rvWidget?.setHeaderViewVisibility(false)
-
+                    isScrollingUp = true
+                    if (dy > THRESHOLD_SCROLL_TEN) {
+                        rvWidget?.setHeaderViewVisibility(false)
+                    }
                 } else {
                     // Scrolling down
-                        isScrollingUp = false
-                    if (dy < THRESHOLD_SCROLL_MINUS_TEN)
-                    rvWidget?.setHeaderViewVisibility(true)
-
+                    isScrollingUp = false
+                    if (dy < THRESHOLD_SCROLL_MINUS_TEN) {
+                        rvWidget?.setHeaderViewVisibility(true)
+                    }
                 }
-
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-
                     val f = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                     val l = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                     if (rvWidget?.getViewHolderAtPosition(l) != null && rvWidget?.getViewHolderAtPosition(l) is PlayFeedWidgetViewHolder.Large) {
                         val vh = rvWidget?.getViewHolderAtPosition(l) as PlayFeedWidgetViewHolder.Large
                         val recyclerViewLargeWidget = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
                         recyclerViewLargeWidget?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it) }
-
                     }
                     if (rvWidget?.getViewHolderAtPosition(f) != null && rvWidget?.getViewHolderAtPosition(f) is PlayFeedWidgetViewHolder.Jumbo) {
                         val vh = rvWidget?.getViewHolderAtPosition(f) as PlayFeedWidgetViewHolder.Jumbo
                         val recyclerViewJumboWidget = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
                         recyclerViewJumboWidget?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it) }
-
                     }
                 }
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && isScrollingUp)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && isScrollingUp) {
                     rvWidget?.setShouldShowStickyHeaderValue(true, TIME_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
+                }
             }
         }
     }
-    fun autoplayJumboWidget(){
+    fun autoplayJumboWidget() {
         rvWidget?.let {
             val f = (it.getLayoutManager() as LinearLayoutManager).findFirstVisibleItemPosition()
 
@@ -425,15 +429,13 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 val vh = it.getViewHolderAtPosition(f) as PlayFeedWidgetViewHolder.Jumbo
                 val recyclerView = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
                 recyclerView?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(recyclerView) }
-
             }
         }
     }
 
-    private fun callAPiOnTabCLick(item: PlaySlotTabMenuUiModel.Item){
-        val videoPageParams = VideoPageParams(cursor = "" , sourceId = item.sourceId, sourceType = item.sourceType, group = item.group)
+    private fun callAPiOnTabCLick(item: PlaySlotTabMenuUiModel.Item) {
+        val videoPageParams = VideoPageParams(cursor = "", sourceId = item.sourceId, sourceType = item.sourceType, group = item.group)
         playFeedVideoTabViewModel.getPlayData(isClickFromTabMenu = true, videoPageParams = videoPageParams)
-
     }
 
     override fun onDestroyView() {
@@ -450,31 +452,34 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         requireActivity().clearTabMenuPosition()
     }
     private fun showToast(message: String, type: Int, actionText: String? = null) {
-        if (actionText?.isEmpty() == false)
+        if (actionText?.isEmpty() == false) {
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
-        else {
+        } else {
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
-
         }
     }
     private fun onSuccessReminderSet(playWidgetFeedReminderInfoData: PlayWidgetFeedReminderInfoData) {
         showToast(
-                if (playWidgetFeedReminderInfoData.reminderType.reminded) getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_add_reminder)
-                else getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder), Toaster.TYPE_NORMAL)
+            if (playWidgetFeedReminderInfoData.reminderType.reminded) {
+                getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_add_reminder)
+            } else {
+                getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder)
+            },
+            Toaster.TYPE_NORMAL
+        )
 
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
         adapter.updatePlayWidgetInfo(
             adapterPositionForItem,
             playWidgetFeedReminderInfoData.channelId,
             null,
-            playWidgetFeedReminderInfoData.reminderType == PlayWidgetReminderType.Reminded,
+            playWidgetFeedReminderInfoData.reminderType == PlayWidgetReminderType.Reminded
         )
     }
 
     override fun onResume() {
         super.onResume()
         playWidgetOnVisibilityChanged(true)
-
     }
 
     override fun onPause() {
@@ -505,7 +510,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 if (playWidgetFeedReminderInfoData != null) playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType, playWidgetFeedReminderInfoData.itemPosition)
             }
             REQUEST_CODE_PLAY_ROOM -> {
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     val selectedCard = playFeedVideoTabViewModel.selectedPlayWidgetCard
 
                     val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: selectedCard.channelId

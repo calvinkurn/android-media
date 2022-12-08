@@ -9,11 +9,10 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.response.GqlDynamicFilterResponse
 import com.tokopedia.shop.common.util.UrlParamUtil
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetShopFilterBottomSheetDataUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+    private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<DynamicFilterModel>(graphqlRepository) {
 
     companion object {
@@ -25,11 +24,14 @@ class GetShopFilterBottomSheetDataUseCase @Inject constructor(
         private const val KEY_SHOP_ID = "shop_id"
 
         fun createParams(shopId: String = "") = mapOf(
-                KEY_PARAMS to UrlParamUtil.convertMapToStringParam(mapOf(
-                        KEY_SOURCE to VALUE_SOURCE,
-                        KEY_DEVICE to DEVICE_VALUE,
-                        KEY_SHOP_ID to shopId
-                )))
+            KEY_PARAMS to UrlParamUtil.convertMapToStringParam(
+                mapOf(
+                    KEY_SOURCE to VALUE_SOURCE,
+                    KEY_DEVICE to DEVICE_VALUE,
+                    KEY_SHOP_ID to shopId
+                )
+            )
+        )
     }
 
     var params = mapOf<String, Any>()
@@ -47,58 +49,58 @@ class GetShopFilterBottomSheetDataUseCase @Inject constructor(
     }
 
     private val GQL_QUERY = "query SearchProduct(\n" +
-            " \$params: String!\n" +
-            ") {\n" +
-            "filter_sort_product(params: \$params) {\n" +
-            "      data {\n" +
-            "        filter {\n" +
-            "          title\n" +
-            "          search {\n" +
-            "            searchable\n" +
-            "            placeholder\n" +
-            "          }\n" +
-            "      template_name\n" +
-            "          options {\n" +
-            "            name\n" +
-            "            key\n" +
-            "            icon\n" +
-            "            Description\n" +
-            "            value\n" +
-            "            inputType\n" +
-            "            totalData\n" +
-            "            valMax\n" +
-            "            valMin\n" +
-            "            isPopular\n" +
-            "            isNew\n" +
-            "            hexColor\n" +
-            "            child {\n" +
-            "              key\n" +
-            "              value\n" +
-            "              name\n" +
-            "              icon\n" +
-            "              inputType\n" +
-            "              totalData\n" +
-            "              isPopular\n" +
-            "              child {\n" +
-            "                key\n" +
-            "                value\n" +
-            "                name\n" +
-            "                icon\n" +
-            "                inputType\n" +
-            "                totalData\n" +
-            "                isPopular\n" +
-            "              }\n" +
-            "            }\n" +
-            "          }\n" +
-            "        }\n" +
-            "        sort {\n" +
-            "          name\n" +
-            "          key\n" +
-            "          value\n" +
-            "          inputType\n" +
-            "          applyFilter\n" +
-            "        }\n" +
-            "     }\n" +
-            "  }\n" +
-            "}"
+        " \$params: String!\n" +
+        ") {\n" +
+        "filter_sort_product(params: \$params) {\n" +
+        "      data {\n" +
+        "        filter {\n" +
+        "          title\n" +
+        "          search {\n" +
+        "            searchable\n" +
+        "            placeholder\n" +
+        "          }\n" +
+        "      template_name\n" +
+        "          options {\n" +
+        "            name\n" +
+        "            key\n" +
+        "            icon\n" +
+        "            Description\n" +
+        "            value\n" +
+        "            inputType\n" +
+        "            totalData\n" +
+        "            valMax\n" +
+        "            valMin\n" +
+        "            isPopular\n" +
+        "            isNew\n" +
+        "            hexColor\n" +
+        "            child {\n" +
+        "              key\n" +
+        "              value\n" +
+        "              name\n" +
+        "              icon\n" +
+        "              inputType\n" +
+        "              totalData\n" +
+        "              isPopular\n" +
+        "              child {\n" +
+        "                key\n" +
+        "                value\n" +
+        "                name\n" +
+        "                icon\n" +
+        "                inputType\n" +
+        "                totalData\n" +
+        "                isPopular\n" +
+        "              }\n" +
+        "            }\n" +
+        "          }\n" +
+        "        }\n" +
+        "        sort {\n" +
+        "          name\n" +
+        "          key\n" +
+        "          value\n" +
+        "          inputType\n" +
+        "          applyFilter\n" +
+        "        }\n" +
+        "     }\n" +
+        "  }\n" +
+        "}"
 }

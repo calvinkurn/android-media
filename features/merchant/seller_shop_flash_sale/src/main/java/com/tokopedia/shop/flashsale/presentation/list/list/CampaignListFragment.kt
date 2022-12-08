@@ -175,6 +175,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeShareComponentThumbnailImage()
         observeCampaignCreationEligibility()
         observeShopDecorStatus()
+        observerTimeToFlip()
     }
 
     override fun onResume() {
@@ -374,6 +375,16 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
+    private fun observerTimeToFlip(){
+        viewModel.timeToFlip.observe(viewLifecycleOwner){ result ->
+            if(result%2 == 0){
+                binding?.warningOfQuota?.transitionToEnd()
+            }else {
+                binding?.warningOfQuota?.transitionToStart()
+            }
+        }
+    }
+
     private fun handleShopDecorStatusResult(decorStatus: String) {
         val hasDraft = viewModel.getCampaignDrafts().isNotEmpty()
         val hasCampaign = adapter?.itemCount.isMoreThanZero()
@@ -498,11 +509,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         binding?.run {
             if (isNearExpirePackageAvailable) {
-                groupAvailableSourceQuota.gone()
                 tgExpireValue.visible()
+                startAnimationOfWarningQuota()
             } else {
-                groupAvailableSourceQuota.visible()
                 tgExpireValue.gone()
+                stopAnimationOfWarningQuota()
             }
             tgQuotaValue.run {
                 text = if (totalRemainingQuota.isMoreThanZero()) {
@@ -543,6 +554,20 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                     routeToYourShopFlashSaleQuotaPage()
                 }
             }
+        }
+    }
+
+    private fun startAnimationOfWarningQuota(){
+        val isTimerForFlipRunning = viewModel.isTimerForFlipRunning()
+        if (!isTimerForFlipRunning) {
+            viewModel.startAnimationOfWarningQuota()
+        }
+    }
+
+    private fun stopAnimationOfWarningQuota(){
+        val isTimerForFlipRunning = viewModel.isTimerForFlipRunning()
+        if (isTimerForFlipRunning){
+            viewModel.stopAnimationOfWarningQuota()
         }
     }
 

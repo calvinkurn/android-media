@@ -21,7 +21,7 @@
             "snapshot_url": "https://www.tokopedia.com/snapshot_product?order_id=688060798&dtl_id=1027717227",
             "currency_type": 1,
             "currency_rate": 0,
-            "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg",
+            "thumbnail": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg",
             "price": 100000,
             "price_text": "Rp 100.000",
             "weight": 0.5,
@@ -38,7 +38,7 @@
         "customer": {
           "id": 12299749,
           "name": "Try Sugihartoo",
-          "image": "https://ecs7.tokopedia.net/img/cache/100-square/default_picture_user/default_toped-19.jpg",
+          "image": "https://images.tokopedia.net/img/cache/100-square/default_picture_user/default_toped-19.jpg",
           "phone": "6287767899273"
         },
         "dropshipper": {

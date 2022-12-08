@@ -111,18 +111,35 @@
     <string name="ent_pdp_form_error_all_msg_fragment">%s yang Anda isi belum lengkap</string>
     <string name="ent_event_pdp_ticket_recommendation_label">COBA CEK YANG INI JUGA, YUK!</string>
 
-    <string name="ent_redeem_title">Redeem Your Ticket</string>
-    <string name="ent_redeem_title_owner">Data Pemilik Tiket</string>
-    <string name="ent_redeem_title_total">Jumlah Tiket</string>
-    <string name="ent_redeem_title_btn_redeem">Redeem Tiket</string>
-    <string name="ent_redeem_title_btn_back">Kembali</string>
-    <string name="ent_redeem_data_redeemed">Tiket Berhasil di Redeem</string>
-    <string name="ent_redeem_data_already_redeemed">Tiket Sudah di Redeem </string>
+    <string name="ent_redeem_title">Redeem Tiket</string>
     <string name="ent_redeem_not_login">Anda Belum Login</string>
     <string name="ent_redeem_url_null">Tiket Scanner anda Kosong</string>
-    <string name="ent_redeemed_time">Sudah di-redeem pada %s</string>
 
     <string name="ent_content_description">Event Content Description</string>
     <string name="ent_free_price"> Gratis</string>
-
+    
+    <string name="ent_redeem_revamp_booker_data_title">Data Pemesan</string>
+    <string name="ent_redeem_revamp_booker_detail_ticket_title">Detail Tiket</string>
+    <string name="ent_redeem_revamp_visitor_detail_ticket_title">Data Pengunjung</string>
+    <string name="ent_redeem_revamp_name">Nama</string>
+    <string name="ent_redeem_revamp_product">Produk</string>
+    <string name="ent_redeem_revamp_ticket">Jenis Tiket</string>
+    <string name="ent_redeem_revamp_date">Tanggal Acara</string>
+    <string name="ent_redeem_revamp_sum_product">Jumlah Tiket</string>
+    <string name="ent_redeem_revamp_sum_product_error">Pilih Jumlah Tiket</string>
+    <string name="ent_redeem_revamp_redeem_button">Redeem</string>
+    <string name="ent_redeem_revamp_redeem_title">Redeem Tiket</string>
+    <string name="ent_redeem_revamp_bottomsheet_title">Jumlah redeem tiket</string>
+    <string name="ent_redeem_revamp_bottomsheet_save">Simpan</string>
+    <string name="ent_redeem_revamp_scan_other_qr">Scan QR Code Lain</string>
+    <string name="ent_redeem_revamp_not_login">Harap Login Terlebih Dahulu</string>
+    <string name="ent_redeem_revamp_empty_url">Harap Scan Ulang</string>
+    <string name="ent_redeem_revamp_day">Day %d</string>
+    <string name="ent_redeem_revamp_subtitle">%s: %s \u0020</string>
+    <string name="ent_redeem_success_redeem">Berhasil redeem %d tiket!</string>
+    <string name="ent_redeem_success_old_redeem">Berhasil redeem tiket!</string>
+    <string name="ent_redeem_success_all_already_redeem">Semua tiket sudah di redeem</string>
+    <string name="ent_redeem_success_all_redeemed">Tiket Habis Terpakai</string>
+    <string name="ent_redeem_success_redeem_time">Di redeem pada %s</string>
+    <string name="ent_redeem_success_all_redeem_time">%s WIB</string>
 </resources>

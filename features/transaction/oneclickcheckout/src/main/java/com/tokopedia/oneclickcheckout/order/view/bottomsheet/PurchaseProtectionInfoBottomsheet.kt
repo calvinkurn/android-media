@@ -50,7 +50,7 @@ class PurchaseProtectionInfoBottomsheet(private val url: String, val userSession
             domStorageEnabled = true
             builtInZoomControls = false
             displayZoomControls = true
-            setAppCacheEnabled(true)
+//            setAppCacheEnabled(true)
         }
         binding?.webView?.webViewClient = PurchaseProtectionInfoWebViewClient()
         webSettings?.mediaPlaybackRequiresUserGesture = false

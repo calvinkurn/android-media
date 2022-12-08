@@ -92,6 +92,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation projectOrAar(rootProject.ext.libraries.sse)
+    implementation rootProject.ext.unifyDependencies.loader_dialog
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.mockitorCore
