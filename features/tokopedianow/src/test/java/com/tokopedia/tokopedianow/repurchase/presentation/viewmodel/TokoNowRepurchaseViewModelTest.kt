@@ -43,18 +43,13 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayo
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedSortFilter
-import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyErrorEquals
-import com.tokopedia.unit.test.ext.verifyNullEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
@@ -852,7 +847,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         verifyGetMiniCartUseCaseCalled()
 
-        viewModel.miniCartAdd.verifyNullEquals()
+        viewModel.miniCartAdd.verifyValueEquals(null)
     }
 
     @Test

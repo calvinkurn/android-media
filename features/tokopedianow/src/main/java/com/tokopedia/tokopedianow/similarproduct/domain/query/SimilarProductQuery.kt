@@ -80,6 +80,8 @@ internal object SimilarProductQuery: GqlQueryInterface {
                     countReview
                     recommendationType
                     stock
+                    minOrder
+                    maxOrder
                     isTopads
                   }
                 }

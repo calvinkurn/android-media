@@ -9,7 +9,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 
 fun <T> LiveData<T>.getOrAwaitValue(
     time: Long = 2,
@@ -52,8 +51,4 @@ fun<T: Any> LiveData<Result<T>>.verifyErrorEquals(expected: Fail) {
         it.throwable::class.java
     }
     assertEquals(expectedResult, actualResult)
-}
-
-fun<T: Any> LiveData<Result<T>>.verifyNullEquals() {
-    assertTrue(value == null)
 }
