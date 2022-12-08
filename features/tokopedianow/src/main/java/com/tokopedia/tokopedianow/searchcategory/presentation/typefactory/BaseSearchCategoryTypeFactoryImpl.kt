@@ -5,9 +5,17 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.common.adapter.typefactory.*
-import com.tokopedia.tokopedianow.common.model.*
-import com.tokopedia.tokopedianow.common.viewholder.*
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRecommendationCarouselTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseTypeFactory
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
@@ -15,24 +23,32 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BannerViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.CategoryFilterViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BannerViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.CategoryFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductCountViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TitleViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProgressBarViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.SwitcherWidgetViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TitleViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
+
 
 abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
@@ -45,14 +61,16 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val switcherWidgetListener: SwitcherWidgetListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
-    private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?
+    private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?,
+    private val feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ):  BaseAdapterTypeFactory(),
     BaseSearchCategoryTypeFactory,
     TokoNowEmptyStateNoResultTypeFactory,
     TokoNowRecommendationCarouselTypeFactory,
     TokoNowCategoryGridTypeFactory,
     TokoNowRepurchaseTypeFactory,
-    TokoNowEmptyStateOocTypeFactory{
+    TokoNowEmptyStateOocTypeFactory,
+    TokoNowFeedbackWidgetTypeFactory {
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
 
@@ -83,6 +101,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     override fun type(progressBarDataView: ProgressBarDataView): Int = ProgressBarViewHolder.LAYOUT
 
     override fun type(switcherWidgetDataView: SwitcherWidgetDataView): Int = SwitcherWidgetViewHolder.LAYOUT
+
+    override fun type(uiModel: TokoNowFeedbackWidgetUiModel): Int = TokoNowFeedbackWidgetViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -130,6 +150,10 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
                 listener = switcherWidgetListener
             )
             ProgressBarViewHolder.LAYOUT -> ProgressBarViewHolder(view)
+            TokoNowFeedbackWidgetViewHolder.LAYOUT -> TokoNowFeedbackWidgetViewHolder(
+                itemView = view,
+                listener = feedbackWidgetListener
+            )
             else -> super.createViewHolder(view, type)
         }
     }

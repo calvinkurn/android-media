@@ -36,6 +36,12 @@ class WishlistCollectionItemViewHolder(
                 binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW
                 binding.collectionTitle.text = item.dataObject.name
                 binding.collectionDesc.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+                if (item.dataObject.indicator.title.isNotEmpty()) {
+                    binding.labelDesc.visible()
+                    binding.labelDesc.text = item.dataObject.indicator.title
+                } else {
+                    binding.labelDesc.gone()
+                }
                 if (item.dataObject.name == SEMUA_WISHLIST) {
                     isAllWishlist = true
                     binding.collectionKebabMenu.gone()

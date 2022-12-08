@@ -75,6 +75,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dateFilter
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.carousel
+    implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.imageGallery
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -93,6 +94,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.networkDependencies.glide
 
