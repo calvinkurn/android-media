@@ -39,13 +39,15 @@ class SimilarProductCallback(
         userId: String,
         warehouseId: String,
         similarProduct: SimilarProductUiModel,
-        productIdTriggered: String
+        productIdTriggered: String,
+        newQuantity: Int
     ) {
         analytics.trackClickAddToCart(
             userId = userId,
             warehouseId = warehouseId,
             similarProduct = similarProduct,
-            productIdTriggered = productIdTriggered
+            productIdTriggered = productIdTriggered,
+            newQuantity = newQuantity
         )
     }
 

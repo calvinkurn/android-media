@@ -227,6 +227,15 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
             it.id == data.data.productId.toString()
         }
         bottomSheet?.changeQuantity(data.data.quantity, position)
+
+        listener?.trackClickAddToCart(
+            userId = viewModel.userId,
+            warehouseId = viewModel.warehouseId,
+            similarProduct = productList[position],
+            productIdTriggered = productIdTriggered,
+            newQuantity = data.data.quantity
+        )
+
         getMiniCart()
     }
 

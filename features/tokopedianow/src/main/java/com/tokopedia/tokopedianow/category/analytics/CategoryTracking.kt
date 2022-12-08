@@ -956,7 +956,7 @@ object CategoryTracking {
                 id = similarProduct.id,
                 name = similarProduct.name,
                 price = similarProduct.priceFmt.getDigits().orZero().toFloat(),
-                category = similarProduct.categoryId
+                category = similarProduct.categoryName
             )
         )
 
@@ -982,7 +982,8 @@ object CategoryTracking {
         userId: String,
         warehouseId: String,
         similarProduct: SimilarProductUiModel,
-        productIdTriggered: String
+        productIdTriggered: String,
+        newQuantity: Int
     ) {
         val items = arrayListOf(
             createAtcProductItemDataLayer(
@@ -991,7 +992,7 @@ object CategoryTracking {
                 price = similarProduct.priceFmt,
                 categoryName = similarProduct.categoryName,
                 categoryId = similarProduct.categoryId,
-                quantity = similarProduct.quantity.toString(),
+                quantity = newQuantity.toString(),
                 shopId = similarProduct.shopId,
                 shopName = similarProduct.shopName
             )
@@ -1060,7 +1061,7 @@ object CategoryTracking {
         return Bundle().apply {
             putString(TrackerConstant.EVENT, event)
             putString(TrackerConstant.EVENT_ACTION, action)
-            putString(TrackerConstant.EVENT_CATEGORY, TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE)
+            putString(TrackerConstant.EVENT_CATEGORY, EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE)
             putString(TrackerConstant.EVENT_LABEL, label)
             putString(TrackerConstant.BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             putString(TrackerConstant.CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)

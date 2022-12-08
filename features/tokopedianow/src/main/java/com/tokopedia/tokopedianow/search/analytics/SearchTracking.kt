@@ -764,7 +764,7 @@ object SearchTracking {
                 id = similarProduct.id,
                 name = similarProduct.name,
                 price = similarProduct.priceFmt.getDigits().orZero().toFloat(),
-                category = similarProduct.categoryId
+                category = similarProduct.categoryName
             )
         )
 
@@ -790,7 +790,8 @@ object SearchTracking {
         userId: String,
         warehouseId: String,
         similarProduct: SimilarProductUiModel,
-        productIdTriggered: String
+        productIdTriggered: String,
+        newQuantity: Int
     ) {
         val items = arrayListOf(
             createAtcProductItemDataLayer(
@@ -799,7 +800,7 @@ object SearchTracking {
                 price = similarProduct.priceFmt,
                 categoryName = similarProduct.categoryName,
                 categoryId = similarProduct.categoryId,
-                quantity = similarProduct.quantity.toString(),
+                quantity = newQuantity.toString(),
                 shopId = similarProduct.shopId,
                 shopName = similarProduct.shopName
             )

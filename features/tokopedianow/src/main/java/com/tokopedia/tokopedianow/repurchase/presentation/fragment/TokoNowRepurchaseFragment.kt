@@ -1054,8 +1054,6 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun createSimilarProductCallback(): SimilarProductCallback {
-        return SimilarProductCallback(
-            analytics = analytics
-        )
+        return SimilarProductCallback(analytics)
     }
 }

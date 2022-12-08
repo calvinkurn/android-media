@@ -22,7 +22,8 @@ interface SimilarProductListener: Serializable {
         userId: String,
         warehouseId: String,
         similarProduct: SimilarProductUiModel,
-        productIdTriggered: String
+        productIdTriggered: String,
+        newQuantity: Int
     )
 
     fun trackClickCloseBottomsheet(

@@ -403,7 +403,7 @@ class RepurchaseAnalytics: Serializable {
                 id = similarProduct.id,
                 name = similarProduct.name,
                 price = similarProduct.priceFmt.getDigits().orZero().toFloat(),
-                category = similarProduct.categoryId
+                category = similarProduct.categoryName
             )
         )
 
@@ -429,7 +429,8 @@ class RepurchaseAnalytics: Serializable {
         userId: String,
         warehouseId: String,
         similarProduct: SimilarProductUiModel,
-        productIdTriggered: String
+        productIdTriggered: String,
+        newQuantity: Int
     ) {
         val items = arrayListOf(
             createAtcProductItemDataLayer(
@@ -438,7 +439,7 @@ class RepurchaseAnalytics: Serializable {
                 price = similarProduct.priceFmt.getDigits().orZero().toFloat(),
                 categoryName = similarProduct.categoryName,
                 categoryId = similarProduct.categoryId,
-                quantity = similarProduct.quantity.toString(),
+                quantity = newQuantity.toString(),
                 shopId = similarProduct.shopId,
                 shopName = similarProduct.shopName
             )

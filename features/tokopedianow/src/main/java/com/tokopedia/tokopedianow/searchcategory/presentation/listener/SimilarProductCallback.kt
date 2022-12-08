@@ -58,21 +58,24 @@ class SimilarProductCallback(
         userId: String,
         warehouseId: String,
         similarProduct: SimilarProductUiModel,
-        productIdTriggered: String
+        productIdTriggered: String,
+        newQuantity: Int
     ) {
         if (isCategoryPage) {
             CategoryTracking.trackClickAddToCart(
                 userId = userId,
                 warehouseId = warehouseId,
                 similarProduct = similarProduct,
-                productIdTriggered = productIdTriggered
+                productIdTriggered = productIdTriggered,
+                newQuantity = newQuantity
             )
         } else {
             SearchTracking.trackClickAddToCart(
                 userId = userId,
                 warehouseId = warehouseId,
                 similarProduct = similarProduct,
-                productIdTriggered = productIdTriggered
+                productIdTriggered = productIdTriggered,
+                newQuantity = newQuantity
             )
         }
     }
