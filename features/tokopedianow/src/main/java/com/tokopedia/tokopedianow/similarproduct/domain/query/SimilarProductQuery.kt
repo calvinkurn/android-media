@@ -7,8 +7,6 @@ internal object SimilarProductQuery: GqlQueryInterface {
     const val PARAM_USER_ID = "userID"
     const val PARAM_PRODUCT_IDS = "productIDs"
     const val PARAM_PAGE_NAME = "pageName"
-    const val PARAM_CATEGORY_IDS = "categoryIDs"
-    const val PARAM_KEYWORDS = "keywords"
     const val PARAM_QUERY = "queryParam"
     const val PARAM_X_DEVICE = "xDevice"
     const val PARAM_TOKONOW = "tokoNow"
@@ -56,8 +54,6 @@ internal object SimilarProductQuery: GqlQueryInterface {
                     slashedPriceInt
                     slashedPrice
                     discountPercentage
-                    minOrder
-                    maxOrder
                     shop {
                       id
                       name
