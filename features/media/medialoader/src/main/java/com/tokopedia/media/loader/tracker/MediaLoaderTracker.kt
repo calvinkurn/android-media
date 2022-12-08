@@ -89,7 +89,7 @@ object MediaLoaderTracker : CoroutineScope {
         loadTime: String = "",
         exception: GlideException?
     ) {
-        if (!url.contains(CDN_URL)) return
+        if (!RemoteCdnService.isValidUrl(url)) return
 
         val pageName = try {
             context.javaClass.name.split(".").last()
