@@ -117,8 +117,9 @@ open class TopChatRoomActivity :
             if (currentActiveChat == null) {
                 currentActiveChat = intent.getStringExtra(Constant.CHAT_CURRENT_ACTIVE)
             } else {
-                // open another chatroom, remove attachment
+                // open another chatroom, remove attachment & reset web socket
                 bundle.putBoolean(Constant.CHAT_REMOVE_ATTACHMENT, true)
+                bundle.putBoolean(Constant.CHAT_RESET_WEBSOCKET, true)
             }
         }
 
