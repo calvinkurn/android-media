@@ -1487,16 +1487,7 @@ open class ShopPageHomeFragment :
             val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
                 listWidgetLayoutToLoad.remove(this)
             }
-            // exclude product bundle widget from widgets to load
-            viewModel?.let { viewModel ->
-                val iterator = listWidgetLayoutToLoad.iterator()
-                while (iterator.hasNext()) {
-                    val element = iterator.next()
-                    if (viewModel.isWidgetBundle(element)) {
-                        iterator.remove()
-                    }
-                }
-            }
+            excludeWidgetBundle(listWidgetLayoutToLoad)
             getWidgetContentData(listWidgetLayoutToLoad)
             widgetPlayLayout?.let {
                 getPlayWidgetData()
@@ -1511,6 +1502,18 @@ open class ShopPageHomeFragment :
     protected fun getMvcWidgetData() {
         shopHomeAdapter.getMvcWidgetUiModel()?.let {
             viewModel?.getMerchantVoucherCoupon(shopId, context, it)
+        }
+    }
+
+    private fun excludeWidgetBundle(listWidgetLayoutToLoad: MutableList<ShopPageWidgetLayoutUiModel>) {
+        viewModel?.let { viewModel ->
+            val iterator = listWidgetLayoutToLoad.iterator()
+            while (iterator.hasNext()) {
+                val element = iterator.next()
+                if (viewModel.isWidgetBundle(element)) {
+                    iterator.remove()
+                }
+            }
         }
     }
 
