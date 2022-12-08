@@ -129,9 +129,7 @@ class LivenessFragment : BaseDaggerFragment(),
     }
 
     override fun onDetectionSuccess() {
-        livenessActionState?.let {
-            sendTrackerSuccess(it)
-        }
+        sendTrackerDetectionSuccess(livenessActionState)
         viewBinding?.livenessView?.getLivenessData(this)
     }
 
@@ -161,9 +159,7 @@ class LivenessFragment : BaseDaggerFragment(),
 
     override fun onDetectionActionChanged() {
         viewBinding?.backgroundOverlay?.changeColor()
-        livenessActionState?.let {
-            sendTrackerSuccess(it)
-        }
+        sendTrackerDetectionSuccess(livenessActionState)
     }
 
     /*
@@ -177,7 +173,7 @@ class LivenessFragment : BaseDaggerFragment(),
     * if in the future, there is a change in the rules, we must add it at the code logic
     * */
     @Suppress("NON_EXHAUSTIVE_WHEN")
-    private fun sendTrackerSuccess(type: Detector.DetectionType) {
+    private fun sendTrackerDetectionSuccess(type: Detector.DetectionType?) {
         when(type) {
             Detector.DetectionType.BLINK -> {
                 analytics.eventSuccessBlinkDetection(projectId, true)
