@@ -24,7 +24,7 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
 
     interface Category {
         companion object {
-            const val EPharmacyCategory = "courier selection"
+            const val COURIER_SELECTION = "courier selection"
             const val CART = "cart"
         }
     }
@@ -73,7 +73,7 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
     fun sendPrescriptionWidgetClick(cartId: String) {
         val gtmData = getGtmData(
             Events.CLICK_PP,
-            Category.EPharmacyCategory,
+            Category.COURIER_SELECTION,
             Actions.CLICK_UPLOAD_PRESCRIPTION_WIDGET,
             "cart_id: $cartId"
         )
@@ -92,9 +92,10 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
     ) {
         val gtmData = getGtmData(
             Events.VIEW_PP_IRIS,
-            Category.EPharmacyCategory,
+            Category.COURIER_SELECTION,
             Actions.VIEW_BANNER_PESANAN_BUTUH_RESEP_IN_CHECKOUT_PAGE,
-            "${epharmacyGroupIds.joinToString(",")} - ${enablerNames.joinToString(",")} - ${shopIds.joinToString(",")} - ${cartIds.joinToString(",")}"
+            "${epharmacyGroupIds.joinToString(",")} - " +
+                "${enablerNames.joinToString(",")} - ${shopIds.joinToString(",")} - ${cartIds.joinToString(",")}"
         )
         gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
         gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE
@@ -113,9 +114,11 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
     ) {
         val gtmData = getGtmData(
             Events.CLICK_PP,
-            Category.EPharmacyCategory,
+            Category.COURIER_SELECTION,
             Actions.CLICK_LAMPIRKAN_RESEP_DOKTER,
-            "$state - $buttonText - $buttonNotes - ${epharmacyGroupIds.joinToString(",")} - ${enablerNames.joinToString(",")} - ${shopIds.joinToString(",")} - ${cartIds.joinToString(",")}"
+            "$state - $buttonText - " +
+                "$buttonNotes - ${epharmacyGroupIds.joinToString(",")} - " +
+                "${enablerNames.joinToString(",")} - ${shopIds.joinToString(",")} - ${cartIds.joinToString(",")}"
         )
         gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
         gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE
@@ -136,7 +139,7 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
         }
         val gtmData = getGtmData(
             Events.CLICK_PP,
-            Category.EPharmacyCategory,
+            Category.COURIER_SELECTION,
             Actions.CLICK_PILIH_PEMBAYARAN,
             "$successValue - $buttonNotes - ${epharmacyGroupIds.joinToString(",")} - $successValue - $reason"
         )
@@ -179,14 +182,13 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
         }
         val gtmData = getGtmData(
             Events.CLICK_PP,
-            Category.EPharmacyCategory,
+            Category.COURIER_SELECTION,
             Actions.CLICK_KELUAR_IN_ABANDON_PAGE,
             "${epharmacyGroupIds.joinToString(",")} - $status"
         )
         gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
         gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE
         gtmData[KEY_TRACKER_ID] = TrackerId.CLICK_KELUAR_IN_ABANDON_PAGE
-        gtmData[KEY_USER_ID] = userId
         sendGeneralEvent(gtmData)
     }
 
@@ -201,14 +203,13 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
         }
         val gtmData = getGtmData(
             Events.CLICK_PP,
-            Category.EPharmacyCategory,
+            Category.COURIER_SELECTION,
             Actions.CLICK_LANJUT_BAYAR_IN_ABANDON_PAGE,
             "${epharmacyGroupIds.joinToString(",")} - $status"
         )
         gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
         gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE
         gtmData[KEY_TRACKER_ID] = TrackerId.CLICK_LANJUT_BAYAR_IN_ABANDON_PAGE
-        gtmData[KEY_USER_ID] = userId
         sendGeneralEvent(gtmData)
     }
 }
