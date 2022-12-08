@@ -153,7 +153,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -198,7 +198,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -243,7 +243,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -286,7 +286,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)

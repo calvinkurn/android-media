@@ -1578,8 +1578,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0)
+        assertEquals(1000.0, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0.0, 0.0)
     }
 
     @Test
@@ -1594,8 +1594,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(2000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0)
+        assertEquals(2000.0, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0.0, 0.0)
     }
 
     @Test
@@ -1604,7 +1604,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
                 cartId = "456", orderQuantity = 1, addOn = AddOnsDataModel(
-                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
         ))), shop = OrderShop(isFulfillment = false), cartString = "123")
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
@@ -1613,8 +1613,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(0L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0)
+        assertEquals(0.0, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0.0, 0.0)
     }
 
     @Test
@@ -1623,7 +1623,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
         orderSummaryPageViewModel.orderCart = OrderCart(
                 shop = OrderShop(addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
                 ), isFulfillment = true),
                 products = mutableListOf(OrderProduct(cartId = "456", orderQuantity = 1)), cartString = "123")
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -1634,8 +1634,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(0L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0)
+        assertEquals(0.0, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0.0, 0.0)
     }
 
     @Test
@@ -1644,7 +1644,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
                 cartId = "123", orderQuantity = 1, addOn = AddOnsDataModel(
-                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
         ))), shop = OrderShop(isFulfillment = false), cartString = "456")
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
@@ -1653,8 +1653,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0)
+        assertEquals(1000.0, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0.0, 0.0)
     }
 
     @Test
@@ -1663,7 +1663,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
         orderSummaryPageViewModel.orderCart = OrderCart(
                 shop = OrderShop(addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
                 ), isFulfillment = true),
                 products = mutableListOf(OrderProduct(cartId = "123", orderQuantity = 1)), cartString = "456")
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -1674,8 +1674,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(2000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0)
+        assertEquals(2000.0, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0.0, 0.0)
     }
 
     @Test
@@ -1684,7 +1684,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateProductLevelResultNegativeTest
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
                 cartId = "123", orderQuantity = 1, addOn = AddOnsDataModel(
-                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
         ))), shop = OrderShop(isFulfillment = false), cartString = "456")
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
@@ -1693,8 +1693,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0)
+        assertEquals(1000.0, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0.0, 0.0)
     }
 
     @Test
@@ -1703,7 +1703,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateShopLevelResultNegativeTest
         orderSummaryPageViewModel.orderCart = OrderCart(
                 shop = OrderShop(addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
                 ), isFulfillment = true),
                 products = mutableListOf(OrderProduct(cartId = "123", orderQuantity = 1)), cartString = "456")
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -1715,9 +1715,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            2000L,
+            2000.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0
+                ?: 0.0, 0.0
         )
     }
 

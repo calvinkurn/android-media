@@ -1,15 +1,13 @@
 package com.tokopedia.checkout.data.model.request.checkout.cross_sell
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CrossSellRequest(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("main_vertical_id")
-        var mainVerticalId: Int = 1,
+        var mainVerticalId: Long = 1L,
         @SerializedName("items")
         var listItem: ArrayList<CrossSellItemRequestModel> = arrayListOf()
 ) : Parcelable

@@ -19,9 +19,8 @@ data class CrossSellProduct (
         @SerializedName("lang")
         val lang: String = "",
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("max_retail_price")
-        val maxRetailPrice: Int = 0,
+        val maxRetailPrice: Double = 0.0,
 
         @SerializedName("meta_data")
         val metaData: String = "",
@@ -52,9 +51,8 @@ data class CrossSellProduct (
         @SerializedName("quantity")
         val quantity: Int = 0,
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("sales_price")
-        val salesPrice: Int = 0,
+        val salesPrice: Double = 0.0,
 
         @SerializedName("saving")
         val saving: String = "",
@@ -79,4 +77,5 @@ data class CrossSellProduct (
         val tooltipText: String = "",
 
         @SerializedName("category_id")
-        val categoryId: String = "")
+        val categoryId: String = ""
+)
