@@ -854,19 +854,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed()) {
-                        when (newState) {
-                            RecyclerView.SCROLL_STATE_IDLE -> {
-                                var position = getCurrentPosition()
-                                FeedScrollListenerNew.onFeedScrolled(
-                                    recyclerView,
-                                    adapter.getList()
-                                )
-                            }
-                        }
+                    if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        FeedScrollListenerNew.onFeedScrolled(
+                            recyclerView,
+                            adapter.getList()
+                        )
                     }
-                } catch (e: IndexOutOfBoundsException) {
-                }
+                } catch (e: Exception) { }
             }
         })
 
@@ -910,8 +904,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         TopAdsHeadlineActivityCounter.page = 1
         Toaster.onCTAClick = View.OnClickListener { }
-        recyclerView.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
         feedFloatingButtonManager.cancel()
+        recyclerView.clearOnScrollListeners()
     }
 
     override fun onInfoClicked() {
