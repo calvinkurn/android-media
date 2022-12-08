@@ -254,5 +254,7 @@
     <string name="smvc_repeat_for_label">Ulangi selama</string>
     <string name="smvc_input_count_error">Minimal 5 karakter.</string>
     <string name="smvc_input_empty_error">Kamu belum mengisi informasi ini.</string>
+    <string name="smvc_voucher_name_placeholder_label">Contoh Diskon Extra 10%</string>
+    <string name="smvc_voucher_code_placeholder_label">SEPTCERIA</string>
 
 </resources>

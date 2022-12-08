@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.campaign.utils.extension.doOnTextChanged
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
@@ -27,8 +27,11 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
+import com.tokopedia.mvc.util.extension.removeSpace
+import com.tokopedia.mvc.util.extension.setToAllCapsMode
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import java.util.*
 import javax.inject.Inject
 
 class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
@@ -245,7 +248,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
 
         voucherNameSectionBinding?.run {
             tfVoucherName.editText.setText(voucherConfiguration.voucherName)
-            tfVoucherName.editText.doOnTextChanged { text ->
+            tfVoucherName.editText.afterTextChanged {  text ->
                 viewModel.processEvent(
                     VoucherCreationStepTwoEvent.OnVoucherNameChanged(text)
                 )
@@ -272,12 +275,16 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
         }
 
         voucherCodeSectionBinding?.run {
-            tfVoucherCode.prependText(voucherConfiguration.voucherCodePrefix)
-            tfVoucherCode.editText.setText(voucherConfiguration.voucherCode)
-            tfVoucherCode.editText.doOnTextChanged { text ->
-                viewModel.processEvent(
-                    VoucherCreationStepTwoEvent.OnVoucherCodeChanged(text)
-                )
+            tfVoucherCode.apply {
+                prependText(voucherConfiguration.voucherCodePrefix)
+                editText.setText(voucherConfiguration.voucherCode)
+                editText.setToAllCapsMode()
+                editText.afterTextChanged { text ->
+                    val formattedText = text.uppercase(Locale.getDefault()).removeSpace()
+                    viewModel.processEvent(
+                        VoucherCreationStepTwoEvent.OnVoucherCodeChanged(formattedText)
+                    )
+                }
             }
         }
     }

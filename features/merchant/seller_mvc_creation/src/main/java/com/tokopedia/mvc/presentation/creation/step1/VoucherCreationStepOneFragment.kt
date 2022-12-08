@@ -87,10 +87,10 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
                 voucherConfiguration
             )
         )
+        setVoucherType(voucherConfiguration.isVoucherProduct)
         setupView()
         observeUiState()
         observeUiAction()
-        setVoucherType(voucherConfiguration.isVoucherProduct)
     }
 
     private fun observeUiState() {

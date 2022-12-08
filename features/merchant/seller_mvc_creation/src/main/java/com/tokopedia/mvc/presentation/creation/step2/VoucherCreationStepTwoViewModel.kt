@@ -29,17 +29,13 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
     private val currentState: VoucherCreationStepTwoUiState
         get() = _uiState.value
 
-    init {
-        handleVoucherInputValidation()
-    }
-
     fun processEvent(event: VoucherCreationStepTwoEvent) {
         when (event) {
             is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
                 event.voucherConfiguration
             )
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(event.isPublic)
-            is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep(currentState.voucherConfiguration)
+            is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
             is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
             is VoucherCreationStepTwoEvent.ValidateVoucherInput -> {}
@@ -53,15 +49,10 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
                 voucherConfiguration = voucherConfiguration
             )
         }
+        handleVoucherInputValidation()
     }
 
-    private fun handleBackToPreviousStep(voucherConfiguration: VoucherConfiguration) {
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                voucherConfiguration = voucherConfiguration
-            )
-        }
+    private fun handleBackToPreviousStep() {
         _uiAction.tryEmit(VoucherCreationStepTwoAction.BackToPreviousStep(currentState.voucherConfiguration))
     }
 
@@ -72,9 +63,7 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     isVoucherPublic = isPublic,
                     voucherCode = ""
-                ),
-                isVoucherCodeError = false,
-                voucherCodeErrorMsg = ""
+                )
             )
         }
     }

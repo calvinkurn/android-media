@@ -17,7 +17,7 @@ data class VoucherConfiguration(
     val minPurchase: Long = 0,
     val productIds: List<Long> = emptyList(),
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
-    val isVoucherPublic: Boolean = false,
+    val isVoucherPublic: Boolean = true,
     val voucherName: String = "",
     val voucherCodePrefix: String = "",
     val voucherCode: String = ""
