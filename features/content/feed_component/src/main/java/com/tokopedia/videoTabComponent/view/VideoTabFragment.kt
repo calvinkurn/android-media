@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
@@ -157,8 +158,15 @@ class VideoTabFragment :
                     when (it) {
                         is Success -> onSuccessReminderSet(it.data)
                         is Fail -> {
-                            val errorMsg = it.throwable.message
-                                ?: getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder)
+                            val errorMsg = if (it.throwable is CustomUiMessageThrowable) {
+                                getString(
+                                    (it.throwable as? CustomUiMessageThrowable)?.errorMessageId
+                                        ?: com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder
+                                )
+                            } else {
+                                it.throwable.message
+                                    ?: getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder)
+                            }
                             showToast(errorMsg, Toaster.TYPE_ERROR)
                         }
                     }
