@@ -1,7 +1,9 @@
 package com.tokopedia.logger.repository
 
+import com.google.gson.Gson
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
+import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkImpl
 import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
@@ -20,6 +22,9 @@ abstract class LoggerRepositoryTestFixture {
 
     @RelaxedMockK
     lateinit var loggerCloudNewRelicSdkImpl: LoggerCloudNewRelicSdkImpl
+
+    @RelaxedMockK
+    lateinit var loggerCloudNewRelicApiImpl: LoggerCloudNewRelicApiImpl
 
     @RelaxedMockK
     lateinit var loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl
@@ -41,10 +46,10 @@ abstract class LoggerRepositoryTestFixture {
         encrypt = { s: String -> s }
         decrypt = { s: String -> s }
         loggerRepository = LoggerRepository(
-                loggerDao, loggerCloudDataSource, loggerCloudNewRelicSdkImpl,
-                loggerCloudEmbraceImpl,
-                scalyrConfigs, newRelicConfigs, encrypt, decrypt
+            Gson(),
+            loggerDao, loggerCloudDataSource, loggerCloudNewRelicSdkImpl, loggerCloudNewRelicApiImpl,
+            loggerCloudEmbraceImpl,
+            scalyrConfigs, newRelicConfigs, encrypt, decrypt
         )
     }
-
 }
