@@ -172,7 +172,13 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 )
             )
         } else {
-            currentHeaderDataModel
+            currentHeaderDataModel.copy(
+                headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                    homeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.copy(
+                        status = HomeBalanceModel.STATUS_LOADING
+                    ) ?: HomeBalanceModel()
+                )
+            )
         }
     }
 
