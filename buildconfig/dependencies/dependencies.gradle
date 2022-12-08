@@ -98,7 +98,7 @@ ext {
     playIntegrityVersion = '1.0.1'
     conversationsVersion = '7.7.1'
     gojekCourierVersion = '0.1.5'
-    gojekCourierClientVersion = '0.0.8@aar'
+    gojekCourierClientVersion = '0.0.8.1@aar'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
