@@ -7,8 +7,8 @@ import java.util.*
 
 @Parcelize
 data class VoucherInformation (
-    val voucherName: String = "test",
-    val code: String = "code test",
+    val voucherName: String = "",
+    val code: String = "",
     val target: VoucherTarget = VoucherTarget.PUBLIC,
     val startPeriod: Date = Date(),
     val endPeriod: Date = Date(),
