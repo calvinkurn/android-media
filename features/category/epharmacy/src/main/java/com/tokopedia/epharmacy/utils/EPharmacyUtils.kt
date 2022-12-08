@@ -35,7 +35,7 @@ object EPharmacyUtils {
 
     fun getTimeFromDate(date: Date?): String {
         date?.let {
-            val fromFormat: DateFormat = SimpleDateFormat("HH:MM", Locale.ENGLISH)
+            val fromFormat: DateFormat = SimpleDateFormat(HH_MM, Locale.ENGLISH)
             return fromFormat.format(date).toString()
         } ?: kotlin.run {
             return ""

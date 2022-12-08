@@ -87,7 +87,8 @@ const val CLOSE_TIME = "close_time"
 const val REMINDER_TYPE = "reminder_type"
 const val CONSULTATION_SOURCE_ID = "consultation_source_id"
 
-const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ssZ"
+const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+const val HH_MM = "HH:mm"
 const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 const val UTC = "UTC"
 

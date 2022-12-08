@@ -82,6 +82,7 @@
         android:layout_marginEnd="16dp"
         android:visibility="gone"
         tools:visibility="visible"
+        app:closeButtonVisibility="gone"
         app:tickerType="error"
         app:descriptionText="@string/epharmacy_ticker_rejected_error_description"
         app:layout_constraintTop_toBottomOf="@id/enabler_image"
