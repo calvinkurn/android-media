@@ -4,10 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.*
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.LayoutShopHeaderButtonWidgetBinding
 import com.tokopedia.shop.pageheader.presentation.ShopPageActionButtonWidgetMarginItemDivider
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopActionButtonWidgetAdapter
@@ -17,7 +14,6 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetNoteButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderActionButtonWidgetViewHolder(
@@ -45,15 +41,6 @@ class ShopHeaderActionButtonWidgetViewHolder(
         ))
         adapterShopHeader?.setAdapterWidgetButton(shopActionButtonWidgetAdapter)
         recyclerViewButtonComponent?.apply {
-            if(ShopUtil.isFoldableAndHorizontalScreen){
-                val lp = recyclerViewButtonComponent.layoutParams as? RecyclerView.LayoutParams
-                recyclerViewButtonComponent.setMargin(
-                    lp?.leftMargin.orZero(),
-                    RV_MARGIN_TOP_FOLD_ABLE.toPx(),
-                    lp?.rightMargin.orZero(),
-                    lp?.bottomMargin.orZero()
-                )
-            }
             adapter = shopActionButtonWidgetAdapter
             val manager= FlexboxLayoutManager(itemView.context)
             layoutManager = manager
