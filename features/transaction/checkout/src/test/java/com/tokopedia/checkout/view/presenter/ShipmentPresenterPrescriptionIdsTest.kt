@@ -25,6 +25,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
@@ -107,7 +108,7 @@ class ShipmentPresenterPrescriptionIdsTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -171,7 +172,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
                 false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+                checkoutId = CHECKOUT_ID, arrayListOf()
             )
         )
 
@@ -260,7 +261,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
                 false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+                checkoutId = CHECKOUT_ID, arrayListOf()
             )
         )
 
@@ -284,7 +285,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
                 false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+                checkoutId = CHECKOUT_ID, arrayListOf()
             )
         )
 
@@ -597,7 +598,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -606,7 +608,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389386
@@ -626,7 +629,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = true,
-                rejectedWording = rejectedWording
+                rejectedWording = rejectedWording,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf("0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -637,7 +644,10 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
         assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
-        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage)
+        assertEquals(
+            rejectedWording,
+            presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage
+        )
         assertEquals(false, presenter.shipmentCartItemModelList[1].cartItemModels[1].isError)
     }
 
@@ -702,7 +712,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -716,7 +727,12 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         // Then
         assertEquals(
-            UploadPrescriptionUiModel(rejectedWording = rejectedWording),
+            UploadPrescriptionUiModel(
+                rejectedWording = rejectedWording,
+                shopIds = listOf("6554231"),
+                enablerNames = listOf(""),
+                cartIds = listOf("0")
+            ),
             presenter.uploadPrescriptionUiModel
         )
         assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
@@ -804,10 +820,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389389
+                        productId = 2150389389,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -816,10 +834,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389386
+                        productId = 2150389386,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -845,7 +865,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = false,
-                uploadedImageCount = 2
+                uploadedImageCount = 2,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554231"),
+                cartIds = listOf("0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1074,10 +1098,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389389
+                        productId = 2150389389,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1086,10 +1112,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389386
+                        productId = 2150389386,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1098,10 +1126,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389385
+                        productId = 2150389385,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389384
+                        productId = 2150389384,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1130,7 +1160,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 cartItemModels = listOf(
                     CartItemModel(
                         isError = true,
-                        productId = 2150389381
+                        productId = 2150389381,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1156,7 +1187,16 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = true,
-                uploadedImageCount = 4
+                uploadedImageCount = 4,
+                epharmacyGroupIds = arrayListOf("123", "124", "125"),
+                enablerNames = listOf(""),
+                shopIds = listOf(
+                    "6554231",
+                    "6554231",
+                    "6554232",
+                    "6554235"
+                ),
+                cartIds = listOf("0", "0", "0", "0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1359,7 +1399,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389389
@@ -1371,7 +1412,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389386
@@ -1399,7 +1441,11 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         // Then
         assertEquals(
-            UploadPrescriptionUiModel(),
+            UploadPrescriptionUiModel(
+                shopIds = listOf("6554231", "6554231"),
+                enablerNames = listOf(""),
+                cartIds = listOf("0", "0")
+            ),
             presenter.uploadPrescriptionUiModel
         )
     }
@@ -1456,7 +1502,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389389
@@ -1468,7 +1515,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389386
@@ -1509,7 +1557,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 cartItemModels = listOf(
                     CartItemModel(
                         isError = true,
-                        productId = 2150389385
+                        productId = 2150389385,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         isError = true,
@@ -1528,7 +1577,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = false,
-                uploadedImageCount = 2
+                uploadedImageCount = 2,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554231", "6554234"),
+                cartIds = listOf("0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1546,65 +1599,6 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals("", presenter.shipmentCartItemModelList[2].consultationDataString)
         assertEquals("", presenter.shipmentCartItemModelList[2].tokoConsultationId)
         assertEquals("", presenter.shipmentCartItemModelList[2].partnerConsultationId)
-    }
-
-    @Test
-    fun `GIVEN rejected consultation in the only order WHEN set mini consultation result THEN should set error`() {
-        // Given
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
-        val result = arrayListOf(
-            EPharmacyMiniConsultationResult(
-                epharmacyGroupId = "123",
-                shopInfo = listOf(
-                    ProductsInfo(
-                        shopId = "6554231",
-                        products = listOf(
-                            ProductsInfo.Product(
-                                productId = 2150389388,
-                                isEthicalDrug = true,
-                                itemWeight = 0.0,
-                                name = "",
-                                productImage = "",
-                                productTotalWeightFmt = "",
-                                quantity = 1,
-                            )
-                        ),
-                        partnerLogoUrl = "",
-                        shopLocation = "",
-                        shopLogoUrl = "",
-                        shopName = "",
-                        shopType = "",
-                    )
-                ),
-                prescriptionImages = listOf(),
-                consultationStatus = 4,
-                consultationString = "",
-                tokoConsultationId = "123",
-                partnerConsultationId = "321",
-                prescription = listOf(),
-            )
-        )
-        presenter.shipmentCartItemModelList = arrayListOf(
-            ShipmentCartItemModel(
-                shopId = 6554231,
-                cartItemModels = listOf(
-                    CartItemModel(
-                        productId = 2150389388
-                    )
-                ),
-                hasEthicalProducts = true
-            )
-        )
-        val rejectedWording = "rejectedWording"
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
-
-        // When
-        presenter.setMiniConsultationResult(result)
-
-        // Then
-        verify {
-            view.onNoValidCheckoutItem()
-        }
     }
 
     @Test
@@ -1669,7 +1663,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1678,7 +1673,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389386
@@ -1707,7 +1703,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 rejectedWording = rejectedWording,
-                hasInvalidPrescription = true
+                hasInvalidPrescription = true,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf("0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1718,7 +1718,10 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
         assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
-        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage)
+        assertEquals(
+            rejectedWording,
+            presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage
+        )
         assertEquals(false, presenter.shipmentCartItemModelList[1].cartItemModels[1].isError)
 
         assertEquals(false, presenter.shipmentCartItemModelList[2].isError)
@@ -1895,10 +1898,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389389
+                        productId = 2150389389,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1907,10 +1912,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389386
+                        productId = 2150389386,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1919,10 +1926,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389385
+                        productId = 2150389385,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389384
+                        productId = 2150389384,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1955,7 +1964,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = true,
-                uploadedImageCount = 4
+                uploadedImageCount = 4,
+                epharmacyGroupIds = arrayListOf("123", "124", "125"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554231", "6554232"),
+                cartIds = listOf("0", "0", "0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1982,5 +1995,184 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals("", presenter.shipmentCartItemModelList[3].tokoConsultationId)
         assertEquals("", presenter.shipmentCartItemModelList[3].partnerConsultationId)
         assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[3].prescriptionIds)
+    }
+
+    @Test
+    fun `GIVEN has uploaded prescription WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(false, result)
+        verify {
+            view.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
+        }
+    }
+
+    @Test
+    fun `GIVEN has invalid prescription WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(false, result)
+        verify {
+            view.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
+        }
+    }
+
+    @Test
+    fun `GIVEN has both valid & invalid prescriptions WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(false, result)
+        verify {
+            view.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
+        }
+    }
+
+    @Test
+    fun `GIVEN has not upload any prescription WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = false,
+            uploadedImageCount = 0
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN not show upload widget WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = false,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN null shipment data WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = null
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN null upload prescription model WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = null
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = null
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN null view WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+        presenter.detachView()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
     }
 }

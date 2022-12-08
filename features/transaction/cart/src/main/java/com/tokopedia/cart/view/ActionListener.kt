@@ -96,7 +96,11 @@ interface ActionListener {
 
     fun onClickAddOnCart(productId: String, addOnId: String)
 
-    fun onClickEpharmacyInfoCart(enablerLabel: String)
+    fun onClickEpharmacyInfoCart(
+        enablerLabel: String,
+        shopId: String,
+        productUiModelList: MutableList<CartItemHolderData>
+    )
 
     fun addOnImpression(productId: String)
 

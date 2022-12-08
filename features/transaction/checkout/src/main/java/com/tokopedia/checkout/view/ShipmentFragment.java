@@ -1,5 +1,33 @@
 package com.tokopedia.checkout.view;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_LABEL_TRADE_IN_CHECKOUT_EE;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_SCREEN_NAME;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER_ID;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_RESULT_EXTRA;
+import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +41,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
@@ -22,6 +51,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -41,7 +71,6 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -57,7 +86,15 @@ import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.helper.CartProtectionInfoBottomSheetHelper;
-import com.tokopedia.checkout.view.uimodel.*;
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
 import com.tokopedia.checkout.webview.UpsellWebViewActivity;
 import com.tokopedia.coachmark.CoachMark2;
@@ -76,19 +113,36 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource;
-import com.tokopedia.logisticCommon.data.entity.address.*;
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticcart.shipping.model.*;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
-import com.tokopedia.purchase_platform.common.analytics.*;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant;
@@ -102,7 +156,11 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPre
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -112,7 +170,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet;
@@ -126,6 +188,17 @@ import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
 import com.tokopedia.utils.time.TimeHelper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
 import kotlin.Unit;
 import rx.Emitter;
 import rx.Observable;
@@ -135,17 +208,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import static com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.*;
-import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_RESULT_EXTRA;
-import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.*;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.*;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -214,7 +276,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutEgoldAnalytics checkoutEgoldAnalytics;
     @Inject
     EPharmacyAnalytics ePharmacyAnalytics;
-
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
@@ -554,8 +615,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
 
         boolean hasEpharmacyWidget = false;
-        if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
-                && uploadPrescriptionUiModel.getShowImageUpload()) {
+        if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload()) {
             shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
             hasEpharmacyWidget = true;
         }
@@ -651,25 +711,40 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         if (!isUnsubscribed() && ShipmentFragment.this.getActivityContext() != null) {
                             if (UploadPrescriptionUiModel1.getConsultationFlow()) {
                                 shipmentPresenter.fetchEpharmacyData();
-                                if (!CoachMarkPreference.INSTANCE.hasShown(ShipmentFragment.this.getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY)) {
-                                    int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
-                                    rvShipment.scrollToPosition(uploadPrescriptionPosition);
-                                    rvShipment.post(() -> {
-                                        RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(uploadPrescriptionPosition);
-                                        if (viewHolder instanceof UploadPrescriptionViewHolder) {
-                                            CoachMark2Item item = new CoachMark2Item(viewHolder.itemView, ShipmentFragment.this.getActivityContext().getString(R.string.checkout_epharmacy_coachmark_title), ShipmentFragment.this.getActivityContext().getString(R.string.checkout_epharmacy_coachmark_description), CoachMark2.POSITION_TOP);
-                                            ArrayList<CoachMark2Item> list = new ArrayList<>();
-                                            list.add(item);
-                                            CoachMark2 coachMark = new CoachMark2(requireContext());
-                                            coachMark.showCoachMark(list, null, 0);
-                                            CoachMarkPreference.INSTANCE.setShown(ShipmentFragment.this.getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY, true);
-                                        }
-                                    });
-                                }
                             }
                         }
                     }
                 });
+    }
+
+    @Override
+    public void showCoachMarkEpharmacy(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        if (getActivityContext() != null && !CoachMarkPreference.INSTANCE.hasShown(getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY)) {
+            int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
+            rvShipment.scrollToPosition(uploadPrescriptionPosition);
+            rvShipment.post(() -> {
+                RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(uploadPrescriptionPosition);
+                if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                    CoachMark2Item item = new CoachMark2Item(
+                            viewHolder.itemView,
+                            getActivityContext().getString(R.string.checkout_epharmacy_coachmark_title),
+                            getActivityContext().getString(R.string.checkout_epharmacy_coachmark_description),
+                            CoachMark2.POSITION_TOP
+                    );
+                    ArrayList<CoachMark2Item> list = new ArrayList<>();
+                    list.add(item);
+                    CoachMark2 coachMark = new CoachMark2(requireContext());
+                    coachMark.showCoachMark(list, null, 0);
+                    CoachMarkPreference.INSTANCE.setShown(getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY, true);
+                    ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
+                            uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                            uploadPrescriptionUiModel.getEnablerNames(),
+                            uploadPrescriptionUiModel.getShopIds(),
+                            uploadPrescriptionUiModel.getCartIds()
+                    );
+                }
+            });
+        }
     }
 
     private ArrayList<Long> getCrossSellChildCategoryId(List<ShipmentCartItemModel> shipmentCartItemModelList) {
@@ -1878,6 +1953,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
+                sendAnalyticsEpharmacyClickPembayaran();
                 if (notEligiblePromoHolderdataList.size() > 0) {
                     hasClearPromoBeforeCheckout = true;
                     shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
@@ -1913,6 +1989,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
+                    sendAnalyticsEpharmacyClickPembayaran();
                     doCheckout();
                 }
             }
@@ -3378,13 +3455,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         }
                     } else if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
                         UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                        if (epharmacyError) {
-                            if (firstFoundPosition == 0) {
-                                showToastNormal(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found));
-                                firstFoundPosition = i;
+                        RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
+                        if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                            if (epharmacyError) {
+                                String toasterMessage = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found);
+                                if (firstFoundPosition == 0) {
+                                    showToastNormal(toasterMessage);
+                                    firstFoundPosition = i;
+                                }
+                                uploadPrescriptionUiModel.setError(true);
+                                onNeedUpdateViewItem(i);
+                                if (uploadPrescriptionUiModel.getConsultationFlow()) {
+                                    ePharmacyAnalytics.clickPilihPembayaran(
+                                            ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
+                                            uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                                            false,
+                                            toasterMessage
+                                    );
+                                }
                             }
-                            uploadPrescriptionUiModel.setError(true);
-                            onNeedUpdateViewItem(i);
                         }
                     }
                 }
@@ -3604,17 +3693,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+    public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel, String buttonText, String buttonNotes) {
         if (!uploadPrescriptionUiModel.getConsultationFlow()) {
-            if (uploadPrescriptionUiModel.getCheckoutId() != null) {
-                ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
-                Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
-                uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
-                startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
-            }
+            ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
+            Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
+            uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
+            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
         } else {
             Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink);
             startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION);
+            ePharmacyAnalytics.clickLampirkanResepDokter(uploadPrescriptionUiModel.getWidgetState(),
+                    buttonText,
+                    buttonNotes,
+                    uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                    uploadPrescriptionUiModel.getEnablerNames(),
+                    uploadPrescriptionUiModel.getShopIds(),
+                    uploadPrescriptionUiModel.getCartIds()
+            );
         }
     }
 
@@ -3639,63 +3734,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             return;
         }
         ArrayList<EPharmacyMiniConsultationResult> results = data.getParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA);
-//        ArrayList<EPharmacyMiniConsultationResult> results = new ArrayList<>();
-//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup> epharmacyGroups = new ArrayList<>();
-//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo> shopInfo = new ArrayList<>();
-//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product> products = new ArrayList<>();
-//        products.add(new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-//                true,
-//                null,
-//                null,
-//                2150458249L,
-//                null,
-//                null,
-//                null
-//        ));
-//        shopInfo.add(new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-//                null,
-//                products,
-//                "6554231",
-//                null,
-//                null,
-//                null,
-//                null
-//        ));
-//        epharmacyGroups.add(new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
-//                new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-//                        4,
-//                        "",
-//                        null,
-//                        null,
-//                        null,
-//                        null, null,
-//                        null, null
-//                ),
-//                null,
-//                "1",
-//                null,
-//                null,
-//                null,
-//                shopInfo
-//        ));
-//        EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse1 = new EPharmacyPrepareProductsGroupResponse(
-//                new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-//                        new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
-//                                "",
-//                                epharmacyGroups
-//                        )
-//                )
-//        );
-//        results.add(new EPharmacyMiniConsultationResult(
-//                "1",
-//                shopInfo,
-//                4,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null
-//        ));
         if (results != null) {
             shipmentPresenter.setMiniConsultationResult(results);
         }
@@ -3878,21 +3916,55 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void showPrescriptionReminderDialog() {
+    public void showPrescriptionReminderDialog(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        final ArrayList<String> epharmacyGroupIds = uploadPrescriptionUiModel.getEpharmacyGroupIds();
+        final boolean hasAttachedPrescription = uploadPrescriptionUiModel.getUploadedImageCount() > 0 || uploadPrescriptionUiModel.getHasInvalidPrescription();
         DialogUnify reminderDialog = new DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         reminderDialog.setTitle(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_title));
         reminderDialog.setDescription(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_description));
         reminderDialog.setPrimaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_positive_button));
         reminderDialog.setSecondaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_negative_button));
         reminderDialog.setPrimaryCTAClickListener(() -> {
+            ePharmacyAnalytics.clickLanjutBayarInAbandonPage(
+                    epharmacyGroupIds,
+                    hasAttachedPrescription
+            );
             reminderDialog.dismiss();
             return Unit.INSTANCE;
         });
         reminderDialog.setSecondaryCTAClickListener(() -> {
+            ePharmacyAnalytics.clickKeluarInAbandonPage(
+                    epharmacyGroupIds,
+                    hasAttachedPrescription
+            );
             reminderDialog.dismiss();
             finish();
             return Unit.INSTANCE;
         });
         reminderDialog.show();
+        ePharmacyAnalytics.viewAbandonCheckoutPage(getActivity(),
+                epharmacyGroupIds,
+                hasAttachedPrescription);
+    }
+
+    private void sendAnalyticsEpharmacyClickPembayaran() {
+        List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
+        for (int i = shipmentDataList.size() - 1; i >= 0; i--) {
+            if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
+                UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
+                if (uploadPrescriptionUiModel.getConsultationFlow() && uploadPrescriptionUiModel.getShowImageUpload()) {
+                    RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
+                    if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                        ePharmacyAnalytics.clickPilihPembayaran(
+                                ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
+                                uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                                false,
+                                "success"
+                        );
+                    }
+                }
+                break;
+            }
+        }
     }
 }

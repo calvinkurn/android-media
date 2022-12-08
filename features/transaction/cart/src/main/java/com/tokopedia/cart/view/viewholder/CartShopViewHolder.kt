@@ -427,7 +427,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         cartShopHolderData.addOnId
                     )
                 } else if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_EPHARMACY) {
-                    actionListener.onClickEpharmacyInfoCart(cartShopHolderData.enablerLabel)
+                    actionListener.onClickEpharmacyInfoCart(cartShopHolderData.enablerLabel, cartShopHolderData.shopId, cartShopHolderData.productUiModelList)
                 }
             }
             if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {

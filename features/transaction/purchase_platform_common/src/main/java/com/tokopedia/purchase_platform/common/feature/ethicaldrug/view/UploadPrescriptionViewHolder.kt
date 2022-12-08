@@ -8,9 +8,9 @@ import android.view.animation.CycleInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.databinding.ItemUploadPrescriptionBinding
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
@@ -34,7 +34,7 @@ class UploadPrescriptionViewHolder(
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
-        if (uploadPrescriptionUiModel.showImageUpload != true) {
+        if (!uploadPrescriptionUiModel.showImageUpload) {
             binding.root.gone()
             binding.root.layoutParams = RecyclerView.LayoutParams(0, 0)
             return
@@ -45,8 +45,8 @@ class UploadPrescriptionViewHolder(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
-        binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
-        if (uploadPrescriptionUiModel.uploadedImageCount == null || uploadPrescriptionUiModel.uploadedImageCount == 0) {
+        binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl)
+        if (uploadPrescriptionUiModel.uploadedImageCount == 0) {
             if (uploadPrescriptionUiModel.hasInvalidPrescription) {
                 binding.uploadPrescriptionText.text =
                     itemView.resources.getString(R.string.pp_epharmacy_upload_invalid_title_text)
@@ -55,6 +55,7 @@ class UploadPrescriptionViewHolder(
                 binding.uploadDescriptionText.show()
             } else {
                 binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
+                binding.uploadDescriptionText.text = ""
                 binding.uploadDescriptionText.hide()
             }
         } else {
@@ -67,7 +68,11 @@ class UploadPrescriptionViewHolder(
             binding.uploadDescriptionText.show()
         }
         binding.uploadPrescriptionLayout.setOnClickListener {
-            listener.uploadPrescriptionAction(uploadPrescriptionUiModel)
+            listener.uploadPrescriptionAction(
+                uploadPrescriptionUiModel,
+                getButtonText(),
+                getButtonNotes()
+            )
         }
 
         if (uploadPrescriptionUiModel.isError) {
@@ -100,5 +105,13 @@ class UploadPrescriptionViewHolder(
         } else {
             binding.occDivider.gone()
         }
+    }
+
+    fun getButtonText(): String {
+        return binding.uploadPrescriptionText.text.toString()
+    }
+
+    fun getButtonNotes(): String {
+        return binding.uploadDescriptionText.text.toString()
     }
 }

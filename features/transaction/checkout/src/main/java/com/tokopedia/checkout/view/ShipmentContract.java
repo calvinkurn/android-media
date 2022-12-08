@@ -191,11 +191,13 @@ public interface ShipmentContract {
         ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
                                                  RecipientAddressModel recipientAddressModel);
 
-        void showPrescriptionReminderDialog();
+        void showPrescriptionReminderDialog(UploadPrescriptionUiModel uploadPrescriptionUiModel);
 
         void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
 
         void onNoValidCheckoutItem();
+
+        void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
     }
 
     interface AnalyticsActionListener {
