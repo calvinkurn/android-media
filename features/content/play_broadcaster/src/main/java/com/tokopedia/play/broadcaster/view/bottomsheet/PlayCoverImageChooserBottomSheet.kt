@@ -9,12 +9,9 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.itemdecoration.CarouselCoverItemDecoration
@@ -22,6 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverCameraViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
@@ -153,24 +151,14 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
      * Camera Permission
      */
     private fun isCameraPermissionGranted(): Boolean =
-            isPermissionGranted(Manifest.permission.CAMERA) && isPermissionGranted(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                Manifest.permission.READ_MEDIA_IMAGES
-            }else{
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            }) && isPermissionGranted(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                Manifest.permission.READ_MEDIA_IMAGES
-            }else{
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            })
+            isPermissionGranted(Manifest.permission.CAMERA)
+                && isPermissionGranted(PermissionHelper.READ_EXTERNAL_STORAGE)
 
     private fun requestCameraPermission() = requestPermissions(
             arrayOf(
                 Manifest.permission.CAMERA,
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    Manifest.permission.READ_MEDIA_IMAGES
-                }else{
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                }),
+                PermissionHelper.READ_EXTERNAL_STORAGE
+            ),
         REQUEST_CODE_PERMISSION_CAMERA
     )
 
