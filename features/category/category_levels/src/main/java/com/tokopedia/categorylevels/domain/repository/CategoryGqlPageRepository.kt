@@ -63,7 +63,8 @@ class CategoryGqlPageRepository(private val departmentName: String,
                             KEY_ROOT_ID to (basicInfo.rootId.toString() ?: ""),
                             KEY_PARENT to (basicInfo.parent.toString() ?: ""),
                             KEY_URL to (basicInfo.url ?: ""),
-                            KEY_REDIRECTION_URL to (basicInfo.appRedirectionURL ?: "")
+                            KEY_REDIRECTION_URL to (basicInfo.appRedirectionURL ?: ""),
+                            KEY_TREE  to (basicInfo.tree.toString())
                     )))
         }
     }

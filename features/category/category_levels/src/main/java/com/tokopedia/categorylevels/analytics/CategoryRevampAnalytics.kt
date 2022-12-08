@@ -7,7 +7,9 @@ import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getAdditionalInfo
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -196,11 +198,12 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         }
     }
 
-    private fun trackEventImpressionFeaturedProductCard(componentsItems: ComponentsItem){
+    private fun trackEventImpressionFeaturedProductCard(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-        val pagePath = getComponent(componentsItems.parentComponentId, componentsItems.pageEndPoint)?.pagePath
-        if(!pagePath.isNullOrEmpty())
+        val pagePath =
+            getComponent(componentsItems.parentComponentId, componentsItems.pageEndPoint)?.pagePath
+        if (!pagePath.isNullOrEmpty())
             dimension40 = pagePath
         componentsItems.data?.firstOrNull()?.let {
             productMap[KEY_BRAND] = NONE_OTHER
@@ -216,34 +219,39 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
 
         val eCommerce = mapOf(
             CURRENCY_CODE to IDR,
-            KEY_IMPRESSIONS to list)
-//        Todo:: Add custom label with l2/l3 cat data
-        val map = createGeneralEvent(eventName = EVENT_PRODUCT_VIEW,
-            eventAction = CATEGORY_PRODUCT_LIST_IN_CAROUSEL_IMPRESSION)
+            KEY_IMPRESSIONS to list
+        )
+        var level = ""
+        getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
+            val catLevel = it[KEY_TREE].toIntOrZero()
+            level = when (catLevel) {
+                LVL2 -> {
+                    LEVEL_2
+                }
+                LVL3 -> {
+                    LEVEL_3
+                }
+                else -> ""
+            }
+        }
+        val label = "$LEVEL: $level - $ID: $categoryPageIdentifier - $CAROUSEL_TITLE: ${componentsItems.lihatSemua?.header ?: ""}"
+        val map = createGeneralEvent(
+            eventName = EVENT_PRODUCT_VIEW,
+            eventAction = CATEGORY_PRODUCT_LIST_IN_CAROUSEL_IMPRESSION,
+            eventLabel = label
+        )
         map[KEY_E_COMMERCE] = eCommerce
         map[TRACKER_ID] = "38961"
 //Product id/productGroupId/subcategoryId
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    fun trackFeaturedProductCardClick(componentsItems: ComponentsItem) {
+    private fun trackFeaturedProductCardClick(componentsItems: ComponentsItem) {
         if (!componentsItems.data.isNullOrEmpty()) {
             var productCardItemList = ""
             val list = ArrayList<Map<String, Any>>()
             val productMap = HashMap<String, Any>()
-//            val pagePath = getComponent(
-//                componentsItems.parentComponentId,
-//                componentsItems.pageEndPoint
-//            )?.pagePath
-//            if (!pagePath.isNullOrEmpty())
-//                dimension40 = pagePath
             componentsItems.data?.firstOrNull()?.let {
-//                productCardItemList =
-//                    if (getProductName(it.typeProductCard) == PRODUCT_CARD_CAROUSEL) {
-//                        if (it.isTopads == false) "$dimension40 - carousel-best-seller" else "$dimension40 - topads - carousel-best-seller"
-//                    } else {
-//                        if (it.isTopads == false) "$dimension40 - product-card-infinite" else "$dimension40 - topads - product-card-infinite"
-//                    }
                 productMap[KEY_BRAND] = NONE_OTHER
                 productMap[KEY_CATEGORY] = it.departmentID
                 productMap[KEY_ID] = it.productId.toString()
@@ -263,9 +271,24 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                     PRODUCTS to list
                 )
             )
+            var level = ""
+            getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
+                val catLevel = it[KEY_TREE].toIntOrZero()
+                level = when (catLevel) {
+                    LVL2 -> {
+                        LEVEL_2
+                    }
+                    LVL3 -> {
+                        LEVEL_3
+                    }
+                    else -> ""
+                }
+            }
+            val label = "$LEVEL: $level - $ID: $categoryPageIdentifier - $CAROUSEL_TITLE: ${componentsItems.lihatSemua?.header ?: ""}"
             val map = createGeneralEvent(
                 eventName = EVENT_PRODUCT_CLICK,
-                eventAction = CLICK_PRODUCT_CAROUSEL
+                eventAction = CLICK_PRODUCT_CAROUSEL,
+                eventLabel = label
             )
             map[KEY_E_COMMERCE] = eCommerce
             map[TRACKER_ID] = "38960"
@@ -324,7 +347,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     }
 
     override fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {
-        if(componentsItems.name == ComponentNames.CLPFeaturedProducts.componentName){
+        if(componentsItems.parentComponentName == ComponentNames.CLPFeaturedProducts.componentName){
             trackFeaturedProductCardClick(componentsItems)
             return
         }
@@ -469,10 +492,25 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
 
     override fun trackPromoLihat(componentsItems: ComponentsItem) {
 //        categoryId,productGroupId,productId,subcategoryId
+        var level = ""
+        getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
+            val catLevel = it[KEY_TREE].toIntOrZero()
+            level = when (catLevel) {
+                LVL2 -> {
+                    LEVEL_2
+                }
+                LVL3 -> {
+                    LEVEL_3
+                }
+                else -> ""
+            }
+        }
+        val label =
+            "$LEVEL: $level - $ID: $categoryPageIdentifier - $CAROUSEL_TITLE: ${componentsItems.data?.firstOrNull()?.title ?: ""}"
         val event = createGeneralEvent(
             eventName = EVENT_CLICK_CONTENT,
             eventAction = CLICK_LIHAT_SEMUA_IN_CAROUSEL,
-            eventLabel = ""
+            eventLabel = label
         )
         event[TRACKER_ID] = "38958"
         getTracker().sendGeneralEvent(event)
