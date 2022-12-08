@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -51,9 +52,9 @@ class SummaryFragment: BaseDaggerFragment(),
         private const val TNC_LINK = "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
         @JvmStatic
         fun newInstance(
-            pageMode: PageMode?,
-            voucherId: String?,
-            voucherConfiguration: VoucherConfiguration?,
+            pageMode: PageMode,
+            voucherId: String,
+            voucherConfiguration: VoucherConfiguration,
         ): SummaryFragment {
             return SummaryFragment().apply {
                 arguments = Bundle().apply {
@@ -204,7 +205,7 @@ class SummaryFragment: BaseDaggerFragment(),
     private fun SmvcFragmentSummarySubmissionBinding.setupLayoutSubmission() {
         tfTnc.text = MethodChecker.fromHtml(getString(R.string.smvc_summary_page_tnc_text))
         tfTnc.setOnClickListener {
-            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$TNC_LINK")
+            routeToUrl(TNC_LINK)
         }
     }
 
@@ -240,13 +241,19 @@ class SummaryFragment: BaseDaggerFragment(),
         val resources = root.context.resources
         with(information) {
             val targetItems = resources.getStringArray(R.array.target_items)
-            val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
             tpgVoucherName.text = voucherName
             tpgVoucherCode.text = code
             tpgVoucherTarget.text = targetItems.getOrNull(target.ordinal)
             llVoucherCode.isVisible = target == VoucherTarget.PRIVATE
-            tpgVoucherStartPeriod.text = formatter.format(startPeriod)
-            tpgVoucherEndPeriod.text = formatter.format(endPeriod)
+            try {
+                val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
+                tpgVoucherStartPeriod.text = formatter.format(startPeriod)
+                tpgVoucherEndPeriod.text = formatter.format(endPeriod)
+            } catch (e: Exception) {
+                tpgVoucherStartPeriod.gone()
+                tpgVoucherEndPeriod.gone()
+            }
+
         }
     }
 

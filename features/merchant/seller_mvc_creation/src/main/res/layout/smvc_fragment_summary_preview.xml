@@ -9,7 +9,6 @@
         android:id="@+id/viewBg"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="@+id/viewBgBottom"
         app:layout_constraintTop_toTopOf="parent" />
 

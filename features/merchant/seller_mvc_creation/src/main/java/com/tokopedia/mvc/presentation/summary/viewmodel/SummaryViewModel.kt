@@ -30,7 +30,6 @@ class SummaryViewModel @Inject constructor(
     }
 
     fun setupEditMode(voucherId: String) {
-        merchantPromotionGetMVDataByIDUseCase
         launchCatchError(
             dispatchers.io,
             block = {

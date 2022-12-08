@@ -44,8 +44,12 @@ class SummaryActivity: BaseSimpleActivity() {
     override fun getParentViewResourceID() = R.id.container
     override fun getNewFragment(): SummaryFragment {
         val pageMode = intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode
-        val voucherId = intent?.extras?.getString(BundleConstant.BUNDLE_VOUCHER_ID)
+        val voucherId = intent?.extras?.getString(BundleConstant.BUNDLE_VOUCHER_ID).orEmpty()
         val voucherConfiguration = intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
-        return SummaryFragment.newInstance(pageMode, voucherId, voucherConfiguration)
+        return SummaryFragment.newInstance(
+            pageMode ?: PageMode.CREATE,
+            voucherId,
+            voucherConfiguration ?: VoucherConfiguration()
+        )
     }
 }
