@@ -70,7 +70,6 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                     if (queryLimit != null) {
                         queryLimits = queryLimit
                     }
-                    loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.tags)
 
                     if (dataLogConfigNewRelic.keys?.isNotEmpty() == true) {
                         loggerReporting.setPopulateKeyMapsNewRelic(dataLogConfigNewRelic.keys)
@@ -79,6 +78,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                     if (dataLogConfigNewRelic.tables?.isNotEmpty() == true) {
                         loggerReporting.setPopulateTableMapsNewRelic(dataLogConfigNewRelic.tables)
                     }
+
+                    loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.tags)
                 }
             }
 
