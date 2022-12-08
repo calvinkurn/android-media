@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -468,12 +469,24 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun isGalleryPermissionGranted(): Boolean {
         return permissionHelper.isAllPermissionsGranted(
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                arrayOf(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    Manifest.permission.READ_MEDIA_IMAGES
+                }else{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }, if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    Manifest.permission.READ_MEDIA_IMAGES
+                }else{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                })
         )
     }
 
     private fun requestGalleryPermission(requestCode: Int, isFullFlow: Boolean = true) {
-        val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        val permissions = arrayOf(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            Manifest.permission.READ_MEDIA_IMAGES
+        }else{
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        })
         if (isFullFlow) {
             permissionHelper.requestMultiPermissionsFullFlow(
                     permissions = permissions,

@@ -871,7 +871,11 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     override fun askPermission(uri: String, isDownloadable: Boolean, downloadFileName: String) {
         val permissions = arrayOf(
             PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-            PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE,
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                PermissionCheckerHelper.Companion.PERMISSION_READ_MEDIA_IMAGES
+            }else{
+                PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
+            },
         )
         permissionChecker.checkPermissions(this, permissions, object : PermissionCheckerHelper.PermissionCheckListener{
             override fun onPermissionDenied(permissionText: String) {}

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -284,7 +285,12 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun requestRequiredPermission() {
         permissionHelper.requestMultiPermissionsFullFlow(
-                permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
+                permissions = arrayOf(Manifest.permission.CAMERA,
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    }else{
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    }),
                 requestCode = REQUEST_CODE_PERMISSION,
                 permissionResultListener = object : PermissionResultListener {
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
@@ -301,7 +307,13 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
+            arrayOf(
+                Manifest.permission.CAMERA,
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    Manifest.permission.READ_MEDIA_IMAGES
+                }else{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                })
     )
 
     companion object {

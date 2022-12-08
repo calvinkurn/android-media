@@ -23,7 +23,11 @@ class ScreenRecorderActivity : AppCompatActivity() {
     companion object {
         private const val REQUEST_PERMISSION_RECORD_SCREEN = 1;
         private val PERMISSIONS = mutableSetOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                Manifest.permission.READ_MEDIA_VIDEO
+            }else{
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            },
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
 

@@ -100,7 +100,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         get() = if (Build.VERSION.SDK_INT < VERSION_CODES.Q) {
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
         } else {
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            if(Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU){
+                arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+            }else{
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
