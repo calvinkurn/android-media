@@ -13,13 +13,15 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import java.io.File
 import javax.inject.Inject
 
 class EditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
-    private val addLogoFilterRepository: AddLogoFilterRepository
+    private val addLogoFilterRepository: AddLogoFilterRepository,
+    private val userSession: UserSessionInterface
 ) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
@@ -149,6 +151,11 @@ class EditorViewModel @Inject constructor(
         )
     }
 
+    fun isShopAvailable(): Boolean {
+        val shopId = userSession.shopId
+        return shopId.isNotEmpty() && shopId != EMPTY_SHOP_ID
+    }
+
     private fun updateEditedItem(originalUrl: String) {
         var index = 0
 
@@ -160,5 +167,9 @@ class EditorViewModel @Inject constructor(
         }
 
         _updatedIndexItem.value = index
+    }
+
+    companion object {
+        const val EMPTY_SHOP_ID = "0"
     }
 }
