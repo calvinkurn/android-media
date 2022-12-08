@@ -108,7 +108,7 @@ class ShipmentPresenterPrescriptionIdsTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -1995,5 +1995,184 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals("", presenter.shipmentCartItemModelList[3].tokoConsultationId)
         assertEquals("", presenter.shipmentCartItemModelList[3].partnerConsultationId)
         assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[3].prescriptionIds)
+    }
+
+    @Test
+    fun `GIVEN has uploaded prescription WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(false, result)
+        verify {
+            view.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
+        }
+    }
+
+    @Test
+    fun `GIVEN has invalid prescription WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(false, result)
+        verify {
+            view.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
+        }
+    }
+
+    @Test
+    fun `GIVEN has both valid & invalid prescriptions WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(false, result)
+        verify {
+            view.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
+        }
+    }
+
+    @Test
+    fun `GIVEN has not upload any prescription WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = false,
+            uploadedImageCount = 0
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN not show upload widget WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = false,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN null shipment data WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = null
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN null upload prescription model WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = null
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = null
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN null view WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        presenter.setUploadPrescriptionData(
+            uploadPrescriptionUiModel
+        )
+        presenter.shipmentCartItemModelList = listOf()
+        presenter.detachView()
+
+        // When
+        val result = presenter.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(true, result)
+        verify(inverse = true) {
+            view.showPrescriptionReminderDialog(any())
+        }
     }
 }
