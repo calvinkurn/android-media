@@ -56,6 +56,8 @@ internal object SimilarProductQuery: GqlQueryInterface {
                     slashedPriceInt
                     slashedPrice
                     discountPercentage
+                    minOrder
+                    maxOrder
                     shop {
                       id
                       name
