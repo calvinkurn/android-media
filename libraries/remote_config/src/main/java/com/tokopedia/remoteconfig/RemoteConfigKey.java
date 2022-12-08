@@ -296,16 +296,20 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
 
+    public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
     public static final String SEARCH_DEBUG_LOG = "android_search_debug_enable";
 
     public static final String HOME_USE_GQL_FED_QUERY = "android_home_use_gql_fed_query";
 
-    public static final String ENABLE_TICKER_NOTIFY_ME = "android_show_ticker_notify_me";
-
     public static final String ENABLE_SEND_SUCCESS_LOG_BRANCH = "android_enable_success_log_branch";
 
     public static final String ENABLE_NEW_SHARE_SELLER = "android_sellerapp_enable_new_share";
 
+    public static final String ENABLE_STOCK_AVAILABLE = "android_enable_stock_available";
+
+    public static final String RECOM_USE_GQL_FED_QUERY = "android_recom_use_gql_fed_query";
+
+    public static final String HOME_USE_NEW_PULL_REFRESH = "android_home_use_new_pull_refresh";
 }

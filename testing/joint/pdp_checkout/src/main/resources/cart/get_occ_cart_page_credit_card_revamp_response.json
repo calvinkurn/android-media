@@ -21,7 +21,7 @@
             "onboarding_ticker": {
               "title": "Baru!",
               "message": "Cara lain belanja untuk 1 barang dan bisa bayar lebih cepat.",
-              "image": "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png",
+              "image": "https://images.tokopedia.net/android/others/beli_langsung_keranjang.png",
               "show_coachmark_link_text": true,
               "coachmark_link_text": "Yuk, Mulai Coba!"
             },
@@ -63,16 +63,16 @@
                 "shop_location": "Kota Yogyakarta",
                 "free_shipping": {
                   "eligible": true,
-                  "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
                 "free_shipping_extra": {
                   "eligible": true,
-                  "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
                 "free_shipping_general": {
                   "bo_name": "bebas ongkir extra",
                   "bo_type": 3,
-                  "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
                 "preorder": {
                   "is_preorder": false,
@@ -84,7 +84,7 @@
                 "user_id": 5513284,
                 "admin_ids": [],
                 "shop_name": "tokocgk",
-                "shop_image": "https://ecs7.tokopedia.net/img/seller_no_logo_0.png",
+                "shop_image": "https://images.tokopedia.net/img/seller_no_logo_0.png",
                 "shop_url": "https://staging.tokopedia.com/tokocgk",
                 "shop_status": 1,
                 "is_gold": 1,
@@ -94,7 +94,7 @@
                 "gold_merchant": {
                   "is_gold": 1,
                   "is_gold_badge": true,
-                  "gold_merchant_logo_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                  "gold_merchant_logo_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
                 },
                 "official_store": {
                   "is_official": 0,
@@ -103,8 +103,8 @@
                 "shop_type_info": {
                   "shop_tier": 1,
                   "shop_grade": 0,
-                  "badge": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
-                  "badge_svg": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                  "badge": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                  "badge_svg": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
                   "title": "Power Merchant"
                 },
                 "address_id": 3608,
@@ -127,7 +127,7 @@
                     "ship_id": 11,
                     "ship_name": "SiCepat",
                     "ship_code": "sicepat",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-sicepat.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -144,7 +144,7 @@
                     "ship_id": 6,
                     "ship_name": "Wahana",
                     "ship_code": "wahana",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-wahana.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-wahana.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -161,7 +161,7 @@
                     "ship_id": 23,
                     "ship_name": "AnterAja",
                     "ship_code": "anteraja",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-anteraja.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -178,7 +178,7 @@
                     "ship_id": 14,
                     "ship_name": "J\u0026T",
                     "ship_code": "jnt",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-jnt.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -195,7 +195,7 @@
                     "ship_id": 4,
                     "ship_name": "Pos Indonesia",
                     "ship_code": "pos",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-pos.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -212,7 +212,7 @@
                     "ship_id": 2,
                     "ship_name": "TIKI",
                     "ship_code": "tiki",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-tiki.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-tiki.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -237,7 +237,7 @@
                     "ship_id": 1,
                     "ship_name": "JNE",
                     "ship_code": "jne",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -270,7 +270,7 @@
                     "ship_id": 26,
                     "ship_name": "Kurir Rekomendasi",
                     "ship_code": "tkpdexp",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-rekomendasi.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-rekomendasi.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -287,7 +287,7 @@
                     "ship_id": 13,
                     "ship_name": "GrabExpress",
                     "ship_code": "grab",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-grab.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -304,7 +304,7 @@
                     "ship_id": 10,
                     "ship_name": "Gojek",
                     "ship_code": "gojek",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-gosend.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -413,7 +413,7 @@
                       "product_price_currency": 1,
                       "product_image": {
                         "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg",
-                        "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800",
+                        "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800",
                         "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg",
                         "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg"
                       },
@@ -454,7 +454,7 @@
                       "is_blacklisted": false,
                       "free_shipping": {
                         "eligible": true,
-                        "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "booking_stock": 0,
                       "product_variant": {
@@ -507,7 +507,7 @@
               "active": 1,
               "gateway_code": "CREDITCARD",
               "gateway_name": "Kartu Kredit",
-              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png",
+              "image": "https://images.tokopedia.net/img/toppay/payment-logo/cc-new.png",
               "description": "Kartu Kredit (************1841)",
               "url": "https://pay.tokopedia.com/v2/api/payment/CREDITCARD",
               "fee": 0,
@@ -517,7 +517,7 @@
                 "pin": false
               },
               "wallet_amount": 0,
-              "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"CREDITCARD\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"1841\",\"issuer\":\"bni\",\"card_token\":\"ced46df1-d3f9-4fbb-b540-951c74834660\",\"card_type\":\"mastercard\",\"total_saved_card\":\"2\",\"installment_term\":\"0\",\"expiry\":\"06/21\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/CREDITCARD\",\"high_risk_flag\":\"\",\"description\":\"Kartu Kredit\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png\",\"signature\":\"53fb901330881ed14c755fbfab125b41a26d0990\",\"customer_name\":\"Jk Buyer\",\"customer_email\":\"jean.karunadewi+jkb@tokopedia.com\",\"user_id\":7977933}",
+              "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"CREDITCARD\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"1841\",\"issuer\":\"bni\",\"card_token\":\"ced46df1-d3f9-4fbb-b540-951c74834660\",\"card_type\":\"mastercard\",\"total_saved_card\":\"2\",\"installment_term\":\"0\",\"expiry\":\"06/21\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/CREDITCARD\",\"high_risk_flag\":\"\",\"description\":\"Kartu Kredit\",\"image\":\"https://images.tokopedia.net/img/toppay/payment-logo/cc-new.png\",\"signature\":\"53fb901330881ed14c755fbfab125b41a26d0990\",\"customer_name\":\"Jk Buyer\",\"customer_email\":\"jean.karunadewi+jkb@tokopedia.com\",\"user_id\":7977933}",
               "mdr": 1.5,
               "credit_card": {
                 "number_of_cards": {

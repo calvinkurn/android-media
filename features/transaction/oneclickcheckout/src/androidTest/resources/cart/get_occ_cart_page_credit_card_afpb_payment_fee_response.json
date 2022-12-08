@@ -21,7 +21,7 @@
             "onboarding_ticker": {
               "title": "",
               "message": "Ini halaman terakhir dari proses belanjamu. Pastikan semua sudah benar, ya. :)",
-              "image": "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png",
+              "image": "https://images.tokopedia.net/android/others/beli_langsung_keranjang.png",
               "show_coachmark_link_text": false,
               "coachmark_link_text": ""
             },
@@ -124,7 +124,7 @@
                     "ship_id": 1,
                     "ship_name": "JNE",
                     "ship_code": "jne",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -165,7 +165,7 @@
                     "ship_id": 2,
                     "ship_name": "TIKI",
                     "ship_code": "tiki",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-tiki.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-tiki.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -190,7 +190,7 @@
                     "ship_id": 24,
                     "ship_name": "Lion Parcel",
                     "ship_code": "lion",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-lionparcel.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -207,7 +207,7 @@
                     "ship_id": 12,
                     "ship_name": "Ninja Xpress",
                     "ship_code": "ninja",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-ninja.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-ninja.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -224,7 +224,7 @@
                     "ship_id": 23,
                     "ship_name": "AnterAja",
                     "ship_code": "anteraja",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-anteraja.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -257,7 +257,7 @@
                     "ship_id": 16,
                     "ship_name": "REX",
                     "ship_code": "rex",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-rex.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-rex.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -274,7 +274,7 @@
                     "ship_id": 10,
                     "ship_name": "GoSend",
                     "ship_code": "gojek",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-gosend.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -299,7 +299,7 @@
                     "ship_id": 14,
                     "ship_name": "J\u0026T",
                     "ship_code": "jnt",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-jnt.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -316,7 +316,7 @@
                     "ship_id": 4,
                     "ship_name": "Pos Indonesia",
                     "ship_code": "pos",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-pos.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -333,7 +333,7 @@
                     "ship_id": 13,
                     "ship_name": "GrabExpress",
                     "ship_code": "grab",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-grab.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -358,7 +358,7 @@
                     "ship_id": 6,
                     "ship_name": "Wahana",
                     "ship_code": "wahana",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-wahana.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-wahana.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -375,7 +375,7 @@
                     "ship_id": 11,
                     "ship_name": "SiCepat",
                     "ship_code": "sicepat",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-sicepat.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -444,7 +444,7 @@
                       "product_invenage_value": 999984,
                       "product_switch_invenage": 1,
                       "product_image": {
-                        "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/11/23/9015580/9015580_44119979-3fe8-4da6-a7c2-c3990a0b7b07_700_700"
+                        "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/11/23/9015580/9015580_44119979-3fe8-4da6-a7c2-c3990a0b7b07_700_700"
                       },
                       "product_notes": "",
                       "product_quantity": 1,
@@ -533,13 +533,13 @@
               "active": 1,
               "gateway_code": "CREDITCARD",
               "gateway_name": "Kartu Kredit",
-              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png",
+              "image": "https://images.tokopedia.net/img/toppay/payment-logo/cc-new.png",
               "description": "Kartu Kredit (************7199)",
               "minimum_amount": 50000,
               "maximum_amount": 50000000,
               "wallet_amount": 0,
               "fee": 0,
-              "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"CREDITCARD\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"7199\",\"issuer\":\"\",\"card_token\":\"6c91a38d-aa48-4462-b258-7e9df78c47cd\",\"card_type\":\"visa\",\"total_saved_card\":\"0\",\"installment_term\":\"0\",\"expiry\":\"01/25\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay-staging.tokopedia.com/v2/api/payment/CREDITCARD\",\"high_risk_flag\":\"\",\"description\":\"Kartu Kredit\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png\",\"signature\":\"0e2f91027c26c1b735e8b7d744ef26f03a920406\",\"customer_name\":\"Hansen Staging\",\"customer_email\":\"hansen.wijaya+occstaging@tokopedia.com\",\"user_id\":9067919}",
+              "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"CREDITCARD\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"7199\",\"issuer\":\"\",\"card_token\":\"6c91a38d-aa48-4462-b258-7e9df78c47cd\",\"card_type\":\"visa\",\"total_saved_card\":\"0\",\"installment_term\":\"0\",\"expiry\":\"01/25\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay-staging.tokopedia.com/v2/api/payment/CREDITCARD\",\"high_risk_flag\":\"\",\"description\":\"Kartu Kredit\",\"image\":\"https://images.tokopedia.net/img/toppay/payment-logo/cc-new.png\",\"signature\":\"0e2f91027c26c1b735e8b7d744ef26f03a920406\",\"customer_name\":\"Hansen Staging\",\"customer_email\":\"hansen.wijaya+occstaging@tokopedia.com\",\"user_id\":9067919}",
               "mdr": 0,
               "credit_card": {
                 "number_of_cards": {

@@ -69,14 +69,14 @@ open class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxA
         const val TAB_PARAM = "tab_param"
         const val FILTER_PARAM = "filter"
         const val FILTER_UNREAD = "unread"
-        const val EMPTY_DISCUSSION_IMAGE = "https://ecs7.tokopedia.net/android/talk_inbox_empty.png"
+        const val EMPTY_DISCUSSION_IMAGE = "https://images.tokopedia.net/android/talk_inbox_empty.png"
         const val REPLY_REQUEST_CODE = 420
         const val EMPTY_SELLER_READ_DISCUSSION =
-            "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
+            "https://images.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
         const val EMPTY_SELLER_DISCUSSION =
-            "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
+            "https://images.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
         const val EMPTY_SELLER_PROBLEM =
-            "https://ecs7.tokopedia.net/android/others/talk_empty_reported_discussion.png"
+            "https://images.tokopedia.net/android/others/talk_empty_reported_discussion.png"
         const val EMPTY_SELLER_AUTOREPLIED =
             "https://images.tokopedia.net/img/android/talk/talk_inbox_empty_autoreplied.png"
         const val COACH_MARK_SHOWN = false

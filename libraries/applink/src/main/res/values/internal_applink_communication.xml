@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_communication" translatable="false">communication</string>
+
+    <!--Toko Chat-->
+    <string name="title_applink_toko_chat">Toko Chat</string>
+    <string name="path_toko_chat">/tokochat</string>
+
+</resources>

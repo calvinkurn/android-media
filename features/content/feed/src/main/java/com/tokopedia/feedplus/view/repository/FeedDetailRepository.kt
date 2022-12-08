@@ -15,6 +15,7 @@ private const val LIMIT_DETAIL = 30
 const val FEED_X_GET_ACTIVITY_PRODUCTS_QUERY: String = """
 query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
   feedXGetActivityProducts(req:${'$'}req){
+    hasVoucher
     products{
           id
           shopID
