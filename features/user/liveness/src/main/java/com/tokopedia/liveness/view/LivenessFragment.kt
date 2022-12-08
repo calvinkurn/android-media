@@ -129,7 +129,9 @@ class LivenessFragment : BaseDaggerFragment(),
     }
 
     override fun onDetectionSuccess() {
-        analytics.eventSuccessHeadDetection(projectId, true)
+        livenessActionState?.let {
+            sendTrackerSuccess(it)
+        }
         viewBinding?.livenessView?.getLivenessData(this)
     }
 
@@ -160,10 +162,31 @@ class LivenessFragment : BaseDaggerFragment(),
     override fun onDetectionActionChanged() {
         viewBinding?.backgroundOverlay?.changeColor()
         livenessActionState?.let {
-            if (it == Detector.DetectionType.BLINK) {
+            sendTrackerSuccess(it)
+        }
+    }
+
+    /*
+    * WARNING!!!
+    * when this code created, tokopedia only use 3 DetectionType,
+    * there are:
+    * 1. Detector.DetectionType.BLINK
+    * 2. Detector.DetectionType.MOUTH
+    * 3. Detector.DetectionType.POS_YAW
+    *
+    * if in the future, there is a change in the rules, we must add it at the code logic
+    * */
+    @Suppress("NON_EXHAUSTIVE_WHEN")
+    private fun sendTrackerSuccess(type: Detector.DetectionType) {
+        when(type) {
+            Detector.DetectionType.BLINK -> {
                 analytics.eventSuccessBlinkDetection(projectId, true)
-            } else if (it == Detector.DetectionType.MOUTH) {
+            }
+            Detector.DetectionType.MOUTH -> {
                 analytics.eventSuccessMouthDetection(projectId, true)
+            }
+            Detector.DetectionType.POS_YAW -> {
+                analytics.eventSuccessHeadDetection(projectId, true)
             }
         }
     }
