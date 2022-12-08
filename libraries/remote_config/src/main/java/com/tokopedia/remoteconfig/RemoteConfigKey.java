@@ -296,6 +296,7 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
 
+    public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
     public static final String SEARCH_DEBUG_LOG = "android_search_debug_enable";
@@ -310,4 +311,5 @@ public class RemoteConfigKey {
 
     public static final String RECOM_USE_GQL_FED_QUERY = "android_recom_use_gql_fed_query";
 
+    public static final String HOME_USE_NEW_PULL_REFRESH = "android_home_use_new_pull_refresh";
 }
