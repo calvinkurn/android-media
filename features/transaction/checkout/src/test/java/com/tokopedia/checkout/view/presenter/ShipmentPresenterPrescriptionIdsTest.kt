@@ -25,6 +25,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
@@ -597,7 +598,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -606,7 +608,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389386
@@ -630,7 +633,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                 epharmacyGroupIds = arrayListOf("123"),
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554232"),
-                cartIds = listOf("0", "0", "0")
+                cartIds = listOf("0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -709,7 +712,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -726,6 +730,7 @@ class ShipmentPresenterPrescriptionIdsTest {
             UploadPrescriptionUiModel(
                 rejectedWording = rejectedWording,
                 shopIds = listOf("6554231"),
+                enablerNames = listOf(""),
                 cartIds = listOf("0")
             ),
             presenter.uploadPrescriptionUiModel
@@ -815,10 +820,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389389
+                        productId = 2150389389,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -827,10 +834,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389386
+                        productId = 2150389386,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -859,8 +868,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 uploadedImageCount = 2,
                 epharmacyGroupIds = arrayListOf("123"),
                 enablerNames = listOf(""),
-                shopIds = listOf("6554231", "6554231", "6554232"),
-                cartIds = listOf("0", "0", "0", "0", "0", "0")
+                shopIds = listOf("6554231", "6554231"),
+                cartIds = listOf("0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1089,10 +1098,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389389
+                        productId = 2150389389,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1101,10 +1112,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389386
+                        productId = 2150389386,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1113,10 +1126,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389385
+                        productId = 2150389385,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389384
+                        productId = 2150389384,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1145,7 +1160,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 cartItemModels = listOf(
                     CartItemModel(
                         isError = true,
-                        productId = 2150389381
+                        productId = 2150389381,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1178,12 +1194,9 @@ class ShipmentPresenterPrescriptionIdsTest {
                     "6554231",
                     "6554231",
                     "6554232",
-                    "6554233",
-                    "6554234",
-                    "6554235",
-                    "6554236"
+                    "6554235"
                 ),
-                cartIds = listOf("0", "0", "0", "0", "0", "0", "0", "0", "0", "0")
+                cartIds = listOf("0", "0", "0", "0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1386,7 +1399,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389389
@@ -1398,7 +1412,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389386
@@ -1427,8 +1442,9 @@ class ShipmentPresenterPrescriptionIdsTest {
         // Then
         assertEquals(
             UploadPrescriptionUiModel(
-                shopIds = listOf("6554231", "6554231", "6554232"),
-                cartIds = listOf("0", "0", "0", "0", "0", "0")
+                shopIds = listOf("6554231", "6554231"),
+                enablerNames = listOf(""),
+                cartIds = listOf("0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1486,7 +1502,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389389
@@ -1498,7 +1515,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389386
@@ -1539,7 +1557,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 cartItemModels = listOf(
                     CartItemModel(
                         isError = true,
-                        productId = 2150389385
+                        productId = 2150389385,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         isError = true,
@@ -1561,8 +1580,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 uploadedImageCount = 2,
                 epharmacyGroupIds = arrayListOf("123"),
                 enablerNames = listOf(""),
-                shopIds = listOf("6554231", "6554231", "6554232", "6554233", "6554234"),
-                cartIds = listOf("0", "0", "0", "0", "0", "0", "0", "0", "0", "0")
+                shopIds = listOf("6554231", "6554231", "6554234"),
+                cartIds = listOf("0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1644,7 +1663,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1653,7 +1673,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
                         productId = 2150389386
@@ -1685,8 +1706,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 hasInvalidPrescription = true,
                 epharmacyGroupIds = arrayListOf("123"),
                 enablerNames = listOf(""),
-                shopIds = listOf("6554231", "6554232", "6554233"),
-                cartIds = listOf("0", "0", "0", "0")
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf("0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )
@@ -1877,10 +1898,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389388
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389389
+                        productId = 2150389389,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1889,10 +1912,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554231,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389387
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389386
+                        productId = 2150389386,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1901,10 +1926,12 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopId = 6554232,
                 cartItemModels = listOf(
                     CartItemModel(
-                        productId = 2150389385
+                        productId = 2150389385,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     ),
                     CartItemModel(
-                        productId = 2150389384
+                        productId = 2150389384,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
                     )
                 ),
                 hasEthicalProducts = true
@@ -1940,8 +1967,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 uploadedImageCount = 4,
                 epharmacyGroupIds = arrayListOf("123", "124", "125"),
                 enablerNames = listOf(""),
-                shopIds = listOf("6554231", "6554231", "6554232", "6554233", "6554234"),
-                cartIds = listOf("0", "0", "0", "0", "0", "0", "0", "0")
+                shopIds = listOf("6554231", "6554231", "6554232"),
+                cartIds = listOf("0", "0", "0", "0", "0", "0")
             ),
             presenter.uploadPrescriptionUiModel
         )

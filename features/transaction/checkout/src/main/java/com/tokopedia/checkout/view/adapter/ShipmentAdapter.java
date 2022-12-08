@@ -665,7 +665,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             break;
                         }
                     }
-                    if (shipmentCartItemModel.getHasEthicalProducts() && !shipmentCartItemModel.isError()) {
+                    if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() &&
+                            uploadPrescriptionUiModel.getFrontEndValidation() &&
+                            shipmentCartItemModel.getHasEthicalProducts() && !shipmentCartItemModel.isError()) {
                         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                             if (!cartItemModel.isError() && cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
                                 boolean prescriptionIdsEmpty = shipmentCartItemModel.getPrescriptionIds().isEmpty();
@@ -677,8 +679,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 if (prescriptionIdsEmpty && consultationEmpty) {
                                     isPrescriptionFrontEndValidationError = true;
                                     availableCheckout = false;
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }

@@ -1953,6 +1953,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
+                sendAnalyticsEpharmacyClickPembayaran();
                 if (notEligiblePromoHolderdataList.size() > 0) {
                     hasClearPromoBeforeCheckout = true;
                     shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
@@ -1988,6 +1989,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
+                    sendAnalyticsEpharmacyClickPembayaran();
                     doCheckout();
                 }
             }
@@ -2020,7 +2022,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void doCheckout() {
         shipmentPresenter.processSaveShipmentState();
         shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId(), isPlusSelected());
-        sendAnalyticsEpharmacyClickPembayaran();
     }
 
     @Override

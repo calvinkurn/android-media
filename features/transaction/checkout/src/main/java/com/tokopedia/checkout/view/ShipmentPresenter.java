@@ -2463,9 +2463,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 ArrayList<String> cartIds = new ArrayList<>();
                 boolean hasInvalidPrescription = false;
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                    shopIds.add(String.valueOf(shipmentCartItemModel.getShopId()));
-                    for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                        cartIds.add(String.valueOf(cartItemModel.getCartId()));
+                    if (shipmentCartItemModel.getHasEthicalProducts()) {
+                        shopIds.add(String.valueOf(shipmentCartItemModel.getShopId()));
+                        enablerNames.add(shipmentCartItemModel.getEnablerLabel());
+                        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                            if (cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                                cartIds.add(String.valueOf(cartItemModel.getCartId()));
+                            }
+                        }
                     }
                     if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
                         boolean updated = false;
@@ -2480,7 +2485,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
                                 if (epharmacyGroup != null && epharmacyGroup.getShopInfo() != null) {
                                     epharmacyGroupIds.add(epharmacyGroup.getEpharmacyGroupId());
-                                    enablerNames.add(shipmentCartItemModel.getEnablerLabel());
                                     for (GroupData.EpharmacyGroup.ProductsInfo productsInfo : epharmacyGroup.getShopInfo()) {
                                         if (updated) {
                                             break;
@@ -2602,9 +2606,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             ArrayList<String> cartIds = new ArrayList<>();
             boolean hasInvalidPrescription = false;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                shopIds.add(String.valueOf(shipmentCartItemModel.getShopId()));
-                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                    cartIds.add(String.valueOf(cartItemModel.getCartId()));
+                if (shipmentCartItemModel.getHasEthicalProducts()) {
+                    shopIds.add(String.valueOf(shipmentCartItemModel.getShopId()));
+                    enablerNames.add(shipmentCartItemModel.getEnablerLabel());
+                    for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                        if (cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                            cartIds.add(String.valueOf(cartItemModel.getCartId()));
+                        }
+                    }
                 }
                 if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
                     boolean updated = false;
@@ -2619,7 +2628,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                             if (result.getShopInfo() != null) {
                                 epharmacyGroupIds.add(result.getEpharmacyGroupId());
-                                enablerNames.add(shipmentCartItemModel.getEnablerLabel());
                                 for (GroupData.EpharmacyGroup.ProductsInfo productsInfo : result.getShopInfo()) {
                                     if (updated) {
                                         break;
