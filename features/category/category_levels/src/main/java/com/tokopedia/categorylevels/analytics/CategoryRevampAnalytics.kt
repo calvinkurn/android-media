@@ -201,6 +201,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     private fun trackEventImpressionFeaturedProductCard(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
+        var productId = ""
         val pagePath =
             getComponent(componentsItems.parentComponentId, componentsItems.pageEndPoint)?.pagePath
         if (!pagePath.isNullOrEmpty())
@@ -209,7 +210,8 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             productMap[KEY_BRAND] = NONE_OTHER
             productMap[KEY_CATEGORY] = it.departmentID
             productMap[KEY_ID] = it.productId.toString()
-//                productMap[LIST] = if (it.isTopads == false) "$dimension40 - carousel-best-seller" else "$dimension40 - topads - carousel-best-seller"
+            productId = it.productId.toString()
+            productMap[LIST] = ""
             productMap[KEY_NAME] = it.name.toString()
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -222,13 +224,18 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             KEY_IMPRESSIONS to list
         )
         var level = ""
+        var subCategoryID  = ""
+        var productGroupId = ""
         getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
             val catLevel = it[KEY_TREE].toIntOrZero()
             level = when (catLevel) {
                 LVL2 -> {
+                    subCategoryID = categoryPageIdentifier
                     LEVEL_2
                 }
                 LVL3 -> {
+                    subCategoryID = it[KEY_PARENT] ?: ""
+                    productGroupId = categoryPageIdentifier
                     LEVEL_3
                 }
                 else -> ""
@@ -242,12 +249,16 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         )
         map[KEY_E_COMMERCE] = eCommerce
         map[TRACKER_ID] = "38961"
-//Product id/productGroupId/subcategoryId
+        map[KEY_PRODUCT_GROUP_ID] = productGroupId
+        map[SUB_CATEGORY_ID] = subCategoryID
+        map[PRODUCT_ID] = productId
+
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     private fun trackFeaturedProductCardClick(componentsItems: ComponentsItem) {
         if (!componentsItems.data.isNullOrEmpty()) {
+            var productId = ""
             var productCardItemList = ""
             val list = ArrayList<Map<String, Any>>()
             val productMap = HashMap<String, Any>()
@@ -255,7 +266,8 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_BRAND] = NONE_OTHER
                 productMap[KEY_CATEGORY] = it.departmentID
                 productMap[KEY_ID] = it.productId.toString()
-//                productMap[LIST] = productCardItemList
+                productId = it.productId.toString()
+                productMap[LIST] = ""
                 productMap[KEY_NAME] = it.name.toString()
                 productMap[KEY_POSITION] = componentsItems.position + 1
                 productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -272,13 +284,18 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 )
             )
             var level = ""
+            var subCategoryID  = ""
+            var productGroupId = ""
             getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
                 val catLevel = it[KEY_TREE].toIntOrZero()
                 level = when (catLevel) {
                     LVL2 -> {
+                        subCategoryID = categoryPageIdentifier
                         LEVEL_2
                     }
                     LVL3 -> {
+                        subCategoryID = it[KEY_PARENT] ?: ""
+                        productGroupId = categoryPageIdentifier
                         LEVEL_3
                     }
                     else -> ""
@@ -292,6 +309,9 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             )
             map[KEY_E_COMMERCE] = eCommerce
             map[TRACKER_ID] = "38960"
+            map[KEY_PRODUCT_GROUP_ID] = productGroupId
+            map[SUB_CATEGORY_ID] = subCategoryID
+            map[PRODUCT_ID] = productId
             getTracker().sendEnhanceEcommerceEvent(map)
         }
     }
@@ -491,15 +511,19 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     }
 
     override fun trackPromoLihat(componentsItems: ComponentsItem) {
-//        categoryId,productGroupId,productId,subcategoryId
         var level = ""
+        var subCategoryID  = ""
+        var productGroupId = ""
         getAdditionalInfo(categoryPageIdentifier)?.categoryData?.let {
             val catLevel = it[KEY_TREE].toIntOrZero()
             level = when (catLevel) {
                 LVL2 -> {
+                    subCategoryID = categoryPageIdentifier
                     LEVEL_2
                 }
                 LVL3 -> {
+                    subCategoryID = it[KEY_PARENT] ?: ""
+                    productGroupId = categoryPageIdentifier
                     LEVEL_3
                 }
                 else -> ""
@@ -512,6 +536,10 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             eventAction = CLICK_LIHAT_SEMUA_IN_CAROUSEL,
             eventLabel = label
         )
+        event[CATEGORY_ID] = categoryPageIdentifier
+        event[KEY_PRODUCT_GROUP_ID] = productGroupId
+        event[SUB_CATEGORY_ID] = subCategoryID
+        event[PRODUCT_ID] = ""
         event[TRACKER_ID] = "38958"
         getTracker().sendGeneralEvent(event)
     }
