@@ -208,7 +208,7 @@ class ProductSheetViewComponent(
         show()
 
         /**
-         * Everytime user clicks Cart hit tracker
+         * Everytime user clicks [View All Icon] hit tracker
          */
         scope.launch {
             rootView.awaitLayout()
