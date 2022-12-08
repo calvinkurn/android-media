@@ -1,15 +1,7 @@
 package com.tokopedia.liveness.view
 
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.Detector.WarnCode.FACELARGE
-import ai.advance.liveness.lib.Detector.WarnCode.FACECAPTURE
-import ai.advance.liveness.lib.Detector.WarnCode.FACENOTCENTER
-import ai.advance.liveness.lib.Detector.WarnCode.FACESMALL
-import ai.advance.liveness.lib.Detector.WarnCode.FACEINACTION
-import ai.advance.liveness.lib.Detector.WarnCode.FACEMISSING
-import ai.advance.liveness.lib.Detector.WarnCode.WARN_MULTIPLEFACES
-import ai.advance.liveness.lib.Detector.WarnCode.FACENOTFRONTAL
-import ai.advance.liveness.lib.Detector.WarnCode.FACENOTSTILL
+import ai.advance.liveness.lib.Detector.WarnCode.*
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.http.entity.ResultEntity
@@ -40,7 +32,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.Exception
 import javax.inject.Inject
 
 class LivenessFragment : BaseDaggerFragment(),
@@ -68,7 +59,7 @@ class LivenessFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            projectId = it.getInt(PARAM_PROJECT_ID).toString()
+            projectId = it.getString(PARAM_PROJECT_ID).orEmpty()
         }
     }
 
