@@ -48,8 +48,7 @@ class TokoNowProductRecommendationCallback(
             viewModel.addProductToCart(
                 position = position,
                 shopId = product.shopId,
-                quantity = quantity,
-                product = product
+                quantity = quantity
             )
         }
     }

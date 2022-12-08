@@ -268,15 +268,17 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     fun addProductToCart(
         position: Int,
         quantity: Int,
-        shopId: String,
-        product: TokoNowProductCardCarouselItemUiModel
+        shopId: String
     ) {
-        val miniCartItem = getMiniCartItem(product.productCardModel.productId)
-        when {
-            miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
-            miniCartItem == null -> addItemToCart(position, shopId, quantity, product)
-            quantity.isZero() -> removeItemCart(miniCartItem)
-            else -> updateItemCart(miniCartItem, quantity)
+        if (productModels.size > position && productModels[position] is TokoNowProductCardCarouselItemUiModel) {
+            val product = productModels[position] as TokoNowProductCardCarouselItemUiModel
+            val miniCartItem = getMiniCartItem(product.productCardModel.productId)
+            when {
+                miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
+                miniCartItem == null -> addItemToCart(position, shopId, quantity, product)
+                quantity.isZero() -> removeItemCart(miniCartItem)
+                else -> updateItemCart(miniCartItem, quantity)
+            }
         }
     }
 
