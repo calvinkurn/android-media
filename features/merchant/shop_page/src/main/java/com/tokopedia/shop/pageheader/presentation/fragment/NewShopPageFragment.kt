@@ -3024,6 +3024,7 @@ class NewShopPageFragment :
                                     shareModel.channel.orEmpty(),
                                     customDimensionShopPage,
                                     userId,
+                                    shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
                                     UniversalShareBottomSheet.getUserType()
                                 )
                                 if (!isMyShop) {
@@ -3037,7 +3038,9 @@ class NewShopPageFragment :
                                 shopPageTracking?.clickScreenshotShareBottomSheetOption(
                                     shareModel.channel.orEmpty(),
                                     customDimensionShopPage,
-                                    userId
+                                    userId,
+                                    shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
+                                    UniversalShareBottomSheet.getUserType()
                                 )
                             }
 
@@ -3083,9 +3086,9 @@ class NewShopPageFragment :
     override fun onCloseOptionClicked() {
         if (isUsingNewShareBottomSheet(requireContext())) {
             if (isGeneralShareBottomSheet)
-                shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId)
+                shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId, UniversalShareBottomSheet.getUserType())
             else
-                shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId)
+                shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId, UniversalShareBottomSheet.getUserType())
         } else {
             shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
         }
@@ -3096,7 +3099,8 @@ class NewShopPageFragment :
         showUniversalShareBottomSheet()
         shopPageTracking?.onImpressionScreenshotShareBottomSheet(
             customDimensionShopPage,
-            userId
+            userId,
+            UniversalShareBottomSheet.getUserType()
         )
     }
 
@@ -3121,15 +3125,7 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
-
-        universalShareBottomSheet?.setOnGetAffiliateData {
-            shopPageTracking?.onImpressionShareBottomSheet(
-                customDimensionShopPage,
-                userId,
-                UniversalShareBottomSheet.getUserType()
-            )
-        }
-
+        configShopShareBottomSheetImpressionTracker()
         // activate contextual image
         val initialProductListData = shopViewModel?.productListData?.data ?: listOf()
         val initialProductListSize = initialProductListData.size
@@ -3300,6 +3296,24 @@ class NewShopPageFragment :
             universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
             universalShareBottomSheet?.affiliateRequestDataReceived(true)
         })
+    }
+
+    private fun configShopShareBottomSheetImpressionTracker() {
+        if (isLogin) {
+            universalShareBottomSheet?.setOnGetAffiliateData {
+                trackImpressionShareBottomSheet()
+            }
+        } else {
+            trackImpressionShareBottomSheet()
+        }
+    }
+
+    private fun trackImpressionShareBottomSheet() {
+        shopPageTracking?.onImpressionShareBottomSheet(
+            customDimensionShopPage,
+            userId,
+            UniversalShareBottomSheet.getUserType()
+        )
     }
 
     override fun onRequestPermissionsResult(

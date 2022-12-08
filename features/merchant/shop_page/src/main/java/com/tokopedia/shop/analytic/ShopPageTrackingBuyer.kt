@@ -1175,12 +1175,16 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickCloseNewShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun clickCloseNewShareBottomSheet(
+        customDimensionShopPage: CustomDimensionShopPage,
+        userId: String,
+        userType: String
+    ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_CLOSE_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+            ShopPageTrackingConstant.EVENT_LABEL to "${customDimensionShopPage.shopId.orEmpty()} - $userType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLOSE_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1190,12 +1194,18 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String, userType: String) {
+    fun clickShareBottomSheetOption(
+        socialMediaName: String,
+        customDimensionShopPage: CustomDimensionShopPage,
+        userId: String,
+        imageType: String,
+        userType: String
+    ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SHARE_BOTTOM_SHEET_OPTION,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - ${UniversalShareBottomSheet.Companion.KEY_CONTEXTUAL_IMAGE} - $userType",
+            ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - $userType - $imageType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLICK_SHARING_CHANNEL,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1235,12 +1245,12 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun onImpressionScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun onImpressionScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String, userShareType: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_COMMUNICATION_IRIS,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.VIEW_SCREENSHOT_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+            ShopPageTrackingConstant.EVENT_LABEL to "${customDimensionShopPage.shopId.orEmpty()} - $userShareType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_VIEW_SCREEN_SHOT_BOTTOM_SHEET,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1250,12 +1260,12 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String, userShareType: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+            ShopPageTrackingConstant.EVENT_LABEL to "${customDimensionShopPage.shopId.orEmpty()} - $userShareType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLOSE_SCREEN_SHOT_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1265,12 +1275,12 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickScreenshotShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun clickScreenshotShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String, userShareType: String, imageType: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SCREENSHOT_SHARE_BOTTOM_SHEET_OPTION,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()}",
+            ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - $userShareType - $imageType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_SCREEN_SHOT_CLICK_SHARING_CHANNEL,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
