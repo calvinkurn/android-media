@@ -78,7 +78,7 @@ public interface KolComment {
 
             boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
 
-            void onMenuClicked(String id, boolean canDeleteComment, int adapterPosition);
+            void onMenuClicked(String id, boolean canDeleteComment, boolean canReportComment, int adapterPosition);
         }
 
         interface SeeAll {

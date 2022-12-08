@@ -31,6 +31,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -46,6 +47,11 @@ class CampaignListViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        const val TIMER_FOR_FLIP = 5000L
+        const val DEFAULT_VALUE_OF_ANIMATION = 0
+    }
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
     val campaigns: LiveData<Result<CampaignMeta>>
@@ -75,9 +81,28 @@ class CampaignListViewModel @Inject constructor(
     val vpsPackages: LiveData<Result<List<VpsPackage>>>
         get() = _vpsPackages
 
+    //Timer for running motion
+    private val _timeFlip = MutableLiveData<Int>()
+    val timeToFlip: LiveData<Int>
+        get() = _timeFlip
+
     private var drafts: List<CampaignUiModel> = emptyList()
     private var campaignId: Long = 0
     private var thumbnailImageUrl = ""
+
+    private val timerForToFlip by lazy {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                while (true) { //will always true because is for looping purpose
+                    val currentValue = _timeFlip.value?:DEFAULT_VALUE_OF_ANIMATION
+                    _timeFlip.postValue(currentValue+1)
+                    delay(TIMER_FOR_FLIP)
+                }
+            },
+            onError = {}
+        )
+    }
 
     fun getCampaigns(
         rows: Int,
@@ -272,4 +297,14 @@ class CampaignListViewModel @Inject constructor(
         }
         return vpsPackages.size
     }
+
+    fun isTimerForFlipRunning() = timerForToFlip.isActive
+    fun startAnimationOfWarningQuota(){
+        timerForToFlip.start()
+    }
+
+    fun stopAnimationOfWarningQuota(){
+        timerForToFlip.cancel()
+    }
+
 }
