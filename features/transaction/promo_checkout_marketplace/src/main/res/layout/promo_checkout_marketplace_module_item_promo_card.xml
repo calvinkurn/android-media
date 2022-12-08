@@ -208,7 +208,7 @@
                 android:id="@+id/container_error_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_NN0"
+                android:background="@color/Unify_Background"
                 android:gravity="top"
                 android:orientation="horizontal"
                 app:flexWrap="wrap"
