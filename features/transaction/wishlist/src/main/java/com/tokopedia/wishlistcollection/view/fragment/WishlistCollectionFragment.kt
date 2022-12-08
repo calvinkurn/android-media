@@ -27,9 +27,14 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -80,6 +85,8 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishli
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -349,6 +356,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
+                        showRvWishlistCollection()
                         wishlistCollectionPref?.getHasClosed()
                             ?.let { collectionAdapter.setTickerHasClosed(it) }
 
@@ -385,10 +393,9 @@ class WishlistCollectionFragment :
                         if (result.data.data.collections.size == 1) {
                             onlyAllCollection = true
                             checkOnboarding()
-                        } else if (result.data.data.collections.size > 1) {
                         }
                     } else {
-                        // TODO: show global error page?
+                        showGlobalErrorWishlistCollection(ResponseErrorException())
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
                             context?.getString(
                                 R.string.wishlist_v2_common_error_msg
@@ -398,7 +405,7 @@ class WishlistCollectionFragment :
                     }
                 }
                 is Fail -> {
-                    // TODO: show global error page?
+                    showGlobalErrorWishlistCollection(result.throwable)
                     finishRefresh()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
@@ -409,6 +416,56 @@ class WishlistCollectionFragment :
 
     private fun getDeleteWishlistProgress() {
         collectionViewModel.getDeleteWishlistProgress()
+    }
+
+    private fun showRvWishlistCollection() {
+        binding?.run {
+            rlWishlistCollectionError.gone()
+            rlWishlistCollectionContent.visible()
+        }
+    }
+
+    private fun showGlobalErrorWishlistCollection(throwable: Throwable) {
+        val errorType = when (throwable) {
+            is MessageErrorException -> null
+            is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
+        }
+        if (errorType == null) {
+            binding?.run {
+                rlWishlistCollectionContent.gone()
+                rlWishlistCollectionError.visible()
+                globalErrorWishlistCollection.gone()
+                emptyStateWishlistCollection.apply {
+                    visible()
+                    showMessageExceptionError(throwable)
+                }
+            }
+        } else {
+            binding?.run {
+                rlWishlistCollectionContent.gone()
+                rlWishlistCollectionError.visible()
+                emptyStateWishlistCollection.gone()
+                globalErrorWishlistCollection.apply {
+                    visible()
+                    setType(errorType)
+                    setActionClickListener {
+                        doRefresh()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
+        var errorMessage = context?.let {
+            ErrorHandler.getErrorMessage(it, throwable)
+        } ?: ""
+        if (errorMessage.isEmpty()) {
+            errorMessage =
+                getString(R.string.wishlist_v2_failed_to_get_information)
+        }
+        setDescription(errorMessage)
     }
 
     override fun onPause() {
