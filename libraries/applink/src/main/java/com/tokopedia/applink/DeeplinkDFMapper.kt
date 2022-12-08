@@ -146,22 +146,29 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_HOTEL
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.NEW_ADD_PHONE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_GENDER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CONSENT_WITHDRAWAL_NEW
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_ALA_CARTE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_INFO
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_LIVENESS_BASE
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PRIVACY_CENTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SHARING_WISHLIST
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SEARCH_HISTORY
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -205,6 +212,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
+    const val DF_USER_PRIVACYCENTER = "df_user_privacycenter"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_USER_FINGERPRINT = "df_user_fingerprint"
@@ -222,6 +230,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_PEOPLE = "df_people"
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
+    const val DF_TOKOCHAT = "df_comm_tokochat"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -505,6 +514,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 (it.startsWith(SETTING_PROFILE)
                         || it.startsWith(ADD_PHONE)
+                        || it.startsWith(NEW_ADD_PHONE)
                         || it.startsWith(ADD_EMAIL)
                         || it.startsWith(ADD_BOD)
                         || it.startsWithPattern(CHANGE_NAME)
@@ -553,6 +563,13 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
             add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_choose_account))
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
+            add(DFP({
+                it.startsWithPattern(PRIVACY_CENTER) ||
+                it.startsWithPattern(CONSENT_WITHDRAWAL_NEW) ||
+                it.startsWithPattern(ACCOUNT_LINKING_WEBVIEW) ||
+                it.startsWithPattern(SEARCH_HISTORY) ||
+                it.startsWithPattern(SHARING_WISHLIST)
+            }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
 
             // Media
             add(DFP({
@@ -659,6 +676,9 @@ object DeeplinkDFMapper : CoroutineScope {
             //Feedback Form
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) ||
                     it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_ALPHA_TESTING, R.string.internal_feedback))
+
+            //Toko Chat
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalCommunication.TOKO_CHAT) }, DF_TOKOCHAT, R.string.title_applink_toko_chat))
         }
     }
 

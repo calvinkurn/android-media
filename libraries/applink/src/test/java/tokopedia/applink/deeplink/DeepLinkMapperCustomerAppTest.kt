@@ -8,9 +8,12 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -1743,6 +1746,30 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check privacy center appLink then should return tokopedia internal privacy center in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/privacy-center"
+        val rollencePrivacyCenter = "privacy_center_and"
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(rollencePrivacyCenter)
+        } returns rollencePrivacyCenter
+
+        assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check privacy center appLink then should return tokopedia internal home navigation in customerapp`() {
+        val expectedDeepLink = ApplinkConsInternalHome.HOME_NAVIGATION
+        val rollencePrivacyCenter = "privacy_center_and"
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(rollencePrivacyCenter)
+        } returns ""
+
+        assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
+    }
+
+    @Test
     fun `check add pin onboarding appLink then should return tokopedia internal add pin onboarding in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/add-pin-onboarding"
         assertEqualsDeepLinkMapper(ApplinkConst.ADD_PIN_ONBOARD, expectedDeepLink)
@@ -2523,5 +2550,30 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.RECIPE_SEARCH}?$queryParam"
         val appLink = "${ApplinkConst.TokopediaNow.RECIPE_SEARCH}?$queryParam"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokochat applink customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalCommunication.TOKO_CHAT
+        tokochatRollenceEnabler()
+        assertEqualsDeepLinkMapper(ApplinkConst.TOKO_CHAT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokochat applink customerapp with query params`() {
+        val queryParams = "?orderId=F-123&tokochatSource=tokofood"
+        val deepLink = "${ApplinkConst.TOKO_CHAT}$queryParams"
+        val expectedDeepLink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$queryParams"
+        tokochatRollenceEnabler()
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokochat applink customerapp with rollence turn off`() {
+        val queryParams = "orderId=F-123&tokochatSource=tokofood"
+        val deepLink = "${ApplinkConst.TOKO_CHAT}?$queryParams"
+        val expectedDeepLink = "${ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD}&$queryParams"
+        tokochatRollenceEnabler("")
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 }

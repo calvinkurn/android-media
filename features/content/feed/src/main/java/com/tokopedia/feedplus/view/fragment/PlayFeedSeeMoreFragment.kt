@@ -115,7 +115,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
         super.onActivityCreated(savedInstanceState)
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         playFeedVideoTabViewModel.run {
-            getLivePlayDataRsp.observe(
+            getLiveOrUpcomingPlayDataRsp.observe(
                 lifecycleOwner,
                 Observer {
                     when (it) {
@@ -170,7 +170,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
         sendAnalyticsForLehatSemua()
         setupView(view)
         setUpShopDataHeader()
-        playFeedVideoTabViewModel.getLivePlayData(widgetType, sourceId, sourceType)
+        playFeedVideoTabViewModel.getPlayDetailPageData(widgetType, sourceId, sourceType)
     }
 
     private fun sendAnalyticsForLehatSemua() {
@@ -198,7 +198,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(rvWidgetSample?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                playFeedVideoTabViewModel.getLivePlayData(widgetType, sourceId, sourceType)
+                playFeedVideoTabViewModel.getPlayDetailPageData(widgetType, sourceId, sourceType)
             }
         }
     }

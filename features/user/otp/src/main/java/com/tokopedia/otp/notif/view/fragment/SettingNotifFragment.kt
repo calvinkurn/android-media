@@ -46,7 +46,7 @@ class SettingNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     override val viewBound = SettingNotifViewBinding()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_PUSH_NOTIF_SETTING
 

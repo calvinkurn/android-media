@@ -1675,8 +1675,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            if (account != null && account.idToken != null) {
-                val accessToken: String = account?.idToken
+            val accessToken = account?.idToken
+            if (account != null && accessToken != null) {
                 val email = account.email
                 if (email != null) {
                     showLoadingLogin()

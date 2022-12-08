@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tokochat_unsupported_attachment_voice_note">Driver kirim pesan suara. Minta driver kirim pesan teks, ya.</string>
+    <string name="tokochat_unsupported_attachment_general">Driver kirim konten yang belum tersedia.</string>
+    
+    <string name="tokochat_bottomsheet_unavailable_general_title">Yah, chat-nya nggak tersedia</string>
+    <string name="tokochat_bottomsheet_unavailable_general_subtitle">Mungkin driver-nya berubah, pesananmu dibatalkan atau sesi chat-mu sudah selesai.</string>
+    <string name="tokochat_bottomsheet_unavailable_general_button">Oke</string>
+</resources>
