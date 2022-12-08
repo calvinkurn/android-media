@@ -327,9 +327,9 @@ class EditorFragment @Inject constructor(
     }
 
     private fun observeEditorParam() {
-        viewModel.editorParam.observe(viewLifecycleOwner) { it ->
+        viewModel.editorParam.observe(viewLifecycleOwner) {
             val isAddLogoEnable = RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
-            if (!isAddLogoEnable) {
+            if (!isAddLogoEnable || !viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
                     remove(removeIndex)
