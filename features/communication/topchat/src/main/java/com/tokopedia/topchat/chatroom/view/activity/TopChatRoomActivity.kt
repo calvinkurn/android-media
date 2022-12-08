@@ -292,8 +292,10 @@ open class TopChatRoomActivity :
                     .collect { newLayoutInfo ->
                         changeLayout(newLayoutInfo)
                     }
-            } catch (ignored: Throwable) {
-                onErrorGetWindowLayoutInfo()
+            } catch (throwable: Throwable) {
+                if (throwable !is CancellationException) {
+                    onErrorGetWindowLayoutInfo()
+                }
             }
         }
     }
