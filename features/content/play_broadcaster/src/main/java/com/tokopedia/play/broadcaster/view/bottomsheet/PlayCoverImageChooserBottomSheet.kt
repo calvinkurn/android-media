@@ -166,23 +166,10 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
      * Gallery Permission
      */
     private fun isGalleryPermissionGranted(): Boolean =
-            isPermissionGranted(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                Manifest.permission.READ_MEDIA_IMAGES
-            }else{
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            }) && isPermissionGranted(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                Manifest.permission.READ_MEDIA_IMAGES
-            }else{
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            })
+            isPermissionGranted(PermissionHelper.READ_EXTERNAL_STORAGE)
 
     private fun requestGalleryPermission() = requestPermissions(
-            arrayOf(
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    Manifest.permission.READ_MEDIA_IMAGES
-                }else{
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                }),
+            arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE),
         REQUEST_CODE_PERMISSION_GALLERY
     )
 
