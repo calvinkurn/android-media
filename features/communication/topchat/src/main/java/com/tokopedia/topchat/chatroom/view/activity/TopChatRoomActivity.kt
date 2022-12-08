@@ -286,11 +286,21 @@ open class TopChatRoomActivity :
     override fun onStart() {
         super.onStart()
         layoutUpdatesJob = CoroutineScope(Dispatchers.Main).launch {
-            windowInfoRepo.windowLayoutInfo(this@TopChatRoomActivity)
-                .collect { newLayoutInfo ->
-                    changeLayout(newLayoutInfo)
-                }
+            try {
+                windowInfoRepo.windowLayoutInfo(this@TopChatRoomActivity)
+                    .collect { newLayoutInfo ->
+                        changeLayout(newLayoutInfo)
+                    }
+            } catch (ignored: Throwable) {
+                onErrorGetWindowLayoutInfo()
+            }
         }
+    }
+
+    private fun onErrorGetWindowLayoutInfo() {
+        setupChatRoomOnlyToolbar()
+        handleNonFlexModeView()
+        currentlyInFlexMode = false
     }
 
     override fun onStop() {
