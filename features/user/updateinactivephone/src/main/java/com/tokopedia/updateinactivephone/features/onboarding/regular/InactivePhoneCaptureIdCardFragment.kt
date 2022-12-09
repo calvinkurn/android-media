@@ -59,11 +59,18 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
 
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper.request(it, arrayOf(
+            val listPermission = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                arrayOf(
                     PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
                     PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
-                ), granted = {
+                )
+            } else {
+                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_CAMERA)
+            }
+
+            activity?.let {
+                permissionCheckerHelper.request(it, listPermission,
+                granted = {
                 }, denied = {
                     it.finish()
                 })

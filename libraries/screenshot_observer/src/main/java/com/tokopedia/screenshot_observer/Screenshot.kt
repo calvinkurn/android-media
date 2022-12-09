@@ -35,7 +35,11 @@ open class Screenshot @JvmOverloads constructor(
     private var className: String = ""
     private val requiredPermissions = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            Manifest.permission.READ_MEDIA_IMAGES
+        }else{
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
     )
     private val bottomSheetFeedback: BottomSheetUnify
     private var isInitBottomSheet = true
