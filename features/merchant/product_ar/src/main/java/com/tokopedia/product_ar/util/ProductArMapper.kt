@@ -5,9 +5,7 @@ import com.modiface.mfemakeupkit.effects.MFEMakeupLipLayer
 import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product_ar.model.ComparissonImageUiModel
 import com.tokopedia.product_ar.model.ModifaceProvider
 import com.tokopedia.product_ar.model.ModifaceUiModel
@@ -21,14 +19,14 @@ object ProductArMapper {
                                 shopId: String,
                                 userId: String): AddToCartRequestParams {
         return AddToCartRequestParams().apply {
-            productId = productAr?.productID.toLongOrZero()
+            productId = productAr?.productID ?: "0"
             quantity = productAr?.getFinalMinOrder() ?: 1
             notes = ""
             attribution = ""
             listTracker = ""
             productName = productAr?.name ?: ""
             price = productAr?.getFinalPrice().toString()
-            this.shopId = shopId.toIntOrZero()
+            this.shopId = shopId
             this.userId = userId
         }
     }
