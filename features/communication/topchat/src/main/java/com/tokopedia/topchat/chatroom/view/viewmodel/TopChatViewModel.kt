@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
-import android.util.Log
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -16,10 +15,8 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -36,6 +33,7 @@ import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -62,7 +60,6 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.Constant
-import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
@@ -379,7 +376,8 @@ open class TopChatViewModel @Inject constructor(
             AttachmentType.Companion.TYPE_INVOICE_SEND,
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
             AttachmentType.Companion.TYPE_VOUCHER -> updateLiveDataOnMainThread(
-                _removeSrwBubble, null
+                _removeSrwBubble,
+                null
             )
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
                 if (uiModel is ProductAttachmentUiModel) {
@@ -429,12 +427,15 @@ open class TopChatViewModel @Inject constructor(
     }
 
     private fun logWebSocketFailure(throwable: Throwable, response: Response?) {
-        ServerLogger.log(Priority.P2, TAG,
+        ServerLogger.log(
+            Priority.P2,
+            TAG,
             mapOf(
                 "type" to ERROR_TYPE_LOG,
                 "error" to throwable.message.orEmpty(),
                 "response" to response.toString()
-            ))
+            )
+        )
     }
 
     private fun retryConnectWebSocket() {
@@ -466,7 +467,7 @@ open class TopChatViewModel @Inject constructor(
     fun getMessageId(
         toUserId: String,
         toShopId: String,
-        source: String,
+        source: String
     ) {
         launchCatchError(block = {
             val existingMessageIdParam = GetExistingMessageIdUseCase.Param(
@@ -478,8 +479,8 @@ open class TopChatViewModel @Inject constructor(
             _messageId.value = Success(result.chatExistingChat.messageId)
             roomMetaData.updateMessageId(result.chatExistingChat.messageId)
         }, onError = {
-            _messageId.value = Fail(it)
-        })
+                _messageId.value = Fail(it)
+            })
     }
 
     fun getShopFollowingStatus(shopId: String) {
@@ -487,8 +488,8 @@ open class TopChatViewModel @Inject constructor(
             val result = getShopFollowingUseCase(shopId)
             _shopFollowing.value = Success(result)
         }, onError = {
-            _shopFollowing.value = Fail(it)
-        })
+                _shopFollowing.value = Fail(it)
+            })
     }
 
     fun followUnfollowShop(
@@ -510,8 +511,8 @@ open class TopChatViewModel @Inject constructor(
                 _followUnfollowShop.postValue(Pair(element, Success(result)))
             }
         }, onError = {
-            _followUnfollowShop.value = Pair(element, Fail(it))
-        })
+                _followUnfollowShop.value = Pair(element, Fail(it))
+            })
     }
 
     fun addProductToCart(addToCartParam: AddToCartParam) {
@@ -525,8 +526,8 @@ open class TopChatViewModel @Inject constructor(
                 _addToCart.value = Fail(MessageErrorException(atcResult.errorMessage.first()))
             }
         }, onError = {
-            _addToCart.value = Fail(it)
-        })
+                _addToCart.value = Fail(it)
+            })
     }
 
     private fun setupAddToCartParam(addToCartParam: AddToCartParam) {
@@ -562,8 +563,8 @@ open class TopChatViewModel @Inject constructor(
             val result = getChatRoomSettingUseCase(messageId)
             _chatRoomSetting.value = Success(result)
         }, onError = {
-            _chatRoomSetting.value = Fail(it)
-        })
+                _chatRoomSetting.value = Fail(it)
+            })
     }
 
     fun getOrderProgress(messageId: String) {
@@ -571,8 +572,8 @@ open class TopChatViewModel @Inject constructor(
             val result = orderProgressUseCase(messageId)
             _orderProgress.value = Success(result)
         }, onError = {
-            _orderProgress.value = Fail(it)
-        })
+                _orderProgress.value = Fail(it)
+            })
     }
 
     fun getTickerReminder(isSeller: Boolean) {
@@ -602,7 +603,6 @@ open class TopChatViewModel @Inject constructor(
             },
             onError = { }
         )
-
     }
 
     fun occProduct(
@@ -622,8 +622,8 @@ open class TopChatViewModel @Inject constructor(
                 _occProduct.value = Success(product)
             }
         }, onError = {
-            _occProduct.value = Fail(it)
-        })
+                _occProduct.value = Fail(it)
+            })
     }
 
     private fun getAddToCartOccMultiRequestParams(
@@ -637,7 +637,7 @@ open class TopChatViewModel @Inject constructor(
                     shopId = product.shopId.toString(),
                     quantity = product.minOrder.toString(),
                     warehouseId = attachProductWarehouseId,
-                    //analytics data
+                    // analytics data
                     productName = product.productName,
                     category = product.category,
                     price = product.productPrice
@@ -662,11 +662,11 @@ open class TopChatViewModel @Inject constructor(
             )
             _toggleBlock.value = result
         }, onError = {
-            _toggleBlock.value = WrapperChatSetting(
-                blockActionType = blockActionType,
-                response = Fail(it)
-            )
-        })
+                _toggleBlock.value = WrapperChatSetting(
+                    blockActionType = blockActionType,
+                    response = Fail(it)
+                )
+            })
     }
 
     private fun generateToggleBlockChatParam(
@@ -709,8 +709,8 @@ open class TopChatViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _chatDeleteStatus.value = Fail(it)
-        })
+                _chatDeleteStatus.value = Fail(it)
+            })
     }
 
     fun getBackground() {
@@ -719,8 +719,8 @@ open class TopChatViewModel @Inject constructor(
                 _chatBackground.value = Success(it)
             }
         }, onError = {
-            _chatBackground.value = Fail(it)
-        })
+                _chatBackground.value = Fail(it)
+            })
     }
 
     fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
@@ -733,10 +733,10 @@ open class TopChatViewModel @Inject constructor(
                 _chatAttachments.value = attachments
             }
         }, onError = {
-            val mapErrorAttachment = chatAttachmentMapper.mapError(chatRoom.replyIDs)
-            attachments.putAll(mapErrorAttachment.toMap())
-            _chatAttachments.value = attachments
-        })
+                val mapErrorAttachment = chatAttachmentMapper.mapError(chatRoom.replyIDs)
+                attachments.putAll(mapErrorAttachment.toMap())
+                _chatAttachments.value = attachments
+            })
     }
 
     private fun generateAttachmentParams(
@@ -767,8 +767,8 @@ open class TopChatViewModel @Inject constructor(
                 _chatListGroupSticker.value = Success(it)
             }
         }, onError = {
-            _chatListGroupSticker.value = Fail(it)
-        })
+                _chatListGroupSticker.value = Fail(it)
+            })
     }
 
     fun getSmartReplyWidget(msgId: String, productIds: String) {
@@ -787,20 +787,22 @@ open class TopChatViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _srw.postValue(Resource.error(it, null))
-        })
+                _srw.postValue(Resource.error(it, null))
+            })
     }
 
     fun adjustInterlocutorWarehouseId(msgId: String) {
         attachProductWarehouseId = "0"
-        launchCatchError(block = {
-            tokoNowWHUsecase(msgId).collect {
-                attachProductWarehouseId = it.chatTokoNowWarehouse.warehouseId
-            }
-        },
+        launchCatchError(
+            block = {
+                tokoNowWHUsecase(msgId).collect {
+                    attachProductWarehouseId = it.chatTokoNowWarehouse.warehouseId
+                }
+            },
             onError = {
                 it.printStackTrace()
-            })
+            }
+        )
     }
 
     fun addToWishListV2(
@@ -821,7 +823,9 @@ open class TopChatViewModel @Inject constructor(
     }
 
     fun removeFromWishListV2(
-        productId: String, userId: String, wishListActionListener: WishlistV2ActionListener
+        productId: String,
+        userId: String,
+        wishListActionListener: WishlistV2ActionListener
     ) {
         launch(dispatcher.main) {
             deleteWishlistV2UseCase.setParams(productId, userId)
@@ -845,8 +849,8 @@ open class TopChatViewModel @Inject constructor(
                 val result = GetChatResult(chatroomViewModel, response.chatReplies)
                 _existingChat.value = Pair(Success(result), isInit)
             }, onError = {
-                _existingChat.value = Pair(Fail(it), isInit)
-            })
+                    _existingChat.value = Pair(Fail(it), isInit)
+                })
         }
     }
 
@@ -862,8 +866,8 @@ open class TopChatViewModel @Inject constructor(
                 val result = GetChatResult(chatroomViewModel, response.chatReplies)
                 _topChat.value = Success(result)
             }, onError = {
-                _topChat.value = Fail(it)
-            })
+                    _topChat.value = Fail(it)
+                })
         }
     }
 
@@ -875,8 +879,8 @@ open class TopChatViewModel @Inject constructor(
                 val result = GetChatResult(chatroomViewModel, response.chatReplies)
                 _bottomChat.value = Success(result)
             }, onError = {
-                _bottomChat.value = Fail(it)
-            })
+                    _bottomChat.value = Fail(it)
+                })
         }
     }
 
@@ -892,7 +896,6 @@ open class TopChatViewModel @Inject constructor(
         getChatUseCase.reset()
     }
 
-
     fun deleteMsg(msgId: String, replyTimeNano: String) {
         launchCatchError(block = {
             val existingMessageIdParam = UnsendReplyUseCase.Param(
@@ -906,8 +909,8 @@ open class TopChatViewModel @Inject constructor(
                 _deleteBubble.value = Fail(IllegalStateException())
             }
         }, onError = {
-            _deleteBubble.value = Fail(it)
-        })
+                _deleteBubble.value = Fail(it)
+            })
     }
 
     fun sendAttachments(message: String) {
@@ -1011,16 +1014,20 @@ open class TopChatViewModel @Inject constructor(
     }
 
     private fun onSuccessUploadImage(
-        uploadId: String, imageUploadUiModel: ImageUploadUiModel
+        uploadId: String,
+        imageUploadUiModel: ImageUploadUiModel
     ) {
         val wsPayload = payloadGenerator.generateImageWsPayload(
-            roomMetaData, uploadId, imageUploadUiModel
+            roomMetaData,
+            uploadId,
+            imageUploadUiModel
         )
         sendWsPayload(wsPayload)
     }
 
     private fun onErrorUploadImage(
-        throwable: Throwable, imageUploadUiModel: ImageUploadUiModel
+        throwable: Throwable,
+        imageUploadUiModel: ImageUploadUiModel
     ) {
         _errorSnackbar.value = throwable
         _failUploadImage.value = imageUploadUiModel
@@ -1098,10 +1105,10 @@ open class TopChatViewModel @Inject constructor(
             attachmentPreviewData.putAll(mapAttachment.toMap())
             _chatAttachmentsPreview.value = attachmentPreviewData
         }, onError = {
-            val errorMapAttachment = productIds.associateWith { ErrorAttachment() }
-            attachmentPreviewData.putAll(errorMapAttachment)
-            _chatAttachmentsPreview.value = attachmentPreviewData
-        })
+                val errorMapAttachment = productIds.associateWith { ErrorAttachment() }
+                attachmentPreviewData.putAll(errorMapAttachment)
+                _chatAttachmentsPreview.value = attachmentPreviewData
+            })
     }
 
     private fun showLoadingProductPreview(productIds: List<String>) {
@@ -1117,7 +1124,7 @@ open class TopChatViewModel @Inject constructor(
 
     fun isAttachmentPreviewReady(): Boolean {
         val sendable = attachmentsPreview.firstOrNull() as? DeferredAttachment
-                ?: return attachmentsPreview.isNotEmpty()
+            ?: return attachmentsPreview.isNotEmpty()
         return !sendable.isLoading && !sendable.isError
     }
 
@@ -1158,7 +1165,8 @@ open class TopChatViewModel @Inject constructor(
     private fun isEnableUploadImageService(): Boolean {
         return try {
             remoteConfig.getBoolean(
-                ENABLE_UPLOAD_IMAGE_SERVICE, false
+                ENABLE_UPLOAD_IMAGE_SERVICE,
+                false
             ) && !isProblematicDevice()
         } catch (ex: Throwable) {
             false
@@ -1190,13 +1198,14 @@ open class TopChatViewModel @Inject constructor(
             }
             _templateChat.value = Success(templateList)
         }, onError = {
-            _templateChat.value = Fail(it)
-        })
+                _templateChat.value = Fail(it)
+            })
     }
 
     fun addOngoingUpdateProductStock(
         productId: String,
-        product: ProductAttachmentUiModel, adapterPosition: Int,
+        product: ProductAttachmentUiModel,
+        adapterPosition: Int,
         parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
         val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
@@ -1205,6 +1214,10 @@ open class TopChatViewModel @Inject constructor(
 
     fun updateMessageId(messageId: String) {
         roomMetaData.updateMessageId(messageId)
+    }
+
+    fun resetWebSocket() {
+        chatWebSocket.reset()
     }
 
     companion object {
