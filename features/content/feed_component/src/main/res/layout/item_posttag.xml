@@ -11,15 +11,24 @@
         android:id="@+id/cardTitlePostTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif"
         android:textColor="@color/Unify_N700_68"
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
         tools:text="@string/content_product_bs_title"
+        tools:visibility="visible" />
+
+    <com.tokopedia.mvcwidget.views.MvcView
+        android:id="@+id/merchant_voucher_widget_post_tag"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:visibility="gone"
         tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -31,6 +40,6 @@
         android:paddingStart="16dp"
         android:paddingLeft="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_producttag_list_new"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:listitem="@layout/item_producttag_list_new" />
 </LinearLayout>

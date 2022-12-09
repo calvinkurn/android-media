@@ -10,7 +10,7 @@ object MockReminderWidget {
                 backgroundColor = listOf(),
                 buttonText = "Mock Button",
                 id = "1",
-                iconURL = "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/3/22/1579059/1579059_86946c79-26f2-40da-a7c3-a6286936345f_700_700",
+                iconURL = "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/22/1579059/1579059_86946c79-26f2-40da-a7c3-a6286936345f_700_700",
                 link = "https://www.tokopedia.com/",
                 mainText = "Mock Main Text",
                 subText = "Mock Sub Text",

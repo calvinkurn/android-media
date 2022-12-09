@@ -50,7 +50,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_CATEGORY)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     // Row 32
