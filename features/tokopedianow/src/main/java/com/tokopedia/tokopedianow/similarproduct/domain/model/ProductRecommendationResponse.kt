@@ -114,6 +114,12 @@ data class ProductRecommendationResponse(
                 @field:SerializedName("discountPercentage")
                 val discountPercentage: Float = 0F,
 
+                @field:SerializedName("minOrder")
+                val minOrder: Int = 0,
+
+                @field:SerializedName("maxOrder")
+                val maxOrder: Int = 0,
+
                 @field:SerializedName("imageUrl")
                 val imageUrl: String? = null,
 

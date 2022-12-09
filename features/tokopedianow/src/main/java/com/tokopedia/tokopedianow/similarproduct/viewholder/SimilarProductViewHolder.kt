@@ -4,14 +4,12 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBinding
-import com.tokopedia.tokopedianow.similarproduct.analytic.SimilarProductAnalytics
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -19,16 +17,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class SimilarProductViewHolder(
     itemView: View,
-    private val listener: SimilarProductListener?,
-    private val analytics: SimilarProductAnalytics?
+    private val listener: SimilarProductListener?
     ) : AbstractViewHolder<SimilarProductUiModel>(itemView) {
 
-    companion object {
+    companion object{
+        private const val QUANTITY_ZERO = 0
         val LAYOUT = R.layout.item_tokopedianow_recipe_product
     }
-
-    private val QUANTITY_ZERO = 0
-    private val context by lazy { itemView.context }
 
     private var binding: ItemTokopedianowRecipeProductBinding? by viewBinding()
 
@@ -40,6 +35,7 @@ class SimilarProductViewHolder(
         renderQuantityEditor(product)
         renderDeleteBtn(product)
         setOnClickListener(product)
+        impressHolder(product)
     }
 
     override fun bind(product: SimilarProductUiModel?, payloads: MutableList<Any>) {
@@ -101,7 +97,6 @@ class SimilarProductViewHolder(
                 isEnabled = true
 
                 setOnClickListener {
-                    analytics?.trackClickAddToCart(product)
                     listener?.addItemToCart(
                         productId = product.id,
                         shopId = product.shopId,
@@ -153,13 +148,8 @@ class SimilarProductViewHolder(
 
     private fun setOnClickListener(product: SimilarProductUiModel) {
         binding?.root?.setOnClickListener {
-            analytics?.trackClickProduct(product)
-            goToProductDetailPage(product)
+            listener?.onProductClicked(product)
         }
-    }
-
-    private fun goToProductDetailPage(item: SimilarProductUiModel) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
     }
 
     private fun onQuantityChanged(product: SimilarProductUiModel) {
@@ -177,6 +167,12 @@ class SimilarProductViewHolder(
         }
     }
 
+    private fun impressHolder(product: SimilarProductUiModel) {
+        itemView.addOnImpressionListener(product.impressHolder) {
+            listener?.onProductImpressed(product)
+        }
+    }
+
     private fun QuantityEditorUnify.closeSoftKeyboard() {
         KeyboardHandler.DropKeyboard(itemView.context, this)
     }
@@ -185,5 +181,7 @@ class SimilarProductViewHolder(
         fun deleteCartItem(productId: String)
         fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
         fun addItemToCart(productId: String, shopId: String, quantity: Int)
+        fun onProductClicked(product: SimilarProductUiModel)
+        fun onProductImpressed(product: SimilarProductUiModel)
     }
 }

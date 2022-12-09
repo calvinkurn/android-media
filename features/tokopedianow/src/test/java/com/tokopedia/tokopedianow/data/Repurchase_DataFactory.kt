@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
@@ -12,6 +14,7 @@ import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMappe
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoResult
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateOoc
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecommendation
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setDateFilter
@@ -72,18 +75,7 @@ fun createDateFilterLayout(selectedFilter: RepurchaseSortFilterUiModel.SelectedD
     return layoutList
 }
 
-fun createProductRecomLayout(pageName: String, carouselData: RecommendationCarouselData): List<Visitable<*>> {
-    val layoutList: MutableList<Visitable<*>> = mutableListOf()
-    layoutList.add(
-        TokoNowRecommendationCarouselUiModel(
-            pageName = pageName,
-            carouselData = carouselData
-        )
-    )
-    return layoutList
-}
-
-fun createEmptyStateLayout(id: String, serviceType: String = ""): List<Visitable<*>> {
+fun createEmptyStateLayout(id: String, serviceType: String = "", pageName: String = ""): List<Visitable<*>> {
     val layoutList: MutableList<Visitable<*>> = mutableListOf()
     when(id) {
         RepurchaseStaticLayoutId.EMPTY_STATE_NO_HISTORY_SEARCH -> {
@@ -104,6 +96,7 @@ fun createEmptyStateLayout(id: String, serviceType: String = ""): List<Visitable
         }
         else -> {
             layoutList.addEmptyStateNoResult(serviceType)
+            layoutList.addProductRecommendation(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
         }
     }
     return layoutList

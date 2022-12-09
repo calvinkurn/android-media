@@ -4,15 +4,43 @@ import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import java.io.Serializable
 
 interface SimilarProductListener: Serializable {
-    fun trackClickSimilarProductBtn(productId: String)
+    fun trackImpressionBottomSheet(
+        userId: String,
+        warehouseId: String,
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String
+    )
 
-    fun trackImpressionBottomSheet(userId: String, warehouseId: String, productId: String, similarProducts: ArrayList<SimilarProductUiModel>)
+    fun trackClickProduct(
+        userId: String,
+        warehouseId: String,
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String
+    )
 
-    fun trackClickProduct(userId: String, warehouseId: String, productId: String, similarProducts: ArrayList<SimilarProductUiModel>)
+    fun trackClickAddToCart(
+        userId: String,
+        warehouseId: String,
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String,
+        newQuantity: Int
+    )
 
-    fun trackClickAddToCart(userId: String, warehouseId: String, product: SimilarProductUiModel, similarProducts: ArrayList<SimilarProductUiModel>)
+    fun trackClickCloseBottomsheet(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    )
 
-    fun trackClickCloseBottomsheet(warehouseId: String, productId: String, similarProducts: ArrayList<SimilarProductUiModel>)
+    fun trackClickSimilarProductBtn(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    )
 
-    fun trackImpressionEmptyState(warehouseId: String, productId: String)
+    fun trackImpressionEmptyState(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    )
 }

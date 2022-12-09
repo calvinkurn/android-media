@@ -58,7 +58,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         verifyProductItemDataViewList(
                 page2ProductList,
                 nextPageVisitableList.filterIsInstance<ProductItemDataView>(),
-                page1ProductSize + 1
+                 1
         )
     }
 

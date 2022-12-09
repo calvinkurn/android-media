@@ -5,50 +5,85 @@ import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
 class SimilarProductCallback(
-    private val analytics: RepurchaseAnalytics,
-    private val warehouseId: String,
-    private val userId: String
+    private val analytics: RepurchaseAnalytics
 ): SimilarProductListener {
-    override fun trackClickSimilarProductBtn(productId: String) {
-        analytics.trackClickSimilarProductBtn(warehouseId, productId, userId)
-    }
-
     override fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String
     ) {
-        analytics.trackImpressionBottomSheet(warehouseId, productId, similarProducts, userId)
+        analytics.trackImpressionBottomSheet(
+            userId = userId,
+            warehouseId = warehouseId,
+            similarProduct = similarProduct,
+            productIdTriggered = productIdTriggered
+        )
     }
 
     override fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String
     ) {
-        analytics.trackClickProduct(warehouseId, productId, similarProducts, userId)
+        analytics.trackClickProduct(
+            userId = userId,
+            warehouseId = warehouseId,
+            similarProduct = similarProduct,
+            productIdTriggered = productIdTriggered
+        )
     }
 
     override fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        product: SimilarProductUiModel,
-        similarProducts: ArrayList<SimilarProductUiModel>
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String,
+        newQuantity: Int
     ) {
-        analytics.trackClickAddToCart(userId, warehouseId, product, similarProducts)
+        analytics.trackClickAddToCart(
+            userId = userId,
+            warehouseId = warehouseId,
+            similarProduct = similarProduct,
+            productIdTriggered = productIdTriggered,
+            newQuantity = newQuantity
+        )
     }
 
     override fun trackClickCloseBottomsheet(
+        userId: String,
         warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
+        productIdTriggered: String
     ) {
-        analytics.trackClickCloseBottomsheet(warehouseId, productId, similarProducts, userId)
+        analytics.trackClickCloseBottomsheet(
+            userId = userId,
+            warehouseId = warehouseId,
+            productIdTriggered = productIdTriggered
+        )
     }
 
-    override fun trackImpressionEmptyState(warehouseId: String, productId: String) {
-        analytics.trackImpressionEmptyState(warehouseId, productId, userId)
+    override fun trackClickSimilarProductBtn(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    ) {
+        analytics.trackClickSimilarProductBtn(
+            userId = userId,
+            warehouseId = warehouseId,
+            productIdTriggered = productIdTriggered
+        )
+    }
+
+    override fun trackImpressionEmptyState(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    ) {
+        analytics.trackImpressionEmptyState(
+            userId = userId,
+            warehouseId = warehouseId,
+            productIdTriggered = productIdTriggered
+        )
     }
 }

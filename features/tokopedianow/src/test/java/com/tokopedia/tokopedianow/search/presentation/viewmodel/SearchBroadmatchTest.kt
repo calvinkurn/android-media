@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.tokopedianow.search.domain.mapper.SearchBroadMatchMapper
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import io.mockk.every
 import org.hamcrest.CoreMatchers.instanceOf
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -58,56 +59,11 @@ class SearchBroadmatchTest: SearchTestFixtures() {
 
         this as BroadMatchDataView
 
-        assertThat(keyword, shouldBe(otherRelated.keyword))
-        assertThat(applink, shouldBe(otherRelated.applink))
-        assertThat(broadMatchItemDataViewList.size, shouldBe(otherRelated.productList.size))
+        val actualBroadMatch = SearchBroadMatchMapper.createBroadMatchDataView(
+            otherRelated, cartService
+        )
 
-        otherRelated.productList.forEachIndexed { index, otherRelatedProduct ->
-            broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(
-                otherRelatedProduct, index + 1, otherRelated.keyword
-            )
-        }
-    }
-
-    private fun BroadMatchItemDataView.assertBroadMatchItemViewModel(
-        otherRelatedProduct: AceSearchProductModel.OtherRelatedProduct,
-        expectedPosition: Int,
-        expectedAlternativeKeyword: String
-    ) {
-        assertThat(id, shouldBe(otherRelatedProduct.id))
-        assertThat(name, shouldBe(otherRelatedProduct.name))
-        assertThat(price, shouldBe(otherRelatedProduct.price))
-        assertThat(imageUrl, shouldBe(otherRelatedProduct.imageUrl))
-        assertThat(applink, shouldBe(otherRelatedProduct.applink))
-        assertThat(priceString, shouldBe(otherRelatedProduct.priceString))
-        assertThat(position, shouldBe(expectedPosition))
-        assertThat(alternativeKeyword, shouldBe(expectedAlternativeKeyword))
-        assertThat(ratingAverage, shouldBe(otherRelatedProduct.ratingAverage))
-        assertThat(shop.id, shouldBe(otherRelatedProduct.shop.id))
-
-        val broadMatchLabelGroupList = otherRelatedProduct.labelGroupList
-        assertThat(labelGroupDataList.size, shouldBe(broadMatchLabelGroupList.size))
-
-        labelGroupDataList.forEachIndexed { index, actualLabelGroup ->
-            val expectedLabelGroup = broadMatchLabelGroupList[index]
-            assertThat(actualLabelGroup.title, shouldBe(expectedLabelGroup.title))
-            assertThat(actualLabelGroup.position, shouldBe(expectedLabelGroup.position))
-            assertThat(actualLabelGroup.type, shouldBe(expectedLabelGroup.type))
-            assertThat(actualLabelGroup.url, shouldBe(expectedLabelGroup.url))
-        }
-
-        this.assertATCConfiguration(otherRelatedProduct)
-    }
-
-    private fun BroadMatchItemDataView.assertATCConfiguration(
-        expectedBroadMatchItem: AceSearchProductModel.OtherRelatedProduct,
-    ) {
-        val hasNonVariantATC = nonVariantATC != null
-        val nonVariantATCReason = "Non Variant ATC should not be null"
-        assertThat(nonVariantATCReason, hasNonVariantATC, shouldBe(true))
-
-        assertThat(nonVariantATC?.minQuantity, shouldBe(expectedBroadMatchItem.minOrder))
-        assertThat(nonVariantATC?.maxQuantity, shouldBe(expectedBroadMatchItem.stock))
+        assertEquals(this, actualBroadMatch)
     }
 
     @Test
@@ -188,17 +144,17 @@ class SearchBroadmatchTest: SearchTestFixtures() {
             miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
             broadMatchList: List<BroadMatchDataView>,
     ) {
-        val broadMatchProductItems = broadMatchList.flatMap { it.broadMatchItemDataViewList }
+        val broadMatchProductItems = broadMatchList.flatMap { it.broadMatchItemModelList }
 
         miniCartItems.forEach { miniCartItem ->
             val item = miniCartItem.value
             if (item is MiniCartItem.MiniCartItemProduct) {
                 val broadMatchItem = broadMatchProductItems.find {
-                    it.id == item.productId
+                    it.productCardModel.productId == item.productId
                 } ?: return@forEach
 
                 val reason = createInvalidNonVariantQtyReason(item)
-                assertThat(reason, broadMatchItem.nonVariantATC?.quantity, shouldBe(item.quantity))
+                assertThat(reason, broadMatchItem.productCardModel.orderQuantity, shouldBe(item.quantity))
             }
         }
     }
@@ -228,8 +184,8 @@ class SearchBroadmatchTest: SearchTestFixtures() {
                 miniCartItems.forEach { miniCartItem ->
                     val item = miniCartItem.value
                     if (item is MiniCartItem.MiniCartItemProduct) {
-                        visitable.broadMatchItemDataViewList.forEach {
-                            val isInMiniCart = it.id == item.productId
+                        visitable.broadMatchItemModelList.forEach {
+                            val isInMiniCart = it.productCardModel.productId == item.productId
 
                             if (isInMiniCart)
                                 expectedUpdatedIndices.add(index)

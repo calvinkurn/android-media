@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home_component.visitable.FeaturedShopDataModel.Companion.STATE_READY
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
@@ -11,9 +10,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
@@ -132,13 +129,11 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc(recommendationWidget: RecommendationWidget) {
+    fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc() {
         val productRecomUiModel = TokoNowProductRecommendationOocUiModel(
             pageName = OOC_TOKONOW,
-            carouselData = RecommendationCarouselData(
-                recommendationData = recommendationWidget,
-                state = STATE_READY
-            )
+            isFirstLoad = true,
+            isBindWithPageName = true
         )
         add(HomeLayoutItemUiModel(productRecomUiModel, HomeLayoutItemState.LOADED))
     }

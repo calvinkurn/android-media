@@ -13,7 +13,6 @@ class CreateTokoNowCategoryViewModelTest:
         CreateSearchCategoryViewModelTestHelper.Callback {
 
     private val testHelper = CreateSearchCategoryViewModelTestHelper(
-            abTestPlatformWrapper,
             this,
     )
 

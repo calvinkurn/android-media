@@ -248,7 +248,6 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 )
             )
             setOnClickListener {
-                similarProductListener?.trackClickSimilarProductBtn(productId)
                 val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, similarProductListener)
                 context.startActivity(intent)
             }

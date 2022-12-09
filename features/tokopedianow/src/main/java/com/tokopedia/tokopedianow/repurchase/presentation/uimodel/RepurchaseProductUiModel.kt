@@ -10,7 +10,6 @@ data class RepurchaseProductUiModel(
     val shopId: String,
     val categoryId: String,
     val category: String,
-    val isStockEmpty: Boolean,
     val position: Int,
     val productCardModel: TokoNowProductCardViewUiModel,
 ) : Visitable<RepurchaseTypeFactory>, ImpressHolder() {

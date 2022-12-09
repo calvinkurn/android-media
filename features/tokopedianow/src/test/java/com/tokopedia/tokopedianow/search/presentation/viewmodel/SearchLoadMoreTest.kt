@@ -30,11 +30,34 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         `Then assert has next page value`(false)
     }
 
+    @Test
+    fun `test load more page as last page but getting failed`() {
+        val searchModelPage1 = "search/first-page-16-products.json".jsonToObject<SearchModel>()
+
+        `Given get search first page use case will be successful`(searchModelPage1)
+        `Given get search load more page use case will be failed`()
+        `Given view already created`()
+
+        `When view load more`()
+
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
+
+        `Then assert load more page data`(searchModelPage1, null, visitableList)
+    }
+
     private fun `Given get search load more page use case will be successful`(searchModel: SearchModel) {
         every {
             getSearchLoadMorePageUseCase.execute(any(), any(), capture(requestParamsSlot))
         } answers {
             firstArg<(SearchModel) -> Unit>().invoke(searchModel)
+        }
+    }
+
+    private fun `Given get search load more page use case will be failed`() {
+        every {
+            getSearchLoadMorePageUseCase.execute(any(), any(), capture(requestParamsSlot))
+        } answers {
+           secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
     }
 
@@ -44,13 +67,13 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
 
     private fun `Then assert load more page data`(
             searchModelPage1: SearchModel,
-            searchModelPage2: SearchModel,
+            searchModelPage2: SearchModel?,
             visitableList: List<Visitable<*>>
     ) {
         val firstProductIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val page1ProductSize = searchModelPage1.searchProduct.data.productList.size
         val nextPageProductIndex = firstProductIndex + page1ProductSize
-        val page2ProductList = searchModelPage2.searchProduct.data.productList
+        val page2ProductList = searchModelPage2?.searchProduct?.data?.productList.orEmpty()
         val nextPageVisitableList = visitableList.subList(
                 nextPageProductIndex, nextPageProductIndex + page2ProductList.size
         )
@@ -58,7 +81,7 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         verifyProductItemDataViewList(
                 page2ProductList,
                 nextPageVisitableList.filterIsInstance<ProductItemDataView>(),
-                page1ProductSize + 1
+                1
         )
     }
 

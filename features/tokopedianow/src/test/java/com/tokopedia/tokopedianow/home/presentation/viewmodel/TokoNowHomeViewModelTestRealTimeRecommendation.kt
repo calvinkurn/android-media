@@ -91,8 +91,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     imageUrl = "https://tokopedia.com/image.jpg",
                     isVariant = false,
                     price = "0",
-                    orderQuantity = 1
-                )
+                    orderQuantity = 1,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                ),
+                parentId = "0"
             )
         )
 
@@ -104,8 +107,12 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
                 productCardModel = TokoNowProductCardViewUiModel(
                     productId = "5",
-                    name = "Tahu Bulat"
-                )
+                    name = "Tahu Bulat",
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
+                ),
+                parentId = "0"
             )
         )
 
@@ -243,7 +250,9 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     imageUrl = "https://tokopedia.com/image.jpg",
                     price = "2000",
                     orderQuantity = 1,
-                    isVariant = true
+                    isVariant = true,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
                 )
             ),
             TokoNowProductCardCarouselItemUiModel(
@@ -256,7 +265,9 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     imageUrl = "https://tokopedia.com/image_5.jpg",
                     price = "3000",
                     orderQuantity = 2,
-                    isVariant = true
+                    isVariant = true,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
                 )
             )
         )
@@ -271,7 +282,10 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     productId = "5",
                     name = "Tahu Bulat",
                     orderQuantity = 2,
-                    isVariant = true
+                    isVariant = true,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
                 )
             )
         )
@@ -409,8 +423,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     imageUrl = "https://tokopedia.com/image.jpg",
                     isVariant = false,
                     price = "0",
-                    orderQuantity = 1
-                )
+                    orderQuantity = 1,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                ),
+                parentId = "0"
             )
         )
 
@@ -421,8 +438,12 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
                 productCardModel = TokoNowProductCardViewUiModel(
                     productId = "5",
-                    name = "Tahu Bulat"
-                )
+                    name = "Tahu Bulat",
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
+                ),
+                parentId = "0"
             )
         )
 
@@ -550,8 +571,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     imageUrl = "https://tokopedia.com/image.jpg",
                     isVariant = false,
                     price = "0",
-                    orderQuantity = 1
-                )
+                    orderQuantity = 1,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                ),
+                parentId = "0"
             )
         )
 
@@ -720,8 +744,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     imageUrl = "https://tokopedia.com/image.jpg",
                     isVariant = false,
                     price = "0",
-                    orderQuantity = 1
-                )
+                    orderQuantity = 1,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                ),
+                parentId = "0"
             )
         )
 

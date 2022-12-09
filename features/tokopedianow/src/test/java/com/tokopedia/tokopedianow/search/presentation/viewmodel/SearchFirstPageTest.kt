@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
@@ -13,8 +14,10 @@ import com.tokopedia.tokopedianow.searchcategory.assertQuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
+import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -22,10 +25,15 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
+    override fun setUp() {}
+
     @Test
-    fun `test first page is last page`() {
+    fun `test first page is last page 2h`() {
         val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
+        `Given choose address data`()
+        `Given search view model`()
 
         `When view created`()
 
@@ -33,7 +41,27 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)
-        `Then assert visitable list footer`(visitableList, searchModel)
+        `Then assert visitable list footer 2h`(visitableList, searchModel)
+        `Then assert visitable list does not end with loading more model`(visitableList)
+        `Then assert has next page value`(false)
+        `Then assert get first page success interactions`(searchModel)
+    }
+
+    @Test
+    fun `test first page is last page 15m`() {
+        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+
+        `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
+        `Given choose address data`(dummyChooseAddressData.copy(service_type = NOW_15M))
+        `Given search view model`()
+
+        `When view created`()
+
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
+
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
+        `Then assert first page visitables`(visitableList, searchModel)
+        `Then assert visitable list footer 15m`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
@@ -79,7 +107,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList, 1)
     }
 
-    private fun `Then assert visitable list footer`(
+    private fun `Then assert visitable list footer 2h`(
             visitableList: List<Visitable<*>>,
             searchModel: SearchModel
     ) {
@@ -89,6 +117,18 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         footerList.first().assertCategoryJumperDataView(searchModel.searchCategoryJumper)
         footerList.last().assertCTATokopediaNowHomeDataView()
+    }
+
+    private fun `Then assert visitable list footer 15m`(
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
+    ) {
+        val lastProductIndex = visitableList.indexOfLast { it is ProductItemDataView }
+        val footerStartIndex = lastProductIndex + 1
+        val footerList = visitableList.subList(footerStartIndex, visitableList.size)
+
+        footerList.first().assertSwitcherWidgetDataView()
+        footerList.last().assertCategoryJumperDataView(searchModel.searchCategoryJumper)
     }
 
     private fun Visitable<*>.assertCategoryJumperDataView(
@@ -112,6 +152,10 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
     private fun Visitable<*>.assertCTATokopediaNowHomeDataView() {
         assertThat(this, instanceOf(CTATokopediaNowHomeDataView::class.java))
+    }
+
+    private fun Visitable<*>.assertSwitcherWidgetDataView() {
+        assertThat(this, instanceOf(SwitcherWidgetDataView::class.java))
     }
 
     private fun `Then assert get first page success interactions`(searchModel: SearchModel) {
@@ -138,6 +182,8 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     fun `test first page has next page`() {
         val searchModel = "search/first-page-16-products.json".jsonToObject<SearchModel>()
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
+        `Given choose address data`()
+        `Given search view model`()
 
         `When view created`()
 

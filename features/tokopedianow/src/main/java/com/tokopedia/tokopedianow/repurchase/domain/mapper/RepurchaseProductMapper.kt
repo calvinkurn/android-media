@@ -40,7 +40,6 @@ object RepurchaseProductMapper {
             shopId = repurchaseProduct.shop.id,
             categoryId = repurchaseProduct.categoryId,
             category = repurchaseProduct.category,
-            isStockEmpty = repurchaseProduct.isStockEmpty(),
             position = index + ADDITIONAL_POSITION,
             productCardModel = mapRepurchaseProductToProductCard(repurchaseProduct)
         )

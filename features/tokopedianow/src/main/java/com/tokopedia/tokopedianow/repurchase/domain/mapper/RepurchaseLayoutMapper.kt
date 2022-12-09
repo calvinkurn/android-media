@@ -79,6 +79,20 @@ object RepurchaseLayoutMapper {
         add(RepurchaseEmptyStateNoHistoryUiModel(title, description))
     }
 
+    fun MutableList<Visitable<*>>.updateProductWishlist(productId: String, hasBeenWishlist: Boolean) {
+        filterIsInstance<RepurchaseProductUiModel>().find { it.productCardModel.productId == productId }?.apply {
+            val index = indexOf(this)
+            set(
+                index,
+                copy(
+                    productCardModel = productCardModel.copy(
+                        hasBeenWishlist = hasBeenWishlist
+                    )
+                )
+            )
+        }
+    }
+
     fun MutableList<Visitable<*>>.removeEmptyStateNoHistory() {
         removeFirstLayout(RepurchaseEmptyStateNoHistoryUiModel::class.java)
     }
@@ -308,11 +322,9 @@ object RepurchaseLayoutMapper {
         val productList = filterIsInstance<RepurchaseProductUiModel>()
 
         productList.firstOrNull { it.productCardModel.productId == productId }?.let {
-            if (!it.isStockEmpty) {
-                val index = indexOf(it)
-                val productCard = it.productCardModel.copy(orderQuantity = quantity)
-                set(index, it.copy(productCardModel = productCard))
-            }
+            val index = indexOf(it)
+            val productCard = it.productCardModel.copy(orderQuantity = quantity)
+            set(index, it.copy(productCardModel = productCard))
         }
     }
 

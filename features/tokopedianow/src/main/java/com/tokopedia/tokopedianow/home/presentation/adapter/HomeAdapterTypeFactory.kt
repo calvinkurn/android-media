@@ -60,6 +60,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHold
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
@@ -118,7 +119,8 @@ class HomeAdapterTypeFactory(
     private val homeLeftCarouselListener: MixLeftComponentListener? = null,
     private val playWidgetCoordinator: PlayWidgetCoordinator? = null,
     private val rtrListener: RealTimeRecommendationListener? = null,
-    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null,
+    private val productRecommendationBindOocListener: TokonowRecomBindPageNameListener? = null,
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -181,7 +183,7 @@ class HomeAdapterTypeFactory(
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowView, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
-            TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(view, homeProductRecomOocListener)
+            TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(view, homeProductRecomOocListener, productRecommendationBindOocListener)
             // endregion
 
             // region TokoNow Home Component

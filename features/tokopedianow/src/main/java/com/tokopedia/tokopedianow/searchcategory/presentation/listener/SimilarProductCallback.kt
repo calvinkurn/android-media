@@ -6,74 +6,137 @@ import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
 class SimilarProductCallback(
-    private val warehouseId: String,
-    private val userId: String,
     private val isCategoryPage: Boolean
 ): SimilarProductListener {
-    override fun trackClickSimilarProductBtn(productId: String) {
-        if (isCategoryPage) {
-            CategoryTracking.trackClickSimilarProductBtn(warehouseId, productId, userId)
-        } else {
-            SearchTracking.trackClickSimilarProductBtn(warehouseId, productId, userId)
-        }
-    }
-
     override fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String
     ) {
         if (isCategoryPage) {
-            CategoryTracking.trackImpressionBottomSheet(warehouseId, productId, similarProducts, userId)
+            CategoryTracking.trackImpressionBottomSheet(
+                userId = userId,
+                warehouseId = warehouseId,
+                similarProduct = similarProduct,
+                productIdTriggered = productIdTriggered
+            )
         } else {
-            SearchTracking.trackImpressionBottomSheet(warehouseId, productId, similarProducts, userId)
+            SearchTracking.trackImpressionBottomSheet(
+                userId = userId,
+                warehouseId = warehouseId,
+                similarProduct = similarProduct,
+                productIdTriggered = productIdTriggered
+            )
         }
     }
 
     override fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String
     ) {
         if (isCategoryPage) {
-            CategoryTracking.trackClickProduct(warehouseId, productId, similarProducts, userId)
+            CategoryTracking.trackClickProduct(
+                userId = userId,
+                warehouseId = warehouseId,
+                similarProduct = similarProduct,
+                productIdTriggered = productIdTriggered
+            )
         } else {
-            SearchTracking.trackClickProduct(warehouseId, productId, similarProducts, userId)
+            SearchTracking.trackClickProduct(
+                userId = userId,
+                warehouseId = warehouseId,
+                similarProduct = similarProduct,
+                productIdTriggered = productIdTriggered
+            )
         }
     }
 
     override fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        product: SimilarProductUiModel,
-        similarProducts: ArrayList<SimilarProductUiModel>
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String,
+        newQuantity: Int
     ) {
         if (isCategoryPage) {
-            CategoryTracking.trackClickAddToCart(userId, warehouseId, product, similarProducts)
+            CategoryTracking.trackClickAddToCart(
+                userId = userId,
+                warehouseId = warehouseId,
+                similarProduct = similarProduct,
+                productIdTriggered = productIdTriggered,
+                newQuantity = newQuantity
+            )
         } else {
-            SearchTracking.trackClickAddToCart(userId, warehouseId, product, similarProducts)
+            SearchTracking.trackClickAddToCart(
+                userId = userId,
+                warehouseId = warehouseId,
+                similarProduct = similarProduct,
+                productIdTriggered = productIdTriggered,
+                newQuantity = newQuantity
+            )
         }
     }
 
     override fun trackClickCloseBottomsheet(
+        userId: String,
         warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
+        productIdTriggered: String
     ) {
         if (isCategoryPage) {
-            CategoryTracking.trackClickCloseBottomsheet(warehouseId, productId, similarProducts, userId)
+            CategoryTracking.trackClickCloseBottomsheet(
+                userId = userId,
+                warehouseId = warehouseId,
+                productIdTriggered = productIdTriggered
+            )
         } else {
-            SearchTracking.trackClickCloseBottomsheet(warehouseId, productId, similarProducts, userId)
+            SearchTracking.trackClickCloseBottomsheet(
+                userId = userId,
+                warehouseId = warehouseId,
+                productIdTriggered = productIdTriggered
+            )
         }
     }
 
-    override fun trackImpressionEmptyState(warehouseId: String, productId: String) {
+    override fun trackClickSimilarProductBtn(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    ) {
         if (isCategoryPage) {
-            CategoryTracking.trackImpressionEmptyState(warehouseId, productId, userId)
+            CategoryTracking.trackClickSimilarProductBtn(
+                userId = userId,
+                warehouseId = warehouseId,
+                productIdTriggered = productIdTriggered
+            )
         } else {
-            SearchTracking.trackImpressionEmptyState(warehouseId, productId, userId)
+            SearchTracking.trackClickSimilarProductBtn(
+                userId = userId,
+                warehouseId = warehouseId,
+                productIdTriggered = productIdTriggered
+            )
+        }
+    }
+
+    override fun trackImpressionEmptyState(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    ) {
+        if (isCategoryPage) {
+            CategoryTracking.trackImpressionEmptyState(
+                userId = userId,
+                warehouseId = warehouseId,
+                productIdTriggered = productIdTriggered
+            )
+        } else {
+            SearchTracking.trackImpressionEmptyState(
+                userId = userId,
+                warehouseId = warehouseId,
+                productIdTriggered = productIdTriggered
+            )
         }
     }
 }

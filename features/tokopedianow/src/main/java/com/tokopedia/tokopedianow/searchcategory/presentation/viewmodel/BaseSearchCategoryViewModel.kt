@@ -155,6 +155,8 @@ abstract class BaseSearchCategoryViewModel(
         private set
     var autoCompleteApplink = ""
         private set
+    var serviceType = ""
+        private set
 
     private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
@@ -283,30 +285,28 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun processLoadDataPage(source: MiniCartSource? = null) {
-        val shopId = chooseAddressData?.shop_id ?: ""
-        val warehouseId = chooseAddressData?.warehouse_id ?: ""
+        val shopId = chooseAddressData?.shop_id.orEmpty()
+        val warehouseId = chooseAddressData?.warehouse_id.orEmpty()
+        val serviceType = chooseAddressData?.service_type.orEmpty()
         if (source != null) {
             miniCartSource = source
         }
 
         if (shopId.isValidId())
-            processLoadDataWithShopId(shopId, warehouseId)
+            processLoadDataWithShopId(shopId, warehouseId, serviceType)
         else
             getShopIdBeforeLoadData()
     }
 
-    protected open fun processLoadDataWithShopId(shopId: String, warehouseId: String) {
+    private fun processLoadDataWithShopId(shopId: String, warehouseId: String, serviceType: String) {
         this.shopIdMutableLiveData.value = shopId
         this.warehouseId = warehouseId
+        this.serviceType = serviceType
 
         if (warehouseId.isValidId())
-            processLoadDataInCoverage()
+            loadFirstPage()
         else
             showOutOfCoverage()
-    }
-
-    protected open fun processLoadDataInCoverage() {
-        loadFirstPage()
     }
 
     private fun getShopIdBeforeLoadData() {
@@ -321,8 +321,9 @@ abstract class BaseSearchCategoryViewModel(
         val tokonowData = state.tokonow
         val shopId = tokonowData.shopId.toString()
         val warehouseId = tokonowData.warehouseId.toString()
+        val serviceType = tokonowData.serviceType
 
-        processLoadDataWithShopId(shopId, warehouseId)
+        processLoadDataWithShopId(shopId, warehouseId, serviceType)
 
         refreshMiniCart()
     }
@@ -338,7 +339,7 @@ abstract class BaseSearchCategoryViewModel(
         showPageContent()
     }
 
-    protected fun sendOutOfCoverageTrackingEvent() {
+    private fun sendOutOfCoverageTrackingEvent() {
         oocOpenScreenTrackingMutableEvent.value = true
     }
 
@@ -347,7 +348,7 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(chooseAddressDataView)
         visitableList.add(TokoNowEmptyStateOocUiModel(
             hostSource = DEFAULT_VALUE_SOURCE_SEARCH,
-            serviceType = chooseAddressData?.service_type.orEmpty()
+            serviceType = serviceType
         ))
         visitableList.add(TokoNowProductRecommendationOocUiModel(
                 pageName = OOC_TOKONOW,
@@ -762,7 +763,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage()) {
             // show switcher only if service type is 15m
-            if (chooseAddressData?.service_type == ServiceType.NOW_15M) {
+            if (serviceType == ServiceType.NOW_15M) {
                 add(SwitcherWidgetDataView())
             }
             addAll(createFooterVisitableList())

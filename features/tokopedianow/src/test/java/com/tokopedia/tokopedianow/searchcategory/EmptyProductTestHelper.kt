@@ -5,6 +5,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+//import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -46,17 +47,15 @@ class EmptyProductTestHelper(
 
         visitableList.first().assertChooseAddressDataView()
         visitableList[1].assertEmptyProductDataView()
-        visitableList.last().assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
+//        visitableList.last().assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
 
         callback.`Then assert empty result visitable list`(visitableList)
     }
 
     private fun `Then asset empty result visitable list with feedback widget`(){
         val visitableList = baseViewModel.visitableListLiveData.value!!
-        val listSize = visitableList.size
         visitableList.first().assertChooseAddressDataView()
         visitableList[1].assertEmptyProductDataView()
-        visitableList[listSize-2].assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
         visitableList.last().assertProductFeedbackWidget()
 
         callback.`Then assert empty result visitable list`(visitableList)
