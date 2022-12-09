@@ -22,10 +22,10 @@ class WidgetBulkReviewBadRatingCategories @JvmOverloads constructor(
         true
     )
 
-    fun updateUiState(uiState: BulkReviewBadRatingCategoryUiState) {
+    fun updateUiState(uiState: BulkReviewBadRatingCategoryUiState, animate: Boolean) {
         when (uiState) {
             is BulkReviewBadRatingCategoryUiState.Hidden -> {
-                animateHide(onAnimationEnd = { gone() })
+                animateHide(animate = animate, onAnimationEnd = { gone() })
             }
             is BulkReviewBadRatingCategoryUiState.Showing -> {
                 val badRatingCategoriesString = uiState
@@ -36,7 +36,7 @@ class WidgetBulkReviewBadRatingCategories @JvmOverloads constructor(
                     R.string.tv_bulk_review_bad_rating_category_format,
                     badRatingCategoriesString
                 )
-                animateShow(onAnimationStart = { show() })
+                animateShow(animate = animate, onAnimationStart = { show() })
             }
         }
     }

@@ -36,21 +36,21 @@ class WidgetBulkReviewTextArea @JvmOverloads constructor(
         setupListener()
     }
 
-    fun updateUiState(uiState: BulkReviewTextAreaUiState) {
+    fun updateUiState(uiState: BulkReviewTextAreaUiState, animate: Boolean) {
         when (uiState) {
             is BulkReviewTextAreaUiState.Hidden -> {
-                animateHide(onAnimationEnd = { gone() })
+                animateHide(animate = animate, onAnimationEnd = { gone() })
             }
             is BulkReviewTextAreaUiState.Showing -> {
                 if (binding.root.editText.text.toString() != uiState.text) {
                     binding.root.editText.setText(uiState.text)
                 }
                 binding.root.setPlaceholder(uiState.hint.getStringValue(context))
-                animateShow(onAnimationStart = {
+                animateShow(animate = animate, onAnimationStart = {
                     show()
                 }, onAnimationEnd = {
-                    if (uiState.focused) binding.root.requestFocus()
-                })
+                        if (uiState.focused) binding.root.requestFocus()
+                    })
             }
         }
     }

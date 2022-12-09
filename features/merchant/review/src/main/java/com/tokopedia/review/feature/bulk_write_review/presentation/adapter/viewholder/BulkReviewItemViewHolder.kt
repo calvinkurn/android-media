@@ -49,19 +49,23 @@ class BulkReviewItemViewHolder(
         )
         setupBadRatingCategories(
             inboxID = element.inboxID,
-            badRatingCategoriesUiState = element.uiState.badRatingCategoriesUiState
+            badRatingCategoriesUiState = element.uiState.badRatingCategoriesUiState,
+            animate = false
         )
         setupTextArea(
             inboxID = element.inboxID,
-            textAreaUiState = element.uiState.textAreaUiState
+            textAreaUiState = element.uiState.textAreaUiState,
+            animate = false
         )
         setupAttachments(
             inboxID = element.inboxID,
-            mediaPickerUiState = element.uiState.mediaPickerUiState
+            mediaPickerUiState = element.uiState.mediaPickerUiState,
+            animate = false
         )
         setupMiniActions(
             inboxID = element.inboxID,
-            miniActionsUiState = element.uiState.miniActionsUiState
+            miniActionsUiState = element.uiState.miniActionsUiState,
+            animate = false
         )
         setupRemoveIcon(inboxID = element.inboxID)
         setupOverlayVisibility(uiState = element.uiState)
@@ -79,25 +83,29 @@ class BulkReviewItemViewHolder(
                         is BulkReviewItemUiModel.ChangePayload.BadRatingCategoriesChanged -> {
                             setupBadRatingCategories(
                                 inboxID = element.inboxID,
-                                badRatingCategoriesUiState = element.uiState.badRatingCategoriesUiState
+                                badRatingCategoriesUiState = element.uiState.badRatingCategoriesUiState,
+                                animate = true
                             )
                         }
                         is BulkReviewItemUiModel.ChangePayload.TextAreaChanged -> {
                             setupTextArea(
                                 inboxID = element.inboxID,
-                                textAreaUiState = element.uiState.textAreaUiState
+                                textAreaUiState = element.uiState.textAreaUiState,
+                                animate = true
                             )
                         }
                         is BulkReviewItemUiModel.ChangePayload.MediaPickerChanged -> {
                             setupAttachments(
                                 inboxID = element.inboxID,
-                                mediaPickerUiState = element.uiState.mediaPickerUiState
+                                mediaPickerUiState = element.uiState.mediaPickerUiState,
+                                animate = true
                             )
                         }
                         is BulkReviewItemUiModel.ChangePayload.MiniActionsChanged -> {
                             setupMiniActions(
                                 inboxID = element.inboxID,
-                                miniActionsUiState = element.uiState.miniActionsUiState
+                                miniActionsUiState = element.uiState.miniActionsUiState,
+                                animate = true
                             )
                         }
                         is BulkReviewItemUiModel.ChangePayload.OverlayVisibilityChanged -> {
@@ -111,7 +119,7 @@ class BulkReviewItemViewHolder(
     }
 
     private fun setupRootView() {
-        binding.root.setOnClickListener {  }
+        binding.root.setOnClickListener { }
     }
 
     private fun setupProductInfo(productCardUiState: BulkReviewProductInfoUiState) {
@@ -121,28 +129,29 @@ class BulkReviewItemViewHolder(
     private fun setupRating(inboxID: String, ratingUiState: BulkReviewRatingUiState) {
         binding.widgetBulkWriteReviewFormRating.updateUiState(ratingUiState)
         binding.widgetBulkWriteReviewFormRating.setListener(object :
-            WidgetBulkReviewRating.Listener {
-            override fun onRatingChanged(rating: Int) {
-                listener.onRatingChanged(inboxID, rating)
-            }
-        })
+                WidgetBulkReviewRating.Listener {
+                override fun onRatingChanged(rating: Int) {
+                    listener.onRatingChanged(inboxID, rating)
+                }
+            })
     }
 
     private fun setupBadRatingCategories(
         inboxID: String,
-        badRatingCategoriesUiState: BulkReviewBadRatingCategoryUiState
+        badRatingCategoriesUiState: BulkReviewBadRatingCategoryUiState,
+        animate: Boolean
     ) {
-        binding.widgetBulkReviewBadRatingCategories.updateUiState(badRatingCategoriesUiState)
+        binding.widgetBulkReviewBadRatingCategories.updateUiState(badRatingCategoriesUiState, animate)
         binding.widgetBulkReviewBadRatingCategories.setListener(object :
-            WidgetBulkReviewBadRatingCategories.Listener {
-            override fun onClickChangeBadRatingCategory() {
-                listener.onClickChangeBadRatingCategory(inboxID)
-            }
-        })
+                WidgetBulkReviewBadRatingCategories.Listener {
+                override fun onClickChangeBadRatingCategory() {
+                    listener.onClickChangeBadRatingCategory(inboxID)
+                }
+            })
     }
 
-    private fun setupTextArea(inboxID: String, textAreaUiState: BulkReviewTextAreaUiState) {
-        binding.widgetBulkReviewTextArea.updateUiState(textAreaUiState)
+    private fun setupTextArea(inboxID: String, textAreaUiState: BulkReviewTextAreaUiState, animate: Boolean) {
+        binding.widgetBulkReviewTextArea.updateUiState(textAreaUiState, animate)
         binding.widgetBulkReviewTextArea.setListener(object : WidgetBulkReviewTextArea.Listener {
             override fun onGainFocus(view: View) {
                 listener.onTextAreaGainFocus(inboxID, view)
@@ -160,9 +169,10 @@ class BulkReviewItemViewHolder(
 
     private fun setupAttachments(
         inboxID: String,
-        mediaPickerUiState: CreateReviewMediaPickerUiState
+        mediaPickerUiState: CreateReviewMediaPickerUiState,
+        animate: Boolean
     ) {
-        binding.widgetBulkReviewAttachments.updateUi(mediaPickerUiState)
+        binding.widgetBulkReviewAttachments.updateUi(uiState = mediaPickerUiState, animate = animate)
         binding.widgetBulkReviewAttachments.setListener(object : CreateReviewMediaPicker.Listener {
             override fun onAddMediaClicked(enabled: Boolean) {
                 listener.onAddMediaClicked(inboxID, enabled)
@@ -180,19 +190,20 @@ class BulkReviewItemViewHolder(
 
     private fun setupMiniActions(
         inboxID: String,
-        miniActionsUiState: BulkReviewMiniActionsUiState
+        miniActionsUiState: BulkReviewMiniActionsUiState,
+        animate: Boolean
     ) {
-        binding.widgetBulkReviewMiniActions.updateUiState(miniActionsUiState)
+        binding.widgetBulkReviewMiniActions.updateUiState(miniActionsUiState, animate)
         binding.widgetBulkReviewMiniActions.setListener(object :
-            WidgetBulkReviewMiniActions.Listener {
-            override fun onClickTestimonyMiniAction() {
-                listener.onClickTestimonyMiniAction(inboxID)
-            }
+                WidgetBulkReviewMiniActions.Listener {
+                override fun onClickTestimonyMiniAction() {
+                    listener.onClickTestimonyMiniAction(inboxID)
+                }
 
-            override fun onClickAddAttachmentMiniAction() {
-                listener.onClickAddAttachmentMiniAction(inboxID)
-            }
-        })
+                override fun onClickAddAttachmentMiniAction() {
+                    listener.onClickAddAttachmentMiniAction(inboxID)
+                }
+            })
     }
 
     private fun setupRemoveIcon(inboxID: String) {

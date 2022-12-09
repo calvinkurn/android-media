@@ -71,11 +71,12 @@ abstract class BaseReviewCustomView<VB : ViewBinding> @JvmOverloads constructor(
 
     private fun createAnimatorSet(
         vararg animator: Animator,
+        duration: Long = ANIMATION_DURATION,
         onAnimationStart: (() -> Unit)? = null,
         onAnimationEnd: (() -> Unit)? = null
     ): AnimatorSet {
         return AnimatorSet().apply {
-            this.duration = ANIMATION_DURATION
+            this.duration = duration
             playTogether(*animator)
             if (onAnimationStart == null && onAnimationEnd == null) {
                 removeAllListeners()
@@ -112,18 +113,21 @@ abstract class BaseReviewCustomView<VB : ViewBinding> @JvmOverloads constructor(
         }
     }
 
-    fun animateShow(onAnimationStart: (() -> Unit)? = null, onAnimationEnd: (() -> Unit)? = null) {
+    fun animateShow(
+        animate: Boolean = true,
+        onAnimationStart: (() -> Unit)? = null,
+        onAnimationEnd: (() -> Unit)? = null
+    ) {
         Handler(Looper.getMainLooper()).post {
             hideAnimator?.cancel()
             val measuredWrapHeight = calculateWrapHeight()
             val animator = arrayOf(
                 createHeightAnimator(end = measuredWrapHeight),
-                createAlphaAnimator(
-                    MAX_ALPHA
-                )
+                createAlphaAnimator(MAX_ALPHA)
             )
             showAnimator = createAnimatorSet(
                 *animator,
+                duration = if (animate) ANIMATION_DURATION else 0L,
                 onAnimationStart = onAnimationStart,
                 onAnimationEnd = {
                     onAnimationEnd?.invoke()
@@ -133,12 +137,20 @@ abstract class BaseReviewCustomView<VB : ViewBinding> @JvmOverloads constructor(
         }
     }
 
-    fun animateHide(onAnimationStart: (() -> Unit)? = null, onAnimationEnd: (() -> Unit)? = null) {
+    fun animateHide(
+        animate: Boolean = true,
+        onAnimationStart: (() -> Unit)? = null,
+        onAnimationEnd: (() -> Unit)? = null
+    ) {
         Handler(Looper.getMainLooper()).post {
             showAnimator?.cancel()
-            val animator = arrayOf(createHeightAnimator(end = Int.ZERO), createAlphaAnimator(MIN_ALPHA))
+            val animator = arrayOf(
+                createHeightAnimator(end = Int.ZERO),
+                createAlphaAnimator(MIN_ALPHA)
+            )
             hideAnimator = createAnimatorSet(
                 *animator,
+                duration = if (animate) ANIMATION_DURATION else 0L,
                 onAnimationStart = onAnimationStart,
                 onAnimationEnd = onAnimationEnd
             )

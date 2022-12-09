@@ -41,14 +41,14 @@ class WidgetBulkReviewMiniActions @JvmOverloads constructor(
         }
     }
 
-    fun updateUiState(uiState: BulkReviewMiniActionsUiState) {
+    fun updateUiState(uiState: BulkReviewMiniActionsUiState, animate: Boolean) {
         when (uiState) {
             is BulkReviewMiniActionsUiState.Hidden -> {
-                animateHide(onAnimationEnd = { gone() })
+                animateHide(animate = animate, onAnimationEnd = { gone() })
             }
             is BulkReviewMiniActionsUiState.Showing -> {
                 adapter.setMiniActions(uiState.miniActions)
-                animateShow(onAnimationStart = { show() })
+                animateShow(animate = animate, onAnimationStart = { show() })
             }
         }
     }
