@@ -5,6 +5,7 @@ import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 data class VoucherConfiguration(
@@ -18,5 +19,9 @@ data class VoucherConfiguration(
     val productIds: List<Long> = emptyList(),
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val quota: Long = 0,
-    val voucherInformation: VoucherInformation = VoucherInformation()
+    val isVoucherPublic: Boolean = false,
+    val voucherName: String = "",
+    val code: String = "",
+    val startPeriod: Date = Date(),
+    val endPeriod: Date = Date()
 ) : Parcelable

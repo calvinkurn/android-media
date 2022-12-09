@@ -5,10 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
-import com.tokopedia.mvc.presentation.summary.helper.SummaryPageHelper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
@@ -22,19 +21,18 @@ class SummaryViewModel @Inject constructor(
 
     private val _configuration = MutableLiveData<VoucherConfiguration>()
     val configuration: LiveData<VoucherConfiguration> get() = _configuration
-    val information = Transformations.map(configuration) { it.voucherInformation }
-    val maxExpense = Transformations.map(configuration) { SummaryPageHelper.getMaxExpenses(it) }
+    val maxExpense = Transformations.map(configuration) { getMaxExpenses(it) }
 
     fun setConfiguration(configuration: VoucherConfiguration) {
         _configuration.value = configuration
     }
 
-    fun setupEditMode(voucherId: String) {
+    fun setupEditMode(voucherId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val param = MerchantPromotionGetMVDataByIDUseCase.Param(
-                    voucherId = voucherId.toLongOrZero()
+                    voucherId = voucherId
                 )
                 val result = merchantPromotionGetMVDataByIDUseCase.execute(param)
                 _configuration.postValue(result.toVoucherConfiguration())
@@ -43,5 +41,15 @@ class SummaryViewModel @Inject constructor(
                 _error.postValue(it)
             }
         )
+    }
+
+    fun getMaxExpenses(configuration: VoucherConfiguration): Long {
+        return with(configuration) {
+            if (benefitType == BenefitType.NOMINAL) {
+                benefitIdr
+            } else {
+                benefitMax
+            } * quota
+        }
     }
 }

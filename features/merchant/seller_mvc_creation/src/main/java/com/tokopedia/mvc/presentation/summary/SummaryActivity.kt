@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
@@ -28,11 +29,11 @@ class SummaryActivity: BaseSimpleActivity() {
 
         fun buildEditModeIntent(
             context: Context?,
-            voucherId: String
+            voucherId: Long
         ): Intent {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.EDIT)
-                putString(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
+                putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
             }
             val intent = Intent(context, SummaryActivity::class.java)
             intent.putExtras(bundle)
@@ -44,12 +45,12 @@ class SummaryActivity: BaseSimpleActivity() {
     override fun getParentViewResourceID() = R.id.container
     override fun getNewFragment(): SummaryFragment {
         val pageMode = intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode
-        val voucherId = intent?.extras?.getString(BundleConstant.BUNDLE_VOUCHER_ID).orEmpty()
+        val voucherId = intent?.extras?.getLong(BundleConstant.BUNDLE_VOUCHER_ID).orZero()
         val voucherConfiguration = intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
         return SummaryFragment.newInstance(
             pageMode ?: PageMode.CREATE,
             voucherId,
-            voucherConfiguration ?: VoucherConfiguration()
+            voucherConfiguration
         )
     }
 }

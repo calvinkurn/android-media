@@ -29,10 +29,8 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBindi
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.VoucherInformation
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -54,14 +52,14 @@ class SummaryFragment: BaseDaggerFragment(),
         @JvmStatic
         fun newInstance(
             pageMode: PageMode,
-            voucherId: String,
-            voucherConfiguration: VoucherConfiguration,
+            voucherId: Long,
+            voucherConfiguration: VoucherConfiguration?,
         ): SummaryFragment {
             return SummaryFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                     putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
-                    putString(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
+                    putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
                 }
             }
         }
@@ -70,7 +68,7 @@ class SummaryFragment: BaseDaggerFragment(),
     private var binding by autoClearedNullable<SmvcFragmentSummaryBinding>()
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val configuration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
-    private val voucherId by lazy { arguments?.getString(BundleConstant.BUNDLE_VOUCHER_ID) }
+    private val voucherId by lazy { arguments?.getLong(BundleConstant.BUNDLE_VOUCHER_ID) }
     private val redirectionHelper = SummaryPageRedirectionHelper(this)
 
     @Inject
@@ -129,10 +127,8 @@ class SummaryFragment: BaseDaggerFragment(),
                 layoutType.updateLayoutType(it)
                 layoutSetting.updatePageData(it)
                 layoutProducts.updateProductData(it)
+                layoutInfo.updatePageInfo(it)
             }
-        }
-        viewModel.information.observe(viewLifecycleOwner) {
-            binding?.layoutInfo?.updatePageInfo(it)
         }
         viewModel.maxExpense.observe(viewLifecycleOwner) {
             binding?.layoutSubmission?.labelSpendingEstimation?.
@@ -237,15 +233,16 @@ class SummaryFragment: BaseDaggerFragment(),
     }
 
     private fun SmvcVoucherDetailVoucherInfoSectionBinding.updatePageInfo(
-        information: VoucherInformation
+        information: VoucherConfiguration
     ) {
         val resources = root.context.resources
         with(information) {
             val targetItems = resources.getStringArray(R.array.target_items)
             tpgVoucherName.text = voucherName
             tpgVoucherCode.text = code
-            tpgVoucherTarget.text = targetItems.getOrNull(target.ordinal)
-            llVoucherCode.isVisible = target == VoucherTarget.PRIVATE
+            tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
+                                    else getString(R.string.smvc_voucher_private_label)
+            llVoucherCode.isVisible = isVoucherPublic
             try {
                 val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
                 tpgVoucherStartPeriod.text = formatter.format(startPeriod)
@@ -273,7 +270,7 @@ class SummaryFragment: BaseDaggerFragment(),
             getString(R.string.smvc_summary_page_shop_coupon_text)
     }
 
-    private fun showErrorDialog() {
+    private fun showErrorUploadDialog() {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
             setImageUrl(UPLOAD_ERROR_IMAGE_URL)
             setTitle(context.getString(R.string.smvc_summary_page_error_dialog_title))
