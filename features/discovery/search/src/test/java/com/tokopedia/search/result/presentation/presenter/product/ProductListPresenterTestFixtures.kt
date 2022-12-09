@@ -122,8 +122,10 @@ internal open class ProductListPresenterTestFixtures {
     protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
     protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
     protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
-    protected val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
+    protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
     protected val bottomSheetFilterView = mockk<BottomSheetFilterView>(relaxed = true)
+
+    private val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
     private val pagination = PaginationImpl()
     private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
     private val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
@@ -136,7 +138,6 @@ internal open class ProductListPresenterTestFixtures {
         { getDynamicFilterUseCase },
         dynamicFilterModel,
     )
-    private val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before

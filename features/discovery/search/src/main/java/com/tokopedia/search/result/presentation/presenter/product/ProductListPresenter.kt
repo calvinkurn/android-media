@@ -81,7 +81,8 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.visitable.VisitableFactory
-import com.tokopedia.search.result.product.visitable.VisitableFactoryData
+import com.tokopedia.search.result.product.visitable.VisitableFactoryFirstPageData
+import com.tokopedia.search.result.product.visitable.VisitableFactorySecondPageData
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
@@ -405,12 +406,8 @@ class ProductListPresenter @Inject constructor(
         productList.addAll(loadMoreProductList)
 
         return visitableFactory.createLoadMoreVisitableList(
-            VisitableFactoryData(
-                productDataView,
-                pageTitle,
-                getIsGlobalNavWidgetAvailable(productDataView),
+            VisitableFactorySecondPageData(
                 isLocalSearch(),
-                isTickerHasDismissed,
                 responseCode,
                 productList,
                 searchProductModel,
@@ -850,7 +847,7 @@ class ProductListPresenter @Inject constructor(
         ).toMutableList()
 
         val visitableList = visitableFactory.createFirstPageVisitableList(
-            VisitableFactoryData(
+            VisitableFactoryFirstPageData(
                 productDataView,
                 pageTitle,
                 getIsGlobalNavWidgetAvailable(productDataView),
@@ -861,7 +858,6 @@ class ProductListPresenter @Inject constructor(
                 searchProductModel,
                 externalReference,
                 constructGlobalSearchApplink(),
-                listOf(),
             )
         )
 

@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ProductDataView
 
-data class VisitableFactoryData(
+data class VisitableFactoryFirstPageData(
     val productDataView: ProductDataView,
     val pageTitle: String,
     val isGlobalNavWidgetAvailable: Boolean,
@@ -15,6 +15,14 @@ data class VisitableFactoryData(
     val searchProductModel: SearchProductModel,
     val externalReference: String,
     val globalSearchApplink: String,
-    val loadMoreProductList: List<Visitable<*>>,
 )
 
+data class VisitableFactorySecondPageData(
+    val isLocalSearch: Boolean,
+    val responseCode: String,
+    val allProductList: List<Visitable<*>>,
+    val searchProductModel: SearchProductModel,
+    val externalReference: String,
+    val globalSearchApplink: String,
+    val loadMoreProductList: List<Visitable<*>>,
+)

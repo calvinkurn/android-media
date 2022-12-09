@@ -20,7 +20,6 @@ import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPr
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.pagination.Pagination
-import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.performancemonitoring.*
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL
@@ -54,7 +53,7 @@ class VisitableFactory @Inject constructor(
     private val performanceMonitoring: PageLoadTimePerformanceInterface? =
         performanceMonitoringProvider.get()
 
-    fun createFirstPageVisitableList(data: VisitableFactoryData): List<Visitable<*>> {
+    fun createFirstPageVisitableList(data: VisitableFactoryFirstPageData): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
         val productDataView = data.productDataView
 
@@ -416,7 +415,7 @@ class VisitableFactory @Inject constructor(
         }
     }
 
-    fun createLoadMoreVisitableList(data: VisitableFactoryData): List<Visitable<*>> {
+    fun createLoadMoreVisitableList(data: VisitableFactorySecondPageData): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
         addProductList(visitableList, data.loadMoreProductList)
@@ -424,20 +423,20 @@ class VisitableFactory @Inject constructor(
             data.searchProductModel,
             visitableList,
             data.isLocalSearch,
-            data.productList,
+            data.allProductList,
         )
-        processTopAdsImageViewModel(visitableList, data.productList)
-        processInspirationWidgetPosition(visitableList, data.productList)
-        processInspirationCarouselPosition(visitableList, data.productList, data.externalReference)
+        processTopAdsImageViewModel(visitableList, data.allProductList)
+        processInspirationWidgetPosition(visitableList, data.allProductList)
+        processInspirationCarouselPosition(visitableList, data.allProductList, data.externalReference)
         processBannerAndBroadMatchInSamePosition(
             visitableList,
-            data.productList,
+            data.allProductList,
             data.responseCode,
         )
-        addBanner(visitableList, data.productList)
+        addBanner(visitableList, data.allProductList)
         broadMatchDelegate.processBroadMatch(
             data.responseCode,
-            data.productList,
+            data.allProductList,
             visitableList,
         ) { index, broadMatch ->
             visitableList.addAll(index, broadMatch)
