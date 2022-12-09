@@ -72,7 +72,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
         }) {}
     }
 
-    private fun appendChooseAddressParams(): MutableMap<String, Any> {
+    fun appendChooseAddressParams(): MutableMap<String, Any> {
         val tokonowQueryParam: MutableMap<String, Any> = mutableMapOf()
         val chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         warehouseId = chooseAddressData.warehouse_id
