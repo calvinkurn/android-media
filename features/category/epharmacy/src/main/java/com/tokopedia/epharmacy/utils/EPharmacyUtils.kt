@@ -28,7 +28,7 @@ object EPharmacyUtils {
                                 ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.EXPIRED.status
                             )
                     ) ||
-                    ePharmacyAttachmentDataModel.prescriptionImages?.isNotEmpty() == true
+                    ePharmacyAttachmentDataModel.prescriptionImages?.isEmpty() == true
                 ) &&
                 ePharmacyAttachmentDataModel.showUploadWidget
             )

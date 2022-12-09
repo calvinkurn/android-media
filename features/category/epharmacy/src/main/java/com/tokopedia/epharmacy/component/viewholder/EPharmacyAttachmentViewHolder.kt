@@ -121,9 +121,13 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderPartnerData() {
-        enablerImage.show()
         partnerTitle.show()
-        enablerImage.loadImage(dataModel?.enablerLogo)
+        if (dataModel?.enablerLogo.isNullOrBlank()) {
+            enablerImage.show()
+            enablerImage.loadImage(dataModel?.enablerLogo)
+        } else {
+            enablerImage.hide()
+        }
     }
 
     private fun renderShopData() {
