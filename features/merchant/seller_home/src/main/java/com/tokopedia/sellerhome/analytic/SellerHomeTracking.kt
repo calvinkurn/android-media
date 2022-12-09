@@ -38,6 +38,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/1733
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/1732
  * https://mynakama.tokopedia.com/datatracker/requestdetail/781
+ * New Seller Journey Tracker : https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3581
  * */
 
 object SellerHomeTracking {
