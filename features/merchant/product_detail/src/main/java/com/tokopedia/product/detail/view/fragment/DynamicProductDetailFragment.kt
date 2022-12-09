@@ -3523,7 +3523,8 @@ open class DynamicProductDetailFragment :
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
-                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: ""
+                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: "",
+                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId) ?: ""
                 )
             )
             shouldRefreshShippingBottomSheet = false

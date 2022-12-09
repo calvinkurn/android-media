@@ -16,7 +16,8 @@ data class ProductShippingSellyDataModel(
 data class Service(
     val scheduledDate: String = "",
     val isAvailable: Boolean = false,
-    val products: List<Product> = emptyList()
+    val products: List<Product> = emptyList(),
+    var isExpanded: Boolean = false
 )
 
 data class Product(

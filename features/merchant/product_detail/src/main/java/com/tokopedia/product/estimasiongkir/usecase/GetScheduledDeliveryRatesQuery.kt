@@ -44,6 +44,9 @@ object GetScheduledDeliveryRatesQuery : GqlQueryInterface {
 
     override fun getTopOperationName() = OPERATION_NAME
 
+    /**
+     * TODO vindo - update with actual param
+     */
     fun createParams(
         origin: String,
         destination: String,
@@ -51,8 +54,8 @@ object GetScheduledDeliveryRatesQuery : GqlQueryInterface {
         weight: String,
         shopId: Long,
         uniqueId: String,
-        products: String = "",
-        boMetadata: String = ""
+        productMetadata: String,
+        boMetadata: String = "",
     ) = mapOf(
         "destination" to "2274||,",
         "weight" to "2.0",

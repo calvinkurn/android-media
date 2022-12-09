@@ -26,7 +26,8 @@ data class RatesEstimateRequest(
         val addressId: String = "",
         val warehouseId: String = "",
         val orderValue: Int = 0,
-        val boMetadata: String = ""
+        val boMetadata: String = "",
+        val productMetadata: String = ""
 ) {
     companion object {
         const val KG_TEXT = "kilo"

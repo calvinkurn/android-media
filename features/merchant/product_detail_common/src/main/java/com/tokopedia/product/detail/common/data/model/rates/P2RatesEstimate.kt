@@ -26,7 +26,11 @@ data class P2RatesEstimate(
 
         @SerializedName("boMetadata")
         @Expose
-        val boMetadata: String = ""
+        val boMetadata: String = "",
+
+        @SerializedName("productMetadata")
+        @Expose
+        val productMetadata: List<ProductMetadata> = emptyList()
 )
 
 data class P2RatesEstimateData(
@@ -131,4 +135,14 @@ data class FulfillmentData(
         @SerializedName("description")
         @Expose
         val description: String = ""
+)
+
+data class ProductMetadata(
+    @SerializedName("productID")
+    @Expose
+    val productId: String = "",
+
+    @SerializedName("value")
+    @Expose
+    val value: String = ""
 )

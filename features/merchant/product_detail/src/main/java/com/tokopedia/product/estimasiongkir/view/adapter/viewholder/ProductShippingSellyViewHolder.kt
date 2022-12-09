@@ -16,6 +16,7 @@ import com.tokopedia.product.detail.databinding.ItemSellyTimeBinding
 import com.tokopedia.product.estimasiongkir.data.model.shipping.Product
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.Service
+import kotlin.reflect.KMutableProperty0
 
 class ProductShippingSellyViewHolder(
     view: View
@@ -54,15 +55,49 @@ class ProductShippingSellyViewHolder(
         }
 
         val products = service.products
-        if (service.isAvailable) renderAvailableDate(this, products)
+        if (service.isAvailable) renderAvailableDate(this, products, service::isExpanded)
         else renderNotAvailableDate(this, products)
     }.root
 
     /**
      * Render Available & Recommend Date
      */
-    private fun renderAvailableDate(binding: ItemSellyDateBinding, products: List<Product>) {
-        renderScheduledTimes(binding, products.filter { it.isRecommend })
+    private fun renderAvailableDate(
+        binding: ItemSellyDateBinding,
+        products: List<Product>,
+        isExpandedProperty: KMutableProperty0<Boolean>
+    ) {
+        renderScheduledTimes(binding, products.filter {
+            if (isExpandedProperty.get()) true
+            else it.isRecommend
+        })
+
+        binding.pdpSellyExpandableButton.setOnClickListener {
+            toggle(binding, products, isExpandedProperty)
+        }
+    }
+
+    private fun toggle(
+        binding: ItemSellyDateBinding,
+        products: List<Product>,
+        isExpandedProperty: KMutableProperty0<Boolean>
+    ) = with(binding) {
+        val isExpanded = isExpandedProperty.get()
+        pdpSellyTimeList.removeAllViews()
+
+        renderScheduledTimes(binding, products.filter{
+            if (isExpanded) it.isRecommend
+            else true
+        })
+        isExpandedProperty.set(!isExpanded)
+
+        if(isExpanded){
+            pdpSellyExpandableButton.text = "Jadwal Lainnya"
+            pdpSellyExpandableIcon.animate().rotation(0f).start()
+        }else{
+            pdpSellyExpandableButton.text = "Tampilkan lebih sedikit"
+            pdpSellyExpandableIcon.animate().rotation(180f).start()
+        }
     }
 
     private fun renderNotAvailableDate(
@@ -71,6 +106,7 @@ class ProductShippingSellyViewHolder(
     ) = with(binding) {
 
         pdpSellyExpandableButton.hide()
+        pdpSellyExpandableIcon.hide()
         pdpSellyDate.setTextColor(grayColor)
 
         val product = products.firstOrNull() ?: return@with

@@ -64,6 +64,8 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
             weight = request.productWeight.toString(),
             shopId = request.shopId.toLongOrZero(),
             uniqueId = generateUniqueId(request),
+            productMetadata = request.productMetadata,
+            boMetadata = request.boMetadata,
             forceRefresh = true
         )
     }
