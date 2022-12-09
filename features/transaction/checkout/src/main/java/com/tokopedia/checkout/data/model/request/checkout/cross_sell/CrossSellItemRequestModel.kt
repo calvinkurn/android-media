@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CrossSellItemRequestModel(
         @SerializedName("id")
-        var id: Long = 0L,
+        var id: Long = 0,
 
         @SerializedName("price")
         var price: Double = 0.0,
@@ -16,5 +16,5 @@ data class CrossSellItemRequestModel(
         var transactionType: String = "",
 
         @SerializedName("additional_vertical_id")
-        var additionalVerticalId: Long = -1L
+        var additionalVerticalId: Long = -1
 ) : Parcelable
