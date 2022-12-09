@@ -9,9 +9,9 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
@@ -25,7 +25,6 @@ interface ProductListSectionContract {
     interface View : CustomerView {
         fun addProductList(list: List<Visitable<*>>)
         fun setProductList(list: List<Visitable<*>>)
-        fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(throwable: Throwable?)
         val queryKey: String
         fun backToTop()
