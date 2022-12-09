@@ -958,10 +958,6 @@ open class ShopScoreMapper @Inject constructor(
                 titlePotentialPM = R.string.title_item_rm_section_pm_benefit_1
             ),
             SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                iconPotentialPMUrl = ShopScoreConstant.IC_FREE_SHIPPING_BENEFIT_URL,
-                titlePotentialPM = R.string.title_item_rm_section_pm_benefit_2
-            ),
-            SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
                 iconPotentialPMUrl = ShopScoreConstant.IC_PROMOTION_BENEFIT_URL,
                 titlePotentialPM = R.string.title_item_rm_section_pm_benefit_3
             )
