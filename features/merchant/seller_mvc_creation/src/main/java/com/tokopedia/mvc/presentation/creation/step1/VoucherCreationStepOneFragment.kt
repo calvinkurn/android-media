@@ -51,7 +51,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
     // binding
     private var binding by autoClearedNullable<SmvcFragmentVoucherCreationStepOneBinding>()
 
-    //coachmark
+    // coachmark
     private val coachMark by lazy {
         context?.let {
             CoachMark2(it)
@@ -219,7 +219,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
     }
 
     private fun showChangeVoucherTypeConfirmationDialog() {
-        // TODO: implement dialog
+        TODO("Implement dialog")
     }
 
     private fun showError(error: Throwable) {
@@ -246,10 +246,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
             VoucherCreationStepTwoActivity.start(requireContext(), voucherConfiguration)
             activity?.finish()
         } else {
-            VoucherCreationStepTwoActivity.buildEditModeIntent(
-                requireContext(),
-                voucherConfiguration
-            )
+            TODO("Navigate to next step in edit mode")
         }
     }
 }

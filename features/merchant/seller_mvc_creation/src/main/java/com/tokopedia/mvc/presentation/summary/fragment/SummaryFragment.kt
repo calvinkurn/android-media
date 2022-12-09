@@ -41,7 +41,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
-class SummaryFragment: BaseDaggerFragment(),
+class SummaryFragment :
+    BaseDaggerFragment(),
     SummaryPageRedirectionHelper.SummaryPageResultListener {
 
     companion object {
@@ -49,11 +50,12 @@ class SummaryFragment: BaseDaggerFragment(),
         private const val TNC_LINK = "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
         private const val VOUCHER_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/mvc/mvc_voucher.png"
         private const val UPLOAD_ERROR_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/error_upload_coupon.png"
+
         @JvmStatic
         fun newInstance(
             pageMode: PageMode,
             voucherId: Long,
-            voucherConfiguration: VoucherConfiguration?,
+            voucherConfiguration: VoucherConfiguration?
         ): SummaryFragment {
             return SummaryFragment().apply {
                 arguments = Bundle().apply {
@@ -131,8 +133,8 @@ class SummaryFragment: BaseDaggerFragment(),
             }
         }
         viewModel.maxExpense.observe(viewLifecycleOwner) {
-            binding?.layoutSubmission?.labelSpendingEstimation?.
-                spendingEstimationText = it.getCurrencyFormatted()
+            binding?.layoutSubmission?.labelSpendingEstimation
+                ?.spendingEstimationText = it.getCurrencyFormatted()
         }
     }
 
@@ -156,7 +158,9 @@ class SummaryFragment: BaseDaggerFragment(),
     private fun SmvcFragmentSummaryPreviewBinding.setupLayoutPreview() {
         val greenDark = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val greenLight = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN200)
-        val drawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(greenDark, greenLight)
+        val drawable = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(greenDark, greenLight)
         )
         val corner = CORNER_RADIUS_HEADER.toPx().toFloat()
         drawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, corner, corner, corner, corner)
@@ -239,9 +243,12 @@ class SummaryFragment: BaseDaggerFragment(),
         with(information) {
             val targetItems = resources.getStringArray(R.array.target_items)
             tpgVoucherName.text = voucherName
-            tpgVoucherCode.text = code
-            tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
-                                    else getString(R.string.smvc_voucher_private_label)
+            tpgVoucherCode.text = voucherCode
+            tpgVoucherTarget.text = if (isVoucherPublic) {
+                getString(R.string.smvc_voucher_public_label)
+            } else {
+                getString(R.string.smvc_voucher_private_label)
+            }
             llVoucherCode.isVisible = isVoucherPublic
             try {
                 val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
@@ -251,7 +258,6 @@ class SummaryFragment: BaseDaggerFragment(),
                 tpgVoucherStartPeriod.gone()
                 tpgVoucherEndPeriod.gone()
             }
-
         }
     }
 
@@ -264,10 +270,11 @@ class SummaryFragment: BaseDaggerFragment(),
     }
 
     private fun SmvcVoucherDetailVoucherTypeSectionBinding.updateLayoutType(configuration: VoucherConfiguration) {
-        tpgVoucherType.text = if (configuration.isVoucherProduct)
+        tpgVoucherType.text = if (configuration.isVoucherProduct) {
             getString(R.string.smvc_summary_page_product_coupon_text)
-        else
+        } else {
             getString(R.string.smvc_summary_page_shop_coupon_text)
+        }
     }
 
     private fun showErrorUploadDialog() {
@@ -306,6 +313,5 @@ class SummaryFragment: BaseDaggerFragment(),
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
         redirectionHelper.redirectToViewProductPage(activity ?: return, configuration, listOf())
-
     }
 }
