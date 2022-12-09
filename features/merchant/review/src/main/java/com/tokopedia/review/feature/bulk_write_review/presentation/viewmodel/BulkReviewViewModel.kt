@@ -81,6 +81,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.mapLatest
@@ -88,6 +89,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import java.io.File
 import javax.inject.Inject
 
@@ -114,6 +116,7 @@ class BulkReviewViewModel @Inject constructor(
     companion object {
         const val BAD_RATING_CATEGORY_THRESHOLD = 2
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
+        private const val DELAY_WAIT_FOR_UI_STATE_RESTORATION = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
         private const val MIN_REVIEW_ITEM = 1
         private const val SAVE_STATE_KEY_GET_FORM_REQUEST_STATE = "getFormRequestState"
@@ -634,8 +637,22 @@ class BulkReviewViewModel @Inject constructor(
                 reviewItemsMediaUploadResults.value = savedReviewItemsMediaUploadResults
                 reviewItemsMediaUploadBatchNumber.value = savedReviewItemsMediaUploadBatchNumber
                 anonymous.value = savedAnonymous
-                shouldSubmitReview.value = savedShouldSubmitReview
                 activeMediaPickerInboxID = savedActiveMediaPickerInboxID
+                if (savedShouldSubmitReview) {
+                    // wait 5 seconds or until restored raw data mapped into bulkReviewVisitableList
+                    // before restoring shouldSubmitReview value, because we need bulkReviewVisitableList
+                    // to compose the submission params
+                    runCatching {
+                        withTimeout(DELAY_WAIT_FOR_UI_STATE_RESTORATION) {
+                            bulkReviewVisitableList.filter {
+                                it.filterIsInstance<BulkReviewItemUiModel>().isNotEmpty()
+                            }.first()
+                            shouldSubmitReview.value = savedShouldSubmitReview
+                        }
+                    }
+                } else {
+                    // noop
+                }
             } else {
                 getData()
             }
