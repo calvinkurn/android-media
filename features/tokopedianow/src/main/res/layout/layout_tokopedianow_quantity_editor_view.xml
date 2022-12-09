@@ -27,9 +27,9 @@
         android:layout_height="46dp"
         android:padding="12dp"
         android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_add"
-        app:srcCompat="@drawable/iconunify_add"
         android:tint="@color/tokopedianow_product_card_dms_button_stroke_plus_minus_cursor_color"
         android:translationZ="3dp"
+        app:srcCompat="@drawable/iconunify_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,9 +40,9 @@
         android:layout_height="46dp"
         android:padding="12dp"
         android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_sub"
-        android:src="@drawable/iconunify_remove"
         android:tint="@color/tokopedianow_product_card_dms_button_stroke_plus_minus_cursor_color"
         android:translationZ="2dp"
+        app:srcCompat="@drawable/iconunify_remove"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
