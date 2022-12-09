@@ -549,7 +549,8 @@ class DetailEditorFragment @Inject constructor(
                         originalImageWidth,
                         originalImageHeight,
                         avatarUrl = viewModel.getAvatarShop(),
-                        localAvatarUrl = viewModel.getLocalLogo()
+                        localAvatarUrl = viewModel.getLocalLogo(),
+                        data.addLogoValue
                     )
                 }
             }

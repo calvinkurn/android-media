@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.databinding.AddLogoTipsBottomsheetBinding
+import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.basecomponent.UiComponent
@@ -45,13 +46,14 @@ class AddLogoToolUiComponent constructor(
     private var originalImageWidth = 1
     private var originalImageHeight = 1
 
+    private var uploadAvatarUrl = ""
     private var shopAvatarUrl = ""
     private var isShopAvatarReady = false
 
     private var toaster: Snackbar? = null
     private var retryNumber = 0
 
-    private var logoUrl: String = ""
+    private var selectedLogoUrl: String = ""
 
     fun bottomSheet(isUpload: Boolean = true) = BottomSheetUnify().apply {
         val child = AddLogoTipsBottomsheetBinding.inflate(
@@ -81,24 +83,82 @@ class AddLogoToolUiComponent constructor(
         imageWidth: Int,
         imageHeight: Int,
         avatarUrl: String,
-        localAvatarUrl: String = ""
+        localAvatarUrl: String = "",
+        addLogoData: EditorAddLogoUiModel
     ) {
         originalImageWidth = imageWidth
         originalImageHeight = imageHeight
 
         shopAvatarUrl = avatarUrl
-
-        if (localAvatarUrl.isNotEmpty()) {
-            initUploadAvatar(localAvatarUrl)
-        }
+        uploadAvatarUrl = localAvatarUrl
+        selectedLogoUrl = addLogoData.logoUrl
 
         initShopAvatar()
         initListener()
         container().show()
+
+        if (localAvatarUrl.isNotEmpty()) {
+            initUploadAvatar(localAvatarUrl)
+        }
     }
 
     fun getLogoUrl(): String {
-        return logoUrl
+        return selectedLogoUrl
+    }
+
+    fun isUploadAvatarReady(): Boolean {
+        return uploadAvatarWrapper.isVisible
+    }
+
+    fun initUploadAvatar(imageUrl: String) {
+        loadImageWithEmptyTarget(context, imageUrl, {},
+            MediaBitmapEmptyTarget(
+                onReady = {
+                    uploadAvatarWrapper.show()
+                    uploadAvatar.setImageBitmap(
+                        roundedBitmap(it, cornerRadius = 8f)
+                    )
+                    uploadText.text = resources().getString(editorR.string.editor_add_logo_upload)
+
+                    uploadAvatarUrl = imageUrl
+                    isLogoChosen(imageUrl)
+                }
+            )
+        )
+    }
+
+    private fun initShopAvatar() {
+        loadImageWithEmptyTarget(context, shopAvatarUrl, {},
+            MediaBitmapEmptyTarget(
+                onReady = {
+                    shopAvatar.setImageBitmap(
+                        roundedBitmap(it, isCircular = true)
+                    )
+                    isShopAvatarReady = true
+                    isLogoChosen(shopAvatarUrl)
+                },
+                onFailed = {
+                    shopAvatar.setImageDrawable(it)
+                    shopLoadFailedToaster()
+                }
+            )
+        )
+    }
+
+    private fun isLogoChosen(finishedUrl: String) {
+        if (selectedLogoUrl.isNotEmpty() && selectedLogoUrl == finishedUrl) {
+            when (finishedUrl) {
+                uploadAvatarUrl -> uploadAvatar.performClick()
+                shopAvatarUrl -> shopAvatar.performClick()
+            }
+            return
+        }
+
+        if (uploadAvatarUrl.isNotEmpty() && finishedUrl == uploadAvatarUrl){
+            uploadAvatar.performClick()
+        } else if (uploadAvatarUrl.isEmpty() && finishedUrl == shopAvatarUrl) {
+            shopAvatar.performClick()
+        }
     }
 
     private fun getTipsMoreText(): SpannableString {
@@ -133,50 +193,14 @@ class AddLogoToolUiComponent constructor(
         ).spannedString
     }
 
-    private fun initShopAvatar() {
-        loadImageWithEmptyTarget(context, shopAvatarUrl, {},
-            MediaBitmapEmptyTarget(
-                onReady = {
-                    shopAvatar.setImageBitmap(
-                        roundedBitmap(it, isCircular = true)
-                    )
-                    isShopAvatarReady = true
-                    logoUrl = shopAvatarUrl
-                },
-                onFailed = {
-                    shopAvatar.setImageDrawable(it)
-                    shopLoadFailedToaster()
-                }
-            )
-        )
-    }
-
-    fun initUploadAvatar(imageUrl: String) {
-        loadImageWithEmptyTarget(context, imageUrl, {},
-            MediaBitmapEmptyTarget(
-                onReady = {
-                    uploadAvatarWrapper.show()
-                    uploadAvatar.setImageBitmap(
-                        roundedBitmap(it, cornerRadius = 8f)
-                    )
-                    logoUrl = shopAvatarUrl
-
-                    uploadText.text = resources().getString(editorR.string.editor_add_logo_upload)
-                }
-            )
-        )
-    }
-
-    fun isUploadAvatarReady(): Boolean {
-        return uploadAvatarWrapper.isVisible
-    }
-
     private fun initListener() {
         uploadAvatar.setOnClickListener {
+            selectedLogoUrl = uploadAvatarUrl
             listener.onLogoChosen(getUploadAvatarBitmap())
         }
 
         shopAvatar.setOnClickListener {
+            selectedLogoUrl = shopAvatarUrl
             if (isShopAvatarReady) listener.onLogoChosen(getShopAvatarBitmap())
         }
 
