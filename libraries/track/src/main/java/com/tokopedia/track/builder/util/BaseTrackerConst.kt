@@ -410,5 +410,4 @@ abstract class BaseTrackerConst {
     protected fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
     }
-
 }
