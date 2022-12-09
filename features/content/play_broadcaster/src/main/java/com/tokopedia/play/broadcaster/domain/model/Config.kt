@@ -40,7 +40,7 @@ data class Config(
         @SerializedName("scheduled_time")
         val scheduledTime: ScheduledTime = ScheduledTime(),
         @SerializedName("tnc")
-        val tnc: List<GetBroadcasterShopConfigResponse.TermsAndCondition> = emptyList(),
+        val tnc: List<GetBroadcasterAuthorConfigResponse.TermsAndCondition> = emptyList(),
 ) {
         data class ScheduledTime(
                 @SerializedName("minimum")

@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.query.BusinessUnitListQuery
+import com.tokopedia.homenav.mainnav.domain.usecases.query.CategoryQuery
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -15,13 +16,15 @@ import com.tokopedia.usecase.coroutines.UseCase
  */
 class GetCategoryGroupUseCase (
         private val buListMapper: BuListMapper,
-        private val graphqlUseCase: GraphqlUseCase<DynamicHomeIconEntity>
+        private val graphqlUseCase: GraphqlUseCase<DynamicHomeIconEntity>,
+        private val isUsingV2: Boolean
 ): UseCase<List<Visitable<*>>>(){
 
     private var params : Map<String, Any> = mapOf()
 
     init {
-        graphqlUseCase.setGraphqlQuery(BusinessUnitListQuery())
+        val query = if(isUsingV2) CategoryQuery() else BusinessUnitListQuery()
+        graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setTypeClass(DynamicHomeIconEntity::class.java)
     }
 

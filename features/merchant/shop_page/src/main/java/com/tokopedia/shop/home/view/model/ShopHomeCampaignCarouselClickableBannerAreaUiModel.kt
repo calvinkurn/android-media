@@ -8,7 +8,7 @@ import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTy
  */
 
 class ShopHomeCampaignCarouselClickableBannerAreaUiModel(
-        val width: Int = 0
+    val width: Int = 0
 ) : Visitable<ShopCampaignCarouselProductAdapterTypeFactory> {
     override fun type(typeFactory: ShopCampaignCarouselProductAdapterTypeFactory): Int {
         return typeFactory.type(this)

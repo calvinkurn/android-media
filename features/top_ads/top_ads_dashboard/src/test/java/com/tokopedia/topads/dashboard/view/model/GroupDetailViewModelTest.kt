@@ -92,7 +92,7 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `get product data`() {
-        viewModel.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}) {}
+        viewModel.getGroupProductData(1, "1", "", "", 1, "", "", 0, {}) {}
         coVerify {
             topAdsGetGroupProductDataUseCase.execute(any())
         }
@@ -106,7 +106,7 @@ class GroupDetailViewModelTest {
 
         coEvery { topAdsGetGroupProductDataUseCase.execute(any()) } returns fakeResponse
 
-        viewModel.getGroupProductData(1, 1, "", "", 1, "", "", 0, {
+        viewModel.getGroupProductData(1, "1", "", "", 1, "", "", 0, {
             actual = it
         }, {})
 
@@ -121,7 +121,7 @@ class GroupDetailViewModelTest {
 
         coEvery { topAdsGetGroupProductDataUseCase.execute(any()) } returns fakeResponse
 
-        viewModel.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}, {
+        viewModel.getGroupProductData(1, "1", "", "", 1, "", "", 0, {}, {
             onErrorInvoked = true
         })
 
@@ -247,8 +247,8 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `getGroupKeywordData success`() {
-        val expected = 10
-        var actual = 0
+        val expected = "10"
+        var actual = "0"
         val data =
             KeywordsResponse(getTopadsDashboardKeywords = KeywordsResponse.GetTopadsDashboardKeywords
                 (listOf(KeywordsResponse.GetTopadsDashboardKeywords.DataItem(keywordId = expected))))

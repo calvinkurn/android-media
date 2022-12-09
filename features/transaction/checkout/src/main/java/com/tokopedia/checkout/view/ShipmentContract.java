@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
@@ -20,6 +19,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
@@ -34,7 +34,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
@@ -52,6 +53,8 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import rx.subjects.PublishSubject;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -186,10 +189,11 @@ public interface ShipmentContract {
 
         int getShipmentCartItemModelAdapterPositionByUniqueId(String uniqueId);
 
-        @Nullable ShipmentCartItemModel getShipmentCartItemModel(int position);
+        @Nullable
+        ShipmentCartItemModel getShipmentCartItemModel(int position);
 
         ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
-                                                        RecipientAddressModel recipientAddressModel);
+                                                 RecipientAddressModel recipientAddressModel);
     }
 
     interface AnalyticsActionListener {
@@ -259,14 +263,16 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
+        PublishSubject<Boolean> getLogisticDonePublisher();
+
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
                                             boolean isReloadAfterPriceChangeHinger,
-                                            String cornerId, String deviceId, String leasingId);
+                                            String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
 
         void processCheckout(boolean isOneClickShipment, boolean isTradeIn,
                              boolean isTradeInDropOff, String deviceId,
-                             String cornerId, String leasingId);
+                             String cornerId, String leasingId, boolean isPlusSelected);
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
@@ -372,7 +378,7 @@ public interface ShipmentContract {
 
         void releaseBooking();
 
-        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded,String checkoutId);
+        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
@@ -402,6 +408,8 @@ public interface ShipmentContract {
 
         ShipmentUpsellModel getShipmentUpsellModel();
 
+        ShipmentNewUpsellModel getShipmentNewUpsellModel();
+
         Pair<ArrayList<String>, ArrayList<String>> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
         void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
@@ -417,6 +425,13 @@ public interface ShipmentContract {
         void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel);
 
         void hitClearAllBo();
+
+        void cancelUpsell(boolean isReloadData, boolean isOneClickShipment,
+                          boolean isTradeIn, boolean skipUpdateOnboardingState,
+                          boolean isReloadAfterPriceChangeHinger,
+                          String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
+
+        void clearAllBoOnTemporaryUpsell();
     }
 
 }

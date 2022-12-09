@@ -11,7 +11,6 @@
     <string name="ok_button">Ok</string>
     <string name="expired_reward_title">Maaf, Anda kurang cepat</string>
     <string name="expired_reward_message">Tunggu Kesempatan Lainnya</string>
-    <string name="expired_reward_color">#ffffff</string>
     <string name="expired_reward_size">small</string>
 
     <string name="error_reward_title">Maaf, sayang sekali sepertinya</string>
@@ -72,6 +71,6 @@
     <string name="gami_back_button_ok">Cek Daftar Hadiah Game</string>
     <string name="gami_back_button_cancel">Ke Home</string>
 
-    <string name="gami_remote_image_user_no_reward">https://ecs7.tokopedia.net/android/res/xxhdpi/user_no_reward.png</string>
+    <string name="gami_remote_image_user_no_reward">https://images.tokopedia.net/android/res/xxhdpi/user_no_reward.png</string>
 
 </resources>

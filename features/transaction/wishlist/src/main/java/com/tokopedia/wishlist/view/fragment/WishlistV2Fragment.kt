@@ -31,6 +31,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -74,7 +75,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2UiModel
-import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
@@ -95,6 +95,7 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2CleanerBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -1372,6 +1373,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         // wishlist collection only
     }
 
+    override fun goToEditWishlistCollectionPage() {
+        // wishlist collection only
+    }
+
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
         WishlistV2Analytics.clickThreeDotsOnProductCard()
@@ -1390,6 +1395,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         } else {
             setDefaultLabelDeleteButton()
         }
+    }
+
+    override fun onValidateCheckBulkOption(productId: String, isChecked: Boolean, position: Int) {
+        // wishlist collection detail only
     }
 
     private fun setLabelDeleteButton() {
@@ -1445,8 +1454,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 productId = wishlistItem.id.toLong(),
                 productName = wishlistItem.name,
                 price = wishlistItem.originalPriceFmt,
-                quantity = wishlistItem.minOrder.toInt(),
-                shopId = wishlistItem.shop.id.toInt(),
+                quantity = wishlistItem.minOrder.toIntOrZero(),
+                shopId = wishlistItem.shop.id.toIntOrZero(),
                 atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST)
         wishlistViewModel.doAtc(atcParam)
         wishlistItemOnAtc = wishlistItem

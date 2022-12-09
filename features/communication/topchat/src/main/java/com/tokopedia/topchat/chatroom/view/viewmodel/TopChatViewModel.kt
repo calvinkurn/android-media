@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
+import android.util.Log
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -18,6 +19,7 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -60,6 +62,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.Constant
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
@@ -271,11 +274,27 @@ open class TopChatViewModel @Inject constructor(
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
 
+    /*
+    * these flags use to handle messages in order to unread when from the bubble and on stop
+     */
+    var isOnStop = false
+    var isFromBubble = false
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         chatWebSocket.close()
         chatWebSocket.destroy()
         cancel()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        isOnStop = true
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        isOnStop = false
     }
 
     fun connectWebSocket() {
@@ -337,6 +356,7 @@ open class TopChatViewModel @Inject constructor(
     private fun onReceiveReplyEvent(chat: ChatSocketPojo) {
         if (!isInTheMiddleOfThePage()) {
             renderChatItem(chat)
+            if (isFromBubble && isOnStop) return
             updateLiveDataOnMainThread(_unreadMsg, 0)
         } else {
             if (chat.isOpposite) {
@@ -1007,6 +1027,10 @@ open class TopChatViewModel @Inject constructor(
     }
 
     fun markAsRead() {
+        if (isFromBubble && isOnStop) {
+            incrementUnreadMsg()
+            return
+        }
         val wsPayload = payloadGenerator.generateMarkAsReadPayload(roomMetaData)
         sendWsPayload(wsPayload)
     }

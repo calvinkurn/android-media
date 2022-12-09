@@ -32,7 +32,7 @@
                 android:id="@+id/collapsing_toolbar_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="@color/white"
+                app:contentScrim="@color/Unify_NN0"
                 app:layout_scrollFlags="scroll|enterAlways">
 
                 <com.tokopedia.header.HeaderUnify

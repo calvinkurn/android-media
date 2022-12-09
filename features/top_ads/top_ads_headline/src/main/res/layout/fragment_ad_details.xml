@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.AdDetailsFragment">
+    tools:context=".view.fragment.AdDetailsFragment"
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textHeadlineAdName"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="@string/topads_headline_ad_detail_name_header"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_NN1000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -83,6 +83,7 @@ class DealsPDPActivityTest {
         clickSeeMoreRedeem()
         clickRecommendation()
         clickBtnCheckout()
+        clickATC()
 
         Assert.assertThat(cassavaTestRule.validate(
             ANALYTIC_VALIDATOR_QUERY_DEALS_PRODUCT_DETAIL_PAGE), hasAllSuccess())
@@ -123,6 +124,10 @@ class DealsPDPActivityTest {
 
     private fun clickBtnCheckout() {
         onView(withId(R.id.btn_buynow)).perform(click())
+    }
+
+    private fun clickATC() {
+        onView(withId(R.id.btn_continue)).perform(click())
     }
 
     companion object {

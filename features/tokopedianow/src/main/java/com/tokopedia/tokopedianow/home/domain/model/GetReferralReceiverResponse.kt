@@ -14,7 +14,11 @@ data class GetReferralReceiverHomeResponse(
         val resultStatus: ResultStatus,
         @Expose
         @SerializedName("reward")
-        val reward: Reward
+        val reward: Reward,
+
+        @Expose
+        @SerializedName("benefits")
+        val benefits: List<Benefit> = listOf()
     ) {
         data class ResultStatus(
             @Expose
@@ -30,6 +34,17 @@ data class GetReferralReceiverHomeResponse(
         data class Reward(
             @SerializedName("maxReward")
             val maxReward: String
+        )
+
+        data class Benefit(
+            @SerializedName("description")
+            val description: String = "",
+
+            @SerializedName("benefitText")
+            val benefitText: String = "",
+
+            @SerializedName("title")
+            val title: String = ""
         )
     }
 }

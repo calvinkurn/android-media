@@ -352,6 +352,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.supportLibDependencies.exifinterface
+    implementation rootProject.ext.miscDependencies.embraceSdk
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp

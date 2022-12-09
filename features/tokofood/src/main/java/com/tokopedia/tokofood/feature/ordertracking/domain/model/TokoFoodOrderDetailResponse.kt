@@ -146,7 +146,9 @@ data class TokoFoodOrderDetailResponse(
             @SerializedName("subtitle")
             val subtitle: String? = "",
             @SerializedName("title")
-            val title: String = ""
+            val title: String = "",
+            @SerializedName("enableChatButton")
+            val isEnableChatButton: Boolean = true,
         )
 
         data class Payment(

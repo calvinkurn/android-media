@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/separatorDividerPenalty"
@@ -16,7 +16,7 @@
         android:id="@+id/rvPenaltyFilterBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing_lvl3"
+        android:paddingBottom="8dp"
         android:layout_below="@+id/separatorDividerPenalty"
         android:layout_alignParentStart="true"
         tools:itemCount="2"
@@ -29,11 +29,11 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/rvPenaltyFilterBottomSheet"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginTop="24dp"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/btn_show_penalty" />
 
 </RelativeLayout>

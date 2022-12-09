@@ -9,18 +9,18 @@
         android:id="@+id/talkWriteProductImage"
         android:layout_width="@dimen/dp_46"
         android:layout_height="@dimen/dp_46"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/talkWriteProductName"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toEndOf="@id/talkWriteProductImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/talkWriteProductImage"
@@ -31,7 +31,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/talkWriteProductImage"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

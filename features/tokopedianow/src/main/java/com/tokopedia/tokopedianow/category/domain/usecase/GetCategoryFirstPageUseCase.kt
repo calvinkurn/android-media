@@ -10,9 +10,11 @@ import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.Ca
 import com.tokopedia.tokopedianow.searchcategory.data.createAceSearchProductRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createCategoryFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createDynamicChannelRequest
+import com.tokopedia.tokopedianow.searchcategory.data.createFeedbackFieldToggleRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createQuickFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createRepurchaseWidgetRequest
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
+import com.tokopedia.tokopedianow.searchcategory.data.getFeedbackFieldToggleData
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getBanner
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getCategoryFilter
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getQuickFilter
@@ -42,6 +44,7 @@ class GetCategoryFirstPageUseCase(
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
         graphqlUseCase.addRequest(createDynamicChannelRequest(TOKONOW_CATEGORY))
         graphqlUseCase.addRequest(createRepurchaseWidgetRequest(useCaseRequestParams.parameters))
+        graphqlUseCase.addRequest(createFeedbackFieldToggleRequest())
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 
@@ -52,6 +55,7 @@ class GetCategoryFirstPageUseCase(
                 quickFilter = getQuickFilter(graphqlResponse),
                 bannerChannel = getBanner(graphqlResponse),
                 tokonowRepurchaseWidget = getRepurchaseWidget(graphqlResponse),
+                feedbackFieldToggle = getFeedbackFieldToggleData(graphqlResponse)
         )
     }
 

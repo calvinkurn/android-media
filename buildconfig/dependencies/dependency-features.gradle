@@ -3,6 +3,7 @@ ext {
     // Sort and categorize alphabetically by folder name
     features = [
 			shopDiscount		: ":features:merchant:shop_discount",
+			productAr		                : ":features:merchant:product_ar",
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
             appCommon                       : ":features:common:app_common",
@@ -23,6 +24,7 @@ ext {
             agerestriction                  : ":features:category:age_restriction",
             affiliateToko                  : ":features:category:affiliate_toko",
             ePharmacy                       : ":features:category:epharmacy",
+            commonEPharmacy                 : ":features:category:common_epharmacy",
             findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
             moneyIn                         : ":features:category:moneyin",
@@ -30,6 +32,7 @@ ext {
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
+            contentCommon                   : ":features:content:content_common",
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
@@ -43,7 +46,7 @@ ext {
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
             playBroadcaster                 : ":features:content:play_broadcaster",
-            playTest                        : ":features:content:play_test",
+            contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
@@ -131,6 +134,7 @@ ext {
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
+            mediaeditor		                : ":features:media:mediaeditor",
             mediapicker		                : ":features:media:mediapicker",
             mediapickerCommon		        : ":features:media:mediapicker-common",
 
@@ -185,6 +189,7 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             voucherCreation                 : ":features:merchant:voucher_creation",
             sellerShopFlashSale             : ":features:merchant:seller_shop_flash_sale",
+            sellerTokopediaFlashSale        : ":features:merchant:seller_tokopedia_flash_sale",
             brandlist                       : ":features:merchant:brandlist",
             campaignList                    : ":features:merchant:campaign_list",
             favorite                        : ":features:merchant:favorite",
@@ -262,6 +267,9 @@ ext {
             notifCenter                     : ":features:communication:notifcenter",
             orderhistory                    : ":features:communication:orderhistory",
             attachvoucher                   : ":features:communication:attachvoucher",
+            tokochat                        : ":features:communication:tokochat",
+            tokochat_common                 : ":features:communication:tokochat_common",
+            tokochat_config_common          : ":features:communication:tokochat_config_common",
 
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
@@ -279,6 +287,7 @@ ext {
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            privacycenter                   : ":features:user:privacycenter",
             profileCompletion               : ":features:user:profilecompletion",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",
