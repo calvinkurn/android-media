@@ -354,15 +354,21 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             updateUi()
         } else {
             EPharmacyMiniConsultationAnalytics.clickCTAButton("", "", "", "", "")
-            if (appLink.isNullOrBlank() || appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
+            if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
                 activity?.setResult(
-                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,
+                    EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
                     Intent().apply {
                         putParcelableArrayListExtra(
                             EPHARMACY_CONSULTATION_RESULT_EXTRA,
                             ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
                         )
                     }
+                )
+                activity?.finish()
+            } else if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CART_APPLINK)) {
+                activity?.setResult(
+                    EPHARMACY_REDIRECT_CART_RESULT_CODE,
+                    Intent()
                 )
                 activity?.finish()
             } else {

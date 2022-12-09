@@ -73,6 +73,7 @@ enum class EPharmacyConsultationStatus(val status: Int) {
 }
 
 const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://checkout"
+const val EPHARMACY_CART_APPLINK = "tokopedia://cart"
 
 enum class EPharmacyButtonState(val state: String) {
     ACTIVE("ACTIVE"),
