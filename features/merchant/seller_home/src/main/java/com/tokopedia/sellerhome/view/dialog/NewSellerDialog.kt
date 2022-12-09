@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 
 /**
@@ -36,18 +37,21 @@ object NewSellerDialog {
             setPrimaryCTAText(info.button.name)
             setPrimaryCTAClickListener {
                 openAppLink(context, info.button.appLink)
+                SellerHomeTracking.sendClickOnFirstTransactionPopUpPrimaryCtaEvent()
                 dismiss()
             }
             if (isVerticalAction) {
                 setSecondaryCTAText(info.buttonAlt.name)
                 setSecondaryCTAClickListener {
                     openAppLink(context, info.buttonAlt.appLink)
+                    SellerHomeTracking.sendClickOnFirstTransactionPopUpSecondaryCtaEvent()
                     dismiss()
                 }
             }
             setOnDismissListener(onDismiss)
             show()
         }
+        SellerHomeTracking.sendImpressionFirstTransactionPopUpEvent()
     }
 
     fun showNewSellerJourneyDialog(
