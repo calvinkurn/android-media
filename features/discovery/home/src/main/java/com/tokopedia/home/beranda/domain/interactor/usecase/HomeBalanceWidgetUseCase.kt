@@ -46,7 +46,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    suspend fun onGetBalanceWidgetData(): HomeHeaderDataModel {
+    suspend fun onGetBalanceWidgetData(previousHeaderDataModel: HomeHeaderDataModel? = null): HomeHeaderDataModel {
         val homeHeaderDataModel = HomeHeaderDataModel()
         if (!userSession.isLoggedIn) return homeHeaderDataModel
 
@@ -61,19 +61,23 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach { getHomeBalanceItem ->
                     when (getHomeBalanceItem.type) {
                         BALANCE_TYPE_GOPAY -> {
-                            val placeHolderLoadingGopay = BalanceDrawerItemModel(
+                            val previousGopayData = previousHeaderDataModel?.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.find { it.drawerItemType == TYPE_WALLET_APP_LINKED }
+                                ?: BalanceDrawerItemModel(
                                 drawerItemType = TYPE_WALLET_APP_LINKED,
                                 headerTitle = getHomeBalanceItem.title
                             )
-                            homeBalanceModel.balanceDrawerItemModels.add(placeHolderLoadingGopay)
+                            previousGopayData.state = BalanceDrawerItemModel.STATE_LOADING
+                            homeBalanceModel.balanceDrawerItemModels.add(previousGopayData)
                             indexDataRegistered++
                         }
                         BALANCE_TYPE_REWARDS -> {
-                            val placeHolderLoadingRewards = BalanceDrawerItemModel(
+                            val previousRewardsData = previousHeaderDataModel?.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.find { it.drawerItemType == TYPE_REWARDS }
+                                ?: BalanceDrawerItemModel(
                                 drawerItemType = TYPE_REWARDS,
                                 headerTitle = getHomeBalanceItem.title
                             )
-                            homeBalanceModel.balanceDrawerItemModels.add(placeHolderLoadingRewards)
+                            previousRewardsData.state = BalanceDrawerItemModel.STATE_LOADING
+                            homeBalanceModel.balanceDrawerItemModels.add(previousRewardsData)
                             indexDataRegistered++
                         }
                         BALANCE_TYPE_SUBSCRIPTIONS -> {

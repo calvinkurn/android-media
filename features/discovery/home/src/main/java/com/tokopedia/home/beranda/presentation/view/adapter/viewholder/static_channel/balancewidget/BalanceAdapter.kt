@@ -19,7 +19,7 @@ import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
 class BalanceAdapter(
     val listener: HomeCategoryListener?,
     diffUtil: DiffUtil.ItemCallback<BalanceDrawerItemModel>
-): ListAdapter<BalanceDrawerItemModel, BalanceViewHolder>(diffUtil) {
+) : ListAdapter<BalanceDrawerItemModel, BalanceViewHolder>(diffUtil) {
 
     var attachedRecyclerView: RecyclerView? = null
     private var itemList: HomeBalanceModel = HomeBalanceModel()
@@ -38,13 +38,13 @@ class BalanceAdapter(
             HomeServerLogger.logWarning(
                 type = TYPE_ERROR_SUBMIT_WALLET,
                 throwable = e,
-                reason = e.message?:""
+                reason = e.message ?: ""
             )
             e.printStackTrace()
         }
     }
 
-    fun getItemList():  HomeBalanceModel {
+    fun getItemList(): HomeBalanceModel {
         return itemList
     }
 
