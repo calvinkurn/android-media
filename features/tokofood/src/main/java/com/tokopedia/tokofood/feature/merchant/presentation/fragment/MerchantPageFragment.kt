@@ -1684,7 +1684,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun getIsImplementDebounce(): Boolean {
-        return true
+        return false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
