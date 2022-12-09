@@ -120,6 +120,7 @@
     <string name="pm_pro_general_benefit_3">Akses eksklusif ke semua fitur promosi</string>
     <string name="pm_be_selected_shop_by_buyer">Menjadi toko pilihan pembeli</string>
     <string name="pm_get_extra_topads_credit">Dapat tambahan kredit TopAds</string>
+    <string name="pm_get_free_shipping_benefit">Punya layanan Bebas Ongkir</string>
     <string name="pm_get_excellent_feature">Fitur-fitur unggulan lainnya</string>
 
     <string name="pm_deactivation_bottom_sheet_message">Regular Merchant dengan jumlah transaksi di atas <b>100</b> transaksi akan dikenakan biaya layanan berdasarkan kategori produk.</string>
