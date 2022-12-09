@@ -18,6 +18,7 @@ import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.URLSpanNoUnderline
 import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
@@ -152,7 +153,12 @@ class CardViewHolder(
 
             showCardState(element.data)
             showBadge(element.data?.badgeImageUrl.orEmpty())
+            removeCardValueUnderLine()
         }
+    }
+
+    private fun removeCardValueUnderLine() {
+        URLSpanNoUnderline.stripUnderlines(binding.tvCardValue)
     }
 
     private fun showBadge(badgeUrl: String) {
