@@ -1,27 +1,22 @@
 package com.tokopedia.play_common.shortsuploader.worker
 
 import android.content.Context
-import android.media.ThumbnailUtils
 import android.util.Log
-import android.util.Size
 import androidx.work.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.BroadcasterAddMediasUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
-import com.tokopedia.play_common.shortsuploader.di.DaggerPlayShortsUploaderComponent
+import com.tokopedia.play_common.shortsuploader.di.DaggerPlayShortsWorkerComponent
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.notification.PlayShortsUploadNotificationManager
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -66,7 +61,7 @@ class PlayShortsUploadWorker(
     }
 
     private fun inject() {
-        DaggerPlayShortsUploaderComponent.builder()
+        DaggerPlayShortsWorkerComponent.builder()
             .baseAppComponent((appContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)

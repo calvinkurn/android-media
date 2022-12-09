@@ -3,7 +3,9 @@ package com.tokopedia.play_common.shortsuploader.notification
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
@@ -12,6 +14,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import javax.inject.Inject
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
+import com.tokopedia.play_common.shortsuploader.model.orEmpty
+import com.tokopedia.play_common.shortsuploader.receiver.PlayShortsUploadReceiver
 import kotlinx.coroutines.withContext
 import com.tokopedia.unifycomponents.R as unifyR
 
@@ -108,6 +112,26 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     }
 
     fun onError() {
+        val intent = PlayShortsUploadReceiver.getIntent(context, uploadData.orEmpty())
+
+        val retryPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        } else {
+            PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        }
+
+        notificationBuilder.addAction(0, NOTIFICATION_FAIL_RETRY_ACTION, retryPendingIntent)
+
         val builder = notificationBuilder
             .setProgress(0, 0, false)
             .setContentTitle(NOTIFICATION_TITLE)
@@ -132,6 +156,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         const val NOTIFICATION_PROGRESS_DESCRIPTION = "Memproses..."
         const val NOTIFICATION_SUCCESS_DESCRIPTION = "Berhasil di-upload"
         const val NOTIFICATION_FAIL_DESCRIPTION = "Gagal upload"
+        const val NOTIFICATION_FAIL_RETRY_ACTION = "Coba lagi"
 
         const val CHANNEL_NAME = "Tokopedia Play Shorts"
         const val CHANNEL_DESCRIPTION = "Tokopedia Play Shorts"
