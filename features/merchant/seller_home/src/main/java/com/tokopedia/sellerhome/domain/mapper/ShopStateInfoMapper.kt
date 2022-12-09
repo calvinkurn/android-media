@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.domain.mapper
 
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.model.GetShopStateInfoResponse
 import com.tokopedia.sellerhome.domain.model.InfoWidgetButtonModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
@@ -28,16 +27,15 @@ class ShopStateInfoMapper @Inject constructor() {
             buttonAlt = getButton(info.buttonAlt),
             dataSign = info.dataSign,
             subType = getSubType(info.subType),
-            isNewSellerState = isNewSellerState(info.state)
+            isNewSellerState = isNewSellerState(info.meta.shopState)
         )
     }
 
-    private fun isNewSellerState(state: String): Boolean {
-        val stateInt = state.toLongOrZero()
+    private fun isNewSellerState(shopState: Long): Boolean {
         return listOf(
             ShopStateUiModel.NEW_REGISTERED_SHOP, ShopStateUiModel.ADDED_PRODUCT,
             ShopStateUiModel.VIEWED_PRODUCT
-        ).contains(stateInt)
+        ).contains(shopState)
     }
 
     private fun getButton(button: InfoWidgetButtonModel): ShopStateInfoUiModel.Button {

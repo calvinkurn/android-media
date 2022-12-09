@@ -25,8 +25,7 @@ import com.tokopedia.unifycomponents.NotificationUnify
  */
 
 class CardViewHolder(
-    itemView: View,
-    private val listener: Listener
+    itemView: View, private val listener: Listener
 ) : AbstractViewHolder<CardWidgetUiModel>(itemView) {
 
     companion object {
@@ -49,9 +48,7 @@ class CardViewHolder(
             notifTagCard.isVisible = isTagVisible
             if (isTagVisible) {
                 notifTagCard.setNotification(
-                    element.tag,
-                    NotificationUnify.TEXT_TYPE,
-                    NotificationUnify.COLOR_TEXT_TYPE
+                    element.tag, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_TEXT_TYPE
                 )
             }
         }
@@ -113,11 +110,10 @@ class CardViewHolder(
         if (!isShown) return
 
         with(binding) {
-            if (element.appLink.isNotBlank()) {
+            if (element.getWidgetAppLink().isNotBlank()) {
                 val selectableItemBg = TypedValue()
                 root.context.theme.resolveAttribute(
-                    android.R.attr.selectableItemBackground,
-                    selectableItemBg, true
+                    android.R.attr.selectableItemBackground, selectableItemBg, true
                 )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else {
@@ -147,8 +143,8 @@ class CardViewHolder(
             }
 
             root.setOnClickListener {
-                if (element.appLink.isNotBlank()) {
-                    if (RouteManager.route(root.context, element.appLink)) {
+                if (element.getWidgetAppLink().isNotBlank()) {
+                    if (RouteManager.route(root.context, element.getWidgetAppLink())) {
                         listener.sendCardClickTracking(element)
                     }
                 }
@@ -171,11 +167,10 @@ class CardViewHolder(
     private fun setupRefreshButton(element: CardWidgetUiModel) {
         with(binding) {
             element.data?.lastUpdated?.let {
-                val shouldShowRefreshButton = it.needToUpdated.orFalse()
-                        && !element.showLoadingState
+                val shouldShowRefreshButton =
+                    it.needToUpdated.orFalse() && !element.showLoadingState
                 val isError = !element.data?.error.isNullOrBlank()
-                icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled)
-                        || isError
+                icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled) || isError
                 icShcRefreshCard.setOnClickListener {
                     refreshWidget(element)
                 }
