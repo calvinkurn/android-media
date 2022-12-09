@@ -13,6 +13,7 @@ import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetF
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
@@ -87,7 +88,8 @@ interface ProductListSectionContract {
         TickerPresenter,
         SafeSearchPresenter,
         WishlistPresenter,
-        BottomSheetFilterPresenter {
+        BottomSheetFilterPresenter,
+        InspirationCarouselPresenter {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
@@ -101,17 +103,9 @@ interface ProductListSectionContract {
         fun trackProductClick(item: ProductItemDataView)
         fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>
-        fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
-        fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun onViewResumed()
         fun onLocalizingAddressSelected()
-        fun onInspirationCarouselChipsClick(
-            adapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            searchParameter: Map<String, Any>
-        )
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

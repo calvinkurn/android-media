@@ -82,6 +82,7 @@ import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetF
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListenerDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
@@ -207,10 +208,6 @@ class ProductListFragment: BaseDaggerFragment(),
     @Suppress("LateinitUsage")
     @Inject
     lateinit var bottomSheetFilterViewDelegate: BottomSheetFilterViewDelegate
-
-    @Suppress("LateinitUsage")
-    @Inject
-    lateinit var inspirationCarouselListener: InspirationCarouselListener
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -453,7 +450,14 @@ class ProductListFragment: BaseDaggerFragment(),
                 this,
             ),
             recommendationListener = this,
-            inspirationCarouselListener = inspirationCarouselListener,
+            inspirationCarouselListener = InspirationCarouselListenerDelegate(
+                this,
+                activity,
+                this,
+                trackingQueue,
+                getUserId(),
+                presenter
+            ),
             broadMatchListener = BroadMatchListenerDelegate(
                 presenter,
                 productCardLifecycleObserver,

@@ -16,4 +16,8 @@ interface InspirationCarouselView {
     fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
 
     fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+
+    fun openLink(applink: String, url: String)
+
+    fun refreshItemAtIndex(index: Int)
 }

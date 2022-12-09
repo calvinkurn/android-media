@@ -54,6 +54,7 @@ class InspirationCarouselDataView(
         val cardButton: CardButton = CardButton(),
         val bundle: Bundle = Bundle(),
         val keyword: String = "",
+        val externalReference: String = "",
     ): Visitable<InspirationCarouselOptionTypeFactory> {
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {

@@ -15,14 +15,13 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class InspirationCarouselListenerDelegate @Inject constructor(
+class InspirationCarouselListenerDelegate(
     queryKeyProvider: QueryKeyProvider,
-    @SearchContext
-    context: Context,
+    context: Context?,
     searchParameterProvider: SearchParameterProvider,
     private val trackingQueue: TrackingQueue,
-    private val userSession: UserSessionInterface,
-    private val presenter: ProductListPresenter,
+    private val userId: String,
+    private val presenter: InspirationCarouselPresenter?,
 ): InspirationCarouselListener,
     QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context),
@@ -60,7 +59,7 @@ class InspirationCarouselListenerDelegate @Inject constructor(
             option.inspirationCarouselType,
             queryKey,
             option.getBannerDataLayer(queryKey),
-            getUserId(userSession),
+            userId,
         )
     }
 
@@ -92,37 +91,37 @@ class InspirationCarouselListenerDelegate @Inject constructor(
     override fun onInspirationCarouselListProductImpressed(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        presenter.onInspirationCarouselProductImpressed(product)
+        presenter?.onInspirationCarouselProductImpressed(product)
     }
 
     override fun onInspirationCarouselListProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        presenter.onInspirationCarouselProductClick(product)
+        presenter?.onInspirationCarouselProductClick(product)
     }
 
     override fun onInspirationCarouselGridProductImpressed(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        presenter.onInspirationCarouselProductImpressed(product)
+        presenter?.onInspirationCarouselProductImpressed(product)
     }
 
     override fun onInspirationCarouselGridProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        presenter.onInspirationCarouselProductClick(product)
+        presenter?.onInspirationCarouselProductClick(product)
     }
 
     override fun onInspirationCarouselChipsProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        presenter.onInspirationCarouselProductClick(product)
+        presenter?.onInspirationCarouselProductClick(product)
     }
 
     override fun onImpressedInspirationCarouselChipsProduct(
         product: InspirationCarouselDataView.Option.Product,
     ) {
-        presenter.onInspirationCarouselProductImpressed(product)
+        presenter?.onInspirationCarouselProductImpressed(product)
     }
 
     override fun onInspirationCarouselChipsClicked(
@@ -130,7 +129,7 @@ class InspirationCarouselListenerDelegate @Inject constructor(
         inspirationCarouselViewModel: InspirationCarouselDataView,
         inspirationCarouselOption: InspirationCarouselDataView.Option,
     ) {
-        presenter.onInspirationCarouselChipsClick(
+        presenter?.onInspirationCarouselChipsClick(
             adapterPosition = inspirationCarouselAdapterPosition,
             inspirationCarouselViewModel = inspirationCarouselViewModel,
             clickedInspirationCarouselOption = inspirationCarouselOption,
