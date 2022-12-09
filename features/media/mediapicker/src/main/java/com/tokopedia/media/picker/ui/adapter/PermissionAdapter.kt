@@ -69,7 +69,7 @@ class PermissionAdapter constructor(
             when (permission) {
                 RECORD_AUDIO -> binding?.imgAction?.setImage(IconUnify.MICROPHONE)
                 CAMERA -> binding?.imgAction?.setImage(IconUnify.CAMERA)
-                READ_MEDIA_VIDEO ->  binding?.imgAction?.setImage(IconUnify.VIDEO)
+                READ_MEDIA_VIDEO -> binding?.imgAction?.setImage(IconUnify.VIDEO)
                 READ_EXTERNAL_STORAGE,
                 READ_MEDIA_IMAGES ->  binding?.imgAction?.setImage(IconUnify.IMAGE)
             }
