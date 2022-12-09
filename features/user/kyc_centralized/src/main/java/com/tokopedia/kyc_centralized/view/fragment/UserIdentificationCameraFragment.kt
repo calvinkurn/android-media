@@ -133,7 +133,7 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
     }
 
     private fun checkPermission(isGranted: () -> Unit = {}) {
-        val listPermission = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+        val listPermission = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
                 PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE

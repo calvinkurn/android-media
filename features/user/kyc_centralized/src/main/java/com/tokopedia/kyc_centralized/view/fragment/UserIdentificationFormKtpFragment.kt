@@ -116,7 +116,7 @@ class UserIdentificationFormKtpFragment :
     }
 
     private fun checkPermission(isGranted: () -> Unit) {
-        val listPermission = if (SDK_INT < VERSION_CODES.P) {
+        val listPermission = if (SDK_INT <= VERSION_CODES.P) {
             arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
                 PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
