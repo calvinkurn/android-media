@@ -52,7 +52,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                 @Parcelize
                 data class ConsultationData(
                     @SerializedName("consultation_status")
-                    val consultationStatus: Int = 0,
+                    val consultationStatus: Int? = 0,
                     @SerializedName("consultation_string")
                     val consultationString: String?,
                     @SerializedName("doctor_details")
