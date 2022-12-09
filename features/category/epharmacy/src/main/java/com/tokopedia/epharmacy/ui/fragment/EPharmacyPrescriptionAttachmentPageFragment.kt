@@ -206,8 +206,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner) { papCTA ->
             ePharmacyDoneButton?.show()
             papCTA?.let { cta ->
-                // TODO
-                EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult("", "", "", "", "", "")
                 ePharmacyDoneButton?.text = cta.title
                 when (cta.state) {
                     EPharmacyButtonState.ACTIVE.state -> {
@@ -350,7 +348,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onDoneButtonClick(appLink: String?) {
-        if (hasError()) {
+        if (hasAnyError()) {
             updateUi()
         } else {
             EPharmacyMiniConsultationAnalytics.clickCTAButton("", "", "", "", "")
@@ -377,23 +375,22 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         }
     }
 
-    private fun hasError(): Boolean {
-        ePharmacyAttachmentUiUpdater.mapOfData.forEach {
-            if (it.value is EPharmacyAttachmentDataModel) {
-                if ((
-                    (it.value as EPharmacyAttachmentDataModel).consultationData == null ||
-                        (it.value as EPharmacyAttachmentDataModel).prescriptionImages?.isEmpty() == true
-                    ) &&
-                    (it.value as EPharmacyAttachmentDataModel).showUploadWidget
-                ) {
-                    val updated = (it.value as EPharmacyAttachmentDataModel).copy()
+    private fun hasAnyError(): Boolean {
+        var isError = false
+        ePharmacyAttachmentUiUpdater.mapOfData.forEach { entry ->
+            (entry.value as? EPharmacyAttachmentDataModel)?.let { ePharmacyAttachmentDataModel ->
+                if (EPharmacyUtils.checkIsError(ePharmacyAttachmentDataModel)) {
+                    val updated = (entry.value as EPharmacyAttachmentDataModel).copy()
                     updated.isError = true
+                    if (!isError) {
+                        updated.isFirstError = true
+                    }
                     ePharmacyAttachmentUiUpdater.updateModel(updated)
-                    return true
+                    isError = true
                 }
             }
         }
-        return false
+        return isError
     }
 
     private fun submitList(visitableList: List<BaseEPharmacyDataModel>) {
@@ -433,6 +430,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         super.onError(adapterPosition, modelKey)
         val updated = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).copy()
         updated.isError = false
+        if (updated.isFirstError) {
+            ePharmacyRecyclerView?.smoothScrollToPosition(adapterPosition)
+        }
         ePharmacyAttachmentUiUpdater.updateModel(updated)
     }
 

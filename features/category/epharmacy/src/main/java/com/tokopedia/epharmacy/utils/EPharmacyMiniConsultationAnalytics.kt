@@ -52,7 +52,7 @@ object EPharmacyMiniConsultationAnalytics {
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .setCustomProperty(EventKeys.IS_LOGGED_IN, isLoggedIn.toString())
             .setCustomProperty(EventKeys.PAGE_PATH, "")
-            .setCustomProperty(EventKeys.SCREEN_NAME, "view mini consultation page - $enablerName - $ePharmacyGroupId - $consultationId")
+            .setCustomProperty(EventKeys.SCREEN_NAME, "request to open webview - $enablerName - $ePharmacyGroupId - $consultationId")
             .setUserId(userId)
             .build()
             .send()

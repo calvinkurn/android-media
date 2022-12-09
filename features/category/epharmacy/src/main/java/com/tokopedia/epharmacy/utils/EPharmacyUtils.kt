@@ -1,6 +1,7 @@
 package com.tokopedia.epharmacy.utils
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.usecase.BuildConfig
 import java.text.DateFormat
 import java.text.ParseException
@@ -15,6 +16,22 @@ object EPharmacyUtils {
         } else {
             e.printStackTrace()
         }
+    }
+
+    fun checkIsError(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
+        return (
+            (
+                (
+                    ePharmacyAttachmentDataModel.consultationData == null ||
+                        (
+                            ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.APPROVED.status &&
+                                ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.EXPIRED.status
+                            )
+                    ) ||
+                    ePharmacyAttachmentDataModel.prescriptionImages?.isNotEmpty() == true
+                ) &&
+                ePharmacyAttachmentDataModel.showUploadWidget
+            )
     }
 
     fun formatDateToLocal(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): Date? {

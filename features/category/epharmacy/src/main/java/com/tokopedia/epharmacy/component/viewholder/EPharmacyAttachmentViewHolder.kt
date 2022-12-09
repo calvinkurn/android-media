@@ -76,19 +76,22 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderError() {
         if (dataModel?.isError == true) {
             containerUploadPrescription.setBackgroundResource(com.tokopedia.epharmacy.R.drawable.epharmacy_bg_rounded_red)
-            chatDokterUploadLayout.animate()
-                .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
-                .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
-                .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
-                .setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animator: Animator) {}
-                    override fun onAnimationEnd(animator: Animator) {
-                    }
+            if (dataModel?.isFirstError == true) {
+                chatDokterUploadLayout.animate()
+                    .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
+                    .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
+                    .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationStart(animator: Animator) {}
+                        override fun onAnimationEnd(animator: Animator) {
+                            dataModel?.isError = false
+                        }
 
-                    override fun onAnimationCancel(animator: Animator) {}
-                    override fun onAnimationRepeat(animator: Animator) {}
-                })
-                .start()
+                        override fun onAnimationCancel(animator: Animator) {}
+                        override fun onAnimationRepeat(animator: Animator) {}
+                    })
+                    .start()
+            }
             ePharmacyListener?.onError(bindingAdapterPosition, dataModel?.name)
         } else {
             containerUploadPrescription.setBackgroundResource(R.drawable.epharmacy_bg_rounded_grey)
