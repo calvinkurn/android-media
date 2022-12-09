@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
@@ -13,14 +12,12 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.RouteManagerKt
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
-import com.tokopedia.play_common.R
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.model.orEmpty
 import com.tokopedia.play_common.shortsuploader.receiver.PlayShortsUploadReceiver
 import kotlinx.coroutines.withContext
-import com.tokopedia.unifycomponents.R as unifyR
 
 /**
  * Created By : Jonathan Darwin on December 07, 2022
@@ -29,7 +26,6 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatchers: CoroutineDispatchers,
 ){
-    private var uploadData: PlayShortsUploadModel? = null
 
     private val notificationManager = context.getSystemService(
         Context.NOTIFICATION_SERVICE
@@ -43,6 +39,11 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         setGroup(NOTIFICATION_GROUP)
         priority = NotificationCompat.PRIORITY_MAX
     }
+
+    private var uploadData: PlayShortsUploadModel? = null
+
+    private val notificationId: Int
+        get() = uploadData?.shortsId.toIntOrZero()
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -85,7 +86,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setShowWhen(true)
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, builder)
+        notificationManager.notify(notificationId, builder)
     }
 
     fun onProgress(progress: Int) {
@@ -98,7 +99,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setShowWhen(true)
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, builder)
+        notificationManager.notify(notificationId, builder)
     }
 
     fun onSuccess() {
@@ -131,7 +132,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, builder)
+        notificationManager.notify(notificationId, builder)
     }
 
     fun onError() {
@@ -164,13 +165,11 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setShowWhen(true)
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, builder)
+        notificationManager.notify(notificationId, builder)
     }
 
 
     private companion object {
-        const val NOTIFICATION_ID = 84389
-
         const val PROGRESS_MAX = 100
 
         const val NOTIFICATION_GROUP = "com.tokopedia"
