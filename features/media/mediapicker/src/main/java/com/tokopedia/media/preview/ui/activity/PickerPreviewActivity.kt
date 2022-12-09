@@ -81,7 +81,9 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     }
 
     private val permissionManager: PermissionManager by lazy {
-        PermissionManager.init(this, object : PermissionRequestCallback {
+        PermissionManager.init(
+            this,
+            object : PermissionRequestCallback {
             override fun onDenied(permissions: List<String>) {}
 
             override fun onPermissionPermanentlyDenied(permissions: List<String>) {
