@@ -22,6 +22,9 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapResponseToProductRecommendation
+import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.NO_ORDER_QUANTITY
+import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.resetAllProductCardCarouselItemQuantities
+import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.updateProductCardCarouselItemQuantity
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
@@ -42,7 +45,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
     companion object {
-        private const val NO_ORDER_QUANTITY = 0
         private const val NON_VARIANT_PRODUCT = "0"
     }
 
@@ -82,6 +84,94 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = mMiniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.getMiniCartItemProduct(productId)
+    }
+
+    private fun updateItemCart(
+        miniCartItem: MiniCartItem.MiniCartItemProduct,
+        quantity: Int
+    ) {
+        miniCartItem.quantity = quantity
+        val productId = miniCartItem.productId
+        val cartId = miniCartItem.cartId
+        val updateCartRequest = UpdateCartRequest(
+            cartId = cartId,
+            quantity = miniCartItem.quantity,
+            notes = miniCartItem.notes
+        )
+        updateCartUseCase.setParams(
+            updateCartRequestList = listOf(updateCartRequest),
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
+        )
+        updateCartUseCase.execute({
+            productModels.updateProductCardCarouselItemQuantity(
+                productId = productId,
+                quantity = quantity
+            )
+            _miniCartUpdate.value = Success(it)
+        }, {
+            _miniCartUpdate.postValue(Fail(it))
+        })
+    }
+
+    private fun removeItemCart(
+        miniCartItem: MiniCartItem.MiniCartItemProduct
+    ) {
+        deleteCartUseCase.setParams(
+            cartIdList = listOf(miniCartItem.cartId)
+        )
+        deleteCartUseCase.execute({
+            val productId = miniCartItem.productId
+            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
+            productModels.updateProductCardCarouselItemQuantity(
+                productId = productId,
+                quantity = NO_ORDER_QUANTITY
+            )
+            _miniCartRemove.postValue(Success(data))
+        }, {
+            _miniCartRemove.postValue(Fail(it))
+        })
+    }
+
+    private fun updateProductQuantityBasedOnMiniCart(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        miniCartSimplifiedData.miniCartItems.values.forEach { miniCartItem ->
+            if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
+                val productId = miniCartItem.productId
+                val quantity = HomeLayoutMapper.getAddToCartQuantity(productId, mMiniCartSimplifiedData)
+
+                productModels.updateProductCardCarouselItemQuantity(
+                    productId = productId,
+                    quantity = quantity
+                )
+            }
+        }
+    }
+
+    private fun resetProductQuantityBasedOnMiniCart(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        val cartProductIds = miniCartSimplifiedData.miniCartItems.values.mapNotNull {
+            if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
+        }
+        val unavailableProducts = productModels.filter { it is TokoNowProductCardCarouselItemUiModel && it.productCardModel.productId !in cartProductIds }
+        unavailableProducts.forEach { product ->
+            if ((product as TokoNowProductCardCarouselItemUiModel).parentId != NON_VARIANT_PRODUCT) {
+                val totalQuantity = miniCartSimplifiedData.miniCartItems.getMiniCartItemParentProduct(product.parentId)?.totalQuantity.orZero()
+                if (totalQuantity == HomeLayoutMapper.DEFAULT_QUANTITY) {
+                    productModels.updateProductCardCarouselItemQuantity(
+                        productId = product.productCardModel.productId,
+                        quantity = NO_ORDER_QUANTITY
+                    )
+                } else {
+                    productModels.updateProductCardCarouselItemQuantity(
+                        productId = product.productCardModel.productId,
+                        quantity = totalQuantity
+                    )
+                }
+            } else {
+                productModels.updateProductCardCarouselItemQuantity(
+                    productId = product.productCardModel.productId,
+                    quantity = NO_ORDER_QUANTITY
+                )
+            }
+        }
     }
 
     fun setRecommendationPageName(type: String) {
@@ -135,7 +225,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
-            updateProductQuantity(
+            productModels.updateProductCardCarouselItemQuantity(
                 productId = product.productCardModel.productId,
                 quantity = quantity
             )
@@ -151,118 +241,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         }, {
             _miniCartAdd.postValue(Fail(it))
         })
-    }
-
-    private fun updateItemCart(
-        miniCartItem: MiniCartItem.MiniCartItemProduct,
-        quantity: Int
-    ) {
-        miniCartItem.quantity = quantity
-        val productId = miniCartItem.productId
-        val cartId = miniCartItem.cartId
-        val updateCartRequest = UpdateCartRequest(
-            cartId = cartId,
-            quantity = miniCartItem.quantity,
-            notes = miniCartItem.notes
-        )
-        updateCartUseCase.setParams(
-            updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
-        )
-        updateCartUseCase.execute({
-            updateProductQuantity(
-                productId = productId,
-                quantity = quantity
-            )
-            _miniCartUpdate.value = Success(it)
-        }, {
-            _miniCartUpdate.postValue(Fail(it))
-        })
-    }
-
-    private fun removeItemCart(
-        miniCartItem: MiniCartItem.MiniCartItemProduct
-    ) {
-        deleteCartUseCase.setParams(
-            cartIdList = listOf(miniCartItem.cartId)
-        )
-        deleteCartUseCase.execute({
-            val productId = miniCartItem.productId
-            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
-            updateProductQuantity(
-                productId = productId,
-                quantity = NO_ORDER_QUANTITY
-            )
-            _miniCartRemove.postValue(Success(data))
-        }, {
-            _miniCartRemove.postValue(Fail(it))
-        })
-    }
-
-    private fun updateProductQuantity(
-        productId: String,
-        quantity: Int
-    ) {
-        productModels.filterIsInstance<TokoNowProductCardCarouselItemUiModel>().firstOrNull { it.productCardModel.productId == productId }?.let { model ->
-            val index = productModels.indexOf(model)
-            productModels[index] = model.copy(
-                productCardModel = model.productCardModel.copy(
-                    orderQuantity = quantity
-                )
-            )
-        }
-    }
-
-    private fun resetAllProductQuantities() {
-        productModels.filterIsInstance<TokoNowProductCardCarouselItemUiModel>().forEachIndexed { index, model ->
-            productModels[index] = model.copy(
-                productCardModel = model.productCardModel.copy(
-                    orderQuantity = NO_ORDER_QUANTITY
-                )
-            )
-        }
-    }
-
-    private fun updateProductQuantityBasedOnMiniCart(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        miniCartSimplifiedData.miniCartItems.values.forEach { miniCartItem ->
-            if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
-                val productId = miniCartItem.productId
-                val quantity = HomeLayoutMapper.getAddToCartQuantity(productId, mMiniCartSimplifiedData)
-
-                updateProductQuantity(
-                    productId = productId,
-                    quantity = quantity
-                )
-            }
-        }
-    }
-
-    private fun resetProductQuantityBasedOnMiniCart(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        val cartProductIds = miniCartSimplifiedData.miniCartItems.values.mapNotNull {
-            if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
-        }
-        val unavailableProducts = productModels.filter { it is TokoNowProductCardCarouselItemUiModel && it.productCardModel.productId !in cartProductIds }
-        unavailableProducts.forEach { model ->
-            if ((model as TokoNowProductCardCarouselItemUiModel).parentId != NON_VARIANT_PRODUCT) {
-                val totalQuantity = miniCartSimplifiedData.miniCartItems.getMiniCartItemParentProduct(model.parentId)?.totalQuantity.orZero()
-                if (totalQuantity == HomeLayoutMapper.DEFAULT_QUANTITY) {
-                    updateProductQuantity(
-                        productId = model.productCardModel.productId,
-                        quantity = NO_ORDER_QUANTITY
-                    )
-                } else {
-                    updateProductQuantity(
-                        productId = model.productCardModel.productId,
-                        quantity = totalQuantity
-                    )
-                }
-            } else {
-                updateProductQuantity(
-                    productId = model.productCardModel.productId,
-                    quantity = NO_ORDER_QUANTITY
-                )
-            }
-        }
     }
 
     fun addProductToCart(
@@ -288,7 +266,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         launch {
             mMiniCartSimplifiedData?.apply {
                 if (miniCartItems.values.isEmpty()) {
-                    resetAllProductQuantities()
+                    productModels.resetAllProductCardCarouselItemQuantities()
                 } else {
                     updateProductQuantityBasedOnMiniCart(this)
                     resetProductQuantityBasedOnMiniCart(this)

@@ -1,18 +1,13 @@
 package com.tokopedia.tokopedianow.productrecommendation
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -23,46 +18,6 @@ import org.junit.Test
 
 class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
 
-    private val mockProductModels = mutableListOf<Visitable<*>>(
-        TokoNowProductCardCarouselItemUiModel(
-            productCardModel = TokoNowProductCardViewUiModel(
-                productId = "11111",
-                name = "product a",
-                price = "RP. 10.000",
-                minOrder = 1,
-                orderQuantity = 2,
-                availableStock = 100,
-                maxOrder = 6
-            ),
-            shopId = "122212"
-        ),
-        TokoNowProductCardCarouselItemUiModel(
-            productCardModel = TokoNowProductCardViewUiModel(
-                productId = "11112",
-                name = "product b",
-                price = "RP. 30.000",
-                minOrder = 1,
-                orderQuantity = 0,
-                availableStock = 100,
-                maxOrder = 3
-            ),
-            shopId = "122212"
-        ),
-        TokoNowProductCardCarouselItemUiModel(
-            productCardModel = TokoNowProductCardViewUiModel(
-                productId = "11113",
-                name = "product c",
-                price = "RP. 20.000",
-                minOrder = 2,
-                orderQuantity = 1,
-                availableStock = 90,
-                maxOrder = 2
-            ),
-            shopId = "122212"
-        ),
-        TokoNowSeeMoreCardCarouselUiModel()
-    )
-
     @Test
     fun `while adding product to cart, the request should be success`() {
         val position = 1
@@ -70,15 +25,18 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val cartId = "22122121"
         val success = 1
 
-        val privateFieldName = "productModels"
-        val expectedProduct = mockProductModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
-        viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
+        val expectedAddToCartDataTrackerModel = AddToCartDataTrackerModel(
+            position = position,
+            quantity = quantity,
+            cartId = cartId,
+            productRecommendation = expectedProduct
         )
+
+        mockProductModels()
 
         val response = AddToCartDataModel(
             data = DataModel(
@@ -95,6 +53,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartAdd.verifySuccessEquals(Success(response))
+        viewModel.atcDataTracker.verifyValueEquals(expectedAddToCartDataTrackerModel)
     }
 
     @Test
@@ -102,14 +61,10 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val position = 1
         val quantity = 2
 
-        val privateFieldName = "productModels"
-        val expectedProduct = mockProductModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
         val shopId = expectedProduct.shopId
 
-        viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
-        )
+        mockProductModels()
 
         onAddToCart_thenReturn(Throwable())
 
@@ -122,32 +77,18 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
     fun `while updating product to cart, the request should be success`() {
         val position = 0
         val quantity = 4
-        val cartId = "22122121"
-        val success = 1
+        val message = "success"
 
-        val privateFieldName = "productModels"
-        val expectedProduct = mockProductModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
-        viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
-        )
+        mockProductModels()
 
-        viewModel.mockPrivateField(
-            name = "mMiniCartSimplifiedData",
-            value = MiniCartSimplifiedData(
-                    miniCartItems = mapOf(Pair(
-                        MiniCartItemKey(id = productId),
-                        MiniCartItem.MiniCartItemProduct()
-                    )
-                )
-            )
-        )
+        mockMiniCartSimplifiedData(productId)
 
         val response = UpdateCartV2Data(
-            error = listOf("success"),
+            error = listOf(message),
         )
 
         onUpdateItemCart_thenReturn(response)
@@ -162,26 +103,13 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val position = 1
         val quantity = 2
 
-        val privateFieldName = "productModels"
-        val expectedProduct = mockProductModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
-        viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
-        )
+        mockProductModels()
 
-        viewModel.mockPrivateField(
-            name = "mMiniCartSimplifiedData",
-            value = MiniCartSimplifiedData(
-                miniCartItems = mapOf(Pair(
-                    MiniCartItemKey(id = productId),
-                    MiniCartItem.MiniCartItemProduct()
-                )
-                )
-            )
-        )
+        mockMiniCartSimplifiedData(productId)
 
         onUpdateItemCart_thenReturn(Throwable())
 
@@ -194,35 +122,22 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
     fun `while removing product to cart, the request should be success`() {
         val position = 0
         val quantity = 0
-        val cartId = "22122121"
         val success = 1
+        val message = "success"
 
-        val privateFieldName = "productModels"
-        val expectedProduct = mockProductModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
-        viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
-        )
+        mockProductModels()
 
-        viewModel.mockPrivateField(
-            name = "mMiniCartSimplifiedData",
-            value = MiniCartSimplifiedData(
-                miniCartItems = mapOf(Pair(
-                    MiniCartItemKey(id = productId),
-                    MiniCartItem.MiniCartItemProduct(productId = productId)
-                )
-                )
-            )
-        )
+        mockMiniCartSimplifiedData(productId)
 
         val response = RemoveFromCartData(
-            errorMessage = listOf("success"),
+            errorMessage = listOf(message),
             data = Data(
-                success = 1,
-                message = listOf("success")
+                success = success,
+                message = listOf(message)
             )
         )
 
@@ -238,30 +153,21 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val position = 0
         val quantity = 0
 
-        val privateFieldName = "productModels"
-        val expectedProduct = mockProductModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
-        viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
-        )
-
-        viewModel.mockPrivateField(
-            name = "mMiniCartSimplifiedData",
-            value = MiniCartSimplifiedData(
-                miniCartItems = mapOf(Pair(
-                    MiniCartItemKey(id = productId),
-                    MiniCartItem.MiniCartItemProduct(productId = productId)
-                )
-                )
-            )
-        )
-
         onRemoveItemCart_thenReturn(Throwable())
 
-        viewModel.addProductToCart(position, quantity, shopId)
+        mockProductModels()
+
+        mockMiniCartSimplifiedData(productId)
+
+        viewModel.addProductToCart(
+            position = position,
+            quantity = quantity,
+            shopId = shopId
+        )
 
         viewModel.miniCartRemove.verifyErrorEquals(Fail(Throwable()))
     }
@@ -271,16 +177,19 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val position = 1
         val quantity = 0
 
-        val expectedProduct = mockProductModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
         val shopId = expectedProduct.shopId
 
-        val privateFieldName = "productModels"
         viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
+            name = privateFieldProductModels,
+            value = productModels
         )
 
-        viewModel.addProductToCart(position, quantity, shopId)
+        viewModel.addProductToCart(
+            position = position,
+            quantity = quantity,
+            shopId = shopId
+        )
 
         viewModel.miniCartAdd.verifyValueEquals(null)
         viewModel.miniCartUpdate.verifyValueEquals(null)
@@ -289,17 +198,20 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while adding product to cart if product is not TokoNowProductCardCarouselItemUiModel, it will do nothing`() {
-        val position = mockProductModels.size - 1
+        val position = productModels.size - 1
         val quantity = 0
         val shopId = "12221"
 
-        val privateFieldName = "productModels"
         viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
+            name = privateFieldProductModels,
+            value = productModels
         )
 
-        viewModel.addProductToCart(position, quantity, shopId)
+        viewModel.addProductToCart(
+            position = position,
+            quantity = quantity,
+            shopId = shopId
+        )
 
         viewModel.miniCartAdd.verifyValueEquals(null)
         viewModel.miniCartUpdate.verifyValueEquals(null)
@@ -312,13 +224,16 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val quantity = 0
         val shopId = "12221"
 
-        val privateFieldName = "productModels"
         viewModel.mockPrivateField(
-            name = privateFieldName,
-            value = mockProductModels
+            name = privateFieldProductModels,
+            value = productModels
         )
 
-        viewModel.addProductToCart(position, quantity, shopId)
+        viewModel.addProductToCart(
+            position = position,
+            quantity = quantity,
+            shopId = shopId
+        )
 
         viewModel.miniCartAdd.verifyValueEquals(null)
         viewModel.miniCartUpdate.verifyValueEquals(null)
