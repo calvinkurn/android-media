@@ -143,14 +143,9 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
         }
 
         activity?.let {
-            permissionCheckerHelper.request(
-                it, listPermission,
-                granted = {
-                    isGranted.invoke() },
-                denied = {
-                    it.finish()
-                }
-            )
+            permissionCheckerHelper.request(it, listPermission) {
+                isGranted.invoke()
+            }
         }
     }
 
