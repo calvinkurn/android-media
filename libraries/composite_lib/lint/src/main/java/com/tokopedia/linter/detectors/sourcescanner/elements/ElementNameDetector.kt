@@ -40,7 +40,7 @@ object ElementNameDetector {
     private val regexList = listOf(
         "(?i)(card*cvv|(\bcard.*cvv|card.*cvv\b))|(card.*cvv)|(\bcard.*cvv|card.*cvv\b\\S+)|(card.*cvv\b)|(creditcard*cvv|(\bcreditcard.*cvv|creditcard.*cvv\b))|(creditcard.*cvv)|(\bcreditcard.*cvv|creditcard.*cvv\b\\S+)|(creditcard.*cvv\b)|(cc*cvv|(\bcc.*cvv|cc.*cvv\b))|(cc.*cvv)|(\bcc.*cvv|cc.*cvv\b\\S+)|(cc.*cvv\\b)|(cvv*code|(\bcvv.*code|cvv.*code\b))|(cvv.*code)|(\bcvv.*code|cvv.*code\b\\S+)|(cvv.*code\b)|(cvvault*code|(\bcvvault.*code|cvvault.*code\b))|(cvvault.*code)|(\bcvvault.*code|cvvault.*code\b\\S+)|(cvvault.*code\b)|(\b*CVV)|(\b*cvv)",
         "(?i)(mail*address|(\bmail.*address|mail.*address\b))|(mail.*address)|(mail.*address\b.*)|(email*address|(\bemail.*address|email.*address\b))|(email.*address)|(email.*address\b.*)|(mail.*|\bmail.*)|(email.*|\bemail.*)",
-        "name|Name|NAME|user_name|userName",
+        "((\bname\b)|(\bName\b)|(\bNAME\b)|user_name|userName|username)",
         "full_name|FULL_NAME|fullName",
         "address|ADDRESS|Address|home_addr|shop_addr",
         "ktp|KTP|kTp|Ktp|KTp|kTP",
