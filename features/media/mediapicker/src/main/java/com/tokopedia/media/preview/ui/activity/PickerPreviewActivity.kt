@@ -200,7 +200,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     }
 
     private fun checkPermission() {
-        if (isGranted(this, WRITE_EXTERNAL_STORAGE) && SDK_INT < VERSION_CODES.P) {
+        if (isGranted(this, WRITE_EXTERNAL_STORAGE) && SDK_INT <= VERSION_CODES.P) {
             permissionManager.requestPermission(WRITE_EXTERNAL_STORAGE, PERMISSION_REQUEST_CODE)
         } else {
             viewModel.files(uiModel)
