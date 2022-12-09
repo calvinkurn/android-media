@@ -1,7 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.*
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
 import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
@@ -75,7 +75,6 @@ class UserProfileReminderViewModelTest {
 
     @Test
     fun `when user wants to set reminder, it should emit success event`() {
-
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
@@ -86,7 +85,7 @@ class UserProfileReminderViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.SaveReminderActivityResult(mockChannelId, mockPosition, true))
-            } recordEvent  {
+            } recordEvent {
                 submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = false))
             } andThen {
                 last().assertEvent(UserProfileUiEvent.SuccessUpdateReminder("ignore this message", mockPosition))
@@ -96,7 +95,6 @@ class UserProfileReminderViewModelTest {
 
     @Test
     fun `when user wants to unset reminder, it should emit success event`() {
-
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
@@ -107,7 +105,7 @@ class UserProfileReminderViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.SaveReminderActivityResult(mockChannelId, mockPosition, false))
-            } recordEvent  {
+            } recordEvent {
                 submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = false))
             } andThen {
                 last().assertEvent(UserProfileUiEvent.SuccessUpdateReminder("ignore this message", mockPosition))
@@ -117,7 +115,6 @@ class UserProfileReminderViewModelTest {
 
     @Test
     fun `when user wants to unset reminder and BE fail to update, it should emit error event`() {
-
         coEvery { mockRepo.updateReminder(any(), any()) } returns mockMutationError
 
         val robot = UserProfileViewModelRobot(
@@ -130,7 +127,7 @@ class UserProfileReminderViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.SaveReminderActivityResult(mockChannelId, mockPosition, false))
-            } recordEvent  {
+            } recordEvent {
                 submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = false))
             } andThen {
                 last().assertEvent(UserProfileUiEvent.ErrorUpdateReminder(mockException))
@@ -140,7 +137,6 @@ class UserProfileReminderViewModelTest {
 
     @Test
     fun `when user wants to unset reminder and error happen, it should emit error event`() {
-
         coEvery { mockRepo.updateReminder(any(), any()) } throws mockException
 
         val robot = UserProfileViewModelRobot(
@@ -153,7 +149,7 @@ class UserProfileReminderViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.SaveReminderActivityResult(mockChannelId, mockPosition, false))
-            } recordEvent  {
+            } recordEvent {
                 submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = false))
             } andThen {
                 last().assertEvent(UserProfileUiEvent.ErrorUpdateReminder(mockException))
@@ -163,7 +159,6 @@ class UserProfileReminderViewModelTest {
 
     @Test
     fun `when user wants to unset reminder and theres no saved reminder data, it should do anything`() {
-
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
@@ -172,7 +167,7 @@ class UserProfileReminderViewModelTest {
         )
 
         robot.use {
-            it.recordEvent  {
+            it.recordEvent {
                 submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = false))
             } andThen {
                 this equalTo emptyList()
@@ -182,7 +177,6 @@ class UserProfileReminderViewModelTest {
 
     @Test
     fun `when user wants to unset reminder and after logged in, it should load new follow status and emit success event`() {
-
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
         val robot = UserProfileViewModelRobot(
@@ -196,7 +190,7 @@ class UserProfileReminderViewModelTest {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(false))
                 submitAction(UserProfileAction.SaveReminderActivityResult(mockChannelId, mockPosition, false))
-            } recordStateAndEvent   {
+            } recordStateAndEvent {
                 coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
                 submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))

@@ -17,10 +17,40 @@
             android:layout_height="48dp"
             app:title="Add Gql" />
 
+        <RadioGroup
+            android:id="@+id/rgCheckedResponseState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbCheckedSuccess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Set Response Success" />
+
+            <RadioButton
+                android:id="@+id/rbCheckedError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Set Response Error" />
+        </RadioGroup>
+
+        <CheckBox
+            android:id="@+id/cbDelayResponse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/set_delay_response_5_second" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
             tools:context=".presentation.activities.AddGqlActivity">
 
             <TextView

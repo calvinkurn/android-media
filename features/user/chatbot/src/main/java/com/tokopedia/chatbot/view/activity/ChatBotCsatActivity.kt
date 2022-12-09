@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.view.activity
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
-import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.view.fragment.ChatBotCsatFragment
 import com.tokopedia.csat_rating.activity.BaseProvideRatingActivity
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
@@ -23,7 +23,7 @@ class ChatBotCsatActivity : BaseProvideRatingActivity() {
         val CASE_CHAT_ID = "caseChatID"
         val CASE_ID = "caseID"
 
-        fun getInstance(context: Context, clickEmoji: Int, model: CsatOptionsViewModel?): Intent {
+        fun getInstance(context: Context, clickEmoji: Int, model: CsatOptionsUiModel?): Intent {
             val intent = Intent(context, ChatBotCsatActivity::class.java)
             intent.putExtra(CLICKED_EMOJI, clickEmoji)
             intent.putExtra(CASE_CHAT_ID, model?.csat?.caseChatId)

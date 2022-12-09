@@ -103,6 +103,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val showLocationAdminPopUp: LiveData<Result<Boolean>>
         get() = mutableShowLocationAdminPopUp
 
+    private val mutableAdminRedirection = MutableLiveData<Result<Boolean>>()
+    val adminRedirection: LiveData<Result<Boolean>>
+        get() = mutableAdminRedirection
+
     private val mutableGoToSecurityQuestion = MutableLiveData<String>()
     val goToSecurityQuestion: LiveData<String>
         get() = mutableGoToSecurityQuestion
@@ -200,6 +204,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
             getAdminTypeUseCase = getAdminTypeUseCase,
             showLocationAdminPopUp = {
                 mutableShowLocationAdminPopUp.value = Success(true)
+            },
+            onLocationAdminRedirection = {
+                mutableAdminRedirection.value = Success(true)
             },
             showErrorGetAdminType = {
                 mutableShowLocationAdminPopUp.value = Fail(it)

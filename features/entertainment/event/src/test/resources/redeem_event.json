@@ -6,30 +6,43 @@
       "provider_id": 3,
       "facility_group_id": 0,
       "provider_product_id": "Testing offline events-1-3",
+      "provider_product_code": " ",
+      "provider_product_name": " ",
       "display_name": "Testing offline events",
       "title": "Testing offline events",
+      "action_text": " ",
+      "censor": " ",
+      "genre": " ",
+      "duration": "0",
       "url": "testing-offline-event",
       "seo_url": "testing-offline-event",
-      "image_web": "https://ecs7.tokopedia.net/img/banner/2018/3/8/5253715/5253715_59dd6dd4-fe55-4d7c-a9dd-6ea93a9ff951.jpg",
-      "thumbnail_web": "https://ecs7.tokopedia.net/img/banner/2018/3/8/5253715/5253715_59dd6dd4-fe55-4d7c-a9dd-6ea93a9ff951.jpg",
-      "image_app": "https://ecs7.tokopedia.net/img/banner/2018/3/8/5253715/5253715_59dd6dd4-fe55-4d7c-a9dd-6ea93a9ff951.jpg",
-      "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2018/3/8/5253715/5253715_59dd6dd4-fe55-4d7c-a9dd-6ea93a9ff951.jpg",
+      "image_web": "https://images.tokopedia.net/img/cache/1200/ANWSwT/2020/10/21/264fa070-9605-4b7d-b830-6ba94c9ec011.png",
+      "thumbnail_web": "https://images.tokopedia.net/img/cache/800/ANWSwT/2020/10/21/264fa070-9605-4b7d-b830-6ba94c9ec011.png",
+      "image_app": "https://images.tokopedia.net/img/cache/800/ANWSwT/2020/10/21/264fa070-9605-4b7d-b830-6ba94c9ec011.png",
+      "thumbnail_app": "https://images.tokopedia.net/img/cache/600/ANWSwT/2020/10/21/264fa070-9605-4b7d-b830-6ba94c9ec011.png",
       "tnc": "~~ Before purchasing your ticket, please make sure that purchasing date is not less than 7 days before the event date.\n~ Tickets cannot be exchanged or refunded.\n~ Please ensure that you enter a valid email address and mobile phone number.\n~ We will send you a confirmation email after payment completed.\n~ Please note that this email is not a ticket and will not give you access. This email need to be redeemed for a ticket at the venue.\n~ Make sure you bring either a printout of this voucher to the venue to guarantee entry\n~ Internet handling fee will be charged per ticket. Please check your total amount before payment.\n~ We recommend that you arrive at the venue at least 20 minutes before the event start to redeemed your physical tickets.\n~ The amount paid is only for the ticket entry, not include any accommodation (Transportation, hotel etc).",
-      "long_rich_desc": " ",
+      "offer_text": " ",
+      "short_desc": " ",
+      "long_rich_desc": "                                                              \u003cp style\u003d\"text-align:justify\"\u003eGrab your Mickey ears and get ready for the ultimate Disney experience at Disney On Ice celebrates Everyone’s Story!  Be charmed by a cast of over 50 unforgettable Disney characters, with Mouse-ter of Ceremonies Mickey Mouse, his sweetheart Minnie Mouse, Donald Duck, Goofy and many of the Disney Princesses including Cinderella, Rapunzel, Ariel, Snow White and Tiana. Relive the magic of Disney’s Frozen with Anna, Elsa and the hilarious Olaf as they discover that true love is the greatest magic of all. Sing-along to over 30 unforgettable songs including favorites like “Let It Go,” “You’ve Got a Friend in Me,” and “Hakuna Matata.” Exciting moments from Disney•Pixar’s Toy Story, Finding Nemo, Disney’s The Lion King, Beauty and the Beast, Aladdin and more will leave the whole family captivated with memories that will last a lifetime. Experience the celebration of the century when Disney On Ice celebrates Everyone’s Story skates into your hometown!  \n\n",
+      "meta_title": " ",
+      "meta_description": " ",
+      "search_tags": " ",
+      "display_tags": " ",
       "mrp": 0,
       "sales_price": 0,
+      "is_free": 0,
       "min_start_date": 1577880000,
-      "max_end_date": 1735732800,
-      "created_at": "2020-09-17T16:50:48+07:00",
-      "updated_at": "2020-09-17T16:50:48+07:00"
+      "max_end_date": 1671642000,
+      "created_at": "2022-11-22T17:19:46+07:00",
+      "updated_at": "2022-11-22T17:19:46+07:00"
     },
     "schedule": {
       "show_data": "01 Jan 2020 19:00",
-      "name": "Testing Normal",
+      "name": "Test Free",
       "description": "Tiket berlaku untuk 1 orang. Harap membaca syarat dan ketentuan."
     },
     "user": {
-      "name": "Elly Yes"
+      "name": "Hefdy Wiguna"
     },
     "action": [
       {
@@ -45,9 +58,45 @@
         "border_color": ""
       }
     ],
+    "redemptions": [
+      {
+        "id": 14940,
+        "day": 1,
+        "redemption_time": 1669112370,
+        "participant_details": [
+          {
+            "label": "Nama",
+            "value": "Hefdy Wiguna#1"
+          }
+        ]
+      },
+      {
+        "id": 14941,
+        "day": 1,
+        "redemption_time": 1669112386,
+        "participant_details": [
+          {
+            "label": "Nama",
+            "value": "Hefdy Wiguna#2"
+          }
+        ]
+      },
+      {
+        "id": 14942,
+        "day": 1,
+        "redemption_time": 1669112386,
+        "participant_details": [
+          {
+            "label": "Nama",
+            "value": "Hefdy Wiguna#3"
+          }
+        ]
+      }
+    ],
+    "redemption_status": 1,
     "quantity": 3
   },
   "status": "OK",
   "config": null,
-  "server_process_time": "11.576056ms"
+  "server_process_time": "9.24632ms"
 }

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.tradein">
+    package="com.tokopedia.tradein"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application android:usesCleartextTraffic="true">
@@ -28,6 +29,7 @@
             android:name=".view.activity.TradeInHomePageActivity"
             android:label="@string/tukar_tambah"
             android:launchMode="singleTask"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -48,7 +50,12 @@
         <activity
             android:name=".view.activity.TradeInPromoActivity"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
         </activity>
+        <activity
+            android:name="com.laku6.tradeinsdk.activities.ButtonDetectionActivity"
+            tools:node="merge"
+            android:exported="false"/>
     </application>
 </manifest>

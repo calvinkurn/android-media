@@ -10,6 +10,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
@@ -78,7 +79,7 @@ class ProductDetailTopAdsVerificationTest {
     }
 
     private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        val layoutManager = recyclerView.layoutManager as CenterLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 

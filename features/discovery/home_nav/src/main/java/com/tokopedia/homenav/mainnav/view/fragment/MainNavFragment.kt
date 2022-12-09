@@ -177,7 +177,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        observeCategoryListData()
         viewModel.mainNavLiveData.observe(viewLifecycleOwner, Observer {
             populateAdapterData(it)
         })
@@ -292,7 +291,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
 
     private fun validateHomeWishlistPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
-        homeNavMenuDataModel.id == ID_WISHLIST_MENU && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+        homeNavMenuDataModel.id == ID_WISHLIST_MENU &&
+            (
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
+            )
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
         when(homeNavMenuDataModel.id) {
@@ -364,15 +367,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             return (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
         }
         return null
-    }
-
-    private fun observeCategoryListData(){
-        onRefresh()
-        viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
-            if(it is Fail){
-
-            }
-        })
     }
 
     private fun initAdapter() {

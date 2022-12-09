@@ -82,14 +82,23 @@
     <string name="wrong_email_format">Pastikan format e-mail kamu sudah benar.</string>
 
     <!-- ADD PHONE -->
-    <string name="title_add_phone">Tambah Nomor HP</string>
-    <string name="warning_add_phone">Biar akunmu aman, pastikan nomor HP-mu aktif.</string>
-    <string name="title_phone">Nomor HP</string>
-    <string name="sample_phone">Contoh: 08xxxxxxxxxx</string>
-    <string name="wrong_phone_format">Format nomor HP salah</string>
-    <string name="button_next">Selanjutnya</string>
-    <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
-    <string name="subtitle_phone_setting_profile">Nomor HP</string>
+    <string name="add_phone_title_add_phone">Tambah Nomor HP</string>
+    <string name="add_phone_warning_add_phone">Biar akunmu aman, pastikan nomor HP-mu aktif.</string>
+    <string name="add_phone_title_phone">Nomor HP</string>
+    <string name="add_phone_sample_phone">Contoh: 08xxxxxxxxxx</string>
+    <string name="add_phone_wrong_phone_format">Format nomor HP salah</string>
+    <string name="add_phone_button_next">Selanjutnya</string>
+    <string name="add_phone_success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
+    <string name="add_phone_subtitle_phone_setting_profile">Nomor HP</string>
+
+    <!-- NEW ADD PHONE-->
+    <string name="new_add_phone_title">Tambah nomor HP biar akunmu makin aman, yuk!</string>
+    <string name="new_add_phone_subtitle">Akunmu akan jadi lebih aman karena dilindungi kata sandi dan nomor HP.</string>
+    <string name="new_add_phone_label_filed">Nomor HP</string>
+    <string name="new_add_phone_label_button">Tambah Nomor HP</string>
+    <string name="new_add_phone_must_be_filled">Wajib diisi.</string>
+    <string name="new_add_phone_min_length_error">Min. 9 digit.</string>
+    <string name="new_add_phone_max_length_error">Maks. 15 angka</string>
 
     <!-- CHANGE PIN -->
     <string name="title_change_pin">Ubah PIN Tokopedia</string>

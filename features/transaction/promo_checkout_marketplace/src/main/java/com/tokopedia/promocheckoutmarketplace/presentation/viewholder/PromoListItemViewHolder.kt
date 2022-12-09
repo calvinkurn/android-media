@@ -55,7 +55,7 @@ class PromoListItemViewHolder(
     private var colorBackgroundSelected =
         ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
     private var colorBackgroundEnabled =
-        ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
     private var colorBackgroundDisabled =
         ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
     private var colorIconLightSelected =

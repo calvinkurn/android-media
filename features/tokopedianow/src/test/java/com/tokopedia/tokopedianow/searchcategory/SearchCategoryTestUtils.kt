@@ -23,9 +23,11 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVa
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
+import org.junit.Assert
 import org.junit.Assert.assertThat
 import java.io.File
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -109,6 +111,7 @@ fun verifyProductItemDataViewList(
         expectedProductList: List<Product>,
         actualProductItemDataViewList: List<ProductItemDataView>,
         startPosition: Int,
+        needToVerifyAtc: Boolean = true
 ) {
     assertThat(actualProductItemDataViewList.size, shouldBe(expectedProductList.size))
 
@@ -130,7 +133,7 @@ fun verifyProductItemDataViewList(
         assertThat(actualProductDataView.sourceEngine, shouldBe(expectedProduct.sourceEngine))
         assertThat(actualProductDataView.boosterList, shouldBe(expectedProduct.boosterList))
         assertThat(actualProductDataView.position, shouldBe(expectedPosition))
-        assertATCConfiguration(actualProductDataView, expectedProduct)
+        if (needToVerifyAtc) assertATCConfiguration(actualProductDataView, expectedProduct)
         assertLabelGroupDataView(
                 actualProductDataView.labelGroupDataViewList,
                 expectedProduct.labelGroupList
@@ -205,6 +208,10 @@ fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState(
     assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
 }
 
+fun Visitable<*>.assertProductFeedbackWidget(){
+    assertThat(this, instanceOf(TokoNowFeedbackWidgetUiModel::class.java))
+}
+
 fun assertTokonowRecommendationCarouselRequestParams(
     getRecommendationRequestParam: GetRecommendationRequestParam,
     recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel,
@@ -214,4 +221,18 @@ fun assertTokonowRecommendationCarouselRequestParams(
     assertThat(getRecommendationRequestParam.isTokonow, shouldBe(true))
     assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
     assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))
+}
+
+fun List<Visitable<*>>.assertNotProductFeedbackWidget(){
+   val tempList = this.filterIsInstance<TokoNowFeedbackWidgetUiModel>()
+    Assert.assertEquals(tempList.size,0)
+}
+
+fun assertNoProductFeedbackWidget(list:List<Visitable<*>>){
+    var found = false
+    list.forEach {
+        if(it is TokoNowFeedbackWidgetUiModel)
+           found = true
+    }
+    Assert.assertEquals(found,false)
 }

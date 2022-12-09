@@ -61,13 +61,13 @@ class TokoNowCategoryItemViewHolder(
                 listener?.onAllCategoryClicked()
             } else {
                 RouteManager.route(itemView.context, data.appLink)
-                listener?.onCategoryClicked(adapterPosition, data.id, data.headerName)
+                listener?.onCategoryClicked(layoutPosition, data.id, data.headerName, data.title)
             }
         }
     }
 
     interface TokoNowCategoryItemListener {
         fun onAllCategoryClicked()
-        fun onCategoryClicked(position: Int, categoryId: String, headerName: String)
+        fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String)
     }
 }

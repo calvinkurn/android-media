@@ -19,10 +19,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
-import com.tokopedia.product.addedit.detail.presentation.model.SimilarProduct
-import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
+import com.tokopedia.product.addedit.detail.presentation.model.*
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -1247,6 +1244,57 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `updateProductPhotos with expected edit picture`(){
+        //params
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "a/0/tkpd/102014.jpg")
+        val originalImage = arrayListOf("", "a/0/tkpd/102013.jpg", "")
+
+        //data existing
+        val list = listOf(
+            PictureInputModel(picID = "1", urlOriginal = "a/0/tkpd/102012.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
+            PictureInputModel(picID = "2", urlOriginal = "a/0/tkpd/102014.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
+        )
+        val sampleProductPhotos = list
+
+        //target
+        val targetImageUrlOrPathList = arrayListOf("thumb 1","a/0/tkpd/102013.jpg", "thumb 2")
+        val objectTarget = DetailInputModel().apply {
+            this.pictureList = list
+            this.imageUrlOrPathList = targetImageUrlOrPathList
+        }
+
+
+        viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
+        val actual = viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assertEquals(objectTarget, actual)
+    }
+
+    @Test
+    fun `updateProductPhotos with expected all new image`(){
+        //params
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "a/tkpd/102014.jpg")
+        val originalImage = arrayListOf("", "a/0/tkpd/102013.jpg", "")
+
+        //data existing
+        val list = listOf(
+            PictureInputModel(picID = "1", urlOriginal = "a/0/tkpd/102020.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
+            PictureInputModel(picID = "2", urlOriginal = "a/0/tkpd/102021.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
+        )
+        val sampleProductPhotos = list
+
+        //target
+        val targetImageUrlOrPathList = arrayListOf("a/0/tkpd/102012.jpg","a/0/tkpd/102013.jpg", "a/tkpd/102014.jpg")
+        val objectTarget = DetailInputModel().apply {
+            this.pictureList = emptyList()
+            this.imageUrlOrPathList = targetImageUrlOrPathList
+        }
+
+        viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
+        val actual = viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assertEquals(objectTarget, actual)
+    }
+
+    @Test
     fun `disable productNameField when product has transaction`() {
         // positive case
         viewModel.productInputModel.itemSold = 199
@@ -2059,6 +2107,12 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when successful transactions is less than 100 and shop type is regular merchant expect no service fee`() {
         val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(99, ShopStatusLevelDef.LEVEL_REGULAR)
+        assertTrue(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when successful transactions is less than 100 and shop type is official store expect no service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(99, ShopStatusLevelDef.LEVEL_OFFICIAL_STORE)
         assertTrue(isFreeOfServiceFee)
     }
 

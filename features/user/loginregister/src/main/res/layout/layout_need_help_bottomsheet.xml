@@ -1,50 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/ub_forgot_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="alternate"
+        android:text="@string/loginregister_title_forgot_password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/ub_forgot_password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonType="alternate"
-            android:text="@string/loginregister_title_forgot_password"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/ub_inactive_phone_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="alternate"
+        android:text="@string/loginregister_title_phone_number_inactive"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ub_forgot_password"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/ub_inactive_phone_number"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonType="alternate"
-            android:text="@string/loginregister_title_phone_number_inactive"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ub_forgot_password"
-            app:layout_constraintEnd_toEndOf="parent"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/to_need_another_help"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="display_2"
+        android:gravity="center"
+        android:text="@string/loginregister_need_another_help"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ub_inactive_phone_number" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/to_need_another_help"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyType="display_2"
-            android:gravity="center"
-            android:text="@string/loginregister_need_another_help"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="28dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ub_inactive_phone_number" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

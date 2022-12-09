@@ -1,7 +1,7 @@
 [
   {
     "data": {
-      "notifier_getHtdw": {
+      "notifier_getHtdw_v2": {
         "status": 200,
         "data": {
           "notification_id": 234,
@@ -53,6 +53,25 @@
                 }
               ]
             }
+          ],
+          "payment": [
+            {
+            "image_url": "https://images.tokopedia.net/img/og_image_default_new.jpg",
+            "gateway_name": "BCA",
+            "account_number": "RN12345",
+            "total_payment": "Rp 50.000",
+            "expired_time": "1682468828",
+            "app_link": "tokopedia://home",
+            "action_buttons": [
+              {
+                "id": 1,
+                "icon": "",
+                "text": "Lihat Cara Bayar",
+                "type": "",
+                "app_link": "tokopedia://home"
+              }
+            ]
+          }
           ],
           "card": {
             "label": "Lihat Semuaa",

@@ -12,6 +12,7 @@ import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SeparatorItemDecoration
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
@@ -22,6 +23,7 @@ import javax.inject.Inject
 
 @SearchScope
 class RecyclerViewUpdater @Inject constructor(
+    private val searchNavigationListener: SearchNavigationListener?,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     @SearchContext
     context: Context,
@@ -38,6 +40,9 @@ class RecyclerViewUpdater @Inject constructor(
 
     override val itemCount: Int
         get() = productListAdapter?.itemCount ?: 0
+
+    override val itemList: List<Visitable<*>>?
+        get() = productListAdapter?.itemList
 
     fun initialize(
         recyclerView: RecyclerView?,
@@ -109,6 +114,7 @@ class RecyclerViewUpdater @Inject constructor(
     }
 
     override fun removeLoading() {
+        searchNavigationListener?.removeSearchPageLoading()
         productListAdapter?.removeLoading()
     }
 
@@ -122,6 +128,14 @@ class RecyclerViewUpdater @Inject constructor(
 
     override fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>) {
         productListAdapter?.insertItemAfter(item, previousItem)
+    }
+
+    override fun backToTop() {
+        recyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun scrollToPosition(position: Int) {
+        recyclerView?.scrollToPosition(position)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

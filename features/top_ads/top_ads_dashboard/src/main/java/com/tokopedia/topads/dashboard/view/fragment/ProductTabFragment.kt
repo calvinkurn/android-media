@@ -186,7 +186,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
         viewModel.getGroupProductData(page,
-            arguments?.getInt(TopAdsDashboardConstant.GROUP_ID) ?: 0,
+            arguments?.getString(TopAdsDashboardConstant.GROUP_ID) ?: "0",
             searchBar?.searchBarTextField?.text.toString(),
             groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
             startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(),
@@ -246,7 +246,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
-            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
+            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getString(TopAdsDashboardConstant.GROUP_ID))
             putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, arguments?.getString(TopAdsDashboardConstant.GROUP_STRATEGY))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
@@ -368,7 +368,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
         viewModel.getGroupProductData(1,
-            arguments?.getInt(TopAdsDashboardConstant.GROUP_ID) ?: 0,
+            arguments?.getString(TopAdsDashboardConstant.GROUP_ID) ?: "0",
             searchBar?.searchBarTextField?.text.toString(),
             groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
             startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(),

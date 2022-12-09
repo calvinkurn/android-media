@@ -82,27 +82,23 @@ class AffiliatePerformaSharedProductCardsItemVH(
             itemView.findViewById<Typography>(R.id.product_name)?.text = product.itemTitle
             itemView.findViewById<Typography>(R.id.product_status)?.text =
                 getString(R.string.affiliate_date, formatDate(element.product.linkGeneratedAt))
-            if (product.status == PRODUCT_ACTIVE) {
-                itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                    )
-                )
-                itemView.findViewById<Typography>(R.id.product_name)?.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                    )
-                )
-            } else {
-                val disabledColor = MethodChecker.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
-                )
-                itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(disabledColor)
-                itemView.findViewById<Typography>(R.id.product_name)?.setTextColor(disabledColor)
-            }
+            val disabledColor = MethodChecker.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN400
+            )
+            val activeColor = MethodChecker.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+            itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(disabledColor)
+            itemView.findViewById<Typography>(R.id.product_name)?.setTextColor(
+                if (product.status == PRODUCT_ACTIVE) {
+                    activeColor
+                } else {
+                    disabledColor
+                }
+            )
+
             itemView.setOnClickListener {
                 if (product.itemType == PRODUCT_ITEM) sendSelectContentEvent(product) else sendShopClickEvent(
                     product
@@ -117,7 +113,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
         }
     }
 
-    private fun formatDate(rfc3339Date:String?):String{
+    private fun formatDate(rfc3339Date: String?): String {
         val rfc3339DatePattern = "yyyy-MM-dd'T'HH:mm:ssZ"
         val dayMonYearPattern = "dd MMM yyyy"
         return rfc3339Date?.let {

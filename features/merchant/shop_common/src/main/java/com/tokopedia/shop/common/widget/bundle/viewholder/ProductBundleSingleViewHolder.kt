@@ -126,8 +126,8 @@ class ProductBundleSingleViewHolder(
 
         bundleDetailAdapter.setSelectionListener { selectedBundle ->
             renderBundlePriceDetails(selectedBundle)
-            bundle.selectedBundleId = selectedBundle.bundleId
-            bundle.selectedBundleApplink = selectedBundle.applink
+            bundleDetail.selectedBundleId = selectedBundle.bundleId
+            bundleDetail.selectedBundleApplink = selectedBundle.applink
             listener?.onTrackSingleVariantChange(
                 product,
                 selectedBundle,
@@ -147,12 +147,16 @@ class ProductBundleSingleViewHolder(
     private fun initShopInfo(shopInfo: BundleShopUiModel?, bundleName: String) {
         val hasShopInfo = shopInfo != null
         viewBinding?.bundleWidgetHeaderContainer?.apply {
-            iconShop.isVisible = hasShopInfo
             tvShopName.isVisible = hasShopInfo
             tvBundleName.isVisible = hasShopInfo
             tvBundleNameLarge.isVisible = !hasShopInfo
             if (hasShopInfo) {
-                iconShop.loadImage(shopInfo?.shopIconUrl)
+                if(!shopInfo?.shopIconUrl.isNullOrEmpty()) {
+                    iconShop.visibility = View.VISIBLE
+                    iconShop.loadImage(shopInfo?.shopIconUrl)
+                }else{
+                    iconShop.visibility = View.GONE
+                }
                 tvShopName.text = shopInfo?.shopName
             } else {
                 tvBundleNameLarge.text = bundleName

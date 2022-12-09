@@ -30,29 +30,29 @@ class SliderBannerViewModelTest {
     }
 
 
-//    @Test
-//    fun `test for ListData Live data`(){
-//        every { componentsItem.data } returns null
-//        var viewModel: SliderBannerViewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
-//        assert(viewModel.getListDataLiveData().value == null)
-//
-//        val list = ArrayList<DataItem>()
-//        every { componentsItem.data } returns list
-//        viewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
-//        assert(viewModel.getListDataLiveData().value?.isEmpty() == true)
-//
-////      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
-////      and this was causing exception.
-//        mockkConstructor(URLParser::class)
-//        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
-//        for (i in 0..4) {
-//            val item = DataItem()
-//            list.add(item)
-//        }
-//        viewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
-//        assert(viewModel.getListDataLiveData().value?.size == 5)
-//        assert(viewModel.getListDataLiveData().value?.firstOrNull()?.name == ComponentNames.SingleBanner.componentName)
-//    }
+    @Test
+    fun `test for ListData Live data`(){
+        every { componentsItem.data } returns null
+        var viewModel: SliderBannerViewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
+        assert(viewModel.getListDataLiveData().value == null)
+
+        val list = ArrayList<DataItem>()
+        every { componentsItem.data } returns list
+        viewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
+        assert(viewModel.getListDataLiveData().value?.isEmpty() == true)
+
+//      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        for (i in 0..4) {
+            val item = DataItem()
+            list.add(item)
+        }
+        viewModel = spyk(SliderBannerViewModel(application, componentsItem, 99))
+        assert(viewModel.getListDataLiveData().value?.size == 5)
+        assert(viewModel.getListDataLiveData().value?.firstOrNull()?.name == ComponentNames.SingleBanner.componentName)
+    }
 
     @Test
     fun `test for position passed to VM`(){
