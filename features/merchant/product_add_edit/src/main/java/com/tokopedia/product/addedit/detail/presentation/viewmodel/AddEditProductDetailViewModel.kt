@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
@@ -321,7 +320,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         launchCatchError(block = {
             mMaxStockThreshold.value = getMaxStockThresholdUseCase.execute(shopId).getIMSMeta.data.maxStockThreshold
         }, onError = {
-                mMaxStockThreshold.value = String.EMPTY
+                mMaxStockThreshold.value = null
             })
     }
 
