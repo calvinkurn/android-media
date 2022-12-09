@@ -928,6 +928,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun setOverlaySize(displaySize: Pair<Float, Float>?) {
+        if (data.isToolCrop()) return
         displaySize?.let {
             viewBinding?.imgPreviewOverlay?.apply {
                 val lp = layoutParams
@@ -938,7 +939,9 @@ class DetailEditorFragment @Inject constructor(
                 layoutParams = lp
 
                 post {
-                    this.loadImage(data.addLogoValue.overlayLogoUrl)
+                    this.loadImage(data.addLogoValue.overlayLogoUrl) {
+                        setPlaceHolder(-1)
+                    }
                 }
             }
         }
