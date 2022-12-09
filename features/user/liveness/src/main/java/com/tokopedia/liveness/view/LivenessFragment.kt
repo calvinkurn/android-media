@@ -364,7 +364,7 @@ class LivenessFragment : BaseDaggerFragment(),
     private fun setFailedResultData(detectionFailedType: Detector.DetectionFailedType) {
         val bundle = Bundle()
         bundle.putSerializable(LivenessConstants.ARG_FAILED_TYPE, detectionFailedType)
-
+        bundle.putString(PARAM_PROJECT_ID, projectId)
         activity?.let {
             val fragment = LivenessErrorFragment.newInstance(bundle)
             (it as LivenessActivity).replaceFragment(fragment)
