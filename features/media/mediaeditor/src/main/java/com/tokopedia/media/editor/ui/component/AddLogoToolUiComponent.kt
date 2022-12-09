@@ -37,7 +37,8 @@ class AddLogoToolUiComponent constructor(
 
     private val shopAvatar = findViewById<ImageView>(editorR.id.add_logo_shop_avatar)
     private val uploadAvatar = findViewById<ImageView>(editorR.id.add_logo_upload_avatar)
-    private val uploadAvatarWrapper = findViewById<LinearLayout>(editorR.id.add_logo_upload_avatar_wrapper)
+    private val uploadAvatarWrapper =
+        findViewById<LinearLayout>(editorR.id.add_logo_upload_avatar_wrapper)
     private val uploadButton = findViewById<CardUnify2>(editorR.id.add_logo_upload_button)
     private val uploadText = findViewById<Typography>(editorR.id.add_logo_upload_text)
 
@@ -76,7 +77,12 @@ class AddLogoToolUiComponent constructor(
         setChild(child.root)
     }
 
-    fun setupView(imageWidth: Int, imageHeight: Int, avatarUrl: String, localAvatarUrl: String = "") {
+    fun setupView(
+        imageWidth: Int,
+        imageHeight: Int,
+        avatarUrl: String,
+        localAvatarUrl: String = ""
+    ) {
         originalImageWidth = imageWidth
         originalImageHeight = imageHeight
 
@@ -109,7 +115,12 @@ class AddLogoToolUiComponent constructor(
             val image = ImageSpan(it, ImageSpan.ALIGN_BOTTOM)
             val startIndex = modifiedText.indexOf(editFormat)
 
-            span.setSpan(image, startIndex, startIndex + editFormat.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            span.setSpan(
+                image,
+                startIndex,
+                startIndex + editFormat.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
         }
         return span
     }
@@ -175,17 +186,27 @@ class AddLogoToolUiComponent constructor(
     }
 
     private fun getUploadAvatarBitmap(): Bitmap {
-        val resultBitmap = Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
+        val resultBitmap =
+            Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
-        drawBitmap(canvas, uploadAvatar.drawable.toBitmap())
+        drawBitmap(
+            canvas, getDrawLogo(
+                uploadAvatar.drawable.toBitmap()
+            )
+        )
 
         return resultBitmap
     }
 
     private fun getShopAvatarBitmap(): Bitmap {
-        val resultBitmap = Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
+        val resultBitmap =
+            Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
-        drawBitmap(canvas, shopAvatar.drawable.toBitmap())
+        drawBitmap(
+            canvas, getDrawLogo(
+                shopAvatar.drawable.toBitmap()
+            )
+        )
 
         return resultBitmap
     }
@@ -194,7 +215,11 @@ class AddLogoToolUiComponent constructor(
         canvas.drawBitmap(bitmap, LOGO_X_POS, LOGO_Y_POS, Paint())
     }
 
-    private fun roundedBitmap(source: Bitmap, cornerRadius: Float = 0f, isCircular: Boolean = false): Bitmap {
+    private fun roundedBitmap(
+        source: Bitmap,
+        cornerRadius: Float = 0f,
+        isCircular: Boolean = false
+    ): Bitmap {
         val roundedBitmap = RoundedBitmapDrawableFactory.create(resources(), source)
         roundedBitmap.cornerRadius = if (isCircular) (source.width.toFloat() / 2) else cornerRadius
 
@@ -219,6 +244,19 @@ class AddLogoToolUiComponent constructor(
         }, TOASTER_DELAY_TIME)
     }
 
+    // get logo bitmap that rescaled to 1/6 from base image
+    private fun getDrawLogo(source: Bitmap): Bitmap {
+        val widthTarget = originalImageWidth / LOGO_SIZE_DIVIDER
+        val heightTarget = ((widthTarget.toFloat() / source.width) * source.height).toInt()
+
+        return Bitmap.createScaledBitmap(
+            source,
+            widthTarget,
+            heightTarget,
+            true
+        )
+    }
+
     interface Listener {
         fun onLogoChosen(bitmap: Bitmap)
         fun onUpload()
@@ -235,5 +273,8 @@ class AddLogoToolUiComponent constructor(
 
         private const val TOASTER_DELAY_TIME = 300L
         private const val RETRY_LIMIT = 3
+
+        // logo size 1/6 from base image
+        private const val LOGO_SIZE_DIVIDER = 6
     }
 }
