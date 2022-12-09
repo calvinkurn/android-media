@@ -2,6 +2,7 @@ package com.tokopedia.epharmacy.utils
 
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object EPharmacyMapper {
 
@@ -21,7 +22,7 @@ object EPharmacyMapper {
             group.consultationData?.consultationString,
             group.consultationData?.prescription,
             group.consultationData?.partnerConsultationId,
-            group.consultationData?.tokoConsultationId,
+            group.consultationData?.tokoConsultationId.toLongOrZero(),
             group.prescriptionImages,
             group.prescriptionSource,
             group.consultationSource,

@@ -68,7 +68,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                     @SerializedName("start_time")
                     val startTime: String?,
                     @SerializedName("toko_consultation_id")
-                    val tokoConsultationId: Long?
+                    val tokoConsultationId: String?
                 ) : Parcelable {
                     @Parcelize
                     data class DoctorDetails(
