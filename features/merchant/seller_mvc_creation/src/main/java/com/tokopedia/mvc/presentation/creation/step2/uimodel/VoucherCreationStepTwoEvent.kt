@@ -10,4 +10,5 @@ sealed class VoucherCreationStepTwoEvent {
     data class OnVoucherNameChanged(val voucherName: String) : VoucherCreationStepTwoEvent()
     data class OnVoucherCodeChanged(val voucherCode: String) : VoucherCreationStepTwoEvent()
     data class ValidateVoucherInput(val voucherConfiguration: VoucherConfiguration) : VoucherCreationStepTwoEvent()
+    object NavigateToNextStep : VoucherCreationStepTwoEvent()
 }

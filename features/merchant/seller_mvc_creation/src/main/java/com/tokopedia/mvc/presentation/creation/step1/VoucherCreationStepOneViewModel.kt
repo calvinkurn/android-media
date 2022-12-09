@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.creation.step1
 
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -10,12 +11,14 @@ import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneAction
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
+import com.tokopedia.mvc.util.constant.CommonConstant
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class VoucherCreationStepOneViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase
+    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
+    private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -38,6 +41,9 @@ class VoucherCreationStepOneViewModel @Inject constructor(
             }
             is VoucherCreationStepOneEvent.ChooseVoucherType -> {
                 handleVoucherTypeSelection(event.pageMode, event.isVoucherProduct)
+            }
+            is VoucherCreationStepOneEvent.HandleCoachmark -> {
+                handleCoachmark()
             }
             is VoucherCreationStepOneEvent.NavigateToNextStep -> {
                 navigateToNextStep()
@@ -101,5 +107,24 @@ class VoucherCreationStepOneViewModel @Inject constructor(
                 currentState.voucherConfiguration
             )
         )
+    }
+
+    private fun handleCoachmark() {
+        if (!isCoachMarkShown()) {
+            _uiAction.tryEmit(VoucherCreationStepOneAction.ShowCoachmark)
+        }
+    }
+
+    private fun isCoachMarkShown(): Boolean {
+        return sharedPreferences.getBoolean(
+            CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_ONE_COACH_MARK,
+            false
+        )
+    }
+
+    fun setSharedPrefCoachMarkAlreadyShown() {
+        sharedPreferences.edit()
+            .putBoolean(CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_ONE_COACH_MARK, true)
+            .apply()
     }
 }

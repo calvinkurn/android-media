@@ -14,5 +14,9 @@ data class VoucherCreationStepTwoUiState(
     val voucherCodeErrorMsg: String = "",
     val error: Throwable? = null
 ) {
-    fun isInputValid(): Boolean = !isVoucherNameError
+    fun isInputValid(): Boolean = if (voucherConfiguration.isVoucherPublic) {
+        !isVoucherNameError
+    } else {
+        !isVoucherNameError && !isVoucherCodeError
+    }
 }

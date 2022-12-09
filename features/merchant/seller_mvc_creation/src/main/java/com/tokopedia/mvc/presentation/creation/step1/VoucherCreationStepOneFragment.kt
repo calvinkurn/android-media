@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherCreationStepOneBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -48,6 +50,13 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
 
     // binding
     private var binding by autoClearedNullable<SmvcFragmentVoucherCreationStepOneBinding>()
+
+    //coachmark
+    private val coachMark by lazy {
+        context?.let {
+            CoachMark2(it)
+        }
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -91,6 +100,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
         setupView()
         observeUiState()
         observeUiAction()
+        viewModel.processEvent(VoucherCreationStepOneEvent.HandleCoachmark)
     }
 
     private fun observeUiState() {
@@ -118,6 +128,9 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
             }
             is VoucherCreationStepOneAction.NavigateToNextStep -> {
                 navigateToNextStep(action.pageMode, action.voucherConfiguration)
+            }
+            is VoucherCreationStepOneAction.ShowCoachmark -> {
+                showCoachmark()
             }
             is VoucherCreationStepOneAction.ShowError -> {
                 showError(action.error)
@@ -211,6 +224,21 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
 
     private fun showError(error: Throwable) {
         binding?.btnContinue.showToasterError(error.message ?: "")
+    }
+
+    private fun showCoachmark() {
+        binding?.run {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            coachMarkItem.add(
+                CoachMark2Item(
+                    voucherTypeSelectionProduct,
+                    getString(R.string.smvc_voucher_creation_step_one_coachmark_title),
+                    getString(R.string.smvc_voucher_creation_step_one_coachmark_description)
+                )
+            )
+            coachMark?.showCoachMark(coachMarkItem)
+            coachMark?.onDismissListener = { viewModel.setSharedPrefCoachMarkAlreadyShown() }
+        }
     }
 
     private fun navigateToNextStep(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {

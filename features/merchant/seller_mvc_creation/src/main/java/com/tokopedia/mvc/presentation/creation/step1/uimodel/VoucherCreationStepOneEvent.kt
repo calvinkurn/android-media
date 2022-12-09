@@ -11,5 +11,6 @@ sealed class VoucherCreationStepOneEvent {
         val pageMode: PageMode, val isVoucherProduct: Boolean
     ) : VoucherCreationStepOneEvent()
 
+    object HandleCoachmark : VoucherCreationStepOneEvent()
     object NavigateToNextStep : VoucherCreationStepOneEvent()
 }

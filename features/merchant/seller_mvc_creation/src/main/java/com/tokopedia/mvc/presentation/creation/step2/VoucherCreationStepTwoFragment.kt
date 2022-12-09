@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherCreationStepTwoBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoButtonSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherCodeSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherNameSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherPeriodSectionBinding
@@ -59,6 +60,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     private var voucherNameSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoVoucherNameSectionBinding>()
     private var voucherCodeSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoVoucherCodeSectionBinding>()
     private var voucherPeriodSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoVoucherPeriodSectionBinding>()
+    private var buttonSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoButtonSectionBinding>()
 
     // viewModel
     @Inject
@@ -119,7 +121,8 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     private fun handleUiState(state: VoucherCreationStepTwoUiState) {
         renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
         renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
-        renderVoucherCodeValidation(state.isVoucherCodeError, state.voucherCodeErrorMsg)
+        renderVoucherCodeValidation(state.voucherConfiguration, state.isVoucherCodeError, state.voucherCodeErrorMsg)
+        renderButtonValidation(state.isInputValid())
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
@@ -149,11 +152,16 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
                 voucherPeriodSectionBinding =
                     SmvcVoucherCreationStepTwoVoucherPeriodSectionBinding.bind(view)
             }
+            viewButton.setOnInflateListener { _, view ->
+                buttonSectionBinding =
+                    SmvcVoucherCreationStepTwoButtonSectionBinding.bind(view)
+            }
         }
         setupHeader()
         setupVoucherTargetSection()
         setupVoucherNameSection()
         setupVoucherCodeSection()
+        setupButtonSection()
     }
 
     private fun setupHeader() {
@@ -248,7 +256,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
 
         voucherNameSectionBinding?.run {
             tfVoucherName.editText.setText(voucherConfiguration.voucherName)
-            tfVoucherName.editText.afterTextChanged {  text ->
+            tfVoucherName.editText.afterTextChanged { text ->
                 viewModel.processEvent(
                     VoucherCreationStepTwoEvent.OnVoucherNameChanged(text)
                 )
@@ -290,12 +298,36 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     }
 
     private fun renderVoucherCodeValidation(
+        voucherConfiguration: VoucherConfiguration,
         isVoucherCodeError: Boolean,
         voucherCodeErrorMsg: String
     ) {
         voucherCodeSectionBinding?.run {
+            tfVoucherCode.editText.setText(voucherConfiguration.voucherCode)
             tfVoucherCode.isInputError = isVoucherCodeError
             tfVoucherCode.setMessage(voucherCodeErrorMsg)
+        }
+    }
+
+    //Button section
+    private fun setupButtonSection() {
+        binding?.run {
+            if (viewButton.parent != null) {
+                viewButton.inflate()
+            }
+        }
+
+        buttonSectionBinding?.run {
+            btnBack.setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton) }
+        }
+    }
+
+    private fun renderButtonValidation(isEnabled: Boolean) {
+        buttonSectionBinding?.run {
+            btnContinue.apply {
+                this.isEnabled = isEnabled
+                setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep) }
+            }
         }
     }
 }

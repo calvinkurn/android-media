@@ -3,22 +3,18 @@ package com.tokopedia.mvc.presentation.creation.step2
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.presentation.creation.step2.helper.ErrorHelper
-import com.tokopedia.mvc.presentation.creation.step2.helper.ErrorMessageHelper
+import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class VoucherCreationStepTwoViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val errorMessageHelper: ErrorMessageHelper
+    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {
-
-    companion object {
-        private const val TRUE = 1
-    }
 
     private val _uiState = MutableStateFlow(VoucherCreationStepTwoUiState())
     val uiState = _uiState.asStateFlow()
@@ -39,6 +35,7 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
             is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
             is VoucherCreationStepTwoEvent.ValidateVoucherInput -> {}
+            is VoucherCreationStepTwoEvent.NavigateToNextStep -> {}
         }
     }
 
@@ -61,11 +58,12 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    isVoucherPublic = isPublic,
-                    voucherCode = ""
+                    isVoucherPublic = isPublic
                 )
             )
         }
+
+        handleVoucherInputValidation()
     }
 
     private fun handleVoucherNameChanges(voucherName: String) {
@@ -88,13 +86,36 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
 
     private fun handleVoucherInputValidation() {
         val voucherConfiguration = currentState.voucherConfiguration
-        _uiState.update {
-            it.copy(
-                isVoucherNameError = ErrorHelper.getVoucherInputErrorStatus(voucherConfiguration.voucherName),
-                voucherNameErrorMsg = errorMessageHelper.getVoucherInputErrorMessage(voucherConfiguration.voucherName),
-                isVoucherCodeError = ErrorHelper.getVoucherInputErrorStatus(voucherConfiguration.voucherCode),
-                voucherCodeErrorMsg = errorMessageHelper.getVoucherInputErrorMessage(voucherConfiguration.voucherCode)
-            )
-        }
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val voucherValidationParam = VoucherValidationPartialUseCase.Param(
+                    benefitIdr = voucherConfiguration.benefitIdr,
+                    benefitMax = voucherConfiguration.benefitMax,
+                    benefitPercent = voucherConfiguration.benefitPercent,
+                    benefitType = voucherConfiguration.benefitType,
+                    promoType = voucherConfiguration.promoType,
+                    isVoucherProduct = voucherConfiguration.isVoucherProduct,
+                    minPurchase = voucherConfiguration.minPurchase,
+                    productIds = emptyList(),
+                    targetBuyer = voucherConfiguration.targetBuyer,
+                    couponName = voucherConfiguration.voucherName,
+                    isPublic = voucherConfiguration.isVoucherPublic,
+                    code = voucherConfiguration.voucherCode
+                )
+                val validationResult =
+                    voucherValidationPartialUseCase.execute(voucherValidationParam).validationError
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isVoucherNameError = validationResult.couponName.isNotBlank(),
+                        voucherNameErrorMsg = validationResult.couponName,
+                        isVoucherCodeError = validationResult.code.isNotBlank(),
+                        voucherCodeErrorMsg = validationResult.code
+                    )
+                }
+            },
+            onError = { }
+        )
     }
 }

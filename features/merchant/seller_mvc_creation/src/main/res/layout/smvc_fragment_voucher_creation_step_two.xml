@@ -14,14 +14,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_title="@string/smvc_informasi_kupon_label"
-        app:unify_header_is_show_shadow="false" />
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/smvc_informasi_kupon_label" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layout_button_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
@@ -74,5 +74,21 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:id="@+id/layout_button_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ViewStub
+            android:id="@+id/view_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inflatedId="@+id/button_section"
+            android:layout="@layout/smvc_voucher_creation_step_two_button_section" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
