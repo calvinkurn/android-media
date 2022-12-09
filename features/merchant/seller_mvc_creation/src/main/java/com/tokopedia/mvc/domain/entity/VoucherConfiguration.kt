@@ -12,7 +12,7 @@ data class VoucherConfiguration(
     val benefitIdr: Long = 0,
     val benefitMax: Long = 0,
     val benefitPercent: Int = 0,
-    val benefitType : BenefitType = BenefitType.NOMINAL,
+    val benefitType: BenefitType = BenefitType.NOMINAL,
     val promoType: PromoType = PromoType.FREE_SHIPPING,
     val isVoucherProduct: Boolean = false,
     val minPurchase: Long = 0,
@@ -23,5 +23,6 @@ data class VoucherConfiguration(
     val voucherName: String = "",
     val code: String = "",
     val startPeriod: Date = Date(),
-    val endPeriod: Date = Date()
+    val endPeriod: Date = Date(),
+    val totalPeriod: Int = 0
 ) : Parcelable

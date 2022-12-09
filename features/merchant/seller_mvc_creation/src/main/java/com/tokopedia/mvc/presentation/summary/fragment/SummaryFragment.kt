@@ -31,6 +31,7 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -235,14 +236,12 @@ class SummaryFragment: BaseDaggerFragment(),
     private fun SmvcVoucherDetailVoucherInfoSectionBinding.updatePageInfo(
         information: VoucherConfiguration
     ) {
-        val resources = root.context.resources
         with(information) {
-            val targetItems = resources.getStringArray(R.array.target_items)
             tpgVoucherName.text = voucherName
             tpgVoucherCode.text = code
             tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
                                     else getString(R.string.smvc_voucher_private_label)
-            llVoucherCode.isVisible = isVoucherPublic
+            llVoucherCode.isVisible = !isVoucherPublic
             try {
                 val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
                 tpgVoucherStartPeriod.text = formatter.format(startPeriod)
@@ -288,6 +287,14 @@ class SummaryFragment: BaseDaggerFragment(),
         }
     }
 
+    private fun showSuccessUploadBottomSheet(configuration: VoucherConfiguration) {
+        SuccessUploadBottomSheet
+            .createInstance(configuration)
+            .setOnAdsClickListener(::onSuccessBottomsheetAdsClick)
+            .setOnBroadCastClickListener(::onSuccessBottomsheetBroadCastClick)
+            .show(childFragmentManager)
+    }
+
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         // TODO: redirect to step 1
     }
@@ -306,6 +313,13 @@ class SummaryFragment: BaseDaggerFragment(),
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
         redirectionHelper.redirectToViewProductPage(activity ?: return, configuration, listOf())
+    }
 
+    private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {
+        // TODO implement broadcast redirection
+    }
+
+    private fun onSuccessBottomsheetAdsClick(voucherConfiguration: VoucherConfiguration) {
+        // TODO implement ads redirection
     }
 }

@@ -38,9 +38,9 @@ data class AddProductUiState(
         benefitPercent = 0,
         benefitType = BenefitType.NOMINAL,
         promoType = PromoType.CASHBACK,
+        isVoucherProduct = true,
         minPurchase = 0,
         productIds = emptyList(),
-        isVoucherProduct = true,
         targetBuyer = VoucherTargetBuyer.ALL_BUYER
     ),
     val error: Throwable? = null
