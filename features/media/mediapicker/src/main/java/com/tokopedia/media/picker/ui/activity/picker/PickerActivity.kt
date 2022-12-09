@@ -23,7 +23,7 @@ import com.tokopedia.media.picker.ui.component.ParentContainerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
-import com.tokopedia.media.picker.utils.delegates.permissionGranted
+import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -58,8 +58,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     @Inject
     lateinit var pickerAnalytics: PickerAnalytics
-
-    private val hasPermissionGranted: Boolean by permissionGranted()
 
     protected val medias = arrayListOf<MediaUiModel>()
 
@@ -191,7 +189,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun initView() {
-        if (hasPermissionGranted) {
+        if (isRootPermissionGranted()) {
             onPageViewByType()
         } else {
             onPermissionPageView()
@@ -299,6 +297,13 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     override fun onPermissionGranted() {
         onPageViewByType()
+    }
+
+    override fun isRootPermissionGranted(): Boolean {
+        val page = param.get().pageType()
+        val mode = param.get().modeType()
+
+        return hasPermissionRequiredGranted(this, page, mode)
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
