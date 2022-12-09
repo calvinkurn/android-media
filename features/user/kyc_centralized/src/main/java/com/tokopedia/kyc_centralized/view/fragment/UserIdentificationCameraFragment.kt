@@ -137,10 +137,13 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
                 it, arrayOf(
                     PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
                     PermissionCheckerHelper.Companion.PERMISSION_CAMERA
-                )
-            ) {
-                isGranted.invoke()
-            }
+                ),
+                granted = {
+                    isGranted.invoke() },
+                denied = {
+                    it.finish()
+                }
+            )
         }
     }
 
