@@ -1036,6 +1036,7 @@ class TokoNowHomeFragment : Fragment(),
                     getMiniCart()
                     showToaster(
                         message = it.data.second,
+                        actionText = getString(R.string.tokopedianow_toaster_ok),
                         type = TYPE_NORMAL
                     )
                 }
