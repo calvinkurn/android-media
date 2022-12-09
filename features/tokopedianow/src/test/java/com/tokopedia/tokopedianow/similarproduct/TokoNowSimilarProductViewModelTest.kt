@@ -21,6 +21,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -77,46 +78,19 @@ class TokoNowSimilarProductViewModelTest {
         } returns data
 
         every {
-            chooseAddressData.city_id
-        } answers{
-            "123"
-        }
-        every {
-            chooseAddressData.address_id
-        } answers {
-            "123"
-        }
-        every {
-            chooseAddressData.district_id
-        } answers {
-            "321"
-        }
-        every {
-            chooseAddressData.lat
-        } answers {
-            "123"
-        }
-        every {
-            chooseAddressData.long
-        } answers {
-            "312"
-        }
-        every {
-            chooseAddressData.postal_code
-        } answers {
-            "123"
-        }
-        every {
-            chooseAddressData.warehouse_id
-        } answers {
-            "213"
-        }
+            chooseAddressWrapper.getChooseAddressData()
+        } returns LocalCacheModel(
+            city_id = "123",
+            address_id = "112121",
+            district_id = "12",
+            lat = "123",
+            long = "412",
+            postal_code = "123",
+            warehouse_id = "412"
+        )
 
-        coEvery {
-            viewModel.appendChooseAddressParams()
-        } returns mutableMapOf()
-
-        viewModel.getSimilarProductList("")
+        viewModel.getSimilarProductList("123")
+        coVerify {  }
         viewModel.similarProductList.verifyValueEquals(data.productRecommendationWidgetSingle?.data?.recommendation)
     }
 
