@@ -210,7 +210,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_info_typography"
+        app:layout_constraintTop_toBottomOf="@+id/progress_typography"
         app:layout_constraintVertical_bias="1.0" />
 
     <com.tokopedia.unifyprinciples.Typography
