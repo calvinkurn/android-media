@@ -11,6 +11,9 @@ import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.RouteManagerKt
 import javax.inject.Inject
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
@@ -99,13 +102,33 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     }
 
     fun onSuccess() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, uploadData?.shortsId.orEmpty())
+
+        val openPlayRoomPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        } else {
+            PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        }
+
         val builder = notificationBuilder
             .setProgress(0, 0, false)
             .setContentTitle(NOTIFICATION_TITLE)
             .setContentText(NOTIFICATION_SUCCESS_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_SUCCESS_DESCRIPTION))
+            .setContentIntent(openPlayRoomPendingIntent)
             .setOngoing(false)
             .setShowWhen(true)
+            .setAutoCancel(true)
             .build()
 
         notificationManager.notify(NOTIFICATION_ID, builder)
