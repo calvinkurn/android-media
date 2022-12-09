@@ -341,7 +341,7 @@ abstract class BaseTrackerConst {
             else {
                 map[KEY_CATEGORY_ID] = if(product.categoryId.isNotBlank()) product.categoryId else NONE
                 map[KEY_SHOP_ID] = if(product.shopId.isNotBlank()) product.shopId else NONE
-                map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopName else NONE
+                map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopId else NONE
                 map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
                 map[KEY_DIMENSION_83] = checkBebasOngkir(product)
             }
@@ -410,4 +410,5 @@ abstract class BaseTrackerConst {
     protected fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
     }
+
 }
