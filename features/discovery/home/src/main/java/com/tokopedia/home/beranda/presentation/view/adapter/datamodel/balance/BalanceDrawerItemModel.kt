@@ -38,42 +38,4 @@ data class BalanceDrawerItemModel(
         const val STATE_LOADING = 1
         const val STATE_ERROR = 2
     }
-
-    override fun equals(other: Any?): Boolean {
-        return try {
-            other as BalanceDrawerItemModel
-            other.state != state &&
-                other.balanceTitleTextAttribute != balanceTitleTextAttribute &&
-                other.balanceSubTitleTextAttribute != balanceSubTitleTextAttribute &&
-                other.iconImageUrl != iconImageUrl
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    override fun toString(): String {
-        return super.toString()
-    }
-
-    override fun hashCode(): Int {
-        var result = applinkContainer.hashCode()
-        result = 31 * result + applinkActionText.hashCode()
-        result = 31 * result + redirectUrl.hashCode()
-        result = 31 * result + (iconImageUrl?.hashCode() ?: 0)
-        result = 31 * result + (defaultIconRes ?: 0)
-        result = 31 * result + (balanceTitleTextAttribute?.hashCode() ?: 0)
-        result = 31 * result + (balanceSubTitleTextAttribute?.hashCode() ?: 0)
-        result = 31 * result + (balanceTitleTagAttribute?.hashCode() ?: 0)
-        result = 31 * result + (balanceSubTitleTagAttribute?.hashCode() ?: 0)
-        result = 31 * result + drawerItemType
-        result = 31 * result + mainPageTitle.hashCode()
-        result = 31 * result + state
-        result = 31 * result + trackingAttribute.hashCode()
-        result = 31 * result + (alternateBalanceDrawerItem?.hashCode() ?: 0)
-        result = 31 * result + (balanceCoachmark?.hashCode() ?: 0)
-        result = 31 * result + reserveBalance.hashCode()
-        result = 31 * result + headerTitle.hashCode()
-        result = 31 * result + isSubscriberGoToPlus.hashCode()
-        return result
-    }
 }
