@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CrossSellItemRequestModel(
         @SerializedName("id")
-        var id: Long = 0,
+        var id: Long = 0L,
 
         @SerializedName("price")
         var price: Double = 0.0,

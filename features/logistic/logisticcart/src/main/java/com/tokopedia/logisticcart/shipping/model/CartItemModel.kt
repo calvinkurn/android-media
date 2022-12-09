@@ -38,7 +38,7 @@ data class CartItemModel(
         var errorMessageDescription: String = "",
         var isProtectionAvailable: Boolean = false,
         var protectionPricePerProduct: Int = 0,
-        var protectionPrice: Int = 0,
+        var protectionPrice: Double = 0.0,
         var protectionSubTitle: String = "",
         var protectionTitle: String = "",
         var protectionLinkText: String = "",

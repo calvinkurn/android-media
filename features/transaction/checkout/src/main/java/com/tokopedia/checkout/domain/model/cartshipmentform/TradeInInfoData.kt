@@ -6,9 +6,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class TradeInInfoData(
         var isValidTradeIn: Boolean = false,
-        var newDevicePrice: Int = 0,
+        var newDevicePrice: Long = 0,
         var newDevicePriceFmt: String = "",
-        var oldDevicePrice: Int = 0,
+        var oldDevicePrice: Long = 0,
         var oldDevicePriceFmt: String = "",
         var isDropOffEnable: Boolean = false,
         var deviceModel: String = "",

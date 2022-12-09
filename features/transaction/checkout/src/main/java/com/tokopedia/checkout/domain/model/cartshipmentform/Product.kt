@@ -16,7 +16,7 @@ data class Product(
         var productId: Long = 0,
         var productName: String = "",
         var productPriceFmt: String = "",
-        var productPrice: Long = 0,
+        var productPrice: Double = 0.0,
         var productOriginalPrice: Double = 0.0,
         var productWholesalePrice: Double = 0.0,
         var productWholesalePriceFmt: String = "",

@@ -41,7 +41,6 @@ data class CrossSellProduct (
         @SerializedName("product_code")
         val productCode: Int = 0,
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("product_info_type_id")
         val productInfoTypeId: Long = 0,
 
@@ -57,7 +56,6 @@ data class CrossSellProduct (
         @SerializedName("saving")
         val saving: String = "",
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("vertical_id")
         val verticalId: Long = 0,
 
