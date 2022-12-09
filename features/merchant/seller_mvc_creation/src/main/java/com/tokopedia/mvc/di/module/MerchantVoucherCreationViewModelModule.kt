@@ -13,6 +13,7 @@ import com.tokopedia.mvc.presentation.product.add.AddProductViewModel
 import com.tokopedia.mvc.presentation.product.list.ProductListViewModel
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantViewModel
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantViewModel
+import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -58,9 +59,14 @@ abstract class MerchantVoucherCreationViewModelModule {
     @ViewModelKey(VoucherDetailViewModel::class)
     internal abstract fun provideVoucherDetailViewModel(viewModel: VoucherDetailViewModel): ViewModel
 
-
     @Binds
     @IntoMap
     @ViewModelKey(DownloadVoucherImageViewModel::class)
     internal abstract fun provideDownloadVoucherViewModel(viewModel: DownloadVoucherImageViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SummaryViewModel::class)
+    internal abstract fun provideSummaryViewModel(viewModel: SummaryViewModel): ViewModel
+
 }

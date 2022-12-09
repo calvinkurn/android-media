@@ -38,6 +38,7 @@ import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
 import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.unifycomponents.CardUnify2
@@ -425,7 +426,7 @@ class ProductListFragment : BaseDaggerFragment() {
         selectedProducts: List<SelectedProduct>,
         selectedParentProductImageUrls: List<String>
     ) {
-        //TODO: Navigate to voucher preview page
+        SummaryActivity.start(context, voucherConfiguration)
     }
 
     private fun backToPreviousPage() {
