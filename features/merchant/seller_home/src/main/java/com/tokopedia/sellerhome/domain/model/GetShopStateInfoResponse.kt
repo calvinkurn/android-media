@@ -35,9 +35,15 @@ data class FetchInfoWidgetDataModel(
     val dataSign: String = String.EMPTY,
     @SerializedName("subType")
     val subType: Long = Int.ZERO.toLong(),
-    @SerializedName("state")
-    val state: String = String.EMPTY,
-)
+    @SerializedName("meta")
+    val meta: MetaModel
+) {
+
+    data class MetaModel(
+        @SerializedName("shopState")
+        val shopState: Long = 0L,
+    )
+}
 
 data class InfoWidgetButtonModel(
     @SerializedName("name")

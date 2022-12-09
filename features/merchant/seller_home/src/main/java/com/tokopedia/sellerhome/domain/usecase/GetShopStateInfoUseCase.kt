@@ -82,6 +82,9 @@ class GetShopStateInfoUseCase @Inject constructor(
                     name
                     applink
                   }
+                  meta {
+                    shopState
+                  }
                   widgetDataSign
                   subType
                   state
