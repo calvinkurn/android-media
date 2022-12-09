@@ -99,10 +99,8 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
     }
 
     private fun renderItemLoading(element: BalanceDrawerItemModel) {
-        if (binding?.homeContainerBalance?.homeTvBalance?.text.toString().isBlank()) {
-            binding?.shimmerItemBalanceWidget?.root?.show()
-            binding?.homeContainerBalance?.homeContainerBalance?.invisible()
-        }
+        binding?.shimmerItemBalanceWidget?.root?.show()
+        binding?.homeContainerBalance?.homeContainerBalance?.invisible()
         if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
             listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
         } else if (element.drawerItemType == TYPE_REWARDS) {

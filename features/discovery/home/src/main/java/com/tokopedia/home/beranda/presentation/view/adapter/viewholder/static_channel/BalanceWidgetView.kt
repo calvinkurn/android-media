@@ -85,6 +85,7 @@ class BalanceWidgetView : FrameLayout {
         if (element.balanceDrawerItemModels.isNotEmpty()) {
             subscriptionPosition = element.balancePositionSubscriptions
             balanceWidgetAdapter?.setVisitables(listOf(element))
+            listener?.showBalanceWidgetCoachMark(element)
             rvBalance?.post {
                 listener?.showBalanceWidgetCoachMark(element)
             }

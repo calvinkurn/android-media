@@ -23,7 +23,6 @@ class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAd
     }
 
     override fun type(dataModel: BalanceShimmerModel): Int {
-//        balanceWidgetViewHolder?.clearPreviousData()
         return BalanceWidgetShimmerViewHolder.LAYOUT
     }
 
