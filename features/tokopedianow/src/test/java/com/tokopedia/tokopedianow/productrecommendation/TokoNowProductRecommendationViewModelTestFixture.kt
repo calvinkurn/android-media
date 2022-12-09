@@ -124,19 +124,6 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         TokoNowSeeMoreCardCarouselUiModel()
     )
 
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
-        viewModel = TokoNowProductRecommendationViewModel(
-            getRecommendationUseCase = getRecommendationUseCase,
-            addToCartUseCase = addToCartUseCase,
-            updateCartUseCase = updateCartUseCase,
-            deleteCartUseCase = deleteCartUseCase,
-            userSession = userSession,
-            dispatchers = CoroutineTestDispatchers
-        )
-    }
-
     protected fun onGetRecommendation_thenReturn(response: List<RecommendationWidget>) {
         coEvery {
             getRecommendationUseCase.getData(any())
@@ -219,6 +206,19 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
                     )
                 )
             )
+        )
+    }
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+        viewModel = TokoNowProductRecommendationViewModel(
+            getRecommendationUseCase = getRecommendationUseCase,
+            addToCartUseCase = addToCartUseCase,
+            updateCartUseCase = updateCartUseCase,
+            deleteCartUseCase = deleteCartUseCase,
+            userSession = userSession,
+            dispatchers = CoroutineTestDispatchers
         )
     }
 

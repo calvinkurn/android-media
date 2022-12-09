@@ -19,7 +19,7 @@ class TokoNowWishlistViewModel @Inject constructor(
     private val addToWishlistUseCase: AddToWishlistUseCase,
     private val removeFromWishlistUseCase: RemoveFromWishlistUseCase,
     private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers,
 ): BaseViewModel(dispatchers.io) {
 
     val addToWishlistLiveData: LiveData<Result<AddToWishListResponse>>
