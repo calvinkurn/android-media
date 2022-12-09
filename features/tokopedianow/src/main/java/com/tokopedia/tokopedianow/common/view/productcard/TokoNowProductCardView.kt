@@ -44,7 +44,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
 ) : CardView(context, attrs) {
 
     companion object {
-        private const val VERTICAL_BIAS_RATING_TYPOGRAPHY = 1.0f
+        private const val VERTICAL_BIAS_RATING_TYPOGRAPHY = 0.998f
         private const val WORDING_SEGERA_HABIS = "Segera Habis"
         private const val BOUND_DEFAULT_VALUE = 0
         private const val NO_MARGIN = 0
@@ -336,21 +336,6 @@ class TokoNowProductCardView @JvmOverloads constructor(
         constraintSet.clone(root)
 
         if (isNormal) {
-            constraintSet.clear(
-                ratingTypography.id,
-                ConstraintSet.END
-            )
-
-            constraintSet.clear(
-                ratingIcon.id,
-                ConstraintSet.START
-            )
-
-            constraintSet.setVerticalBias(
-                ratingTypography.id,
-                VERTICAL_BIAS_RATING_TYPOGRAPHY
-            )
-
             constraintSet.connect(
                 ratingTypography.id,
                 ConstraintSet.BOTTOM,
@@ -358,34 +343,17 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 ConstraintSet.BOTTOM,
                 NO_MARGIN
             )
+
+            constraintSet.setVerticalBias(
+                ratingTypography.id,
+                VERTICAL_BIAS_RATING_TYPOGRAPHY
+            )
         } else {
             constraintSet.clear(
                 ratingTypography.id,
                 ConstraintSet.BOTTOM
             )
         }
-
-        constraintSet.connect(
-            ratingIcon.id,
-            ConstraintSet.START,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.START,
-            getDpFromDimen(
-                context = context,
-                id = R.dimen.tokopedianow_product_card_rating_icon_start_margin_normal_state
-            ).toIntSafely()
-        )
-
-        constraintSet.connect(
-            ratingTypography.id,
-            ConstraintSet.START,
-            ratingIcon.id,
-            ConstraintSet.END,
-            getDpFromDimen(
-                context = context,
-                id = R.dimen.tokopedianow_product_card_rating_typography_start_margin_normal_state
-            ).toIntSafely()
-        )
 
         constraintSet.applyTo(root)
     }
