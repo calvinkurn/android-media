@@ -16,9 +16,12 @@ class KolCommentNewViewHolder(
     private val commentView: KolCommentNewCardView = itemView.findViewById(R.id.kcv_comment)
     private val commentViewListener: KolCommentNewCardView.Listener =
         object : KolCommentNewCardView.Listener {
-
-            override fun onMenuClicked(id: String?, canDeleteComment: Boolean) {
-                viewListener.onMenuClicked(id, canDeleteComment, adapterPosition)
+            override fun onMenuClicked(
+                id: String?,
+                canDeleteComment: Boolean,
+                canReportComment: Boolean
+            ) {
+                viewListener.onMenuClicked(id, canDeleteComment, canReportComment, adapterPosition)
             }
 
             override fun onHashtagClicked(hashtag: String) {
@@ -33,6 +36,7 @@ class KolCommentNewViewHolder(
             }
 
             override fun onTokopediaUrlClicked(url: String) {}
+
             override fun onReplyClicked(mentionableUser: MentionableUserModel) {
                 viewListener.replyToUser(mentionableUser)
             }

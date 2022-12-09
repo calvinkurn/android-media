@@ -37,7 +37,7 @@ public interface ShipmentAdapterActionListener {
 
     void onTotalPaymentChange(String totalPayment, boolean enable);
 
-    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString, boolean forceHitValidateUse);
+    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString, boolean forceHitValidateUse, boolean skipValidateUse);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 

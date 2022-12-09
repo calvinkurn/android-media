@@ -55,6 +55,7 @@ import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
+import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData;
 import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber;
@@ -173,6 +174,7 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
+import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -238,6 +240,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
     private UploadPrescriptionUiModel uploadPrescriptionUiModel;
+
+    private PublishSubject<ShipmentGetCourierHolderData> ratesPublisher = null;
+    private PublishSubject<ShipmentGetCourierHolderData> ratesPromoPublisher = null;
+    private PublishSubject<Boolean> logisticDonePublisher = null;
+    private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -308,6 +315,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (epharmacyUseCase != null) {
             epharmacyUseCase.cancelJobs();
         }
+        ratesPublisher = null;
+        logisticDonePublisher = null;
+        ratesPromoPublisher = null;
+        logisticPromoDonePublisher = null;
     }
 
     @Override
@@ -1315,7 +1326,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                                 @Override
                                 public void onCompleted() {
-
+                                    if (logisticDonePublisher != null) {
+                                        logisticDonePublisher.onCompleted();
+                                    }
+                                    if (logisticPromoDonePublisher != null) {
+                                        logisticPromoDonePublisher.onCompleted();
+                                    }
                                 }
 
                                 @Override
@@ -2255,21 +2271,55 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
             observable = ratesApiUseCase.execute(param);
+            compositeSubscription.add(
+                    observable
+                            .map(shippingRecommendationData ->
+                                    stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                            spId, 0))
+                            .subscribe(
+                                    new GetCourierRecommendationSubscriber(
+                                            getView(), this, shipperId, spId, itemPosition,
+                                            shippingCourierConverter, shipmentCartItemModel,
+                                            isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled, null
+                                    ))
+            );
         } else {
-            observable = ratesUseCase.execute(param);
+            if (ratesPublisher == null) {
+                logisticDonePublisher = PublishSubject.create();
+                ratesPublisher = PublishSubject.create();
+                compositeSubscription.add(
+                        ratesPublisher
+                                .concatMap(shipmentGetCourierHolderData -> {
+                                    ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
+                                            .map(shippingRecommendationData ->
+                                                    stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
+                                                            shipmentGetCourierHolderData.getSpId(), 0)
+                                            ).subscribe(
+                                                    new GetCourierRecommendationSubscriber(
+                                                            getView(), this, shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(), shipmentGetCourierHolderData.getItemPosition(),
+                                                            shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
+                                                            shipmentGetCourierHolderData.isInitialLoad(), shipmentGetCourierHolderData.isTradeInDropOff(), shipmentGetCourierHolderData.isForceReload(), isBoUnstackEnabled,
+                                                            logisticDonePublisher
+                                                    ));
+                                    return logisticDonePublisher;
+                                })
+                                .subscribe()
+                );
+            }
+            ratesPublisher.onNext(new ShipmentGetCourierHolderData(
+                    shipperId,
+                    spId,
+                    itemPosition,
+                    shipmentCartItemModel,
+                    shopShipmentList,
+                    isInitialLoad,
+                    "",
+                    isTradeInDropOff,
+                    isForceReload,
+                    param,
+                    ""
+            ));
         }
-        compositeSubscription.add(
-                observable
-                        .map(shippingRecommendationData ->
-                                stateConverter.fillState(shippingRecommendationData, shopShipmentList,
-                                        spId, 0))
-                        .subscribe(
-                                new GetCourierRecommendationSubscriber(
-                                        getView(), this, shipperId, spId, itemPosition,
-                                        shippingCourierConverter, shipmentCartItemModel,
-                                        isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
-                                ))
-        );
     }
 
     @Override
@@ -3013,26 +3063,59 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RatesParam param = ratesParamBuilder.build();
 
         Observable<ShippingRecommendationData> observable;
-        if (isTradeInDropOff) {
-            observable = ratesApiUseCase.execute(param);
-        } else {
-            observable = ratesUseCase.execute(param);
-        }
         String promoCode = voucherOrdersItemUiModel.getCode();
         int shippingId = voucherOrdersItemUiModel.getShippingId();
         int spId = voucherOrdersItemUiModel.getSpId();
         getView().setStateLoadingCourierStateAtIndex(itemPosition, true);
-        compositeSubscription.add(
-                observable
-                        .map(shippingRecommendationData ->
-                                stateConverter.fillState(shippingRecommendationData, shopShipmentList,
-                                        spId, 0))
-                        .subscribe(
-                                new GetBoPromoCourierRecommendationSubscriber(
-                                        getView(), this, cartString, promoCode, shippingId, spId,
-                                        itemPosition, shippingCourierConverter, shipmentCartItemModel,
-                                        isTradeInDropOff, false
-                                )));
+        if (isTradeInDropOff) {
+            observable = ratesApiUseCase.execute(param);
+            compositeSubscription.add(
+                    observable
+                            .map(shippingRecommendationData ->
+                                    stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                            spId, 0))
+                            .subscribe(
+                                    new GetBoPromoCourierRecommendationSubscriber(
+                                            getView(), this, cartString, promoCode, shippingId, spId,
+                                            itemPosition, shippingCourierConverter, shipmentCartItemModel,
+                                            isTradeInDropOff, false, null
+                                    )));
+        } else {
+            if (ratesPromoPublisher == null) {
+                logisticPromoDonePublisher = PublishSubject.create();
+                ratesPromoPublisher = PublishSubject.create();
+                compositeSubscription.add(
+                        ratesPromoPublisher
+                                .concatMap(shipmentGetCourierHolderData -> {
+                                    ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
+                                            .map(shippingRecommendationData ->
+                                                    stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
+                                                            shipmentGetCourierHolderData.getSpId(), 0)
+                                            ).subscribe(
+                                                    new GetBoPromoCourierRecommendationSubscriber(
+                                                            getView(), this, shipmentGetCourierHolderData.getCartString(), shipmentGetCourierHolderData.getPromoCode(), shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(),
+                                                            shipmentGetCourierHolderData.getItemPosition(), shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
+                                                            shipmentGetCourierHolderData.isTradeInDropOff(), false, logisticPromoDonePublisher
+                                                    ));
+                                    return logisticPromoDonePublisher;
+                                })
+                                .subscribe()
+                );
+            }
+            ratesPromoPublisher.onNext(new ShipmentGetCourierHolderData(
+                    shippingId,
+                    spId,
+                    itemPosition,
+                    shipmentCartItemModel,
+                    shopShipmentList,
+                    false,
+                    cartString,
+                    isTradeInDropOff,
+                    false,
+                    param,
+                    promoCode
+            ));
+        }
     }
 
     @Override
@@ -3115,5 +3198,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
         }
         return true;
+    }
+
+    @Override
+    public PublishSubject<Boolean> getLogisticDonePublisher() {
+        return logisticDonePublisher;
     }
 }
