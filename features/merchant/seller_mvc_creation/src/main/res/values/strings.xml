@@ -229,4 +229,23 @@
     <string name="smvc_vertical_description">Untuk post Instagram Story.</string>
     <string name="smvc_horizontal">Horizontal</string>
     <string name="smvc_horizontal_description">Untuk banner toko</string>
+
+    <!--Voucher List-->
+    <string name="smvc_summary_page_title">Ringkasan Kupon</string>
+    <string name="smvc_summary_page_preview_button_text">Lihat Tampilan</string>
+    <string name="smvc_summary_page_tnc_text"><![CDATA[Saya menyetujui <font color=#00AA5B><b>Syarat & Ketentuan</b></font> Pembuatan Kupon.]]></string>
+    <string name="smvc_summary_page_submit_text">Buat Kupon</string>
+    <string name="smvc_summary_page_deduction_nominal_text">Nominal</string>
+    <string name="smvc_summary_page_deduction_percentage_text">Persentase</string>
+    <string name="smvc_summary_page_product_format">%d Produk</string>
+    <string name="smvc_edit_label">Ubah</string>
+    <string name="smvc_summary_page_product_coupon_text">Kupon Produk</string>
+    <string name="smvc_summary_page_shop_coupon_text">Kupon Toko</string>
+    <string name="smvc_summary_page_max_expense_title">Estimasi Maks. Pengeluaran</string>
+    <string name="smvc_summary_page_max_expense_desc">Dipotong dari transaksi selesai</string>
+    <string name="smvc_summary_page_error_dialog_title">Yaah, Kuponmu gagal dibuat</string>
+    <string name="smvc_summary_page_error_dialog_desc">Kupon gagal dibuat karena [Alasan gagal]. Tunggu beberapa saat atau coba lagi buat kuponmu, ya.</string>
+    <string name="smvc_summary_page_error_dialog_negative_action">Ke Daftar Kupon</string>
+    <string name="smvc_summary_page_error_dialog_positive_action">Coba Lagi</string>
+
 </resources>
