@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.usecase.coroutines.Fail
@@ -15,10 +15,14 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.domain.PlayVideoTabRepository
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.ContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotItems
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetFeedReminderInfoData
 import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import kotlinx.coroutines.withContext
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PlayFeedVideoTabViewModel@Inject constructor(
@@ -48,7 +52,6 @@ class PlayFeedVideoTabViewModel@Inject constructor(
     private val _getPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
     private val _getPlayDataForSlotRsp = MutableLiveData<Result<ContentSlotResponse>>()
     private val _getLiveOrUpcomingPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
-    private val playWidgetUIMutableLiveData: MutableLiveData<PlayWidgetState?> = MutableLiveData(PlayWidgetState(isLoading = true))
     private val _reminderObservable = MutableLiveData<Result<PlayWidgetFeedReminderInfoData>>()
     private val _playWidgetReminderEvent = MutableLiveData<PlayWidgetFeedReminderInfoData>()
 
@@ -77,6 +80,13 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             _selectedPlayWidgetCard.value = value
         }
 
+    private val _getSelectedTabDefaultPosition = MutableLiveData<Int>()
+    var selectedTabDefaultPosition: Int
+        get() = _getSelectedTabDefaultPosition.value ?: 0
+        set(value) {
+            _getSelectedTabDefaultPosition.value = value
+        }
+
     fun setDefaultValuesOnRefresh() {
         currentCursor = ""
         currentGroup = DEFAULT_GROUP_VALUE
@@ -84,7 +94,7 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         currentSourceType = ""
     }
 
-    fun getInitialPlayData() {
+    fun getInitialPlayData(selectedChipValue: String = "") {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 repository.getPlayData(VideoPageParams(cursor = currentCursor, sourceId = currentSourceId, sourceType = currentSourceType, group = currentGroup))
@@ -93,12 +103,20 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             if (tabData.isNotEmpty()) {
                 tabData.first().let {
                     val tabList = it.items
-                    if (tabList.isNotEmpty()) {
-                        tabList.let {
+                    tabList.let {
+                        if (tabList.isNotEmpty()) {
                             val firstListItem = tabList.first()
-                            currentSourceId = firstListItem.source_id
-                            currentGroup = firstListItem.group
-                            currentSourceType = firstListItem.source_type
+                            var selectedTabItem: PlaySlotItems? = null
+                            tabList.mapIndexed { index, playSlotItems ->
+                                if (playSlotItems.slug_id == selectedChipValue) {
+                                    _getSelectedTabDefaultPosition.value = index
+                                    selectedTabItem = playSlotItems
+                                }
+                            }
+                            val tabItem = selectedTabItem ?: firstListItem
+                            currentSourceId = tabItem.source_id
+                            currentGroup = tabItem.group
+                            currentSourceType = tabItem.source_type
                         }
                     }
                 }
@@ -193,10 +211,25 @@ class PlayFeedVideoTabViewModel@Inject constructor(
                     )
                     _reminderObservable.postValue(Success(playWidgetFeedReminderInfoData))
                 } else {
-                    _reminderObservable.postValue(Fail(Throwable()))
+                    if (reminderType == PlayWidgetReminderType.Reminded) {
+                        _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.feedcomponent.R.string.feed_video_tab_failed_to_set_reminder_text)))
+                    } else {
+                        _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.feedcomponent.R.string.feed_video_tab_failed_to_unset_reminder_text)))
+                    }
                 }
             }) { throwable ->
-                _reminderObservable.postValue(Fail(throwable))
+                when (throwable) {
+                    is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                        if (reminderType == PlayWidgetReminderType.Reminded) {
+                            _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.feedcomponent.R.string.feed_video_tab_failed_to_set_reminder_text)))
+                        } else {
+                            _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.feedcomponent.R.string.feed_video_tab_failed_to_unset_reminder_text)))
+                        }
+                    }
+                    else -> {
+                        _reminderObservable.postValue(Fail(throwable))
+                    }
+                }
             }
         }
     }
