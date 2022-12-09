@@ -21,17 +21,23 @@ object EPharmacyUtils {
     fun checkIsError(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
         return (
             (
-                (
-                    ePharmacyAttachmentDataModel.consultationData == null ||
-                        (
-                            ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.APPROVED.status &&
-                                ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.EXPIRED.status
-                            )
-                    ) ||
-                    ePharmacyAttachmentDataModel.prescriptionImages?.isEmpty() == true
+                checkIsErrorForConsultationData(ePharmacyAttachmentDataModel) ||
+                    checkIsErrorForPrescriptionImages(ePharmacyAttachmentDataModel)
                 ) &&
                 ePharmacyAttachmentDataModel.showUploadWidget
             )
+    }
+
+    private fun checkIsErrorForConsultationData(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
+        return ePharmacyAttachmentDataModel.consultationData != null &&
+            (
+                ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.APPROVED.status &&
+                    ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.EXPIRED.status
+                )
+    }
+
+    private fun checkIsErrorForPrescriptionImages(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
+        return ePharmacyAttachmentDataModel.consultationData == null && ePharmacyAttachmentDataModel.prescriptionImages?.isEmpty() == true
     }
 
     fun formatDateToLocal(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): Date? {
