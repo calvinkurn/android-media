@@ -3,6 +3,7 @@ package com.tokopedia.logger.utils
 import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.logger.datasource.db.Logger
+import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -27,7 +28,7 @@ class LoggerReporting {
     * since server logger v3 to make it more flexible and support two endpoints use the API & SDK in New relic
     * So, we add the keys & tables field maps, to handle the logic in the repository
      */
-    var tagMapsNrKey: HashMap<String, String> = hashMapOf()
+    var tagMapsNrKey: HashMap<String, NewRelicConfig> = hashMapOf()
     var tagMapsNrTable: HashMap<String, String> = hashMapOf()
 
     fun getProcessedMessage(
@@ -79,14 +80,12 @@ class LoggerReporting {
         val p = when (priority) {
             P1 -> Constants.SEVERITY_HIGH
             P2 -> Constants.SEVERITY_MEDIUM
-            SF -> Constants.SEVERITY_SF
             else -> -1
         }
 
         with(mapMessage) {
-            put(Constants.PRIORITY_LOG, p.toString())
             put(Constants.TAG_LOG, tag)
-            if (priority == SF) {
+            if (tag == GP) {
                 for (item in message) {
                     if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
                         put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
@@ -95,6 +94,7 @@ class LoggerReporting {
                     }
                 }
             } else {
+                put(Constants.PRIORITY_LOG, p.toString())
                 put("log_timestamp", timeStamp.toString())
                 put("log_time", getReadableTimeStamp(timeStamp))
                 put("log_did", partDeviceId)
@@ -107,16 +107,25 @@ class LoggerReporting {
                 put("log_installer", installer.toString())
                 put("log_debug", debug.toString())
                 for (item in message) {
+                    val filterKey = getFilterKey(item.key)
                     if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
-                        put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
+                        put(filterKey, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
                     } else {
-                        put(item.key, item.value)
+                        put(filterKey, item.value)
                     }
                 }
             }
         }
 
         return mapMessage.convertMapToJsonString()
+    }
+
+    private fun getFilterKey(key: String): String {
+        return if (key == TYPE) {
+            key.replace(TYPE, TYP)
+        } else {
+            key
+        }
     }
 
     private fun getPriority(tagPriority: String): Int {
@@ -172,12 +181,18 @@ class LoggerReporting {
                         .append(DELIMITER_TAG_MAPS)
                         .append(tagSplit[1])
                         .toString()
-                    val newRelicKey = if (tagSplit.getOrNull(NR_KEY_INDEX) != null) tagSplit[NR_KEY_INDEX] else ""
-                    val newRelicTable = if (tagSplit.getOrNull(NR_TABLE_INDEX) != null) tagSplit[NR_TABLE_INDEX] else Constants.EVENT_ANDROID_NEW_RELIC
+                    val (newRelicKey, newRelicTable) = getNewRelicKeyAndTable(tagSplit)
                     tagMapsNewRelic[tagKey] = NewRelicTag(getPriority(tagSplit[3]), newRelicKey, newRelicTable)
                 }
             }
         }
+    }
+
+    private fun getNewRelicKeyAndTable(tagSplit: List<String>): Pair<String, String> {
+        val nrKey = tagMapsNrKey.keys.firstOrNull { it in tagSplit } ?: ""
+        val nrTable = tagMapsNrTable.keys.firstOrNull { it in tagSplit } ?: ""
+
+        return Pair(nrKey, nrTable)
     }
 
     fun setPopulateKeyMapsNewRelic(nrKeys: List<String>?) {
@@ -187,13 +202,14 @@ class LoggerReporting {
         for (key in nrKeys) {
             val nrKeySplit = key.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
 
-            if (nrKeySplit.size < SIZE_NR_SPLIT || nrKeySplit.isEmpty()) {
+            if (nrKeySplit.size < SIZE_NR_KEY_SPLIT || nrKeySplit.isEmpty()) {
                 continue
             }
 
             val nrKeyName = nrKeySplit[0]
-            val nrKeyValue = nrKeySplit[1]
-            tagMapsNrKey[nrKeyName] = nrKeyValue
+            val nrUserId = nrKeySplit[1]
+            val nrKeyValue = nrKeySplit[2]
+            tagMapsNrKey[nrKeyName] = NewRelicConfig(nrUserId, nrKeyValue)
         }
     }
 
@@ -204,7 +220,7 @@ class LoggerReporting {
         for (table in nrTables) {
             val nrTableSplit = table.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
 
-            if (nrTableSplit.size < SIZE_NR_SPLIT || nrTableSplit.isEmpty()) {
+            if (nrTableSplit.size < SIZE_NR_TABLE_SPLIT || nrTableSplit.isEmpty()) {
                 continue
             }
 
@@ -243,7 +259,8 @@ class LoggerReporting {
         const val DELIMITER = ","
         const val MAX_RANDOM_NUMBER = 100
 
-        const val SIZE_NR_SPLIT = 2
+        const val SIZE_NR_TABLE_SPLIT = 2
+        const val SIZE_NR_KEY_SPLIT = 3
 
         const val SIZE_MESSAGE = 3
         const val SIZE_REMOTE_CONFIG_TAG = 4
@@ -253,6 +270,11 @@ class LoggerReporting {
         const val P1 = "P1"
         const val P2 = "P2"
         const val SF = "SF"
+
+        const val GP = "GP"
+
+        const val TYPE = "type"
+        const val TYP = "typ"
 
         const val NR_KEY_INDEX = 5
         const val NR_TABLE_INDEX = 6

@@ -8,7 +8,6 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
-import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.LogWorker
@@ -118,7 +117,6 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 loggerCloudNewRelicApiDataSource,
                 loggerCloudEmbraceDataSource,
                 getScalyrConfigList(context),
-                NewRelicConfig(loggerProxy.newRelicUserId, loggerProxy.newRelicToken),
                 loggerProxy.encrypt,
                 loggerProxy.decrypt,
                 loggerProxy.decryptNrKey
