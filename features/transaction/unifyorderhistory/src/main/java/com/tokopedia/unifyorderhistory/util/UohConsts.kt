@@ -65,6 +65,7 @@ object UohConsts {
     const val TYPE_ACTION_CANCEL_ORDER = "cancelOrder"
     const val GQL_FINISH_ORDER = "gql-mp-finish"
     const val GQL_MP_ATC = "gql-mp-atc"
+    const val GQL_MP_ATC_REDIRECTION = "gql-mp-atc-redirection"
     const val GQL_MP_OCC = "gql-mp-occ"
     const val GQL_TRACK = "gql-mp-track"
     const val GQL_LS_FINISH = "gql-ls-finish"

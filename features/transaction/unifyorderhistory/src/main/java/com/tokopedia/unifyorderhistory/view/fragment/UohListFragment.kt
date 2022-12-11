@@ -128,6 +128,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FLIGHT_EMAIL
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_LS_FINISH
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_LS_LACAK
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_ATC
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_ATC_REDIRECTION
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_CHAT
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_EXTEND
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_FINISH
@@ -178,7 +179,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TOKOFOOD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
-import com.tokopedia.unifyorderhistory.util.UohRollenceUtil
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
@@ -264,6 +264,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var _listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
     private var _atcVerticalCategory = ""
     private var trackingQueue: TrackingQueue? = null
+    private var _buttonAction = ""
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -796,20 +797,20 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun observingAtcMulti() {
-        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner) {
-            when (it) {
+        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(
-                        it.data.atcMulti.buyAgainData.message,
+                        result.data.atcMulti.buyAgainData.message,
                         ","
                     )
-                    if (it.data.atcMulti.buyAgainData.success == 1) {
-                        val product = it.data.atcMulti.buyAgainData.listProducts.getOrNull(0)
+                    if (result.data.atcMulti.buyAgainData.success == 1) {
+                        val product = result.data.atcMulti.buyAgainData.listProducts.getOrNull(0)
                         showToasterAtc(msg, Toaster.TYPE_NORMAL)
-                        if (UohRollenceUtil.isEnableAutoRedirectionToCartOnRepurchase()) {
+                        if (_buttonAction == GQL_MP_ATC_REDIRECTION) {
                             val intent = RouteManager.getIntent(context, ApplinkConst.CART)
-                            product?.cartId?.let {
-                                intent.putExtra(Transaction.EXTRA_CART_ID, it.toString())
+                            product?.cartId?.let { cartId ->
+                                intent.putExtra(Transaction.EXTRA_CART_ID, cartId.toString())
                             }
                             startActivity(intent)
                         }
@@ -834,7 +835,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 userSession.userId,
                                 arrayListProducts,
                                 _atcVerticalCategory,
-                                it.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
+                                result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
                             )
                         }
                     } else {
@@ -2078,6 +2079,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     ) {
         try {
             order.metadata.buttons.getOrNull(buttonIndex)?.let { button ->
+                _buttonAction = button.actionType
                 if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
                     handleRouting(button.appURL)
                 } else {
@@ -2087,6 +2089,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             doFinishOrder(index, order.verticalStatus, order.verticalID)
                         }
                         button.actionType.equals(GQL_MP_ATC, true) -> {
+                            atc(order)
+                        }
+                        button.actionType.equals(GQL_MP_ATC_REDIRECTION, true) -> {
                             atc(order)
                         }
                         button.actionType.equals(GQL_MP_OCC, true) -> {
