@@ -12,13 +12,10 @@ import com.tokopedia.mvc.databinding.SmvcBottomsheetEduCenterBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class EduCenterBottomSheet(
-    context: Context? = null,
-    listener: EduCenterClickListener? = null,
-    private val fm: FragmentManager? = null
-): BottomSheetUnify() {
+class EduCenterBottomSheet: BottomSheetUnify() {
 
     companion object {
+        fun createInstance() = EduCenterBottomSheet()
         private val TAG = EduCenterBottomSheet::class.java.simpleName
     }
 
@@ -26,10 +23,8 @@ class EduCenterBottomSheet(
 
     private var binding by autoClearedNullable<SmvcBottomsheetEduCenterBinding>()
 
-    init {
-        if (context != null && listener != null && fm != null) {
-            eduCenterMenuAdapter = EduCenterMenuAdapter(context, listener)
-        }
+    fun initRecyclerView(context: Context, listener: EduCenterClickListener){
+        eduCenterMenuAdapter = EduCenterMenuAdapter(context, listener)
     }
 
     override fun onCreateView(
@@ -69,10 +64,8 @@ class EduCenterBottomSheet(
         }
     }
 
-    fun show() {
-        fm?.let {
-            show(it, TAG)
-        }
+    fun show(fm: FragmentManager) {
+        show(fm, TAG)
     }
 
 }

@@ -18,8 +18,8 @@ import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
 import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.domain.usecase.*
-import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.CancelStatus.Companion.DELETE
-import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.CancelStatus.Companion.STOP
+import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.Companion.UpdateVoucherAction.DELETE
+import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.Companion.UpdateVoucherAction.STOP
 import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError

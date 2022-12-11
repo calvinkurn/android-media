@@ -187,7 +187,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
                             dialog.setLoadingProses(false)
                             dialog.setDismissDialog()
                         }
-                        val successMessage = getStringSuccessStopVoucher(it.voucherStatus, it.name.orEmpty())
+                        val successMessage = getStringSuccessStopVoucher(it.voucherStatus, it.name)
                         showSuccessToaster(successMessage)
                         loadInitialDataList()
                     }
@@ -197,7 +197,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
                             dialog.setLoadingProses(false)
                             dialog.setDismissDialog()
                         }
-                        val errorMessage = getStringFailedStopVoucher(it.voucherStatus, it.name.orEmpty())
+                        val errorMessage = getStringFailedStopVoucher(it.voucherStatus, it.name)
                         view?.showToasterError(errorMessage, getString(R.string.smvc_ok))
                     }
 
@@ -241,7 +241,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_kebab_horizontal).apply {
             setColorFilter(colorIcon, PorterDuff.Mode.MULTIPLY)
             setOnClickListener {
-                eduCenterBottomSheet?.show()
+                eduCenterBottomSheet?.show(childFragmentManager)
             }
         }
         setNavigationOnClickListener {
@@ -375,8 +375,9 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
     }
 
     private fun setEduCenterBottomSheet() {
-        eduCenterBottomSheet =
-            EduCenterBottomSheet(context, this, childFragmentManager)
+        eduCenterBottomSheet = EduCenterBottomSheet.createInstance().apply {
+            initRecyclerView(this@MvcListFragment.context?:return, this@MvcListFragment)
+        }
     }
 
     private fun setupStopConfirmationDialog(){

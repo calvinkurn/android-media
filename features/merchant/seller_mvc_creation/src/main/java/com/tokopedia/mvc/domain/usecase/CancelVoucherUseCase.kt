@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.domain.usecase
 
-import androidx.annotation.StringDef
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -11,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.data.exception.VoucherCancellationException
 import com.tokopedia.mvc.data.response.CancelVoucherResponse
-import com.tokopedia.mvc.data.response.ProductListResponse
 import javax.inject.Inject
 
 class CancelVoucherUseCase @Inject constructor(
@@ -27,7 +25,12 @@ class CancelVoucherUseCase @Inject constructor(
         private const val TOKEN_KEY = "token"
         private const val STATUS_KEY = "status"
         private const val SOURCE_KEY = "source"
-        const val SELLERAPP = "android-sellerapp"
+        private const val SELLERAPP = "android-sellerapp"
+
+        enum class UpdateVoucherAction {
+            STOP,
+            DELETE
+        }
     }
 
     private val mutation = object : GqlQueryInterface {
@@ -55,17 +58,7 @@ class CancelVoucherUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    @MustBeDocumented
-    @Retention(AnnotationRetention.SOURCE)
-    @StringDef(CancelStatus.STOP, CancelStatus.DELETE)
-    annotation class CancelStatus {
-        companion object {
-            const val STOP = "stop"
-            const val DELETE = "delete"
-        }
-    }
-
-    fun buildRequest(voucherId: Int, @CancelStatus cancelStatus: String, token : String): GraphqlRequest {
+    fun buildRequest(voucherId: Int,  cancelStatus: UpdateVoucherAction, token : String): GraphqlRequest {
         val params = mapOf(
             VOUCHER_ID_KEY to voucherId,
             STATUS_KEY to cancelStatus,
@@ -79,7 +72,7 @@ class CancelVoucherUseCase @Inject constructor(
         )
     }
 
-    suspend fun execute(voucherId: Int, @CancelStatus cancelStatus: String, token : String): Int {
+    suspend fun execute(voucherId: Int, cancelStatus: UpdateVoucherAction, token : String): Int {
         val request = buildRequest(voucherId, cancelStatus, token)
         val response = repository.response(listOf(request))
         val dataSuccess = response.getSuccessData<CancelVoucherResponse>()
