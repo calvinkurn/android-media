@@ -105,7 +105,7 @@ class GraphqlCloudDataStore @Inject constructor(
         for (req in requests) {
             val list: List<String> = getQueryListFromQueryString(req.query)
             for (temp in list) {
-                if (temp.equals("status", ignoreCase = true)) {
+                if (temp.startsWith("status", ignoreCase = true)) {
                     isStatusAvailable = true
                     break
                 }
