@@ -6,13 +6,13 @@
 
     <application>
         <activity
-            android:name=".presentation.creation.step2.VoucherCreationStepTwoActivity"
+            android:name=".presentation.creation.step2.VoucherInformationActivity"
             android:exported="false"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"/>
         <activity
-            android:name=".presentation.creation.step1.VoucherCreationStepOneActivity"
+            android:name=".presentation.creation.step1.VoucherTypeActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"

@@ -15,28 +15,28 @@ import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.SmvcFragmentVoucherCreationStepOneBinding
+import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherTypeBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneAction
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
-import com.tokopedia.mvc.presentation.creation.step2.VoucherCreationStepTwoActivity
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class VoucherCreationStepOneFragment : BaseDaggerFragment() {
+class VoucherTypeFragment : BaseDaggerFragment() {
 
     companion object {
         fun newInstance(
             pageMode: PageMode,
             voucherConfiguration: VoucherConfiguration
-        ): VoucherCreationStepOneFragment {
-            return VoucherCreationStepOneFragment().apply {
+        ): VoucherTypeFragment {
+            return VoucherTypeFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                     putParcelable(
@@ -49,7 +49,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
     }
 
     // binding
-    private var binding by autoClearedNullable<SmvcFragmentVoucherCreationStepOneBinding>()
+    private var binding by autoClearedNullable<SmvcFragmentCreationVoucherTypeBinding>()
 
     // coachmark
     private val coachMark by lazy {
@@ -62,7 +62,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(VoucherCreationStepOneViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(VoucherTypeViewModel::class.java) }
 
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val voucherConfiguration by lazy {
@@ -71,7 +71,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String =
-        VoucherCreationStepOneFragment::class.java.canonicalName.orEmpty()
+        VoucherTypeFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -85,7 +85,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = SmvcFragmentVoucherCreationStepOneBinding.inflate(inflater, container, false)
+        binding = SmvcFragmentCreationVoucherTypeBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -243,7 +243,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
 
     private fun navigateToNextStep(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            VoucherCreationStepTwoActivity.start(requireContext(), voucherConfiguration)
+            VoucherInformationActivity.start(requireContext(), voucherConfiguration)
             activity?.finish()
         } else {
             TODO("Navigate to next step in edit mode")

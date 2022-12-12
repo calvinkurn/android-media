@@ -15,7 +15,7 @@ import com.tokopedia.mvc.util.constant.CommonConstant
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-class VoucherCreationStepOneViewModel @Inject constructor(
+class VoucherTypeViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
     private val sharedPreferences: SharedPreferences

@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
-import com.tokopedia.mvc.presentation.creation.step1.VoucherCreationStepOneViewModel
-import com.tokopedia.mvc.presentation.creation.step2.VoucherCreationStepTwoViewModel
+import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeViewModel
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationViewModel
 import com.tokopedia.mvc.presentation.detail.VoucherDetailViewModel
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageViewModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
@@ -75,11 +75,11 @@ abstract class MerchantVoucherCreationViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(VoucherCreationStepOneViewModel::class)
-    internal abstract fun provideVoucherCreationStepOneViewModel(viewModel: VoucherCreationStepOneViewModel): ViewModel
+    @ViewModelKey(VoucherTypeViewModel::class)
+    internal abstract fun provideVoucherCreationStepOneViewModel(viewModel: VoucherTypeViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(VoucherCreationStepTwoViewModel::class)
-    internal abstract fun provideVoucherCreationStepTwoViewModel(viewModel: VoucherCreationStepTwoViewModel): ViewModel
+    @ViewModelKey(VoucherInformationViewModel::class)
+    internal abstract fun provideVoucherCreationStepTwoViewModel(viewModel: VoucherInformationViewModel): ViewModel
 }

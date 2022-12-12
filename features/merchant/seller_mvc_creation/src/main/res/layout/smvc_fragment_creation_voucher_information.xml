@@ -5,7 +5,7 @@
     android:id="@+id/voucher_creation_step_two"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.creation.step2.VoucherCreationStepTwoActivity">
+    tools:context=".presentation.creation.step2.VoucherInformationActivity">
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/header"

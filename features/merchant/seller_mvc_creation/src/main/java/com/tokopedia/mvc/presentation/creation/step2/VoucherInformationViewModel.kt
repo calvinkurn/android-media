@@ -11,7 +11,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-class VoucherCreationStepTwoViewModel @Inject constructor(
+class VoucherInformationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {

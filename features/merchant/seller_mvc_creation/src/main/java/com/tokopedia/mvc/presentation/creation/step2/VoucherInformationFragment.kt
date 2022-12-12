@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.SmvcFragmentVoucherCreationStepTwoBinding
+import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherInformationBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoButtonSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherCodeSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherNameSectionBinding
@@ -22,7 +22,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherTargetSect
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.presentation.creation.step1.VoucherCreationStepOneActivity
+import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
@@ -36,14 +36,14 @@ import java.util.*
 import javax.inject.Inject
 
 @FlowPreview
-class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
+class VoucherInformationFragment : BaseDaggerFragment() {
 
     companion object {
         fun newInstance(
             pageMode: PageMode,
             voucherConfiguration: VoucherConfiguration
-        ): VoucherCreationStepTwoFragment {
-            return VoucherCreationStepTwoFragment().apply {
+        ): VoucherInformationFragment {
+            return VoucherInformationFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                     putParcelable(
@@ -57,7 +57,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     }
 
     // binding
-    private var binding by autoClearedNullable<SmvcFragmentVoucherCreationStepTwoBinding>()
+    private var binding by autoClearedNullable<SmvcFragmentCreationVoucherInformationBinding>()
     private var voucherTargetSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoVoucherTargetSectionBinding>()
     private var voucherNameSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoVoucherNameSectionBinding>()
     private var voucherCodeSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoVoucherCodeSectionBinding>()
@@ -68,7 +68,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(VoucherCreationStepTwoViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(VoucherInformationViewModel::class.java) }
 
     // data
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
@@ -78,7 +78,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String =
-        VoucherCreationStepTwoFragment::class.java.canonicalName.orEmpty()
+        VoucherInformationFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -92,7 +92,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = SmvcFragmentVoucherCreationStepTwoBinding.inflate(inflater, container, false)
+        binding = SmvcFragmentCreationVoucherInformationBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -185,7 +185,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
 
     private fun backToPreviousStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            VoucherCreationStepOneActivity.start(requireContext(), voucherConfiguration)
+            VoucherTypeActivity.start(requireContext(), voucherConfiguration)
             activity?.finish()
         } else {
             // TODO: navigate back to summary page
