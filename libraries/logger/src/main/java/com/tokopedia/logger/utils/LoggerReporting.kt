@@ -196,6 +196,8 @@ class LoggerReporting {
     }
 
     fun setPopulateKeyMapsNewRelic(nrKeys: List<String>?) {
+        tagMapsNrKey.clear()
+
         if (nrKeys.isNullOrEmpty()) {
             return
         }
@@ -214,6 +216,8 @@ class LoggerReporting {
     }
 
     fun setPopulateTableMapsNewRelic(nrTables: List<String>?) {
+        tagMapsNrTable.clear()
+
         if (nrTables.isNullOrEmpty()) {
             return
         }
