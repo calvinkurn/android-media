@@ -1,10 +1,12 @@
 package com.tokopedia.graphql.coroutines.data.source
 
+import android.content.Context
 import android.text.TextUtils
 import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.tokopedia.akamai_bot_lib.getAkamaiQuery
+import com.tokopedia.akamai_bot_lib.getQueryListFromQueryString
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -24,6 +26,7 @@ import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorSsl
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.interceptor.TopAdsInterceptor
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
@@ -43,7 +46,8 @@ import javax.net.ssl.SSLHandshakeException
 class GraphqlCloudDataStore @Inject constructor(
     private val api: GraphqlApiSuspend,
     val cacheManager: GraphqlCacheManager,
-    private val fingerprintManager: FingerprintManager
+    private val fingerprintManager: FingerprintManager,
+    private val context: Context
 ) : GraphqlDataStore {
 
     /*
@@ -56,6 +60,7 @@ class GraphqlCloudDataStore @Inject constructor(
         val header = mutableMapOf<String, String>()
 
         putAkamaiHeader(header, requests)
+        putStatusHeader(header, requests)
 
         if (requests[0].isDoQueryHash) {
             val queryHashingHeaderValue = StringBuilder()
@@ -92,6 +97,26 @@ class GraphqlCloudDataStore @Inject constructor(
             api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
         } else {
             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        }
+    }
+
+    private fun putStatusHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
+        var isStatusAvailable = false
+        for (req in requests) {
+            val list: List<String> = getQueryListFromQueryString(req.query)
+            for (temp in list) {
+                if (temp.equals("status", ignoreCase = true)) {
+                    isStatusAvailable = true
+                    break
+                }
+            }
+        }
+        if (isStatusAvailable) {
+            val sp = context.getSharedPreferences(TopAdsInterceptor.TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE)
+            val newHeader = sp.getString(TopAdsInterceptor.RESPONSE_HEADER_KEY, "")
+            if (!newHeader.isNullOrEmpty()) {
+                header[TopAdsInterceptor.TOP_ADS_TRACKING_KEY] = newHeader
+            }
         }
     }
 
