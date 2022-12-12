@@ -19,6 +19,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -258,7 +259,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         configResponse: ChannelDetailsWithRecomResponse.Config,
         title: String
     ): PlayStatusUiModel {
-        val statusType = mapStatusType(!configResponse.active || configResponse.freezed)
+        val statusType = PlayStatusType.getByValue(
+            configResponse.status
+        )
         return PlayStatusUiModel(
             channelStatus = PlayChannelStatus(
                 statusType = statusType,
@@ -268,6 +271,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             config = PlayStatusConfig(
                 bannedModel = mapBannedModel(configResponse.bannedData),
                 freezeModel = mapFreezeUiModel(configResponse.freezeData, title),
+                archivedModel = mapArchived(configResponse.archiveConfig),
             ),
         )
     }
@@ -281,6 +285,15 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
         PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
+    }
+
+    private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {
+        ArchivedUiModel(
+            title = title,
+            description = description,
+            btnTitle = buttonText,
+            appLink = appLink,
+        )
     }
 
     private fun mapPopUp(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.popupConfig){

@@ -235,4 +235,31 @@ class PlaySocketResponseBuilder {
     )
 
     fun buildQuiz(): WebSocketResponse = gson.fromJson(channelQuizActive, WebSocketResponse::class.java)
+
+    private val freezeStatus = """
+        "type":"FREEZE",
+        "data":{
+          "channel_id": "12269",
+          "is_freeze":true,
+          "timestamp":1592392273000
+        }
+    """.trimIndent()
+
+    private val bannedStatus = """
+        "type": "BANNED",
+        "data": {
+          "channel_id": "12665,
+          "user": {
+            "id": 1,
+            "name: "",
+            "image": ""
+          },
+          "is_banned": true,
+          "timestamp": 1579064126000
+        }
+    """.trimIndent()
+
+    fun buildFreeze(): WebSocketResponse = gson.fromJson(freezeStatus, WebSocketResponse::class.java)
+
+    fun buildBanned(): WebSocketResponse = gson.fromJson(bannedStatus, WebSocketResponse::class.java)
 }

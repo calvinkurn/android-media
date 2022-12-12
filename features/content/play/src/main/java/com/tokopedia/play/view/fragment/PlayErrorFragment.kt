@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
@@ -22,6 +24,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play_common.model.result.PageResultState
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -32,6 +35,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-01-10.
  */
+@Suppress("LateinitUsage")
 class PlayErrorFragment @Inject constructor(
     private val analytic: PlayAnalytic,
     private val router: Router,
@@ -40,7 +44,8 @@ class PlayErrorFragment @Inject constructor(
     private lateinit var parentViewModel: PlayParentViewModel
     private lateinit var container: View
     private lateinit var globalError: GlobalError
-    private lateinit var imgBack: View
+    private lateinit var imgBack: IconUnify
+    private lateinit var tvTitle: TextView
 
     override fun getScreenName() = "Play Video"
 
@@ -80,6 +85,7 @@ class PlayErrorFragment @Inject constructor(
             container = findViewById(R.id.container_global_error)
             globalError = findViewById(R.id.global_error)
             imgBack = findViewById(R.id.img_back)
+            tvTitle = findViewById(R.id.text_play_title)
         }
     }
 
@@ -118,6 +124,7 @@ class PlayErrorFragment @Inject constructor(
             when (val state = it.state) {
                 is PageResultState.Fail -> showGlobalError(state.error)
                 is PageResultState.Success -> container.hide()
+                is PageResultState.Archived -> showArchived(state.config)
             }
         })
     }
@@ -166,5 +173,23 @@ class PlayErrorFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun showArchived(config: ArchivedUiModel) {
+        imgBack.setImage(newIconId = IconUnify.ARROW_BACK)
+        tvTitle.text = ""
+
+        globalError.apply {
+            setType(GlobalError.PAGE_NOT_FOUND)
+            errorTitle.text = config.title
+            errorDescription.text = config.description
+            errorAction.text = config.btnTitle
+            setActionClickListener {
+                activity?.let { activity ->
+                    router.route(activity, config.appLink)
+                }
+            }
+        }
+        container.show()
     }
 }
