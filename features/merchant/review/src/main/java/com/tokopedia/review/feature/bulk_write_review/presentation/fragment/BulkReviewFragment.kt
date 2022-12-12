@@ -30,6 +30,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getVisiblePercent
@@ -38,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -71,6 +73,8 @@ import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -289,7 +293,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     private fun collectBulkReviewPageUiState() {
         collectLatestWhenResumed(viewModel.bulkReviewPageUiState) {
             when (it) {
-                is BulkReviewPageUiState.Error -> onBulkReviewPageError()
+                is BulkReviewPageUiState.Error -> onBulkReviewPageError(it.throwable)
                 is BulkReviewPageUiState.Loading -> onBulkReviewPageLoading()
                 is BulkReviewPageUiState.Showing -> onBulkReviewPageShowing(
                     it.items,
@@ -374,10 +378,11 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         }
     }
 
-    private suspend fun onBulkReviewPageError() {
+    private suspend fun onBulkReviewPageError(throwable: Throwable?) {
         suspendCoroutine<Unit> { continuation ->
             binding?.run {
                 headerBulkReview.isShowBackButton = true
+                setupGlobalErrorUI(throwable)
                 globalErrorBulkReview.show()
                 animatePageUiStateChange(
                     rvBulkReviewItemsAlphaTarget = 0F,
@@ -471,6 +476,25 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                     continuation.resume(Unit)
                 }
             }
+        }
+    }
+
+    private fun setupGlobalErrorUI(throwable: Throwable?) {
+        binding?.run {
+            when (throwable) {
+                is UnknownHostException, is SocketTimeoutException -> {
+                    globalErrorBulkReview.setType(GlobalError.NO_CONNECTION)
+                    globalErrorBulkReview.errorSecondaryAction.show()
+                }
+                else -> {
+                    globalErrorBulkReview.setType(GlobalError.SERVER_ERROR)
+                    globalErrorBulkReview.errorSecondaryAction.gone()
+                }
+            }
+            globalErrorBulkReview.errorDescription.text = ErrorHandler.getErrorMessage(
+                context,
+                throwable
+            )
         }
     }
 

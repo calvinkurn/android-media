@@ -27,7 +27,10 @@ data class BulkReviewGetFormResponse(
                 val reputationID: String? = null,
                 @SerializedName("product")
                 @Expose
-                val product: Product? = null
+                val product: Product? = null,
+                @SerializedName("timestamp")
+                @Expose
+                val timestamp: Timestamp? = null
             ) {
                 data class Product(
                     @SerializedName("productID")
@@ -41,10 +44,7 @@ data class BulkReviewGetFormResponse(
                     val productImageURL: String? = null,
                     @SerializedName("productVariant")
                     @Expose
-                    val productVariant: Variant? = null,
-                    @SerializedName("timeStamp")
-                    @Expose
-                    val timestamp: Timestamp? = null
+                    val productVariant: Variant? = null
                 ) {
                     data class Variant(
                         @SerializedName("variantID")
@@ -54,13 +54,13 @@ data class BulkReviewGetFormResponse(
                         @Expose
                         val variantName: String? = null
                     )
-
-                    data class Timestamp(
-                        @SerializedName("createTimeFormatted")
-                        @Expose
-                        val createTimeFormatted: String? = null
-                    )
                 }
+
+                data class Timestamp(
+                    @SerializedName("createTimeFormatted")
+                    @Expose
+                    val createTimeFormatted: String? = null
+                )
             }
         }
     }

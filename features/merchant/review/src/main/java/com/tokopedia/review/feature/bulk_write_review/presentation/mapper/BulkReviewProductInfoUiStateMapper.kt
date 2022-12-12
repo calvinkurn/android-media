@@ -31,7 +31,7 @@ class BulkReviewProductInfoUiStateMapper @Inject constructor() {
                 productName = reviewForm.product?.productName.orEmpty(),
                 productImageUrl = reviewForm.product?.productImageURL.orEmpty(),
                 productVariantName = reviewForm.product?.productVariant?.variantName.orEmpty(),
-                productPurchaseDate = reviewForm.product?.timestamp?.createTimeFormatted.orEmpty()
+                productPurchaseDate = reviewForm.timestamp?.createTimeFormatted.orEmpty()
             )
         )
     }

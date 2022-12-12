@@ -279,7 +279,7 @@ class BulkReviewViewModel @Inject constructor(
     val bulkReviewPageUiState = combine(
         shouldSubmitReview,
         submitBulkReviewRequestState,
-        bulkReviewVisitableList.filter { it.isNotEmpty() },
+        bulkReviewVisitableList,
         bulkReviewStickyButtonUiState,
         getFormRequestState,
         getBadRatingCategoryRequestState,
@@ -1548,7 +1548,7 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun getForms() {
         viewModelScope.launch(coroutineDispatchers.io) {
-            getFormUseCase(userSession.userId).collectLatest { requestState ->
+            getFormUseCase(Unit).collectLatest { requestState ->
                 getFormRequestState.value = requestState
             }
         }
