@@ -63,7 +63,8 @@ class EditorDetailAnalyticsImpl(
         cropText: String,
         rotateValue: Int,
         watermarkText: String,
-        removeBackgroundText: String
+        removeBackgroundText: String,
+        addLogoValue: String
     ) {
 
         val historyList = "{$brightnessValue}, " +
@@ -71,7 +72,8 @@ class EditorDetailAnalyticsImpl(
                 "{$rotateValue}, " +
                 "{$cropText}, " +
                 "{$removeBackgroundText}, " +
-                "{$watermarkText}"
+                "{$watermarkText}, " +
+                "{$addLogoValue}"
 
         sendGeneralEvent(
             ACTION_CLICK_SAVE,

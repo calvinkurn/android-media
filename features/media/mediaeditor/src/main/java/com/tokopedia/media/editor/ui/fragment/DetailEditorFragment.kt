@@ -40,6 +40,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
+import com.tokopedia.media.editor.utils.addLogoToText
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.editor.utils.cropRatioToText
 import com.tokopedia.media.editor.utils.getToolEditorText
@@ -1000,6 +1001,7 @@ class DetailEditorFragment @Inject constructor(
             } else {
                 viewModel.rotateSliderValue.toInt()
             }
+            val addLogoValue = addLogoToText(addLogoComponent.getLogoState())
 
             val currentEditorText =
                 requireContext().getText(getToolEditorText(data.editorToolType)).toString()
@@ -1010,7 +1012,8 @@ class DetailEditorFragment @Inject constructor(
                 cropRatioText,
                 rotateText,
                 watermarkText,
-                removeBackgroundText
+                removeBackgroundText,
+                addLogoValue
             )
         }
     }
