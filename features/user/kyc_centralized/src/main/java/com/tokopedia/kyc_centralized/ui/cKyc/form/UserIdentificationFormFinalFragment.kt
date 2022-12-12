@@ -30,7 +30,7 @@ import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
 import com.tokopedia.kyc_centralized.common.KycServerLogger
-import com.tokopedia.kyc_centralized.data.model.response.KycData
+import com.tokopedia.kyc_centralized.data.model.KycData
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationFinalBinding
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent

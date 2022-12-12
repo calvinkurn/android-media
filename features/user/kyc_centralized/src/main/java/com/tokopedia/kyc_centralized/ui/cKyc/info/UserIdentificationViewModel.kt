@@ -10,7 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PRO
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 class UserIdentificationViewModel @Inject constructor (

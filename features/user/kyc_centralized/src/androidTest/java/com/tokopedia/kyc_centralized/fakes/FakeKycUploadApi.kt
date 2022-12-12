@@ -1,8 +1,8 @@
 package com.tokopedia.kyc_centralized.fakes
 
-import com.tokopedia.kyc_centralized.data.model.response.KycAppModel
-import com.tokopedia.kyc_centralized.data.model.response.KycData
-import com.tokopedia.kyc_centralized.data.model.response.KycResponse
+import com.tokopedia.kyc_centralized.data.model.KycAppModel
+import com.tokopedia.kyc_centralized.data.model.KycData
+import com.tokopedia.kyc_centralized.data.model.KycResponse
 import com.tokopedia.kyc_centralized.data.network.KycUploadApi
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

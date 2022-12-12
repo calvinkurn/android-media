@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
 import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationViewModel
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

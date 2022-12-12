@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 class GetUserProjectInfoUseCase @Inject constructor(

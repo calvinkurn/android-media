@@ -1,8 +1,8 @@
 package com.tokopedia.kyc_centralized.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.kyc_centralized.data.model.response.KycData
-import com.tokopedia.kyc_centralized.data.model.response.KycResponse
+import com.tokopedia.kyc_centralized.data.model.KycData
+import com.tokopedia.kyc_centralized.data.model.KycResponse
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
