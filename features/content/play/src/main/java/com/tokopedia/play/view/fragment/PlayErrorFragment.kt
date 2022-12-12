@@ -35,6 +35,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-01-10.
  */
+@Suppress("LateinitUsage")
 class PlayErrorFragment @Inject constructor(
     private val analytic: PlayAnalytic,
     private val router: Router,
