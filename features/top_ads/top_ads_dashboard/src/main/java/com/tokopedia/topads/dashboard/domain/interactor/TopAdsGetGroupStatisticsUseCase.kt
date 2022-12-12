@@ -29,8 +29,8 @@ import kotlin.collections.set
  */
 
 private const val TOP_ADS_GET_GROUP_STATISTICS_QUERY: String =
-    """query GetTopadsDashboardGroupStatisticsV2(${'$'}queryInput: GetTopadsDashboardGroupStatisticsInputTypeV2!) {
-  GetTopadsDashboardGroupStatisticsV2(queryInput: ${'$'}queryInput) {
+    """query GetTopadsDashboardGroupStatisticsV3(${'$'}queryInput: GetTopadsDashboardGroupStatisticsInputTypeV3!) {
+  GetTopadsDashboardGroupStatisticsV3(queryInput: ${'$'}queryInput) {
     separate_statistic
     meta {
       page {
@@ -93,7 +93,7 @@ class TopAdsGetGroupStatisticsUseCase @Inject constructor(
         queryMap[PAGE] = page
         queryMap[START_DATE] = startDate
         queryMap[END_DATE] = endDate
-        queryMap[GOAL_ID] = goalId
+        queryMap[GOAL_ID] = goalId.toString()
         queryMap[GROUP_iDS] = groupids.joinToString(",")
         requestParams.putAll(mapOf(QUERY_INPUT to queryMap))
         return requestParams

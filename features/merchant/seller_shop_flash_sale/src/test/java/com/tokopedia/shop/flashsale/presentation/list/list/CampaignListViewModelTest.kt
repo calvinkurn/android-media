@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.list.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
@@ -29,13 +30,13 @@ import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.runBlockingTest
+import okhttp3.internal.wait
+import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -72,6 +73,10 @@ class CampaignListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+
+    @RelaxedMockK
+    lateinit var checkTimeMotionTimer: Observer<in Int>
+
     private val viewModel by lazy {
         CampaignListViewModel(
             CoroutineTestDispatchersProvider,
@@ -90,8 +95,19 @@ class CampaignListViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        with(viewModel) {
+            timeToFlip.observeForever(checkTimeMotionTimer)
+        }
     }
 
+    @After
+    fun tearDown() {
+        with(viewModel) {
+            timeToFlip.removeObserver(checkTimeMotionTimer)
+        }
+
+        unmockkAll()
+    }
 
 
     //region getCampaigns
@@ -715,5 +731,33 @@ class CampaignListViewModelTest {
             Date(),
             CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Eltie")
         )
+    }
+
+    @Test
+    fun `checkTimeMotionTimer is active`(){
+        viewModel.startAnimationOfWarningQuota()
+        assertTrue(viewModel.isTimerForFlipRunning())
+    }
+
+    @Test
+    fun `checkTimeMotionTimer is not active`(){
+        viewModel.startAnimationOfWarningQuota()
+        viewModel.stopAnimationOfWarningQuota()
+        assertFalse(viewModel.isTimerForFlipRunning())
+    }
+
+    @Test
+    fun `checkTimeMotionTimer wait until 5 second`(){
+            viewModel.startAnimationOfWarningQuota()
+            assertEquals(1, viewModel.timeToFlip.getOrAwaitValue())
+    }
+
+    @Test
+    fun `checkTimeMotionTimer wait until 10 second`(){
+        viewModel.startAnimationOfWarningQuota()
+        runBlocking {
+            delay(11000L)
+        }
+        assertEquals(3, viewModel.timeToFlip.getOrAwaitValue())
     }
 }
