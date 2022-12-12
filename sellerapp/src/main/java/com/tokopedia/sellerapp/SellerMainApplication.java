@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.work.Configuration;
 
@@ -27,6 +28,8 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.encryption.security.RSA;
+import com.tokopedia.encryption.utils.RSAKeys;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
@@ -58,6 +61,7 @@ import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -159,6 +163,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(com.tokopedia.sellerapp.utils.constants.Constants.ENCRYPTION_KEY);
 
+            final RSA encryptorRSA = new RSA();
+            final RSAPrivateKey privateKeyRSA = encryptorRSA.stringToPrivateKey(RSAKeys.PRIVATE_RSA_KEY_STR);
+
             @Override
             public Function1<String, String> getDecrypt() {
                 return new Function1<String, String>() {
@@ -175,6 +182,16 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
                     @Override
                     public String invoke(String s) {
                         return encryptor.encrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @Override
+            public Function1<String, String> getDecryptNrKey() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptorRSA.decrypt(s, privateKeyRSA, com.tokopedia.encryption.utils.Constants.RSA_OAEP_ALGORITHM);
                     }
                 };
             }

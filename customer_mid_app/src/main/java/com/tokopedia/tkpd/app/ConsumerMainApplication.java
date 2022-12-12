@@ -61,6 +61,7 @@ import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLife
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.encryption.security.RSA;
+import com.tokopedia.encryption.utils.RSAKeys;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
 import com.tokopedia.journeydebugger.JourneySubscriber;
@@ -444,7 +445,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             final SecretKey secretKey = encryptor.generateKey(NewRelicConstants.ENCRYPTION_KEY);
 
             final RSA encryptorRSA = new RSA();
-            final RSAPrivateKey privateKeyRSA = encryptorRSA.stringToPrivateKey(NewRelicConstants.PRIVATE_RSA_KEY_STR);
+            final RSAPrivateKey privateKeyRSA = encryptorRSA.stringToPrivateKey(RSAKeys.PRIVATE_RSA_KEY_STR);
 
 
             @Override
