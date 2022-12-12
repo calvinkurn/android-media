@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
@@ -29,8 +29,6 @@ import com.tokopedia.play.view.uimodel.action.ClickChipWidget
 import com.tokopedia.play.view.uimodel.action.NextPageWidgets
 import com.tokopedia.play.view.uimodel.action.RefreshWidget
 import com.tokopedia.play.view.uimodel.action.UpdateReminder
-import com.tokopedia.play.view.uimodel.getChipsShimmering
-import com.tokopedia.play.view.uimodel.getWidgetShimmering
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -72,9 +70,9 @@ class PlayExploreWidgetFragment @Inject constructor(
         GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
     }
 
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && layoutManager.childCount - 1 == layoutManager.findLastVisibleItemPosition()) {
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.submitAction(NextPageWidgets)
             }
         }
