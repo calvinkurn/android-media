@@ -78,6 +78,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val getShopInfoUseCase: GetShopInfoUseCase,
     private val getDefaultCommissionRulesUseCase: GetDefaultCommissionRulesUseCase,
+    private val getProductAutoMigratedStatusUseCase: GetProductAutoMigratedStatusUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
@@ -151,7 +152,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     var productSkuMessage: String = ""
 
     private var _productNameValidationFromNetwork = MutableLiveData<Result<String>>()
-    val productNameValidationFromNetwork : LiveData<Result<String>>
+    val productNameValidationFromNetwork: LiveData<Result<String>>
         get() = _productNameValidationFromNetwork
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
@@ -201,6 +202,13 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mAddProductPriceSuggestionError = MutableLiveData<Throwable>()
     val addProductPriceSuggestionError: LiveData<Throwable>
         get() = mAddProductPriceSuggestionError
+
+    private val mProductMigrateStatus = MutableLiveData<ProductMigrateStatus>()
+    val productMigrateStatus: LiveData<ProductMigrateStatus>
+        get() = mProductMigrateStatus
+    private val mProductMigrateStatusError = MutableLiveData<Throwable>()
+    val productMigrateStatusError: LiveData<Throwable>
+        get() = mProductMigrateStatusError
 
     private val mMaxStockThreshold = MutableLiveData<String>()
     val maxStockThreshold: LiveData<String>
@@ -292,10 +300,12 @@ class AddEditProductDetailViewModel @Inject constructor(
         // by default the product sku is allowed to empty
         val isProductSkuError = mIsProductSkuInputError.value ?: false
 
-        return (!isProductPhotoError && !isProductNameError &&
+        return (
+            !isProductPhotoError && !isProductNameError &&
                 !isProductPriceError && !isProductStockError &&
                 !isOrderQuantityError && !isProductWholeSaleError &&
-                !isPreOrderDurationError && !isProductSkuError)
+                !isPreOrderDurationError && !isProductSkuError
+            )
     }
 
     fun validateProductPhotoInput(productPhotoCount: Int) {
@@ -310,8 +320,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         launchCatchError(block = {
             mMaxStockThreshold.value = getMaxStockThresholdUseCase.execute(shopId).getIMSMeta.data.maxStockThreshold
         }, onError = {
-            mMaxStockThreshold.value = null
-        })
+                mMaxStockThreshold.value = null
+            })
     }
 
     fun validateProductNameInput(productNameInput: String) {
@@ -350,9 +360,9 @@ class AddEditProductDetailViewModel @Inject constructor(
                     }
                     mIsProductNameInputError.value = productNameValidationResult.isBlacklistKeyword
                 }, onError = {
-                    // log error
-                    AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-                })
+                        // log error
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+                    })
             }
         }
     }
@@ -507,27 +517,29 @@ class AddEditProductDetailViewModel @Inject constructor(
                 validateProductUseCase.executeOnBackground()
             }
             val validationMessage = response.productValidateV3.data.productSku
-                    .joinToString("\n")
+                .joinToString("\n")
             productSkuMessage = validationMessage
             mIsProductSkuInputError.value = validationMessage.isNotEmpty()
         }, onError = {
-            // log error
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-        })
+                // log error
+                AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            })
     }
 
     fun validateProductNameInputFromNetwork(productName: String) {
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 validateProductNameUseCase.setParamsProductName(
-                    productInputModel.productId.toString(), productName)
+                    productInputModel.productId.toString(),
+                    productName
+                )
                 validateProductNameUseCase.executeOnBackground()
             }
             val validationMessage = response.productValidateV3.data.validationResults.joinToString("\n")
             _productNameValidationFromNetwork.value = Success(validationMessage)
         }, onError = {
-            _productNameValidationFromNetwork.value = Fail(it)
-        })
+                _productNameValidationFromNetwork.value = Fail(it)
+            })
     }
 
     fun setProductNameInputFromNetwork(value: Result<String>?) {
@@ -583,8 +595,12 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
 
         val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
-            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == cleanResult[index] }?.urlThumbnail
+            if (editted[index]) {
+                urlOrPath
+            } else {
+                pictureList.find { it.urlOriginal == cleanResult[index] }?.urlThumbnail
                     ?: urlOrPath
+            }
         }
 
         this.productPhotoPaths = imageUrlOrPathList.toMutableList()
@@ -634,30 +650,34 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
             mProductNameRecommendations.value = Success(result)
         }, onError = {
-            mProductNameRecommendations.value = Fail(it)
-        })
+                mProductNameRecommendations.value = Fail(it)
+            })
     }
 
     fun getCategoryRecommendation(productNameInput: String) {
         launchCatchError(block = {
-            productCategoryRecommendationLiveData.value = Success(withContext(dispatchers.io) {
-                getCategoryRecommendationUseCase.params = GetCategoryRecommendationUseCase.createRequestParams(productNameInput)
-                getCategoryRecommendationUseCase.executeOnBackground()
-            })
+            productCategoryRecommendationLiveData.value = Success(
+                withContext(dispatchers.io) {
+                    getCategoryRecommendationUseCase.params = GetCategoryRecommendationUseCase.createRequestParams(productNameInput)
+                    getCategoryRecommendationUseCase.executeOnBackground()
+                }
+            )
         }, onError = {
-            productCategoryRecommendationLiveData.value = Fail(it)
-        })
+                productCategoryRecommendationLiveData.value = Fail(it)
+            })
     }
 
     fun getShopShowCasesUseCase() {
         launchCatchError(block = {
-            mShopShowCases.value = Success(withContext(dispatchers.io) {
-                val response = getShopEtalaseUseCase.executeOnBackground()
-                response.shopShowcases.result
-            })
+            mShopShowCases.value = Success(
+                withContext(dispatchers.io) {
+                    val response = getShopEtalaseUseCase.executeOnBackground()
+                    response.shopShowcases.result
+                }
+            )
         }, onError = {
-            mShopShowCases.value = Fail(it)
-        })
+                mShopShowCases.value = Fail(it)
+            })
     }
 
     fun getShopInfo(shopId: Int) {
@@ -668,8 +688,8 @@ class AddEditProductDetailViewModel @Inject constructor(
                 response
             }
         }, onError = {
-            mShopInfoError.value = it
-        })
+                mShopInfoError.value = it
+            })
     }
 
     fun getCommissionInfo(categoryId: Int) {
@@ -680,8 +700,8 @@ class AddEditProductDetailViewModel @Inject constructor(
                 response
             }
         }, onError = {
-            mCommissionInfoError.value = it
-        })
+                mCommissionInfoError.value = it
+            })
     }
 
     /**
@@ -730,30 +750,31 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
 
     private fun getMultiLocationStockAllocationMessage(): String =
-            when {
-                isEditing -> provider.getEditProductStockMultiLocationMessage().orEmpty()
-                isAdding -> provider.getAddProductStockMultiLocationMessage().orEmpty()
-                else -> ""
-            }
+        when {
+            isEditing -> provider.getEditProductStockMultiLocationMessage().orEmpty()
+            isAdding -> provider.getAddProductStockMultiLocationMessage().orEmpty()
+            else -> ""
+        }
 
     private fun getIsMultiLocation(): Boolean =
-            userSession.run {
-                isMultiLocationShop && (isShopAdmin || isShopOwner)
-            }
-
+        userSession.run {
+            isMultiLocationShop && (isShopAdmin || isShopOwner)
+        }
 
     fun getAnnotationCategory(categoryId: String, productId: String) {
         launchCatchError(block = {
-            mAnnotationCategoryData.value = Success(withContext(dispatchers.io) {
-                delay(DEBOUNCE_DELAY_MILLIS)
-                annotationCategoryUseCase.setParamsCategoryId(categoryId)
-                annotationCategoryUseCase.setParamsProductId(productId)
-                val response = annotationCategoryUseCase.executeOnBackground()
-                response.drogonAnnotationCategoryV2.data
-            })
+            mAnnotationCategoryData.value = Success(
+                withContext(dispatchers.io) {
+                    delay(DEBOUNCE_DELAY_MILLIS)
+                    annotationCategoryUseCase.setParamsCategoryId(categoryId)
+                    annotationCategoryUseCase.setParamsProductId(productId)
+                    val response = annotationCategoryUseCase.executeOnBackground()
+                    response.drogonAnnotationCategoryV2.data
+                }
+            )
         }, onError = {
-            mAnnotationCategoryData.value = Fail(it)
-        })
+                mAnnotationCategoryData.value = Fail(it)
+            })
     }
 
     fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
@@ -808,8 +829,8 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
             mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
         }, onError = {
-            mProductPriceRecommendationError.value = it
-        })
+                mProductPriceRecommendationError.value = it
+            })
     }
 
     fun getAddProductPriceSuggestion(keyword: String, categoryL3: String) {
@@ -820,8 +841,20 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
             mAddProductPriceSuggestion.value = response.priceSuggestionByKeyword
         }, onError = {
-            mAddProductPriceSuggestionError.value = it
-        })
+                mAddProductPriceSuggestionError.value = it
+            })
+    }
+
+    fun getProductAutoMigratedStatus(productId: String) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                getProductAutoMigratedStatusUseCase.setRequestParam(productId)
+                getProductAutoMigratedStatusUseCase.executeOnBackground()
+            }
+            mProductMigrateStatus.value = response.isProductAutoMigrated.productMigrateStatus
+        }, onError = {
+                mProductMigrateStatusError.value = it
+            })
     }
 
     fun removeKeywords(text: String, removedWords: List<String>): String {
@@ -834,37 +867,37 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun mapAddPriceSuggestionToPriceSuggestionUiModel(priceSuggestion: PriceSuggestionByKeyword): PriceSuggestion {
         return PriceSuggestion(
-                suggestedPrice = priceSuggestion.summary?.suggestedPrice,
-                suggestedPriceMin = priceSuggestion.summary?.suggestedPriceMin,
-                suggestedPriceMax = priceSuggestion.summary?.suggestedPriceMax,
-                similarProducts = priceSuggestion.suggestions?.map {
-                    SimilarProduct(
-                            productId = it.productId,
-                            displayPrice = it.displayPrice,
-                            imageURL = it.imageURL,
-                            title = it.title,
-                            totalSold = it.totalSold,
-                            rating = it.rating
-                    )
-                } ?: listOf()
+            suggestedPrice = priceSuggestion.summary?.suggestedPrice,
+            suggestedPriceMin = priceSuggestion.summary?.suggestedPriceMin,
+            suggestedPriceMax = priceSuggestion.summary?.suggestedPriceMax,
+            similarProducts = priceSuggestion.suggestions?.map {
+                SimilarProduct(
+                    productId = it.productId,
+                    displayPrice = it.displayPrice,
+                    imageURL = it.imageURL,
+                    title = it.title,
+                    totalSold = it.totalSold,
+                    rating = it.rating
+                )
+            } ?: listOf()
         )
     }
 
     fun mapEditPriceSuggestionToPriceSuggestionUiModel(priceSuggestion: PriceSuggestionSuggestedPriceGet): PriceSuggestion {
         return PriceSuggestion(
-                suggestedPrice = priceSuggestion.suggestedPrice,
-                suggestedPriceMin = priceSuggestion.suggestedPriceMin,
-                suggestedPriceMax = priceSuggestion.suggestedPriceMax,
-                similarProducts = priceSuggestion.productRecommendation.map {
-                    SimilarProduct(
-                            productId = it.productID,
-                            displayPrice = it.price,
-                            imageURL = it.imageURL,
-                            title = it.title,
-                            totalSold = it.sold,
-                            rating = it.rating
-                    )
-                }
+            suggestedPrice = priceSuggestion.suggestedPrice,
+            suggestedPriceMin = priceSuggestion.suggestedPriceMin,
+            suggestedPriceMax = priceSuggestion.suggestedPriceMax,
+            similarProducts = priceSuggestion.productRecommendation.map {
+                SimilarProduct(
+                    productId = it.productID,
+                    displayPrice = it.price,
+                    imageURL = it.imageURL,
+                    title = it.title,
+                    totalSold = it.sold,
+                    rating = it.rating
+                )
+            }
         )
     }
 
@@ -885,7 +918,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (isError) return false
         val minPrice = priceSuggestionRange.first
         val maxPrice = priceSuggestionRange.second
-        return priceInput <= minPrice ||  priceInput in minPrice..maxPrice
+        return priceInput <= minPrice || priceInput in minPrice..maxPrice
     }
 
     fun isPriceSuggestionLayoutVisible(isRangeEmpty: Boolean, productStatus: Int, isNew: Boolean, hasVariant: Boolean): Boolean {
@@ -917,8 +950,10 @@ class AddEditProductDetailViewModel @Inject constructor(
      * @param imagePickerResult is the list of product photo paths that returned from imagePicker (it will have different value if the user do addition, removal or edit any images that are previously added)
      * @param originalImageUrl is the list of original product photo paths that input to imagePicker (it doesn't contain image path of any added or edited image)
      **/
-    private fun cleanProductPhotoUrl(imagePickerResult: MutableList<String>,
-                                     originalImageUrl: MutableList<String>): List<String> {
+    private fun cleanProductPhotoUrl(
+        imagePickerResult: MutableList<String>,
+        originalImageUrl: MutableList<String>
+    ): List<String> {
         return imagePickerResult.mapIndexed { index, input ->
             if (input.endsWith(TEMP_IMAGE_EXTENSION)) {
                 originalImageUrl[index]

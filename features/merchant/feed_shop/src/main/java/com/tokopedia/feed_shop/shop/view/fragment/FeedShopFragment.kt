@@ -156,7 +156,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val LOGIN_FOLLOW_CODE = 1384
         private const val OPEN_CONTENT_REPORT = 1130
         private const val KOL_COMMENT_CODE = 13
-        private const val PARAM_SOURCE = "source"
+        private const val PARAM_ENTRY_POINT = "entry_point"
         private const val SHOP_PAGE = "shop_page"
         private const val WEBVIEW_URL_FORMAT = "%s?url=%s"
 
@@ -811,7 +811,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private fun getUpdatedApplinkForContentDetailPage(originalRedirectlink: String) =
         Uri.parse(originalRedirectlink)
             .buildUpon()
-            .appendQueryParameter(PARAM_SOURCE, SHOP_PAGE)
+            .appendQueryParameter(PARAM_ENTRY_POINT, SHOP_PAGE)
             .build().toString()
 
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,

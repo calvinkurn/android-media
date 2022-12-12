@@ -37,7 +37,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 211
+        const val SIZE_MAPPER = 213
     }
 
     override fun setup() {
@@ -222,6 +222,20 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=1"
         assertEqualsDeepLinkMapper(ApplinkConst.FEED, expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed explore tab appLink then should return tokopedia internal home navigation tab feed content with explore tab position in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=1&FEED_TAB_POSITION=2"
+        assertEqualsDeepLinkMapper(ApplinkConst.FEED_EXPLORE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed video tab appLink then should return tokopedia internal home navigation tab feed content with video tab position in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=1&FEED_TAB_POSITION=3&tab="
+        assertEqualsDeepLinkMapper(ApplinkConst.FEED_VIDEO, expectedDeepLink)
     }
 
     @Test
