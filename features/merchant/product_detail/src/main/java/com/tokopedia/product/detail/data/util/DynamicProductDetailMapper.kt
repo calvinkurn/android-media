@@ -196,21 +196,24 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
-                            OneLinersDataModel(type = component.type, name = component.componentName)
+                        OneLinersDataModel(type = component.type, name = component.componentName)
                     )
                 }
                 ProductDetailConstant.CATEGORY_CAROUSEL -> {
-                    //all data already provided in here (P1), so fill the data
+                    // all data already provided in here (P1), so fill the data
                     val carouselData = component.componentData.firstOrNull()
 
                     if (carouselData?.categoryCarouselList?.isNotEmpty() == true) {
                         listOfComponent.add(
-                                ProductCategoryCarouselDataModel(type = component.type,
-                                        name = component.componentName,
-                                        titleCarousel = carouselData.titleCarousel,
-                                        linkText = carouselData.linkText,
-                                        applink = carouselData.applink,
-                                        categoryList = carouselData.categoryCarouselList))
+                            ProductCategoryCarouselDataModel(
+                                type = component.type,
+                                name = component.componentName,
+                                titleCarousel = carouselData.titleCarousel,
+                                linkText = carouselData.linkText,
+                                applink = carouselData.applink,
+                                categoryList = carouselData.categoryCarouselList
+                            )
+                        )
                     }
                 }
                 PRODUCT_BUNDLING -> {
@@ -283,11 +286,20 @@ object DynamicProductDetailMapper {
             applink = contentData.applink,
             title = contentData.title,
             isApplink = contentData.isApplink,
-            parentIcon = contentData.icon ,
+            parentIcon = contentData.icon,
             subtitle = content.firstOrNull()?.subtitle.orEmpty(),
             lightIcon = contentData.lightIcon,
             darkIcon = contentData.darkIcon,
+            isPlaceholder = determinePlaceholder(name)
         )
+    }
+
+    /**
+     * Use for General Info
+     * component (name) should wait P2 data to render.
+     */
+    private fun determinePlaceholder(name: String): Boolean {
+        return name == ProductDetailConstant.INFO_OBAT_KERAS
     }
 
     /**
@@ -316,18 +328,19 @@ object DynamicProductDetailMapper {
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-                layoutName = data.generalName,
-                basic = data.basicInfo,
-                data = newDataWithMedia,
-                pdpSession = data.pdpSession,
-                bestSellerContent = bestSellerComponent,
-                stockAssuranceContent = stockAssuranceComponent
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent,
+            stockAssuranceContent = stockAssuranceComponent,
+            requestId = data.requestId
         )
     }
 
     private fun mapToOneLinersComponent(
-            componentName: String,
-            data: PdpGetLayout
+        componentName: String,
+        data: PdpGetLayout
     ): Map<String, OneLinersContent>? {
         return data.components.find {
             it.componentName == componentName
@@ -368,13 +381,13 @@ object DynamicProductDetailMapper {
         }?.componentData?.firstOrNull() ?: return null
 
         return ProductVariant(
-                parentId = networkData.parentId,
-                errorCode = networkData.errorCode,
-                sizeChart = networkData.sizeChart,
-                defaultChild = networkData.defaultChild,
-                variants = networkData.variants,
-                children = networkData.children,
-                maxFinalPrice = networkData.maxFinalPrice
+            parentId = networkData.parentId,
+            errorCode = networkData.errorCode,
+            sizeChart = networkData.sizeChart,
+            defaultChild = networkData.defaultChild,
+            variants = networkData.variants,
+            children = networkData.children,
+            maxFinalPrice = networkData.maxFinalPrice
         )
     }
 
@@ -436,24 +449,26 @@ object DynamicProductDetailMapper {
         }
     }
 
-    private fun mapToCustomInfoUiModel(componentData: ComponentData?,
-                                       componentName: String,
-                                       componentType: String): ProductCustomInfoDataModel? {
+    private fun mapToCustomInfoUiModel(
+        componentData: ComponentData?,
+        componentName: String,
+        componentType: String
+    ): ProductCustomInfoDataModel? {
         if (componentData == null) return null
 
         val label = componentData.labels.firstOrNull()
         return ProductCustomInfoDataModel(
-                name = componentName,
-                type = componentType,
-                title = componentData.title,
-                applink = if (componentData.isApplink) componentData.applink else "",
-                description = componentData.description,
-                icon = componentData.icon,
-                separator = componentData.separator,
-                labelColor = label?.color ?: "",
-                labelValue = label?.value ?: "",
-                lightIcon = componentData.lightIcon,
-                darkIcon = componentData.darkIcon
+            name = componentName,
+            type = componentType,
+            title = componentData.title,
+            applink = if (componentData.isApplink) componentData.applink else "",
+            description = componentData.description,
+            icon = componentData.icon,
+            separator = componentData.separator,
+            labelColor = label?.color ?: "",
+            labelValue = label?.value ?: "",
+            lightIcon = componentData.lightIcon,
+            darkIcon = componentData.darkIcon
         )
     }
 
@@ -568,14 +583,16 @@ object DynamicProductDetailMapper {
 
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
-        return "${localData.district_id}|${localData.postal_code}|${latlong}"
+        return "${localData.district_id}|${localData.postal_code}|$latlong"
     }
 
-    fun determineSelectedOptionIds(variantData: ProductVariant,
-                                   selectedChild: VariantChild?): MutableMap<String, String> {
+    fun determineSelectedOptionIds(
+        variantData: ProductVariant,
+        selectedChild: VariantChild?
+    ): MutableMap<String, String> {
         return AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(
-                variantData,
-                selectedChild?.optionIds
+            variantData,
+            selectedChild?.optionIds
         )
     }
 
@@ -589,40 +606,43 @@ object DynamicProductDetailMapper {
 
     fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String, bundleId: String): ProductData {
         return ProductData(
-                userId,
-                productInfo.finalPrice.getCurrencyFormatted(),
-                "${productInfo.data.isCashback.percentage}%",
-                MethodChecker.fromHtml(productInfo.getProductName).toString(),
-                productInfo.data.price.currency,
-                productInfo.basic.url,
-                shopUrl,
-                productInfo.basic.shopName,
-                productInfo.basic.productID,
-                productInfo.data.getProductImageUrl() ?: "",
-                campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
-                bundleId = zeroIfEmpty(bundleId)
+            userId,
+            productInfo.finalPrice.getCurrencyFormatted(),
+            "${productInfo.data.isCashback.percentage}%",
+            MethodChecker.fromHtml(productInfo.getProductName).toString(),
+            productInfo.data.price.currency,
+            productInfo.basic.url,
+            shopUrl,
+            productInfo.basic.shopName,
+            productInfo.basic.productID,
+            productInfo.data.getProductImageUrl() ?: "",
+            campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
+            bundleId = zeroIfEmpty(bundleId)
         )
     }
 
-    fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?,
-                                   variantData: ProductVariant?): AffiliatePDPInput {
+    fun generateAffiliateShareData(
+        productInfo: DynamicProductInfoP1,
+        shopInfo: ShopInfo?,
+        variantData: ProductVariant?
+    ): AffiliatePDPInput {
         return AffiliatePDPInput(
-                pageType= PageType.PDP.value,
-                product = Product(
-                        productID = productInfo.basic.productID,
-                        catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
-                        catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
-                        catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
-                        productPrice = productInfo.data.price.value.toString(),
-                        maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), //to do
-                        productStatus = productInfo.basic.status
-                ),
-                shop = Shop(
-                        shopID = productInfo.basic.shopID,
-                        isOS = productInfo.data.isOS,
-                        isPM = productInfo.data.isPowerMerchant,
-                        shopStatus = shopInfo?.statusInfo?.shopStatus
-                )
+            pageType = PageType.PDP.value,
+            product = Product(
+                productID = productInfo.basic.productID,
+                catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
+                catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
+                catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
+                productPrice = productInfo.data.price.value.toString(),
+                maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), // to do
+                productStatus = productInfo.basic.status
+            ),
+            shop = Shop(
+                shopID = productInfo.basic.shopID,
+                isOS = productInfo.data.isOS,
+                isPM = productInfo.data.isPowerMerchant,
+                shopStatus = shopInfo?.statusInfo?.shopStatus
+            )
         )
     }
 
@@ -630,7 +650,6 @@ object DynamicProductDetailMapper {
         return PdpParamModel(
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
             bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
-            productImageUrl = product.data.getProductImageUrl() ?: "",
             productPrice = product.data.price.value.toLong(),
             productRating = product.basic.stats.rating,
             productTitle = MethodChecker.fromHtml(product.getProductName).toString()

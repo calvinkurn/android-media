@@ -10,7 +10,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCaseSeller
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailWishlistedUseCase
@@ -63,7 +63,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
                         }
                         postDetailLive.value = Success(t)
 
-                        val dynamicPost = t.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
+                        val dynamicPost = t.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel
                         postFooterLive.value = t.footerModel to dynamicPost?.template?.cardpost?.footer
                         dynamicPost?.postTag?.let {
                             postTagLive.value = it
@@ -101,7 +101,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
                         if (t == true){
                             val mapFooter = postFooterLive.value ?:
                                     (postDetailLive.value as? Success)?.data?.let {
-                                        val dynamicPost = it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
+                                        val dynamicPost = it.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel
                                         it.footerModel to dynamicPost?.template?.cardpost?.footer
                                     }
                             if (mapFooter == null)
@@ -144,7 +144,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
                 if (it is Success) {
                     val prodTags = postTagLive.value
                     (postDetailLive.value as? Success)?.data?.let {
-                        (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+                        (it.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel)?.postTag
                     }
 
                     if (prodTags == null || position >= prodTags.items.size) {
@@ -168,7 +168,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
                 if (it is Success) {
                     val prodTags = postTagLive.value
                             ?: (postDetailLive.value as? Success)?.data?.let {
-                                (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+                                (it.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel)?.postTag
                             }
 
                     if (prodTags == null || position >= prodTags.items.size) {

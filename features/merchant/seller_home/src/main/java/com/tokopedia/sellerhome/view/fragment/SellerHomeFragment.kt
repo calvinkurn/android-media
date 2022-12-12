@@ -375,6 +375,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             recyclerView?.post {
                 resetWidgetImpressionHolder()
                 showRebateCoachMark()
+                showUnificationCoachMarkWhenVisible()
             }
 
             getShopStateInfoIfEligible()
@@ -428,8 +429,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
         recyclerView?.post {
-            adapter.data.remove(widget)
-            adapter.notifyItemRemoved(position)
+            val widgetList = mutableListOf<BaseWidgetUiModel<*>>()
+            adapter.data.forEach {
+                val isRemovedWidget = it != widget
+                if (isRemovedWidget) {
+                    widgetList.add(it)
+                }
+            }
+            notifyWidgetWithSdkChecking {
+                updateWidgets(widgetList)
+            }
         }
     }
 
@@ -742,7 +751,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                             dismissCoachMark()
                         }
                     }
-                    showUnificationWidgetCoachMark()
+                    showUnificationCoachMarkWhenVisible()
                 }
             }
         }
@@ -1087,7 +1096,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             setOnVerticalScrollListener {
                 requestVisibleWidgetsData()
                 handleRebateCoachMark()
-                handleUnificationCoachMark()
+                showUnificationCoachMarkWhenVisible()
             }
         }
         recyclerView?.run {
@@ -2381,7 +2390,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun handleUnificationCoachMark() {
+    private fun showUnificationCoachMarkWhenVisible() {
         if (unificationWidgetTitleView == null) return
 
         getSellerHomeLayoutManager()?.let { layoutManager ->

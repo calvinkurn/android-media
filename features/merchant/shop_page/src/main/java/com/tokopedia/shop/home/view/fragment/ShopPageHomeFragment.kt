@@ -1482,6 +1482,14 @@ open class ShopPageHomeFragment :
             val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
                 listWidgetLayoutToLoad.remove(this)
             }
+            // exclude product bundle widget from widgets to load
+            viewModel?.let { viewModel ->
+                listWidgetLayoutToLoad.forEach {
+                    if (viewModel.isWidgetBundle(it)) {
+                        listWidgetLayoutToLoad.remove(it)
+                    }
+                }
+            }
             getWidgetContentData(listWidgetLayoutToLoad)
             widgetPlayLayout?.let {
                 getPlayWidgetData()
@@ -1703,7 +1711,6 @@ open class ShopPageHomeFragment :
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct
         )
-        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
@@ -1764,7 +1771,6 @@ open class ShopPageHomeFragment :
             clickedProduct = selectedProduct,
             selectedPackage = selectedSingleBundle.minOrderWording
         )
-        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun addMultipleBundleToCart(

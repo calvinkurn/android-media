@@ -12,13 +12,13 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollViewHol
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeModel
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedcomponent.view.widget.WrapContentViewPager
 
@@ -34,7 +34,7 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
                        private val feedType: String)
     : PagerAdapter() {
 
-    private val itemList: MutableList<BasePostViewModel> = ArrayList()
+    private val itemList: MutableList<BasePostModel> = ArrayList()
     private var currentPosition = -1
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
@@ -43,14 +43,14 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
 
     @Suppress("UNCHECKED_CAST")
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val element: BasePostViewModel = itemList[position]
-        val viewHolder: BasePostViewHolder<BasePostViewModel> = when (element) {
-            is ImagePostViewModel -> ImagePostViewHolder(imagePostListener) as BasePostViewHolder<BasePostViewModel>
-            is YoutubeViewModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostViewModel>
-            is PollContentViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
-            is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>
-            is VideoViewModel -> VideoViewHolder(videoViewListener) as BasePostViewHolder<BasePostViewModel>
-            is MultimediaGridViewModel -> MultimediaGridViewHolder(feedMultipleImageViewListener, feedType) as BasePostViewHolder<BasePostViewModel>
+        val element: BasePostModel = itemList[position]
+        val viewHolder: BasePostViewHolder<BasePostModel> = when (element) {
+            is ImagePostModel -> ImagePostViewHolder(imagePostListener) as BasePostViewHolder<BasePostModel>
+            is YoutubeModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostModel>
+            is PollContentModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostModel>
+            is GridPostModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostModel>
+            is VideoModel -> VideoViewHolder(videoViewListener) as BasePostViewHolder<BasePostModel>
+            is MultimediaGridModel -> MultimediaGridViewHolder(feedMultipleImageViewListener, feedType) as BasePostViewHolder<BasePostModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))
@@ -78,7 +78,7 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
 
     override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
 
-    fun setList(imageList: MutableList<BasePostViewModel>) {
+    fun setList(imageList: MutableList<BasePostModel>) {
         this.itemList.clear()
         this.itemList.addAll(imageList)
         notifyDataSetChanged()

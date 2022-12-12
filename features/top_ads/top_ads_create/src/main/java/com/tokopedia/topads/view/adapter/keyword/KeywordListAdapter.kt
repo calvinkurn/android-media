@@ -10,6 +10,7 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.HIGH
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.LOW
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.MEDIUM
+import com.tokopedia.topads.view.adapter.bidinfo.viewholder.MID
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -77,6 +78,11 @@ class KeywordListAdapter(private val onChecked: ((position: Int) -> Unit)) : Rec
             }
 
             MEDIUM -> {
+                holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
+                holder.keywordCompetition.setLabel(holder.view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_moderation))
+            }
+
+            MID -> {
                 holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
                 holder.keywordCompetition.setLabel(holder.view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_moderation))
             }

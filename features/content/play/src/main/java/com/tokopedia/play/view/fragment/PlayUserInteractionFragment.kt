@@ -170,7 +170,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
-    private val engagementCarouselView by viewComponent { EngagementCarouselViewComponent(listener = this, resId = R.id.v_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
+    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(listener = this, resId = R.id.v_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
 
     /**
      * Interactive
@@ -867,9 +867,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderEngagement(prevState: EngagementUiState?, currState: EngagementUiState){
         if(prevState?.shouldShow != currState.shouldShow)
-            engagementCarouselView.rootView.showWithCondition(currState.shouldShow)
+            engagementCarouselView?.rootView?.showWithCondition(currState.shouldShow)
         if(prevState?.data != currState.data)
-            engagementCarouselView.setData(currState.data)
+            engagementCarouselView?.setData(currState.data)
     }
 
     private fun observeUiEvent() {
@@ -1746,35 +1746,30 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private fun onProductCarouselEvent(event: ProductCarouselUiComponent.Event) {
         when (event) {
-            is ProductCarouselUiComponent.Event.OnBuyClicked -> {
+            is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
                 //TODO("Temporary, maybe best to combine bottom sheet into this fragment")
                 if (event.product.isVariantAvailable) {
                     playFragment.openVariantBottomSheet(
-                        ProductAction.Buy,
+                        event.action,
                         event.product
                     )
                 }
 
                 playViewModel.submitAction(
-                    PlayViewerNewAction.BuyProduct(
-                        event.product,
-                        isProductFeatured = true,
-                    ),
-                )
-            }
-            is ProductCarouselUiComponent.Event.OnAtcClicked -> {
-                if (event.product.isVariantAvailable) {
-                    playFragment.openVariantBottomSheet(
-                        ProductAction.AddToCart,
-                        event.product
-                    )
-                }
-
-                playViewModel.submitAction(
-                    PlayViewerNewAction.AtcProduct(
-                        event.product,
-                        isProductFeatured = true,
-                    )
+                    when (event.action) {
+                        ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                        ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                        ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                    }
                 )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {

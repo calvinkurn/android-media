@@ -1,7 +1,6 @@
 package com.tokopedia.affiliatecommon.domain
 
 import android.text.TextUtils
-import com.tokopedia.affiliatecommon.MUTATION_AFFILIATE_TRACKING
 import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliateResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -11,14 +10,13 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by milhamj on 2019-08-20.
  */
 class TrackAffiliateUseCase @Inject constructor(
-        @Named(MUTATION_AFFILIATE_TRACKING) val query: String,
-        val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<Boolean>() {
+    val graphqlUseCase: MultiRequestGraphqlUseCase
+) : UseCase<Boolean>() {
 
     var params: Map<String, Any> = mapOf()
 
@@ -29,8 +27,7 @@ class TrackAffiliateUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): Boolean {
-        val request = GraphqlRequest(query, TrackAffiliateResponse::class.java, params)
-
+        val request = GraphqlRequest(QUERY.trimIndent(), TrackAffiliateResponse::class.java, params)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)
@@ -48,6 +45,20 @@ class TrackAffiliateUseCase @Inject constructor(
     companion object {
         const val UNIQUE_STRING = "uniqueString"
         const val TRACKER_ID = "trackerID"
+
+        private const val QUERY = """
+            mutation AffiliateTracker(${'$'}trackerID: String!, ${'$'}uniqueString: String!) {
+              topadsAffiliateTracker(input: {trackerID: ${'$'}trackerID, uniqueString: ${'$'}uniqueString}) {
+                success
+                message
+                errors {
+                  Code
+                  Title
+                  Detail
+                }
+              }
+            }
+        """
 
         fun createParams(uniqueString: String, deviceId: String): Map<String, Any> {
             return mutableMapOf<String, Any>().apply {
