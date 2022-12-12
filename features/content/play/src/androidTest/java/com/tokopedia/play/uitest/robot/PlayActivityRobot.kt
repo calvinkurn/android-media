@@ -30,6 +30,7 @@ class PlayActivityRobot(
     channelId: String,
     initialDelay: Long = 1000,
     isYouTube: Boolean = false,
+    isErrorPage: Boolean = false,
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -46,6 +47,7 @@ class PlayActivityRobot(
         waitUntilViewIsDisplayed(
             withId(
                 if (!isYouTube) R.id.view_video
+                else if (isErrorPage) R.id.fl_global_error
                 else R.id.fl_youtube_player
             )
         )
@@ -207,7 +209,7 @@ class PlayActivityRobot(
     }
 
     fun isErrorViewAvailable() {
-        Espresso.onView(withId(R.id.global_error)).check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.container_global_error)).check(matches(isDisplayed()))
     }
 
     fun swipeChannel() {
@@ -215,10 +217,11 @@ class PlayActivityRobot(
     }
 
     fun endViewIsAvailable(title: String) {
+        val viewMatcher = hasDescendant(withText(containsString(title)))
         Espresso.onView(
-            withId(R.id.txt_live_ended_title)
+            withId(R.id.cl_play_live_ended)
         ).check(
-            matches(withText(title))
+            matches(viewMatcher)
         )
     }
 
