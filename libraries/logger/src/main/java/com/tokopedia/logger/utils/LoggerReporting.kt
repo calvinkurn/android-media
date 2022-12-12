@@ -120,25 +120,6 @@ class LoggerReporting {
         return mapMessage.convertMapToJsonString()
     }
 
-    private fun getFilterKey(key: String): String {
-        return if (key == TYPE) {
-            key.replace(TYPE, TYP)
-        } else {
-            key
-        }
-    }
-
-    private fun getPriority(tagPriority: String): Int {
-        if (tagPriority == TAG_OFFLINE) {
-            return PRIORITY_OFFLINE
-        }
-        return PRIORITY_ONLINE
-    }
-
-    private fun Map<String, String>.convertMapToJsonString(): String {
-        return Gson().toJson(this)
-    }
-
     fun setPopulateTagMapsScalyr(tags: List<String>?) {
         tagMapsScalyr.clear()
         if (tags.isNullOrEmpty()) {
@@ -186,13 +167,6 @@ class LoggerReporting {
                 }
             }
         }
-    }
-
-    private fun getNewRelicKeyAndTable(tagSplit: List<String>): Pair<String, String> {
-        val nrKey = tagMapsNrKey.keys.firstOrNull { it in tagSplit } ?: ""
-        val nrTable = tagMapsNrTable.keys.firstOrNull { it in tagSplit } ?: ""
-
-        return Pair(nrKey, nrTable)
     }
 
     fun setPopulateKeyMapsNewRelic(nrKeys: List<String>?) {
@@ -256,6 +230,32 @@ class LoggerReporting {
                 }
             }
         }
+    }
+
+    private fun getFilterKey(key: String): String {
+        return if (key == TYPE) {
+            key.replace(TYPE, TYP)
+        } else {
+            key
+        }
+    }
+
+    private fun getPriority(tagPriority: String): Int {
+        if (tagPriority == TAG_OFFLINE) {
+            return PRIORITY_OFFLINE
+        }
+        return PRIORITY_ONLINE
+    }
+
+    private fun Map<String, String>.convertMapToJsonString(): String {
+        return Gson().toJson(this)
+    }
+
+    private fun getNewRelicKeyAndTable(tagSplit: List<String>): Pair<String, String> {
+        val nrKey = tagMapsNrKey.keys.firstOrNull { it in tagSplit } ?: ""
+        val nrTable = tagMapsNrTable.keys.firstOrNull { it in tagSplit } ?: ""
+
+        return Pair(nrKey, nrTable)
     }
 
     companion object {

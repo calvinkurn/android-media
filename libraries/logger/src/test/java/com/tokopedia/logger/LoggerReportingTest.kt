@@ -1,5 +1,6 @@
 package com.tokopedia.logger
 
+import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.utils.DataLogConfig
 import com.tokopedia.logger.utils.LoggerReporting
 import com.tokopedia.logger.utils.Tag
@@ -139,7 +140,7 @@ class LoggerReportingTest {
     fun `set populate tag maps of embrace with empty value should return false`() {
         val mockEmbrace = TestUtilsHelper.createSuccessResponse(EMBRACE_FAIL_RESPONSE) as DataLogConfig
         val mockTagEmbrace = mockEmbrace.tags
-        val expectedTagMapsEmbrace= mutableMapOf<String, Tag>().apply {
+        val expectedTagMapsEmbrace = mutableMapOf<String, Tag>().apply {
             put("P1#DEV_CRASH", Tag(TestUtilsHelper.getPriority("offline")))
             put("P1#DEV_ANR", Tag(TestUtilsHelper.getPriority("offline")))
             put("P1#DEV_TOO_LARGE", Tag(TestUtilsHelper.getPriority("offline")))
@@ -174,7 +175,6 @@ class LoggerReportingTest {
             assertEquals(query, expectedQueryLimitsScalyr[index])
         }
     }
-
 
     @Test
     fun `set query limits of new relic with value should return equal`() {
@@ -240,9 +240,40 @@ class LoggerReportingTest {
         assertTrue(LogManager.queryLimits.isEmpty())
     }
 
+    @Test
+    fun `set populate key maps of new relic, then should return success`() {
+        val mockNewRelicV3 = TestUtilsHelper.createSuccessResponse(NEW_RELIC_SUCCESS_V3_RESPONSE) as DataLogConfig
+        val mockKeysNewRelicV3 = mockNewRelicV3.keys
+        val expectedKeysNrV3 = hashMapOf<String, NewRelicConfig>().apply {
+            put("key_new_relic_android", NewRelicConfig("31345657577", "OnReGNYndyS6M1MnEhHsBtrXywe3EDSb+dLT3p4kGuDjO4ART5YhSgUJLPp9qKRh5DAd1ZjSIUQOBoGeeSE1L4sWGyZg9aaFOIG2R9VdbyTdSVyZVXwyQlbGFFBQlCRgchrwDOftEarhCj2fkCcvzEaT31R0QDZKUWHoPaFVJ12Oqt99KjX+jInVCE0iurniMInp4sY3dYK2hiAtNBWpZxH6uzeArWWQqfgMfH5peLEReDoFPv8WNowzk//cGP0ajgCzvGwuo/er34+v6wJkHrHEFDgoTSMSgc5u000HCD4ulAbttWXkHMYwsdZMhiraw0DHYVBSoFiefzZt9V0F9A=="))
+        }
+
+        LoggerReporting.getInstance().setPopulateKeyMapsNewRelic(mockKeysNewRelicV3)
+
+        LoggerReporting.getInstance().tagMapsNrKey.forEach { (key, newRelicConfig) ->
+            assertEquals(newRelicConfig, expectedKeysNrV3[key])
+        }
+    }
+
+    @Test
+    fun `set populate key tables of new relic, then should return success`() {
+        val mockNewRelicV3 = TestUtilsHelper.createSuccessResponse(NEW_RELIC_SUCCESS_V3_RESPONSE) as DataLogConfig
+        val mockTablesNewRelicV3 = mockNewRelicV3.tables
+        val expectedQueryLimitsNrV3 = hashMapOf<String, String>().apply {
+            put("table_sf", "androidsf")
+        }
+
+        LoggerReporting.getInstance().setPopulateTableMapsNewRelic(mockTablesNewRelicV3)
+
+        LoggerReporting.getInstance().tagMapsNrTable.forEach { (key, value) ->
+            assertEquals(value, expectedQueryLimitsNrV3[key])
+        }
+    }
+
     companion object {
         const val SCALYR_SUCCESS_RESPONSE = "json/mock_scalyr_success_response.json"
         const val NEW_RELIC_SUCCESS_RESPONSE = "json/mock_new_relic_success_response.json"
+        const val NEW_RELIC_SUCCESS_V3_RESPONSE = "json/mock_new_relic_v3_success_response.json"
         const val SCALYR_FAIL_RESPONSE = "json/mock_scalyr_fail_response.json"
         const val NEW_RELIC_FAIL_RESPONSE = "json/mock_new_relic_fail_response.json"
         const val EMBRACE_SUCCESS_RESPONSE = "json/mock_embrace_success_response.json"
