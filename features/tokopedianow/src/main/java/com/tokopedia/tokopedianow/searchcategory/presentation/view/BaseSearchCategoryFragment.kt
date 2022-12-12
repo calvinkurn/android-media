@@ -473,8 +473,7 @@ abstract class BaseSearchCategoryFragment:
 
     private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
         headerBackground?.translationY = getViewModel().getTranslationYHeaderBackground(
-            dy = dy,
-            headerBackgroundHeight = headerBackground?.height.orZero()
+            dy = dy
         )
         if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = false)

@@ -180,6 +180,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rating_typography" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="assigned_value_typography, main_price_typography, promo_layout, product_name_typography, category_info_typography, rating_icon, rating_typography" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/similar_product_typography"
         android:layout_width="wrap_content"
@@ -194,7 +201,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rating_typography"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:layout_constraintVertical_bias="1.0"
         app:typographyType="small" />
 
@@ -210,7 +217,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_info_typography"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:layout_constraintVertical_bias="1.0" />
 
     <com.tokopedia.unifyprinciples.Typography
