@@ -280,6 +280,7 @@ class LoggerRepository(
     private fun addEventNewRelic(message: String, eventType: String): String {
         val gson = gson.fromJson(message, JsonObject::class.java)
         gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, eventType)
+        gson.remove(Constants.PRIORITY_LOG)
         return gson.toString()
     }
 

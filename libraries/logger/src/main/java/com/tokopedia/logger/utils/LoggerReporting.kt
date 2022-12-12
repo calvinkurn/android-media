@@ -88,6 +88,8 @@ class LoggerReporting {
             put("log_vernm", versionName)
 
             put(Constants.TAG_LOG, tag)
+            put(Constants.PRIORITY_LOG, p.toString())
+
             if (tag == GP) {
                 for (item in message) {
                     if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
@@ -97,7 +99,6 @@ class LoggerReporting {
                     }
                 }
             } else {
-                put(Constants.PRIORITY_LOG, p.toString())
                 put("log_timestamp", timeStamp.toString())
                 put("log_time", getReadableTimeStamp(timeStamp))
                 put("log_did", partDeviceId)
