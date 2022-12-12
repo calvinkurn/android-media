@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.domain.usecase
 
-
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -11,8 +10,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
-import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
+import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import javax.inject.Inject
 
@@ -57,7 +56,7 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
               }
 
 
-    """.trimIndent()
+        """.trimIndent()
 
         override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
         override fun getQuery(): String = QUERY
@@ -71,15 +70,36 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
         return mapper.map(data)
     }
 
+    suspend fun getToken(): VoucherCreationMetadata {
+        val request = buildRequest()
+        val response = repository.response(listOf(request))
+        val data = response.getSuccessData<GetInitiateVoucherPageResponse>()
+        return mapper.map(data)
+    }
+
+    private fun buildRequest(): GraphqlRequest {
+        val action = "update"
+
+        val params = mapOf(
+            REQUEST_PARAM_ACTION to action
+        )
+
+        return GraphqlRequest(
+            query,
+            GetInitiateVoucherPageResponse::class.java,
+            params
+        )
+    }
+
     private fun buildRequest(param: Param): GraphqlRequest {
         val voucherProduct = if (param.isVoucherProduct) VOUCHER_TYPE_PRODUCT else VOUCHER_TYPE_SHOP
 
-        val action = when(param.action) {
+        val action = when (param.action) {
             VoucherAction.CREATE -> "create"
             VoucherAction.UPDATE -> "update"
         }
 
-        val promoType = when(param.promoType) {
+        val promoType = when (param.promoType) {
             PromoType.CASHBACK -> "cashback"
             PromoType.FREE_SHIPPING -> "shipping"
             PromoType.DISCOUNT -> "discount"
@@ -99,11 +119,9 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
         )
     }
 
-
     data class Param(
         val action: VoucherAction,
         val promoType: PromoType,
         val isVoucherProduct: Boolean
     )
 }
-

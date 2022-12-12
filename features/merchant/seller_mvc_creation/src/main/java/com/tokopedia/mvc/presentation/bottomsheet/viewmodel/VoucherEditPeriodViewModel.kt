@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.mvc.domain.entity.UpdateVoucherResult
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.usecase.ChangeVoucherPeriodUseCase
-import com.tokopedia.mvc.domain.usecase.GetTokenUseCase
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class VoucherEditPeriodViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getTokenUseCase: GetTokenUseCase,
+    private val getTokenUseCase: GetInitiateVoucherPageUseCase,
     private val changeVoucherPeriodUseCase: ChangeVoucherPeriodUseCase
 ) : BaseViewModel(dispatchers.main) {
 
@@ -67,7 +67,8 @@ class VoucherEditPeriodViewModel @Inject constructor(
 
         voucher?.let {
             launchCatchError(dispatchers.io, {
-                val token = getTokenUseCase.executeOnBackground()
+                val voucherCreationMetadata = getTokenUseCase.getToken()
+                val token = voucherCreationMetadata.token
                 changeVoucherPeriodUseCase.updateVoucherPeriod(
                     ::onSuccessUpdateVoucher,
                     ::onFailureUpdateVoucher,
