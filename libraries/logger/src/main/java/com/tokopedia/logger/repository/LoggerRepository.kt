@@ -136,7 +136,7 @@ class LoggerRepository(
                     jobList.add(jobEmbrace)
                 }
 
-                val isSuccess = jobList.awaitAll().any { it }
+                val isSuccess = jobList.toList().awaitAll().any { it }
                 if (isSuccess) {
                     deleteEntries(logs)
                 }
