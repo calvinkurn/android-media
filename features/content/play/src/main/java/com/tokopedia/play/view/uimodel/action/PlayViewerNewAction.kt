@@ -103,4 +103,5 @@ data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): Pla
 
 data class SendWarehouseId(val id: String, val isOOC: Boolean) : PlayViewerNewAction()
 
+object DismissFollowPopUp : PlayViewerNewAction()
 object OpenCart: PlayViewerNewAction()

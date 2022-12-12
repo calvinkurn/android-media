@@ -43,11 +43,13 @@ import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.bottomsheet.PlayFollowBottomSheet
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
@@ -861,6 +863,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
                     viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
                 }
+
+                if(cachedState.isChanged { it.followPopUp }) renderFollowPopUp(state.followPopUp)
             }
         }
     }
@@ -926,9 +930,10 @@ class PlayUserInteractionFragment @Inject constructor(
                                 errCode
                             )
                         }
+
                         doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
-                            message = errMessage
+                            message = errMessage,
                         )
                     }
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
@@ -973,6 +978,17 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
+                    }
+                    FailedFollow -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = getString(R.string.play_failed_follow),
+                            actionText = getString(commonR.string.play_interactive_retry),
+                            clickListener = {
+                                newAnalytic.clickRetryToasterPopUp(channelId, channelType = playViewModel.channelType.value)
+                                playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
+                            }
+                        )
                     }
                 }
             }
@@ -1204,7 +1220,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     fun hideBottomSheet() {
         val bottomSheet = getBottomSheetInstance()
-        if (bottomSheet.isVisible) bottomSheet.dismiss()
+        if (bottomSheet.isVisible) {
+            bottomSheet.dismiss()
+        }
     }
 
     private fun showInteractionIfWatchMode() {
@@ -1291,8 +1309,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun doShowToaster(
             toasterType: Int = Toaster.TYPE_NORMAL,
-            actionText: String = "",
             message: String,
+            actionText: String = "",
+            clickListener: View.OnClickListener = View.OnClickListener {},
     ) {
         if (toasterBottomMargin == 0) {
             val likeAreaView = likeView.rootView
@@ -1305,7 +1324,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 container,
                 message,
                 type = toasterType,
-                actionText = actionText
+                actionText = actionText,
+                clickListener = clickListener
         ).show()
     }
 
@@ -1789,6 +1809,15 @@ class PlayUserInteractionFragment @Inject constructor(
                 playViewModel.submitAction(OpenKebabAction)
             }
         }
+    }
+
+    private fun renderFollowPopUp(shouldShow: Boolean) {
+        if (shouldShow)
+            PlayFollowBottomSheet.getOrCreate(
+                childFragmentManager,
+                classLoader = requireActivity().classLoader
+            )
+                .show(childFragmentManager)
     }
 
     /**

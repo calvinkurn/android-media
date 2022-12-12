@@ -20,6 +20,7 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -44,7 +45,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
-                    emptyBottomSheetInfo = mapEmptyBottomSheet(it)
+                    emptyBottomSheetInfo = mapEmptyBottomSheet(it),
+                    popupConfig = mapPopUp(it),
                 ),
                 partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
@@ -279,6 +281,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
         PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
+    }
+
+    private fun mapPopUp(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.popupConfig){
+        PlayPopUpConfigUiModel(isEnabled = isEnabled, text = copyText, duration = TimeUnit.SECONDS.toMillis(duration))
     }
 
     companion object {
