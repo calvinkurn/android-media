@@ -268,7 +268,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                             analytic.onClickAccountAndHaveDraft()
                             getSwitchAccountConfirmationDialog(contentAccount).show()
                         } else {
-                            parentViewModel.submitAction(SwitchAccount)
+                            parentViewModel.submitAction(SwitchAccount())
                         }
                         viewModel.setFromSwitchAccount(true)
                     }
@@ -983,7 +983,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(SwitchAccount)
+                    parentViewModel.submitAction(SwitchAccount())
                     if (dialog?.isShowing == true) {
                         analytic.onClickConfirmSwitchAccount()
                         dismiss()

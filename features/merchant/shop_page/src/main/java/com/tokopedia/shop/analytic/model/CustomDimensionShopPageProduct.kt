@@ -9,6 +9,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 open class CustomDimensionShopPageProduct : CustomDimensionShopPage() {
     @JvmField
     var productId: String? = null
+
     @JvmField
     var shopRef = ""
 
@@ -22,8 +23,13 @@ open class CustomDimensionShopPageProduct : CustomDimensionShopPage() {
             return customDimensionShopPage
         }
 
-        fun create(shopId: String?, isOfficial: Boolean, isGold: Boolean,
-                   productId: String?, shopRef: String): CustomDimensionShopPageProduct {
+        fun create(
+            shopId: String?,
+            isOfficial: Boolean,
+            isGold: Boolean,
+            productId: String?,
+            shopRef: String
+        ): CustomDimensionShopPageProduct {
             val customDimensionShopPage = CustomDimensionShopPageProduct()
             customDimensionShopPage.shopId = shopId
             customDimensionShopPage.shopType = if (isOfficial) TrackShopTypeDef.OFFICIAL_STORE else if (isGold) TrackShopTypeDef.GOLD_MERCHANT else TrackShopTypeDef.REGULAR_MERCHANT

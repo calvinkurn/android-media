@@ -63,7 +63,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
-    implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)

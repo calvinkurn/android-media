@@ -149,7 +149,7 @@ class GetOrderUseCaseTest {
                         product = OrderProductUiModel(
                                 productId = "199047330",
                                 productName = "Product 48",
-                                picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2016/12/17/12299749/12299749_a943a8f6-af0e-4507-8bbd-399f397a081a_300_300.jpg"
+                                picture = "https://images.tokopedia.net/img/cache/100-square/product-1/2016/12/17/12299749/12299749_a943a8f6-af0e-4507-8bbd-399f397a081a_300_300.jpg"
                         ),
                         productCount = 1 //number of orders
                 )),
