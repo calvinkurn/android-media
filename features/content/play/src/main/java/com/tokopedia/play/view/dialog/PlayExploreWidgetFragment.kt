@@ -128,6 +128,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.rvWidgets.addOnScrollListener(scrollListener)
 
         binding.srExploreWidget.setOnRefreshListener {
+            binding.srExploreWidget.isRefreshing = !binding.srExploreWidget.isRefreshing
             viewModel.submitAction(RefreshWidget)
         }
     }
