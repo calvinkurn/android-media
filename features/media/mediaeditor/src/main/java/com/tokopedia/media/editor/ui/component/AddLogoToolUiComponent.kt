@@ -271,7 +271,11 @@ class AddLogoToolUiComponent constructor(
                 Toaster.TYPE_NORMAL,
                 resources().getString(editorR.string.editor_add_logo_toast_cta),
                 clickListener = {
-                    if (retryNumber >= RETRY_LIMIT) listener.onLoadFailed()
+                    if (retryNumber >= RETRY_LIMIT) {
+                        listener.onLoadFailed()
+                    } else {
+                        listener.onLoadRetry()
+                    }
                     retryNumber++
                     initShopAvatar()
                 }
@@ -297,6 +301,7 @@ class AddLogoToolUiComponent constructor(
         fun onLogoChosen(bitmap: Bitmap)
         fun onUpload()
         fun onLoadFailed()
+        fun onLoadRetry()
     }
 
     companion object {
