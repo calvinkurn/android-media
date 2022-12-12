@@ -42,12 +42,12 @@ import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
-import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.PageState
@@ -56,7 +56,6 @@ import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
-import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -111,6 +110,10 @@ class MvcListFragment :
     }
 
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
+        showMoreMenuBottomSheet(voucher)
+    }
+
+    private fun showMoreMenuBottomSheet(voucher: Voucher) {
         activity?.let {
             moreMenuBottomSheet =
                 MoreMenuBottomSheet.newInstance(
@@ -252,7 +255,7 @@ class MvcListFragment :
     }
 
     override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
-        //     MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
+        showMoreMenuBottomSheet(voucher)
     }
 
     private fun setupObservables() {
