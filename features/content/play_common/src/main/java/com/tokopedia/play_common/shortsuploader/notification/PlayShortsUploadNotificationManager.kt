@@ -32,7 +32,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     ) as NotificationManager
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
-        setDefaults(Notification.DEFAULT_ALL)
+        setDefaults(Notification.DEFAULT_SOUND)
         setOnlyAlertOnce(true)
         /** TODO: adjust smallIcon here */
         setSmallIcon(com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp)
