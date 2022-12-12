@@ -1,8 +1,7 @@
-package com.tokopedia.kyc_centralized.view.activity
+package com.tokopedia.kyc_centralized.ui.cKyc.alacarte
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoSimpleFragment
 
 class UserIdentificationInfoSimpleActivity: BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {

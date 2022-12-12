@@ -1,9 +1,8 @@
-package com.tokopedia.kyc_centralized.view.model
+package com.tokopedia.kyc_centralized.ui.cKyc.form.stepper
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.model.StepperModel
-import java.util.*
 
 /**
  * @author by alvinatin on 12/11/18.

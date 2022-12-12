@@ -18,7 +18,7 @@
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.UserIdentificationFormActivity"
+            android:name=".ui.cKyc.form.UserIdentificationFormActivity"
             android:label="@string/title_kyc_form_upload"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.UserIdentificationInfoSimpleActivity"
+            android:name=".ui.cKyc.alacarte.UserIdentificationInfoSimpleActivity"
             android:label="@string/title_kyc_info_simple"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"

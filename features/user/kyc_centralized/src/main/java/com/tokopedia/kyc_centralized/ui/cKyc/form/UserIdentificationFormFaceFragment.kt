@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.fragment
+package com.tokopedia.kyc_centralized.ui.cKyc.form
 
 import android.animation.ValueAnimator
 import android.os.Bundle
@@ -26,10 +26,9 @@ import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraFragment
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
-import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.ui.cKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.BaseUserIdentificationStepperFragment
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail

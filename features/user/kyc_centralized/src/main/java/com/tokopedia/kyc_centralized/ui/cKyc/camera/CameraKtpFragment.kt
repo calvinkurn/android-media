@@ -22,7 +22,7 @@ import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_COMPRESSION
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_CROPPING
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.databinding.FragmentCameraKtpBinding
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
+import com.tokopedia.kyc_centralized.ui.cKyc.form.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kyc_centralized.common.KYCConstant

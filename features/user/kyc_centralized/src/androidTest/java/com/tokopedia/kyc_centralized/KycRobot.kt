@@ -12,7 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
 import com.tokopedia.kyc_centralized.util.waitOnView
 import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoSimpleActivity
+import com.tokopedia.kyc_centralized.ui.cKyc.alacarte.UserIdentificationInfoSimpleActivity
 
 class KycRobot {
 

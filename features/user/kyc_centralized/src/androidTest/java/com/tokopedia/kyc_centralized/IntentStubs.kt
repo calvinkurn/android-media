@@ -12,7 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
+import com.tokopedia.kyc_centralized.ui.cKyc.form.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.utils.image.ImageProcessingUtil
 

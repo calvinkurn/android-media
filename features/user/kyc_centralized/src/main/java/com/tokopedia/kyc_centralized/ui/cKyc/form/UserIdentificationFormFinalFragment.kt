@@ -1,7 +1,6 @@
-package com.tokopedia.kyc_centralized.view.fragment
+package com.tokopedia.kyc_centralized.ui.cKyc.form
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
@@ -34,20 +33,18 @@ import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationFinalBinding
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
+import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
+import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraFragment
+import com.tokopedia.kyc_centralized.ui.cKyc.form.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
+import com.tokopedia.kyc_centralized.ui.cKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.kyc_centralized.ui.cKyc.form.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
+import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.BaseUserIdentificationStepperFragment
 import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
-import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
-import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraFragment
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
-import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
-import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -66,7 +63,7 @@ import javax.inject.Inject
  * @author by alvinatin on 15/11/18.
  */
 class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
-    UserIdentificationUploadImage.View, UserIdentificationFormActivity.Listener {
+    UserIdentificationFormActivity.Listener {
     private var viewBinding by autoClearedNullable<FragmentUserIdentificationFinalBinding>()
     private var stepperModel: UserIdentificationStepperModel? = null
     private var stepperListener: StepperListener? = null
@@ -212,16 +209,16 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
                 stepperModel?.faceFile.orEmpty(),
                 projectId.toString(),
                 throwable
-                )
+            )
 
         } else {
             KycServerLogger.selfieUploadResult(
-                 "ErrorUpload",
-                     stepperModel?.ktpFile.orEmpty(),
-                     stepperModel?.faceFile.orEmpty(),
-                     projectId.toString(),
-                    throwable
-                )
+                "ErrorUpload",
+                stepperModel?.ktpFile.orEmpty(),
+                stepperModel?.faceFile.orEmpty(),
+                projectId.toString(),
+                throwable
+            )
 
             analytics?.eventClickUploadPhotosTradeIn("failed")
         }
@@ -230,12 +227,11 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
     private fun sendSuccessTimberLog() {
         analytics?.eventClickUploadPhotosTradeIn("success")
 
-            KycServerLogger.kyUploadResult(
-                "SuccessUpload",
-                 stepperModel?.ktpFile.orEmpty(),
-                 stepperModel?.faceFile.orEmpty(),
-                 projectId.toString()
-            ,
+        KycServerLogger.kyUploadResult(
+            "SuccessUpload",
+            stepperModel?.ktpFile.orEmpty(),
+            stepperModel?.faceFile.orEmpty(),
+            projectId.toString(),
             isKycSelfie
         )
     }
@@ -523,16 +519,13 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
 
     override fun getScreenName(): String = ""
 
-    override val getContext: Context?
-        get() = context
-
-    override fun showLoading() {
+    private fun showLoading() {
         viewBinding?.layoutMain?.visibility = View.GONE
         viewBinding?.loaderUnify?.visibility = View.VISIBLE
         viewBinding?.layoutKycUploadError?.root?.visibility = View.GONE
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         viewBinding?.layoutMain?.visibility = View.VISIBLE
         viewBinding?.loaderUnify?.visibility = View.GONE
         viewBinding?.layoutKycUploadError?.root?.visibility = View.GONE

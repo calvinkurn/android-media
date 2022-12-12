@@ -21,7 +21,7 @@ import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
 import com.tokopedia.kyc_centralized.databinding.FragmentCameraFocusViewBinding
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
+import com.tokopedia.kyc_centralized.ui.cKyc.form.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil

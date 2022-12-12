@@ -10,6 +10,7 @@ import com.tokopedia.kyc_centralized.*
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
+import com.tokopedia.kyc_centralized.ui.cKyc.alacarte.UserIdentificationInfoSimpleActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Assert.*
 import org.junit.Before
