@@ -155,6 +155,7 @@ import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.common.data.model.ShopAffiliateData
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -172,6 +173,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageTextComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopContentCreationOptionBottomSheet
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
@@ -469,6 +471,23 @@ class NewShopPageFragment :
         super.onSaveInstanceState(outState)
         outState.putParcelable(SAVED_INITIAL_FILTER, initialProductFilterParameter)
         outState.putBoolean(SAVED_IS_CONFETTI_ALREADY_SHOWN, isConfettiAlreadyShown)
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is ShopContentCreationOptionBottomSheet -> {
+                childFragment.setListener(object : ShopContentCreationOptionBottomSheet.Listener {
+                    override fun onBroadcastCreationClicked() {
+                        goToBroadcaster()
+                    }
+
+                    override fun onShortsCreationClicked() {
+                        goToShortsCreation()
+                    }
+                })
+            }
+        }
     }
 
     private fun initViews(view: View) {
@@ -1612,6 +1631,21 @@ class NewShopPageFragment :
         startActivity(showcaseListIntent)
     }
 
+    private fun showContentCreationOptionBottomSheet() {
+        ShopContentCreationOptionBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
+    }
+
+    private fun goToBroadcaster() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+        startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
+    }
+
+    private fun goToShortsCreation() {
+        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+    }
+
     private fun onSuccessGetShopPageP1Data(shopPageP1Data: NewShopPageP1HeaderData) {
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
@@ -2567,7 +2601,8 @@ class NewShopPageFragment :
      */
     override fun onStartLiveStreamingClicked(
         componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
-        shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+        shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+        broadcasterConfig: Broadcaster.Config,
     ) {
         val valueDisplayed = componentModel.label
         sendClickShopHeaderComponentTracking(
@@ -2575,8 +2610,16 @@ class NewShopPageFragment :
             componentModel,
             valueDisplayed
         )
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
-        startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
+
+        if(broadcasterConfig.streamAllowed && broadcasterConfig.shortVideoAllowed) {
+            showContentCreationOptionBottomSheet()
+        }
+        else {
+            when {
+                broadcasterConfig.streamAllowed -> goToBroadcaster()
+                broadcasterConfig.shortVideoAllowed -> goToShortsCreation()
+            }
+        }
     }
 
     override fun onImpressionPlayWidgetComponent(componentModel: ShopHeaderPlayWidgetButtonComponentUiModel, shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {

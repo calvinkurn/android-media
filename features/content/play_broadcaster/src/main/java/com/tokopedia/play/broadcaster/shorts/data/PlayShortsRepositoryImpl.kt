@@ -46,7 +46,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
                 badge = "",
                 type = "content-user",
                 hasUsername = true,
-                enable = false,
+                enable = true,
             )
         )
 

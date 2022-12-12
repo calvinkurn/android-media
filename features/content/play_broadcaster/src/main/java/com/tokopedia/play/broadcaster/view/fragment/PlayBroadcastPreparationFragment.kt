@@ -13,6 +13,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
@@ -23,8 +25,6 @@ import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
@@ -89,7 +89,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
-    private val coachMarkManager: ContentCoachMarkManager
+    private val coachMarkSharedPref: ContentCoachMarkSharedPref,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
@@ -113,6 +113,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private var earlyLiveStreamDialog: DialogUnify? = null
     private var switchAccountConfirmationDialog: DialogUnify? = null
+
+    private var coachMark: CoachMark2? = null
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -182,7 +184,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        dismissAllCoachMark()
+
+        coachMark?.dismissCoachMark()
+        coachMark = null
+
         _binding = null
     }
 
@@ -334,14 +339,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
         with(binding.toolbarContentCommon) {
             if (parentViewModel.isAllowChangeAccount) {
-                if (viewModel.isFirstSwitchAccount) {
-                    showCoachMarkSwitchAccount()
-                    viewModel.setNotFirstSwitchAccount()
-                }
-
                 setOnAccountClickListener {
                     analytic.onClickAccountDropdown()
-                    hideCoachMarkSwitchAccount()
+                    coachMark?.dismissCoachMark()
+
                     showAccountBottomSheet()
                 }
             } else {
@@ -413,7 +414,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             bannerShorts.setOnClickListener {
-                coachMarkManager.hasBeenShown(binding.bannerShorts)
+                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }
         }
@@ -454,13 +455,45 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupCoachMark() {
-        coachMarkManager.setupCoachMark(
-            ContentCoachMarkConfig(binding.bannerShorts).apply {
-                title = getString(R.string.play_bro_banner_shorts_coachmark_title)
-                subtitle = getString(R.string.play_bro_banner_shorts_coachmark_description)
-                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+        val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
+            if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)) {
+                add(
+                    CoachMark2Item(
+                        anchorView = binding.bannerShorts,
+                        title = getString(R.string.play_bro_banner_shorts_coachmark_title),
+                        description = getString(R.string.play_bro_banner_shorts_coachmark_description),
+                        position = CoachMark2.POSITION_BOTTOM,
+                    )
+                )
             }
-        )
+
+            if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
+                add(
+                    CoachMark2Item(
+                        anchorView = binding.toolbarContentCommon,
+                        title = getString(contentCommonR.string.sa_coach_mark_title),
+                        description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
+                        position = CoachMark2.POSITION_BOTTOM,
+                    )
+                )
+            }
+        }
+
+        if(coachMark == null) {
+            coachMark = CoachMark2(requireContext())
+        }
+
+        coachMark?.showCoachMark(ArrayList(coachMarkItems))
+        coachMark?.onDismissListener = {
+            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+        }
+        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if(coachMarkItem.anchorView == binding.toolbarContentCommon) {
+                    viewModel.setNotFirstSwitchAccount()
+                }
+            }
+        })
     }
 
     private fun observeConfigInfo() {
@@ -819,7 +852,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
-        if (!isShow) binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
+        if (!isShow) coachMark?.dismissCoachMark()
         binding.groupPreparationMain.showWithCondition(isShow)
     }
 
@@ -1039,10 +1072,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
-    }
-
-    private fun dismissAllCoachMark() {
-        coachMarkManager.dismissAllCoachMark()
     }
 
     companion object {

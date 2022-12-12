@@ -21,6 +21,7 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
         broadcasterGetShopConfig(shopID: ${'$'}shopId)
         {
           streamAllowed
+          shortVideoAllowed
         }
     }
     """
