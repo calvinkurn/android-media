@@ -1,6 +1,7 @@
 package tokopedia.applink.deeplink
 
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -12,7 +13,7 @@ import org.robolectric.RobolectricTestRunner
 import tokopedia.applink.util.DeepLinkUrlConstant
 
 @RunWith(RobolectricTestRunner::class)
-class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
+class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of pulsa then should be equal to the actual`() {
@@ -618,6 +619,12 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     fun `check link url of play room with starting time then should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PLAY}/${DeepLinkUrlConstant.CONTENT.PLAY_CHANNEL_ID}?start_time=60000"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.CONTENT.PLAY_WITH_START_TIME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url for video tab in feed should be equal to the actual`() {
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION}?${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1&${ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION}=3&tab=live"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.CONTENT.VIDEO_TAB_ON_FEED, expectedDeepLink)
     }
 
     @Test

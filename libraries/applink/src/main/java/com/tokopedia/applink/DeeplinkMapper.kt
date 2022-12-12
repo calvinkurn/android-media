@@ -18,6 +18,8 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedExplore
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedVideo
 import com.tokopedia.applink.content.DeeplinkMapperContent.getWebHostWebViewLink
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
@@ -243,6 +245,10 @@ object DeeplinkMapper {
             DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
 
+        val appLinkFeed =
+            DeeplinkMapperContent.getRegisteredNavigationFeedVideoFromHttp(uri, deeplink)
+        if (appLinkFeed.isNotBlank()) return appLinkFeed
+
         val applinkDigital =
             DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
@@ -407,6 +413,14 @@ object DeeplinkMapper {
         DLP.exact(
             ApplinkConst.FEED,
             targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeed() }
+        ),
+        DLP.exact(
+            ApplinkConst.FEED_EXPLORE,
+            targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeedExplore() }
+        ),
+        DLP.exact(
+            ApplinkConst.FEED_VIDEO,
+            targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedVideo(deeplink) }
         ),
         DLP(
             Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),
