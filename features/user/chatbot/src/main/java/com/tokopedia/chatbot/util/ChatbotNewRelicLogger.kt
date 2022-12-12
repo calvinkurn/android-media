@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.util
 
-import android.util.Log
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -87,7 +86,6 @@ object ChatbotNewRelicLogger {
         map["attachmentType"] = attachmentType
         map["caseId"] = caseId
         map["caseChatId"] = caseChatId
-        Log.d("FATAL", "logNewRelicForCSAT: $messageId , $attachmentType , $caseId , $caseChatId")
         ServerLogger.log(Priority.P2, ChatbotConstant.NewRelic.KEY_CSAT, map)
     }
 
