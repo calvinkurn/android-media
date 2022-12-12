@@ -314,24 +314,16 @@ class ShopHomeNplCampaignViewHolder(
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             textDescription?.text = timeDescription
-            val dateCampaign: Date
-            val days: Long
-            when {
+            val days = model.data?.firstOrNull()?.timeCounter?.millisecondsToDays().orZero()
+            val dateCampaign = when {
                 isStatusCampaignUpcoming(statusCampaign) -> {
-                    days = model.data?.firstOrNull()?.timeCounter?.hoursToDays().orZero()
-                    dateCampaign = DateHelper.getDateFromString(
-                        model.data?.firstOrNull()?.startDate.orEmpty()
-                    )
+                    DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate.orEmpty())
                 }
                 isStatusCampaignOngoing(statusCampaign) -> {
-                    days = model.data?.firstOrNull()?.timeCounter?.millisecondsToDays().orZero()
-                    dateCampaign = DateHelper.getDateFromString(
-                        model.data?.firstOrNull()?.endDate.orEmpty()
-                    )
+                    DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate.orEmpty())
                 }
                 else -> {
-                    days = Int.ZERO.toLong()
-                    dateCampaign = Date()
+                    Date()
                 }
             }
             if (days > Int.ONE) {
