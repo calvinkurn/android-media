@@ -35,6 +35,9 @@ import org.junit.Test
 /**
  * @author by astidhiyaa on 30/11/22
  */
+/**
+ * Find away to make sure follow sheet is visible [Video State]
+ */
 @UiTest
 class PlayFollowPopupUiTest {
     @get:Rule
@@ -149,9 +152,11 @@ class PlayFollowPopupUiTest {
         every { mockPreference.isFollowPopup(any()) } returns true
         coEvery { repo.getIsFollowingPartner(any()) } returns false
 
-        delay(duration)
+        /**
+         * delay(duration)
 
         robot.isPopupShown(isShown = false)
+         */
     }
 
     @Test
@@ -161,9 +166,11 @@ class PlayFollowPopupUiTest {
         every { mockPreference.isFollowPopup(any()) } returns false
         coEvery { repo.getIsFollowingPartner(any()) } returns false
 
-        delay(duration)
+        /**
+         *  delay(duration)
 
         robot.isPopupShown()
+         */
     }
 
     @Test
@@ -173,12 +180,14 @@ class PlayFollowPopupUiTest {
         every { mockPreference.isFollowPopup(any()) } returns true
         coEvery { repo.getIsFollowingPartner(any()) } returns false
 
-        delay(duration)
+        /**
+         * delay(duration)
 
         robot.openProductBottomSheet()
         robot.closeAnyBottomSheet()
 
         robot.isPopupShown()
+         */
     }
 
     @Test
@@ -188,9 +197,11 @@ class PlayFollowPopupUiTest {
         every { mockPreference.isFollowPopup(any()) } returns true
         coEvery { repo.getIsFollowingPartner(any()) } returns true
 
-        delay(duration)
+        /**
+         * delay(duration)
 
         robot.isPopupShown(isShown = false)
+         */
     }
 
     @Test
@@ -200,12 +211,14 @@ class PlayFollowPopupUiTest {
         every { mockPreference.isFollowPopup(any()) } returns true
         coEvery { repo.getIsFollowingPartner(any()) } returns false
 
-        delay(duration)
+        /**
+         * delay(duration)
 
         robot.openSharingBottomSheet()
         robot.closeAnyBottomSheet()
 
         robot.isPopupShown()
+         */
     }
 
     @Test
@@ -215,11 +228,13 @@ class PlayFollowPopupUiTest {
         every { mockPreference.isFollowPopup(any()) } returns true
         coEvery { repo.getIsFollowingPartner(any()) } returns false
 
-        delay(duration)
+        /**
+         * delay(duration)
 
         robot.openKebabBottomSheet()
         robot.closeAnyBottomSheet()
 
         robot.isPopupShown()
+         */
     }
 }

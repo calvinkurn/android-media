@@ -3,7 +3,6 @@ package com.tokopedia.play.uitest.popup
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.android.exoplayer2.Player
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.content.test.cassava.containsEventAction
@@ -13,8 +12,6 @@ import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.exoplayer.TestExoPlayer
-import com.tokopedia.play.exoplayer.TestExoPlayerCreator
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -25,7 +22,6 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.annotations.UiTest
@@ -61,13 +57,6 @@ class PlayFollowPopupAnalyticTest {
     private val mockUserSession = mockk<UserSessionInterface>(relaxed = true)
     private val mockPreference: PlayPreference = mockk(relaxed = true)
 
-    private val exoPlayerCreator = TestExoPlayerCreator(targetContext)
-    private val videoManager = PlayVideoWrapper.Builder(targetContext)
-        .setExoPlayerCreator(exoPlayerCreator)
-        .build()
-
-    private val exoPlayer = videoManager.videoPlayer as TestExoPlayer
-
     init {
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
@@ -82,8 +71,6 @@ class PlayFollowPopupAnalyticTest {
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
-
-        exoPlayer.setState(true, Player.STATE_READY)
 
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = listOf(
@@ -122,14 +109,12 @@ class PlayFollowPopupAnalyticTest {
                         )
                     ),
                     videoMetaInfo = PlayVideoMetaInfoUiModel(
-                        videoPlayer = PlayVideoPlayerUiModel.General.Complete(
+                        videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
                             params = PlayGeneralVideoPlayerParams(
                                 videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
                                 buffer = PlayBufferControl(),
                                 lastMillis = null,
                             ),
-                            exoPlayer = exoPlayer,
-                            playerType = PlayerType.Client,
                         ),
                         videoStream = PlayVideoStreamUiModel(
                             "", VideoOrientation.Vertical, "Iklan Popmie"
