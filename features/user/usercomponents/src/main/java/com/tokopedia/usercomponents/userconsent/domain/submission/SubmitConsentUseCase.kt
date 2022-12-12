@@ -18,12 +18,12 @@ class SubmitConsentUseCase @Inject constructor(
 
     override fun graphqlQuery(): String {
         return """
-            mutation SubmitConsentPreference(
+            mutation SubmitConsent(
                 ${'$'}purposes: [SubmitConsentPurposeReq]!, 
                 ${'$'}collectionId: String!, 
                 ${'$'}version: String
             ) {
-                SubmitConsentPreference(
+                SubmitConsent(
                     purposes: ${'$'}purposes,
                     collectionId: ${'$'}collectionId,
                     version: ${'$'}version

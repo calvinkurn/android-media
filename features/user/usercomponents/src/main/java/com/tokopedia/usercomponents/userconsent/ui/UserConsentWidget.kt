@@ -31,6 +31,8 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CON
 import com.tokopedia.usercomponents.userconsent.common.UserConsentType.*
 import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.Purpose
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import javax.inject.Inject
@@ -56,6 +58,7 @@ class UserConsentWidget : FrameLayout,
 
     private var lifecycleOwner: LifecycleOwner? = null
     private var consentCollectionParam: ConsentCollectionParam? = null
+    private var submissionParam = ConsentSubmissionParam()
     private var userConsentActionListener: UserConsentActionListener? = null
     private var collection: UserConsentCollectionDataModel.CollectionPointDataModel? = null
 
@@ -93,6 +96,19 @@ class UserConsentWidget : FrameLayout,
 
         viewBinding?.apply {
             buttonAction.setOnClickListener {
+                submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
+                submissionParam.version = consentCollectionParam?.version.orEmpty()
+                collection?.purposes?.forEach {
+                    submissionParam.purposes.add(
+                        Purpose(
+                            purposeID = it.id,
+                            transactionType = it.purposeType,
+                            version = it.version
+                        )
+                    )
+                }
+                viewModel?.submitConsent(submissionParam)
+
                 collection?.purposes?.let {
                     userConsentAnalytics.trackOnActionButtonClicked(it)
                 }

@@ -9,19 +9,19 @@ import com.tokopedia.graphql.data.GqlParam
  */
 data class ConsentSubmissionParam(
     @SerializedName("collectionId")
-    var collectionId: String,
+    var collectionId: String = "",
     /** collection version */
     @SerializedName("version")
     var version: String = "",
     @SerializedName("purposes")
-    var purposes: MutableList<Purpose>
+    var purposes: MutableList<Purpose> = mutableListOf()
 ): GqlParam
 
 data class Purpose(
     @SerializedName("purposeID")
-    var purposeID: String,
+    var purposeID: String = "",
     @SerializedName("transactionType")
-    var transactionType: String,
+    var transactionType: String = "",
     @SerializedName("version")
     /** purposes version */
     var version: String = "",
