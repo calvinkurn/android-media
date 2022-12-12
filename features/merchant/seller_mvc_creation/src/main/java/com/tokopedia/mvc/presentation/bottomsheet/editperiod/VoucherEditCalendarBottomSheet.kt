@@ -56,7 +56,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
-                showTimePickerBottomSheet(date)
+                setUpTimePickerBottomSheet(date)
             }
 
             override fun onDateUnselected(date: Date) {
@@ -68,7 +68,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         override fun onDateChanged(date: Long) {}
     }
 
-    private fun showTimePickerBottomSheet(selectedDate: Date) {
+    private fun setUpTimePickerBottomSheet(selectedDate: Date) {
         startDate = startDate?.apply {
             set(Calendar.HOUR_OF_DAY, MIN_TIME_OF_DAY)
             set(Calendar.MINUTE, MIN_TIME_OF_DAY)
@@ -83,11 +83,21 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             }
         )
         currentDate.time = selectedDate
-        var defaultDate = currentDate.apply {
+        val defaultDate = currentDate.apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
         }
 
+        initTimePicker(defaultDate)
+        initTitleForTimePicker(selectedDate)
+
+        timePicker?.show(
+            childFragmentManager,
+            context?.resources?.getString(R.string.edit_period_calendar_show_tag).toBlankOrString()
+        )
+    }
+
+    private fun initTimePicker(defaultDate: GregorianCalendar) {
         timePicker = context?.let { timePickerContext ->
             startDate?.let { start ->
                 endDate?.let { end ->
@@ -102,7 +112,9 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+    }
 
+    private fun initTitleForTimePicker(selectedDate: Date) {
         timePicker?.apply {
             hourInterval = HOUR_INTERVAL
             minuteInterval = MINUTE_INTERVAL
@@ -125,8 +137,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 this@VoucherEditCalendarBottomSheet.dismiss()
             }
         }
-
-        timePicker?.show(childFragmentManager, context?.resources?.getString(R.string.edit_period_calendar_show_tag).toBlankOrString())
     }
 
     private fun renderCalendar(holidayArrayList: ArrayList<Legend>) {
@@ -167,6 +177,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         const val MAX_MINUTE_OF_DAY = 59
         const val MIN_TIME_OF_DAY = 0
         const val HOUR_INTERVAL = 1
-        const val MINUTE_INTERVAL = 1
+        const val MINUTE_INTERVAL = 30
     }
 }

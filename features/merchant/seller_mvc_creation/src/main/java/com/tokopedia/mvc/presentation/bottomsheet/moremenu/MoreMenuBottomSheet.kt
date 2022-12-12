@@ -51,7 +51,6 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         this.adapter = MoreMenuAdapter(callback)
     }
 
-    // TODO verify the whole logic here
     companion object {
         @JvmStatic
         fun newInstance(

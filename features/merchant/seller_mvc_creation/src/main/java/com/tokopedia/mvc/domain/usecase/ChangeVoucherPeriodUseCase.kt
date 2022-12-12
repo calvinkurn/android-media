@@ -8,9 +8,9 @@ import com.tokopedia.mvc.data.request.UpdateVoucherRequest
 import com.tokopedia.mvc.data.response.UpdateVoucherResponse
 import com.tokopedia.mvc.domain.entity.UpdateVoucherResult
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.util.constant.Source
-import com.tokopedia.mvc.util.constant.TargetType
-import com.tokopedia.mvc.util.constant.VoucherDefinition
 import javax.inject.Inject
 
 class ChangeVoucherPeriodUseCase @Inject constructor(
@@ -115,14 +115,14 @@ class ChangeVoucherPeriodUseCase @Inject constructor(
                 benefitType = discountTypeFormatted,
                 code = code,
                 couponName = name,
-                couponType = VoucherDefinition.convertVoucherToCouponDefinition(type),
+                couponType = PromoType.mapFromString(type),
                 dateStart = startDate,
                 dateEnd = endDate,
                 hourStart = startHour,
                 hourEnd = endHour,
                 image = image,
                 imageSquare = imageSquare,
-                isPublic = TargetType.convertTargetType(isPublic),
+                isPublic = VoucherTarget.mapToIsPublic(isPublic),
                 minPurchase = minimumAmt,
                 quota = quota,
                 token = token,
