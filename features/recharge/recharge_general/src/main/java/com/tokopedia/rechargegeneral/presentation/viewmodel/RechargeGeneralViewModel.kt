@@ -1,6 +1,5 @@
 package com.tokopedia.rechargegeneral.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -80,7 +79,6 @@ class RechargeGeneralViewModel @Inject constructor(
             if (foundProduct == null) {
                 throw MessageErrorException(nullErrorMessage)
             } else {
-                Log.d("MisaelJonathan", "(productList) return $mapParams")
                 mutableProductList.postValue(Success(data.response))
             }
         }) {
