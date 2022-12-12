@@ -10,11 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant
-import com.tokopedia.campaign.utils.extension.routeToUrl
-import com.tokopedia.campaign.utils.extension.showToaster
-import com.tokopedia.campaign.utils.extension.showToasterError
-import com.tokopedia.campaign.utils.extension.startLoading
-import com.tokopedia.campaign.utils.extension.stopLoading
+import com.tokopedia.campaign.utils.extension.*
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -58,9 +54,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil as ShareComponentUtil
@@ -211,6 +205,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupHeaderSection(data: VoucherDetailData) {
         binding?.run {
             header.headerTitle = data.voucherName
+            header.setNavigationOnClickListener { activity?.finish() }
             if (layoutHeader.parent != null) {
                 layoutHeader.inflate()
             }
@@ -320,25 +315,16 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     tpgPeriodStop.invisible()
                 }
                 else -> {
-                    try {
-                        val format = SimpleDateFormat(
-                            DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
-                            Locale.getDefault()
+                    val stoppedDate =
+                        data.updateTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
+                    btnUbahKupon.invisible()
+                    timer.invisible()
+                    tpgPeriodStop.apply {
+                        visible()
+                        text = getString(
+                            R.string.smvc_placeholder_stopped_date,
+                            stoppedDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
                         )
-                        val stoppedDate = format.parse(data.updateTime)
-                        btnUbahKupon.invisible()
-                        timer.invisible()
-                        tpgPeriodStop.apply {
-                            visible()
-                            if (stoppedDate != null) {
-                                text = getString(
-                                    R.string.smvc_placeholder_stopped_date,
-                                    stoppedDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
-                                )
-                            }
-                        }
-                    } catch (t: Throwable) {
-                        tpgPeriodStop.gone()
                     }
                 }
             }
@@ -400,19 +386,15 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setVoucherInfoDate(data: VoucherDetailData) {
         voucherInfoBinding?.run {
-            try {
-                val format = SimpleDateFormat(
-                    DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
-                    Locale.getDefault()
-                )
-                val startPeriodDate = format.parse(data.voucherStartTime)
-                val endPeriodDate = format.parse(data.voucherFinishTime)
-                tpgVoucherStartPeriod.text = startPeriodDate?.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
-                tpgVoucherEndPeriod.text = endPeriodDate?.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
-            } catch (t: Throwable) {
-                tpgVoucherStartPeriod.text = getString(R.string.smvc_dash_label)
-                tpgVoucherEndPeriod.text = getString(R.string.smvc_dash_label)
-            }
+            val startPeriodDate = data.voucherStartTime.toDate(
+                DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
+            )
+            val endPeriodDate = data.voucherFinishTime.toDate(
+                DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
+            )
+            tpgVoucherStartPeriod.text =
+                startPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
+            tpgVoucherEndPeriod.text = endPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
         }
     }
 

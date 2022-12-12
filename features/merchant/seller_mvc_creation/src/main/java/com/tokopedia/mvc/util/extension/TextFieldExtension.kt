@@ -20,7 +20,7 @@ fun EditText.setToAllCapsMode() {
         ) {
             try {
                 val formattedText =
-                    charSequence.toString().uppercase(Locale.getDefault()).removeSpace()
+                    charSequence.toString().uppercase(Locale.getDefault()).trim()
                 val lengthDiff = formattedText.length - charSequence?.length.orZero()
                 val cursorPosition = start + count + lengthDiff
                 val fixedPosition = cursorPosition.coerceIn(Int.ZERO, formattedText.length)

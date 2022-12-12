@@ -9,8 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherCreationStepTwoBinding
@@ -28,13 +28,14 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
-import com.tokopedia.mvc.util.extension.removeSpace
 import com.tokopedia.mvc.util.extension.setToAllCapsMode
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 import java.util.*
 import javax.inject.Inject
 
+@FlowPreview
 class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
 
     companion object {
@@ -52,6 +53,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
                 }
             }
         }
+        private const val DEBOUNCE = 300L
     }
 
     // binding
@@ -121,7 +123,11 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     private fun handleUiState(state: VoucherCreationStepTwoUiState) {
         renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
         renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
-        renderVoucherCodeValidation(state.voucherConfiguration, state.isVoucherCodeError, state.voucherCodeErrorMsg)
+        renderVoucherCodeValidation(
+            state.voucherConfiguration,
+            state.isVoucherCodeError,
+            state.voucherCodeErrorMsg
+        )
         renderButtonValidation(state.isInputValid())
     }
 
@@ -256,11 +262,17 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
 
         voucherNameSectionBinding?.run {
             tfVoucherName.editText.setText(voucherConfiguration.voucherName)
-            tfVoucherName.editText.afterTextChanged { text ->
-                viewModel.processEvent(
-                    VoucherCreationStepTwoEvent.OnVoucherNameChanged(text)
-                )
-            }
+            tfVoucherName.editText.textChangesAsFlow()
+                .filterNot { it.isEmpty() }
+                .debounce { DEBOUNCE }
+                .distinctUntilChanged()
+                .onEach {
+                    val formattedText = it.uppercase(Locale.getDefault()).trim()
+                    viewModel.processEvent(
+                        VoucherCreationStepTwoEvent.OnVoucherNameChanged(formattedText)
+                    )
+                }
+                .launchIn(lifecycleScope)
         }
     }
 
@@ -287,12 +299,17 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
                 prependText(voucherConfiguration.voucherCodePrefix)
                 editText.setText(voucherConfiguration.voucherCode)
                 editText.setToAllCapsMode()
-                editText.afterTextChanged { text ->
-                    val formattedText = text.uppercase(Locale.getDefault()).removeSpace()
-                    viewModel.processEvent(
-                        VoucherCreationStepTwoEvent.OnVoucherCodeChanged(formattedText)
-                    )
-                }
+                editText.textChangesAsFlow()
+                    .filterNot { it.isEmpty() }
+                    .debounce { DEBOUNCE }
+                    .distinctUntilChanged()
+                    .onEach {
+                        val formattedText = it.uppercase(Locale.getDefault()).trim()
+                        viewModel.processEvent(
+                            VoucherCreationStepTwoEvent.OnVoucherCodeChanged(formattedText)
+                        )
+                    }
+                    .launchIn(lifecycleScope)
             }
         }
     }
@@ -309,7 +326,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
         }
     }
 
-    //Button section
+    // Button section
     private fun setupButtonSection() {
         binding?.run {
             if (viewButton.parent != null) {

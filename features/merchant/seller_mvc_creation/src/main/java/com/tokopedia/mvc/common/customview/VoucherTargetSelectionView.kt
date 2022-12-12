@@ -9,7 +9,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class VoucherTargetSelectionView: BaseCustomView {
+class VoucherTargetSelectionView : BaseCustomView {
     var isActive: Boolean = false
         set(value) {
             field = value
@@ -41,12 +41,17 @@ class VoucherTargetSelectionView: BaseCustomView {
         init(attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init(attrs)
     }
 
     private fun init(attrs: AttributeSet?) {
-        val view = View.inflate(context, R.layout.smvc_custom_view_voucher_creation_voucher_target, this)
+        val view =
+            View.inflate(context, R.layout.smvc_custom_view_voucher_creation_voucher_target, this)
         setupViews(view)
         defineCustomAttributes(attrs)
         refreshViews()
@@ -61,11 +66,19 @@ class VoucherTargetSelectionView: BaseCustomView {
 
     private fun defineCustomAttributes(attrs: AttributeSet?) {
         if (attrs != null) {
-            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.VoucherTargetSelectionView, 0, 0)
+            val styledAttributes =
+                context.obtainStyledAttributes(attrs, R.styleable.VoucherTargetSelectionView, 0, 0)
             try {
-                titleText = styledAttributes.getString(R.styleable.VoucherTargetSelectionView_voucher_target_title_text).orEmpty()
-                descriptionText = styledAttributes.getString(R.styleable.VoucherTargetSelectionView_voucher_target_description_text).orEmpty()
-                isActive = styledAttributes.getBoolean(R.styleable.VoucherTargetSelectionView_voucher_target_description_text, false)
+                titleText =
+                    styledAttributes.getString(R.styleable.VoucherTargetSelectionView_voucher_target_title_text)
+                        .orEmpty()
+                descriptionText =
+                    styledAttributes.getString(R.styleable.VoucherTargetSelectionView_voucher_target_description_text)
+                        .orEmpty()
+                isActive = styledAttributes.getBoolean(
+                    R.styleable.VoucherTargetSelectionView_voucher_target_description_text,
+                    false
+                )
             } finally {
                 styledAttributes.recycle()
             }
@@ -73,14 +86,12 @@ class VoucherTargetSelectionView: BaseCustomView {
     }
 
     private fun refreshViews() {
-        try {
-            tpgTitle?.text = titleText
-            tpgDescription?.text = descriptionText
-            if (isActive) {
-                cardParent?.cardType = CardUnify2.TYPE_BORDER_ACTIVE
-            } else {
-                cardParent?.cardType = CardUnify2.TYPE_BORDER
-            }
-        } catch (t: Throwable) { }
+        tpgTitle?.text = titleText
+        tpgDescription?.text = descriptionText
+        if (isActive) {
+            cardParent?.cardType = CardUnify2.TYPE_BORDER_ACTIVE
+        } else {
+            cardParent?.cardType = CardUnify2.TYPE_BORDER
+        }
     }
 }
