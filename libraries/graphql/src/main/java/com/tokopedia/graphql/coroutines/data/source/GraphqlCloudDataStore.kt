@@ -54,8 +54,6 @@ class GraphqlCloudDataStore @Inject constructor(
    * the hash will be passing into header of
    * X-acf-sensor-data;
    * */
-    @Inject
-    var context: Context? = null
 
     private suspend fun getResponse(requests: List<GraphqlRequest>): Response<JsonArray> {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
@@ -114,8 +112,7 @@ class GraphqlCloudDataStore @Inject constructor(
             }
         }
         if (isStatusAvailable) {
-            val sp = context?.getSharedPreferences(TopAdsInterceptor.TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE)
-            val newHeader = sp?.getString(TopAdsInterceptor.RESPONSE_HEADER_KEY, "")
+            val newHeader = GraphqlClient.getFunction().topAdsHeader
             if (!newHeader.isNullOrEmpty()) {
                 header[TopAdsInterceptor.TOP_ADS_TRACKING_KEY] = newHeader
             }

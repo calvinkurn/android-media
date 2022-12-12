@@ -4,6 +4,7 @@ import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.MainThread;
@@ -31,6 +32,7 @@ import com.tokopedia.network.interceptor.DeprecatedApiInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthenticator;
+import com.tokopedia.network.interceptor.TopAdsInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
@@ -202,6 +204,11 @@ public class GraphqlClient {
                     },
                     () -> UtilsKt.getAkamaiValue(context.get())
             );
+        }
+
+        public String getTopAdsHeader(){
+           SharedPreferences sp =  context.get().getSharedPreferences(TopAdsInterceptor.TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+            return sp.getString(TopAdsInterceptor.RESPONSE_HEADER_KEY, "");
         }
     }
 
