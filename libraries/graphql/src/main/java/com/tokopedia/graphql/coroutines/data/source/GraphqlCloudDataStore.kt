@@ -7,6 +7,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.tokopedia.akamai_bot_lib.getAkamaiQuery
 import com.tokopedia.akamai_bot_lib.getQueryListFromQueryString
+import com.tokopedia.akamai_bot_lib.registeredGqlForTopAds
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -105,7 +106,7 @@ class GraphqlCloudDataStore @Inject constructor(
         for (req in requests) {
             val list: List<String> = getQueryListFromQueryString(req.query)
             for (temp in list) {
-                if (temp.startsWith("status", ignoreCase = true)) {
+                if (temp.startsWith("status", ignoreCase = true) || registeredGqlForTopAds.keys.contains(temp)) {
                     isStatusAvailable = true
                     break
                 }
