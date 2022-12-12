@@ -16,12 +16,6 @@ buildscript {
     }
 }
 
-repositories {
-    flatDir {
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
-}
-
 kapt {
     correctErrorTypes = true
     generateStubs = false
