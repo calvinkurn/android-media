@@ -21,10 +21,6 @@ object DateHelper {
         }
     }
 
-    fun String.hoursToDays(): Long {
-        return TimeUnit.HOURS.toDays(this.toLongOrZero())
-    }
-
     fun String.millisecondsToDays(): Long {
         return TimeUnit.MILLISECONDS.toDays(this.toLongOrZero())
     }
