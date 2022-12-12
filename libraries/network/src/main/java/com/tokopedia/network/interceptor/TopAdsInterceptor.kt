@@ -20,8 +20,8 @@ class TopAdsInterceptor constructor(val context: Context) : Interceptor {
 
     private fun addDebugHeader(newRequest: Request.Builder): Request.Builder {
 
-        val newHeader = sp.getString(RESPONSE_HEADER_KEY, "")
-        if (!newHeader.isNullOrEmpty()) newRequest.addHeader(TOP_ADS_TRACKING_KEY, newHeader)
+//        val newHeader = sp.getString(RESPONSE_HEADER_KEY, "")
+//        if (!newHeader.isNullOrEmpty()) newRequest.addHeader(TOP_ADS_TRACKING_KEY, newHeader)
         return newRequest
     }
 

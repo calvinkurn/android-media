@@ -1116,7 +1116,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
-            clearTopAdsHeader()
+//            clearTopAdsHeader()
         }
 
         refreshRolloutVariant()
