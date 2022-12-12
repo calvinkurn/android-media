@@ -67,9 +67,9 @@ class FindingNewDriverViewModel @Inject constructor(
 
                 _newDriverBooking.value = NewDriverBookingState.Loading(isShowLoading = false)
 
-                if (response.data != null) {
-                    _newDriverBooking.value = NewDriverBookingState.Success(response.data?.message.orEmpty())
-                } else {
+                response.data?.apply {
+                    _newDriverBooking.value = NewDriverBookingState.Success(message)
+                } ?: run {
                     _newDriverBooking.value = NewDriverBookingState.Fail
                 }
             },
