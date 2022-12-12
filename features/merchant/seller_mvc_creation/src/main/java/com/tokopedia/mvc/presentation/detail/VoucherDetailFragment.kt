@@ -42,6 +42,7 @@ import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
@@ -328,6 +329,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
+            btnUbahKupon.setOnClickListener {
+                SummaryActivity.start(requireContext(), data.toVoucherConfiguration())
+            }
         }
     }
 
@@ -600,7 +604,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
-//                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
                 shareToBroadcastChat(data.voucherId)
             }
         }
@@ -609,7 +612,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
-//                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
                 shareToBroadcastChat(data.voucherId)
             }
             btnShare.setOnClickListener {
@@ -622,7 +624,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnDuplicate.setOnClickListener {
-                // TODO:go to summary page
+                SummaryActivity.start(requireContext(), data.toVoucherConfiguration())
             }
         }
     }
