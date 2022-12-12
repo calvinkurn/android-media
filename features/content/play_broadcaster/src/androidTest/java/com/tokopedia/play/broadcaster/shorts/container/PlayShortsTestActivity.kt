@@ -1,12 +1,16 @@
 package com.tokopedia.play.broadcaster.shorts.container
 
 import android.os.Bundle
+import android.os.Handler
+import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsInjector
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.view.activity.BasePlayShortsActivity
+import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,10 +26,18 @@ class PlayShortsTestActivity : BasePlayShortsActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch(Dispatchers.Default) {
-            delay(3000)
-            withContext(Dispatchers.Main) {
-                viewModel.submitAction(PlayShortsAction.SetMedia("123213"))
+        setupTestObserver()
+    }
+
+    private fun setupTestObserver() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                val prev = it.prevValue
+                val curr = it.value
+
+                if (prev?.config?.shortsId.isNullOrEmpty() && curr.config.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
+                    viewModel.submitAction(PlayShortsAction.SetMedia("123"))
+                }
             }
         }
     }

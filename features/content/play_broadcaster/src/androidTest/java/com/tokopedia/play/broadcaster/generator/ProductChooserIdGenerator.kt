@@ -187,7 +187,7 @@ class ProductChooserIdGenerator {
             badge = "",
             type = ContentCommonUserType.TYPE_SHOP,
             hasUsername = true,
-            hasAcceptTnc = true,
+            enable = true,
         )
 
         coEvery { repo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(

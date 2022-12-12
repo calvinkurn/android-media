@@ -167,7 +167,7 @@ class SwitchAccountRobot(
                     analytic = playAnalytic,
                     analyticManager = mockk(relaxed = true),
                     userSession = mockk(relaxed = true),
-                    coachMarkManager = mockk(relaxed = true),
+                    coachMarkSharedPref = mockk(relaxed = true),
                 )
             },
             UserCompleteOnboardingBottomSheet::class.java to {

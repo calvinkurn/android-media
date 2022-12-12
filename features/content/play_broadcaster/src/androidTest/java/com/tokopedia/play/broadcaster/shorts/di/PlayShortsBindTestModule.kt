@@ -48,10 +48,6 @@ abstract class PlayShortsBindTestModule {
 
     @Binds
     @PlayShortsScope
-    abstract fun bindPlayShortsAccountManager(accountManager: PlayShortsAccountManagerImpl): PlayShortsAccountManager
-
-    @Binds
-    @PlayShortsScope
     abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
 
     /** Analytic */

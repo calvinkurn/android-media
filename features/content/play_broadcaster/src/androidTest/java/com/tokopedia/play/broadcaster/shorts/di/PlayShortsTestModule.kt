@@ -10,6 +10,7 @@ import com.google.android.exoplayer2.util.Util
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
@@ -23,10 +24,13 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
+import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
+import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import io.mockk.mockk
 
 /**
  * Created By : Jonathan Darwin on December 12, 2022
@@ -39,6 +43,9 @@ class PlayShortsTestModule(
     private val mockProductTagRepo: ProductTagRepository,
     private val mockUgcOnboardingRepo: UGCOnboardingRepository,
     private val mockUserSession: UserSessionInterface,
+    private val mockAccountManager: PlayShortsAccountManager,
+    private val mockRouter: Router,
+    private val mockIdleManager: PlayShortsIdleManager,
 ) {
 
     @Provides
@@ -62,6 +69,15 @@ class PlayShortsTestModule(
 
     @Provides
     fun provideUGCOnboardingRepository(): UGCOnboardingRepository = mockUgcOnboardingRepo
+
+    @Provides
+    fun provideAccountManager(): PlayShortsAccountManager = mockAccountManager
+
+    @Provides
+    fun provideRouter(): Router = mockRouter
+
+    @Provides
+    fun provideIdleManager(): PlayShortsIdleManager = mockIdleManager
 
     @Provides
     @PlayShortsScope

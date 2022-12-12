@@ -208,10 +208,10 @@ abstract class BasePlayShortsActivity : BaseActivity() {
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if (prev?.config?.shortsId?.isEmpty() == true && curr.config.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
+        if (prev?.config?.shortsId.isNullOrEmpty() && curr.config.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
             binding.loader.visibility = View.GONE
             openMediaPicker()
-        } else if (prev?.media?.mediaUri?.isEmpty() == true && curr.media.mediaUri.isNotEmpty()) {
+        } else if (prev?.media?.mediaUri.isNullOrEmpty() && curr.media.mediaUri.isNotEmpty()) {
             binding.loader.visibility = View.GONE
             openPreparation()
         }
