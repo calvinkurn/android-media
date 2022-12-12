@@ -8,31 +8,31 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class HotelReviewParam(
-        @SerializedName("propertyId")
-        @Expose
-        var propertyId: String = "0",
+    @SerializedName("propertyId")
+    @Expose
+    var propertyId: Long = 0,
 
-        @SerializedName("page")
-        @Expose
-        var page: Int = 0,
+    @SerializedName("page")
+    @Expose
+    var page: Int = 0,
 
-        @SerializedName("rows")
-        @Expose
-        var rows: Int = 11,
+    @SerializedName("rows")
+    @Expose
+    var rows: Int = 11,
 
-        @SerializedName("sortBy")
-        @Expose
-        var sortBy: String = "create_time",
+    @SerializedName("sortBy")
+    @Expose
+    var sortBy: String = "create_time",
 
-        @SerializedName("sortType")
-        @Expose
-        var sortType: String = "desc",
+    @SerializedName("sortType")
+    @Expose
+    var sortType: String = "desc",
 
-        @SerializedName("filterByCountry")
-        @Expose
-        var filterByCountry: String = "id",
+    @SerializedName("filterByCountry")
+    @Expose
+    var filterByCountry: String = "id",
 
-        @SerializedName("filterByRank")
-        @Expose
-        var filterByRank: Int = 0
+    @SerializedName("filterByRank")
+    @Expose
+    var filterByRank: Int = 0
 )

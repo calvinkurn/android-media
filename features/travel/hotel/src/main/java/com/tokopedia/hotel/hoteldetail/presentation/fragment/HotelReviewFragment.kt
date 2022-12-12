@@ -52,7 +52,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            param.propertyId = it.getString(ARG_PROPERTY_ID, "0")
+            param.propertyId = it.getLong(ARG_PROPERTY_ID, 0L)
         }
 
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -61,12 +61,15 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        reviewViewModel.reviewResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessGetResult(it.data)
-                is Fail -> onErrorGetResult(it.throwable)
+        reviewViewModel.reviewResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessGetResult(it.data)
+                    is Fail -> onErrorGetResult(it.throwable)
+                }
             }
-        })
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -100,7 +103,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
             it.indonesiaReviewSwitch.isChecked = true
             it.indonesiaReviewSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
                 param.filterByCountry = if (isChecked) COUNTRY_ID else COUNTRY_ALL
-                //add param to get Indo
+                // add param to get Indo
                 loadInitialData()
             }
         }
@@ -109,12 +112,16 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     fun initFilterView() {
         binding?.let {
             it.filterRecyclerView.listener = this
-            it.filterRecyclerView.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
+            it.filterRecyclerView.setItem(
+                arrayListOf(
+                    getString(R.string.hotel_review_filter_first_rank),
                     getString(R.string.hotel_review_filter_second_rank),
-                    getString(R.string.hotel_review_filter_third_rank)),
-                    com.tokopedia.unifyprinciples.R.color.Unify_G300)
+                    getString(R.string.hotel_review_filter_third_rank)
+                ),
+                com.tokopedia.unifyprinciples.R.color.Unify_G300
+            )
             it.filterRecyclerView.selectOnlyOneChip(true)
-            //initially select recent search chip
+            // initially select recent search chip
             it.filterRecyclerView.selectChipByPosition(0)
         }
     }
@@ -123,8 +130,11 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         binding?.containerError?.root?.visible()
         context?.run {
             binding?.containerError?.globalError?.let {
-                ErrorHandlerHotel.getErrorUnify(this, throwable,
-                    { onRetryClicked() }, it
+                ErrorHandlerHotel.getErrorUnify(
+                    this,
+                    throwable,
+                    { onRetryClicked() },
+                    it
                 )
             }
         }
@@ -159,7 +169,6 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         }
         param.page = page - 1
         reviewViewModel.getReview(QueryHotelPropertyReview(), param)
-
     }
 
     override fun onChipClickListener(string: String, isSelected: Boolean) {
@@ -175,7 +184,9 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
                     param.filterByRank = FILTER_RANK_THIRD
                 }
             }
-        } else param.filterByRank = FILTER_RANK_ZERO
+        } else {
+            param.filterByRank = FILTER_RANK_ZERO
+        }
 
         loadInitialData()
     }
@@ -213,13 +224,12 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         const val FILTER_RANK_SECOND = 2
         const val FILTER_RANK_THIRD = 3
 
-        fun createInstance(propertyId: String): HotelReviewFragment {
+        fun createInstance(propertyId: Long): HotelReviewFragment {
             return HotelReviewFragment().also {
                 it.arguments = Bundle().apply {
-                    putString(ARG_PROPERTY_ID, propertyId)
+                    putLong(ARG_PROPERTY_ID, propertyId)
                 }
             }
         }
     }
-
 }
