@@ -24,9 +24,20 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_DISTRICT_I
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_SOURCE
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import java.lang.IllegalArgumentException
 
 class PinpointWebviewActivity : BaseSimpleActivity() {
+
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(this)
+    }
+
+    private var source: PinpointSource? = null
 
     override fun getNewFragment(): Fragment? {
         val url = generateUrl()
@@ -36,7 +47,8 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
             intent.getParcelableExtra(
                 KEY_LOCATION_PASS
             ),
-            intent.getParcelableExtra(KEY_ADDRESS_DATA)
+            intent.getParcelableExtra(KEY_ADDRESS_DATA),
+            intent.getStringExtra(KEY_SOURCE_PINPOINT)
         )
     }
 
@@ -109,17 +121,41 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
     }
 
     private fun Uri.Builder.setSource(): Uri.Builder {
-        val source: String = if (intent.hasExtra(KEY_SOURCE_PINPOINT)) {
-            intent.getStringExtra(KEY_SOURCE_PINPOINT) ?: ""
+        setPinpointSource()
+        source?.run {
+            appendQueryParameter(PARAM_SOURCE, this.param)
+        }
+        return this
+    }
+
+    private fun setPinpointSource() {
+        val value: String? = if (intent.hasExtra(KEY_SOURCE_PINPOINT)) {
+            intent.getStringExtra(KEY_SOURCE_PINPOINT)
         } else {
-            intent.data?.getQueryParameter(PARAM_SOURCE) ?: ""
+            intent.data?.getQueryParameter(PARAM_SOURCE)
         }
 
-        source.takeIf { value -> value.isNotEmpty() }
-            ?.let { data ->
-                appendQueryParameter(PARAM_SOURCE, data)
+        value?.takeIf { data -> data.isNotEmpty() }?.run {
+            try {
+                this@PinpointWebviewActivity.source = PinpointSource.valueOf(this)
+            } catch (e: IllegalArgumentException) {
+                // no op
             }
-        return this
+        }
+    }
+
+    override fun onBackPressed() {
+        source?.let {
+            when (it) {
+                PinpointSource.EDIT_ADDRESS -> {
+                    EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
+                }
+                else -> {
+                    AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+                }
+            }
+        }
+        super.onBackPressed()
     }
 
     companion object {
@@ -141,7 +177,7 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
                 putExtra(KEY_CURRENT_LOC, currentLoc)
                 putExtra(KEY_LOCATION_PASS, locationPass)
                 putExtra(KEY_ADDRESS_DATA, saveAddressDataModel)
-                putExtra(KEY_SOURCE_PINPOINT, source?.source)
+                putExtra(KEY_SOURCE_PINPOINT, source.toString())
             }
         }
     }

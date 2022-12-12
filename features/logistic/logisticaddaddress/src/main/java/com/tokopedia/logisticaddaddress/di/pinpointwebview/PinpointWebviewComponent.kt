@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.di.pinpointwebview
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewFragment
 import dagger.Component
 
@@ -12,4 +13,5 @@ import dagger.Component
 )
 interface PinpointWebviewComponent {
     fun inject(pinpointWebviewFragment: PinpointWebviewFragment)
+    fun inject(pinpointWebviewActivity: PinpointWebviewActivity)
 }

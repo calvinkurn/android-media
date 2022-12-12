@@ -100,6 +100,8 @@ public class AddressConstants {
     public static final String KEY_SOURCE_PINPOINT = "KEY_SOURCE_PINPOINT";
     public static final String PARAM_LAT = "lat";
     public static final String PARAM_LONG = "lng";
+    public static final String PARAM_TRACKER = "trackerId";
+    public static final String PARAM_TRACKER_LABEL = "label";
     public static final String PARAM_DISTRICT_ID = "districtId";
     public static final String PARAM_CURRENT_LOC = "currentLoc";
     public static final String PARAM_SOURCE = "source" ;

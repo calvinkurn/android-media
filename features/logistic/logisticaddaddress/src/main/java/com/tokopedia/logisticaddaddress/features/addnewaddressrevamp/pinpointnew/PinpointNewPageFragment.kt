@@ -216,12 +216,15 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 )
             }
         } else {
+            val source =
+                if (isPositiveFlow) PinpointSource.ADD_ADDRESS_POSITIVE else PinpointSource.ADD_ADDRESS_NEGATIVE
             return PinpointWebviewActivity.getIntent(
                 context = context,
                 saveAddressDataModel = viewModel.getAddress(),
                 districtId = districtId,
                 lat = currentLat,
-                lng = currentLong
+                lng = currentLong,
+                source = source
             )
         }
     }
@@ -673,7 +676,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId)
                 } else {
                     if (isPositiveFlow) {
-                        AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId, SUCCESS)
+                        AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId)
                     } else {
                         AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
                     }

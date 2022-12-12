@@ -23,7 +23,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
     private const val CLICK_BACK_ARROW = "click back arrow on top left corner"
     private const val CLICK_BACK_ARROW_BUTTON = "click back arrow button on top left corner"
     private const val IMPRESSION_BOTTOMSHEET_ALAMAT_TIDAK_TERDETEKSI = "impression bottomsheet alamat tidak terdeteksi"
-    private const val CLICK_ISI_ALAMAT_MANUAL_FROM_UNDETECTED_LOC_BOTTOMSHEET ="click isi alamat manual from undetected location bottomsheet"
+    private const val CLICK_ISI_ALAMAT_MANUAL_FROM_UNDETECTED_LOC_BOTTOMSHEET = "click isi alamat manual from undetected location bottomsheet"
     private const val IMPRESSION_BOTTOMSHEET_OUT_OF_INDO = "impression out of indonesia"
     private const val CLICK_ISI_ALAMAT_MANUAL_FROM_OUT_OF_INDO = "click isi alamat manual from out of indonesia bottomsheet"
     private const val CLICK_CARI_ULANG_ALAMAT = "click cari ulang alamat"
@@ -55,7 +55,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
     private const val SEARCH_PAGE = "search page"
     private const val PINPOINT_PAGE = "pinpoint page"
     private const val ANA_POSITIVE = "add new address positive"
-    private const val ANA_NEGATIVE= "add new address negative"
+    private const val ANA_NEGATIVE = "add new address negative"
     private const val KOTA_KECAMATAN_PAGE = "kota kecamatan page"
     private const val KODE_POST_PAGE = "kode pos page"
 
@@ -68,7 +68,8 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
 
     /*Search Page*/
     fun onClickFieldCariLokasi(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_FIELD_CARI_LOKASI)
@@ -76,11 +77,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickDropdownSuggestion(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_DROPDOWN_SUGGESTION_ALAMAT)
@@ -88,11 +91,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickGunakanLokasiSaatIniSearch(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_GUNAKAN_LOKASI_SAAT_INI)
@@ -100,11 +105,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickAllowLocationSearch(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_OK_ALLOW_LOCATION)
@@ -112,11 +119,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickDontAllowLocationSearch(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_DONT_ALLOW_LOCATION)
@@ -124,11 +133,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickAktifkanLayananLokasiSearch(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS)
@@ -136,11 +147,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickXOnBlockGpsSearch(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_X_ON_BLOCK_GPS)
@@ -148,11 +161,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIsiAlamatManualSearch(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_ISI_ALAMAT_MANUAL)
@@ -160,11 +175,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickBackArrowSearch(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_SEARCH)
                 .appendEventCategory(SEARCH_PAGE)
                 .appendEventAction(CLICK_BACK_ARROW)
@@ -172,12 +189,14 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     /*Pinpoint Page*/
     fun onImpressBottomSheetAlamatTidakTerdeteksi(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(VIEW_PINPOINT_IRIS)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(IMPRESSION_BOTTOMSHEET_ALAMAT_TIDAK_TERDETEKSI)
@@ -185,11 +204,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIsiAlamatManualUndetectedLocation(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_ISI_ALAMAT_MANUAL_FROM_UNDETECTED_LOC_BOTTOMSHEET)
@@ -197,11 +218,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onImpressBottomSheetOutOfIndo(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(VIEW_PINPOINT_IRIS)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(IMPRESSION_BOTTOMSHEET_OUT_OF_INDO)
@@ -209,11 +232,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIsiAlamatOutOfIndo(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_ISI_ALAMAT_MANUAL_FROM_OUT_OF_INDO)
@@ -221,11 +246,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickBackArrowPinpoint(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_BACK_ARROW_BUTTON)
@@ -233,11 +260,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickCariUlangAlamat(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_CARI_ULANG_ALAMAT)
@@ -245,11 +274,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickGunakanLokasiSaatIniPinpoint(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_GUNAKAN_LOKASI_SAAT_INI)
@@ -257,11 +288,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickAllowLocationPinpoint(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_OK_ALLOW_LOCATION)
@@ -269,11 +302,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickDontAllowLocationPinpoint(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_DONT_ALLOW_LOCATION)
@@ -281,12 +316,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
-
     fun onClickAktifkanLayananLokasiPinpoint(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS)
@@ -294,11 +330,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickXOnBlockGpsPinpoint(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_X_ON_BLOCK_GPS)
@@ -306,11 +344,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIconQuestion(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_ICON_QUESTION)
@@ -318,11 +358,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
-    fun onClickPilihLokasiPositive(userId: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+    fun onClickPilihLokasiPositive(userId: String) {
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_PILIH_LOKASI_DAN_LANJUT_ISI_ALAMAT)
@@ -330,11 +372,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickPilihLokasiNegative(userId: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_PILIH_LOKASI_DAN_LANJUT_ISI_ALAMAT_NEGATIVE)
@@ -342,11 +386,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIsiAlamatManual(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_ISI_ALAMAT_MANUAL)
@@ -354,11 +400,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onViewToasterPinpointTidakSesuai(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(VIEW_PINPOINT_IRIS)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(VIEW_TOASTER_PASTIKAN_PINPOINT_SESUAI_KOTA_KECAMATAN)
@@ -366,12 +414,14 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     /*ANA Positive*/
     fun onClickFieldLabelAlamatPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_FIELD_LABEL_ALAMAT)
@@ -379,11 +429,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickChipsLabelAlamatPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_CHIPS_LABEL_ALAMAT)
@@ -391,11 +443,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldAlamatPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_FIELD_ALAMAT)
@@ -403,11 +457,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldCatatanKurirPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_FIELD_CATATAN_KURIR)
@@ -415,11 +471,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldNamaPenerimaPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_FIELD_NAMA_PENERIMA)
@@ -427,11 +485,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIconNamaPenerimaPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_ICON_I_NAMA_PENERIMA)
@@ -439,11 +499,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldNomorHpPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_FIELD_NO_HP)
@@ -451,11 +513,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIconPhoneBookPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_PHONE_BOOK_ICON)
@@ -463,11 +527,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickBoxJadikanAlamatUtamaPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_BOX_JADIKAN_ALAMAT_UTAMA)
@@ -475,11 +541,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickSimpanPositive(userId: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_SIMPAN)
@@ -487,11 +555,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickSimpanErrorPositive(userId: String, errorField: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_SIMPAN_ERROR)
@@ -499,11 +569,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickBackPositive(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_BACK_ARROW)
@@ -511,12 +583,14 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     /*ANA Negative*/
     fun onClickFieldLabelAlamatNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_FIELD_LABEL_ALAMAT)
@@ -524,11 +598,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickChipsLabelAlamatNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_CHIPS_LABEL_ALAMAT)
@@ -536,11 +612,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldAlamatNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_FIELD_ALAMAT)
@@ -548,11 +626,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldCatatanKurirNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_FIELD_CATATAN_KURIR)
@@ -560,11 +640,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldNamaPenerimaNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_FIELD_NAMA_PENERIMA)
@@ -572,11 +654,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIconNamaPenerimaNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_ICON_I_NAMA_PENERIMA)
@@ -584,11 +668,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldNomorHpNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_FIELD_NO_HP)
@@ -596,11 +682,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickIconPhoneBookNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_PHONE_BOOK_ICON)
@@ -608,11 +696,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickBoxJadikanAlamatUtamaNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_BOX_JADIKAN_ALAMAT_UTAMA)
@@ -620,11 +710,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickSimpanNegative(userId: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_SIMPAN)
@@ -632,11 +724,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickSimpanErrorNegative(userId: String, errorField: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_SIMPAN_ERROR)
@@ -644,11 +738,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickBackNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_BACK_ARROW)
@@ -656,11 +752,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldKotaKecamatanNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_FIELD_KOTA_KECAMATAN)
@@ -668,11 +766,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickAturPinpointNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_ATUR_PINPOINT)
@@ -680,12 +780,14 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     /*Discom Bottomsheet ANA Negative*/
     fun onClickFieldCariKotaKecamatanNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
                 .appendEventAction(CLICK_FIELD_CARI_KOTA_KECAMATAN)
@@ -693,11 +795,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickChipsKotaKecamatanNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
                 .appendEventAction(CLICK_CHIPS_KOTA_POPULER)
@@ -705,11 +809,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickBackArrowDiscom(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
                 .appendEventAction(CLICK_BACK_ARROW)
@@ -717,11 +823,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickFieldKodePosNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(CLICK_FIELD_KODE_POS)
@@ -729,11 +837,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickDropDownSuggestionKotaNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
                 .appendEventAction(CLICK_DROPDOWN_SUGGESTION_KOTA_KECAMATAN)
@@ -741,11 +851,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickChipsKodePosNegative(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(CLICK_CHIPS_KODE_POS)
@@ -753,11 +865,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onClickPilihKodePos(userId: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(CLICK_PILIH)
@@ -765,11 +879,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     fun onViewErrorToasterPilih(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(VIEW_ADDRESS_IRIS)
                 .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(VIEW_ERROR_TOASTER_KODE_POS)
@@ -777,12 +893,14 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
 
     /**/
     fun onClickBackArrowKodePos(userId: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(CLICK_BACK_ARROW_BUTTON)
@@ -790,8 +908,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-                .build())
+                .build()
+        )
     }
-
-
 }

@@ -1,15 +1,21 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint.webview
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
+import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
+import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.helper.KeroMapsAutofillProvider
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
+import io.mockk.verifySequence
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,6 +31,7 @@ class PinpointWebviewViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val repo: KeroRepository = mockk(relaxed = true)
+    private val liveDataObserver: Observer<PinpointWebviewState> = mockk(relaxed = true)
 
     private lateinit var viewModel: PinpointWebviewViewModel
 
@@ -34,6 +41,8 @@ class PinpointWebviewViewModelTest {
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         viewModel = PinpointWebviewViewModel(repo, SaveAddressMapper())
+        viewModel.pinpointState.observeForever(liveDataObserver)
+        every { liveDataObserver.onChanged(any()) } just Runs
     }
 
     @Test
@@ -42,15 +51,18 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         val locationPass = LocationPass()
-        viewModel.locationPass = locationPass
+        viewModel.setLocationPass(locationPass)
         coEvery { repo.getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
+        val result = viewModel.pinpointState.value
 
-        assertTrue(viewModel.locationPass?.districtName == data.keroMapsAutofill.data.districtName)
-        assertTrue(viewModel.locationPass?.cityName == data.keroMapsAutofill.data.cityName)
-        assertTrue(viewModel.locationPass?.latitude == data.keroMapsAutofill.data.latitude)
-        assertTrue(viewModel.locationPass?.longitude == data.keroMapsAutofill.data.longitude)
+        assertTrue(result is PinpointWebviewState.AddressDetailResult.Success)
+        val actual = result as PinpointWebviewState.AddressDetailResult.Success
+        assertTrue(actual.locationPass?.districtName == data.keroMapsAutofill.data.districtName)
+        assertTrue(actual.locationPass?.cityName == data.keroMapsAutofill.data.cityName)
+        assertTrue(actual.locationPass?.latitude == data.keroMapsAutofill.data.latitude)
+        assertTrue(actual.locationPass?.longitude == data.keroMapsAutofill.data.longitude)
     }
 
     @Test
@@ -59,22 +71,25 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         val addressData = SaveAddressDataModel()
-        viewModel.saveAddressDataModel = addressData
+        viewModel.setAddressDataModel(addressData)
         coEvery { repo.getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
+        val result = viewModel.pinpointState.value
 
-        assertTrue(viewModel.saveAddressDataModel?.districtName == data.keroMapsAutofill.data.districtName)
-        assertTrue(viewModel.saveAddressDataModel?.cityName == data.keroMapsAutofill.data.cityName)
-        assertTrue(viewModel.saveAddressDataModel?.latitude == data.keroMapsAutofill.data.latitude)
-        assertTrue(viewModel.saveAddressDataModel?.longitude == data.keroMapsAutofill.data.longitude)
-        assertTrue(viewModel.saveAddressDataModel?.districtId == data.keroMapsAutofill.data.districtId)
-        assertTrue(viewModel.saveAddressDataModel?.cityId == data.keroMapsAutofill.data.cityId)
-        assertTrue(viewModel.saveAddressDataModel?.provinceName == data.keroMapsAutofill.data.provinceName)
-        assertTrue(viewModel.saveAddressDataModel?.provinceId == data.keroMapsAutofill.data.provinceId)
-        assertTrue(viewModel.saveAddressDataModel?.postalCode == data.keroMapsAutofill.data.postalCode)
-        assertTrue(viewModel.saveAddressDataModel?.address2 == "${data.keroMapsAutofill.data.latitude},${data.keroMapsAutofill.data.longitude}")
-        assertTrue(viewModel.saveAddressDataModel?.selectedDistrict == data.keroMapsAutofill.data.formattedAddress)
+        assertTrue(result is PinpointWebviewState.AddressDetailResult.Success)
+        val actual = result as PinpointWebviewState.AddressDetailResult.Success
+        assertTrue(actual.saveAddressDataModel?.districtName == data.keroMapsAutofill.data.districtName)
+        assertTrue(actual.saveAddressDataModel?.cityName == data.keroMapsAutofill.data.cityName)
+        assertTrue(actual.saveAddressDataModel?.latitude == data.keroMapsAutofill.data.latitude)
+        assertTrue(actual.saveAddressDataModel?.longitude == data.keroMapsAutofill.data.longitude)
+        assertTrue(actual.saveAddressDataModel?.districtId == data.keroMapsAutofill.data.districtId)
+        assertTrue(actual.saveAddressDataModel?.cityId == data.keroMapsAutofill.data.cityId)
+        assertTrue(actual.saveAddressDataModel?.provinceName == data.keroMapsAutofill.data.provinceName)
+        assertTrue(actual.saveAddressDataModel?.provinceId == data.keroMapsAutofill.data.provinceId)
+        assertTrue(actual.saveAddressDataModel?.postalCode == data.keroMapsAutofill.data.postalCode)
+        assertTrue(actual.saveAddressDataModel?.address2 == "${data.keroMapsAutofill.data.latitude},${data.keroMapsAutofill.data.longitude}")
+        assertTrue(actual.saveAddressDataModel?.selectedDistrict == data.keroMapsAutofill.data.formattedAddress)
     }
 
     @Test
@@ -83,21 +98,16 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         val addressData = SaveAddressDataModel()
-        viewModel.saveAddressDataModel = addressData
+        viewModel.setAddressDataModel(addressData)
         coEvery { repo.getDistrictGeocode(any()) } returns data
 
         viewModel.saveLatLong(lat, long)
-
         val result = viewModel.pinpointState.value
 
-        assertTrue(
-            result == Success(
-                Pair(
-                    data.keroMapsAutofill.data.latitude.toDouble(),
-                    data.keroMapsAutofill.data.longitude.toDouble()
-                )
-            )
-        )
+        assertTrue(result is PinpointWebviewState.AddressDetailResult.Success)
+        val actual = result as PinpointWebviewState.AddressDetailResult.Success
+        assertTrue(actual.latitude == data.keroMapsAutofill.data.latitude.toDouble())
+        assertTrue(actual.longitude == data.keroMapsAutofill.data.longitude.toDouble())
     }
 
     @Test
@@ -107,9 +117,241 @@ class PinpointWebviewViewModelTest {
         coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
 
         viewModel.saveLatLong(lat, long)
-
         val result = viewModel.pinpointState.value
 
-        assertTrue(result is Fail)
+        assertTrue(result is PinpointWebviewState.AddressDetailResult.Fail)
+    }
+
+    @Test
+    fun `WHEN saveLatLong success in add address positive THEN should hit analytic`() {
+        val data = KeroMapsAutofillProvider.provideAutofillResponse()
+        val lat = -6.571004247136069
+        val long = 106.76730046907339
+        viewModel.setSource("ADD_ADDRESS_POSITIVE")
+        coEvery { repo.getDistrictGeocode(any()) } returns data
+
+        viewModel.saveLatLong(lat, long)
+
+        verifySequence {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.AddAddress(
+                        AddAddressPinpointTracker.ClickPilihLokasiPositive
+                    )
+                }
+            )
+            liveDataObserver.onChanged(match { state -> state is PinpointWebviewState.AddressDetailResult.Success })
+        }
+    }
+
+    @Test
+    fun `WHEN saveLatLong success in add address negative THEN should hit analytic`() {
+        val data = KeroMapsAutofillProvider.provideAutofillResponse()
+        val lat = -6.571004247136069
+        val long = 106.76730046907339
+        viewModel.setSource("ADD_ADDRESS_NEGATIVE")
+        coEvery { repo.getDistrictGeocode(any()) } returns data
+
+        viewModel.saveLatLong(lat, long)
+
+        verifySequence {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.AddAddress(
+                        AddAddressPinpointTracker.ClickPilihLokasiNegative,
+                        "success"
+                    )
+                }
+            )
+            liveDataObserver.onChanged(match { state -> state is PinpointWebviewState.AddressDetailResult.Success })
+        }
+    }
+
+    @Test
+    fun `WHEN saveLatLong success in edit address THEN should hit analytic`() {
+        val data = KeroMapsAutofillProvider.provideAutofillResponse()
+        val lat = -6.571004247136069
+        val long = 106.76730046907339
+        viewModel.setSource("EDIT_ADDRESS")
+        coEvery { repo.getDistrictGeocode(any()) } returns data
+
+        viewModel.saveLatLong(lat, long)
+
+        verifySequence {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.EditAddress(
+                        EditAddressPinpointTracker.ClickPilihLokasiIni
+                    )
+                }
+            )
+            liveDataObserver.onChanged(match { state -> state is PinpointWebviewState.AddressDetailResult.Success })
+        }
+    }
+
+    @Test
+    fun `WHEN saveLatLong failed in add address negative THEN should hit analytic`() {
+        val lat = -6.571004247136069
+        val long = 106.76730046907339
+        viewModel.setSource("ADD_ADDRESS_NEGATIVE")
+        coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
+
+        viewModel.saveLatLong(lat, long)
+
+        verifySequence {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.AddAddress(
+                        AddAddressPinpointTracker.ClickPilihLokasiNegative,
+                        "not success"
+                    )
+                }
+            )
+            liveDataObserver.onChanged(match { state -> state is PinpointWebviewState.AddressDetailResult.Fail })
+        }
+    }
+
+    @Test
+    fun `WHEN sendTracker with invalid id THEN dont hit analytic`() {
+        viewModel.setSource("EDIT_ADDRESS")
+        val invalidTrackerId = "33333"
+
+        viewModel.sendTracker(invalidTrackerId, null)
+
+        assertTrue(invalidTrackerId !in EditAddressPinpointTracker.values().map { it.trackerId })
+        verify(exactly = 0) {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.EditAddress(
+                        EditAddressPinpointTracker.ClickPilihLokasiIni
+                    )
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN sendTracker and source is empty string THEN dont hit tracker`() {
+        viewModel.setSource("")
+
+        viewModel.sendTracker("29688", null)
+
+        verify(exactly = 0) {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.EditAddress(
+                        EditAddressPinpointTracker.ClickPilihLokasiIni
+                    )
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN sendTracker and source is invalid enum THEN dont hit tracker`() {
+        viewModel.setSource("edit-address")
+
+        viewModel.sendTracker("29688", null)
+
+        verify(exactly = 0) {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.EditAddress(
+                        EditAddressPinpointTracker.ClickPilihLokasiIni
+                    )
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN saveLatLong success in add address positive flow with empty string THEN dont hit tracker`() {
+        viewModel.setSource("")
+
+        val data = KeroMapsAutofillProvider.provideAutofillResponse()
+        val lat = -6.571004247136069
+        val long = 106.76730046907339
+        coEvery { repo.getDistrictGeocode(any()) } returns data
+
+        viewModel.saveLatLong(lat, long)
+
+        verify(exactly = 0) {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.AddAddress(
+                        AddAddressPinpointTracker.ClickPilihLokasiPositive
+                    )
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN saveLatLong success in edit address with wrong enum THEN dont hit tracker`() {
+        viewModel.setSource("edit-address")
+
+        val data = KeroMapsAutofillProvider.provideAutofillResponse()
+        val lat = -6.571004247136069
+        val long = 106.76730046907339
+        coEvery { repo.getDistrictGeocode(any()) } returns data
+
+        viewModel.saveLatLong(lat, long)
+
+        verify(exactly = 0) {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.EditAddress(
+                        EditAddressPinpointTracker.ClickPilihLokasiIni
+                    )
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN saveLatLong failed in add address positive flow THEN dont hit tracker`() {
+        viewModel.setSource("ADD_ADDRESS_POSITIVE")
+
+        val lat = -6.571004247136069
+        val long = 106.76730046907339
+        coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
+
+        viewModel.saveLatLong(lat, long)
+
+        verify(exactly = 0) {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.AddAddress(
+                        AddAddressPinpointTracker.ClickPilihLokasiNegative,
+                        "not success"
+                    )
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN saveLatLong failed in but no source specified THEN dont hit tracker`() {
+        viewModel.setSource("ADD_ADDRESS_POSITIVE")
+
+        viewModel.sendTracker("29688", null)
+
+        val data = KeroMapsAutofillProvider.provideAutofillResponse()
+        val lat = -6.571004247136069
+        val long = 106.76730046907339
+        coEvery { repo.getDistrictGeocode(any()) } returns data
+
+        viewModel.saveLatLong(lat, long)
+
+        verify(exactly = 0) {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.AddAddress(
+                        AddAddressPinpointTracker.ClickPilihLokasiNegative,
+                        "not success"
+                    )
+                }
+            )
+        }
     }
 }
