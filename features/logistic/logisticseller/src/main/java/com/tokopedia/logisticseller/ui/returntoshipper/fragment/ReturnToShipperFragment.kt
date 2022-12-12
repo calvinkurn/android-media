@@ -100,7 +100,7 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun openRTSConfirmationDialog(data: GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData) {
+    private fun openRTSConfirmationDialog(data: GetGeneralInfoRtsResponse.GeneralInfoRtsData) {
         activity?.apply {
             ReturnToShipperDialog(this).apply {
                 showRtsConfirmationDialog(
@@ -126,7 +126,7 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData.setUrlImage(): GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData {
+    private fun GetGeneralInfoRtsResponse.GeneralInfoRtsData.setUrlImage(): GetGeneralInfoRtsResponse.GeneralInfoRtsData {
         return this.apply {
             image.apply {
                 accessToken = userSession.accessToken

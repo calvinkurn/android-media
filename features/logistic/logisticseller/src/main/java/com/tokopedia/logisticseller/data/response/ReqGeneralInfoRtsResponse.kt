@@ -11,12 +11,12 @@ data class ReqGeneralInfoRtsResponse(
         val status: Int = 0,
         @SerializedName("message_error")
         val messageError: String = ""
-    ) {
-        val isSuccess: Boolean
-            get() = status == STATUS_SUCCESS
+    )
 
-        companion object {
-            private const val STATUS_SUCCESS = 200
-        }
+    val isSuccess: Boolean
+        get() = data.status == STATUS_SUCCESS
+
+    companion object {
+        private const val STATUS_SUCCESS = 200
     }
 }

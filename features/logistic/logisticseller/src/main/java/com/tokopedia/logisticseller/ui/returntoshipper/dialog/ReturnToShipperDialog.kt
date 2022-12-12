@@ -1,17 +1,24 @@
 package com.tokopedia.logisticseller.ui.returntoshipper.dialog
 
 import android.content.Context
+import android.view.Gravity
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.loadImagePod
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
+import com.tokopedia.unifyprinciples.Typography
 
 class ReturnToShipperDialog(private val context: Context) {
 
     fun showRtsConfirmationDialog(
-        data: GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData,
+        data: GetGeneralInfoRtsResponse.GeneralInfoRtsData,
         onPrimaryCTAClickListener: (() -> Unit),
         onSecondaryCTAClickListener: (() -> Unit),
         onDismissListener: (() -> Unit)
@@ -84,7 +91,7 @@ class ReturnToShipperDialog(private val context: Context) {
         onPrimaryCTAClickListener: (() -> Unit)? = null,
         onSecondaryCTAClickListener: (() -> Unit)? = null,
         onDismissListener: (() -> Unit)? = null,
-        imageData: GetGeneralInfoRtsResponse.GetGeneralInfoRts.Image? = null,
+        imageData: GetGeneralInfoRtsResponse.Image? = null,
         imageIcon: Int = 0
     ) {
         var isFromCTAClickListener = false
@@ -102,7 +109,22 @@ class ReturnToShipperDialog(private val context: Context) {
                     dialogImage.loadImagePod(
                         context,
                         accessToken = accessToken,
-                        url = urlImage
+                        url = urlImage,
+                        drawableImageError = MethodChecker.getDrawable(
+                            context,
+                            com.tokopedia.unifycomponents.R.drawable.imagestate_error
+                        ),
+                        onReadyListener = {
+                            setImageDescription(
+                                description = context.getString(R.string.description_success_load_image_rts)
+                            )
+                        },
+                        onFailedListener = {
+                            setImageDescription(
+                                description = context.getString(R.string.description_failed_load_image_rts)
+                            )
+                        }
+
                     )
                 }
             } else {
@@ -122,6 +144,59 @@ class ReturnToShipperDialog(private val context: Context) {
                 }
             }
             show()
+        }
+    }
+
+    private fun DialogUnify.setImageDescription(description: String) {
+        try {
+            dialogContainer.applyConstraintSet {
+                it.clear(dialogContent.id, ConstraintSet.TOP)
+                it.connect(
+                    dialogContent.id,
+                    ConstraintSet.TOP,
+                    dialogImageContainer.id,
+                    ConstraintSet.BOTTOM,
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                        .toDp().toInt(),
+                )
+            }
+
+            dialogContent.applyConstraintSet {
+                it.clear(dialogTitle.id, ConstraintSet.TOP)
+                it.connect(
+                    dialogTitle.id,
+                    ConstraintSet.TOP,
+                    dialogChild.id,
+                    ConstraintSet.BOTTOM,
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_24)
+                        .toDp().toInt(),
+                )
+            }
+
+            val tvImageDescription = Typography(context).apply {
+                text = description
+                setType(Typography.SMALL)
+                gravity = Gravity.CENTER
+                setTextColor(
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+            }
+
+            (dialogChild as LinearLayout).addView(tvImageDescription)
+        } catch (e: Exception) {
+            // no op
+        }
+    }
+
+    private fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (ConstraintSet) -> Unit) {
+        this?.let {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(it)
+            configureConstraintSet(constraintSet)
+            constraintSet.applyTo(it)
         }
     }
 }
