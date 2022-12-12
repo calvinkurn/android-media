@@ -37,7 +37,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         /** TODO: adjust smallIcon here */
         setSmallIcon(com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp)
         setGroup(NOTIFICATION_GROUP)
-        priority = NotificationCompat.PRIORITY_MAX
+        priority = NotificationCompat.PRIORITY_HIGH
     }
 
     private var uploadData: PlayShortsUploadModel? = null
