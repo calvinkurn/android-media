@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
@@ -26,7 +25,6 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.KycCommonUrl
 import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoBinding
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
@@ -429,7 +427,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     private fun onGoToTermsButton(): View.OnClickListener {
         return View.OnClickListener { v: View? ->
             analytics?.eventClickTermsSuccessPage()
-            RouteManager.route(activity, KycCommonUrl.APPLINK_TERMS_AND_CONDITION)
+            RouteManager.route(activity, KycUrl.APPLINK_TERMS_AND_CONDITION)
         }
     }
 
