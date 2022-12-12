@@ -16,9 +16,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadline
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
@@ -52,7 +52,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                           private val userSession: UserSessionInterface) :
         BaseAdapterTypeFactory(), DynamicFeedTypeFactory, FeedShopTypeFactory {
 
-    override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
+    override fun type(dynamicPostModel: DynamicPostModel): Int {
         return DynamicPostViewHolder.LAYOUT
     }
 
@@ -80,11 +80,11 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
         return EmptyFeedShopSellerMigrationViewHolder.LAYOUT
     }
 
-    override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
+    override fun type(topAdsBannerViewmodel: TopAdsBannerModel): Int {
         return TopAdsBannerViewHolder.LAYOUT
     }
 
-    override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+    override fun type(carouselPlayCardModel: CarouselPlayCardModel): Int {
         return 0
     }
 
