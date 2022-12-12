@@ -12,17 +12,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
@@ -60,8 +60,8 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val exoPlayer: ExoPlayer,
     private val mediaSourceFactory: PlayShortsMediaSourceFactory,
-    private val coachMarkManager: ContentCoachMarkManager,
-    private val idleManager: PlayShortsIdleManager
+    private val idleManager: PlayShortsIdleManager,
+    private val coachMarkSharedPref: ContentCoachMarkSharedPref,
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -77,6 +77,8 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private var exitConfirmationDialog: DialogUnify? = null
     private var switchAccountConfirmationDialog: DialogUnify? = null
+
+    private var coachMark: CoachMark2? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,8 +113,12 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        coachMarkManager.dismissAllCoachMark()
+
+        coachMark?.dismissCoachMark()
+        coachMark = null
+
         idleManager.clear()
+
         exitConfirmationDialog = null
         switchAccountConfirmationDialog = null
 
@@ -229,6 +235,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
                 if (viewModel.isAllowChangeAccount) {
                     setOnAccountClickListener {
+                        coachMark?.dismissCoachMark()
                         viewModel.submitAction(PlayShortsAction.ClickSwitchAccount)
                     }
                 } else {
@@ -237,11 +244,11 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
 
             root.setOnClickListener {
-                idleManager.toggleState()
+                idleManager.toggleState(viewLifecycleOwner.lifecycleScope)
             }
 
             preparationMenu.setOnMenuClickListener {
-                coachMarkManager.hasBeenShown(binding.preparationMenu)
+                coachMark?.dismissCoachMark()
 
                 when (it.menuId) {
                     DynamicPreparationMenu.TITLE -> {
@@ -337,14 +344,29 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun setupCoachMark() {
-        coachMarkManager.setupCoachMark(
-            ContentCoachMarkConfig(binding.preparationMenu).apply {
-                title = getString(R.string.play_shorts_preparation_coachmark_title)
-                subtitle = getString(R.string.play_shorts_preparation_coachmark_description)
+        val coachMarkItems = listOf(
+            CoachMark2Item(
+                anchorView = binding.preparationMenu,
+                title = getString(R.string.play_shorts_preparation_coachmark_title),
+                description = getString(R.string.play_shorts_preparation_coachmark_description),
                 position = CoachMark2.POSITION_TOP
-                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
-            }
+            ),
+            CoachMark2Item(
+                anchorView = binding.toolbar,
+                title = requireContext().getString(contentCommonR.string.sa_coach_mark_title),
+                description = requireContext().getString(contentCommonR.string.sa_shorts_coach_mark_subtitle),
+                position = CoachMark2.POSITION_BOTTOM
+            ),
         )
+
+        if(coachMark == null) {
+            coachMark = CoachMark2(requireContext())
+        }
+
+        if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)) {
+            coachMark?.showCoachMark(ArrayList(coachMarkItems))
+            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
+        }
     }
 
     private fun setupUiStandby() {
@@ -463,7 +485,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.groupPreparationMain.showWithCondition(isShow)
 
         if (isShow) {
-            idleManager.startIdleTimer()
+            idleManager.startIdleTimer(viewLifecycleOwner.lifecycleScope)
         } else {
             idleManager.forceStandByMode()
         }

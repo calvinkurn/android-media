@@ -16,10 +16,11 @@ class SellerTncBottomSheet : BottomSheetUnify() {
     private var mDataSource: DataSource? = null
 
     private var view: PlayTermsAndConditionView? = null
+    private val mDataTnc = mutableListOf<TermsAndConditionUiModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupView()
+        initViews()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,6 +38,7 @@ class SellerTncBottomSheet : BottomSheetUnify() {
     override fun onDestroy() {
         super.onDestroy()
         mListener = null
+        mDataTnc.clear()
     }
 
     fun setListener(listener: Listener) {
@@ -47,7 +49,7 @@ class SellerTncBottomSheet : BottomSheetUnify() {
         mDataSource = dataSource
     }
 
-    private fun setupView() {
+    private fun initViews() {
         view = PlayTermsAndConditionView(requireContext())
             .apply {
                 tag = TAG

@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
@@ -22,7 +21,7 @@ import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.write.presentation.fragment.TalkWriteFragment
 
-class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
+open class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
@@ -35,9 +34,9 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         }
     }
 
-    private var productId: String = ""
-    private var isVariantSelected: Boolean = false
-    private var availableVariants: String = ""
+    protected var productId: String = ""
+    protected var isVariantSelected: Boolean = false
+    protected var availableVariants: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -23,7 +23,10 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.tooLargeTool
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
-    debugImplementation project.ext.debugToolsDependencies.leakCanary
+    debugImplementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    debugImplementation (rootProject.ext.debugToolsDependencies.leakPublisher){
+        exclude group:'com.google.firebase'
+    }
 }
 
 project.ext {

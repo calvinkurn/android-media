@@ -13,8 +13,8 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
  */
 
 class ShopHomeSliderSquareAdapter(
-        private val listener: ShopHomeDisplayWidgetListener
-): ListAdapter<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemSliderSquareViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
+    private val listener: ShopHomeDisplayWidgetListener
+) : ListAdapter<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemSliderSquareViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
 
     var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
     var parentPosition: Int = 0
@@ -30,9 +30,11 @@ class ShopHomeSliderSquareAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeItemSliderSquareViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_shop_page_home_slider_square,
-                        parent,
-                        false)
+            .inflate(
+                R.layout.item_shop_page_home_slider_square,
+                parent,
+                false
+            )
         return ShopHomeItemSliderSquareViewHolder(view, listener, heightRatio)
     }
 }

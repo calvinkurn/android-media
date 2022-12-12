@@ -82,7 +82,8 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             coverUrl = it.coverUrl,
             date = it.date,
             duration = it.duration,
-            isEligiblePostVideo = it.isEligiblePostVideo
+            isEligiblePostVideo = it.isEligiblePostVideo,
+            author = it.author,
         )
     }
 
@@ -271,12 +272,13 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             val participantResponse = getInteractiveSummaryLivestreamUseCase.executeOnBackground()
 
             _channelSummary.value = playBroadcastMapper.mapChannelSummary(
-                channel.basic.title,
-                channel.basic.coverUrl,
-                convertDate(channel.basic.timestamp.publishedAt),
-                reportChannelSummary.duration,
-                isEligiblePostVideo(reportChannelSummary.duration)
-            )
+                                        channel.basic.title,
+                                        channel.basic.coverUrl,
+                                        convertDate(channel.basic.timestamp.publishedAt),
+                                        reportChannelSummary.duration,
+                                        isEligiblePostVideo(reportChannelSummary.duration),
+                                        hydraConfigStore.getAuthor(),
+                                    )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
             val leaderboard = getSellerLeaderboardUseCase.executeOnBackground()
             val metrics = mutableListOf<TrafficMetricUiModel>().apply {

@@ -36,7 +36,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
 class ShopProductResultPageAnalyticTest {
 
     companion object {
@@ -47,6 +46,7 @@ class ShopProductResultPageAnalyticTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<ShopProductListResultActivity> = IntentsTestRule(ShopProductListResultActivity::class.java, false, false)
+
     @get:Rule
     var cassavaRule = CassavaTestRule()
 
@@ -54,9 +54,11 @@ class ShopProductResultPageAnalyticTest {
     fun beforeTest() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_NORMAL_PRODUCT))
-        activityRule.launchActivity(Intent().apply {
-            putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
-        })
+        activityRule.launchActivity(
+            Intent().apply {
+                putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
+            }
+        )
     }
 
     @Test
@@ -70,12 +72,11 @@ class ShopProductResultPageAnalyticTest {
     private fun validateTracker() {
         activityRule.activity.finish()
         waitForData(2000)
-        //click sort tracker
+        // click sort tracker
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_RESULT_PAGE_CLICK_SORT_TRACKER_MATCHER_PATH)
 
-        //product card tracker
+        // product card tracker
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH)
-
     }
 
     @After
@@ -95,23 +96,26 @@ class ShopProductResultPageAnalyticTest {
         val clickedItemPosition = 2
         val sampleProductIdWishlist = "23151232"
         val mockIntentData = Intent().apply {
-            putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, ProductCardOptionsModel(
+            putExtra(
+                PRODUCT_CARD_OPTION_RESULT_PRODUCT,
+                ProductCardOptionsModel(
                     isWishlisted = true,
                     productId = sampleProductIdWishlist
-            ).apply {
-                wishlistResult = ProductCardOptionsModel.WishlistResult(
+                ).apply {
+                    wishlistResult = ProductCardOptionsModel.WishlistResult(
                         isUserLoggedIn = true,
                         isAddWishlist = true,
                         isSuccess = true
-                )
-            })
+                    )
+                }
+            )
         }
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, mockIntentData))
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
         )
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
         )
     }
 
@@ -120,11 +124,12 @@ class ShopProductResultPageAnalyticTest {
             putExtra(ShopProductSortActivity.SORT_ID, "1")
             putExtra(ShopProductSortActivity.SORT_NAME, "Terbaru")
         }
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasClassName("com.tokopedia.shop.sort.view.activity.ShopProductSortActivity"))
+        Intents.intending(
+            IntentMatchers.hasComponent(
+                ComponentNameMatchers.hasClassName("com.tokopedia.shop.sort.view.activity.ShopProductSortActivity")
+            )
         ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
         Espresso.onView(AllOf.allOf(withText("Urutkan"), isDescendantOfA(withId(R.id.sort_filter_items_wrapper))))
-                .check(matches(isDisplayed())).perform(click())
+            .check(matches(isDisplayed())).perform(click())
     }
-
 }

@@ -4,9 +4,12 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.QuickFilterUseCase
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import io.mockk.*
 import junit.framework.TestCase
@@ -163,4 +166,98 @@ class QuickFilterViewModelTest {
 
     }
 
+    //    TEST Init Methods
+    @Test
+    fun `test for on fetchQuickFilters with filters not present anywhere already present in data`() {
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val quickFilterRepository: QuickFilterRepository = mockk(relaxed = true)
+
+        viewModel.quickFilterRepository = quickFilterRepository
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns null
+
+        every { componentsItem.data } returns null
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isEmpty())
+
+        every { componentsItem.data } returns listOf()
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isEmpty())
+
+        val dateItem = mockk<DataItem>()
+        every { componentsItem.data } returns listOf(dateItem)
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isEmpty())
+
+        every { dateItem.filter } returns arrayListOf()
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isEmpty())
+
+        val filter = mockk<Filter>()
+        every { dateItem.filter } returns arrayListOf(filter)
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isEmpty())
+    }
+
+    @Test
+    fun `test for on fetchQuickFilters with filters already present in data`() {
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val quickFilterRepository: QuickFilterRepository = mockk(relaxed = true)
+
+        viewModel.quickFilterRepository = quickFilterRepository
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns null
+
+        val dateItem = mockk<DataItem>()
+        every { componentsItem.data } returns listOf(dateItem)
+        val filter = mockk<Filter>()
+        every { dateItem.filter } returns arrayListOf(filter)
+        every { filter.options } returns listOf(mockk())
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).first() === filter)
+    }
+    @Test
+    fun `test for on fetchQuickFilters with filters not present in data but fetched from repo`() {
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val quickFilterRepository: QuickFilterRepository = mockk(relaxed = true)
+
+        viewModel.quickFilterRepository = quickFilterRepository
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns arrayListOf()
+
+        every { componentsItem.data } returns null
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isEmpty())
+
+        val filter = mockk<Filter>()
+        every { filter.options } returns listOf(mockk())
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns arrayListOf(filter)
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).first() === filter)
+    }
 }
