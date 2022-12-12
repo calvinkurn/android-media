@@ -16,6 +16,12 @@ const val HEADER_AKAMAI_VALUE = "akamai"
 const val ERROR_MESSAGE_AKAMAI =
     "Oops, ada kendala pada akunmu. Silakan coba kembali atau hubungi Tokopedia Care untuk bantuan lanjutan."
 
+const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
+const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
+const val TOP_ADS_TRACKING_KEY = "Tkpd-Tracking-ID"
+const val STATUS_QUERY = "status"
+
+
 private val getAnyPattern =
     Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
 val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")

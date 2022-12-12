@@ -1,13 +1,10 @@
 package com.tokopedia.graphql.coroutines.data.source
 
-import android.content.Context
 import android.text.TextUtils
 import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.tokopedia.akamai_bot_lib.getAkamaiQuery
-import com.tokopedia.akamai_bot_lib.getQueryListFromQueryString
-import com.tokopedia.akamai_bot_lib.registeredGqlForTopAds
+import com.tokopedia.akamai_bot_lib.*
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -27,7 +24,6 @@ import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorSsl
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.network.interceptor.TopAdsInterceptor
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
@@ -61,7 +57,7 @@ class GraphqlCloudDataStore @Inject constructor(
         val header = mutableMapOf<String, String>()
 
         putAkamaiHeader(header, requests)
-        putStatusHeader(header, requests)
+        putTopAdsTrackingHeader(header, requests)
 
         if (requests[0].isDoQueryHash) {
             val queryHashingHeaderValue = StringBuilder()
@@ -101,12 +97,12 @@ class GraphqlCloudDataStore @Inject constructor(
         }
     }
 
-    private fun putStatusHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
+    private fun putTopAdsTrackingHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
         var isStatusAvailable = false
         for (req in requests) {
             val list: List<String> = getQueryListFromQueryString(req.query)
             for (temp in list) {
-                if (temp.startsWith("status", ignoreCase = true) || registeredGqlForTopAds.keys.contains(temp)) {
+                if (temp.startsWith(STATUS_QUERY, ignoreCase = true) || registeredGqlForTopAds.keys.contains(temp)) {
                     isStatusAvailable = true
                     break
                 }
@@ -115,7 +111,7 @@ class GraphqlCloudDataStore @Inject constructor(
         if (isStatusAvailable) {
             val newHeader = GraphqlClient.getFunction().topAdsHeader
             if (!newHeader.isNullOrEmpty()) {
-                header[TopAdsInterceptor.TOP_ADS_TRACKING_KEY] = newHeader
+                header[TOP_ADS_TRACKING_KEY] = newHeader
             }
         }
     }

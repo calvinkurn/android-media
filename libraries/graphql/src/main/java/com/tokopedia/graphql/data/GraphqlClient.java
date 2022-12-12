@@ -1,5 +1,7 @@
 package com.tokopedia.graphql.data;
 
+import static com.tokopedia.akamai_bot_lib.UtilsKt.RESPONSE_HEADER_KEY;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.TOP_ADS_SHARED_PREF_KEY;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
@@ -32,7 +34,6 @@ import com.tokopedia.network.interceptor.DeprecatedApiInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthenticator;
-import com.tokopedia.network.interceptor.TopAdsInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
@@ -207,8 +208,8 @@ public class GraphqlClient {
         }
 
         public String getTopAdsHeader(){
-           SharedPreferences sp =  context.get().getSharedPreferences(TopAdsInterceptor.TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
-            return sp.getString(TopAdsInterceptor.RESPONSE_HEADER_KEY, "");
+            SharedPreferences sp =  context.get().getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+            return sp.getString(RESPONSE_HEADER_KEY, "");
         }
     }
 
