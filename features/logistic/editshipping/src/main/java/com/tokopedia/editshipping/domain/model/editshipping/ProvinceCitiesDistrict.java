@@ -14,10 +14,9 @@ import java.util.List;
  * Created by Kris on 3/2/2016.
  */
 public class ProvinceCitiesDistrict implements Parcelable {
-    @SuppressLint("Invalid Data Type")
     @SerializedName("province_id")
     @Expose
-    public Integer provinceId;
+    public long provinceId;
     @SerializedName("cities")
     @Expose
     public List<City> cities;
@@ -43,7 +42,7 @@ public class ProvinceCitiesDistrict implements Parcelable {
     }
 
     protected ProvinceCitiesDistrict(Parcel in) {
-        this.provinceId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.provinceId = (Long) in.readValue(Long.class.getClassLoader());
         this.cities = in.createTypedArrayList(City.CREATOR);
         this.provinceName = in.readString();
     }

@@ -13,14 +13,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class RangePriceData implements Parcelable {
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("min_price")
     @Expose
-    private int minPrice;
-    @SuppressLint("Invalid Data Type")
+    private double minPrice;
     @SerializedName("max_price")
     @Expose
-    private int maxPrice;
+    private double maxPrice;
 
     public RangePriceData() {
     }
@@ -32,8 +30,8 @@ public class RangePriceData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(minPrice);
-        dest.writeInt(maxPrice);
+        dest.writeDouble(minPrice);
+        dest.writeDouble(maxPrice);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class RangePriceData implements Parcelable {
         }
     };
 
-    public int getMinPrice() {
+    public double getMinPrice() {
         return minPrice;
     }
 
@@ -61,7 +59,7 @@ public class RangePriceData implements Parcelable {
         this.minPrice = minPrice;
     }
 
-    public int getMaxPrice() {
+    public double getMaxPrice() {
         return maxPrice;
     }
 

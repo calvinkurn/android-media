@@ -18,10 +18,9 @@ public class CodProductData implements Parcelable {
     @SerializedName("cod_text")
     @Expose
     private String codText;
-    @SuppressLint("Invalid Data Type")
     @SerializedName("cod_price")
     @Expose
-    private Integer codPrice;
+    private Double codPrice;
     @SerializedName("formatted_price")
     @Expose
     private String formattedPrice;
@@ -35,7 +34,7 @@ public class CodProductData implements Parcelable {
     protected CodProductData(Parcel in) {
         isCodAvailable = in.readInt();
         codText = in.readString();
-        codPrice = in.readInt();
+        codPrice = in.readDouble();
         formattedPrice = in.readString();
         tncText = in.readString();
         tncLink = in.readString();
@@ -62,7 +61,7 @@ public class CodProductData implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(isCodAvailable);
         parcel.writeString(codText);
-        parcel.writeInt(codPrice);
+        parcel.writeDouble(codPrice);
         parcel.writeString(formattedPrice);
         parcel.writeString(tncText);
         parcel.writeString(tncLink);
@@ -85,11 +84,11 @@ public class CodProductData implements Parcelable {
         this.codText = codText;
     }
 
-    public Integer getCodPrice() {
+    public Double getCodPrice() {
         return codPrice;
     }
 
-    public void setCodPrice(Integer codPrice) {
+    public void setCodPrice(Double codPrice) {
         this.codPrice = codPrice;
     }
 
