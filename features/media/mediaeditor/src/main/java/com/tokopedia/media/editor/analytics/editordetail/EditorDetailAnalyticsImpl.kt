@@ -1,6 +1,7 @@
 package com.tokopedia.media.editor.analytics.editordetail
 
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.ACTION_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.ACTION_ROTATION_ROTATE
@@ -16,6 +17,7 @@ import com.tokopedia.media.editor.analytics.KEY_EVENT_CATEGORY
 import com.tokopedia.media.editor.analytics.KEY_EVENT_LABEL
 import com.tokopedia.media.editor.analytics.KEY_TRACKER_ID
 import com.tokopedia.media.editor.analytics.KEY_USER_ID
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_ROTATE
@@ -53,6 +55,14 @@ class EditorDetailAnalyticsImpl(
             ACTION_ROTATION_FLIP,
             "$pageSource - $userId - $shopId",
             TRACKER_ID_ROTATION_FLIP
+        )
+    }
+
+    override fun clickAddLogoUpload() {
+        sendGeneralEvent(
+            ACTION_CLICK_LOGO_UPLOAD,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_LOGO_UPLOAD
         )
     }
 

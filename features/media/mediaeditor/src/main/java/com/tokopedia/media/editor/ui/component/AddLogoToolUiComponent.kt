@@ -67,7 +67,7 @@ class AddLogoToolUiComponent constructor(
                 text = container().context.getString(editorR.string.add_logo_tips_upload_text)
             }
             setOnClickListener {
-                if (isUpload) listener.onPickerCall()
+                if (isUpload) listener.onUpload()
                 dismiss()
             }
         }
@@ -297,7 +297,6 @@ class AddLogoToolUiComponent constructor(
         fun onLogoChosen(bitmap: Bitmap)
         fun onUpload()
         fun onLoadFailed()
-        fun onPickerCall()
     }
 
     companion object {

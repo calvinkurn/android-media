@@ -332,6 +332,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onUpload() {
+        editorDetailAnalytics.clickAddLogoUpload()
         if (!addLogoComponent.isUploadAvatarReady()) {
             showAddLogoUploadTips()
         } else {
@@ -343,10 +344,6 @@ class DetailEditorFragment @Inject constructor(
         val text = requireContext().getString(editorR.string.editor_add_logo_toast_final)
         Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         activity?.finish()
-    }
-
-    override fun onPickerCall() {
-        showAddLogoPicker()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
