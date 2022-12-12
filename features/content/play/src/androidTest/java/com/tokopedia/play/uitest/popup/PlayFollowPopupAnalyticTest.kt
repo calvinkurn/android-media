@@ -2,6 +2,7 @@ package com.tokopedia.play.uitest.popup
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cassavatest.CassavaTestRule
@@ -21,21 +22,22 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.websocket.PlayWebSocket
-import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
  * @author by astidhiyaa on 30/11/22
  */
-@UiTest
+@RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayFollowPopupAnalyticTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -109,12 +111,8 @@ class PlayFollowPopupAnalyticTest {
                         )
                     ),
                     videoMetaInfo = PlayVideoMetaInfoUiModel(
-                        videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
-                            params = PlayGeneralVideoPlayerParams(
-                                videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
-                                buffer = PlayBufferControl(),
-                                lastMillis = null,
-                            ),
+                        videoPlayer = PlayVideoPlayerUiModel.YouTube(
+                            youtubeId = ""
                         ),
                         videoStream = PlayVideoStreamUiModel(
                             "", VideoOrientation.Vertical, "Iklan Popmie"
@@ -135,7 +133,7 @@ class PlayFollowPopupAnalyticTest {
         coEvery { repo.getIsFollowingPartner(any()) } returns false
     }
 
-    private fun createRobot() = PlayActivityRobot(channelId, 5000, isYouTube = false)
+    private fun createRobot() = PlayActivityRobot(channelId, 10000, isYouTube = true)
 
     @Test
     fun impress_and_dismiss(){

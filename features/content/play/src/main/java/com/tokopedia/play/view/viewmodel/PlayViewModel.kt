@@ -207,7 +207,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive, _videoProperty) {
         bottomInsets, popUp, partner, kebab, sharing, interactive, videoState ->
-            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying && !videoState.state.hasNoData
+            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying && (!videoState.state.hasNoData || videoPlayer.isYouTube)
     }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(
