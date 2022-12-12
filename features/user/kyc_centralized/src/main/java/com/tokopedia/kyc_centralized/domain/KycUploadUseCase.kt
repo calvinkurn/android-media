@@ -1,6 +1,6 @@
 package com.tokopedia.kyc_centralized.domain
 
-import com.tokopedia.kyc_centralized.KycUrl.KYC_PARAMS
+import com.tokopedia.kyc_centralized.common.KycUrl.KYC_PARAMS
 import com.tokopedia.kyc_centralized.data.model.response.KycResponse
 import com.tokopedia.kyc_centralized.data.repository.KycUploadImagesRepository
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

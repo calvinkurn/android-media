@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.customview
+package com.tokopedia.kyc_centralized.ui.customview
 
 import android.os.Bundle
 import android.view.LayoutInflater

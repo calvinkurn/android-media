@@ -7,8 +7,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
-import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_COMPRESSION
-import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_CROPPING
+import com.tokopedia.kyc_centralized.common.KYCConstant.EXTRA_USE_COMPRESSION
+import com.tokopedia.kyc_centralized.common.KYCConstant.EXTRA_USE_CROPPING
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 

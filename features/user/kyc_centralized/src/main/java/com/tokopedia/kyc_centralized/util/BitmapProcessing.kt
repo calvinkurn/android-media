@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.fragment.camera
+package com.tokopedia.kyc_centralized.util
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,16 +7,12 @@ import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kyc_centralized.KycConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycServerLogger
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
@@ -192,12 +188,12 @@ class BitmapCroppingAndCompression constructor(
     private fun getQualityRedcution(bitmap: Bitmap): Float {
         val size = calculateSize(bitmap) / MB_DIVIDER
         return when {
-            size > KycConstant.MB_2 && size < KycConstant.MB_3 -> { KycConstant.QUALITY_70 }
-            size > KycConstant.MB_3 && size < KycConstant.MB_6 -> { KycConstant.QUALITY_50 }
-            size > KycConstant.MB_6 && size < KycConstant.MB_10 -> { KycConstant.QUALITY_40 }
-            size > KycConstant.MB_10 && size < KycConstant.MB_15 -> { KycConstant.QUALITY_30 }
-            size > KycConstant.MB_15 -> { KycConstant.QUALITY_20 }
-            else -> { KycConstant.QUALITY_100 }
+            size > KYCConstant.MB_2 && size < KYCConstant.MB_3 -> { KYCConstant.QUALITY_70 }
+            size > KYCConstant.MB_3 && size < KYCConstant.MB_6 -> { KYCConstant.QUALITY_50 }
+            size > KYCConstant.MB_6 && size < KYCConstant.MB_10 -> { KYCConstant.QUALITY_40 }
+            size > KYCConstant.MB_10 && size < KYCConstant.MB_15 -> { KYCConstant.QUALITY_30 }
+            size > KYCConstant.MB_15 -> { KYCConstant.QUALITY_20 }
+            else -> { KYCConstant.QUALITY_100 }
         }
     }
 

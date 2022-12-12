@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.customview
+package com.tokopedia.kyc_centralized.ui.customview
 
 import android.app.Activity
 import android.os.Build
@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kyc_centralized.KycUrl
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -59,7 +59,8 @@ object KycOnBoardingViewInflater {
             }
             findViewById<Typography>(R.id.see_more_benefit_button).setOnClickListener {
                 activity?.supportFragmentManager?.let { fragmentManager ->
-                    KycBenefitDetailBottomSheet.createInstance().show(fragmentManager, KycBenefitDetailBottomSheet.TAG)
+                    KycBenefitDetailBottomSheet.createInstance()
+                        .show(fragmentManager, KycBenefitDetailBottomSheet.TAG)
                 }
             }
         }
@@ -94,7 +95,7 @@ object KycOnBoardingViewInflater {
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {
                 onTncClicked()
-                RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${URL_TNC}")
+                RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=$URL_TNC")
             }
             override fun updateDrawState(ds: TextPaint) {
                 ds.color = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400)

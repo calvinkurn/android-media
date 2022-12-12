@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.customview.fragment
+package com.tokopedia.kyc_centralized.ui.customview.fragment
 
 
 import android.os.Bundle

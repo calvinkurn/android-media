@@ -9,12 +9,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kyc_centralized.KycConstant.PADDING_0_5F
-import com.tokopedia.kyc_centralized.KycConstant.PADDING_16
-import com.tokopedia.kyc_centralized.KycConstant.PADDING_ZERO
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.KycUrl
+import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_0_5F
+import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_16
+import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_ZERO
 import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraFragment
 import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.BaseUserIdentificationStepperFragment

@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.customview
+package com.tokopedia.kyc_centralized.ui.customview
 
 import android.content.Context
 import android.util.AttributeSet

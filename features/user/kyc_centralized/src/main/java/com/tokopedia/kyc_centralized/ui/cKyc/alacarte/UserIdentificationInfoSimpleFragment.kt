@@ -16,9 +16,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_SHO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kyc_centralized.KycUrl
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoSimpleBinding
-import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
+import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
