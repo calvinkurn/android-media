@@ -22,9 +22,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 
 class TokoNowSimilarProductViewModelTest {
 
@@ -69,7 +71,15 @@ class TokoNowSimilarProductViewModelTest {
     }
 
     @Test
-    fun getSimilarProducts(){
+    fun `user id and loggedIn test`(){
+        every { userSession.isLoggedIn } returns true
+        every { userSession.userId } returns ""
+        assertEquals(true, viewModel.isLoggedIn)
+        assertEquals("", viewModel.userId)
+    }
+
+    @Test
+    fun `get similar products list success`(){
         val recommendationItem = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem(
             "",
             "",
@@ -99,23 +109,54 @@ class TokoNowSimilarProductViewModelTest {
 
         every {
             chooseAddressWrapper.getChooseAddressData()
-        } returns LocalCacheModel(
-            city_id = "123",
-            address_id = "112121",
-            district_id = "12",
-            lat = "123",
-            long = "412",
-            postal_code = "123",
-            warehouse_id = "412"
-        )
+        } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
-        every { viewModel.isLoggedIn } returns true
         viewModel.similarProductList.verifyValueEquals(response.productRecommendationWidgetSingle?.data?.recommendation)
+        assertEquals("412", viewModel.warehouseId)
     }
 
     @Test
-    fun `given recipe list when onViewCreated should map atc quantity to recipe list`() {
+    fun `empty or null product recommendation widget`(){
+
+        val response = ProductRecommendationResponse(null)
+        coEvery {
+            getSimilarProductUseCase.execute(any(), any(), any())
+        } returns response
+
+        every {
+            chooseAddressWrapper.getChooseAddressData()
+        } returns returnLocalCacheModel()
+
+        viewModel.getSimilarProductList("123")
+        viewModel.similarProductList.verifyValueEquals(null)
+    }
+
+    @Test
+    fun `empty or null similar products data`(){
+        val response = ProductRecommendationResponse(ProductRecommendationResponse.ProductRecommendationWidgetSingle(data = null))
+        coEvery {
+            getSimilarProductUseCase.execute(any(), any(), any())
+        } returns response
+
+        every {
+            chooseAddressWrapper.getChooseAddressData()
+        } returns returnLocalCacheModel()
+
+        viewModel.getSimilarProductList("123")
+        viewModel.similarProductList.verifyValueEquals(null)
+    }
+
+    @Test
+    fun `error while getting similar products list`(){
+        coEvery { getSimilarProductUseCase.execute(any(), any(), any())
+        } throws Throwable()
+        viewModel.getSimilarProductList(ArgumentMatchers.anyString())
+        viewModel.similarProductList.verifyValueEquals(null)
+    }
+
+    @Test
+    fun `mini cart quantity should map to recommended products list when onViewCreated`() {
         val miniCartItems = mapOf(
             MiniCartItemKey("2148241523") to MiniCartItem.MiniCartItemProduct(
                 productId = "2148241523",
@@ -128,137 +169,34 @@ class TokoNowSimilarProductViewModelTest {
         )
         val miniCartSimplifiedData = MiniCartSimplifiedData(miniCartItems = miniCartItems)
         val productList = listOf(
-            SimilarProductUiModel(
-                id = "2148241523",
-                shopId = "480552",
-                shopName = "Raju Karyana Store",
-                name = "kaos testing 112",
-                quantity = 5,
-                stock = 7,
-                minOrder = 1,
-                maxOrder = 7,
-                priceFmt = "Rp150",
-                weight = "500 g",
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
-                slashedPrice = "Rp200",
-                discountPercentage = "20",
-                similarProducts = emptyList(),
-                categoryId = "983",
-                position = 1
-            ),
-            SimilarProductUiModel(
-                id = "2148241524",
-                shopId = "480552",
-                shopName = "Bittu Dhaba",
-                name = "kaos testing 113",
-                quantity = 3,
-                stock = 7,
-                minOrder = 1,
-                maxOrder = 7,
-                priceFmt = "Rp150",
-                weight = "500 g",
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
-                slashedPrice = "Rp200",
-                discountPercentage = "20",
-                similarProducts = emptyList(),
-                categoryId = "983",
-                position = 2
-            )
+            getSimilarProductUiModel("2148241523", 5),
+            getSimilarProductUiModel("2148241524", 3)
         )
 
         viewModel.setMiniCartData(miniCartSimplifiedData)
         viewModel.onViewCreated(productList)
 
         val expectedProductList = listOf(
-            SimilarProductUiModel(
-                id = "2148241523",
-                shopId = "480552",
-                shopName = "Raju Karyana Store",
-                name = "kaos testing 112",
-                quantity = 6,
-                stock = 7,
-                minOrder = 1,
-                maxOrder = 7,
-                priceFmt = "Rp150",
-                weight = "500 g",
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
-                slashedPrice = "Rp200",
-                discountPercentage = "20",
-                similarProducts = emptyList(),
-                categoryId = "983",
-                position = 1
-            ),
-            SimilarProductUiModel(
-                id = "2148241524",
-                shopId = "480552",
-                shopName = "Bittu Dhaba",
-                name = "kaos testing 113",
-                quantity = 100,
-                stock = 7,
-                minOrder = 1,
-                maxOrder = 7,
-                priceFmt = "Rp150",
-                weight = "500 g",
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
-                slashedPrice = "Rp200",
-                discountPercentage = "20",
-                similarProducts = emptyList(),
-                categoryId = "983",
-                position = 2
-            )
+            getSimilarProductUiModel("2148241523", 6),
+            getSimilarProductUiModel("2148241524", 100)
         )
 
         viewModel.visitableItems.verifyValueEquals(expectedProductList)
     }
 
     @Test
-    fun `given mini cart data not set when onViewCreated should update recipe list`() {
+    fun `given mini cart data not set when onViewCreated should update similar products list`() {
         val productList = listOf(
-            SimilarProductUiModel(
-                id = "2148241523",
-                shopId = "480552",
-                shopName = "Raju Karyana Store",
-                name = "kaos testing 112",
-                quantity = 5,
-                stock = 7,
-                minOrder = 1,
-                maxOrder = 7,
-                priceFmt = "Rp150",
-                weight = "500 g",
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
-                slashedPrice = "Rp200",
-                discountPercentage = "20",
-                similarProducts = emptyList(),
-                categoryId = "983",
-                position = 1
-            )
+            getSimilarProductUiModel("2148241523", 5)
         )
 
         viewModel.onViewCreated(productList)
 
         val expectedProductList = listOf(
-            SimilarProductUiModel(
-                id = "2148241523",
-                shopId = "480552",
-                shopName = "Raju Karyana Store",
-                name = "kaos testing 112",
-                quantity = 5,
-                stock = 7,
-                minOrder = 1,
-                maxOrder = 7,
-                priceFmt = "Rp150",
-                weight = "500 g",
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
-                slashedPrice = "Rp200",
-                discountPercentage = "20",
-                similarProducts = emptyList(),
-                categoryId = "983",
-                position = 1
-            )
+            getSimilarProductUiModel("2148241523", 5)
         )
 
-        viewModel.visitableItems
-            .verifyValueEquals(expectedProductList)
+        viewModel.visitableItems.verifyValueEquals(expectedProductList)
     }
 
     @Test
@@ -267,11 +205,42 @@ class TokoNowSimilarProductViewModelTest {
 
         viewModel.setMiniCartData(MiniCartSimplifiedData())
 
-        viewModel.visitableItems
-            .verifyValueEquals(null)
+        viewModel.visitableItems.verifyValueEquals(null)
     }
 
-    protected fun onGetLayoutItemList_returnNull() {
+    private fun onGetLayoutItemList_returnNull() {
         viewModel.mockPrivateField("layoutItemList", null)
     }
+
+    private fun getSimilarProductUiModel(productId: String, quantity: Int): SimilarProductUiModel{
+        return SimilarProductUiModel(
+            id = productId,
+            shopId = "480552",
+            shopName = "Raju Karyana Store",
+            name = "kaos testing 112",
+            quantity = quantity,
+            stock = 7,
+            minOrder = 1,
+            maxOrder = 7,
+            priceFmt = "Rp150",
+            weight = "500 g",
+            imageUrl = "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
+            slashedPrice = "Rp200",
+            discountPercentage = "20",
+            similarProducts = emptyList(),
+            categoryId = "983",
+            position = 1
+        )
+    }
+
+    private fun returnLocalCacheModel() = LocalCacheModel(
+        city_id = "123",
+        address_id = "112121",
+        district_id = "12",
+        lat = "123",
+        long = "412",
+        postal_code = "123",
+        warehouse_id = "412"
+    )
+
 }
