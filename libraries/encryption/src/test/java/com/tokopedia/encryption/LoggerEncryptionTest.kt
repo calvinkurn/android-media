@@ -1,7 +1,6 @@
 package com.tokopedia.encryption
 
 import android.os.Build
-import android.util.Base64
 import com.tokopedia.encryption.security.RSA
 import com.tokopedia.encryption.utils.Constants
 import org.junit.Assert.assertEquals
@@ -12,7 +11,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [Build.VERSION_CODES.O_MR1], manifest= Config.NONE)
+@Config(sdk = [Build.VERSION_CODES.O_MR1], manifest = Config.NONE)
 class LoggerEncryptionTest {
 
     var ENCRYPTION_KEY = String(
@@ -37,7 +36,7 @@ class LoggerEncryptionTest {
     )
 
     lateinit var rsaEncrpytor: RSA
-    
+
     val publicRsaKeyStr = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoHZ7Cq/9VO0ynSSThX8cPf5uoK7vXs5l" +
         "2hN41Otg6ys6b9VB5MWhcZ2GYmq4MDwC/eF0Baby6aNZMZT61Fh88fMbW+glGLEd7YpCL0bhqd3r" +
         "n8Z4IelMlq3CrEVfFd+ZD2cGsGINM1RNCvpwHVTiQTWs8ygBVC7ynsJZrk+abWsCBCYnl1lFkMd9" +
@@ -68,16 +67,15 @@ class LoggerEncryptionTest {
         "knxS3Z723sl71q6g6ykZaqwYlZBSjWIQGUYhl3f9E6x+pwqFk1AVzpxhRTI7GsR/M0uk+WdmNo+y" +
         "2YCzL1IygDeov3aWBJJDeCvAafql"
 
-    
     @Before
     fun setup() {
         rsaEncrpytor = RSA()
     }
 
     @Test
-    fun `AES encrypt`() {
+    fun `RSA decrypt`() {
         val newRelicApiKey = intArrayOf(78, 82, 73, 73, 45, 99, 84, 100, 57, 84, 52, 87, 50, 113, 120, 72, 103, 103, 70, 110, 121, 113, 56, 49, 98, 78, 115, 100, 86, 97, 65, 100, 85, 116, 120, 84, 51)
-        val decodeApiKey =  decodeKey(newRelicApiKey)
+        val decodeApiKey = decodeKey(newRelicApiKey)
         val userIdNr = intArrayOf(51, 48, 53, 57, 53, 50, 56)
         val decodeUserIdNr = decodeKey(userIdNr)
 
@@ -104,10 +102,5 @@ class LoggerEncryptionTest {
 
     private fun decodeKey(keys: IntArray): String {
         return keys.joinToString(separator = "") { it.toChar().toString() }
-    }
-
-    @Test
-    fun `AES decrypt`() {
-
     }
 }
