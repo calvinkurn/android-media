@@ -96,7 +96,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
     }
 
     private fun `Given class name`() {
-        every { productListView.className } returns className
+        every { classNameProvider.className } returns className
     }
 
     private fun `Given view already load data`() {
@@ -111,7 +111,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
 
     private fun `Then verify inspiration carousel product top ads impressed`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            productListView.className
+            classNameProvider.className
 
             topAdsUrlHitter.hitImpressionUrl(
                 className,

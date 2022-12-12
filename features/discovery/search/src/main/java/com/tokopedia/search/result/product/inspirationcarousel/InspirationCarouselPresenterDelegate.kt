@@ -7,6 +7,7 @@ import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductM
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.product.ClassNameProvider
+import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
@@ -33,6 +34,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
     private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
+    private val viewUpdater: ViewUpdater
 ): InspirationCarouselPresenter,
     ApplinkOpener by ApplinkOpenerDelegate {
 
@@ -227,7 +229,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         changeActiveInspirationCarouselChips(inspirationCarouselViewModel, clickedInspirationCarouselOption)
 
         view.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
-        view.refreshItemAtIndex(adapterPosition)
+        viewUpdater.refreshItemAtIndex(adapterPosition)
 
         if (clickedInspirationCarouselOption.hasProducts()) return
 
@@ -316,7 +318,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
         clickedInspirationCarouselOption.product = productList
 
-        view.refreshItemAtIndex(adapterPosition)
+        viewUpdater.refreshItemAtIndex(adapterPosition)
     }
 
     private fun productLabelGroupToLabelGroupDataView(

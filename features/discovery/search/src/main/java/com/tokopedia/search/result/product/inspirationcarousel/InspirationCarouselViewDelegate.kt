@@ -21,7 +21,6 @@ class InspirationCarouselViewDelegate @Inject constructor(
     @SearchContext
     context: Context,
     private val trackingQueue: TrackingQueue,
-    private val recyclerViewUpdater: RecyclerViewUpdater,
 ) : InspirationCarouselView,
     QueryKeyProvider by queryKeyProvider,
     SearchParameterProvider by searchParameterProvider,
@@ -100,9 +99,5 @@ class InspirationCarouselViewDelegate @Inject constructor(
             openApplink(context, applink.decodeQueryParameter())
         else
             openApplink(context, url)
-    }
-
-    override fun refreshItemAtIndex(index: Int) {
-        recyclerViewUpdater.refreshItemAtIndex(index)
     }
 }

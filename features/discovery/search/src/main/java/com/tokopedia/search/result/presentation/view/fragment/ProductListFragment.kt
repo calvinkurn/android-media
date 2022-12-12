@@ -81,7 +81,6 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterViewDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListenerDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate

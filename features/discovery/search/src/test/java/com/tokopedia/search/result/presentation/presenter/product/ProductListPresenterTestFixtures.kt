@@ -136,8 +136,6 @@ internal open class ProductListPresenterTestFixtures {
         dynamicFilterModel,
     )
     protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
-    protected val getInspirationCarouselChipsUseCase = mockk<UseCase<InspirationCarouselChipsProductModel>>(relaxed = true)
-
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
@@ -214,8 +212,9 @@ internal open class ProductListPresenterTestFixtures {
                 topAdsUrlHitter,
                 classNameProvider,
                 requestParamsGenerator,
-                { getInspirationCarouselChipsUseCase },
+                { getInspirationCarouselChipsProductsUseCase },
                 chooseAddressPresenterDelegate,
+                viewUpdater,
             ),
             dynamicFilterModel,
             bottomSheetFilterPresenter,

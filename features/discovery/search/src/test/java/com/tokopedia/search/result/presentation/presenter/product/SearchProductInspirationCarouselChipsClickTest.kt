@@ -107,7 +107,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
     private fun `Then assert view is refreshed`(adapterPosition: Int) {
         verify {
-            productListView.refreshItemAtIndex(adapterPosition)
+            viewUpdater.refreshItemAtIndex(adapterPosition)
         }
     }
 
@@ -201,7 +201,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
     private fun `Then verify refresh view is called twice`(adapterPosition: Int) {
         verify(exactly = 2) {
-            productListView.refreshItemAtIndex(adapterPosition)
+            viewUpdater.refreshItemAtIndex(adapterPosition)
         }
     }
 }
