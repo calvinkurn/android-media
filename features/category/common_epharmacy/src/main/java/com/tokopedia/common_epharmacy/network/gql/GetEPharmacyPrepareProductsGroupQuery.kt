@@ -17,6 +17,17 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                 }
                 data {
                   attachment_page_ticker_text
+                  attachment_page_ticker_logo_url
+                  toaster {
+                      type
+                      message
+                  }
+                  pap_primary_cta {
+                      title
+                      redirect_link_apps
+                      redirect_link_web
+                      state
+                  }
                   epharmacy_groups {
                     epharmacy_group_id
                     prescription_source
@@ -81,6 +92,12 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                         item_weight
                         product_total_weight_fmt
                       }
+                    }
+                    prescription_cta {
+                      logo_url
+                      title
+                      subtitle
+                      action_type
                     }
                   }
                 }
