@@ -13,6 +13,7 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.common.MediaPicker
@@ -49,6 +50,9 @@ abstract class BasePlayShortsActivity : BaseActivity() {
 
     @Inject
     lateinit var analytic: PlayShortsAnalytic
+
+    @Inject
+    lateinit var router: Router
 
     private lateinit var binding: ActivityPlayShortsBinding
 
@@ -233,7 +237,7 @@ abstract class BasePlayShortsActivity : BaseActivity() {
             previewActionText(getString(R.string.play_shorts_next_action_label))
         }
 
-        startActivityForResult(intent, MEDIA_PICKER_REQ)
+        router.route(this, intent, MEDIA_PICKER_REQ)
     }
 
     private fun openPreparation() {
