@@ -53,6 +53,14 @@ data class ProductShopCredibilityDataModel(
         return typeFactory.type(this)
     }
 
+    fun getTickerType(): String {
+        return if (tickerDataResponse.firstOrNull()?.color == "tips") {
+            "tips"
+        } else {
+            "ticker"
+        }
+    }
+
     fun getTwoShopInfoHieararchy(
         context: Context,
         shopSpeed: Long,
