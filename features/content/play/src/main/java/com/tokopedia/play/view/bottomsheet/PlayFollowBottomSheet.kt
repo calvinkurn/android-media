@@ -29,6 +29,7 @@ import javax.inject.Inject
 /**
  * @author by astidhiyaa on 27/10/22
  */
+@Suppress("LateinitUsage")
 class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAnalytic) : BottomSheetUnify() {
 
     private var _binding: PlayFollowBottomSheetBinding? = null
