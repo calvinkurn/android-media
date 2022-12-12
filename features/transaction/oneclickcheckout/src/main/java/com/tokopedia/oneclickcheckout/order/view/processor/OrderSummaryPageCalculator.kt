@@ -55,7 +55,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             if (!isValidState) {
                 return@withContext payment to total.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE, showTickerError = false)
             }
-            if (payment.dynamicPaymentFees == null) {
+            if (payment.isDynamicPaymentFeeError) {
                 return@withContext payment to total.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE, showTickerError = true)
             }
             val (orderCost, newPayment) = calculateOrderCostWithPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel, payment)

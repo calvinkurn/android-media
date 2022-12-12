@@ -30,6 +30,9 @@ data class OrderPayment(
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")
 
+    val isDynamicPaymentFeeError: Boolean
+        get() = dynamicPaymentFees == null
+
     fun isError(): Boolean {
         return isCalculationError || errorData != null || walletErrorData != null
     }

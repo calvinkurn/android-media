@@ -20,6 +20,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCardTenorListUseCase: CreditCardTenorListUseCase,
@@ -158,6 +159,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
+                throw IOException("error")
                 return@withContext listOf(OrderPaymentFee("biaya dinamis", 2000.0, true, false, 0, "dinamis"))
             } catch (t: Throwable) {
                 Timber.d(t)
