@@ -21,7 +21,6 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -72,10 +71,32 @@ class TokoNowSimilarProductViewModelTest {
 
     @Test
     fun getSimilarProducts(){
-        val data = ProductRecommendationResponse()
+        val recommendationItem = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem(
+            "",
+            "",
+            ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.Shop("", "", 0),
+            "",
+            0,
+            0,
+            "",
+            true,
+            "",
+            listOf(Any()),
+            listOf(ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.BadgesItem("", "")),
+            0,
+            "",
+            "",
+            "",
+            0F,
+            0,0,"","","",
+            0,"","",0,
+            listOf(ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.WholesalePriceItem(0, 0, 0, "")),0
+        )
+
+        val response = ProductRecommendationResponse(productRecommendationWidgetSingle = ProductRecommendationResponse.ProductRecommendationWidgetSingle(data = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data(recommendation = listOf(recommendationItem))))
         coEvery {
             getSimilarProductUseCase.execute(userSession.userId.toIntOrZero(), "", mutableMapOf())
-        } returns data
+        } returns response
 
         every {
             chooseAddressWrapper.getChooseAddressData()
@@ -90,8 +111,8 @@ class TokoNowSimilarProductViewModelTest {
         )
 
         viewModel.getSimilarProductList("123")
-        coVerify {  }
-        viewModel.similarProductList.verifyValueEquals(data.productRecommendationWidgetSingle?.data?.recommendation)
+        every { viewModel.isLoggedIn } returns true
+        viewModel.similarProductList.verifyValueEquals(response.productRecommendationWidgetSingle?.data?.recommendation)
     }
 
     @Test
