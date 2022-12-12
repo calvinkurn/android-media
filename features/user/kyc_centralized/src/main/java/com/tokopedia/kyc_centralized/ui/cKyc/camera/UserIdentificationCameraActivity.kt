@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.activity
+package com.tokopedia.kyc_centralized.ui.cKyc.camera
 
 import android.content.Context
 import android.content.Intent
@@ -9,8 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_COMPRESSION
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_CROPPING
-import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationCameraFragment
-import com.tokopedia.kyc_centralized.view.fragment.camera.CameraKtpFragment
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 

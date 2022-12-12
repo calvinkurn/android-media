@@ -3,7 +3,7 @@ package com.tokopedia.kyc_centralized.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
-import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
+import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
 import com.tokopedia.usecase.coroutines.Result

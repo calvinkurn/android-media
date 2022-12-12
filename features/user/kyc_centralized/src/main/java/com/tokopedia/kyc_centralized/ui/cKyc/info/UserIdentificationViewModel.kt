@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.viewmodel
+package com.tokopedia.kyc_centralized.ui.cKyc.info
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
-import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

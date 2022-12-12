@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.fragment
+package com.tokopedia.kyc_centralized.ui.cKyc.info
 
 import android.app.Activity
 import android.content.Intent
@@ -28,9 +28,7 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoBinding
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
 import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
-import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN

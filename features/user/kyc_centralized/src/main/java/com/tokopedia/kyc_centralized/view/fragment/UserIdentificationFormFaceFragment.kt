@@ -24,7 +24,8 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
+import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
+import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraFragment
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel

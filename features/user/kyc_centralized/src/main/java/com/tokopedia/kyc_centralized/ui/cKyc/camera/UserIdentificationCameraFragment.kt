@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.fragment
+package com.tokopedia.kyc_centralized.ui.cKyc.camera
 
 import android.app.Activity
 import android.content.Intent

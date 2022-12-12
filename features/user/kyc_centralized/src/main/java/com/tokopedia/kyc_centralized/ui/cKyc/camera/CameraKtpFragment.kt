@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.fragment.camera
+package com.tokopedia.kyc_centralized.ui.cKyc.camera
 
 import android.app.Activity
 import android.content.Intent
@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,6 +27,8 @@ import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.view.fragment.camera.BitmapCroppingAndCompression
+import com.tokopedia.kyc_centralized.view.fragment.camera.BitmapProcessingListener
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.File

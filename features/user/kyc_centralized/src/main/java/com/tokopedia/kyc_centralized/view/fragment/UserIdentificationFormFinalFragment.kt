@@ -34,11 +34,13 @@ import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationFinalBinding
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
+import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
+import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
+import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraFragment
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage

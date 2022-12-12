@@ -1,16 +1,14 @@
-package com.tokopedia.kyc_centralized.view.activity
+package com.tokopedia.kyc_centralized.ui.cKyc.info
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_CALL_BACK
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
 
@@ -31,7 +29,8 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         if (fragment != null &&
-                fragment is Listener) {
+                fragment is Listener
+        ) {
             (fragment as Listener?)?.onTrackBackPressed()
         }
     }

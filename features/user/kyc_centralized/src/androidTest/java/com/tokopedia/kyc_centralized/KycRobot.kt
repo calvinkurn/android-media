@@ -1,6 +1,5 @@
 package com.tokopedia.kyc_centralized
 
-import android.app.Activity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,7 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
 import com.tokopedia.kyc_centralized.util.waitOnView
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity
+import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoSimpleActivity
 
 class KycRobot {

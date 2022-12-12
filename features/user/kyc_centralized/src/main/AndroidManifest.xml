@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".view.activity.UserIdentificationCameraActivity"
+            android:name=".ui.cKyc.camera.UserIdentificationCameraActivity"
             android:configChanges="orientation"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.UserIdentificationInfoActivity"
+            android:name=".ui.cKyc.info.UserIdentificationInfoActivity"
             android:label="@string/title_kyc_info"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
