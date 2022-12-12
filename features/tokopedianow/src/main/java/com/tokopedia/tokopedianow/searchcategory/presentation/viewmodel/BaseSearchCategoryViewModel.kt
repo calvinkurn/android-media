@@ -77,6 +77,7 @@ import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.ProductItemMapper.mapResponseToProductItem
+import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateWishlistStatus
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
@@ -1388,24 +1389,22 @@ abstract class BaseSearchCategoryViewModel(
         hasBeenWishlist: Boolean
     ) {
         launch {
-            val product = visitableList.filterIsInstance<ProductItemDataView>().find { it.productCardModel.productId == productId }
-            product?.apply {
-                val index = visitableList.indexOf(this)
-                productCardModel = productCardModel.copy(hasBeenWishlist = hasBeenWishlist)
+            val index = visitableList.updateWishlistStatus(
+                productId = productId,
+                hasBeenWishlist = hasBeenWishlist
+            )
+            if (index != null) {
                 updatedVisitableIndicesMutableLiveData.postValue(listOf(index))
             }
         }
     }
 
-    fun getTranslationYHeaderBackground(dy: Int, headerBackgroundHeight: Int): Float {
+    fun getTranslationYHeaderBackground(dy: Int): Float {
         headerYCoordinate += dy
         return if (-headerYCoordinate > DEFAULT_HEADER_Y_COORDINATE) {
             headerYCoordinate = DEFAULT_HEADER_Y_COORDINATE
             headerYCoordinate
-        } else if (headerYCoordinate <= -headerBackgroundHeight) {
-            headerYCoordinate = headerBackgroundHeight.toFloat()
-            -headerYCoordinate
-        } else  {
+        }  else  {
             -headerYCoordinate
         }
     }
