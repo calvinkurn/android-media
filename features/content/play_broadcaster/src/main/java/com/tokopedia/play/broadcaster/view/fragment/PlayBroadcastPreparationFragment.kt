@@ -481,9 +481,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 )
             }
 
-            /** TODO: dont forget to put this analytic on onClickCloseListener */
-            // analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
-
             if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
                 add(
                     CoachMark2Item(
@@ -501,6 +498,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
 
         coachMark?.showCoachMark(ArrayList(coachMarkItems))
+
+        coachMark?.simpleCloseIcon?.setOnClickListener {
+            analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
+            coachMark?.dismissCoachMark()
+        }
+
         coachMark?.onDismissListener = {
             coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
         }

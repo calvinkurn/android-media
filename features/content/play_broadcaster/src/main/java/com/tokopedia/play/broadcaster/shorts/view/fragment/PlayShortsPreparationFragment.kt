@@ -403,10 +403,12 @@ class PlayShortsPreparationFragment @Inject constructor(
         if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)) {
             coachMark?.showCoachMark(ArrayList(coachMarkItems))
             coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
-        }
 
-        /** TODO: dont forget to put this analytic when coachmark is closed */
-        // analytic.clickCloseCoachMarkOnPreparationPage(viewModel.selectedAccount)
+            coachMark?.simpleCloseIcon?.setOnClickListener {
+                analytic.clickCloseCoachMarkOnPreparationPage(viewModel.selectedAccount)
+                coachMark?.dismissCoachMark()
+            }
+        }
     }
 
     private fun setupUiStandby() {
