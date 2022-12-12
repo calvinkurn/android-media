@@ -13,18 +13,18 @@ fun View.animateShow(
     ObjectAnimator.ofFloat(this, View.ALPHA, 0f, 1f).apply {
         this.duration = duration
         addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
                 this@animateShow.visibility = View.VISIBLE
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 this@animateShow.visibility = View.VISIBLE
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
         })
     }.start()
@@ -36,18 +36,18 @@ fun View.animateGone(
     ObjectAnimator.ofFloat(this, View.ALPHA, 1f, 0f).apply {
         this.duration = duration
         addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
                 this@animateGone.visibility = View.VISIBLE
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 this@animateGone.visibility = View.GONE
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
         })
     }.start()

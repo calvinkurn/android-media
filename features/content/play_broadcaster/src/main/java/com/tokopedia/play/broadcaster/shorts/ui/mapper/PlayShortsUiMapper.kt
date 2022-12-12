@@ -2,9 +2,9 @@ package com.tokopedia.play.broadcaster.shorts.ui.mapper
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterAuthorConfigResponse
 import com.tokopedia.play.broadcaster.shorts.domain.model.PlayShortsConfig
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
@@ -17,7 +17,7 @@ class PlayShortsUiMapper @Inject constructor(
     private val gson: Gson,
 ) : PlayShortsMapper {
 
-    override fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel> {
+    override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
         return response.whitelist.authors.map {
             ContentAccountUiModel(
                 id = it.id,

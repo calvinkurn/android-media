@@ -66,6 +66,9 @@ data class GetCheckWhitelistResponse(
 
         @SerializedName("livestream")
         val livestream: LivestreamConfig = LivestreamConfig(),
+
+        @SerializedName("shortvideo")
+        val shortVideo: ShortVideoConfig = ShortVideoConfig(),
     ) {
 
         data class PostConfig(
@@ -77,6 +80,14 @@ data class GetCheckWhitelistResponse(
         )
 
         data class LivestreamConfig(
+            @SerializedName("enable")
+            val enable: Boolean = false,
+
+            @SerializedName("has_username")
+            val hasUsername: Boolean = false,
+        )
+
+        data class ShortVideoConfig(
             @SerializedName("enable")
             val enable: Boolean = false,
 

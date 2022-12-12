@@ -30,7 +30,6 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.BundleData
-import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
@@ -38,9 +37,6 @@ import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
-import com.tokopedia.feedcomponent.util.coachmark.CoachMarkConfig
-import com.tokopedia.feedcomponent.util.coachmark.CoachMarkHelper
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
@@ -256,8 +252,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun setupView(view: View) {
-        coachMarkHelper = CoachMarkHelper(requireContext(), dispatchers ?: CoroutineDispatchersProvider)
-
         fabFeed = view.findViewById(R.id.fab_feed)
         feedFloatingButton = view.findViewById(R.id.feed_floating_button)
         ivFeedUser = view.findViewById(R.id.iv_feed_user)
