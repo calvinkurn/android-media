@@ -33,9 +33,6 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     private var shouldShowStickyHeader = false
     private var isStickyHeaderEnabled = false
     private var isSLideDownAnimationEnabled = false
-    private var handlerView: Handler? = Handler(Looper.getMainLooper())
-    private val runnable by lazy { getRunnableForHeaderVisibility() }
-
 
     init {
         val view = View.inflate(context, R.layout.feed_sticky_header_recycler_view, this)
@@ -58,40 +55,6 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
         } ?: headerRecyclerView.addView(view)
     }
 
-    fun setHeaderViewVisibility(shouldShow: Boolean){
-        if (shouldShow) {
-            isSLideDownAnimationEnabled = true
-            slideDown(headerRecyclerView)
-        } else {
-            if (isSLideDownAnimationEnabled)
-                slideUp(headerRecyclerView)
-            else
-                headerRecyclerView.gone()
-        }
-
-
-    }
-    private fun slideDown(view: View) {
-        view.visible()
-        view.animate().translationY(0f).setDuration(100L).start()
-
-    }
-    private fun slideUp(view: View) {
-        if (!view.isVisible) {
-            return
-        }
-        view.visible()
-        view.animate().translationY((headerRecyclerView.height.toFloat())*-1).setDuration(100L).withEndAction { headerRecyclerView.gone() }.start()
-
-
-    }
-
-
-    private fun getRunnableForHeaderVisibility() = Runnable {
-            if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE)
-                slideDown(headerRecyclerView)
-    }
-
     fun scrollToPosition(position: Int) {
         if (shouldShowStickyHeader)
             recyclerView.scrollLayout(position)
@@ -99,14 +62,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
 
     fun setShouldShowStickyHeaderValue(shouldShow: Boolean, time: Long) {
         this.shouldShowStickyHeader = shouldShow
-        if (shouldShowStickyHeader){
 
-            handlerView?.postDelayed(
-                runnable
-            , time)
-        }else {
-            handlerView?.removeCallbacks(runnable)
-        }
     }
 
 

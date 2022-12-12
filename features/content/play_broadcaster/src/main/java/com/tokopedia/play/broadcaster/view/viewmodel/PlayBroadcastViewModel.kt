@@ -228,7 +228,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
     var warningInfoType: WarningType = WarningType.UNKNOWN
-    var tncList: List<TermsAndConditionUiModel> = emptyList()
+    val tncList = mutableListOf<TermsAndConditionUiModel>()
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
@@ -415,7 +415,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
             is PlayBroadcastAction.GetAccountList -> handleGetAccountList(event.selectedType)
-            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
+            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -1529,7 +1529,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         mIsBroadcastStopped = true
     }
 
-    private fun handleGetAccountList(selectedType: String = TYPE_UNKNOWN) {
+    private fun handleGetAccountList(selectedType: String) {
         viewModelScope.launchCatchError(block = {
             _accountStateInfo.value = AccountStateInfo()
             _observableConfigInfo.value = NetworkResult.Loading
@@ -1590,7 +1590,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSwitchAccount(needLoading: Boolean = true) {
+    private fun handleSwitchAccount(needLoading: Boolean) {
         if (needLoading) _observableConfigInfo.value = NetworkResult.Loading
 
         val currentSelected = switchAccount(
@@ -1643,7 +1643,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         selectedAccount = selectedAccount
                     )
                 }
-                if (selectedAccount.isShop) tncList = configUiModel.tnc
+                if (selectedAccount.isShop) {
+                    tncList.clear()
+                    tncList.addAll(configUiModel.tnc)
+                }
                 false
             }
             else -> true
@@ -1695,24 +1698,22 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun getShopIconUrl(): String = userSession.shopAvatar
-
-    fun getShopName(): String = userSession.shopName
+    fun getAuthorImage(): String = hydraConfigStore.getAuthor().iconUrl
 
     private fun handleClickPin(product: ProductUiModel) {
         viewModelScope.launchCatchError(block = {
-            product.updatePinProduct(isLoading = true)
+            product.updatePinProduct(isLoading = true, needToUpdate = false)
             val result = repo.setPinProduct(channelId, product)
             if (result) {
                 product.updatePinProduct(isLoading = false, needToUpdate = true)
             }
-        }) {
-            product.updatePinProduct(isLoading = false)
+        }){
+            product.updatePinProduct(isLoading = false, needToUpdate = false)
             _uiEvent.emit(PlayBroadcastEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
         }
     }
 
-    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToUpdate: Boolean = false) {
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean, needToUpdate: Boolean) {
         _productSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(

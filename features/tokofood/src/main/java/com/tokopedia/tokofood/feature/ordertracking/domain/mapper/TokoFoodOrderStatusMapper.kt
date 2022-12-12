@@ -21,7 +21,7 @@ class TokoFoodOrderStatusMapper @Inject constructor() : OrderDetailSectionCommon
             tokofoodOrderDetail.invoice,
             tokofoodOrderDetail.payment.paymentDate
         ),
-        toolbarLiveTrackingUiModel = mapToToolbarLiveTrackingUiModel(tokofoodOrderDetail)
+        toolbarLiveTrackingUiModel = mapToToolbarLiveTrackingUiModel(tokofoodOrderDetail),
     )
 
     private fun mapToToolbarLiveTrackingUiModel(

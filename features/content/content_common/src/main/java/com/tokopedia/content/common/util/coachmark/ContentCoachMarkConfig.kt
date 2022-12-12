@@ -27,13 +27,8 @@ class ContentCoachMarkConfig(
     fun setCoachmarkPrefKey(
         coachMarkPrefKey: ContentCoachMarkSharedPref.Key,
         coachMarkPrefKeyId: String = "",
-    ) = chainable {
+    ) {
         this.coachMarkPrefKey = coachMarkPrefKey
         this.coachMarkPrefKeyId = coachMarkPrefKeyId
-    }
-
-    private fun ContentCoachMarkConfig.chainable(fn: () -> Unit): ContentCoachMarkConfig {
-        fn()
-        return this
     }
 }

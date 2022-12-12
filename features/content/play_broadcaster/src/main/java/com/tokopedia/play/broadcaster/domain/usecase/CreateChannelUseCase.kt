@@ -27,14 +27,16 @@ class CreateChannelUseCase @Inject constructor(
            mutation createChannel(
                ${"$$PARAMS_AUTHOR_ID"}: String!, 
                ${"$$PARAMS_AUTHOR_TYPE"}: Int!,
-               ${"$$PARAMS_TYPE"}: Int!,
-               ${"$$PARAMS_STATUS"}: Int!
+               ${"$$PARAMS_STATUS"}: Int!,
+               ${"$$PARAMS_GROUP_ID"}: String,
+               ${"$$PARAMS_TYPE"}: Int!
            ){
             broadcasterCreateChannel(req: {
                $PARAMS_AUTHOR_ID: ${"$$PARAMS_AUTHOR_ID"},
-               $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"},
-               $PARAMS_TYPE: ${"$$PARAMS_TYPE"},
-               $PARAMS_STATUS: ${"$$PARAMS_STATUS"}
+               $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"}, 
+               $PARAMS_STATUS: ${"$$PARAMS_STATUS"},
+               $PARAMS_GROUP_ID: ${"$$PARAMS_GROUP_ID"},
+               $PARAMS_TYPE: ${"$$PARAMS_TYPE"}
               }){
                 channelID
               }
@@ -60,7 +62,11 @@ class CreateChannelUseCase @Inject constructor(
         private const val PARAMS_AUTHOR_ID = "authorID"
         private const val PARAMS_AUTHOR_TYPE = "authorType"
         private const val PARAMS_STATUS = "status"
+        private const val PARAMS_GROUP_ID = "groupID"
         private const val PARAMS_TYPE = "type"
+
+        private const val VALUE_GROUP_ID_SHOP = "1" //Seller Generated Content
+        private const val VALUE_GROUP_ID_USER = "69" //User Generated Content LIVE UGC
 
         fun createParams(
             authorId: String,
@@ -75,6 +81,11 @@ class CreateChannelUseCase @Inject constructor(
                 else -> 0
             },
             PARAMS_STATUS to status.value.toIntOrZero(),
+            PARAMS_GROUP_ID to when (authorType) {
+                TYPE_USER -> VALUE_GROUP_ID_USER
+                TYPE_SHOP -> VALUE_GROUP_ID_SHOP
+                else -> ""
+            },
             PARAMS_TYPE to type.value,
         )
     }

@@ -6,4 +6,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 
 abstract class HomeLayoutUiModel(
     val visitableId: String
-): Visitable<HomeTypeFactory>, ImpressHolder()
+): Visitable<HomeTypeFactory>, ImpressHolder() {
+
+    open fun getChangePayload(newModel: HomeLayoutUiModel): Any? = null
+}

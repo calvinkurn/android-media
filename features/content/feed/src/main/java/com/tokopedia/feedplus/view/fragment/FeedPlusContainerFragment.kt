@@ -32,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
@@ -39,7 +40,6 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
@@ -102,7 +102,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var isTrackerOnBroadcastRecieveAlreadyHit: Boolean = false
     private var isFeedSelectedFromBottomNavigation: Boolean = false
     private var feedToolbar: Toolbar? = null
-    private val authorList: MutableList<Author> = mutableListOf()
+    private val authorList: MutableList<GetCheckWhitelistResponse.Author> = mutableListOf()
     private lateinit var newFeedReceiver: BroadcastReceiver
     private var postProgressUpdateView: PostProgressUpdateView? = null
     private var viewPager: ViewPager? = null
@@ -117,10 +117,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
         const val FEED_FRAGMENT_INDEX = 0
 
+        const val ARGS_FEED_TAB_POSITION = "FEED_TAB_POSITION"
+        const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
+
         private const val BROADCAST_FEED = "BROADCAST_FEED"
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
         private const val USER_ICON_COACH_MARK_DURATION = 7000L
+        const val PARAM_FEED_TAB_POSITION = "FEED_TAB_POSITION"
+        const val UPDATE_TAB_POSITION = "1"
+        const val EXPLORE_TAB_POSITION = "2"
+        const val VIDEO_TAB_POSITION = "3"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -210,15 +217,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
             }
         )
-        viewModel.whitelistResp.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> handleWhitelistData(it.data)
-                    is Fail -> onErrorGetWhitelist(it.throwable)
-                }
-            }
-        )
     }
 
     override fun onCreateView(
@@ -242,8 +240,22 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initView()
         requestFeedTab()
         initFab()
+        setupObserver()
+    }
 
-        observeUploadShorts()
+    private fun addDataToArgument() {
+        activity?.intent?.let {
+            val args = Bundle()
+            args.putString(
+                ARGS_FEED_TAB_POSITION,
+                it.data?.getQueryParameter(ARGS_FEED_TAB_POSITION)
+            )
+            args.putString(
+                ARGS_FEED_VIDEO_TAB_SELECT_CHIP,
+                it.data?.getQueryParameter(ARGS_FEED_VIDEO_TAB_SELECT_CHIP)
+            )
+            arguments = args
+        }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -321,7 +333,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onResume() {
         super.onResume()
+        addDataToArgument()
         registerNewFeedReceiver()
+        if (hasFeedTabParam()) {
+            openTabAsPerParamValue()
+        }
         feedFloatingButton.checkFabMenuStatusWithTimer {
             fabFeed.menuOpen
         }
@@ -365,6 +381,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.unregisterBroadcastReceiver()
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         coachMarkManager?.dismissAllCoachMark()
+        coachMarkManager = null
         super.onDestroy()
     }
 
@@ -431,14 +448,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             .forEach { it.onParentFragmentHiddenChanged(hidden) }
     }
 
-    @JvmOverloads
-    fun goToExplore(shouldResetCategory: Boolean = false) {
+    private fun goToExplore(shouldResetCategory: Boolean = false) {
         if (canGoToExplore()) {
             viewPager?.currentItem = pagerAdapter.getContentExploreIndex()
 
             if (shouldResetCategory) {
                 pagerAdapter.getContentExplore()?.onCategoryReset()
             }
+        }
+    }
+    private fun goToVideo() {
+        if (canGoToVideo()) {
+            view_pager.currentItem = pagerAdapter.getVideoTabIndex()
         }
     }
 
@@ -506,7 +527,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun observeUploadShorts() {
+    private fun setupObserver() {
+        viewModel.whitelistResp.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> handleWhitelistData(it.data)
+                    is Fail -> onErrorGetWhitelist(it.throwable)
+                }
+            }
+        )
+
         playShortsUploader.observe(viewLifecycleOwner) { progress, uploadData ->
             when(progress) {
                 PlayShortsUploadConst.PROGRESS_COMPLETED -> {
@@ -636,7 +667,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun onSuccessGetTab(data: FeedTabs) {
         val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
-
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         feedData.forEach {
             tab_layout?.addNewTab(it.title)
@@ -653,8 +683,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (hasCategoryIdParam()) {
             goToExplore()
         }
+        if (hasFeedTabParam()) {
+            openTabAsPerParamValue()
+        }
 
         viewModel.getWhitelist()
+    }
+    private fun openTabAsPerParamValue() {
+        when (arguments?.getString(PARAM_FEED_TAB_POSITION) ?: UPDATE_TAB_POSITION) {
+            EXPLORE_TAB_POSITION -> goToExplore()
+            VIDEO_TAB_POSITION -> goToVideo()
+        }
     }
 
     private fun handleWhitelistData(whitelistDomain: WhitelistDomain) {
@@ -689,6 +728,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 feedFloatingButton.hide()
             }
         } catch (e: Exception) { }
+    }
+    private fun canGoToVideo(): Boolean {
+        return pagerAdapter.isVideoTabExist()
     }
 
     private fun createLiveFab(): FloatingButtonItem {
@@ -736,7 +778,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         )
     }
 
-    private fun renderUserProfileEntryPoint(userAccount: Author?) {
+    private fun renderUserProfileEntryPoint(userAccount: GetCheckWhitelistResponse.Author?) {
         ivFeedUser?.let { ivFeedUser ->
             if (userAccount == null) {
                 ivFeedUser.setOnClickListener(null)
@@ -808,6 +850,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         return !arguments?.getString(ContentExploreFragment.PARAM_CATEGORY_ID).isNullOrBlank()
     }
 
+    private fun hasFeedTabParam(): Boolean {
+        return !arguments?.getString(PARAM_FEED_TAB_POSITION).isNullOrBlank()
+    }
+
     private fun canGoToExplore(): Boolean {
         return pagerAdapter.isContextExploreExist()
     }
@@ -818,19 +864,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
 
         fabFeed.menuOpen = false
-    }
-
-    private fun onGoToLink(link: String) {
-        if (!TextUtils.isEmpty(link)) {
-            RouteManager.route(activity, link)
-        }
-    }
-
-    private fun onGoToLogin() {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            it.startActivityForResult(intent, FeedPlusFragment.REQUEST_LOGIN)
-        }
     }
 
     private fun showCreatePostOnBoarding() {
@@ -854,9 +887,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun showFabCoachMark() {
-        if (::coachMarkItem.isInitialized
-            && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)
-            && feedFloatingButton.visibility == View.VISIBLE) {
+        if (::coachMarkItem.isInitialized &&
+            !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId) &&
+            feedFloatingButton.visibility == View.VISIBLE
+        ) {
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
