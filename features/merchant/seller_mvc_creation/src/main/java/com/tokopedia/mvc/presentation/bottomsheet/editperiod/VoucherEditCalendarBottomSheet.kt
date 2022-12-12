@@ -126,7 +126,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             }
         }
 
-        timePicker?.show(childFragmentManager, "TimePicker Show")
+        timePicker?.show(childFragmentManager, context?.resources?.getString(R.string.edit_period_calendar_show_tag).toBlankOrString())
     }
 
     private fun renderCalendar(holidayArrayList: ArrayList<Legend>) {

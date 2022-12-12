@@ -67,7 +67,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = SmvcBottomsheetEditPeriodBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
-        setTitle(context?.getString(R.string.edit_period_title) ?: "")
+        setTitle(context?.getString(R.string.edit_period_title).toBlankOrString())
         initInjector()
         setUpDate()
 
