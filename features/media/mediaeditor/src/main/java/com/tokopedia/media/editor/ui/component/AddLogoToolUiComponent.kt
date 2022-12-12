@@ -127,6 +127,18 @@ class AddLogoToolUiComponent constructor(
         )
     }
 
+    fun getLogoState(): Int? {
+        return if (selectedLogoUrl.isNotEmpty()) {
+            when (selectedLogoUrl){
+                uploadAvatarUrl -> LOGO_UPLOAD
+                shopAvatarUrl -> LOGO_SHOP
+                else -> null
+            }
+        } else {
+            null
+        }
+    }
+
     private fun initShopAvatar() {
         loadImageWithEmptyTarget(context, shopAvatarUrl, {},
             MediaBitmapEmptyTarget(
@@ -300,5 +312,8 @@ class AddLogoToolUiComponent constructor(
 
         // logo size 1/6 from base image
         private const val LOGO_SIZE_DIVIDER = 6
+
+        const val LOGO_SHOP = 0
+        const val LOGO_UPLOAD = 1
     }
 }

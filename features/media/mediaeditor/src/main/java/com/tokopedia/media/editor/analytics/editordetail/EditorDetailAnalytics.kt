@@ -10,6 +10,7 @@ interface EditorDetailAnalytics {
         cropText: String,
         rotateValue: Int,
         watermarkText: String,
-        removeBackgroundText: String
+        removeBackgroundText: String,
+        addLogoValue: String
     )
 }

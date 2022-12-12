@@ -51,3 +51,6 @@ const val REMOVE_BG_TYPE_GREY = "grey"
 
 const val WATERMARK_TYPE_CENTER = "center"
 const val WATERMARK_TYPE_DIAGONAL = "diagonal"
+
+const val ADD_LOGO_TYPE_CUSTOM = "custom"
+const val ADD_LOGO_TYPE_PROFILE = "profile"
