@@ -41,7 +41,7 @@ class LoggerReporting {
         val priorityText = when (priority) {
             Priority.P1 -> P1
             Priority.P2 -> P2
-            Priority.SF -> SF
+            else -> ""
         }
         val tagMapKey = StringBuilder(priorityText).append(DELIMITER_TAG_MAPS).append(tag).toString()
 
