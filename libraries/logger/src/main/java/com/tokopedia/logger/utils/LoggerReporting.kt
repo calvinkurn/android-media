@@ -84,6 +84,9 @@ class LoggerReporting {
         }
 
         with(mapMessage) {
+            // temporary for testing
+            put("log_vernm", versionName)
+
             put(Constants.TAG_LOG, tag)
             if (tag == GP) {
                 for (item in message) {
@@ -99,7 +102,6 @@ class LoggerReporting {
                 put("log_time", getReadableTimeStamp(timeStamp))
                 put("log_did", partDeviceId)
                 put("log_uid", userId)
-                put("log_vernm", versionName)
                 put("log_vercd", versionCode.toString())
                 put("log_os", Build.VERSION.RELEASE)
                 put("log_device", Build.MODEL)
