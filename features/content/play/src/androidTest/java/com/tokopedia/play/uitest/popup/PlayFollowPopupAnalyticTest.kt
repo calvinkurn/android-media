@@ -140,7 +140,7 @@ class PlayFollowPopupAnalyticTest {
 
     @Test
     fun impress_and_dismiss(){
-        val robot = createRobot()
+//        val robot = createRobot()
 
 //        delay(duration)
 //
@@ -151,7 +151,7 @@ class PlayFollowPopupAnalyticTest {
 
     @Test
     fun click_follow_show_toaster_success(){
-        val robot = createRobot()
+//        val robot = createRobot()
         coEvery { repo.postFollowStatus("11", PartnerFollowAction.Follow) } returns true
 
 //        delay(duration)
@@ -163,7 +163,7 @@ class PlayFollowPopupAnalyticTest {
 
     @Test
     fun click_follow_show_toaster_failed_then_retry(){
-        val robot = createRobot()
+//        val robot = createRobot()
         coEvery { repo.postFollowStatus("11", PartnerFollowAction.Follow) } returns false
 
 //        delay(duration)
@@ -178,7 +178,7 @@ class PlayFollowPopupAnalyticTest {
 
     @Test
     fun click_name(){
-        val robot = createRobot()
+//        val robot = createRobot()
 //        delay(duration)
 //
 //        robot.clickPartnerNamePopup()
