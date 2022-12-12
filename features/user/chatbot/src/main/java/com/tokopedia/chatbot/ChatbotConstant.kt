@@ -44,10 +44,15 @@ object ChatbotConstant {
     }
 
     object AttachmentType {
+        const val TYPE_CSAT_VIEW = "13"
+        const val TYPE_CHAT_SEPARATOR = "15"
+        const val TYPE_HELPFULL_QUESTION = "22"
+        const val TYPE_CSAT_OPTIONS = "23"
+        const val TYPE_STICKED_BUTTON_ACTIONS = "25"
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
+        const val TYPE_REPLY_BUBBLE = "28"
         const val TYPE_VIDEO_UPLOAD = "30"
         const val SESSION_CHANGE = "31"
-        const val TYPE_REPLY_BUBBLE = "28"
     }
 
     object ReplyBoxType {
@@ -78,8 +83,11 @@ object ChatbotConstant {
     }
 
     object NewRelic {
-        // New Relic Key For Logging
+        // New Relic Key For Logging GQL related errors
         const val KEY_CHATBOT_ERROR = "CHATBOT_ANDROID_ERROR"
+
+        // New Relic Key For Logging CSAT Options and Helpfull questions , attachment type 22 and 23
+        const val KEY_CSAT = "CHATBOT_CSAT_LOG"
 
         // Keys for each GQL
         const val KEY_SECURE_UPLOAD = "CHATBOT_SECURE_UPLOAD"
@@ -95,7 +103,6 @@ object ChatbotConstant {
         const val KEY_CHATBOT_NEW_SESSION = "CHATBOT_NEW_SESSION"
         const val KEY_CHATBOT_SEND_RATING = "CHATBOT_SEND_RATING"
         const val KEY_CHATBOT_CSAT_RATING = "CHATBOT_CSAT_RATING"
-        const val KEY_CHATBOT_SOCKET_EXCEPTION = "CHATBOT_SOCKET_EXCEPTION"
     }
 
     const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"

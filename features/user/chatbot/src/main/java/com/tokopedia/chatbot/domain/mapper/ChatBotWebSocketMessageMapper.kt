@@ -15,8 +15,11 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTION
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKED_BUTTON_ACTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
@@ -44,9 +47,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 10/12/18.
  */
-const val TYPE_HELPFULL_QUESTION = "22"
-const val TYPE_CSAT_OPTIONS = "23"
-const val TYPE_STICKED_BUTTON_ACTIONS = "25"
+
 class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
 
     override fun map(pojo: ChatSocketPojo): Visitable<*> {
@@ -101,7 +102,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
     private fun convertToVideoUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            VideoUploadUiModel {
+        VideoUploadUiModel {
         val pojoAttribute = GsonBuilder().create().fromJson<ChatbotVideoUploadAttributes>(
             jsonAttribute,
             ChatbotVideoUploadAttributes::class.java
