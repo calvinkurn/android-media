@@ -98,6 +98,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -1413,7 +1414,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         productUiModelList: MutableList<CartItemHolderData>
     ) {
         activity?.let {
-            RouteManager.route(it, "tokopedia://epharmacy/edu/${enablerLabel.lowercase(Locale.ROOT)}/obat_keras_tnc")
+            RouteManager.route(
+                it,
+                "tokopedia://epharmacy/edu/${enablerLabel.lowercase(Locale.ROOT).encodeToUtf8()}/obat_keras_tnc"
+            )
             epharmacyAnalytics.get()
                 .clickInfoChatDokter(
                     enablerLabel,
