@@ -150,7 +150,6 @@ class ProductChooserUGCAnalyticTest {
             productSetupViewModel(
                 productSectionList = emptyList(),
                 repo = mockk(relaxed = true),
-                configStore = mockConfigStore,
             )
         },
         productTagViewModel = { source, config ->

@@ -52,7 +52,7 @@ class ProductChooserRobot(
         ProductSetupContainer(viewModel, onAttach) {
             when (it) {
                 ProductSortBottomSheet::class.java.name -> {
-                    ProductSortBottomSheet()
+                    ProductSortBottomSheet(mockk(relaxed = true))
                 }
                 else -> {
                     ProductChooserBottomSheet(

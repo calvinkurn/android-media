@@ -7,6 +7,12 @@
     <application
         android:label="Play Broadcaster Test"
         tools:replace="android:label">
+
+        <activity
+            android:name=".shorts.container.PlayShortsTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
     </application>
 
 </manifest>
