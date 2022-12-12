@@ -1357,7 +1357,7 @@ class BulkReviewViewModel @Inject constructor(
         badRatingCategoryID: String,
         selected: Boolean
     ) {
-        if (badRatingCategoryID == ReviewConstants.BAD_RATING_OTHER_ID == selected) {
+        if (badRatingCategoryID == ReviewConstants.BAD_RATING_OTHER_ID && selected) {
             (_badRatingCategoryBottomSheetUiState.value as? BulkReviewBadRatingCategoryBottomSheetUiState.Showing)?.inboxID?.let { inboxID ->
                 showExpandedTextAreaBottomSheet(
                     inboxID = inboxID,
