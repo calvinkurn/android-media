@@ -1,6 +1,6 @@
 package com.tokopedia.shop.home.util
 
-import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -21,10 +21,11 @@ object DateHelper {
         }
     }
 
-    fun Date.getDayDiffFromTodayWithoutTrim(): Long {
-        val leftDate = this
-        val rightDate = DateUtil.getCurrentCalendar().time
-        val diff = leftDate.time - rightDate.time
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+    fun String.hoursToDays(): Long {
+        return TimeUnit.HOURS.toDays(this.toLongOrZero())
+    }
+
+    fun String.millisecondsToDays(): Long {
+        return TimeUnit.MILLISECONDS.toDays(this.toLongOrZero())
     }
 }

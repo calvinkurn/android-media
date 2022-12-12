@@ -22,7 +22,8 @@ import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
-import com.tokopedia.shop.home.util.DateHelper.getDayDiffFromTodayWithoutTrim
+import com.tokopedia.shop.home.util.DateHelper.hoursToDays
+import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
@@ -313,27 +314,36 @@ class ShopHomeNplCampaignViewHolder(
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             textDescription?.text = timeDescription
-            val dateCampaign = when {
+            val dateCampaign: Date
+            val days: Long
+            when {
                 isStatusCampaignUpcoming(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "")
+                    days = model.data?.firstOrNull()?.timeCounter?.hoursToDays().orZero()
+                    dateCampaign = DateHelper.getDateFromString(
+                        model.data?.firstOrNull()?.startDate.orEmpty()
+                    )
                 }
                 isStatusCampaignOngoing(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate ?: "")
+                    days = model.data?.firstOrNull()?.timeCounter?.millisecondsToDays().orZero()
+                    dateCampaign = DateHelper.getDateFromString(
+                        model.data?.firstOrNull()?.endDate.orEmpty()
+                    )
                 }
                 else -> {
-                    Date()
+                    days = Int.ZERO.toLong()
+                    dateCampaign = Date()
                 }
             }
-            val dateDiff = dateCampaign.getDayDiffFromTodayWithoutTrim()
-            if (dateDiff >= Int.ONE) {
+            if (days > Int.ONE) {
                 timerUnify?.gone()
                 timerMoreThanOneDay?.apply {
-                    text = dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+                    text =
+                        dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
                     show()
                 }
             } else {
                 timerMoreThanOneDay?.gone()
-                if (timeCounter.toLong() != 0L) {
+                if (!timeCounter.toLong().isZero()) {
                     timerUnify?.apply {
                         show()
                         targetDate = Calendar.getInstance().apply {
@@ -347,7 +357,7 @@ class ShopHomeNplCampaignViewHolder(
                     timerUnify?.gone()
                 }
             }
-        }else{
+        } else {
             timerUnify?.gone()
             textDescription?.gone()
             timerMoreThanOneDay?.gone()
