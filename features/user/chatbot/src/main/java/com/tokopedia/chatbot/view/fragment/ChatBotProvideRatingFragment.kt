@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chatbot.ColorUtil
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.databinding.ChatbotFragmentRatingProvideBinding
@@ -20,7 +22,9 @@ import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import javax.inject.Inject
+
 
 private const val ACTION_KIRIM_CSAT_SMILEY_BUTTON_CLICKED = "click kirim csat smiley button"
 private const val ACTION_CSAT_SMILEY_REASON_BUTTON_CLICKED = "click csat smiley reason button"
@@ -76,8 +80,10 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
             if (!((it.getBoolean(IS_SHOW_OTHER_REASON)) ?: false)) {
                 getBindingView().topBotReasonLayout.reasonLayout.hide()
             } else {
+                val firstString = it.getString(OTHER_REASON_TITLE)
+                val finalString =  renderReasonText(firstString)
                 getBindingView().topBotReasonLayout.botReasonText.text =
-                    it.getString(OTHER_REASON_TITLE)
+                    MethodChecker.fromHtml(finalString)
                 getBindingView().topBotReasonLayout.etState.editText.addTextChangedListener(object :
                     TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
@@ -116,6 +122,23 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
             }
 
         }
+    }
+
+    private fun renderReasonText(firstString: String?): String {
+        var finalString = firstString.toBlankOrString()
+        context?.let {
+            val secondString = it.resources.getString(R.string.chatbot_csat_opsional).toBlankOrString()
+            finalString = "<b>$firstString</b> <font color='${
+                context?.let { it1 ->
+                    ColorUtil.getColorFromResToString(
+                        it1,
+                        R.color.chatbot_optional_text
+                    )
+                }
+            }'> $secondString </font>"
+        }
+
+        return finalString
     }
 
     //Calculates the length of alphanumeric characters

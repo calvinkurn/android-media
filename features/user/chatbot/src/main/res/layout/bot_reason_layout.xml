@@ -21,8 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2"
-        app:typographyWeight="bold" />
+        app:typographyType="display_2" />
 
     <com.tokopedia.unifycomponents.TextAreaUnify2
         android:id="@+id/et_state"
