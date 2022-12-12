@@ -90,6 +90,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      */
     fun navigateToNewFragment(fragment: Fragment, isSingleTask: Boolean = false, isFinishCurrent: Boolean = false) {
         val fragmentName = fragment.javaClass.name
+        if (getIsNavigatingToSameFragment(fragmentName)) return
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (isSingleTask && existingFragment != null) {
             popExistedFragment(fragmentName)
@@ -286,6 +287,11 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             pageLoadTimeMonitoring = TokoFoodHomePageLoadTimeMonitoring()
             pageLoadTimeMonitoring?.initPerformanceMonitoring()
         }
+    }
+
+    private fun getIsNavigatingToSameFragment(destinationFragmentName: String): Boolean {
+        val currentFragmentName = supportFragmentManager.fragments.lastOrNull()?.javaClass?.name
+        return currentFragmentName == destinationFragmentName
     }
 
     companion object {

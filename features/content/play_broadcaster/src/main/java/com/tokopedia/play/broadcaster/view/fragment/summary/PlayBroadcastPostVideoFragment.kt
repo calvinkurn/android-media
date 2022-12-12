@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -45,7 +45,8 @@ import javax.inject.Inject
  */
 class PlayBroadcastPostVideoFragment @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val router: Router,
 ) : PlayBaseBroadcastFragment(), TagListViewComponent.Listener {
 
     private var _binding: FragmentPlayBroadcastPostVideoBinding? = null
@@ -204,7 +205,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     private fun openShopPageWithBroadcastStatus() {
         if (activity?.callingActivity == null) {
-            val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
+            val intent = router.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
                 .putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, true)
             startActivity(intent)
             activity?.finish()

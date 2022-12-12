@@ -27,12 +27,12 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     companion object {
-        private const val BAD_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_bad.json"
-        private const val MEDIOCRE_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_mediocre.json"
-        private const val EXCELLENT_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_excellent.json"
-        private const val BAD_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_bad_reverse.json"
-        private const val MEDIOCRE_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_mediocre_reverse.json"
-        private const val EXCELLENT_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_excellent_reverse.json"
+        private const val BAD_SMILEY_ANIMATION = "https://images.tokopedia.net/android/reputation/reputation_smiley_bad.json"
+        private const val MEDIOCRE_SMILEY_ANIMATION = "https://images.tokopedia.net/android/reputation/reputation_smiley_mediocre.json"
+        private const val EXCELLENT_SMILEY_ANIMATION = "https://images.tokopedia.net/android/reputation/reputation_smiley_excellent.json"
+        private const val BAD_SMILEY_ANIMATION_REVERSE = "https://images.tokopedia.net/android/reputation/reputation_smiley_bad_reverse.json"
+        private const val MEDIOCRE_SMILEY_ANIMATION_REVERSE = "https://images.tokopedia.net/android/reputation/reputation_smiley_mediocre_reverse.json"
+        private const val EXCELLENT_SMILEY_ANIMATION_REVERSE = "https://images.tokopedia.net/android/reputation/reputation_smiley_excellent_reverse.json"
     }
 
     private var isActive = false
@@ -110,11 +110,11 @@ class ReviewSmileyWidget : BaseCustomView {
             setInactiveImage(score)
         }
         binding.reviewEditableSmiley.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {
+            override fun onAnimationRepeat(animation: Animator) {
                 // No Op
             }
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 if (isActive) {
                     setActiveImage(score)
                 } else {
@@ -124,11 +124,11 @@ class ReviewSmileyWidget : BaseCustomView {
                 binding.reviewEditableSmiley.hide()
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 // No Op
             }
 
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
                 binding.reviewEditableImageView.hide()
                 if (isActive) {
                     showSmileyText()

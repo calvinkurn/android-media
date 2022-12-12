@@ -6,6 +6,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedP
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
 import com.tokopedia.search.result.product.wishlist.Wishlistable
@@ -39,6 +40,7 @@ data class BroadMatchItemDataView(
     val originalPrice: String = "",
     val discountPercentage: Int = 0,
     val externalReference: String = "",
+    val stockBarDataView: StockBarDataView = StockBarDataView(),
 ) : ImpressHolder(), Wishlistable {
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
@@ -138,6 +140,7 @@ data class BroadMatchItemDataView(
             originalPrice = product.originalPrice,
             discountPercentage = product.discountPercentage,
             externalReference = externalReference,
+            stockBarDataView = product.stockBarDataView,
         )
     }
 }

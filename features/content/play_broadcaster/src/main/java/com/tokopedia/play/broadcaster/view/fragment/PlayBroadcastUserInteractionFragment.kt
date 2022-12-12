@@ -300,7 +300,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setupView() {
         observeTitle()
-        actionBarLiveView.setShopIcon(parentViewModel.getShopIconUrl())
+        actionBarLiveView.setAuthorImage(parentViewModel.getAuthorImage())
 
         ivShareLink.setOnClickListener {
             doCopyShareLink()
@@ -639,7 +639,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     reconnectLiveStreaming()
                 }
                 BroadcasterErrorType.AuthFailed,
-                BroadcasterErrorType.UrlEmpty -> {
+                BroadcasterErrorType.UrlEmpty,
+                BroadcasterErrorType.ServiceNotReady, -> {
                     showErrorToaster(
                         error,
                         getString(R.string.play_live_broadcast_connect_fail),
@@ -650,7 +651,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         }
                     )
                 }
-                BroadcasterErrorType.ServiceNotReady,
                 BroadcasterErrorType.StartFailed -> {
                     showErrorToaster(
                         error,

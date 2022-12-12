@@ -14,6 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.BuildConfig
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -54,6 +56,8 @@ import java.util.*
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ProductChooserIdGenerator {
+
+    private val parentViewModel by lazy { mockk<PlayBroadcastViewModel>(relaxed = true) }
 
     private val mockSelectedProducts = listOf(
         ProductUiModel(
@@ -142,7 +146,8 @@ class ProductChooserIdGenerator {
                     ProductChooserAnalyticManager(
                         mockk(relaxed = true),
                         CoroutineDispatchersProvider,
-                    )
+                    ),
+                    mockk(relaxed = true),
                 )
             },
             EtalaseListBottomSheet::class.java to {
@@ -175,6 +180,16 @@ class ProductChooserIdGenerator {
     private val fileWriter = FileWriter()
 
     init {
+        coEvery { parentViewModel.uiState.value.selectedContentAccount } returns ContentAccountUiModel(
+            id = "1",
+            name = "Halo",
+            iconUrl = "",
+            badge = "",
+            type = ContentCommonUserType.TYPE_SHOP,
+            hasUsername = true,
+            hasAcceptTnc = true,
+        )
+
         coEvery { repo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
             dataList = mockSelectedProducts,
             hasNextPage = false,
