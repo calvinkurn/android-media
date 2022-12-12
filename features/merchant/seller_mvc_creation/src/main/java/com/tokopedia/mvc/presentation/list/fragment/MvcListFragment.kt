@@ -42,6 +42,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
@@ -55,6 +56,7 @@ import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -233,7 +235,7 @@ class MvcListFragment :
     }
 
     override fun onVoucherListClicked(voucher: Voucher) {
-        println("card")
+        VoucherDetailActivity.start(context ?: return, voucher.id)
     }
 
     override fun onFilterVoucherStatusChanged(status: List<VoucherStatus>, statusText: String) {
@@ -434,7 +436,8 @@ class MvcListFragment :
             isVoucherProduct = true,
             minPurchase = 50_000,
             productIds = emptyList(),
-            targetBuyer = VoucherTargetBuyer.ALL_BUYER
+            targetBuyer = VoucherTargetBuyer.ALL_BUYER,
+            0
         )
 
         val intent = AddProductActivity.buildCreateModeIntent(

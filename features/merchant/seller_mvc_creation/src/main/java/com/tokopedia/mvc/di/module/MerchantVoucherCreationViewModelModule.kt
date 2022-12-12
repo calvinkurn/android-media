@@ -9,6 +9,8 @@ import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.DisplayVoucherViewMo
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.MoreMenuViewModel
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodViewModel
+import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeViewModel
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationViewModel
 import com.tokopedia.mvc.presentation.detail.VoucherDetailViewModel
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageViewModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
@@ -16,6 +18,7 @@ import com.tokopedia.mvc.presentation.product.add.AddProductViewModel
 import com.tokopedia.mvc.presentation.product.list.ProductListViewModel
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantViewModel
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantViewModel
+import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -80,4 +83,20 @@ abstract class MerchantVoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(MoreMenuViewModel::class)
     internal abstract fun provideMoreMenuViewModel(viewModel: MoreMenuViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SummaryViewModel::class)
+    internal abstract fun provideSummaryViewModel(viewModel: SummaryViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(VoucherTypeViewModel::class)
+    internal abstract fun provideVoucherCreationStepOneViewModel(viewModel: VoucherTypeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(VoucherInformationViewModel::class)
+    internal abstract fun provideVoucherCreationStepTwoViewModel(viewModel: VoucherInformationViewModel): ViewModel
 }

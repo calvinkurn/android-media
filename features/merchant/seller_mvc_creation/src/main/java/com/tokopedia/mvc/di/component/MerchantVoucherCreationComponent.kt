@@ -8,6 +8,10 @@ import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
+import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
+import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeFragment
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationFragment
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
@@ -18,6 +22,7 @@ import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.product.list.ProductListFragment
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
+import com.tokopedia.mvc.presentation.summary.fragment.SummaryFragment
 import dagger.Component
 
 @MerchantVoucherCreationScope
@@ -39,9 +44,16 @@ interface MerchantVoucherCreationComponent {
     fun inject(activity: ProductListActivity)
     fun inject(fragment: ProductListFragment)
 
+    fun inject(fragment: SummaryFragment)
+
     fun inject(fragment: DownloadVoucherImageBottomSheet)
 
     fun inject(bottomSheet: VoucherEditPeriodBottomSheet)
     fun inject(bottomSheet: DisplayVoucherBottomSheet)
     fun inject(bottomSheet: MoreMenuBottomSheet)
+
+    fun inject(activity: VoucherTypeActivity)
+    fun inject(fragment: VoucherTypeFragment)
+    fun inject(activity: VoucherInformationActivity)
+    fun inject(fragment: VoucherInformationFragment)
 }

@@ -1,9 +1,11 @@
 package com.tokopedia.mvc.di.module
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
+import com.tokopedia.mvc.util.constant.CommonConstant.SELLER_MVC_SHARED_PREF_NAME
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -29,4 +31,10 @@ class MerchantVoucherCreationModule {
     @MerchantVoucherCreationScope
     @Provides
     fun providePermissionCheckerHelper(): PermissionCheckerHelper = PermissionCheckerHelper()
+
+    @MerchantVoucherCreationScope
+    @Provides
+    internal fun provideMvcSharedPrefs(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences(SELLER_MVC_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+    }
 }

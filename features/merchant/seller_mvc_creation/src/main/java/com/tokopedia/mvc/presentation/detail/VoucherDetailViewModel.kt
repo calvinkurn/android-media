@@ -37,7 +37,8 @@ class VoucherDetailViewModel @Inject constructor(
     val voucherDetail: LiveData<Result<VoucherDetailData>>
         get() = _voucherDetail
 
-    private val _generateVoucherImageMetadata = MutableLiveData<Result<GenerateVoucherImageMetadata>>()
+    private val _generateVoucherImageMetadata =
+        MutableLiveData<Result<GenerateVoucherImageMetadata>>()
     val generateVoucherImageMetadata: LiveData<Result<GenerateVoucherImageMetadata>>
         get() = _generateVoucherImageMetadata
 
@@ -69,11 +70,25 @@ class VoucherDetailViewModel @Inject constructor(
         return (voucherDiscount * voucherQuota).getCurrencyFormatted()
     }
 
-    fun getPercentage(value: Long, total: Long): Int {
-        return if (total.isZero()) {
+    fun getPercentage(availableQuota: Long, remainingQuota: Long): Int {
+        return if (remainingQuota.isZero()) {
             Int.ZERO
         } else {
-            ((value.toDouble() / total.toDouble()) * DEFAULT_PERCENTAGE_NORMALIZATION).roundToInt()
+            ((availableQuota.toDouble() / remainingQuota.toDouble()) * DEFAULT_PERCENTAGE_NORMALIZATION).roundToInt()
+        }
+    }
+
+    fun getThreeDotsBottomSheetType(data: VoucherDetailData): Int {
+        return when (data.voucherStatus) {
+            VoucherStatus.NOT_STARTED -> {
+                ThreeDotsMenuBottomSheet.TYPE_CANCEL
+            }
+            VoucherStatus.ONGOING -> {
+                ThreeDotsMenuBottomSheet.TYPE_STOP
+            }
+            else -> {
+                ThreeDotsMenuBottomSheet.TYPE_DEFAULT
+            }
         }
     }
 
@@ -107,6 +122,11 @@ class VoucherDetailViewModel @Inject constructor(
                     .take(THREE_TOP_SELLING_PRODUCT)
                     .map { it.picture }
 
+                val metadata = GenerateVoucherImageMetadata(
+                    voucherDetail,
+                    shopData,
+                    topSellingProductImageUrls
+                )
                 val metadata = GenerateVoucherImageMetadata(voucherDetail, shopData, topSellingProductImageUrls)
                 _generateVoucherImageMetadata.postValue(Success(metadata))
             },
