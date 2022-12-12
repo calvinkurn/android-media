@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+
+    // Gojek dependencies
+    api (rootProject.ext.miscDependencies.conversation) {
+        exclude group: 'com.gojek.courier', module: 'courier'
+    }
+    api rootProject.ext.miscDependencies.courierClient
+    implementation rootProject.ext.miscDependencies.courier
+    implementation rootProject.ext.miscDependencies.gsonMessageAdapter
+    implementation rootProject.ext.miscDependencies.textMessageAdapter
+    implementation rootProject.ext.miscDependencies.courierStreamAdapter
+    implementation rootProject.ext.miscDependencies.courierAuth
+    implementation rootProject.ext.miscDependencies.timerPingSender
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.dagger
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.debugToolsDependencies.chuckMqtt
+}
+
+project.ext {
+    artifactId = 'tokochat-config-common'
+    groupId = 'com.tokopedia.communication'
+    versionName = "0.0.1"
+    artifactName = "tokochat_config_common-release"
+}
+
+apply from: '../../../publish_local.gradle'

@@ -21,18 +21,21 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
         broadcasterGetShopConfig(shopID: ${'$'}shopId)
         {
           streamAllowed
+          shortVideoAllowed
         }
     }
     """
-    val request by lazy{
+    val request by lazy {
         GraphqlRequest(query, Broadcaster::class.java, params.parameters)
     }
 
     override suspend fun executeOnBackground(): Broadcaster.Config {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build()
+        )
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(Broadcaster::class.java)
@@ -48,10 +51,9 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
 
         @JvmStatic
         fun createParams(
-                shopId: String
+            shopId: String
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_IDS, shopId)
         }
-
     }
 }

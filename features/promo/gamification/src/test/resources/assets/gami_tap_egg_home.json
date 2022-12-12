@@ -26,24 +26,24 @@
         },
         "actionButton": [],
         "tokenAsset": {
-          "backgroundImgURL": "https://ecs7.tokopedia.net/assets/images/gamification/taptap/BG.png",
+          "backgroundImgURL": "https://images.tokopedia.net/assets/images/gamification/taptap/BG.png",
           "seamlessImgURL": "-",
           "imageURL": "",
-          "glowShadowImgURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-glow-shadow.png",
-          "glowImgURL": "https://ecs7.tokopedia.net/assets/images/gamification/taptap/box-glow.png",
+          "glowShadowImgURL": "https://images.tokopedia.net/img/blog/promo/2020/03/kejutan-glow-shadow.png",
+          "glowImgURL": "https://images.tokopedia.net/assets/images/gamification/taptap/box-glow.png",
           "imageV2URLs": [
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/box%20bottom.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/boxlid.gif",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_0.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_1.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_2.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_3.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_4.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_5.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_6.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_7.png"
+            "https://images.tokopedia.net/assets/images/gamification/taptap/box%20bottom.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/boxlid.gif",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_0.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_1.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_2.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_3.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_4.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_5.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_6.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_7.png"
           ],
-          "rewardImgURL": "https://ecs7.tokopedia.net/assets/images/gamification/taptap/small-box.png"
+          "rewardImgURL": "https://images.tokopedia.net/assets/images/gamification/taptap/small-box.png"
         },
         "rewardButton": [
           {

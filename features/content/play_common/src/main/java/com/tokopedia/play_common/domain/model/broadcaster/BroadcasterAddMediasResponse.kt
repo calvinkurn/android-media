@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class BroadcasterAddMediasResponse(
-    @SerializedName("BroadcasterAddMedias")
+    @SerializedName("broadcasterAddMedias")
     val wrapper: Wrapper = Wrapper(),
 ) {
 

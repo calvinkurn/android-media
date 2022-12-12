@@ -35,6 +35,15 @@ data class PlayShortsUploadModel(
     }
 
     companion object {
+        val Empty: PlayShortsUploadModel
+            get() = PlayShortsUploadModel(
+                shortsId = "",
+                authorId = "",
+                authorType = "",
+                mediaUri = "",
+                coverUri = "",
+            )
+
         fun parse(inputData: Data): PlayShortsUploadModel {
             return PlayShortsUploadModel(
                 shortsId = inputData.getString(KEY_SHORTS_ID).orEmpty(),
@@ -46,24 +55,29 @@ data class PlayShortsUploadModel(
         }
 
         fun parse(rawData: String): PlayShortsUploadModel {
-            val map = if(rawData.isEmpty())
-                mapOf()
-            else rawData
-                .replace(OPEN_BRACKET, "")
-                .replace(CLOSE_BRACKET, "")
-                .split(ELEMENT_SEPARATOR)
-                .associate {
-                    val (key, value) = it.split(KEY_VALUE_SEPARATOR)
-                    key to value
-                }
+            return try {
+                val map = if(rawData.isEmpty())
+                    mapOf()
+                else rawData
+                    .replace(OPEN_BRACKET, "")
+                    .replace(CLOSE_BRACKET, "")
+                    .split(ELEMENT_SEPARATOR)
+                    .associate {
+                        val (key, value) = it.split(KEY_VALUE_SEPARATOR)
+                        key to value
+                    }
 
-            return PlayShortsUploadModel(
-                shortsId = map[KEY_SHORTS_ID].orEmpty(),
-                authorId = map[KEY_ACCOUNT_ID].orEmpty(),
-                authorType = map[KEY_ACCOUNT_TYPE].orEmpty(),
-                mediaUri = map[KEY_MEDIA_URI].orEmpty(),
-                coverUri = map[KEY_COVER_URI].orEmpty(),
-            )
+                PlayShortsUploadModel(
+                    shortsId = map[KEY_SHORTS_ID].orEmpty(),
+                    authorId = map[KEY_ACCOUNT_ID].orEmpty(),
+                    authorType = map[KEY_ACCOUNT_TYPE].orEmpty(),
+                    mediaUri = map[KEY_MEDIA_URI].orEmpty(),
+                    coverUri = map[KEY_COVER_URI].orEmpty(),
+                )
+            }
+            catch (e: Exception) {
+                Empty
+            }
         }
 
         private const val KEY_SHORTS_ID = "KEY_SHORTS_ID"
@@ -78,3 +92,5 @@ data class PlayShortsUploadModel(
         private const val KEY_VALUE_SEPARATOR = "="
     }
 }
+
+fun PlayShortsUploadModel?.orEmpty() = this ?: PlayShortsUploadModel.Empty
