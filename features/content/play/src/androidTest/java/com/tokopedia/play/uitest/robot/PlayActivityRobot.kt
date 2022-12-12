@@ -60,6 +60,12 @@ class PlayActivityRobot(
         ).perform(ViewActions.click())
     }
 
+    fun closeAnyBottomSheet() = chainable {
+        Espresso.onView(
+            withId(R.id.iv_sheet_close)
+        ).perform(ViewActions.click())
+    }
+
     fun scrollProductBottomSheet(position: Int) = chainable {
         Espresso.onView(
             withId(R.id.rv_product_list)
@@ -225,6 +231,35 @@ class PlayActivityRobot(
         )
     }
 
+    fun isPopupShown(isShown: Boolean = true) = chainable {
+        Espresso.onView(
+            withId(R.id.cl_parent_follow_sheet)
+        ).check(matches(if(isShown) isDisplayed() else not(isDisplayed())))
+    }
+
+    fun clickPartnerNamePopup() = chainable {
+        Espresso.onView(
+            withId(R.id.cl_follow_container)
+        ).perform(ViewActions.click())
+    }
+
+    fun clickFollow() = chainable {
+        Espresso.onView(
+            withId(R.id.btn_follow)
+        ).perform(ViewActions.click())
+    }
+
+    fun openSharingBottomSheet() = chainable {
+        Espresso.onView(
+            withId(R.id.view_share_experience)
+        ).perform(ViewActions.click())
+    }
+
+    fun openKebabBottomSheet() = chainable {
+        Espresso.onView(
+            withId(R.id.view_kebab_menu)
+        ).perform(ViewActions.click())
+    }
 
     private fun chainable(fn: () -> Unit): PlayActivityRobot {
         fn()

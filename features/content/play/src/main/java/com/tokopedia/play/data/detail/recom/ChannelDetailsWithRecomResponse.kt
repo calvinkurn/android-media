@@ -177,6 +177,9 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("channel_archived_screen")
         val archiveConfig: ArchivedData = ArchivedData(),
+
+        @SerializedName("pop_up")
+        val popupConfig: PopupConfig = PopupConfig(),
     )
 
     data class FreezeData(
@@ -281,5 +284,16 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("button_app_link")
         val appLink: String = "",
+    )
+
+    data class PopupConfig(
+        @SerializedName("is_enabled")
+        val isEnabled: Boolean = false,
+
+        @SerializedName("duration_to_pop_up")
+        val duration: Long = 0,
+
+        @SerializedName("copy_text_bottomsheet")
+        val copyText: String = "",
     )
 }

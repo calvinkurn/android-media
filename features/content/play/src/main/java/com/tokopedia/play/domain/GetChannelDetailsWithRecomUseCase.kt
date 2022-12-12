@@ -145,6 +145,11 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       button_text
                       button_app_link
                     }
+                    pop_up {
+                      is_enabled
+                      duration_to_pop_up
+                      copy_text_bottomsheet
+                    }
                   }
                   app_link
                   web_link
