@@ -18,9 +18,9 @@ import androidx.customview.view.AbsSavedState
 
 @Deprecated("removed soon if unify component ready")
 class CheckableImageButton @JvmOverloads constructor(
-        context: Context?,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = R.attr.imageButtonStyle
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = R.attr.imageButtonStyle
 ) : AppCompatImageButton(context, attrs, defStyleAttr), Checkable {
 
     private var checked = false
@@ -53,8 +53,9 @@ class CheckableImageButton @JvmOverloads constructor(
     override fun onCreateDrawableState(extraSpace: Int): IntArray {
         return if (checked) {
             mergeDrawableStates(
-                    super.onCreateDrawableState(extraSpace + DRAWABLE_STATE_CHECKED.size),
-                    DRAWABLE_STATE_CHECKED)
+                super.onCreateDrawableState(extraSpace + DRAWABLE_STATE_CHECKED.size),
+                DRAWABLE_STATE_CHECKED
+            )
         } else {
             super.onCreateDrawableState(extraSpace)
         }
@@ -131,19 +132,22 @@ class CheckableImageButton @JvmOverloads constructor(
 
     init {
         ViewCompat.setAccessibilityDelegate(
-                this,
-                object : AccessibilityDelegateCompat() {
-                    override fun onInitializeAccessibilityEvent(host: View, event: AccessibilityEvent) {
-                        super.onInitializeAccessibilityEvent(host, event)
-                        event.isChecked = isChecked
-                    }
+            this,
+            object : AccessibilityDelegateCompat() {
+                override fun onInitializeAccessibilityEvent(host: View, event: AccessibilityEvent) {
+                    super.onInitializeAccessibilityEvent(host, event)
+                    event.isChecked = isChecked
+                }
 
-                    override fun onInitializeAccessibilityNodeInfo(
-                            host: View, info: AccessibilityNodeInfoCompat) {
-                        super.onInitializeAccessibilityNodeInfo(host, info)
-                        info.isCheckable = isCheckable()
-                        info.isChecked = isChecked
-                    }
-                })
+                override fun onInitializeAccessibilityNodeInfo(
+                    host: View,
+                    info: AccessibilityNodeInfoCompat
+                ) {
+                    super.onInitializeAccessibilityNodeInfo(host, info)
+                    info.isCheckable = isCheckable()
+                    info.isChecked = isChecked
+                }
+            }
+        )
     }
 }
