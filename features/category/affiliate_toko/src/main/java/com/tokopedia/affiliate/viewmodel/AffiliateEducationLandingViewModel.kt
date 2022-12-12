@@ -130,6 +130,13 @@ class AffiliateEducationLandingViewModel @Inject constructor(
                     AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
                 )
                 tempList.add(AffiliateEducationTutorialRVUiModel(tutorial))
+                tutorial.forEach {
+                    sendEducationImpressions(
+                        it?.title,
+                        it?.id.toString(),
+                        ActionKeys.IMPRESSION_TUTORIAL_CATEGORY
+                    )
+                }
             }
         }
         tempList.add(
@@ -166,6 +173,10 @@ class AffiliateEducationLandingViewModel @Inject constructor(
                 )
             )
         )
+        sendEducationImpressions(INSTAGRAM, INSTAGRAM, ActionKeys.IMPRESSION_SOCIAL_MEDIA_CARD)
+        sendEducationImpressions(FACEBOOK, FACEBOOK, ActionKeys.IMPRESSION_SOCIAL_MEDIA_CARD)
+        sendEducationImpressions(TELEGRAM, TELEGRAM, ActionKeys.IMPRESSION_SOCIAL_MEDIA_CARD)
+        sendEducationImpressions(YOUTUBE, YOUTUBE, ActionKeys.IMPRESSION_SOCIAL_MEDIA_CARD)
         tempList.add(AffiliateEducationLearnUiModel())
         educationPageData.value = tempList
     }
