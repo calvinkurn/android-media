@@ -332,6 +332,10 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    override fun onLoadRetry() {
+        editorDetailAnalytics.clickAddLogoLoadRetry()
+    }
+
     override fun onLoadFailed() {
         val text = requireContext().getString(editorR.string.editor_add_logo_toast_final)
         Toast.makeText(context, text, Toast.LENGTH_LONG).show()

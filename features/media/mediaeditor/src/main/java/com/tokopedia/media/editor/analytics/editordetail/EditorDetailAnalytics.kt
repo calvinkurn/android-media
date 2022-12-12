@@ -4,6 +4,7 @@ interface EditorDetailAnalytics {
     fun clickRotationFlip()
     fun clickRotationRotate()
     fun clickAddLogoUpload()
+    fun clickAddLogoLoadRetry()
     fun clickSave(
         editorText: String,
         brightnessValue: Int,
