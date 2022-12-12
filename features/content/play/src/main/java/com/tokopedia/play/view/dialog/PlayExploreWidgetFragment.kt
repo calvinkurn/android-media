@@ -140,11 +140,8 @@ class PlayExploreWidgetFragment @Inject constructor(
 
                 if (cachedState.isChanged {
                         it.exploreWidget.data.chips
-                        it.exploreWidget.data.state
                     })
                     renderChips(
-                        cachedState.value.exploreWidget.data.state,
-                        cachedState.prevValue?.exploreWidget?.data?.chips,
                         cachedState.value.exploreWidget.data.chips
                     )
 
@@ -160,19 +157,18 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private fun renderChips(state: ResultState, prev: List<ChipWidgetUiModel>?, chips: List<ChipWidgetUiModel>) {
-        when (state) {
+    private fun renderChips(chips: TabMenuUiModel) {
+        when (chips.state) {
             ResultState.Success -> {
-                chipsAdapter.setItemsAndAnimateChanges(chips)
+                chipsAdapter.setItemsAndAnimateChanges(chips.items)
             }
             ResultState.Loading -> {
-                if(prev == chips) return
                 chipsAdapter.setItemsAndAnimateChanges(getChipsShimmering)
             }
             is ResultState.Fail -> {
                 Toaster.build(
                     view = requireView(),
-                    text = state.error.message.orEmpty(),
+                    text = chips.state.error.message.orEmpty(),
                     actionText = getString(playR.string.title_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,

@@ -2708,16 +2708,16 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
-            _exploreWidget.update { it.copy(state = ResultState.Loading) }
+            _exploreWidget.update { it.copy(state = ResultState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
             val data = getWidgets()
-            val chips = data.getChips.items
+            val chips = data.getChips
 
             _exploreWidget.update {
                 it.copy(chips = chips)
             }
 
-            if (!data.isSubSlotAvailable && chips.isEmpty())  return@launchCatchError
-            updateWidgetParam(group = chips.first().group, sourceType = chips.first().sourceType, sourceId = chips.first().sourceId)
+            if (!data.isSubSlotAvailable && chips.items.isEmpty())  return@launchCatchError
+            updateWidgetParam(group = chips.items.first().group, sourceType = chips.items.first().sourceType, sourceId = chips.items.first().sourceId)
             val widgets = getWidgets()
             _exploreWidget.update {
                 val newList = it.widgets.union(widgets).toList()
@@ -2771,11 +2771,10 @@ class PlayViewModel @AssistedInject constructor(
                     sourceId = sourceId,
                     cursor = cursor
                 ),
-                chips =  it.chips.map {
-                    chip ->
+                chips =  it.chips.copy(items = it.chips.items.map { chip ->
                     if (group == chip.group) chip.copy(isSelected = true)
                     else chip.copy(isSelected = false)
-                }
+                })
             )
         }
     }

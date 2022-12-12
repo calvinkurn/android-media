@@ -7,6 +7,7 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import javax.inject.Inject
 
@@ -42,7 +43,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                 text = it.label,
             )
         }
-        return TabMenuUiModel(items = newList)
+        return TabMenuUiModel(items = newList, state = ResultState.Success)
     }
 
     private fun mapWidgets(content: Content) : WidgetItemUiModel {
