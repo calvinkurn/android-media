@@ -1,5 +1,7 @@
 package com.tokopedia.mvc.di.module
 
+import com.tokopedia.mvc.common.util.UrlConstant.IMAGE_GENERATOR_PROD_URL
+import com.tokopedia.mvc.common.util.UrlConstant.IMAGE_GENERATOR_STAGING_URL
 import com.tokopedia.mvc.data.service.ImageGeneratorService
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
@@ -23,9 +25,9 @@ class ImageGeneratorModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val baseUrl = if (TokopediaUrl.getInstance().TYPE == Env.LIVE) {
-            "https://imagenerator.tokopedia.com/"
+            IMAGE_GENERATOR_PROD_URL
         } else {
-            "https://imagenerator-staging.tokopedia.com/"
+            IMAGE_GENERATOR_STAGING_URL
         }
 
         return Retrofit.Builder()
