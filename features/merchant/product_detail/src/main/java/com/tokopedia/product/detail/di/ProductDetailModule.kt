@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.affiliatecommon.di.AffiliateCommonModule
 import com.tokopedia.common_sdk_affiliate_toko.di.AffiliateCommonSdkModule
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -29,7 +28,7 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
-@Module (includes = [RecommendationCoroutineModule::class, AffiliateCommonModule::class, PlayWidgetModule::class, AffiliateCommonSdkModule::class])
+@Module (includes = [RecommendationCoroutineModule::class, PlayWidgetModule::class, AffiliateCommonSdkModule::class])
 class ProductDetailModule {
 
     @ProductDetailScope

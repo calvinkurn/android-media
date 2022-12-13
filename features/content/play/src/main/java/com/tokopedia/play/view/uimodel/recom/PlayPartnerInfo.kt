@@ -16,6 +16,9 @@ data class PlayPartnerInfo(
     val appLink: String = "",
 )
 
+val PlayPartnerInfo.needFollow: Boolean
+    get() =  status is PlayPartnerFollowStatus.Followable && (status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
+
 sealed class PlayPartnerFollowStatus {
 
     data class Followable(val followStatus: PartnerFollowableStatus) : PlayPartnerFollowStatus()

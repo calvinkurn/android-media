@@ -25,10 +25,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -91,9 +91,12 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory>(),
-    TokoFoodPurchaseActionListener, TokoFoodPurchaseToolbarListener,
-    TokoFoodPurchaseConsentBottomSheet.Listener,IBaseMultiFragment {
+class TokoFoodPurchaseFragment :
+    BaseListFragment<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory>(),
+    TokoFoodPurchaseActionListener,
+    TokoFoodPurchaseToolbarListener,
+    TokoFoodPurchaseConsentBottomSheet.Listener,
+    IBaseMultiFragment {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -180,10 +183,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun initInjector() {
         activity?.let {
             DaggerTokoFoodPurchaseComponent
-                    .builder()
-                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
-                    .inject(this)
+                .builder()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
         }
     }
 
@@ -198,7 +201,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun loadData(page: Int) {
-
     }
 
     override fun onDestroyView() {
@@ -247,7 +249,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             toolbar = viewBinding?.toolbarPurchase
             toolbar?.let { toolbar ->
                 toolbar.listener = this@TokoFoodPurchaseFragment
-                toolbar.setContentInsetsAbsolute(Int.ZERO, Int.ZERO);
+                toolbar.setContentInsetsAbsolute(Int.ZERO, Int.ZERO)
                 (activity as AppCompatActivity).setSupportActionBar(toolbar)
             }
 
@@ -303,7 +305,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
-                    (it.data as? Pair<*,*>)?.let { pair ->
+                    (it.data as? Pair<*, *>)?.let { pair ->
                         (pair.first as? CheckoutTokoFood)?.let { response ->
                             (pair.second as? Boolean)?.let { isPreviousPopupPromo ->
                                 shopId = response.data.shop.shopId
@@ -372,7 +374,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     loadData()
                 }
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
-
+                    (it.data as? Throwable)?.message?.let { error ->
+                        showToasterError(error)
+                    }
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT -> {
                     (it.data as? CheckoutTokoFoodConsentBottomSheet)?.let { data ->
@@ -429,9 +433,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 showToasterError(checkoutData.error)
                             }
                             else -> {
-                                showDefaultCheckoutGeneralError(checkoutData.message.takeIf { errorMessage ->
-                                    errorMessage.isNotBlank()
-                                })
+                                showDefaultCheckoutGeneralError(
+                                    checkoutData.message.takeIf { errorMessage ->
+                                        errorMessage.isNotBlank()
+                                    }
+                                )
                             }
                         }
                     }
@@ -465,7 +471,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             activityViewModel?.cartDataValidationFlow?.collect {
                 hideLoadingDialog()
-                when(it.state) {
+                when (it.state) {
                     UiEvent.EVENT_LOADING_DIALOG -> {
                         showLoadingDialog()
                     }
@@ -831,11 +837,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 }
 
                 override fun onCheckOtherMerchant() {
-
                 }
 
                 override fun onStayOnCurrentPage() {
-
                 }
             }
         ).apply {
@@ -846,9 +850,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         bottomSheet.show(parentFragmentManager)
     }
 
-    private fun showToasterError(errorMessage: String,
-                                 actionMessage: String,
-                                 onActionClicked: () -> Unit = {}) {
+    private fun showToasterError(
+        errorMessage: String,
+        actionMessage: String,
+        onActionClicked: () -> Unit = {}
+    ) {
         view?.let {
             Toaster.build(
                 view = it,
@@ -863,9 +869,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
-    private fun showToaster(message: String,
-                            actionMessage: String,
-                            onActionClicked: () -> Unit = {}) {
+    private fun showToaster(
+        message: String,
+        actionMessage: String,
+        onActionClicked: () -> Unit = {}
+    ) {
         view?.let {
             Toaster.build(
                 view = it,
@@ -922,11 +930,13 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
-    private fun showToasterFromMetadata(isErrorToaster: Boolean,
-                                        errorDetail: CheckoutErrorMetadataDetail) {
+    private fun showToasterFromMetadata(
+        isErrorToaster: Boolean,
+        errorDetail: CheckoutErrorMetadataDetail
+    ) {
         val actionText = errorDetail.actionText.takeIf { it.isNotEmpty() } ?: getOkayMessage()
         val toasterAction: () -> Unit = {
-            when(errorDetail.action) {
+            when (errorDetail.action) {
                 CheckoutErrorMetadataDetail.REFRESH_ACTION -> {
                     viewModel.setPaymentButtonLoading(true)
                     viewModel.checkoutGeneral()
@@ -1011,17 +1021,18 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        val addOnBottomSheet = TokoFoodPurchaseNoteBottomSheet(element.notes,
-                object : TokoFoodPurchaseNoteBottomSheet.Listener {
-                    override fun onSaveNotesClicked(notes: String) {
-                        val updateParam =
-                            TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(
-                                listOf(element.copy(notes = notes)),
-                                shopId
-                            )
-                        activityViewModel?.updateNotes(updateParam, SOURCE, false)
-                    }
+        val addOnBottomSheet = TokoFoodPurchaseNoteBottomSheet(
+            element.notes,
+            object : TokoFoodPurchaseNoteBottomSheet.Listener {
+                override fun onSaveNotesClicked(notes: String) {
+                    val updateParam =
+                        TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(
+                            listOf(element.copy(notes = notes)),
+                            shopId
+                        )
+                    activityViewModel?.updateNotes(updateParam, SOURCE, false)
                 }
+            }
         )
         addOnBottomSheet.show(parentFragmentManager)
     }
@@ -1090,5 +1101,4 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             return TokoFoodPurchaseFragment()
         }
     }
-
 }
