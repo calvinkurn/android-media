@@ -64,9 +64,9 @@ data class VoucherDetailData(
 ) {
     data class ProductId(
         val parentProductId: Long = 0,
-        val chilProductId: List<Long>? = listOf(),
+        val chilProductId: List<Long>? = listOf()
     )
-    
+
     fun toVoucherConfiguration(): VoucherConfiguration {
         val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
 
@@ -84,12 +84,13 @@ data class VoucherDetailData(
             quota = voucherQuota,
             isVoucherPublic = isPublic.isMoreThanZero(),
             voucherName = voucherName,
+            voucherCode = voucherCode,
             startPeriod = voucherStartTime.toDate(YYYY_MM_DD_T_HH_MM_SS_Z),
             endPeriod = voucherFinishTime.toDate(YYYY_MM_DD_T_HH_MM_SS_Z)
         )
     }
 
-    fun toSelectedProducts() : List<SelectedProduct> {
+    fun toSelectedProducts(): List<SelectedProduct> {
         return productIds.map { parentProduct ->
             SelectedProduct(
                 parentProduct.parentProductId,
@@ -98,4 +99,3 @@ data class VoucherDetailData(
         }
     }
 }
-
