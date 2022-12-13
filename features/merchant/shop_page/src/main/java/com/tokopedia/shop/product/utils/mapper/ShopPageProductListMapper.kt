@@ -91,7 +91,6 @@ object ShopPageProductListMapper {
                             val viewCount = stats.viewCount
                             if (viewCount >= THRESHOLD_VIEW_COUNT)
                                 it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
-                            val showStockBar = it.showStockBar
                             it.stockLabel = labelGroupList.firstOrNull()?.title.takeIf { showStockBar }.orEmpty()
                             it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
                         }
