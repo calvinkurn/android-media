@@ -57,12 +57,20 @@ fun clickSubmitUgcOnboarding() {
     click(contentCommonR.id.btn_continue)
 }
 
-
-/** Title Form */
-fun openTitleForm() {
+/** Menu */
+fun clickMenuTitle() {
     clickItemRecyclerView(R.id.rv_menu, 0)
 }
 
+fun clickMenuProduct() {
+    clickItemRecyclerView(R.id.rv_menu, 1)
+}
+
+fun clickMenuCover() {
+    clickItemRecyclerView(R.id.rv_menu, 2)
+}
+
+/** Title Form */
 fun inputTitle(text: String = "pokemon") {
     type(unifyR.id.text_field_input, text)
 }

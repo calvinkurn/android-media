@@ -201,6 +201,50 @@
       "userId": ".*"
     },
     {
+      "event": "viewContentIris",
+      "eventAction": "view - post creation page",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "37551",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - edit title",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "37552",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - add product tag",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "37553",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - add cover on preparation page",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "37554",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
       "event": "clickContent",
       "eventAction": "click - back title page",
       "eventCategory": "play broadcast short",

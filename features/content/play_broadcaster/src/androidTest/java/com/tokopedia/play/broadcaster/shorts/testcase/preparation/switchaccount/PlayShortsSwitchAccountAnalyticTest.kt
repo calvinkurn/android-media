@@ -132,7 +132,7 @@ class PlayShortsSwitchAccountAnalyticTest {
             coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
         }
 
-        openTitleForm()
+        clickMenuTitle()
         inputTitle()
         submitTitle()
 
@@ -148,7 +148,7 @@ class PlayShortsSwitchAccountAnalyticTest {
             coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
         }
 
-        openTitleForm()
+        clickMenuTitle()
         inputTitle()
         submitTitle()
 
@@ -165,7 +165,7 @@ class PlayShortsSwitchAccountAnalyticTest {
             coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         }
 
-        openTitleForm()
+        clickMenuTitle()
         inputTitle()
         submitTitle()
 
@@ -181,7 +181,7 @@ class PlayShortsSwitchAccountAnalyticTest {
             coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         }
 
-        openTitleForm()
+        clickMenuTitle()
         inputTitle()
         submitTitle()
 
