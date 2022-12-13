@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.work.ForegroundInfo
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -75,8 +76,8 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         }
     }
 
-    fun onStart() {
-        val builder = notificationBuilder
+    fun onStart(): ForegroundInfo {
+        val notification = notificationBuilder
             .setProgress(0, 0, true)
             .setContentTitle(NOTIFICATION_PROGRESS_TITLE)
             .setContentText(NOTIFICATION_PROGRESS_DESCRIPTION)
@@ -85,11 +86,13 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setShowWhen(true)
             .build()
 
-        notificationManager.notify(notificationId, builder)
+        notificationManager.notify(notificationId, notification)
+
+        return ForegroundInfo(notificationId, notification)
     }
 
-    fun onProgress(progress: Int) {
-        val builder = notificationBuilder
+    fun onProgress(progress: Int): ForegroundInfo {
+        val notification = notificationBuilder
             .setProgress(PROGRESS_MAX, progress, false)
             .setContentTitle(NOTIFICATION_PROGRESS_TITLE)
             .setContentText(NOTIFICATION_PROGRESS_DESCRIPTION)
@@ -98,10 +101,12 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setShowWhen(true)
             .build()
 
-        notificationManager.notify(notificationId, builder)
+        notificationManager.notify(notificationId, notification)
+
+        return ForegroundInfo(notificationId, notification)
     }
 
-    fun onSuccess() {
+    fun onSuccess(): ForegroundInfo {
         val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, uploadData?.shortsId.orEmpty())
 
         val openPlayRoomPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -122,7 +127,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
 
         notificationBuilder.addAction(0, NOTIFICATION_SUCCESS_ACTION_TEXT, openPlayRoomPendingIntent)
 
-        val builder = notificationBuilder
+        val notification = notificationBuilder
             .setProgress(0, 0, false)
             .setContentTitle(NOTIFICATION_SUCCESS_TITLE)
             .setContentText(NOTIFICATION_SUCCESS_DESCRIPTION)
@@ -132,10 +137,12 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(notificationId, builder)
+        notificationManager.notify(notificationId, notification)
+
+        return ForegroundInfo(notificationId, notification)
     }
 
-    fun onError() {
+    fun onError(): ForegroundInfo {
         val intent = PlayShortsUploadReceiver.getIntent(context, uploadData.orEmpty())
 
         val retryPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -156,7 +163,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
 
         notificationBuilder.addAction(0, NOTIFICATION_FAIL_RETRY_ACTION, retryPendingIntent)
 
-        val builder = notificationBuilder
+        val notification = notificationBuilder
             .setProgress(0, 0, false)
             .setContentTitle(NOTIFICATION_FAIL_TITLE)
             .setContentText(NOTIFICATION_FAIL_DESCRIPTION)
@@ -166,7 +173,9 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(notificationId, builder)
+        notificationManager.notify(notificationId, notification)
+
+        return ForegroundInfo(notificationId, notification)
     }
 
 
