@@ -18,6 +18,7 @@ import javax.inject.Inject
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.model.orEmpty
 import com.tokopedia.play_common.shortsuploader.receiver.PlayShortsUploadReceiver
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.withContext
 
 /**
@@ -107,7 +108,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     }
 
     fun onSuccess(): ForegroundInfo {
-        val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, uploadData?.shortsId.orEmpty())
+        val intent = RouteManager.getIntent(context, getPlayRoomWebLink())
 
         val openPlayRoomPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getActivity(
@@ -178,6 +179,25 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         return ForegroundInfo(notificationId, notification)
     }
 
+    private fun getPlayRoomWebLink(): String {
+        return buildString {
+            append(TokopediaUrl.getInstance().WEB)
+            append(PLAY_ROOM_PATH)
+            append(uploadData?.shortsId.orEmpty())
+            append("?")
+            append("$SOURCE_TYPE=${getSourceType()}")
+            append("&")
+            append("$SOURCE_ID=${uploadData?.authorId.orEmpty()}")
+        }
+    }
+
+    private fun getSourceType(): String {
+        return when(uploadData?.authorType.orEmpty()) {
+            CONTENT_SHOP -> SOURCE_TYPE_SHOP
+            CONTENT_USER -> SOURCE_TYPE_USER
+            else -> ""
+        }
+    }
 
     private companion object {
         const val PROGRESS_MAX = 100
@@ -198,6 +218,17 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         const val CHANNEL_NAME = "Tokopedia Play Shorts"
         const val CHANNEL_DESCRIPTION = "Tokopedia Play Shorts"
         const val CHANNEL_ID = "ANDROID_GENERAL_CHANNEL"
+
+
+        /** Web Link Const */
+        const val PLAY_ROOM_PATH = "play/channel/"
+        const val CONTENT_USER = "content-user"
+        const val CONTENT_SHOP = "content-shop"
+
+        const val SOURCE_TYPE = "source_type"
+        const val SOURCE_ID = "source_id"
+        const val SOURCE_TYPE_USER = "SHORT_VIDEO_USER"
+        const val SOURCE_TYPE_SHOP = "SHORT_VIDEO_SHOP"
 
 
         const val COVER_PREVIEW_SIZE = 100
