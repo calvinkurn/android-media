@@ -35,6 +35,7 @@ class MvcListViewModel @Inject constructor(
     private val getVoucherListChildUseCase: GetVoucherListChildUseCase,
     private val cancelVoucherUseCase: CancelVoucherUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
+    private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase
     ) : BaseViewModel(dispatchers.main) {
 
     private val _voucherList = MutableLiveData<List<Voucher>>()
@@ -141,7 +142,10 @@ class MvcListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 _deleteUIEffect.emit(DeleteVoucherUiEffect.OnProgressToDeletedVoucherList)
-                val metadataParam = GetInitiateVoucherPageUseCase.Param(VoucherAction.UPDATE, PromoType.DISCOUNT, isVoucherProduct = true)
+                val detailVoucherParam = MerchantPromotionGetMVDataByIDUseCase.Param(voucher.id)
+                val detailVoucherDeffer = async { merchantPromotionGetMVDataByIDUseCase.execute(detailVoucherParam) }
+                val detailVoucher = detailVoucherDeffer.await()
+                val metadataParam = GetInitiateVoucherPageUseCase.Param(VoucherAction.UPDATE, detailVoucher.voucherType, detailVoucher.isVoucherProduct)
                 val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam)}
                 val token = metadataDeferred.await()
                 val couponStatus = if(voucherStatus == VoucherStatus.NOT_STARTED) DELETE else STOP

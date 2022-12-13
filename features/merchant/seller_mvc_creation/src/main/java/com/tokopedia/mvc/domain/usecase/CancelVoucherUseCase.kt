@@ -27,9 +27,9 @@ class CancelVoucherUseCase @Inject constructor(
         private const val SOURCE_KEY = "source"
         private const val SELLERAPP = "android-sellerapp"
 
-        enum class UpdateVoucherAction {
-            STOP,
-            DELETE
+        enum class UpdateVoucherAction(val state : String) {
+            STOP("stop"),
+            DELETE("delete")
         }
     }
 
@@ -61,7 +61,7 @@ class CancelVoucherUseCase @Inject constructor(
     fun buildRequest(voucherId: Int,  cancelStatus: UpdateVoucherAction, token : String): GraphqlRequest {
         val params = mapOf(
             VOUCHER_ID_KEY to voucherId,
-            STATUS_KEY to cancelStatus,
+            STATUS_KEY to cancelStatus.state,
             TOKEN_KEY to token,
             SOURCE_KEY to SELLERAPP,
         )
