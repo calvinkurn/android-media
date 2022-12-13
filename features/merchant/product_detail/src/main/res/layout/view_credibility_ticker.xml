@@ -22,6 +22,8 @@
         android:id="@+id/shop_credibility_info_tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
         tools:unify_tips_description="Sebagian keuntungan toko akan didonasikan. Lihat"
         tools:unify_tips_title="Title Goes Here" />
 

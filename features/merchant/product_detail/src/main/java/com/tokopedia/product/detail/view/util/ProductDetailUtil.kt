@@ -12,6 +12,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -360,4 +361,13 @@ internal fun RecommendationItem.createProductCardOptionsModel(position: Int): Pr
     productCardOptionsModel.productPosition = position
     productCardOptionsModel.screenName = header
     return productCardOptionsModel
+}
+
+fun ViewStub.inflateWithBinding(onInflate: (View) -> Unit) {
+    if (this.parent != null) {
+        this.setOnInflateListener { _, view ->
+            onInflate(view)
+        }
+        this.inflate()
+    }
 }
