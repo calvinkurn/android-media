@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.data.network.KycUploadApi
 import com.tokopedia.logger.ServerLogger
@@ -94,8 +95,8 @@ open class KycUploadImageModule {
 
     @ActivityScope
     @Provides
-    fun provideServerLogger(): ServerLogger {
-        return ServerLogger
+    fun provideServerLogger(): KycServerLogger {
+        return KycServerLogger
     }
 
 }
