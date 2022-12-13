@@ -39,7 +39,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
         startHour: String,
         endDate: String,
         endHour: String
-    ) {
+    ): Boolean {
         return coroutineScope {
             val initiateVoucherDeferred = async { initiateCoupon() }
             val shopDeferred = async { getShopBasicDataUseCase.execute() }
@@ -104,7 +104,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
         }
     }
 
-    private fun updateCoupon(
+    private suspend fun updateCoupon(
         voucher: UpdateVoucher,
         token: String,
         startDate: String,
@@ -114,9 +114,8 @@ class UpdateCouponFacadeUseCase @Inject constructor(
         imageUrl: String = "",
         imageSquare: String = "",
         imagePortrait: String = ""
-    ) {
+    ): Boolean {
         return updateCouponUseCase.updateVoucherPeriod(
-            {}, {},
             voucher, token, startDate, startHour, endDate, endHour, imageUrl, imageSquare, imagePortrait
         )
     }
@@ -139,16 +138,16 @@ class UpdateCouponFacadeUseCase @Inject constructor(
         val requestParams = arrayListOf(
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_PLATFORM, imageParams.platform),
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_IS_PUBLIC, imageParams.isPublic),
-            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_BENEFIT_TYPE, "cashback"),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_BENEFIT_TYPE, imageParams.voucherBenefitType),
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_CASHBACK_TYPE, imageParams.voucherCashbackType),
-            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_CASHBACK_PERCENTAGE, "0"),
-            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_NOMINAL_AMOUNT, "20"),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_CASHBACK_PERCENTAGE, imageParams.voucherCashbackPercentage),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_NOMINAL_AMOUNT, imageParams.voucherNominalAmount),
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_NOMINAL_SYMBOL, imageParams.voucherNominalSymbol),
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_SHOP_LOGO, imageParams.shopLogo),
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_SHOP_NAME, imageParams.shopName),
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_CODE, imageParams.voucherCode),
-            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_START_TIME, "28 Des 2022"),
-            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_FINISH_TIME, "17 Jan 2023"),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_START_TIME, imageParams.voucherStartDate),
+            GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_VOUCHER_FINISH_TIME, imageParams.voucherEndDate),
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_PRODUCT_COUNT, imageParams.productCount),
             GenerateImageParams(ImageGeneratorConstant.COUPON_PRODUCT_AUDIENCE_TARGET, imageParams.audienceTarget)
         )

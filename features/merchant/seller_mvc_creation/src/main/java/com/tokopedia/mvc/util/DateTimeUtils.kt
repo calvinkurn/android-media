@@ -22,6 +22,8 @@ object DateTimeUtils {
     const val DASH_DATE_FORMAT = "yyyy-MM-dd"
     private const val EXTRA_DAYS = 30
     private const val PREVIOUS_EXTRA_DAYS = -30
+    const val DATE_FORMAT = "dd MMM yyyy"
+    const val HOUR_FORMAT = "HH:mm"
 
     /**
      * Minimum end time should be 30 days before time
@@ -73,10 +75,10 @@ fun Date.formatTo(
     }
 }
 
-fun Date.formatTo(locale: Locale): String {
-    return this.toFormattedString(DATE_WITH_SECOND_PRECISION_ISO_8601).convertDate(locale)
+fun Date.formatTo(locale: Locale = LocaleUtils.getIDLocale()): String {
+    return this.toFormattedString(DATE_WITH_SECOND_PRECISION_ISO_8601).convertDate(FULL_DAY_FORMAT, locale)
 }
 
-private fun String.convertDate(locale: Locale): String {
-    return this.convertUnsafeDateTime().formatTo(FULL_DAY_FORMAT, locale).toBlankOrString()
+fun String.convertDate(format: String, locale: Locale = LocaleUtils.getIDLocale()): String {
+    return this.convertUnsafeDateTime().formatTo(format, locale).toBlankOrString()
 }

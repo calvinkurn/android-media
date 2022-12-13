@@ -6,24 +6,22 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.mvc.data.mapper.toUpdateVoucher
-import com.tokopedia.mvc.domain.entity.UpdateVoucherResult
+import com.tokopedia.mvc.data.mapper.UpdateVoucherMapper
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.usecase.UpdateCouponFacadeUseCase
+import com.tokopedia.mvc.util.DateTimeUtils.DASH_DATE_FORMAT
+import com.tokopedia.mvc.util.DateTimeUtils.HOUR_FORMAT
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
 class VoucherEditPeriodViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val updateVoucherPeriodUseCase: UpdateCouponFacadeUseCase
+    private val updateVoucherPeriodUseCase: UpdateCouponFacadeUseCase,
+    private val mapper: UpdateVoucherMapper
 ) : BaseViewModel(dispatchers.main) {
-
-    companion object {
-        private const val DATE_FORMAT = "yyyy-MM-dd"
-        private const val HOUR_FORMAT = "HH:mm"
-    }
 
     private val _dateStartLiveData = MutableLiveData<String>()
     private val _dateEndLiveData = MutableLiveData<String>()
@@ -42,19 +40,19 @@ class VoucherEditPeriodViewModel @Inject constructor(
         get() = _endDateCalendarLiveData
 
     private val _updateVoucherPeriodStateLiveData =
-        MutableLiveData<com.tokopedia.usecase.coroutines.Result<UpdateVoucherResult>>()
-    val updateVoucherPeriodStateLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<UpdateVoucherResult>>
+        MutableLiveData<com.tokopedia.usecase.coroutines.Result<Boolean>>()
+    val updateVoucherPeriodStateLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<Boolean>>
         get() = _updateVoucherPeriodStateLiveData
 
     fun setStartDateTime(startDate: Calendar?) {
         _startDateCalendarLiveData.value = startDate
-        _dateStartLiveData.value = startDate?.time?.toFormattedString(DATE_FORMAT)
+        _dateStartLiveData.value = startDate?.time?.toFormattedString(DASH_DATE_FORMAT)
         _hourStartLiveData.value = startDate?.time?.toFormattedString(HOUR_FORMAT)
     }
 
     fun setEndDateTime(endDate: Calendar?) {
         _endDateCalendarLiveData.value = endDate
-        _dateEndLiveData.value = endDate?.time?.toFormattedString(DATE_FORMAT)
+        _dateEndLiveData.value = endDate?.time?.toFormattedString(DASH_DATE_FORMAT)
         _hourEndLiveData.value = endDate?.time?.toFormattedString(HOUR_FORMAT)
     }
 
@@ -63,31 +61,25 @@ class VoucherEditPeriodViewModel @Inject constructor(
         val dateEnd = _dateEndLiveData.value ?: return
         val hourStart = _hourStartLiveData.value ?: return
         val hourEnd = _hourEndLiveData.value ?: return
-
         voucher?.let {
-            launchCatchError(dispatchers.io, {
-                updateVoucherPeriodUseCase.execute(
-//                    ::onSuccessUpdateVoucher,
-//                    ::onFailureUpdateVoucher,
-//                    ,
-                    it.toUpdateVoucher(),
-                    emptyList(),
-                    dateStart,
-                    hourStart,
-                    dateEnd,
-                    hourEnd
-                )
-            }, onError = {
-                    onFailureUpdateVoucher(it)
-                })
+            launchCatchError(
+                block = {
+                    val result = withContext(dispatchers.io) {
+                        updateVoucherPeriodUseCase.execute(
+                            mapper.toUpdateVoucher(it, dateStart, dateEnd),
+                            emptyList(),
+                            dateStart,
+                            hourStart,
+                            dateEnd,
+                            hourEnd
+                        )
+                    }
+                    _updateVoucherPeriodStateLiveData.value = Success(result)
+                },
+                onError = {
+                    _updateVoucherPeriodStateLiveData.value = Fail(it)
+                }
+            )
         }
-    }
-
-    private fun onSuccessUpdateVoucher(result: UpdateVoucherResult) {
-        _updateVoucherPeriodStateLiveData.value = Success(result)
-    }
-
-    private fun onFailureUpdateVoucher(throwable: Throwable) {
-        _updateVoucherPeriodStateLiveData.value = Fail(throwable)
     }
 }

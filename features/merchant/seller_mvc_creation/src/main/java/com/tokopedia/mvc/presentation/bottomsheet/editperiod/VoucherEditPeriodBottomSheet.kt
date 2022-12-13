@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -40,10 +39,6 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private val viewModel: VoucherEditPeriodViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory).get(VoucherEditPeriodViewModel::class.java)
-    }
-
-    private val locale by lazy {
-        LocaleUtils.getIDLocale()
     }
 
     private var startCalendar: GregorianCalendar? = null
@@ -111,10 +106,10 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun initObservers() {
         viewModel.startDateCalendarLiveData.observe(viewLifecycleOwner) {
-            binding?.edtMvcStartDate?.setPlaceholder(it.time.formatTo(locale))
+            binding?.edtMvcStartDate?.setPlaceholder(it.time.formatTo())
         }
         viewModel.endDateCalendarLiveData.observe(viewLifecycleOwner) {
-            binding?.edtMvcEndDate?.setPlaceholder(it.time.formatTo(locale))
+            binding?.edtMvcEndDate?.setPlaceholder(it.time.formatTo())
         }
         viewModel.hourStartLiveData.observe(viewLifecycleOwner) {
             try {

@@ -11,7 +11,7 @@ enum class PromoType(val id: Int, val text: String) : Parcelable {
 
     companion object {
 
-        fun mapFromString(type: Int): String {
+        fun mapToString(type: Int): String {
             return values().firstOrNull {
                 it.id == type
             }?.text ?: FREE_SHIPPING.text

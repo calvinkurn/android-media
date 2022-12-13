@@ -1,7 +1,5 @@
 package com.tokopedia.mvc.domain.entity
 
-import java.util.*
-
 data class GenerateImageProperty(
     val platform: String = "",
     val isPublic: String = "",
@@ -15,8 +13,8 @@ data class GenerateImageProperty(
     val shopLogo: String = "",
     val shopName: String = "",
     val voucherCode: String = "",
-    val voucherStartTime: Date,
-    val voucherEndTime: Date,
+    val voucherStartDate: String = "",
+    val voucherEndDate: String = "",
     val productCount: String = "",
     val productImage1: String,
     val productImage2: String,

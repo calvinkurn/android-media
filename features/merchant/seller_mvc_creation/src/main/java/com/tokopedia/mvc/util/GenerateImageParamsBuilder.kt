@@ -1,12 +1,14 @@
 package com.tokopedia.mvc.util
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.mvc.domain.entity.GenerateImageProperty
 import com.tokopedia.mvc.domain.entity.UpdateVoucher
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.util.DateTimeUtils.DATE_FORMAT
 import com.tokopedia.mvc.util.extension.getIndexAtOrEmpty
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import javax.inject.Inject
@@ -42,19 +44,20 @@ class GenerateImageParamsBuilder @Inject constructor() {
             ImageGeneratorConstants.VoucherVisibility.PRIVATE
         }
 
+        val voucherType = PromoType.mapToString(voucher.type)
+
         val formattedBenefitType = when {
-            voucher.voucherType == PromoType.FREE_SHIPPING -> ImageGeneratorConstants.CashbackType.NOMINAL
-            voucher.voucherType == PromoType.CASHBACK && voucher.voucherBenefitType == BenefitType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
-            voucher.voucherType == PromoType.CASHBACK && voucher.voucherBenefitType == BenefitType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
+            voucherType == PromoType.FREE_SHIPPING.text -> ImageGeneratorConstants.CashbackType.NOMINAL
+            voucherType == PromoType.CASHBACK.text && voucher.discountTypeFormatted == ImageGeneratorConstants.CashbackType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
+            voucherType == PromoType.CASHBACK.text && voucher.discountTypeFormatted == ImageGeneratorConstants.CashbackType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
             else -> ImageGeneratorConstants.CashbackType.NOMINAL
         }
 
-        // TODO verify them
         val amount = when {
-            voucher.voucherType == PromoType.FREE_SHIPPING -> voucher.voucherNominalAmount
-            voucher.voucherType == PromoType.CASHBACK && voucher.voucherBenefitType == BenefitType.NOMINAL -> voucher.voucherNominalAmount
-            voucher.voucherType == PromoType.CASHBACK && voucher.voucherBenefitType == BenefitType.PERCENTAGE -> voucher.voucherNominalAmount
-            else -> voucher.voucherNominalAmount
+            voucherType == PromoType.FREE_SHIPPING.text -> voucher.discountAmt
+            voucherType == PromoType.CASHBACK.text && voucher.voucherBenefitType == BenefitType.NOMINAL -> voucher.discountAmt
+            voucherType == PromoType.CASHBACK.text && voucher.voucherBenefitType == BenefitType.PERCENTAGE -> voucher.discountAmtMax
+            else -> voucher.discountAmt
         }
 
         val symbol = when {
@@ -71,11 +74,16 @@ class GenerateImageParamsBuilder @Inject constructor() {
             else -> amount.toFloat()
         }
 
-        val nominalAmount = formattedDiscountAmount.toLong()
-
-//        val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
-//        val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
-
+        val startTime = convertFormatDate(
+            voucher.voucherStartDate,
+            DateTimeUtils.DASH_DATE_FORMAT,
+            DATE_FORMAT
+        )
+        val endTime = convertFormatDate(
+            voucher.voucherEndDate,
+            DateTimeUtils.DASH_DATE_FORMAT,
+            DATE_FORMAT
+        )
         val audienceTarget = when (voucher.audienceTarget) {
             VoucherTargetBuyer.ALL_BUYER -> ImageGeneratorConstants.AUDIENCE_TARGET.ALL_USERS
             VoucherTargetBuyer.NEW_FOLLOWER -> ImageGeneratorConstants.AUDIENCE_TARGET.NEW_FOLLOWER
@@ -87,19 +95,17 @@ class GenerateImageParamsBuilder @Inject constructor() {
             platform = formattedImageRatio,
             isPublic = couponVisibility,
             voucherBenefitType = formattedBenefitType,
-            // TODO change this
-            voucherCashbackPercentage = voucher.voucherDiscountPercentage,
+            voucherCashbackPercentage = voucher.discountAmt.toString(),
             voucherNominalAmount = formattedDiscountAmount.toString(),
             voucherCashbackType = formattedBenefitType,
             voucherNominalSymbol = symbol,
-            voucherDiscountType = formattedDiscountAmount.toString(),
-            voucherDiscountPercentage = voucher.voucherDiscountPercentage,
+            voucherDiscountType = formattedBenefitType,
+            voucherDiscountPercentage = voucher.discountAmt.toString(),
             shopLogo = shopLogo,
             shopName = formattedShopName,
             voucherCode = voucher.voucherCode,
-            // TODO change this
-            voucherStartTime = voucher.voucherStartTime,
-            voucherEndTime = voucher.voucherEndTime,
+            voucherStartDate = startTime,
+            voucherEndDate = endTime,
             productCount = voucher.productImageUrls.size.toString(),
             productImage1 = voucher.productImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL_INDEX),
             productImage2 = voucher.productImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL_INDEX),

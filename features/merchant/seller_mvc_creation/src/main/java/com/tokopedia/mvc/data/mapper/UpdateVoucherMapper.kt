@@ -4,13 +4,12 @@ import com.tokopedia.mvc.data.response.UpdateVoucherResponse
 import com.tokopedia.mvc.domain.entity.UpdateVoucher
 import com.tokopedia.mvc.domain.entity.UpdateVoucherResult
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
-import java.util.*
 import javax.inject.Inject
 
 class UpdateVoucherMapper @Inject constructor() {
+
+    private val EMPTY = ""
 
     fun map(response: UpdateVoucherResponse): UpdateVoucherResult {
         return UpdateVoucherResult(
@@ -35,30 +34,30 @@ class UpdateVoucherMapper @Inject constructor() {
             status = this.status
         )
     }
-}
 
-private val EMPTY = ""
-fun Voucher.toUpdateVoucher(): UpdateVoucher {
-    return UpdateVoucher(
-        platform = "",
-        isPublic = this.isPublic,
-        voucherBenefitType = BenefitType.NOMINAL,
-        voucherCashbackType = "idr",
-        voucherCashbackPercentage = "20",
-        voucherNominalAmount = 200,
-        voucherNominalSymbol = "idr",
-        voucherDiscountType = "a",
-        voucherDiscountPercentage = "20",
-        shopLogo = EMPTY,
-        shopName = EMPTY,
-        voucherCode = code,
-        // TODO change
-        voucherStartTime = Date(),
-        voucherEndTime = Date(),
-        productCount = 0,
-        productImageUrls = emptyList(),
-        audienceTarget = VoucherTargetBuyer.ALL_BUYER,
-        // TODO change
-        voucherType = PromoType.FREE_SHIPPING
-    )
+    fun toUpdateVoucher(voucher: Voucher, dateStart: String, dateEnd: String): UpdateVoucher {
+        with(voucher) {
+            return UpdateVoucher(
+                platform = EMPTY,
+                isPublic = isPublic,
+                shopLogo = EMPTY,
+                shopName = EMPTY,
+                voucherCode = code,
+                voucherStartDate = dateStart,
+                voucherEndDate = dateEnd,
+                productCount = 0,
+                productImageUrls = emptyList(),
+                audienceTarget = VoucherTargetBuyer.ALL_BUYER,
+                type = type,
+                voucherName = name,
+                discountTypeFormatted = discountTypeFormatted,
+                discountAmt = discountAmt,
+                discountAmtMax = discountAmtMax,
+                voucherId = id,
+                minimumAmt = minimumAmt,
+                quota = quota,
+                discountPercentage = discountAmt
+            )
+        }
+    }
 }
