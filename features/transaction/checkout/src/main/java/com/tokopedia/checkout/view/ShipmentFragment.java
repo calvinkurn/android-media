@@ -12,6 +12,8 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_N
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
 import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_RESULT_EXTRA;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CART_RESULT_CODE;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
@@ -150,7 +152,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder;
@@ -1422,7 +1423,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else if (requestCode == REQUEST_CODE_UPLOAD_PRESCRIPTION) {
             onUploadPrescriptionResult(data, false);
         } else if (requestCode == REQUEST_CODE_MINI_CONSULTATION) {
-            onMiniConsultationResult(data);
+            onMiniConsultationResult(resultCode, data);
         } else if (requestCode == REQUEST_CODE_UPSELL) {
             onResultFromUpsell(data);
         }
@@ -3732,13 +3733,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void onMiniConsultationResult(Intent data) {
-        if (data == null) {
-            return;
-        }
-        ArrayList<EPharmacyMiniConsultationResult> results = data.getParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA);
-        if (results != null) {
-            shipmentPresenter.setMiniConsultationResult(results);
+    private void onMiniConsultationResult(int resultCode, Intent data) {
+        if (resultCode == EPHARMACY_REDIRECT_CART_RESULT_CODE) {
+            finish();
+        } else if (resultCode == EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE) {
+            if (data == null) {
+                return;
+            }
+            ArrayList<EPharmacyMiniConsultationResult> results = data.getParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA);
+            if (results != null) {
+                shipmentPresenter.setMiniConsultationResult(results);
+            }
         }
     }
 
