@@ -21,6 +21,9 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
         private const val FIRST_IMAGE_URL_INDEX = 0
         private const val SECOND_IMAGE_URL_INDEX = 1
         private const val THIRD_IMAGE_URL_INDEX = 2
+        private const val FORMATTED_RATIO_SQUARE = "square"
+        private const val FORMATTED_RATIO_VERTICAL = "vertical"
+        private const val FORMATTED_RATIO_HORIZONTAL = "horizontal"
     }
 
     fun mapToPreviewImageParam(
@@ -84,13 +87,13 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             else -> benefitIdr
         }
 
-        val formattedDiscountAmount : Float = when {
-            amount < INTEGER_THOUSAND -> amount.toFloat()
-            amount >= INTEGER_MILLION -> (amount / INTEGER_MILLION.toFloat())
-            amount >= INTEGER_THOUSAND -> (amount / INTEGER_THOUSAND.toFloat())
-            else -> amount.toFloat()
+        val formattedDiscountAmount = when {
+            amount < INTEGER_THOUSAND -> amount.toDouble()
+            else -> {
+                val exp = (Math.log(amount.toDouble()) / Math.log(INTEGER_THOUSAND.toDouble())).toInt()
+                amount.toDouble() / Math.pow(INTEGER_THOUSAND.toDouble(), exp.toDouble())
+            }
         }
-
         return formattedDiscountAmount.toInt()
     }
 
@@ -105,33 +108,33 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
 
     private fun VoucherConfiguration.getCashbackType(): String {
         return when {
-            promoType == PromoType.FREE_SHIPPING -> "nominal"
-            promoType == PromoType.CASHBACK && benefitType == BenefitType.NOMINAL -> "nominal"
-            promoType == PromoType.CASHBACK && benefitType == BenefitType.PERCENTAGE -> "percentage"
+            promoType == PromoType.FREE_SHIPPING -> ImageGeneratorConstants.CashbackType.NOMINAL
+            promoType == PromoType.CASHBACK && benefitType == BenefitType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
+            promoType == PromoType.CASHBACK && benefitType == BenefitType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
             else -> ""
         }
     }
 
     private fun VoucherConfiguration.getBenefitType(): String {
         return when (promoType) {
-            PromoType.DISCOUNT -> "discount"
-            PromoType.CASHBACK -> "cashback"
-            PromoType.FREE_SHIPPING -> "gratis-ongkir"
+            PromoType.DISCOUNT -> ImageGeneratorConstants.VoucherBenefitType.DISCOUNT
+            PromoType.CASHBACK -> ImageGeneratorConstants.VoucherBenefitType.CASHBACK
+            PromoType.FREE_SHIPPING -> ImageGeneratorConstants.VoucherBenefitType.GRATIS_ONGKIR
         }
     }
 
     private fun VoucherConfiguration.getCouponVisibility(): String {
         return when (isVoucherPublic) {
-            true -> "public"
-            else -> "private"
+            true -> ImageGeneratorConstants.VoucherVisibility.PUBLIC
+            else -> ImageGeneratorConstants.VoucherVisibility.PRIVATE
         }
     }
 
     private fun ImageRatio.toFormattedImageRatio(): String {
         return when (this) {
-            ImageRatio.SQUARE -> "square"
-            ImageRatio.VERTICAL -> "vertical"
-            ImageRatio.HORIZONTAL -> "horizontal"
+            ImageRatio.SQUARE -> FORMATTED_RATIO_SQUARE
+            ImageRatio.VERTICAL -> FORMATTED_RATIO_VERTICAL
+            ImageRatio.HORIZONTAL -> FORMATTED_RATIO_HORIZONTAL
         }
     }
 }
