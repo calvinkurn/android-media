@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.common.view
 
-import android.content.Context
+import android.app.Activity
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +13,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.unifycomponents.ImageUnify
 
 class TokoNowNavToolbar(
-    private val context: Context?,
+    private val activity: Activity?,
     private val navToolbar: NavToolbar?,
     private val pageName: String,
     private val hintData: List<HintData> = emptyList(),
@@ -91,11 +91,12 @@ class TokoNowNavToolbar(
                     }
 
                     override fun onSwitchToLightToolbar() {
-
+                        navToolbar.switchToNormalBackground(activity)
                     }
 
                     override fun onSwitchToDarkToolbar() {
                         navToolbar.hideShadow()
+                        navToolbar.switchToStaticBackground(activity)
                     }
 
                     override fun onYposChanged(yOffset: Int) {
@@ -133,6 +134,6 @@ class TokoNowNavToolbar(
     }
 
     private fun getDimensionPixelSize(@DimenRes resId: Int): Int {
-        return context?.resources?.getDimensionPixelSize(resId).orZero()
+        return activity?.resources?.getDimensionPixelSize(resId).orZero()
     }
 }

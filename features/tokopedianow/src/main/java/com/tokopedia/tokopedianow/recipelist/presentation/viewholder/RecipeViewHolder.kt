@@ -5,6 +5,8 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -28,6 +30,7 @@ class RecipeViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_recipe
 
         private const val ICON_SIZE = 16
+        private const val DEFAULT_BOUND = 0
     }
 
     private var binding: ItemTokopedianowRecipeBinding? by viewBinding()
@@ -96,12 +99,21 @@ class RecipeViewHolder(
         } else {
             com.tokopedia.iconunify.R.drawable.iconunify_bookmark
         }
-        imageBookmark.setImageDrawable(ContextCompat.getDrawable(context, iconResId))
+        setIconBookmark(imageBookmark, iconResId)
+    }
+
+    private fun setIconBookmark(imageBookmark: ImageUnify, iconResId: Int) {
+        val color = ContextCompat.getColor(context, R.color.tokopedianow_recipe_image_bookmark_dms_color)
+        val icon = ContextCompat.getDrawable(context, iconResId)
+        icon?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_ATOP)
+        imageBookmark.setImageDrawable(icon)
     }
 
     private fun TextView.setDrawableLeft(@DrawableRes drawableRes: Int) {
-        val icon = ContextCompat.getDrawable(itemView.context, drawableRes)
-        icon?.setBounds(0, 0, ICON_SIZE.toPx(), ICON_SIZE.toPx())
+        val color = ContextCompat.getColor(context, R.color.tokopedianow_recipe_white_dms_color)
+        val icon = ContextCompat.getDrawable(context, drawableRes)
+        icon?.setBounds(DEFAULT_BOUND, DEFAULT_BOUND, ICON_SIZE.toPx(), ICON_SIZE.toPx())
+        icon?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_ATOP)
         setCompoundDrawables(icon, null, null, null)
         compoundDrawablePadding = itemView.context.resources
             .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
