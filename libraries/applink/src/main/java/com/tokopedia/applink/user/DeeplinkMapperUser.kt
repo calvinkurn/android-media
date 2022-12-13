@@ -55,7 +55,7 @@ object DeeplinkMapperUser {
         val internal =  getRegisteredUserNavigation(deeplink)
         return when {
             internal.startsWith("$KYC_ONLY_BASE?") -> {
-                UriUtil.buildUriAppendParams(KYC_ONLY_BASE, params)
+                UriUtil.buildUriAppendParams(KYC_ALA_CARTE, params)
             }
             else -> internal
         }
