@@ -27,9 +27,9 @@ class UserIdentificationViewModel @Inject constructor (
             val userProjectInfo = getProjectInfoUseCase(mapOf(
                 PARAM_PROJECT_ID to projectId
             ))
-            _userProjectInfo.postValue(Success(userProjectInfo))
+            _userProjectInfo.value = Success(userProjectInfo)
         }, onError = {
-            _userProjectInfo.postValue(Fail(it))
+            _userProjectInfo.value = Fail(it)
         })
     }
 }

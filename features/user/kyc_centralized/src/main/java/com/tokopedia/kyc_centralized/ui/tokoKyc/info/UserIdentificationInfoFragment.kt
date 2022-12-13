@@ -109,7 +109,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver(view: View) {
-        viewModel.userProjectInfo.observe(viewLifecycleOwner, Observer {
+        viewModel.userProjectInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     allowedSelfie = it.data.kycProjectInfo?.isSelfie == true
@@ -129,7 +129,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
                     onErrorGetUserProjectInfo(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun getStatusInfo() {
