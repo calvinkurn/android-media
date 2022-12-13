@@ -1,10 +1,12 @@
 package com.tokopedia.mvc.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.mvc.di.module.CommonViewModelModule
 import com.tokopedia.mvc.di.module.MerchantVoucherCreationModule
 import com.tokopedia.mvc.di.module.MerchantVoucherCreationViewModelModule
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.ChangeQuotaBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
@@ -20,7 +22,8 @@ import dagger.Component
 
 @MerchantVoucherCreationScope
 @Component(
-    modules = [MerchantVoucherCreationModule::class, MerchantVoucherCreationViewModelModule::class],
+    modules = [MerchantVoucherCreationModule::class, MerchantVoucherCreationViewModelModule::class,
+        CommonViewModelModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface MerchantVoucherCreationComponent {
@@ -40,4 +43,6 @@ interface MerchantVoucherCreationComponent {
     fun inject(fragment: SummaryFragment)
 
     fun inject(fragment: DownloadVoucherImageBottomSheet)
+    fun inject(bottomSheet: ChangeQuotaBottomSheet)
+
 }

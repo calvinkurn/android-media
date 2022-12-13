@@ -41,6 +41,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.ChangeQuotaBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
@@ -49,10 +50,10 @@ import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
-import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -95,7 +96,8 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
-        MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
+        //MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
+        showUpdateQuotaBottomSheet(voucher)
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
@@ -318,6 +320,36 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         )
 
         startActivityForResult(intent, 100)
+    }
+
+    private fun showUpdateQuotaBottomSheet(voucher: Voucher){
+        val bottomSheet = ChangeQuotaBottomSheet.newInstance(
+            getString(R.string.smvc_title_bottom_sheet_change_quota),
+            voucher.id
+        )
+
+        bottomSheet.setOnSuccessUpdateQuotaListener {message ->
+            showSuccessToaster(message)
+            loadInitialDataList()
+        }
+
+        bottomSheet.setOnFailedQuotaListener {message ->
+            view?.showToasterError(message, getString(R.string.smvc_ok))
+        }
+
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showSuccessToaster(message : String){
+        view?.let { view ->
+            Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.smvc_ok)
+            ) { }.show()
+        }
     }
 
     private fun redirectToQuotaVoucherPage() {
