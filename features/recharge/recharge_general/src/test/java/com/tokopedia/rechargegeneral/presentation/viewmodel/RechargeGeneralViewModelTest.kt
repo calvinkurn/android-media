@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -192,6 +193,29 @@ class RechargeGeneralViewModelTest {
         rechargeGeneralViewModel.productListJob?.cancel()
         val actualData = rechargeGeneralViewModel.productList.value
         assertTrue(actualData == null)
+    }
+
+    @Test
+    fun getProductList_invokeTwice_WillCancelFirstJob() {
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers {
+            delay(5000)
+            gqlResponseFail
+        }
+        rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
+        val firstJob = rechargeGeneralViewModel.productListJob
+
+        rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
+        val secondJob = rechargeGeneralViewModel.productListJob
+
+        assertTrue(firstJob?.isCancelled == true)
+        assertTrue(firstJob != secondJob)
+    }
+
+    @Test
+    fun productListJob_setJob_shouldNotBeNull() {
+        assertTrue(rechargeGeneralViewModel.productListJob == null)
+        rechargeGeneralViewModel.productListJob = Job()
+        assertTrue(rechargeGeneralViewModel.productListJob != null)
     }
 
     @Test
