@@ -16,6 +16,7 @@ import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.a
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
+import com.tokopedia.logisticcart.scheduledelivery.analytics.ScheduleDeliveryAnalytics
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
 import com.tokopedia.logisticcart.scheduledelivery.view.bottomsheet.ScheduleSlotBottomSheet
 import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryBottomSheetMapper
@@ -106,6 +107,7 @@ class ShippingScheduleWidget : ConstraintLayout {
                 scheduleDeliveryUiModel?.apply {
                     isSelected = false
                     mListener?.onChangeScheduleDelivery(this)
+                    ScheduleDeliveryAnalytics.sendClickJamTibaRadioButtonOnTokopediaNowEvent()
                 }
             }
         )
@@ -115,8 +117,13 @@ class ShippingScheduleWidget : ConstraintLayout {
         val onClickIconListener: (() -> Unit)? = if (available) {
             {
                 openScheduleDeliveryBottomSheet(this)
+                ScheduleDeliveryAnalytics.sendClickArrowInScheduledDeliveryOptionsOnTokopediaNowEvent()
             }
         } else null
+
+        if (!available) {
+            ScheduleDeliveryAnalytics.sendViewUnavailableScheduledDeliveryEvent()
+        }
 
         return ShippingScheduleWidgetModel(
             isEnable = available,
@@ -128,6 +135,7 @@ class ShippingScheduleWidget : ConstraintLayout {
             onSelectedWidgetListener = {
                 isSelected = true
                 mListener?.onChangeScheduleDelivery(this)
+                ScheduleDeliveryAnalytics.sendChooseScheduledDeliveryOptionRadioButtonOnTokopediaNowEvent()
             },
             onClickIconListener = onClickIconListener
         )
