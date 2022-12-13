@@ -45,6 +45,10 @@ class AddProductViewModel @Inject constructor(
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val ONE_PRODUCT = 1
+    }
+
     private val _uiState = MutableStateFlow(AddProductUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -162,7 +166,13 @@ class AddProductViewModel @Inject constructor(
                     selectedParentProductIds.count()
                 }
 
-                val isSelectAllCheckboxActive = selectedProductCount == productsResponse.total || currentState.isSelectAllCheckboxActive
+                val checkboxState = when {
+                    currentState.checkboxState.isChecked() -> AddProductUiState.CheckboxState.CHECKED
+                    selectedProductCount.isZero() -> AddProductUiState.CheckboxState.UNCHECKED
+                    selectedProductCount < productsResponse.total -> AddProductUiState.CheckboxState.INDETERMINATE
+                    selectedProductCount == productsResponse.total -> AddProductUiState.CheckboxState.CHECKED
+                    else -> AddProductUiState.CheckboxState.UNCHECKED
+                }
 
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(allParentProducts.count(), productsResponse.total))
                 _uiState.update {
@@ -171,7 +181,7 @@ class AddProductViewModel @Inject constructor(
                         products = allParentProducts,
                         selectedProductsIds = selectedParentProductIds,
                         selectedProductCount = selectedProductCount,
-                        isSelectAllCheckboxActive = isSelectAllCheckboxActive,
+                        checkboxState = checkboxState,
                         totalProducts = productsResponse.total
                     )
                 }
@@ -232,7 +242,7 @@ class AddProductViewModel @Inject constructor(
     private fun shouldSelectProduct(productId: Long, selectedProductIds: Set<Long>, isEligible: Boolean): Boolean {
         val nextSelectedProductSize = selectedProductIds.size + AddProductFragment.PAGE_SIZE
         val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.maxProductSelection
-        val shouldAutomaticallyAddToProductSelection = currentState.isSelectAllCheckboxActive && isBelowMaximumProductSelection
+        val shouldAutomaticallyAddToProductSelection = currentState.checkboxState.isChecked()  && isBelowMaximumProductSelection
 
         val isProductAlreadyOnSelection = productId in selectedProductIds
 
@@ -323,7 +333,7 @@ class AddProductViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                isSelectAllCheckboxActive = true,
+                checkboxState = AddProductUiState.CheckboxState.CHECKED,
                 selectedProductsIds = modifiedProducts.selectedProductsOnly(),
                 selectedProductCount = modifiedProducts.selectedProductsOnly().count(),
                 products = modifiedProducts
@@ -336,7 +346,7 @@ class AddProductViewModel @Inject constructor(
         val disabledProducts = currentState.products.map { it.copy(isSelected = false, enableCheckbox = true) }
         _uiState.update {
             it.copy(
-                isSelectAllCheckboxActive = false,
+                checkboxState = AddProductUiState.CheckboxState.UNCHECKED,
                 selectedProductsIds = emptySet(),
                 selectedProductCount = 0,
                 products = disabledProducts
@@ -361,15 +371,22 @@ class AddProductViewModel @Inject constructor(
 
         val allParentProductSelected = updatedSelectedProductIds.count() == currentState.totalProducts
 
+        val checkBoxState = if (allParentProductSelected) {
+            AddProductUiState.CheckboxState.CHECKED
+        } else {
+            AddProductUiState.CheckboxState.INDETERMINATE
+        }
+
         _uiState.update {
             it.copy(
                 selectedProductsIds = updatedSelectedProductIds,
                 selectedProductCount = updatedSelectedProductIds.count(),
                 products = updatedProducts,
-                isSelectAllCheckboxActive = allParentProductSelected
+                checkboxState = checkBoxState
             )
         }
     }
+
 
     private fun disableUnselectedProducts(products: List<Product>): List<Product> {
         return products.map {
@@ -419,9 +436,15 @@ class AddProductViewModel @Inject constructor(
         val updatedSelectedProducts = currentState.selectedProductsIds.toMutableSet()
         updatedSelectedProducts.remove(productIdToDelete)
 
+        val checkBoxState = if (updatedSelectedProducts.isEmpty()) {
+            AddProductUiState.CheckboxState.UNCHECKED
+        } else {
+            AddProductUiState.CheckboxState.INDETERMINATE
+        }
+
         _uiState.update {
             it.copy(
-                isSelectAllCheckboxActive = false,
+                checkboxState = checkBoxState,
                 selectedProductsIds = updatedSelectedProducts,
                 selectedProductCount = updatedSelectedProducts.count(),
                 products = updatedProducts
@@ -436,7 +459,7 @@ class AddProductViewModel @Inject constructor(
                 isLoading = true,
                 searchKeyword = "",
                 page = NumberConstant.FIRST_PAGE,
-                isSelectAllCheckboxActive = false,
+                checkboxState = AddProductUiState.CheckboxState.UNCHECKED,
                 products = emptyList()
             )
         }
@@ -450,7 +473,7 @@ class AddProductViewModel @Inject constructor(
                 searchKeyword = currentState.searchKeyword,
                 page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
-                isSelectAllCheckboxActive = false,
+                checkboxState = AddProductUiState.CheckboxState.UNCHECKED,
                 selectedCategories = emptyList(),
                 selectedWarehouseLocation = Warehouse(currentState.defaultWarehouseLocationId, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
                 selectedShopShowcase = emptyList(),
@@ -467,7 +490,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
-                isSelectAllCheckboxActive = false,
+                checkboxState = AddProductUiState.CheckboxState.UNCHECKED,
                 products = emptyList(),
                 searchKeyword = searchKeyword
             )
@@ -481,7 +504,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
-                isSelectAllCheckboxActive = false,
+                checkboxState = AddProductUiState.CheckboxState.UNCHECKED,
                 products = emptyList(),
                 selectedSort = selectedSort,
                 isFilterActive = selectedSort.id != "DEFAULT"
@@ -510,7 +533,7 @@ class AddProductViewModel @Inject constructor(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
-                isSelectAllCheckboxActive = false,
+                checkboxState = AddProductUiState.CheckboxState.UNCHECKED,
                 selectedProductsIds = emptySet(),
                 selectedProductCount = 0,
                 selectedWarehouseLocation = newWarehouseLocation,
@@ -526,7 +549,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
-                isSelectAllCheckboxActive = false,
+                checkboxState = AddProductUiState.CheckboxState.UNCHECKED,
                 products = emptyList(),
                 selectedShopShowcase = selectedShopShowcases,
                 isFilterActive = selectedShopShowcases.isNotEmpty()
@@ -541,7 +564,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
-                isSelectAllCheckboxActive = false,
+                checkboxState = AddProductUiState.CheckboxState.UNCHECKED,
                 products = emptyList(),
                 selectedCategories = selectedCategories,
                 isFilterActive = selectedCategories.isNotEmpty()
@@ -650,6 +673,10 @@ class AddProductViewModel @Inject constructor(
 
     private fun List<Product.Variant>.allVariantIds(): Set<Long> {
         return map { it.variantProductId }.toSet()
+    }
+
+    private fun AddProductUiState.CheckboxState.isChecked(): Boolean {
+        return this == AddProductUiState.CheckboxState.CHECKED
     }
 
 }

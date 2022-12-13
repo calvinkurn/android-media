@@ -289,7 +289,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun handleUiState(uiState: AddProductUiState) {
         renderLoadingState(uiState.isLoading)
 
-        renderSelectAllCheckbox(uiState.isSelectAllCheckboxActive, uiState.selectedProductCount, uiState.products.count(), uiState.totalProducts)
+        renderSelectAllCheckbox(uiState.checkboxState, uiState.selectedProductCount, uiState.totalProducts)
         renderMaxProductSelection(uiState.maxProductSelection)
 
         //Filter
@@ -356,28 +356,29 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun renderSelectAllCheckbox(
-        isSelectAllCheckboxActive: Boolean,
+        checkboxState: AddProductUiState.CheckboxState,
         selectedProductCount: Int,
-        allLoadedProductCount: Int,
         totalProductCount: Int
     ) {
-        when {
-            selectedProductCount.isZero() -> {
-                binding?.checkbox?.isChecked = false
+        when (checkboxState) {
+            AddProductUiState.CheckboxState.CHECKED -> {
+                binding?.checkbox?.isChecked = true
+                binding?.checkbox?.setIndeterminate(false)
+                binding?.checkbox?.skipAnimation()
             }
-            selectedProductCount < allLoadedProductCount -> {
+            AddProductUiState.CheckboxState.UNCHECKED -> {
+                binding?.checkbox?.isChecked = false
+                binding?.checkbox?.setIndeterminate(false)
+                binding?.checkbox?.skipAnimation()
+            }
+            AddProductUiState.CheckboxState.INDETERMINATE -> {
                 binding?.checkbox?.setIndeterminate(true)
                 binding?.checkbox?.isChecked = true
-            }
-            selectedProductCount == allLoadedProductCount -> {
-                binding?.checkbox?.isChecked = true
-            }
-            isSelectAllCheckboxActive -> {
-                binding?.checkbox?.isChecked = true
+                binding?.checkbox?.skipAnimation()
             }
         }
 
-        val checkboxWording = if (selectedProductCount.isZero()) {
+        val checkboxWording = if (checkboxState == AddProductUiState.CheckboxState.UNCHECKED) {
             getString(R.string.smvc_select_all)
         } else {
             getString(

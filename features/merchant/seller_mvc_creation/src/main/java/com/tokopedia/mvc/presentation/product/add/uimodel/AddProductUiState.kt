@@ -23,7 +23,7 @@ data class AddProductUiState(
     val warehouses: List<Warehouse> = emptyList(),
     val selectedProductsIds: Set<Long> = emptySet(),
     val selectedProductCount: Int = 0,
-    val isSelectAllCheckboxActive: Boolean = false,
+    val checkboxState: CheckboxState = CheckboxState.UNCHECKED,
     val sortOptions: List<ProductSortOptions> = emptyList(),
     val categoryOptions: List<ProductCategoryOption> = emptyList(),
     val shopShowcases: List<ShopShowcase> = emptyList(),
@@ -45,4 +45,10 @@ data class AddProductUiState(
         targetBuyer = VoucherTargetBuyer.ALL_BUYER
     ),
     val error: Throwable? = null
-)
+) {
+    enum class CheckboxState {
+        CHECKED,
+        UNCHECKED,
+        INDETERMINATE
+    }
+}
