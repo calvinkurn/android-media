@@ -8,6 +8,7 @@ import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListR
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
+import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
@@ -20,11 +21,11 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.io.IOException
 import javax.inject.Inject
 
 class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCardTenorListUseCase: CreditCardTenorListUseCase,
                                                            private val goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase,
+                                                           private val dynamicPaymentFeeUseCase: DynamicPaymentFeeUseCase,
                                                            private val executorDispatchers: CoroutineDispatchers) {
 
     suspend fun getCreditCardAdminFee(orderPaymentCreditCard: OrderPaymentCreditCard, userId: String,
@@ -159,8 +160,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                throw IOException("error")
-                return@withContext listOf(OrderPaymentFee("biaya dinamis", 2000.0, true, false, 0, "dinamis"))
+                return@withContext dynamicPaymentFeeUseCase(Unit)
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null

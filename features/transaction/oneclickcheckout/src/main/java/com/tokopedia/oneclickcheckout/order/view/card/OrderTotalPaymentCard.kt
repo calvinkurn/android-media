@@ -85,17 +85,21 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                 } else {
                     tvTotalPaymentValue.text = "-"
                     btnOrderDetail.visibility = View.GONE
-                    tickerPaymentError.setHtmlDescription("Total bayar gagal ditampilkan. <a href=\"refresh\">Muat Ulang</a>")
-                    tickerPaymentError.setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            listener.onRefreshPaymentClicked()
-                        }
+                    if (orderTotal.showTickerError) {
+                        tickerPaymentError.setHtmlDescription("Total bayar gagal ditampilkan. <a href=\"refresh\">Muat Ulang</a>")
+                        tickerPaymentError.setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                listener.onRefreshPaymentClicked()
+                            }
 
-                        override fun onDismiss() {
-                            /* no-op */
-                        }
-                    })
-                    tickerPaymentError.visible()
+                            override fun onDismiss() {
+                                /* no-op */
+                            }
+                        })
+                        tickerPaymentError.visible()
+                    } else {
+                        tickerPaymentError.gone()
+                    }
                 }
 
                 btnOrderDetail.setOnClickListener {
