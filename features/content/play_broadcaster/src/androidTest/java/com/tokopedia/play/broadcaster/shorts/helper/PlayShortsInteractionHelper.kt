@@ -75,6 +75,14 @@ fun inputTitle(text: String = "pokemon") {
     type(unifyR.id.text_field_input, text)
 }
 
+fun clearTitle() {
+    click(unifyR.id.text_field_icon_close)
+}
+
 fun submitTitle() {
     pressActionSoftKeyboard(unifyR.id.text_field_input)
+}
+
+fun clickBackTitleForm() {
+    click(R.id.ic_close_title_form)
 }

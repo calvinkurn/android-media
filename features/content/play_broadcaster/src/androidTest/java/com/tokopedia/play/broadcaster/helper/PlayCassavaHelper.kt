@@ -30,6 +30,8 @@ fun contains(pair: Pair<String, String>): Matcher<List<Validator>> {
 
 fun containsEventAction(value: String) = contains("eventAction" to value)
 
+fun containsScreenName(value: String) = contains("screenName" to value)
+
 val analyticUserSession: UserSessionInterface
     get() = mockk<UserSessionInterface>(relaxed = true).apply {
         every { shopId } returns "12345"
