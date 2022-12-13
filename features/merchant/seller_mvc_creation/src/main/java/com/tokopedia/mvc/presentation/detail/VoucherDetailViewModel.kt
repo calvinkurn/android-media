@@ -9,10 +9,9 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
-import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
-import com.tokopedia.mvc.domain.usecase.ProductListUseCase
-import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
+import com.tokopedia.mvc.domain.usecase.*
 import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.usecase.coroutines.Fail
@@ -27,6 +26,8 @@ class VoucherDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase,
     private val getProductsUseCase: ProductListUseCase,
+    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
+    private val merchantPromotionUpdateStatusMVUseCase: MerchantPromotionUpdateStatusMVUseCase,
     private val shopBasicDataUseCase: ShopBasicDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
@@ -52,6 +53,10 @@ class VoucherDetailViewModel @Inject constructor(
     val redirectToProductListPage: LiveData<VoucherDetailData>
         get() = _redirectToProductListPage
 
+    private val _updateVoucherStatusData = MutableLiveData<Result<String>>()
+    val updateVoucherStatusData: LiveData<Result<String>>
+        get() = _updateVoucherStatusData
+
     fun getVoucherDetail(voucherId: Long) {
         launchCatchError(
             dispatchers.io,
@@ -62,6 +67,31 @@ class VoucherDetailViewModel @Inject constructor(
             },
             onError = { error ->
                 _voucherDetail.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun updateVoucherStatus(data: VoucherDetailData, bottomSheetType: Int) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val metadataParam = GetInitiateVoucherPageUseCase.Param(
+                    action = VoucherAction.UPDATE,
+                    promoType = data.voucherType,
+                    isVoucherProduct = data.isVoucherProduct
+                )
+                val metadata = getInitiateVoucherPageUseCase.execute(metadataParam)
+
+                val param = MerchantPromotionUpdateStatusMVUseCase.Param(
+                    voucherId = data.voucherId,
+                    token = metadata.token,
+                    bottomSheetType = bottomSheetType
+                )
+                merchantPromotionUpdateStatusMVUseCase.execute(param)
+                _updateVoucherStatusData.value = Success(data.voucherName)
+            },
+            onError = { error ->
+                _updateVoucherStatusData.value = Fail(error)
             }
         )
     }

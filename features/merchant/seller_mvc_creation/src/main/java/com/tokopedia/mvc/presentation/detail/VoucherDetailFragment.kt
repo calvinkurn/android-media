@@ -631,8 +631,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun openThreeDotsBottomSheet(data: VoucherDetailData) {
         val bottomSheetType = viewModel.getThreeDotsBottomSheetType(data)
-        ThreeDotsMenuBottomSheet.newInstance(data.voucherName, bottomSheetType)
-            .show(childFragmentManager, "")
+        val bottomSheet = ThreeDotsMenuBottomSheet.newInstance(data.voucherName, bottomSheetType)
+        bottomSheet.setOnUpdateVoucherStatusListener {
+            viewModel.updateVoucherStatus(data, bottomSheetType)
+        }
+        bottomSheet.show(childFragmentManager, "")
     }
 
     private fun getVoucherDetailData(voucherId: Long) {

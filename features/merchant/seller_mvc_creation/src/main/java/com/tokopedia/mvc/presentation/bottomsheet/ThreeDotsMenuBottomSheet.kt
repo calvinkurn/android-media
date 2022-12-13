@@ -34,6 +34,7 @@ class ThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
 
     private var binding by autoClearedNullable<SmvcBottomsheet3DotsMenuBinding>()
+    private var onUpdateVoucherStatusListener: () -> Unit = {}
     private val bottomSheetType by lazy {
         arguments?.getInt(BundleConstant.BUNDLE_BOTTOMSHEET_TYPE).orZero()
     }
@@ -79,15 +80,12 @@ class ThreeDotsMenuBottomSheet : BottomSheetUnify() {
                 routeToUrl(TNC_URL)
             }
             tpgCancel.setOnClickListener {
-                when (bottomSheetType) {
-                    TYPE_CANCEL -> {
-                        TODO("cancel voucher, use case is in progress")
-                    }
-                    TYPE_STOP -> {
-                        TODO("stop voucher, use case is in progress")
-                    }
-                }
+                onUpdateVoucherStatusListener()
             }
         }
+    }
+
+    fun setOnUpdateVoucherStatusListener(listener: () -> Unit) {
+        onUpdateVoucherStatusListener = listener
     }
 }
