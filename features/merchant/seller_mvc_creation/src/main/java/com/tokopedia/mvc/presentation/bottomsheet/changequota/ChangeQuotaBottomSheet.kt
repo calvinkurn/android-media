@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.ChangeQuotaUiEffect
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaUiState
 import com.tokopedia.mvc.util.EditTextWatcher
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -24,7 +24,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaFormBinding
 import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaShimmerBinding
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.ChangeQuotaModel
-import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaState
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect
 import javax.inject.Inject
 
 class ChangeQuotaBottomSheet : BottomSheetUnify() {
@@ -164,21 +164,21 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
 
         viewModel.changeQuotaUiModel.observe(viewLifecycleOwner) { uiModel ->
             when (uiModel) {
-                is UpdateQuotaState.SuccessToGetDetailVoucher -> {
+                is UpdateQuotaEffect.SuccessToGetDetailVoucher -> {
                     loadingLayout?.root?.gone()
                     formLayout?.root?.visible()
                     handlingVoucherUi(uiModel.changeQuotaModel)
                 }
-                is UpdateQuotaState.FailToGetDetailVoucher -> {
+                is UpdateQuotaEffect.FailToGetDetailVoucher -> {
                     dismiss()
                     onFailedListener(uiModel.throwable.message.orEmpty())
                 }
-                is UpdateQuotaState.SuccessToUpdate -> {
+                is UpdateQuotaEffect.SuccessToUpdate -> {
                     dismiss()
                     val message = setMessageSuccess(uiModel)
                     onSuccessListener(message)
                 }
-                is UpdateQuotaState.FailToUpdate -> {
+                is UpdateQuotaEffect.FailToUpdate -> {
                     dismiss()
                     val message = getString(R.string.smvc_failed_change_quota, uiModel.nameVoucher)
                     onFailedListener(message)
@@ -187,7 +187,7 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setMessageSuccess(successUpdate: UpdateQuotaState.SuccessToUpdate): String {
+    private fun setMessageSuccess(successUpdate: UpdateQuotaEffect.SuccessToUpdate): String {
         return if (successUpdate.isApplyToAllPeriodCoupon) {
             getString(R.string.smvc_success_change_quota_multi_period, successUpdate.nameVoucher)
         } else {
@@ -211,7 +211,7 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun handlingUiState(state: ChangeQuotaUiEffect) {
+    private fun handlingUiState(state: UpdateQuotaUiState) {
         val messageError = if (state.isInputOnUnderMinimumReq) getString(
             R.string.smvc_error_min_quota,
             state.quotaReq

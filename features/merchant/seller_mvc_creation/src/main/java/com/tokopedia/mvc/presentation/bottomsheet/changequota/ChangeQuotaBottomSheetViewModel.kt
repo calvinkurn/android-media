@@ -12,9 +12,9 @@ import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.domain.usecase.UpdateQuotaUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.mapper.VoucherToChangeQuotaUiModel.toChangeQuotaUiModel
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.ChangeQuotaModel
-import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.ChangeQuotaUiEffect
-import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaState
-import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaState.SuccessToGetDetailVoucher
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaUiState
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect.SuccessToGetDetailVoucher
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,11 +37,11 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
         private const val RESTART_DATA_ACTIVITY = -1
     }
 
-    private val _inputQuotaValidation = MutableStateFlow(ChangeQuotaUiEffect())
+    private val _inputQuotaValidation = MutableStateFlow(UpdateQuotaUiState())
     val inputQuotaValidation = _inputQuotaValidation.asStateFlow()
 
-    private var _changeQuotaUiModel = MutableLiveData<UpdateQuotaState>()
-    val changeQuotaUiModel: LiveData<UpdateQuotaState>
+    private var _changeQuotaUiModel = MutableLiveData<UpdateQuotaEffect>()
+    val changeQuotaUiModel: LiveData<UpdateQuotaEffect>
         get() = _changeQuotaUiModel
     private var changeQuotaModel: ChangeQuotaModel = ChangeQuotaModel()
 
@@ -56,7 +56,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
                 setOptionsApplyPeriodCoupon(APPLY_ONLY_THIS_PERIOD_COUPON)
             },
             onError = { error ->
-                _changeQuotaUiModel.postValue(UpdateQuotaState.FailToGetDetailVoucher(error))
+                _changeQuotaUiModel.postValue(UpdateQuotaEffect.FailToGetDetailVoucher(error))
             }
         )
     }
@@ -143,7 +143,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
                 )
                 if (updateQuotaStatus) {
                     _changeQuotaUiModel.postValue(
-                        UpdateQuotaState.SuccessToUpdate(
+                        UpdateQuotaEffect.SuccessToUpdate(
                             changeQuotaModel.voucherName,
                             changeQuotaModel.isApplyToAllPeriodCoupon
                         )
@@ -152,7 +152,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
             },
             onError = { error ->
                 _changeQuotaUiModel.postValue(
-                    UpdateQuotaState.FailToUpdate(
+                    UpdateQuotaEffect.FailToUpdate(
                         changeQuotaModel.voucherName,
                         error
                     )
