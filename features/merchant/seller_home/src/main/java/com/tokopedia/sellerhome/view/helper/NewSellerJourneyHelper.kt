@@ -48,9 +48,9 @@ class NewSellerJourneyHelper @Inject constructor(
 
     fun showFirstOrderDialog(
         context: Context, info: ShopStateInfoUiModel, onDismiss: () -> Unit
-    ): Boolean {
+    ) {
         if (!sharedPref.getFirstOrderDialogEligibility(userSession.userId) || isFirstOrderDialogShown) {
-            return false
+            return
         }
         isFirstOrderDialogShown = true
 
@@ -59,7 +59,6 @@ class NewSellerJourneyHelper @Inject constructor(
             isFirstOrderDialogShown = false
             onDismiss()
         })
-        return true
     }
 
     fun shouldFetchShopInfo(): Boolean {

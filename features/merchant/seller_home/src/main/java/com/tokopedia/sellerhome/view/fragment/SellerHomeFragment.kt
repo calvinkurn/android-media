@@ -14,6 +14,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
@@ -167,6 +168,8 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -271,6 +274,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
     private var binding by autoClearedNullable<FragmentSahBinding>()
+    private var isNewSellerState: Boolean = false
 
     private val recyclerView: RecyclerView?
         get() = try {
@@ -338,9 +342,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onResume() {
         super.onResume()
-        if (!isFirstLoad) {
-            reloadPage()
-        }
         startWidgetSse()
     }
 
@@ -378,7 +379,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 showUnificationCoachMarkWhenVisible()
             }
 
-            getShopStateInfoIfEligible()
+            if (!isFirstLoad) {
+                getShopStateInfoIfEligible()
+            }
         }
     }
 
@@ -1301,8 +1304,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupShopSharing() {
-        ImageHandler.loadImageWithTarget(
-            context,
+        ImageHandler.loadImageWithTarget(context,
             shopShareData?.shopSnippetURL.orEmpty(),
             object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(
@@ -1340,8 +1342,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
                 activity?.let {
-                    shopShareHelper.onShareOptionClicked(
-                        it,
+                    shopShareHelper.onShareOptionClicked(it,
                         view,
                         shareDataModel,
                         callback = { shareModel, _ ->
@@ -1421,6 +1422,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    isFirstLoad = false
                     stopLayoutCustomMetric(result.data.widgetList)
                     setOnSuccessGetLayout(result.data.widgetList)
                     startWidgetSse()
@@ -1836,7 +1838,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         viewLifecycleOwner.observe(sellerHomeViewModel.shopStateInfo) {
             if (it is Success) {
                 val info = it.data
-                setViewBackgroundNewSeller(info.isNewSellerState)
+                this.isNewSellerState = info.isNewSellerState
+                setViewBackgroundNewSeller()
                 if (info.subtitle.isBlank()) return@observe
 
                 if (info.subType == ShopStateInfoUiModel.SubType.TOAST) {
@@ -1844,15 +1847,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 } else if (info.subType == ShopStateInfoUiModel.SubType.POPUP) {
                     showShopStatePopup(info)
                 }
+            } else {
+                this.isNewSellerState = false
             }
         }
     }
 
-    private fun setViewBackgroundNewSeller(isNewSeller: Boolean) {
+    private fun setViewBackgroundNewSeller() {
         binding?.run {
-            if (isNewSeller) {
+            if (isNewSellerState) {
                 viewBgShopStatus.visible()
+                viewBgShopStatus.layoutParams.height = LayoutParams.MATCH_PARENT
                 viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_new_seller)
+                viewBgShopStatus.requestLayout()
                 imgSahNewSellerLeft.loadImage(SellerHomeConst.Images.IMG_NEW_SELLER_LEFT) {
                     useCache(true)
                     listener(onSuccess = { _, _ ->
@@ -1869,6 +1876,34 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else {
                 imgSahNewSellerLeft.gone()
                 imgSahNewSellerRight.gone()
+                setViewBackground()
+            }
+            setSectionWidgetTextColor()
+        }
+    }
+
+    private fun setSectionWidgetTextColor() {
+        recyclerView?.post {
+            val widgets = adapter.data.map {
+                if (it is SectionWidgetUiModel) {
+                    val titleTextColor: Int
+                    val subTitleTextColor: Int
+                    if (isNewSellerState) {
+                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    } else {
+                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    }
+                    return@map it.copy(
+                        titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor
+                    )
+                }
+                return@map it
+            }
+
+            notifyWidgetWithSdkChecking {
+                updateWidgets(widgets)
             }
         }
     }
@@ -1878,16 +1913,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                viewBgShopStatus.visible()
-                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_official_store)
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
             }
             isPowerMerchant -> {
-                viewBgShopStatus.visible()
-                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_power_merchant)
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
             }
             else -> {
                 viewBgShopStatus.gone()
             }
+        }
+    }
+
+    private fun showRegularHomeBackground(backgroundResource: Int) {
+        binding?.run {
+            val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+            viewBgShopStatus.layoutParams.height = height
+            viewBgShopStatus.visible()
+            viewBgShopStatus.setImageResource(backgroundResource)
+            viewBgShopStatus.requestLayout()
         }
     }
 
@@ -2642,10 +2685,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showShopStatePopup(info: ShopStateInfoUiModel) {
         context?.let {
-            val isDialogShown = newSellerJourneyHelper.showFirstOrderDialog(it, info, onDismiss = {
+            newSellerJourneyHelper.showFirstOrderDialog(it, info, onDismiss = {
                 fetchNewLayoutAdjustmentToaster()
             })
-            if (isDialogShown) {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                delay(TOAST_DURATION)
                 sendShopStateDismissal(info.dataSign)
             }
         }
@@ -2687,6 +2731,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             shopState == ShopStateUiModel.AddedProduct || shopState == ShopStateUiModel.ViewedProduct || shopState == ShopStateUiModel.HasOrder
         if (shopState == ShopStateUiModel.NewRegisteredShop) {
             showNewSellerDialog()
+            isNewSellerState = true
+            setViewBackgroundNewSeller()
         } else if (shouldGetShopStateInfo) {
             getShopStateInfoIfEligible()
         }
@@ -2695,6 +2741,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun getShopStateInfoIfEligible() {
         if (newSellerJourneyHelper.shouldFetchShopInfo()) {
             sellerHomeViewModel.getShopStateInfo()
+        } else {
+            isNewSellerState = false
+            setViewBackgroundNewSeller()
         }
     }
 
