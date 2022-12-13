@@ -19,7 +19,7 @@ import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.window.WindowLayoutInfo
+import androidx.window.layout.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
 
 object ViewUtil {

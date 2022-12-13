@@ -49,9 +49,6 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         super.onCreate(savedInstanceState)
 
         initInjector()
-
-        //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -1,6 +1,7 @@
 <resources>
     <string name="promo_code">Promo Code</string>
     <string name="hari">Hari</string>
+    <string name="hari_small">hari</string>
     <string name="jam">Jam</string>
     <string name="menit">Menit</string>
     <string name="detik">Detik</string>
@@ -87,4 +88,5 @@
     <string name="discovery_calendar_line">────</string>
     <string name="discovery_this_section_is_still_empty">Oops, bagian ini masih kosong.</string>
     <string name="product_bundling_atc_applink">tokopedia://product-bundle/%s?source=discovery&amp;bundleId=%s</string>
+    <string name="content_card_image">Content Card Image</string>
 </resources>
