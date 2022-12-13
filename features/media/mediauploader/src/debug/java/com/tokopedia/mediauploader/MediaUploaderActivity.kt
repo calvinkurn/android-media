@@ -130,6 +130,8 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             edtExtraBody.showWithCondition(isChecked)
         }
 
+        edtExtraHeader.setText("{\n\t\n}")
+        edtExtraBody.setText("{\n\t\n}")
         edtSourceId.editText.setText(sourceId)
         edtUserId.editText.setText(userSession.userId)
         edtUserId.editText.isEnabled = false
