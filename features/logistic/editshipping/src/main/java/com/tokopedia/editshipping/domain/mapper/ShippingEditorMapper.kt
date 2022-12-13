@@ -1,7 +1,6 @@
 package com.tokopedia.editshipping.domain.mapper
 
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
-import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.editshipping.util.EditShippingConstant.WHITELABEL_SHIPPER_ID
 import com.tokopedia.logisticCommon.data.response.shippingeditor.*
 import javax.inject.Inject
@@ -211,57 +210,5 @@ class ShippingEditorMapper @Inject constructor() {
             int64 = response.int64
             valid = response.valid
         }
-    }
-
-    fun combineTickerAndShipperList(
-        shipperList: ShipperListModel,
-        tickerModel: ShipperTickerModel
-    ): ShipperListModel {
-        tickerModel.courierTicker.forEach { tickerShipper ->
-            shipperList.findShipperById(tickerShipper.shipperId)?.run {
-                setTickerDataToShipper(tickerShipper)
-            }
-        }
-        return shipperList
-    }
-
-    private fun ShipperListModel.findShipperById(shipperId: Long): ShipperModel? {
-        return shippers.conventional.find { shipper -> shipperId == shipper.shipperId }
-            ?: shippers.onDemand.find { shipper -> shipperId == shipper.shipperId }
-    }
-
-    private fun ShipperModel.setTickerDataToShipper(tickerShipper: CourierTickerModel) {
-        tickerState = tickerShipper.tickerState
-        isAvailable = tickerState != EditShippingConstant.TICKER_STATE_UNAVAILABLE
-        warehouseModel = tickerShipper.warehouses
-        if (!isAvailable) {
-            isActive = false
-        }
-        setTickerDataToShipperProduct(tickerShipper.shipperProduct)
-    }
-
-    private fun ShipperModel.setTickerDataToShipperProduct(
-        tickerShipperProducts: List<ShipperProductTickerModel>
-    ) {
-        var shouldReCheckActiveState = false
-        shipperProduct.forEach { productModel ->
-            val tickerShipperProductData =
-                tickerShipperProducts.find { tickerShipperProduct -> tickerShipperProduct.shipperProductId.toString() == productModel.shipperProductId }
-            val shipperProductAvailable =
-                tickerShipperProductData?.isAvailable ?: isAvailable
-            productModel.isAvailable = shipperProductAvailable
-            if (shipperProductAvailable.not()) {
-                productModel.isActive = false
-                shouldReCheckActiveState = true
-            }
-        }
-
-        if (shouldReCheckActiveState) {
-            setActiveState()
-        }
-    }
-
-    private fun ShipperModel.setActiveState() {
-        isActive = shipperProduct.any { shipperProductModel -> shipperProductModel.isActive }
     }
 }
