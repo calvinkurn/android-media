@@ -28,6 +28,8 @@ import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationRes
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
+import com.tokopedia.epharmacy.utils.LabelKeys.Companion.FAILED
+import com.tokopedia.epharmacy.utils.LabelKeys.Companion.SUCCESS
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -157,16 +159,21 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun observerPrescriptionError() {
         ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
-            when (error) {
-                is EPharmacyMiniConsultationToaster -> showToast(
-                    if (error.showErrorToast) {
-                        TYPE_ERROR
-                    } else {
-                        Toaster.TYPE_NORMAL
-                    },
-                    error.message
-                )
-            }
+            if (error is EPharmacyMiniConsultationToaster) showToast(
+                if (error.showErrorToast) {
+                    EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
+                        FAILED,
+                                error.message
+                    )
+                    TYPE_ERROR
+                } else {
+                    EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
+                        SUCCESS,error.message
+                    )
+                    Toaster.TYPE_NORMAL
+                },
+                error.message
+            )
         }
     }
 
