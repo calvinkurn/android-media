@@ -24,35 +24,61 @@ class BulkReviewModule {
                     BulkReviewGetFormRequestState::class.java,
                     BulkReviewGetFormRequestState::type.name,
                     true
-                ).registerSubtype(BulkReviewGetFormRequestState.Requesting::class.java)
-                    .registerSubtype(BulkReviewGetFormRequestState.Complete.Success::class.java)
-                    .registerSubtype(BulkReviewGetFormRequestState.Complete.Error::class.java)
+                ).registerSubtype(
+                    BulkReviewGetFormRequestState.Requesting::class.java,
+                    BulkReviewGetFormRequestState.Requesting::class.java.name
+                ).registerSubtype(
+                    BulkReviewGetFormRequestState.Complete.Success::class.java,
+                    BulkReviewGetFormRequestState.Complete.Success::class.java.name
+                ).registerSubtype(
+                    BulkReviewGetFormRequestState.Complete.Error::class.java,
+                    BulkReviewGetFormRequestState.Complete.Error::class.java.name
+                )
             )
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(
                     BulkReviewGetBadRatingCategoryRequestState::class.java,
                     BulkReviewGetBadRatingCategoryRequestState::type.name,
                     true
-                ).registerSubtype(BulkReviewGetBadRatingCategoryRequestState.Requesting::class.java)
-                    .registerSubtype(BulkReviewGetBadRatingCategoryRequestState.Complete.Success::class.java)
-                    .registerSubtype(BulkReviewGetBadRatingCategoryRequestState.Complete.Error::class.java)
+                ).registerSubtype(
+                    BulkReviewGetBadRatingCategoryRequestState.Requesting::class.java,
+                    BulkReviewGetBadRatingCategoryRequestState.Requesting::class.java.name
+                ).registerSubtype(
+                    BulkReviewGetBadRatingCategoryRequestState.Complete.Success::class.java,
+                    BulkReviewGetBadRatingCategoryRequestState.Complete.Success::class.java.name
+                ).registerSubtype(
+                    BulkReviewGetBadRatingCategoryRequestState.Complete.Error::class.java,
+                    BulkReviewGetBadRatingCategoryRequestState.Complete.Error::class.java.name
+                )
             )
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(
                     BulkReviewSubmitRequestState::class.java,
                     BulkReviewSubmitRequestState::type.name,
                     true
-                ).registerSubtype(BulkReviewSubmitRequestState.Requesting::class.java)
-                    .registerSubtype(BulkReviewSubmitRequestState.Complete.Success::class.java)
-                    .registerSubtype(BulkReviewSubmitRequestState.Complete.Error::class.java)
+                ).registerSubtype(
+                    BulkReviewSubmitRequestState.Requesting::class.java,
+                    BulkReviewSubmitRequestState.Requesting::class.java.name
+                ).registerSubtype(
+                    BulkReviewSubmitRequestState.Complete.Success::class.java,
+                    BulkReviewSubmitRequestState.Complete.Success::class.java.name
+                ).registerSubtype(
+                    BulkReviewSubmitRequestState.Complete.Error::class.java,
+                    BulkReviewSubmitRequestState.Complete.Error::class.java.name
+                )
             )
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(
                     CreateReviewMediaUploadResult::class.java,
                     CreateReviewMediaUploadResult::type.name,
                     true
-                ).registerSubtype(CreateReviewMediaUploadResult.Success::class.java)
-                    .registerSubtype(CreateReviewMediaUploadResult.Error::class.java)
+                ).registerSubtype(
+                    CreateReviewMediaUploadResult.Success::class.java,
+                    CreateReviewMediaUploadResult.Success::class.java.name
+                ).registerSubtype(
+                    CreateReviewMediaUploadResult.Error::class.java,
+                    CreateReviewMediaUploadResult.Error::class.java.name
+                )
             )
             .create()
     }
