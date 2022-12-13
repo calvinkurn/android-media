@@ -140,6 +140,7 @@
     <string name="title_review_inbox">Review Inbox</string>
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
+    <string name="title_bulk_create_review">Kasih Ulasan Sekaligus</string>
     <string name="title_review_reminder">Review Reminder</string>
     <string name="title_review_credibility">Review Credibility</string>
     <string name="title_review_media_gallery">Foto &amp; Video Pembeli</string>
