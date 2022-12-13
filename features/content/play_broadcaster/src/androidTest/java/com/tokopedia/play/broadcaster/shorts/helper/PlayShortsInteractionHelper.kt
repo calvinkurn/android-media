@@ -18,13 +18,14 @@ import org.hamcrest.CoreMatchers
  * Created By : Jonathan Darwin on December 12, 2022
  */
 
+/** General */
+fun clickCloseBottomSheet() {
+    click(unifyR.id.bottom_sheet_close)
+}
+
 /** Switch Account */
 fun clickToolbar() {
     click(contentCommonR.id.text_com_toolbar_subtitle)
-}
-
-fun closeSwitchAccountBottomSheet() {
-    click(unifyR.id.bottom_sheet_close)
 }
 
 fun clickShopAccount() {
@@ -37,6 +38,23 @@ fun clickUserAccount() {
 
 fun clickCancelSwitchAccount() {
     click(dialogR.id.dialog_btn_primary)
+}
+
+/** Ugc Onboarding */
+fun clickTextFieldUsername() {
+    click(unifyR.id.text_field_input)
+}
+
+fun inputUsername(username: String = "pokemon") {
+    type(unifyR.id.text_field_input, username)
+}
+
+fun clickAcceptTnc() {
+    click(contentCommonR.id.cbx_tnc)
+}
+
+fun clickSubmitUgcOnboarding() {
+    click(contentCommonR.id.btn_continue)
 }
 
 
