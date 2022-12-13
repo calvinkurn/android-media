@@ -34,7 +34,6 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
         setDefaults(Notification.DEFAULT_SOUND)
         setOnlyAlertOnce(true)
-        /** TODO: adjust smallIcon here */
         setSmallIcon(com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp)
         setGroup(NOTIFICATION_GROUP)
         priority = NotificationCompat.PRIORITY_HIGH
@@ -79,7 +78,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     fun onStart() {
         val builder = notificationBuilder
             .setProgress(0, 0, true)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(NOTIFICATION_PROGRESS_TITLE)
             .setContentText(NOTIFICATION_PROGRESS_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_PROGRESS_DESCRIPTION))
             .setOngoing(true)
@@ -92,7 +91,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     fun onProgress(progress: Int) {
         val builder = notificationBuilder
             .setProgress(PROGRESS_MAX, progress, false)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(NOTIFICATION_PROGRESS_TITLE)
             .setContentText(NOTIFICATION_PROGRESS_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_PROGRESS_DESCRIPTION))
             .setOngoing(true)
@@ -121,12 +120,13 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             )
         }
 
+        notificationBuilder.addAction(0, NOTIFICATION_SUCCESS_ACTION_TEXT, openPlayRoomPendingIntent)
+
         val builder = notificationBuilder
             .setProgress(0, 0, false)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(NOTIFICATION_SUCCESS_TITLE)
             .setContentText(NOTIFICATION_SUCCESS_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_SUCCESS_DESCRIPTION))
-            .setContentIntent(openPlayRoomPendingIntent)
             .setOngoing(false)
             .setShowWhen(true)
             .setAutoCancel(true)
@@ -158,11 +158,12 @@ class PlayShortsUploadNotificationManager @Inject constructor(
 
         val builder = notificationBuilder
             .setProgress(0, 0, false)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(NOTIFICATION_FAIL_TITLE)
             .setContentText(NOTIFICATION_FAIL_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_FAIL_DESCRIPTION))
             .setOngoing(false)
             .setShowWhen(true)
+            .setAutoCancel(true)
             .build()
 
         notificationManager.notify(notificationId, builder)
@@ -173,11 +174,16 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         const val PROGRESS_MAX = 100
 
         const val NOTIFICATION_GROUP = "com.tokopedia"
-        /** TODO: change title & description */
-        const val NOTIFICATION_TITLE = "Tokopedia"
-        const val NOTIFICATION_PROGRESS_DESCRIPTION = "Memproses..."
-        const val NOTIFICATION_SUCCESS_DESCRIPTION = "Berhasil di-upload"
-        const val NOTIFICATION_FAIL_DESCRIPTION = "Gagal upload"
+
+        const val NOTIFICATION_PROGRESS_TITLE = "Tunggu ya, videomu lagi di-upload"
+        const val NOTIFICATION_PROGRESS_DESCRIPTION = "Selagi menunggu video di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia."
+
+        const val NOTIFICATION_SUCCESS_TITLE = "Yay, videomu berhasil di-upload!"
+        const val NOTIFICATION_SUCCESS_DESCRIPTION = "Lihat videomu di sini, yuk!"
+        const val NOTIFICATION_SUCCESS_ACTION_TEXT = "Lihat"
+
+        const val NOTIFICATION_FAIL_TITLE = "Oops, gagal upload video"
+        const val NOTIFICATION_FAIL_DESCRIPTION = "Tenang, kamu masih bisa coba upload videonya lagi."
         const val NOTIFICATION_FAIL_RETRY_ACTION = "Coba lagi"
 
         const val CHANNEL_NAME = "Tokopedia Play Shorts"
