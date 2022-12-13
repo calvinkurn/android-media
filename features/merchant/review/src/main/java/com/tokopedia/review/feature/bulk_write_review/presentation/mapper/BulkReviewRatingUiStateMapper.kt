@@ -40,7 +40,8 @@ class BulkReviewRatingUiStateMapper @Inject constructor() {
         return Pair(
             reviewForm.inboxID.orEmpty(),
             BulkReviewRatingUiState.Showing(
-                rating = reviewItemRating?.rating ?: DEFAULT_PRODUCT_RATING
+                rating = reviewItemRating?.rating ?: DEFAULT_PRODUCT_RATING,
+                animate = reviewItemRating?.animate ?: true
             )
         )
     }

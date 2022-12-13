@@ -23,6 +23,10 @@ class WidgetBulkReviewRating @JvmOverloads constructor(
     )
 
     init {
+        reset()
+    }
+
+    fun reset() {
         binding.reviewFormRating.resetStars()
     }
 
@@ -32,7 +36,7 @@ class WidgetBulkReviewRating @JvmOverloads constructor(
                 gone()
             }
             is BulkReviewRatingUiState.Showing -> {
-                binding.reviewFormRating.setRating(uiState.rating)
+                binding.reviewFormRating.setRating(uiState.rating, uiState.animate)
                 show()
             }
         }

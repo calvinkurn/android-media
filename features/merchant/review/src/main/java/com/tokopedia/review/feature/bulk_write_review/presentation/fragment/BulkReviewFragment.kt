@@ -183,6 +183,10 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         viewModel.onRatingChanged(inboxID, rating)
     }
 
+    override fun onRatingSet(inboxID: String) {
+        viewModel.onRatingSet(inboxID)
+    }
+
     override fun onClickChangeBadRatingCategory(inboxID: String) {
         clearViewFocus()
         viewModel.onChangeBadRatingCategory(inboxID)

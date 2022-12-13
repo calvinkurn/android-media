@@ -127,6 +127,7 @@ class BulkReviewItemViewHolder(
     }
 
     private fun setupRating(inboxID: String, ratingUiState: BulkReviewRatingUiState) {
+        binding.widgetBulkWriteReviewFormRating.reset()
         binding.widgetBulkWriteReviewFormRating.updateUiState(ratingUiState)
         binding.widgetBulkWriteReviewFormRating.setListener(object :
                 WidgetBulkReviewRating.Listener {
@@ -134,6 +135,7 @@ class BulkReviewItemViewHolder(
                     listener.onRatingChanged(inboxID, rating)
                 }
             })
+        listener.onRatingSet(inboxID)
     }
 
     private fun setupBadRatingCategories(
@@ -245,6 +247,7 @@ class BulkReviewItemViewHolder(
     interface Listener {
         fun onClickRemoveReviewItem(inboxID: String)
         fun onRatingChanged(inboxID: String, rating: Int)
+        fun onRatingSet(inboxID: String)
         fun onClickChangeBadRatingCategory(inboxID: String)
         fun onClickTestimonyMiniAction(inboxID: String)
         fun onClickAddAttachmentMiniAction(inboxID: String)

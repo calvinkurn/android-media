@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.bulk_write_review.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.iconunify.IconUnify
@@ -28,6 +29,7 @@ class WidgetBulkReviewMiniActions @JvmOverloads constructor(
     )
 
     private val adapter: BulkReviewMiniActionAdapter = BulkReviewMiniActionAdapter(this)
+    private val itemAnimator by lazy(LazyThreadSafetyMode.NONE) { DefaultItemAnimator() }
     private var listener: Listener? = null
 
     init {
@@ -48,6 +50,11 @@ class WidgetBulkReviewMiniActions @JvmOverloads constructor(
             }
             is BulkReviewMiniActionsUiState.Showing -> {
                 adapter.setMiniActions(uiState.miniActions)
+                if (animate) {
+                    binding.rvBulkReviewMiniAction.itemAnimator = itemAnimator
+                } else {
+                    binding.rvBulkReviewMiniAction.itemAnimator = null
+                }
                 animateShow(animate = animate, onAnimationStart = { show() })
             }
         }

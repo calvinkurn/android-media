@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
@@ -45,6 +46,8 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     private val adapter = CreateReviewMediaAdapter(typeFactory)
     private val transitionHandler = TransitionHandler()
 
+    private val itemAnimator by lazy(LazyThreadSafetyMode.NONE) { DefaultItemAnimator() }
+
     override val binding = WidgetCreateReviewMediaPickerBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
@@ -62,7 +65,8 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     }
 
     private fun showMediaPickerUploadingState(
-        uiState: CreateReviewMediaPickerUiState.Uploading
+        uiState: CreateReviewMediaPickerUiState.Uploading,
+        animate: Boolean
     ) {
         val successCount = uiState
             .mediaItems
@@ -71,28 +75,36 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
             }
             .count { it.state == CreateReviewMediaUiModel.State.UPLOADED }
         transitionHandler.transitionToShowMediaPicker(showError = false, showPoem = true)
-        setupMediaPicker(uiState.mediaItems)
+        setupMediaPicker(uiState.mediaItems, animate)
         setupWaitingState(uiState.poem, successCount)
     }
 
     private fun showMediaPickerSuccessUploadState(
-        uiState: CreateReviewMediaPickerUiState.SuccessUpload
+        uiState: CreateReviewMediaPickerUiState.SuccessUpload,
+        animate: Boolean
     ) {
         transitionHandler.transitionToShowMediaPicker(showError = false, showPoem = uiState.poem.id.isMoreThanZero())
-        setupMediaPicker(uiState.mediaItems)
+        setupMediaPicker(uiState.mediaItems, animate)
         setupWaitingState(uiState.poem)
     }
 
     private fun showMediaPickerFailedUploadState(
-        uiState: CreateReviewMediaPickerUiState.FailedUpload
+        uiState: CreateReviewMediaPickerUiState.FailedUpload,
+        animate: Boolean
     ) {
         transitionHandler.transitionToShowMediaPicker(showError = true, showPoem = false)
-        setupMediaPicker(uiState.mediaItems)
+        setupMediaPicker(uiState.mediaItems, animate)
     }
 
     private fun setupMediaPicker(
-        mediaItems: List<CreateReviewMediaUiModel>
+        mediaItems: List<CreateReviewMediaUiModel>,
+        animate: Boolean
     ) {
+        if (animate) {
+            binding.layoutMediaPicker.root.itemAnimator = itemAnimator
+        } else {
+            binding.layoutMediaPicker.root.itemAnimator = null
+        }
         adapter.setMediaReviewData(mediaItems)
     }
 
@@ -121,19 +133,19 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
                 })
             }
             is CreateReviewMediaPickerUiState.Uploading -> {
-                showMediaPickerUploadingState(uiState)
+                showMediaPickerUploadingState(uiState, animate)
                 animateShow(animate = animate, onAnimationEnd = {
                     continuation?.resume(Unit)
                 })
             }
             is CreateReviewMediaPickerUiState.SuccessUpload -> {
-                showMediaPickerSuccessUploadState(uiState)
+                showMediaPickerSuccessUploadState(uiState, animate)
                 animateShow(animate = animate, onAnimationEnd = {
                     continuation?.resume(Unit)
                 })
             }
             is CreateReviewMediaPickerUiState.FailedUpload -> {
-                showMediaPickerFailedUploadState(uiState)
+                showMediaPickerFailedUploadState(uiState, animate)
                 animateShow(animate = animate, onAnimationEnd = {
                     continuation?.resume(Unit)
                 })

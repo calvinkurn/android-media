@@ -68,10 +68,11 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
             animatedStarsView.reviewView.setOnClickListener {
                 clickAt = index.inc()
                 generateReviewText(clickAt)
+                cancelPendingAnimations()
                 if (clickAt < lastReview) {
-                    handle.post(reverseAnimation)
+                    handle.post(reverseAnimated)
                 } else {
-                    handle.post(normalAnimation)
+                    handle.post(normalAnimated)
                 }
                 if (lastReview != clickAt) {
                     listener?.onClick(clickAt)
@@ -106,7 +107,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         }
     }
 
-    private val normalAnimation = object : Runnable {
+    private val normalAnimated = object : Runnable {
         override fun run() {
             if (count <= clickAt) {
                 val reviewData = listOfStarsView[count.dec()]
@@ -124,7 +125,25 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         }
     }
 
-    private val reverseAnimation = object : Runnable {
+    private val normalNonAnimated = object : Runnable {
+        override fun run() {
+            if (count <= clickAt) {
+                val reviewData = listOfStarsView[count.dec()]
+                if (isNormalAnim(reviewData)) {
+                    reviewData.isAnimated = true
+                    reviewData.reviewView.toggleStar()
+                }
+                count++
+                handle.post(this)
+            } else {
+                lastReview = clickAt
+                count = INITIAL_COUNT
+                handle.removeCallbacks(this)
+            }
+        }
+    }
+
+    private val reverseAnimated = object : Runnable {
         override fun run() {
             if (countMinus > clickAt) {
                 val reviewData = listOfStarsView[countMinus.dec()]
@@ -134,6 +153,24 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
                 }
                 countMinus--
                 handle.postDelayed(this, RATING_ANIMATION_DELAY) // Delay each animation to reach sequential animation
+            } else {
+                lastReview = clickAt
+                countMinus = INITIAL_COUNT_MINUS
+                handle.removeCallbacks(this)
+            }
+        }
+    }
+
+    private val reverseNonAnimated = object : Runnable {
+        override fun run() {
+            if (countMinus > clickAt) {
+                val reviewData = listOfStarsView[countMinus.dec()]
+                if (shouldReserveAnim(reviewData)) {
+                    reviewData.isAnimated = false
+                    reviewData.reviewView.toggleStar()
+                }
+                countMinus--
+                handle.post(this)
             } else {
                 lastReview = clickAt
                 countMinus = INITIAL_COUNT_MINUS
@@ -163,18 +200,20 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     /**
      * @param reviewClickAt which star should be animating
      */
-    fun renderInitialReviewWithData(reviewClickAt: Int) {
+    fun renderInitialReviewWithData(reviewClickAt: Int, animate: Boolean = true) {
         this.clickAt = reviewClickAt
-        handle.post(normalAnimation)
+        cancelPendingAnimations()
+        handle.post(if (animate) normalAnimated else normalNonAnimated)
         generateReviewText(reviewClickAt)
     }
 
-    fun setRating(rating: Int) {
+    fun setRating(rating: Int, animate: Boolean = true) {
         this.clickAt = rating
+        cancelPendingAnimations()
         if (clickAt < lastReview) {
-            handle.post(reverseAnimation)
+            handle.post(if (animate) reverseAnimated else reverseNonAnimated)
         } else {
-            handle.post(normalAnimation)
+            handle.post(if (animate) normalAnimated else normalNonAnimated)
         }
         generateReviewText(rating)
     }
@@ -193,6 +232,13 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
             it.reviewView.resetStars()
             it.isAnimated = false
         }
+    }
+
+    private fun cancelPendingAnimations() {
+        handle.removeCallbacks(normalAnimated)
+        handle.removeCallbacks(normalNonAnimated)
+        handle.removeCallbacks(reverseAnimated)
+        handle.removeCallbacks(reverseNonAnimated)
     }
 
     interface AnimatedReputationListener {

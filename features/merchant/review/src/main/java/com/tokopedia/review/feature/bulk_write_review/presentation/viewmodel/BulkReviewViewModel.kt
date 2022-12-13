@@ -325,6 +325,29 @@ class BulkReviewViewModel @Inject constructor(
         shouldShowBadRatingCategoryBottomSheet(inboxID, rating, previousRating)
     }
 
+    fun onRatingSet(inboxID: String) {
+        reviewItemsRating.getAndUpdate {
+            it.toMutableList().apply {
+                find { reviewItemRating ->
+                    reviewItemRating.inboxID == inboxID
+                }.let { previousUiModel ->
+                    if (previousUiModel != null) {
+                        remove(previousUiModel)
+                        add(previousUiModel.copy(animate = false))
+                    } else {
+                        add(
+                            BulkReviewItemRatingUiModel(
+                                inboxID = inboxID,
+                                rating = BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING,
+                                animate = false
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun onDismissBadRatingCategoryBottomSheet() {
         dismissBadRatingCategoryBottomSheet()
     }
@@ -1302,7 +1325,7 @@ class BulkReviewViewModel @Inject constructor(
                         remove(previousUiModel)
                         add(previousUiModel.copy(rating = rating))
                     } else {
-                        add(BulkReviewItemRatingUiModel(inboxID = inboxID, rating = rating))
+                        add(BulkReviewItemRatingUiModel(inboxID = inboxID, rating = rating, animate = true))
                     }
                 }
             }
