@@ -2,7 +2,7 @@ package com.tokopedia.kyc_centralized.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
+import com.tokopedia.kyc_centralized.domain.GetProjectInfoUseCase
 import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
@@ -24,13 +24,13 @@ class UserIdentificationViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getUserProjectInfoUseCase: GetUserProjectInfoUseCase = mockk(relaxed = true)
+    private val getProjectInfoUseCase: GetProjectInfoUseCase = mockk(relaxed = true)
     private val userProjectInfoObservable: Observer<Result<KycUserProjectInfoPojo>> = mockk(relaxed = true)
     private lateinit var viewModel: UserIdentificationViewModel
 
     @Before fun setup() {
         viewModel = UserIdentificationViewModel(
-                getUserProjectInfoUseCase,
+                getProjectInfoUseCase,
                 CoroutineTestDispatchersProvider
         )
         viewModel.userProjectInfo.observeForever(userProjectInfoObservable)
@@ -44,7 +44,7 @@ class UserIdentificationViewModelTest {
         val testProjectId = 0
 
         coEvery {
-            getUserProjectInfoUseCase(any())
+            getProjectInfoUseCase(any())
         } returns expectedReturn
 
         viewModel.getUserProjectInfo(testProjectId)
@@ -60,7 +60,7 @@ class UserIdentificationViewModelTest {
         val testProjectId = 0
 
         coEvery {
-            getUserProjectInfoUseCase(any())
+            getProjectInfoUseCase(any())
         } throws expectedReturn
 
         viewModel.getUserProjectInfo(testProjectId)

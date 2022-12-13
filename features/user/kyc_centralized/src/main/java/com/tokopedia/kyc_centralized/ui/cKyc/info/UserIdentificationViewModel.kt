@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
+import com.tokopedia.kyc_centralized.domain.GetProjectInfoUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.usecase.coroutines.Fail
@@ -14,8 +14,8 @@ import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 class UserIdentificationViewModel @Inject constructor (
-        private val getUserProjectInfoUseCase: GetUserProjectInfoUseCase,
-        dispatcher: CoroutineDispatchers
+    private val getProjectInfoUseCase: GetProjectInfoUseCase,
+    dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
     private val _userProjectInfo = MutableLiveData<Result<KycUserProjectInfoPojo>>()
@@ -24,7 +24,7 @@ class UserIdentificationViewModel @Inject constructor (
 
     fun getUserProjectInfo(projectId: Int) {
         launchCatchError(block = {
-            val userProjectInfo = getUserProjectInfoUseCase(mapOf(
+            val userProjectInfo = getProjectInfoUseCase(mapOf(
                 PARAM_PROJECT_ID to projectId
             ))
             _userProjectInfo.postValue(Success(userProjectInfo))

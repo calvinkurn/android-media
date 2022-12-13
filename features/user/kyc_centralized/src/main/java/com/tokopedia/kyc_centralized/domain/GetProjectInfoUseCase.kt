@@ -8,7 +8,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
 import javax.inject.Inject
 
-class GetUserProjectInfoUseCase @Inject constructor(
+class GetProjectInfoUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers,
 ) : CoroutineUseCase<Map<String, Int>, KycUserProjectInfoPojo>(dispatchers.io) {
