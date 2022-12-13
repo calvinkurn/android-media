@@ -65,7 +65,7 @@ class BitmapCroppingAndCompression constructor(
         launchCatchError(coroutineContext, block = {
             val startTime = System.currentTimeMillis()
             var compressionTimeProcess = -1L
-            val quality = getQualityRedcution(bitmap)
+            val quality = getQualityReduction(bitmap)
             var bitmapCompressed = bitmap
             if (quality != 100F) {
                 bitmapCompressed = doCompression(bitmap, quality)
@@ -101,7 +101,7 @@ class BitmapCroppingAndCompression constructor(
 
             var bitmapCompressed: Bitmap? = null
             var bitmapFinal: Bitmap? = bitmapCropped
-            val quality = getQualityRedcution(bitmapCropped)
+            val quality = getQualityReduction(bitmapCropped)
             var compressionTimeProcess = -1L
 
             if (quality != 100F) {
@@ -185,7 +185,7 @@ class BitmapCroppingAndCompression constructor(
      * @param bitmap
      * @return quality reduction
      */
-    private fun getQualityRedcution(bitmap: Bitmap): Float {
+    private fun getQualityReduction(bitmap: Bitmap): Float {
         val size = calculateSize(bitmap) / MB_DIVIDER
         return when {
             size > KYCConstant.MB_2 && size < KYCConstant.MB_3 -> { KYCConstant.QUALITY_70 }
