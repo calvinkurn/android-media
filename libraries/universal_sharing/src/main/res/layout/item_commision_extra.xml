@@ -13,6 +13,7 @@
         android:textColor="@color/Unify_GN500"
         android:layout_marginEnd="@dimen/unify_space_12"
         tools:text="Komisi Ekstra"
+        app:typographyWeight="bold"
         android:background="@drawable/background_ticker_free"/>
 
     <com.tokopedia.unifyprinciples.Typography
