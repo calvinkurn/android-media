@@ -7,6 +7,10 @@ import com.tokopedia.mvc.di.module.MerchantVoucherCreationViewModelModule
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.ChangeQuotaBottomSheet
+import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
+import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeFragment
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationFragment
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
@@ -43,6 +47,11 @@ interface MerchantVoucherCreationComponent {
     fun inject(fragment: SummaryFragment)
 
     fun inject(fragment: DownloadVoucherImageBottomSheet)
-    fun inject(bottomSheet: ChangeQuotaBottomSheet)
 
+    fun inject(activity: VoucherTypeActivity)
+    fun inject(fragment: VoucherTypeFragment)
+    fun inject(activity: VoucherInformationActivity)
+    fun inject(fragment: VoucherInformationFragment)
+
+    fun inject(bottomSheet: ChangeQuotaBottomSheet)
 }
