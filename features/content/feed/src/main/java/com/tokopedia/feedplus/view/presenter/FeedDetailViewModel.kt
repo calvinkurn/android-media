@@ -61,6 +61,7 @@ class FeedDetailViewModel @Inject constructor(
         })
     }
 
+    //TODO(): AddThis
     fun fetchMerchantVoucherSummary(shopId: String) {
         launchCatchError(dispatcherProvider.io, block = {
             val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
@@ -77,6 +78,7 @@ class FeedDetailViewModel @Inject constructor(
         }
     }
 
+    //TODO(): AddThis
     private fun handleDataForFeedDetail(
         feedQuery: FeedXGQLResponse,
         page: Int,

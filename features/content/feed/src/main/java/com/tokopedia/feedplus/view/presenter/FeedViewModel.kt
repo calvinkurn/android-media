@@ -189,6 +189,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    //TODO(): AddThis
     fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
         viewModelScope.launchCatchError(
             baseDispatcher.io,
@@ -244,6 +245,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    //TODO(): AddThis
     fun checkUpcomingCampaignInitialReminderStatus(campaign: FeedXCampaign, rowNumber: Int) {
         viewModelScope.launchCatchError(baseDispatcher.io,
             block = {
@@ -273,6 +275,7 @@ class FeedViewModel @Inject constructor(
             return@withContext response.response.isAvailable
         }
 
+    //TODO(): AddThis
     fun setUnsetReminder(campaign: FeedXCampaign, rowNumber: Int) {
         viewModelScope.launchCatchError(
             block = {
@@ -508,6 +511,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    //TODO(): AddThis
     fun addtoCartProduct(
         postTagItem: FeedXProduct,
         shopId: String,
@@ -587,6 +591,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    //TODO(): AddThis
     fun doAutoRefreshPlayWidget() {
         launchCatchError(
             block = {
@@ -750,6 +755,7 @@ class FeedViewModel @Inject constructor(
     /**
      * Shop Recommendation Widget
      */
+    //TODO(): AddThis
     fun getShopRecomWidget(nextCursor: String = "") {
         launchCatchError(
             baseDispatcher.io,
@@ -802,6 +808,7 @@ class FeedViewModel @Inject constructor(
         return ShopRecomWidgetModel(uiModel)
     }
 
+    //TODO(): AddThis
     fun handleClickFollowButtonShopRecom(itemId: Long) {
         val currentItem = _shopRecom.value.shopRecomUiModel.items.find { it.id == itemId } ?: return
         val currentState =
@@ -855,6 +862,7 @@ class FeedViewModel @Inject constructor(
         )
     }
 
+    //TODO(): AddThis
     fun handleClickRemoveButtonShopRecom(itemID: Long) {
         _shopRecom.update { data ->
             data.copy(
