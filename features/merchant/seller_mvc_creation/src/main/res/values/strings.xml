@@ -156,6 +156,8 @@
     <string name="smvc_kode_kupon_label">Kode Kupon</string>
     <string name="smvc_periode_mulai_label">Periode Mulai</string>
     <string name="smvc_periode_berakhir_label">Periode Berakhir</string>
+    <string name="smvc_diulang_selama_label">Diulang Selama</string>
+    <string name="smvc_lihat_jadwal_label">Lihat Jadwal</string>
     <string name="smvc_pengaturan_kupon_label">Pengaturan Kupon</string>
     <string name="smvc_tipe_promo_label">Tipe Promo</string>
     <string name="smvc_tipe_potongan_label">Tipe Potongan</string>
@@ -246,6 +248,7 @@
     <string name="smvc_summary_page_error_dialog_desc">Kupon gagal dibuat karena [Alasan gagal]. Tunggu beberapa saat atau coba lagi buat kuponmu, ya.</string>
     <string name="smvc_summary_page_error_dialog_negative_action">Ke Daftar Kupon</string>
     <string name="smvc_summary_page_error_dialog_positive_action">Coba Lagi</string>
+    <string name="smvc_summary_page_multiperiod_format">%d Bulan</string>
 
 
     <!--Voucher Creation Step One-->
