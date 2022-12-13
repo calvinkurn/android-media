@@ -55,7 +55,6 @@ object ScheduleDeliveryAnalytics : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-
     fun sendClickArrowInScheduledDeliveryOptionsOnTokopediaNowEvent() {
         val gtmData = getGtmData(
             EventName.CLICK_PP,
