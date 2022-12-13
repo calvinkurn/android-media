@@ -24,9 +24,6 @@ import dagger.multibindings.StringKey
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-/**
- * @author by nisie on 13/11/18.
- */
 @Module
 open class UserIdentificationCommonModule {
 
@@ -34,23 +31,7 @@ open class UserIdentificationCommonModule {
 
     @ActivityScope
     @Provides
-    fun providesContext(@ApplicationContext context: Context): Context = context
-
-    @ActivityScope
-    @Provides
-    fun provideResources(@ApplicationContext context: Context): Resources {
-        return context.resources
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context?): UserSession {
-        return UserSession(context)
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
@@ -73,15 +54,6 @@ open class UserIdentificationCommonModule {
     @Provides
     open fun provideCipher(): CipherProvider {
         return CipherProviderImpl()
-    }
-
-    @Provides
-    @ActivityScope
-    open fun provideGetUserProjectInfoUseCase(
-        @ApplicationContext repository: GraphqlRepository,
-        dispatchers: CoroutineDispatchers
-    ): GetUserProjectInfoUseCase {
-        return GetUserProjectInfoUseCase(repository, dispatchers)
     }
 
 }

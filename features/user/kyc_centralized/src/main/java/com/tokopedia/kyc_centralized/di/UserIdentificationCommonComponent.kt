@@ -8,9 +8,6 @@ import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.ui.cKyc.alacarte.UserIdentificationInfoSimpleFragment
 import dagger.Component
 
-/**
- * @author by nisie on 13/11/18.
- */
 @ActivityScope
 @Component(modules = [
     UserIdentificationCommonModule::class,
