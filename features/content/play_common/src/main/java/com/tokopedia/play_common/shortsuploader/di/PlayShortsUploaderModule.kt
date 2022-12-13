@@ -5,6 +5,8 @@ import androidx.work.WorkManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploaderImpl
+import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalyticImpl
 import dagger.Module
 import dagger.Provides
 
@@ -22,5 +24,10 @@ class PlayShortsUploaderModule {
     @Provides
     fun providePlayShortsUploader(workManager: WorkManager): PlayShortsUploader {
         return PlayShortsUploaderImpl(workManager)
+    }
+
+    @Provides
+    fun providePlayShortsUploadAnalytic(): PlayShortsUploadAnalytic {
+        return PlayShortsUploadAnalyticImpl()
     }
 }

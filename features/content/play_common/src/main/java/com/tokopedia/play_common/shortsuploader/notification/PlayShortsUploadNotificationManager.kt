@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import javax.inject.Inject
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.model.orEmpty
@@ -108,17 +109,21 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     }
 
     fun onSuccess(): ForegroundInfo {
-        val intent = RouteManager.getIntent(context, getPlayRoomWebLink())
+        val intent = PlayShortsUploadReceiver.getIntent(
+            context,
+            uploadData.orEmpty(),
+            PlayShortsUploadReceiver.Companion.Action.OpenPlayRoom
+        )
 
         val openPlayRoomPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getActivity(
+            PendingIntent.getBroadcast(
                 context,
                 0,
                 intent,
                 PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         } else {
-            PendingIntent.getActivity(
+            PendingIntent.getBroadcast(
                 context,
                 0,
                 intent,
@@ -126,13 +131,12 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             )
         }
 
-        notificationBuilder.addAction(0, NOTIFICATION_SUCCESS_ACTION_TEXT, openPlayRoomPendingIntent)
-
         val notification = notificationBuilder
             .setProgress(0, 0, false)
             .setContentTitle(NOTIFICATION_SUCCESS_TITLE)
             .setContentText(NOTIFICATION_SUCCESS_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_SUCCESS_DESCRIPTION))
+            .setContentIntent(openPlayRoomPendingIntent)
             .setOngoing(false)
             .setShowWhen(true)
             .setAutoCancel(true)
@@ -144,7 +148,11 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     }
 
     fun onError(): ForegroundInfo {
-        val intent = PlayShortsUploadReceiver.getIntent(context, uploadData.orEmpty())
+        val intent = PlayShortsUploadReceiver.getIntent(
+            context,
+            uploadData.orEmpty(),
+            PlayShortsUploadReceiver.Companion.Action.Retry
+        )
 
         val retryPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getBroadcast(
@@ -179,26 +187,6 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         return ForegroundInfo(notificationId, notification)
     }
 
-    private fun getPlayRoomWebLink(): String {
-        return buildString {
-            append(TokopediaUrl.getInstance().WEB)
-            append(PLAY_ROOM_PATH)
-            append(uploadData?.shortsId.orEmpty())
-            append("?")
-            append("$SOURCE_TYPE=${getSourceType()}")
-            append("&")
-            append("$SOURCE_ID=${uploadData?.authorId.orEmpty()}")
-        }
-    }
-
-    private fun getSourceType(): String {
-        return when(uploadData?.authorType.orEmpty()) {
-            CONTENT_SHOP -> SOURCE_TYPE_SHOP
-            CONTENT_USER -> SOURCE_TYPE_USER
-            else -> ""
-        }
-    }
-
     private companion object {
         const val PROGRESS_MAX = 100
 
@@ -209,7 +197,6 @@ class PlayShortsUploadNotificationManager @Inject constructor(
 
         const val NOTIFICATION_SUCCESS_TITLE = "Yay, videomu berhasil di-upload!"
         const val NOTIFICATION_SUCCESS_DESCRIPTION = "Lihat videomu di sini, yuk!"
-        const val NOTIFICATION_SUCCESS_ACTION_TEXT = "Lihat"
 
         const val NOTIFICATION_FAIL_TITLE = "Oops, gagal upload video"
         const val NOTIFICATION_FAIL_DESCRIPTION = "Tenang, kamu masih bisa coba upload videonya lagi."
@@ -218,18 +205,6 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         const val CHANNEL_NAME = "Tokopedia Play Shorts"
         const val CHANNEL_DESCRIPTION = "Tokopedia Play Shorts"
         const val CHANNEL_ID = "ANDROID_GENERAL_CHANNEL"
-
-
-        /** Web Link Const */
-        const val PLAY_ROOM_PATH = "play/channel/"
-        const val CONTENT_USER = "content-user"
-        const val CONTENT_SHOP = "content-shop"
-
-        const val SOURCE_TYPE = "source_type"
-        const val SOURCE_ID = "source_id"
-        const val SOURCE_TYPE_USER = "SHORT_VIDEO_USER"
-        const val SOURCE_TYPE_SHOP = "SHORT_VIDEO_SHOP"
-
 
         const val COVER_PREVIEW_SIZE = 100
     }

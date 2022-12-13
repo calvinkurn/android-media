@@ -90,7 +90,7 @@ class PlayShortsInFeedAnalytic @Inject constructor() {
                     EVENT_NAME to EVENT_CLICK_CONTENT,
                     EVENT_ACTION to String.format(
                         EVENT_ACTION_CLICK_FORMAT,
-                        "liat video uploaded"
+                        "lihat video uploaded"
                     ),
                     EVENT_CATEGORY to EVENT_CATEGORY_SHORTS,
                     EVENT_LABEL to "$authorId - ${getAnalyticAuthorType(authorType)} - $channelId",
