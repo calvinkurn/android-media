@@ -32,7 +32,11 @@ open class PlayVideoPlayer(val context: Context) {
 
     var maxDurationCellularInSeconds: Int? = null
 
-    private val trackSelector = DefaultTrackSelector(context)
+    private val limitBitrate = BitrateLimit()
+
+    private val trackSelection = CustomTrackSelection.Factory(limitBitrate)
+
+    private val trackSelector = DefaultTrackSelector(context, trackSelection)
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
         .setTrackSelector(trackSelector)
