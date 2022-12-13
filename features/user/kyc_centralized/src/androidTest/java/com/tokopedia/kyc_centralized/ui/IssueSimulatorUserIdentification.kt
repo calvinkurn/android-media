@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.activity
+package com.tokopedia.kyc_centralized.ui
 
 import android.Manifest
 import androidx.test.espresso.intent.rule.IntentsTestRule
