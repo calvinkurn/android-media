@@ -19,9 +19,10 @@ data class VoucherConfiguration(
     val productIds: List<Long> = emptyList(),
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val quota: Long = 0,
-    val isVoucherPublic: Boolean = false,
+    val isVoucherPublic: Boolean = true,
     val voucherName: String = "",
-    val code: String = "",
+    val voucherCodePrefix: String = "",
+    val voucherCode: String = "",
     val startPeriod: Date = Date(),
     val endPeriod: Date = Date(),
     val totalPeriod: Int = 0

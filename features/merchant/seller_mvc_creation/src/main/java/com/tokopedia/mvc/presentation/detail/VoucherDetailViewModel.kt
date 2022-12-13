@@ -39,7 +39,8 @@ class VoucherDetailViewModel @Inject constructor(
     val voucherDetail: LiveData<Result<VoucherDetailData>>
         get() = _voucherDetail
 
-    private val _generateVoucherImageMetadata = MutableLiveData<Result<GenerateVoucherImageMetadata>>()
+    private val _generateVoucherImageMetadata =
+        MutableLiveData<Result<GenerateVoucherImageMetadata>>()
     val generateVoucherImageMetadata: LiveData<Result<GenerateVoucherImageMetadata>>
         get() = _generateVoucherImageMetadata
 
@@ -71,11 +72,11 @@ class VoucherDetailViewModel @Inject constructor(
         return (voucherDiscount * voucherQuota).getCurrencyFormatted()
     }
 
-    fun getPercentage(value: Long, total: Long): Int {
-        return if (total.isZero()) {
+    fun getPercentage(availableQuota: Long, remainingQuota: Long): Int {
+        return if (remainingQuota.isZero()) {
             Int.ZERO
         } else {
-            ((value.toDouble() / total.toDouble()) * DEFAULT_PERCENTAGE_NORMALIZATION).roundToInt()
+            ((availableQuota.toDouble() / remainingQuota.toDouble()) * DEFAULT_PERCENTAGE_NORMALIZATION).roundToInt()
         }
     }
 
@@ -123,10 +124,12 @@ class VoucherDetailViewModel @Inject constructor(
                     .take(THREE_TOP_SELLING_PRODUCT)
                     .map { it.picture }
 
-
-                val metadata = GenerateVoucherImageMetadata(voucherDetail, shopData, topSellingProductImageUrls)
+                val metadata = GenerateVoucherImageMetadata(
+                    voucherDetail,
+                    shopData,
+                    topSellingProductImageUrls
+                )
                 _generateVoucherImageMetadata.postValue(Success(metadata))
-
             },
             onError = { error ->
                 _generateVoucherImageMetadata.postValue(Fail(error))
@@ -143,7 +146,6 @@ class VoucherDetailViewModel @Inject constructor(
         val voucherDetail = _voucherDetail.value?.unwrapOrNull() ?: return
         _redirectToProductListPage.value = voucherDetail
     }
-
 
     private fun Result<VoucherDetailData>.unwrapOrNull(): VoucherDetailData? {
         return if (this is Success) {

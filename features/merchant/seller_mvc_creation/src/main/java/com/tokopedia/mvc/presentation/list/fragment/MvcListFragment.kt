@@ -41,6 +41,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.PageState
@@ -107,7 +108,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListClicked(voucher: Voucher) {
-        println("card")
+        VoucherDetailActivity.start(context ?: return, voucher.id)
     }
 
     override fun onFilterVoucherStatusChanged(status: List<VoucherStatus>, statusText: String) {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.R
@@ -24,9 +25,12 @@ class ThreeDotsMenuBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+
         const val TYPE_CANCEL = 1
         const val TYPE_STOP = 2
         const val TYPE_DEFAULT = 3
+        private const val TNC_URL =
+            "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
     }
 
     private var binding by autoClearedNullable<SmvcBottomsheet3DotsMenuBinding>()
@@ -53,7 +57,7 @@ class ThreeDotsMenuBottomSheet : BottomSheetUnify() {
     private fun setLayout() {
         setTitle(voucherName)
         binding?.run {
-            when(bottomSheetType) {
+            when (bottomSheetType) {
                 TYPE_CANCEL -> {
                     tpgCancel.text = getString(R.string.smvc_cancel_label)
                 }
@@ -63,6 +67,25 @@ class ThreeDotsMenuBottomSheet : BottomSheetUnify() {
                 else -> {
                     iconCancel.gone()
                     tpgCancel.gone()
+                }
+            }
+        }
+        setAction()
+    }
+
+    private fun setAction() {
+        binding?.run {
+            tpgTnc.setOnClickListener {
+                routeToUrl(TNC_URL)
+            }
+            tpgCancel.setOnClickListener {
+                when (bottomSheetType) {
+                    TYPE_CANCEL -> {
+                        TODO("cancel voucher, use case is in progress")
+                    }
+                    TYPE_STOP -> {
+                        TODO("stop voucher, use case is in progress")
+                    }
                 }
             }
         }

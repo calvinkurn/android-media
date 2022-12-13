@@ -44,18 +44,20 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
-class SummaryFragment: BaseDaggerFragment(),
+class SummaryFragment :
+    BaseDaggerFragment(),
     SummaryPageRedirectionHelper.SummaryPageResultListener {
 
     companion object {
         private const val CORNER_RADIUS_HEADER = 16
         private const val TNC_LINK = "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
         private const val UPLOAD_ERROR_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/error_upload_coupon.png"
+
         @JvmStatic
         fun newInstance(
             pageMode: PageMode,
             voucherId: Long,
-            voucherConfiguration: VoucherConfiguration?,
+            voucherConfiguration: VoucherConfiguration?
         ): SummaryFragment {
             return SummaryFragment().apply {
                 arguments = Bundle().apply {
@@ -139,8 +141,8 @@ class SummaryFragment: BaseDaggerFragment(),
             )
         }
         viewModel.maxExpense.observe(viewLifecycleOwner) {
-            binding?.layoutSubmission?.labelSpendingEstimation?.
-                spendingEstimationText = it.getCurrencyFormatted()
+            binding?.layoutSubmission?.labelSpendingEstimation
+                ?.spendingEstimationText = it.getCurrencyFormatted()
         }
         viewModel.couponImage.observe(viewLifecycleOwner) {
             binding?.layoutPreview?.ivPreview?.loadImage(it)
@@ -159,7 +161,6 @@ class SummaryFragment: BaseDaggerFragment(),
 
     private fun HeaderUnify.setupHeader() {
         title = context.getString(R.string.smvc_summary_page_title)
-
         setNavigationOnClickListener {
             activity?.finish()
         }
@@ -248,7 +249,7 @@ class SummaryFragment: BaseDaggerFragment(),
     ) {
         with(information) {
             tpgVoucherName.text = voucherName
-            tpgVoucherCode.text = code
+            tpgVoucherCode.text = voucherCode
             tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
                                     else getString(R.string.smvc_voucher_private_label)
             llVoucherCode.isVisible = !isVoucherPublic
@@ -260,7 +261,6 @@ class SummaryFragment: BaseDaggerFragment(),
                 tpgVoucherStartPeriod.gone()
                 tpgVoucherEndPeriod.gone()
             }
-
         }
     }
 
@@ -273,10 +273,11 @@ class SummaryFragment: BaseDaggerFragment(),
     }
 
     private fun SmvcVoucherDetailVoucherTypeSectionBinding.updateLayoutType(configuration: VoucherConfiguration) {
-        tpgVoucherType.text = if (configuration.isVoucherProduct)
+        tpgVoucherType.text = if (configuration.isVoucherProduct) {
             getString(R.string.smvc_summary_page_product_coupon_text)
-        else
+        } else {
             getString(R.string.smvc_summary_page_shop_coupon_text)
+        }
     }
 
     private fun showErrorUploadDialog() {

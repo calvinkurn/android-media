@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_voucher_period_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/smvc_voucher_active_period_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/tf_voucher_start_period"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_voucher_period_title"
+        app:layout_constraintWidth_percent="0.45"
+        app:unify_text_field_label="@string/smvc_start_label" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/tf_voucher_end_period"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tf_voucher_start_period"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_voucher_period_title"
+        app:layout_constraintWidth_percent="0.45"
+        app:unify_text_field_label="@string/smvc_end_label" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_repeat_period"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/smvc_repeat_period_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tf_voucher_start_period" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/tf_voucher_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_repeat_period"
+        app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+        app:unify_text_field_label="@string/smvc_repeat_for_label" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
