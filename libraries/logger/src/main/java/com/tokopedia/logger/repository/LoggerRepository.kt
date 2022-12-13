@@ -215,9 +215,8 @@ class LoggerRepository(
                 messageNewRelicSdkList.add(NewRelicBodySdk(eventType, jsonToMap(message)))
             } else {
                 decryptNrKey?.let { decrypt ->
-                    val nrApiKey = decrypt.invoke(nrConfig.token)
                     val msgEventNr = addEventNewRelic(message, eventType)
-                    messageNewRelicApiMaps.addValue(nrConfig.userId, msgEventNr, nrConfig.userId, nrApiKey)
+                    messageNewRelicApiMaps.addValue(nrConfig.userId, msgEventNr, nrConfig.token, decrypt)
                 }
             }
         }
