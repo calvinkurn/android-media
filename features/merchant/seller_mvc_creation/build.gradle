@@ -73,6 +73,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.networkDependencies.converterGson
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.datepicker

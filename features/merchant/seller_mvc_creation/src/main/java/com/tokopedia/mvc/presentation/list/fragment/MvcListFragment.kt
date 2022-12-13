@@ -308,7 +308,8 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             minPurchase = 50_000,
             productIds = emptyList(),
             targetBuyer = VoucherTargetBuyer.ALL_BUYER,
-            0
+            0,
+            totalPeriod = 0
         )
 
         val intent = AddProductActivity.buildCreateModeIntent(
