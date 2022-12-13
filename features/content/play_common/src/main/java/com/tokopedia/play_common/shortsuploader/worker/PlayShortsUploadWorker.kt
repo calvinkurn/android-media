@@ -143,8 +143,6 @@ class PlayShortsUploadWorker(
         }
     }
 
-
-
     private suspend fun uploadMedia(
         uploadType: UploadType,
         mediaUri: String,
@@ -259,7 +257,7 @@ class PlayShortsUploadWorker(
     private suspend fun broadcastInit() {
         broadcastProgress(PlayShortsUploadConst.PROGRESS_INIT)
         notificationManager.init(uploadData)
-        notificationManager.onStart()
+        setForegroundAsync(notificationManager.onStart())
     }
 
     private suspend fun broadcastComplete() {
@@ -313,7 +311,6 @@ class PlayShortsUploadWorker(
 
         fun build(uploadModel: PlayShortsUploadModel): OneTimeWorkRequest {
             return OneTimeWorkRequest.Builder(PlayShortsUploadWorker::class.java)
-                .keepResultsForAtLeast(1, TimeUnit.SECONDS)
                 .setInputData(uploadModel.format())
                 .build()
         }
