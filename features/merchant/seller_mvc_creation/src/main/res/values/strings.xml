@@ -146,7 +146,6 @@
     <string name="mvc_bottomsheet_quota_information_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
     <string name="mvc_bottomsheet_quota_information_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
 
-
     <!--Voucher detail page-->
     <string name="smvc_ubah_kupon_label">Ubah Kupon</string>
     <string name="smvc_kuota_terpakai_label">Kuota terpakai</string>
@@ -229,6 +228,55 @@
     <string name="smvc_vertical_description">Untuk post Instagram Story.</string>
     <string name="smvc_horizontal">Horizontal</string>
     <string name="smvc_horizontal_description">Untuk banner toko</string>
+
+    <!--Voucher List-->
+    <string name="smvc_summary_page_title">Ringkasan Kupon</string>
+    <string name="smvc_summary_page_preview_button_text">Lihat Tampilan</string>
+    <string name="smvc_summary_page_tnc_text"><![CDATA[Saya menyetujui <font color=#00AA5B><b>Syarat & Ketentuan</b></font> Pembuatan Kupon.]]></string>
+    <string name="smvc_summary_page_submit_text">Buat Kupon</string>
+    <string name="smvc_summary_page_deduction_nominal_text">Nominal</string>
+    <string name="smvc_summary_page_deduction_percentage_text">Persentase</string>
+    <string name="smvc_summary_page_product_format">%d Produk</string>
+    <string name="smvc_edit_label">Ubah</string>
+    <string name="smvc_summary_page_product_coupon_text">Kupon Produk</string>
+    <string name="smvc_summary_page_shop_coupon_text">Kupon Toko</string>
+    <string name="smvc_summary_page_max_expense_title">Estimasi Maks. Pengeluaran</string>
+    <string name="smvc_summary_page_max_expense_desc">Dipotong dari transaksi selesai</string>
+    <string name="smvc_summary_page_error_dialog_title">Yaah, Kuponmu gagal dibuat</string>
+    <string name="smvc_summary_page_error_dialog_desc">Kupon gagal dibuat karena [Alasan gagal]. Tunggu beberapa saat atau coba lagi buat kuponmu, ya.</string>
+    <string name="smvc_summary_page_error_dialog_negative_action">Ke Daftar Kupon</string>
+    <string name="smvc_summary_page_error_dialog_positive_action">Coba Lagi</string>
+
+
+    <!--Voucher Creation Step One-->
+    <string name="smvc_kupon_toko_label">Kupon Toko</string>
+    <string name="smvc_kupon_toko_description">Berlaku untuk semua produk yang ada di tokomu.</string>
+    <string name="smvc_kupon_produk_label">Kupon Produk</string>
+    <string name="smvc_kupon_produk_description">Hanya berlaku untuk produk-produk yang kamu pilih.</string>
+    <string name="smvc_choose_coupon_type_label">Pilih Jenis Kupon</string>
+    <string name="smvc_creation_step_one_out_of_three_sub_title_label">Langkah 1 dari 3</string>
+    <string name="smvc_creation_step_one_out_of_four_sub_title_label">Langkah 1 dari 4</string>
+    <string name="smvc_ineligible_voucher_creation_error_text">ineligible</string>
+    <string name="smvc_voucher_creation_step_one_coachmark_title">Pilih jenis kupon sesuai kebutuhan</string>
+    <string name="smvc_voucher_creation_step_one_coachmark_description">Pilih Kupon Toko untuk pasang promo ke semua produk atau pilih Kupon Produk untuk produk-produk pilihanmu saja.</string>
+
+    <!--Voucher Creation Step Two-->
+    <string name="smvc_creation_step_two_out_of_three_sub_title_label">Langkah 2 dari 3</string>
+    <string name="smvc_creation_step_two_out_of_four_sub_title_label">Langkah 2 dari 4</string>
+    <string name="smvc_description_public_voucher_target">Bisa langsung digunakan oleh semua pembeli.</string>
+    <string name="smvc_choose_voucher_target_label">Pilih Target Kupon</string>
+    <string name="smvc_description_private_voucher_target">Hanya bisa digunakan pembeli yang menerima kode.</string>
+    <string name="smvc_voucher_name_label">Nama Kupon</string>
+    <string name="smvc_voucher_code_label">Kode Kupon</string>
+    <string name="smvc_voucher_active_period_label">Periode Kupon Aktif</string>
+    <string name="smvc_start_label">Mulai</string>
+    <string name="smvc_end_label">Berakhir</string>
+    <string name="smvc_repeat_period_label">Ulangi di Bulan Berikutnya</string>
+    <string name="smvc_repeat_for_label">Ulangi selama</string>
+    <string name="smvc_input_count_error">Minimal 5 karakter.</string>
+    <string name="smvc_input_empty_error">Kamu belum mengisi informasi ini.</string>
+    <string name="smvc_voucher_name_placeholder_label">Contoh Diskon Extra 10%</string>
+    <string name="smvc_voucher_code_placeholder_label">SEPTCERIA</string>
 
     <string name="smvc_edu_center_about_my_coupon">Tentang Kupon Toko Saya</string>
     <string name="smvc_edu_center_read_article">Baca Artikel</string>

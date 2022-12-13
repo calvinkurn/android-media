@@ -6,7 +6,7 @@ import com.tokopedia.mvc.presentation.list.fragment.MvcListFragment
 
 class MvcListActivity: BaseSimpleActivity() {
 
-    override fun getLayoutRes() = R.layout.smvc_activity_mvc_list
     override fun getNewFragment() = MvcListFragment()
-    override fun getParentViewResourceID() = R.id.parent_view
+    override fun getLayoutRes() = R.layout.smvc_activity_common
+    override fun getParentViewResourceID() = R.id.container
 }

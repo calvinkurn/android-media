@@ -12,8 +12,22 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/smvc_pengaturan_kupon_label"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_edit_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:text="@string/smvc_edit_label"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_2"
         app:typographyWeight="bold" />
@@ -45,7 +59,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="Cashback" />
@@ -79,7 +93,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="Persentase" />
@@ -113,7 +127,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="20%" />
@@ -147,7 +161,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="Rp10.000" />
@@ -181,7 +195,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="Rp100.000" />
@@ -215,7 +229,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="100" />
@@ -249,7 +263,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="Semua Pembeli" />

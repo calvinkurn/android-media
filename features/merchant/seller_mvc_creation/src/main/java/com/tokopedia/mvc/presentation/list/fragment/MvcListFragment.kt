@@ -58,6 +58,7 @@ import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -363,7 +364,8 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
             isVoucherProduct = true,
             minPurchase = 50_000,
             productIds = emptyList(),
-            targetBuyer = VoucherTargetBuyer.ALL_BUYER
+            targetBuyer = VoucherTargetBuyer.ALL_BUYER,
+            0
         )
 
         val intent = AddProductActivity.buildCreateModeIntent(

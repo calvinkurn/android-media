@@ -201,7 +201,10 @@ class AddProductViewModel @Inject constructor(
             isVoucherProduct = voucherConfiguration.isVoucherProduct,
             minPurchase = voucherConfiguration.minPurchase,
             productIds = currentPageParentProductIds,
-            targetBuyer = voucherConfiguration.targetBuyer
+            targetBuyer = voucherConfiguration.targetBuyer,
+            couponName = voucherConfiguration.voucherName,
+            isPublic = voucherConfiguration.isVoucherPublic,
+            code = voucherConfiguration.voucherCode
         )
 
 

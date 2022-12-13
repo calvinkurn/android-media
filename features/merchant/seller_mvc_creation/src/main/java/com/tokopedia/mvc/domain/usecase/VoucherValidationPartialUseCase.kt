@@ -128,6 +128,11 @@ class VoucherValidationPartialUseCase @Inject constructor(
             PromoType.DISCOUNT -> "discount"
         }
 
+        val isPublic = when(param.isPublic) {
+            true -> 1
+            else -> 0
+        }
+
         val payload = VoucherValidationPartialRequest(
             benefitIdr = param.benefitIdr,
             benefitMax = param.benefitMax,
@@ -137,7 +142,10 @@ class VoucherValidationPartialUseCase @Inject constructor(
             isLockToProduct = if (param.isVoucherProduct) PRODUCT_VOUCHER else SHOP_VOUCHER,
             minPurchase = param.minPurchase,
             productIds = formattedProductIds,
-            targetBuyer = param.targetBuyer.id
+            targetBuyer = param.targetBuyer.id,
+            couponName = param.couponName,
+            isPublic = isPublic,
+            code = param.code
         )
 
         val params = mapOf(REQUEST_PARAM_VOUCHER_VALIDATION_PARTIAL_INPUT to payload)
@@ -157,7 +165,10 @@ class VoucherValidationPartialUseCase @Inject constructor(
         val isVoucherProduct: Boolean,
         val minPurchase: Long,
         val productIds: List<Long>,
-        val targetBuyer: VoucherTargetBuyer
+        val targetBuyer: VoucherTargetBuyer,
+        val couponName: String,
+        val isPublic: Boolean,
+        val code: String
     )
 }
 
