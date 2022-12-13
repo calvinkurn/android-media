@@ -47,7 +47,6 @@ class FakeTopchatWebSocket @Inject constructor(
     }
 
     override fun close() {
-
     }
 
     override fun destroy() {
@@ -58,18 +57,24 @@ class FakeTopchatWebSocket @Inject constructor(
         startTimeQueue.add(wsPayload)
     }
 
+    override fun reset() {
+    }
+
     fun simulateResponseFromRequestQueue(room: GetExistingChatPojo) {
         while (startTimeQueue.peek() != null) {
             val requestMsg = startTimeQueue.remove()
             val requestObj: WebSocketResponse = CommonUtil.fromJson(
-                requestMsg, WebSocketResponse::class.java
+                requestMsg,
+                WebSocketResponse::class.java
             )
             when {
                 isProductAttachment(requestObj) -> simulateProductAttachmentResponse(
-                    requestObj, room
+                    requestObj,
+                    room
                 )
                 isStickerAttachment(requestObj) -> simulateStickerAttachmentResponse(
-                    requestObj, room
+                    requestObj,
+                    room
                 )
                 isTextOnly(requestObj) -> simulateMessageResponse(requestObj, room)
                 else -> Log.d("NOT_HANDLED_WS_RESPONSE", requestMsg)
@@ -83,11 +88,13 @@ class FakeTopchatWebSocket @Inject constructor(
     ) {
         val requestAttachment = request.jsonObject?.get("product_profile")?.asJsonObject
         val requestProductProfile: ProductProfile = CommonUtil.fromJson(
-            requestAttachment.toString(), ProductProfile::class.java
+            requestAttachment.toString(),
+            ProductProfile::class.java
         )
         val requestProductId = request.jsonObject?.get("product_id")?.asString ?: ""
         val requestAttributes = ProductAttachmentAttributes(
-            requestProductId, requestProductProfile
+            requestProductId,
+            requestProductProfile
         )
         val attachment = AttachmentPojo(
             id = requestProductId,
@@ -142,7 +149,8 @@ class FakeTopchatWebSocket @Inject constructor(
         val parentReply = generateParentReplyFrom(request)
         val uiModel = mapper.map(room)
         val timestamp = RfcDateTimeParser.parseDateString(
-            requestStartTime, arrayOf(START_TIME_FORMAT)
+            requestStartTime,
+            arrayOf(START_TIME_FORMAT)
         ).time
         val message = MessagePojo(
             censoredReply = requestMsg,
@@ -173,7 +181,9 @@ class FakeTopchatWebSocket @Inject constructor(
         )
         val chatElement = gson.toJsonTree(chat)
         val response = WebSocketResponse(
-            "", EVENT_TOPCHAT_REPLY_MESSAGE, chatElement
+            "",
+            EVENT_TOPCHAT_REPLY_MESSAGE,
+            chatElement
         )
         simulateResponse(response)
     }
@@ -204,12 +214,14 @@ class FakeTopchatWebSocket @Inject constructor(
 
     private fun isStickerAttachment(requestObj: WebSocketResponse): Boolean {
         return hasAttachment(requestObj) && getAttachmentType(
-            requestObj) == AttachmentType.Companion.TYPE_STICKER.toString()
+            requestObj
+        ) == AttachmentType.Companion.TYPE_STICKER.toString()
     }
 
     private fun isProductAttachment(requestObj: WebSocketResponse): Boolean {
         return hasAttachment(requestObj) && getAttachmentType(
-            requestObj) == AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
+            requestObj
+        ) == AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
     }
 
     private fun getAttachmentType(requestObj: WebSocketResponse): String? {

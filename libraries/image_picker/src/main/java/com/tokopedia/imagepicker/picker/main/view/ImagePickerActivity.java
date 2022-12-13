@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -316,7 +317,11 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             permissions.add(Manifest.permission.CAMERA);
         }
         if (imagePickerBuilder.getGalleryIndex() > -1) {
-            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                permissions.add(Manifest.permission.READ_MEDIA_IMAGES);
+            }else{
+                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
         }
         permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {

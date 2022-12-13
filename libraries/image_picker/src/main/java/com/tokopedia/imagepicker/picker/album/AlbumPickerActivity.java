@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -78,7 +79,12 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
     @Override
     public void onResume() {
         super.onResume();
-        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        String permission = "";
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permission = Manifest.permission.READ_MEDIA_IMAGES;
+        }else{
+            permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        }
         if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             showLoading();
             LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this);

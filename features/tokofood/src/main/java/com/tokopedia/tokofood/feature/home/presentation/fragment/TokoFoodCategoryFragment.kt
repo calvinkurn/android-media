@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -157,6 +158,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackgroundColor()
         setupUi()
         setupNavToolbar()
         setupRecycleView()
@@ -220,6 +222,14 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun onClickRetryError() {
         loadLayout()
+    }
+
+    private fun setupBackgroundColor() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            )
+        }
     }
 
     private fun setupSwipeRefreshLayout() {

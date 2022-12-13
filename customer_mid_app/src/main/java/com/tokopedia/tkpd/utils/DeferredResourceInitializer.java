@@ -23,7 +23,7 @@ public class DeferredResourceInitializer implements DeferredCallback {
     private static final String ENABLE_ASYNC_REMOTERESOURCE_INIT = "android_async_remoteresource_init";
     private static String RELATIVE_URL = "/android/res/";
 
-    private static final String CDN_URL = "https://ecs7.tokopedia.net";
+    private static final String CDN_URL = "https://images.tokopedia.net";
 
     public void initializeResourceDownloadManager(final Context context) {
         WeaveInterface libInitWeave = new WeaveInterface() {

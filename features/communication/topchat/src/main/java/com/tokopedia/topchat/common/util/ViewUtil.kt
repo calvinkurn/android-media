@@ -19,7 +19,8 @@ import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.window.WindowLayoutInfo
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
 
 object ViewUtil {
@@ -27,6 +28,11 @@ object ViewUtil {
     private const val ELEVATION_VALUE_DIVIDER = 3f
     private const val FIVE_MARGIN = 5
     private const val ELLIPSIZE = "..."
+
+    // Fold-able State
+    const val EMPTY_STATE = 0
+    const val FLAT_STATE = 1
+    const val HALF_OPEN_STATE = 2
 
     @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
@@ -104,7 +110,7 @@ object ViewUtil {
                 DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
             else -> {
-                shadowDrawableRect.top = shadowTop?: elevationValue
+                shadowDrawableRect.top = shadowTop ?: elevationValue
                 shadowDrawableRect.bottom = elevationValue * 2
                 DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
@@ -150,11 +156,21 @@ object ViewUtil {
 
         val drawable = LayerDrawable(drawableLayer.toTypedArray())
         if (isInsetElevation) {
-            drawable.setLayerInset(0,
-                elevationValue, elevationValue, elevationValue, elevationValue)
+            drawable.setLayerInset(
+                0,
+                elevationValue,
+                elevationValue,
+                elevationValue,
+                elevationValue
+            )
         } else {
-            drawable.setLayerInset(0,
-                elevationValue, elevationValue, elevationValue, shadowDrawableRect.bottom)
+            drawable.setLayerInset(
+                0,
+                elevationValue,
+                elevationValue,
+                elevationValue,
+                shadowDrawableRect.bottom
+            )
         }
 
         if (strokeColor != null && strokeWidthValue != null && drawableLayer.size > 1) {
@@ -164,7 +180,8 @@ object ViewUtil {
 
         if (pressedDrawable != null) {
             stateDrawable.addState(
-                intArrayOf(android.R.attr.state_pressed), pressedDrawable
+                intArrayOf(android.R.attr.state_pressed),
+                pressedDrawable
             )
         }
         stateDrawable.addState(StateSet.WILD_CARD, drawable)
@@ -176,11 +193,13 @@ object ViewUtil {
         if (context == null) return false
         val duration: Float = Settings.Global.getFloat(
             context.contentResolver,
-            Settings.Global.ANIMATOR_DURATION_SCALE, 0f
+            Settings.Global.ANIMATOR_DURATION_SCALE,
+            0f
         )
         val transition: Float = Settings.Global.getFloat(
             context.contentResolver,
-            Settings.Global.TRANSITION_ANIMATION_SCALE, 0f
+            Settings.Global.TRANSITION_ANIMATION_SCALE,
+            0f
         )
         return duration != 0f && transition != 0f
     }
@@ -201,12 +220,14 @@ object ViewUtil {
         setupDeviceFeatureLine(set, toolbarId, deviceFeatureId)
 
         if (rect.top == 0) {
-            //Device feature is placed vertically
+            // Device feature is placed vertically
             set.setMargin(deviceFeatureId, ConstraintSet.START, rect.left)
             setupVerticalFlex(
                 set,
-                firstContainerId, secondContainerId,
-                toolbarId, deviceFeatureId
+                firstContainerId,
+                secondContainerId,
+                toolbarId,
+                deviceFeatureId
             )
             result = true
         }
@@ -222,12 +243,18 @@ object ViewUtil {
         @IdRes deviceFeatureId: Int
     ) {
         set.connect(
-            deviceFeatureId, ConstraintSet.START,
-            ConstraintSet.PARENT_ID, ConstraintSet.START, 0
+            deviceFeatureId,
+            ConstraintSet.START,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.START,
+            0
         )
         set.connect(
-            deviceFeatureId, ConstraintSet.TOP,
-            toolbarId, ConstraintSet.BOTTOM, 0
+            deviceFeatureId,
+            ConstraintSet.TOP,
+            toolbarId,
+            ConstraintSet.BOTTOM,
+            0
         )
     }
 
@@ -239,37 +266,61 @@ object ViewUtil {
         @IdRes deviceFeatureId: Int
     ) {
         set.connect(
-            firstContainerId, ConstraintSet.TOP,
-            toolbarId, ConstraintSet.BOTTOM, 0
+            firstContainerId,
+            ConstraintSet.TOP,
+            toolbarId,
+            ConstraintSet.BOTTOM,
+            0
         )
         set.connect(
-            firstContainerId, ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0
+            firstContainerId,
+            ConstraintSet.BOTTOM,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.BOTTOM,
+            0
         )
         set.connect(
-            firstContainerId, ConstraintSet.START,
-            ConstraintSet.PARENT_ID, ConstraintSet.START, 0
+            firstContainerId,
+            ConstraintSet.START,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.START,
+            0
         )
         set.connect(
-            firstContainerId, ConstraintSet.END,
-            deviceFeatureId, ConstraintSet.START, 0
+            firstContainerId,
+            ConstraintSet.END,
+            deviceFeatureId,
+            ConstraintSet.START,
+            0
         )
 
         set.connect(
-            secondContainerId, ConstraintSet.TOP,
-            toolbarId, ConstraintSet.BOTTOM, FIVE_MARGIN
+            secondContainerId,
+            ConstraintSet.TOP,
+            toolbarId,
+            ConstraintSet.BOTTOM,
+            FIVE_MARGIN
         )
         set.connect(
-            secondContainerId, ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0
+            secondContainerId,
+            ConstraintSet.BOTTOM,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.BOTTOM,
+            0
         )
         set.connect(
-            secondContainerId, ConstraintSet.START,
-            deviceFeatureId, ConstraintSet.END, 0
+            secondContainerId,
+            ConstraintSet.START,
+            deviceFeatureId,
+            ConstraintSet.END,
+            0
         )
         set.connect(
-            secondContainerId, ConstraintSet.END,
-            ConstraintSet.PARENT_ID, ConstraintSet.END, 0
+            secondContainerId,
+            ConstraintSet.END,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.END,
+            0
         )
     }
 
@@ -281,7 +332,7 @@ object ViewUtil {
         var resultText = text
         if (text.length > maxChar) {
             resultText = resultText.substring(0, maxChar)
-            //Remove if last char is whitespace
+            // Remove if last char is whitespace
             val lastCharIndex = maxChar - 1
             if (lastCharIndex > 0 && resultText[lastCharIndex].toString() == " ") {
                 resultText = resultText.substring(0, lastCharIndex)
@@ -289,5 +340,13 @@ object ViewUtil {
             resultText += ELLIPSIZE
         }
         return resultText
+    }
+
+    fun getFoldingFeatureState(foldingState: FoldingFeature.State?): Int {
+        return when (foldingState) {
+            FoldingFeature.State.FLAT -> FLAT_STATE
+            FoldingFeature.State.HALF_OPENED -> HALF_OPEN_STATE
+            else -> EMPTY_STATE
+        }
     }
 }

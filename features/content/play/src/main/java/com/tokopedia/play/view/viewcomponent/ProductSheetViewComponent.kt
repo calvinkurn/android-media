@@ -28,10 +28,12 @@ import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
 import com.tokopedia.play.view.custom.PlayVoucherView
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.util.extension.getBitmapFromUrl
 import com.tokopedia.play_common.view.loadImage
@@ -82,27 +84,17 @@ class ProductSheetViewComponent(
             )
         }
 
-        override fun onBuyProduct(
+        override fun onButtonTransactionProduct(
             viewHolder: ProductLineViewHolder,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
+            action: ProductAction,
         ) {
-            listener.onBuyButtonClicked(
+            listener.onButtonTransactionClicked(
                 this@ProductSheetViewComponent,
                 product,
                 section,
-            )
-        }
-
-        override fun onAtcProduct(
-            viewHolder: ProductLineViewHolder,
-            product: PlayProductUiModel.Product,
-            section: ProductSectionUiModel.Section,
-        ) {
-            listener.onAtcButtonClicked(
-                this@ProductSheetViewComponent,
-                product,
-                section,
+                action,
             )
         }
     }
@@ -214,6 +206,15 @@ class ProductSheetViewComponent(
         }
 
         show()
+
+        /**
+         * Everytime user clicks [View All Icon] hit tracker
+         */
+        scope.launch {
+            rootView.awaitLayout()
+            impressionSet.clear()
+            sendImpression()
+        }
     }
 
     fun setProductSheet(
@@ -416,8 +417,7 @@ class ProductSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
-        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
-        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onButtonTransactionClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent)
         fun onProductImpressed(

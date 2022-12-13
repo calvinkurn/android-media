@@ -13,7 +13,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.manageaddress.CustomMatchers.isCardUnifyChecked
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 
 class ManageAddressRobot {
@@ -33,8 +35,12 @@ class ManageAddressRobot {
 
     fun onClickSearch(keyword: String) {
         onView(withId(R.id.search_input_view)).perform(click())
-        Thread.sleep(2000)
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
+        onView(withId(R.id.searchbar_textfield)).perform(click(), typeText(keyword), closeSoftKeyboard())
+        waitForData()
+    }
+
+    private fun waitForData(millis: Long = 2000L) {
+        Thread.sleep(millis)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit) = ResultRobot().apply(func)
@@ -49,13 +55,14 @@ class ResultRobot {
     }
 
     fun assertGlobalErrorNoInternetConnectionShown() {
-        onView(withId(R.id.global_error)).check(matches(isDisplayed()))
-        onView(withText("Koneksi internetmu terganggu!")).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.global_error), isCompletelyDisplayed()))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        onView(firstView(withText("Koneksi internetmu terganggu!"))).check(matches(isDisplayed()))
     }
 
     fun assertAddressCheckedAtPosition(position: Int) {
-        onView(RecyclerViewMatcher(R.id.address_list).atPosition(position))
-                .check(matches(isCardUnifyChecked()))
+        onView(RecyclerViewMatcher(R.id.address_list).atPositionOnView(position, R.id.card_address))
+            .check(matches(isCardUnifyChecked()))
     }
 }
 

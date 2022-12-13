@@ -1,7 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.*
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
 import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
@@ -85,6 +85,13 @@ class UserProfileFollowViewModelTest {
             } recordState {
                 submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
             } andThen {
+                it.viewModel.displayName equalTo "Jonathan Darwin"
+                it.viewModel.profileUsername equalTo mockOwnUsername
+                it.viewModel.profileCover equalTo "123.jpg"
+                it.viewModel.totalFollower equalTo ""
+                it.viewModel.totalFollowing equalTo ""
+                it.viewModel.totalPost equalTo ""
+                it.viewModel.profileWebLink equalTo ""
                 followInfo equalTo mockOwnFollow
             }
         }
@@ -185,7 +192,31 @@ class UserProfileFollowViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
             } andThen { state, events ->
                 state.followInfo.status.assertFalse()
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("ignore this message"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(mockMutationError.message)))
+            }
+        }
+    }
+
+    @Test
+    fun `when user wants to follow an unfollowed profile and throw exception, it should emit error event and not change follow status`() {
+        coEvery { mockRepo.followProfile(any()) } throws mockException
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile())
+            } recordStateAndEvent {
+                submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
+            } andThen { state, events ->
+                state.followInfo.status.assertFalse()
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(mockException))
             }
         }
     }
@@ -240,7 +271,7 @@ class UserProfileFollowViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
             } andThen { state, events ->
                 state.followInfo.status.assertTrue()
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("ignore this message"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(mockMutationError.message)))
             }
         }
     }
@@ -264,7 +295,7 @@ class UserProfileFollowViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
             } andThen { state, events ->
                 state.followInfo.status.assertTrue()
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("ignore this message"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(mockException))
             }
         }
     }
@@ -289,7 +320,7 @@ class UserProfileFollowViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
             } andThen { state, events ->
                 state.followInfo.status.assertFalse()
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("ignore this message"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(mockException))
             }
         }
     }

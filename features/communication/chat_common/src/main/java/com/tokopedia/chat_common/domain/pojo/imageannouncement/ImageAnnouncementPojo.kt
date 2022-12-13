@@ -35,4 +35,10 @@ class ImageAnnouncementPojo {
 
     @SerializedName("end_date")
     var endDate: String? = ""
+
+    @SerializedName("broadcast_cta_url")
+    var broadcastCtaUrl: String? = null
+
+    @SerializedName("broadcast_cta_text")
+    var broadcastCtaText: String? = null
 }

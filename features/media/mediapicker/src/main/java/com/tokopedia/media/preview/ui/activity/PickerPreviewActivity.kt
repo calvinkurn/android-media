@@ -1,6 +1,6 @@
 package com.tokopedia.media.preview.ui.activity
 
-import android.Manifest
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -38,9 +38,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
+import com.tokopedia.media.picker.utils.goToSettings
+import com.tokopedia.media.picker.utils.permission.PermissionManager
+import com.tokopedia.media.picker.utils.permission.PermissionRequestCallback
+import com.tokopedia.media.picker.utils.permission.isGranted
 
 open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     DrawerSelectionWidget.Listener {
@@ -75,6 +78,24 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         PreviewPagerComponent(
             parent = it
         )
+    }
+
+    private val permissionManager: PermissionManager by lazy {
+        PermissionManager.init(
+            this,
+            object : PermissionRequestCallback {
+            override fun onDenied(permissions: List<String>) {}
+
+            override fun onPermissionPermanentlyDenied(permissions: List<String>) {
+                if (permissions.isNotEmpty()) {
+                    startActivity(goToSettings())
+                }
+            }
+
+            override fun onGranted(permissions: List<String>) {
+                viewModel.files(uiModel)
+            }
+        })
     }
 
     private val viewModel by lazy {
@@ -172,31 +193,18 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-            publishMediaList()
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            permissionManager.onRequestPermissionsResult(permissions, grantResults)
         }
     }
 
-    // need to check & re-request permission on API 28
-    // for prevention on future checker didn't only run on API 28
     private fun checkPermission() {
-        val permissionCheck = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                PERMISSION_REQUEST_CODE
-            )
+        if (isGranted(this, WRITE_EXTERNAL_STORAGE) && SDK_INT <= VERSION_CODES.P) {
+            permissionManager.requestPermission(WRITE_EXTERNAL_STORAGE, PERMISSION_REQUEST_CODE)
         } else {
-            publishMediaList()
+            viewModel.files(uiModel)
         }
-    }
-
-    private fun publishMediaList() {
-        viewModel.files(uiModel)
     }
 
     private fun initObservable() {
