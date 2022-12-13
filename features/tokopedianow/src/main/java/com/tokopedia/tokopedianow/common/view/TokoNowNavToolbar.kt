@@ -10,6 +10,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.recipehome.presentation.fragment.TokoNowRecipeHomeFragment
 import com.tokopedia.unifycomponents.ImageUnify
 
 class TokoNowNavToolbar(
@@ -91,12 +92,15 @@ class TokoNowNavToolbar(
                     }
 
                     override fun onSwitchToLightToolbar() {
-                        navToolbar.switchToNormalBackground(activity)
+                        if (pageName == TokoNowRecipeHomeFragment.PAGE_NAME) {
+                            navToolbar.switchToNormalBackground(activity)
+                        }
                     }
 
                     override fun onSwitchToDarkToolbar() {
-                        navToolbar.hideShadow()
-                        navToolbar.switchToStaticBackground(activity)
+                        if (pageName == TokoNowRecipeHomeFragment.PAGE_NAME) {
+                            navToolbar.switchToStaticBackground(activity)
+                        }
                     }
 
                     override fun onYposChanged(yOffset: Int) {
