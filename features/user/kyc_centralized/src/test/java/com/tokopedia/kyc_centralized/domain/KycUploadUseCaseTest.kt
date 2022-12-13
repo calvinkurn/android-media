@@ -1,8 +1,7 @@
 package com.tokopedia.kyc_centralized.domain
 
-import com.tokopedia.kyc_centralized.data.model.response.KycData
-import com.tokopedia.kyc_centralized.data.model.response.KycResponse
-import com.tokopedia.kyc_centralized.data.repository.KycUploadImagesRepository
+import com.tokopedia.kyc_centralized.data.model.KycResponse
+import com.tokopedia.kyc_centralized.data.network.KycUploadImagesRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
