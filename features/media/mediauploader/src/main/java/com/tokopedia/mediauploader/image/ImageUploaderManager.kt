@@ -79,9 +79,13 @@ class ImageUploaderManager @Inject constructor(
             )
         )
 
-        return upload.data?.let {
-            UploadResult.Success(fileUrl = it.fileUrl, uploadId = it.uploadId)
-        }?: UploadResult.Error(error)
+        return if (upload.data != null && upload.header.isSuccess) {
+            upload.data.let {
+                UploadResult.Success(fileUrl = it.fileUrl, uploadId = it.uploadId)
+            }
+        } else {
+            UploadResult.Error(error)
+        }
     }
 
 

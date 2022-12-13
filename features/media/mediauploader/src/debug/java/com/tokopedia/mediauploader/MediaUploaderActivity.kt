@@ -268,10 +268,11 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
         val extraHeader = Gson().fromJson(edtExtraHeader.text?.toString() ?: "", HashMap::class.java)
         val extraBody = Gson().fromJson(edtExtraBody.text?.toString() ?: "", HashMap::class.java)
+        val inputSourceId = edtSourceId.editText.text.toString()
 
         if (!withWorker) {
             val param = uploaderUseCase.createParams(
-                sourceId = sourceId,
+                sourceId = inputSourceId,
                 filePath = File(mediaFilePath),
                 withTranscode = isVideoTranscodeSupported,
                 isSecure = this.isSecure,
@@ -307,7 +308,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         } else {
             UploaderWorker.createChainedWorkRequests(
                 context = applicationContext,
-                sourceId = sourceId,
+                sourceId = inputSourceId,
                 filePath = mediaFilePath,
                 isSupportTranscode = isVideoTranscodeSupported
             )
