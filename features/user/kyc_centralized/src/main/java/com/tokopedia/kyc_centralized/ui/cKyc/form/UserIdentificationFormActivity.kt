@@ -31,7 +31,6 @@ import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
-import com.tokopedia.kyc_centralized.ui.customview.fragment.NotFoundFragment
 import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
