@@ -14,7 +14,6 @@ import com.tokopedia.dilayanitokopedia.home.domain.mapper.AnchorTabMapper.mapMen
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUseCase
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetRecommendationForYouUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeLoadingMoreModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
@@ -89,45 +88,17 @@ class DtHomeViewModel @Inject constructor(
             _homeLayoutList.postValue(Success(data))
             _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList()))
 
-            getRecommendationForYou()
-
+            getRecommendationForYouNew()
 
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
     }
-
-    private fun getRecommendationForYou() {
-
-        recommendationForYouLoading()
-
-        launchCatchError(block = {
-
-            val homeVisitableList = getHomeVisitableList().withIndex().find {
-
-                it.value is HomeLoadingMoreModel
-
-            }
-            if (homeVisitableList != null) {
-                val newVisitable = getHomeVisitableList().toMutableList()
-                newVisitable[homeVisitableList.index] = HomeRecommendationFeedDataModel()
-
-                val data = HomeLayoutListUiModel(items = newVisitable, state = DtLayoutState.SHOW)
-                homeLayoutItemList[homeVisitableList.index] =
-                    HomeLayoutItemUiModel(HomeRecommendationFeedDataModel(), state = HomeLayoutItemState.LOADED)
-                _homeLayoutList.postValue(Success(data))
-            }
-
-
-        }, onError =
-        {
-        })
-    }
-
-    private fun recommendationForYouLoading() {
+    
+    private fun getRecommendationForYouNew() {
 
         val newVisitable = getHomeVisitableList().toMutableList()
-        newVisitable.add(HomeLoadingMoreModel())
+        newVisitable.add(HomeRecommendationFeedDataModel())
 
 
         val data = HomeLayoutListUiModel(
@@ -136,7 +107,7 @@ class DtHomeViewModel @Inject constructor(
         )
 
 
-        homeLayoutItemList.add(HomeLayoutItemUiModel(HomeLoadingMoreModel(), state = HomeLayoutItemState.LOADED))
+        homeLayoutItemList.add(HomeLayoutItemUiModel(HomeRecommendationFeedDataModel(), state = HomeLayoutItemState.LOADING))
         _homeLayoutList.postValue(Success(data))
     }
 
