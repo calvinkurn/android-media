@@ -73,9 +73,9 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
 
     private fun VoucherConfiguration.getCouponCode(isCreateMode: Boolean, prefix: String): String {
         return if (isCreateMode && !isVoucherPublic) {
-            prefix + code.uppercase()
+            prefix + voucherCode.uppercase()
         } else {
-            code.uppercase()
+            voucherCode.uppercase()
         }
     }
 

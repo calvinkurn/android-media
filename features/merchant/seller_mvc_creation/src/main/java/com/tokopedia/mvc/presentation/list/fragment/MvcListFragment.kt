@@ -323,7 +323,5 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
 
     private fun redirectToQuotaVoucherPage() {
         //TODO: create redirection here
-        val intent = SummaryActivity.buildEditModeIntent(requireContext(), 15520512)
-        startActivityForResult(intent, 100)
     }
 }
