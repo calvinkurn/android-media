@@ -159,20 +159,9 @@ class AddProductViewModel @Inject constructor(
                 val allParentProducts = currentState.products + updatedParentProducts
                 val selectedParentProductIds = currentState.selectedProductsIds + allParentProducts.selectedProductsOnly()
 
-                val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
-                val selectedProductCount = if (isOnSearchMode) {
-                    currentPageParentProductsIds.count { it in selectedParentProductIds }
-                } else {
-                    selectedParentProductIds.count()
-                }
+                val selectedProductCount = findSelectedProductCount(currentPageParentProductsIds, selectedParentProductIds)
 
-                val checkboxState = when {
-                    currentState.checkboxState.isChecked() -> AddProductUiState.CheckboxState.CHECKED
-                    selectedProductCount.isZero() -> AddProductUiState.CheckboxState.UNCHECKED
-                    selectedProductCount < productsResponse.total -> AddProductUiState.CheckboxState.INDETERMINATE
-                    selectedProductCount == productsResponse.total -> AddProductUiState.CheckboxState.CHECKED
-                    else -> AddProductUiState.CheckboxState.UNCHECKED
-                }
+                val checkboxState = findCheckboxState(selectedProductCount, productsResponse.total)
 
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(allParentProducts.count(), productsResponse.total))
                 _uiState.update {
@@ -677,6 +666,33 @@ class AddProductViewModel @Inject constructor(
 
     private fun AddProductUiState.CheckboxState.isChecked(): Boolean {
         return this == AddProductUiState.CheckboxState.CHECKED
+    }
+
+    private fun findSelectedProductCount(
+        currentPageParentProductsIds: List<Long>,
+        selectedParentProductIds: Set<Long>
+    ): Int {
+        val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
+        val selectedProductCount = if (isOnSearchMode) {
+            currentPageParentProductsIds.count { it in selectedParentProductIds }
+        } else {
+            selectedParentProductIds.count()
+        }
+        return selectedProductCount
+    }
+
+    private fun findCheckboxState(
+        selectedProductCount: Int,
+        totalProductCount: Int
+    ): AddProductUiState.CheckboxState {
+        val checkboxState = when {
+            currentState.checkboxState.isChecked() -> AddProductUiState.CheckboxState.CHECKED
+            selectedProductCount.isZero() -> AddProductUiState.CheckboxState.UNCHECKED
+            selectedProductCount < totalProductCount -> AddProductUiState.CheckboxState.INDETERMINATE
+            selectedProductCount == totalProductCount -> AddProductUiState.CheckboxState.CHECKED
+            else -> AddProductUiState.CheckboxState.UNCHECKED
+        }
+        return checkboxState
     }
 
 }
