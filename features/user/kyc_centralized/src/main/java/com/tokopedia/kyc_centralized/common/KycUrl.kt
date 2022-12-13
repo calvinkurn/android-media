@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.common
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
+import java.util.*
 
 /**
  * @author by nisie on 16/11/18.
@@ -26,7 +27,7 @@ object KycUrl {
     const val KYC_BENEFIT_SHIELD = "https://images.tokopedia.net/img/android/user/kyc_benefit_shield_star.png"
     const val KYC_BENEFIT_CART = "https://images.tokopedia.net/img/android/user/kyc_centralized/kyc_benefit_cart.png"
 
-    val APPLINK_TERMS_AND_CONDITION = String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TERMS_AND_CONDITION)
+    val APPLINK_TERMS_AND_CONDITION = String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, URL_TERMS_AND_CONDITION)
 
     const val KTP_OK = "https://images.tokopedia.net/img/android/others/ktp_ok.png"
     const val KTP_FAIL = "https://images.tokopedia.net/img/android/others/ktp_fail.png"
