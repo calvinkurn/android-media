@@ -49,6 +49,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_IRIS_SAVE_LOG = "View Iris Save Log"
         const val KEYWORD_VIEW_IRIS_SEND_LOG = "View Iris Send Log"
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
+        const val KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY = "Enable Strict Mode"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
         const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
         const val KEYWORD_VIEW_APPLINK_LIST = "View Applink List"
@@ -101,9 +102,11 @@ class DeveloperOptionAdapter(
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
         AppAuthSecretUiModel(listOf(KEYWORD_APP_AUTH_SECRET)),
-        SystemNonSystemAppsUiModel(listOf(
-            KEYWORD_SYSTEM_APPS,
-            KEYWORD_NON_SYSTEM_APPS)
+        SystemNonSystemAppsUiModel(
+            listOf(
+                KEYWORD_SYSTEM_APPS,
+                KEYWORD_NON_SYSTEM_APPS
+            )
         ),
         ResetOnBoardingUiModel(listOf(KEYWORD_RESET_ONBOARDING)),
         ForceLogoutUiModel(listOf(KEYWORD_FORCE_LOGOUT)),
@@ -128,57 +131,72 @@ class DeveloperOptionAdapter(
         AnalyticsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_ANALYTICS_LOG_ON_NOTIFICATION)),
         CassavaUiModel(listOf(KEYWORD_CASSAVA)),
         ViewAnalyticsLogUiModel(listOf(KEYWORD_VIEW_ANALYTICS_LOG)),
-        ViewIrisLogUiModel(listOf(
-            KEYWORD_VIEW_IRIS_SAVE_LOG,
-            KEYWORD_VIEW_IRIS_SEND_LOG
-        )),
+        ViewIrisLogUiModel(
+            listOf(
+                KEYWORD_VIEW_IRIS_SAVE_LOG,
+                KEYWORD_VIEW_IRIS_SEND_LOG
+            )
+        ),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
+        StrictModeLeakPublisherUiModel(listOf(KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
-        LoggingToServerUiModel(listOf(
-            KEYWORD_LOGGING_TO_SERVER,
-            KEYWORD_SEND_LOG_TO_SERVER,
-            KEYWORD_VIEW_SERVER_LOGGER
-        )
+        LoggingToServerUiModel(
+            listOf(
+                KEYWORD_LOGGING_TO_SERVER,
+                KEYWORD_SEND_LOG_TO_SERVER,
+                KEYWORD_VIEW_SERVER_LOGGER
+            )
         ),
         SellerAppReviewDebuggingUiModel(listOf(KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING)),
         SharedPreferencesEditorUiModel(listOf(KEYWORD_SHARED_PREFERENCES_EDITOR)),
         AppVersionUiModel(listOf(KEYWORD_APP_VERSION)),
-        UrlEnvironmentUiModel(listOf(
-            KEYWORD_CHOOSE_URL_ENVIRONMENT,
-            KEYWORD_STAGING, KEYWORD_LIVE)
+        UrlEnvironmentUiModel(
+            listOf(
+                KEYWORD_CHOOSE_URL_ENVIRONMENT,
+                KEYWORD_STAGING,
+                KEYWORD_LIVE
+            )
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
         DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
-        TranslatorUiModel(listOf(
-            KEYWORD_API_KEY_SETTING,
-            KEYWORD_VISIT_BELOW_FOR_API_KEY,
-            KEYWORD_LANGUAGE_SETTING,
-            KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
-            KEYWORD_TOTAL_TRANSLATED_TEXT
-        )),
+        TranslatorUiModel(
+            listOf(
+                KEYWORD_API_KEY_SETTING,
+                KEYWORD_VISIT_BELOW_FOR_API_KEY,
+                KEYWORD_LANGUAGE_SETTING,
+                KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
+                KEYWORD_TOTAL_TRANSLATED_TEXT
+            )
+        ),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),
         ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
-        RollenceAbTestingManualSwitcherUiModel(listOf(
-            KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER,
-            KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS)
+        RollenceAbTestingManualSwitcherUiModel(
+            listOf(
+                KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER,
+                KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS
+            )
         ),
-        HomeAndNavigationRevampSwitcherUiModel(listOf(
-            KEYWORD_TRANSLATOR,
-            KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
-            KEYWORD_NEW_NAVIGATION,
-            KEYWORD_ALWAYS_OS_EXPERIMENT,
-            KEYWORD_OLD_BALANCE_WIDGET,
-            KEYWORD_NEW_BALANCE_WIDGET,
-            KEYWORD_OLD_INBOX,
-            KEYWORD_NEW_INBOX,
-            KEYWORD_OLD_CART_CHECKOUT,
-            KEYWORD_NEW_CART_CHECKOUT
-        )),
-        PlayWebSocketSseLoggingUiModel(listOf(
-            KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING,
-            KEYWORD_VIEW_SSE_LOGGING
-        )),
+        HomeAndNavigationRevampSwitcherUiModel(
+            listOf(
+                KEYWORD_TRANSLATOR,
+                KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
+                KEYWORD_NEW_NAVIGATION,
+                KEYWORD_ALWAYS_OS_EXPERIMENT,
+                KEYWORD_OLD_BALANCE_WIDGET,
+                KEYWORD_NEW_BALANCE_WIDGET,
+                KEYWORD_OLD_INBOX,
+                KEYWORD_NEW_INBOX,
+                KEYWORD_OLD_CART_CHECKOUT,
+                KEYWORD_NEW_CART_CHECKOUT
+            )
+        ),
+        PlayWebSocketSseLoggingUiModel(
+            listOf(
+                KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING,
+                KEYWORD_VIEW_SSE_LOGGING
+            )
+        ),
         ConvertResourceIdUiModel(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
         ),
@@ -208,7 +226,6 @@ class DeveloperOptionAdapter(
     }
 
     private fun removeSellerAppItems() {
-        removeWidget(LeakCanaryUiModel::class.java)
         removeWidget(AppAuthSecretUiModel::class.java)
     }
 
@@ -226,6 +243,6 @@ class DeveloperOptionAdapter(
     }
 
     private fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
-        return defaultItems.find { it.javaClass == itemClass}
+        return defaultItems.find { it.javaClass == itemClass }
     }
 }

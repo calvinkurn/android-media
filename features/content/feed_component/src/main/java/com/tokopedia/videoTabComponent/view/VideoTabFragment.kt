@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
@@ -72,13 +73,8 @@ class VideoTabFragment :
 
     companion object {
         const val TIME_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW = 3000L
-        const val TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW = 0L
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 257
-
-        private const val THRESHOLD_SCROLL_ZERO = 0
-        private const val THRESHOLD_SCROLL_TEN = 10
-        private const val THRESHOLD_SCROLL_MINUS_TEN = -10
-
+        private const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
         private const val REQUEST_CODE_PLAY_ROOM = 123
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
@@ -161,8 +157,17 @@ class VideoTabFragment :
                 Observer {
                     when (it) {
                         is Success -> onSuccessReminderSet(it.data)
-                        else -> {
-                            showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
+                        is Fail -> {
+                            val errorMsg = if (it.throwable is CustomUiMessageThrowable) {
+                                getString(
+                                    (it.throwable as? CustomUiMessageThrowable)?.errorMessageId
+                                        ?: com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder
+                                )
+                            } else {
+                                it.throwable.message
+                                    ?: getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder)
+                            }
+                            showToast(errorMsg, Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -228,7 +233,11 @@ class VideoTabFragment :
 
         swipeToRefresh?.isRefreshing = true
         swipeToRefresh?.isEnabled = false
-        playFeedVideoTabViewModel.getInitialPlayData()
+        playFeedVideoTabViewModel.getInitialPlayData(
+            arguments?.getString(
+                ARGS_FEED_VIDEO_TAB_SELECT_CHIP
+            ) ?: ""
+        )
         feedFloatingButtonManager.setInitialData(parentFragment)
         setupView(view)
         playWidgetCoordinator.onResume()
@@ -265,6 +274,7 @@ class VideoTabFragment :
             FeedPlayVideoTabMapper.map(
                 playDataResponse.data,
                 playDataResponse.meta,
+                position = playFeedVideoTabViewModel.selectedTabDefaultPosition,
                 shopId = userSession.shopId,
                 playWidgetPreference = playWidgetPreference
             )
@@ -379,24 +389,6 @@ class VideoTabFragment :
         return object : EndlessRecyclerViewScrollListener(rvWidget?.getLayoutManager()) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 playFeedVideoTabViewModel.getPlayData(false, null)
-            }
-
-            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(view, dx, dy)
-                rvWidget?.setShouldShowStickyHeaderValue(false, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
-                if (dy > THRESHOLD_SCROLL_ZERO) {
-                    // Scrolling up
-                    isScrollingUp = true
-                    if (dy > THRESHOLD_SCROLL_TEN) {
-                        rvWidget?.setHeaderViewVisibility(false)
-                    }
-                } else {
-                    // Scrolling down
-                    isScrollingUp = false
-                    if (dy < THRESHOLD_SCROLL_MINUS_TEN) {
-                        rvWidget?.setHeaderViewVisibility(true)
-                    }
-                }
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

@@ -1,0 +1,83 @@
+{
+  "readme": "Play - Follow Pop Up",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewContentIris",
+      "eventAction": "impression - follow pop up",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - .* - \\d+",
+      "trackerId": "38068",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - dismiss follow pop up",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - .* - \\d+",
+      "trackerId": "38069",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - follow creator pop up",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - .* - \\d+",
+      "trackerId": "38070",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - creator name follow pop up",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - .* - \\d+",
+      "trackerId": "38071",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "impression - success follow toaster",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "38072",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "impression - fail follow toaster",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "38073",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - coba lagi fail toaster",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "38075",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
