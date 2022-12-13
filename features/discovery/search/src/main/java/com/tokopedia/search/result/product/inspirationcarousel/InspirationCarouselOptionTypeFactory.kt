@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter
+package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

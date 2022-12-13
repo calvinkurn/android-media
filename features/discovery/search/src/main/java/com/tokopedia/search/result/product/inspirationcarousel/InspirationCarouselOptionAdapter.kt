@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter
+package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
