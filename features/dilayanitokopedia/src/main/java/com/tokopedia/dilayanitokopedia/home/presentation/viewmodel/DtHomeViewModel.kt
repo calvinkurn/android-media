@@ -7,18 +7,19 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
-import com.tokopedia.dilayanitokopedia.common.util.PageInfo
 import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabData
+import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.AnchorTabMapper.mapMenuList
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUseCase
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetRecommendationForYouUseCase
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeLoadingMoreModel
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -30,22 +31,8 @@ import javax.inject.Inject
 
 class DtHomeViewModel @Inject constructor(
     private val getHomeLayoutDataUseCase: DtGetHomeLayoutDataUseCase,
-//    private val getCategoryListUseCase: GetCategoryListUseCase,
-//    private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
-//    private val getTickerUseCase: GetTickerUseCase,
-//    private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-//    private val addToCartUseCase: AddToCartUseCase,
-//    private val updateCartUseCase: UpdateCartUseCase,
-//    private val deleteCartUseCase: DeleteCartUseCase,
-//    private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
-//    private val getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase,
-//    private val getQuestWidgetListUseCase: GetQuestWidgetListUseCase,
-//    private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
-//    private val getHomeReferralUseCase: GetHomeReferralUseCase,
-//    private val playWidgetTools: PlayWidgetTools,
-//    private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
@@ -68,8 +55,7 @@ class DtHomeViewModel @Inject constructor(
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         launchCatchError(block = {
-            homeLayoutItemList.clear()
-            homeLayoutItemList.addEmptyStateIntoList(id, serviceType)
+
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = DtLayoutState.HIDE
@@ -85,20 +71,15 @@ class DtHomeViewModel @Inject constructor(
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
-//        getHomeLayoutJob?.cancel()
+
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
             val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                 localCacheModel = localCacheModel
             )
-//            channelToken = homeLayoutResponse.first().token
 
-            homeLayoutItemList.mapHomeLayoutList(
-                homeLayoutResponse,
-                localCacheModel,
-//                userSession.isLoggedIn
-            )
+            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse)
 
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
@@ -108,13 +89,56 @@ class DtHomeViewModel @Inject constructor(
             _homeLayoutList.postValue(Success(data))
             _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList()))
 
+            getRecommendationForYou()
+
+
         }) {
             _homeLayoutList.postValue(Fail(it))
-        }.let {
-//            getHomeLayoutJob = it
         }
     }
 
+    private fun getRecommendationForYou() {
+
+        recommendationForYouLoading()
+
+        launchCatchError(block = {
+
+            val homeVisitableList = getHomeVisitableList().withIndex().find {
+
+                it.value is HomeLoadingMoreModel
+
+            }
+            if (homeVisitableList != null) {
+                val newVisitable = getHomeVisitableList().toMutableList()
+                newVisitable[homeVisitableList.index] = HomeRecommendationFeedDataModel()
+
+                val data = HomeLayoutListUiModel(items = newVisitable, state = DtLayoutState.SHOW)
+                homeLayoutItemList[homeVisitableList.index] =
+                    HomeLayoutItemUiModel(HomeRecommendationFeedDataModel(), state = HomeLayoutItemState.LOADED)
+                _homeLayoutList.postValue(Success(data))
+            }
+
+
+        }, onError =
+        {
+        })
+    }
+
+    private fun recommendationForYouLoading() {
+
+        val newVisitable = getHomeVisitableList().toMutableList()
+        newVisitable.add(HomeLoadingMoreModel())
+
+
+        val data = HomeLayoutListUiModel(
+            items = newVisitable,
+            state = DtLayoutState.SHOW
+        )
+
+
+        homeLayoutItemList.add(HomeLayoutItemUiModel(HomeLoadingMoreModel(), state = HomeLayoutItemState.LOADED))
+        _homeLayoutList.postValue(Success(data))
+    }
 
     /**
      * still dummy, need to update
@@ -124,40 +148,11 @@ class DtHomeViewModel @Inject constructor(
     }
 
 
-    fun switchServiceOrLoadLayout(
-//        externalServiceType: String, localCacheModel: LocalCacheModel
-    ) {
-//        /*
-//           Note :
-//            - There are 2 types of external service we'll receive, those are 20m and 2h.
-//            - 20m will be changed to 15m temporarily.
-//            - 15m still used in LCA and BE as 20m service type.
-//         */
-//        val currentServiceType = localCacheModel.getServiceType()
-//
-//        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
-//            switchService(localCacheModel, externalServiceType)
-//        } else {
-            getLoadingState()
-//        }
-    }
-
-    /***
-     *
-     * @param localCacheModel local data from choose address
-     * @param serviceType which is the intended type of service
-     */
-    fun switchService(localCacheModel: LocalCacheModel, serviceType: String) {
-//        launchCatchError(block = {
-//            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
-//            _setUserPreference.postValue(Success(userPreference))
-//        }) {
-//            _setUserPreference.postValue(Fail(it))
-//        }
+    fun switchServiceOrLoadLayout() {
+        getLoadingState()
     }
 
     fun getLoadingState() {
-//        channelToken = ""
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
         val data = HomeLayoutListUiModel(
@@ -167,7 +162,6 @@ class DtHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-
     fun getChooseAddress(source: String) {
         getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
             _chooseAddress.postValue(Success(it))
@@ -176,13 +170,6 @@ class DtHomeViewModel @Inject constructor(
         }, source)
     }
 
-    fun getShareUTM(data: PageInfo): String {
-        var campaignCode = if (data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
-        if (data.campaignCode != null && data.campaignCode.length > 11) {
-            campaignCode = data.campaignCode.substring(0, 11)
-        }
-        return "${data.identifier}-${campaignCode}"
-    }
 
     fun getPositionWidget(listComponent: MutableList<AnchorTabUiModel>?, pinnedComponentId: AnchorTabUiModel): Int {
         listComponent?.forEachIndexed { index, componentsItem ->
@@ -193,26 +180,4 @@ class DtHomeViewModel @Inject constructor(
         return -1
     }
 
-    fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int) {
-//        launchCatchError(coroutineContext, block = {
-//            val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
-//
-//            if(visitableList.isEmpty()){
-//                deleteWidget(visitable, position)
-//            } else {
-//                val lastIndex = position
-//                deleteWidget(visitable, lastIndex)
-//                visitableList.reversed().forEach {
-//                    addWidget(it, lastIndex)
-//                }
-//                _trackingLiveData.postValue(Event(visitableList.filterIsInstance(HomeVisitable::class.java)))
-//            }
-//        }){
-//            deleteWidget(visitable, position)
-//        }
-    }
-
-    private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
-//        homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
-    }
 }

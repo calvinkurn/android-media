@@ -3,8 +3,13 @@ package com.tokopedia.dilayanitokopedia.home.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.dilayanitokopedia.home.domain.model.common.FreeOngkir
+import com.tokopedia.dilayanitokopedia.home.domain.model.common.Shop
 
 
+/**
+ * Created by irpan on 12/10/22.
+ */
 data class GetHomeLayoutResponse(
     @Expose
     @SerializedName("getHomeChannelV2")
@@ -318,29 +323,6 @@ data class CtaData(
     val couponCode: String = ""
 )
 
-data class Shop(
-    @Expose
-    @SerializedName("shopID")
-    val shopId: String = ""
-)
 
-data class FreeOngkir(
-    @SerializedName("isActive")
-    @Expose
-    val isActive: Boolean = false,
-    @SerializedName("imageUrl")
-    @Expose
-    val imageUrl: String = ""
-)
 
-data class LabelGroup(
-    @SerializedName("title")
-    @Expose
-    val title: String = "",
-    @SerializedName("position")
-    @Expose
-    val position: String = "",
-    @SerializedName("type")
-    @Expose
-    val type: String = ""
-)
+

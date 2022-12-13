@@ -10,53 +10,26 @@ import androidx.annotation.StringDef
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(
     DtLayoutType.BANNER_CAROUSEL,
-//    DtLayoutType.CATEGORY,
-//    DtLayoutType.LEGO_3_IMAGE,
     DtLayoutType.LEGO_6_IMAGE,
     DtLayoutType.MIX_TOP_CAROUSEL,
-//    DtLayoutType.REPURCHASE_PRODUCT,
-//    DtLayoutType.EDUCATIONAL_INFORMATION,
-//    DtLayoutType.SHARING_EDUCATION,
-//    DtLayoutType.SHARING_REFERRAL,
-//    DtLayoutType.MAIN_QUEST,
     DtLayoutType.MIX_LEFT_CAROUSEL,
-    DtLayoutType.FEATURED_SHOP
-//    DtLayoutType.MIX_LEFT_CAROUSEL_ATC
+    DtLayoutType.FEATURED_SHOP,
+
+    //for loading
+    DtLayoutType.LOADING_RECOMMEDATION_FEED
 )
 annotation class DtLayoutType {
     companion object {
 
-        //list supported by BE
-//        "
-//        banner_carousel_v2,
-//        page_usp,
-//        top_carousel,
-//        6_image,
-//        shop_widget,
-//        left_carousel,
-//        ",
-
-
         const val BANNER_CAROUSEL = "banner_carousel_v2"
-        const val EDUCATIONAL_INFORMATION = "page_usp"
         const val MIX_TOP_CAROUSEL = "top_carousel"
         const val LEGO_6_IMAGE = "6_image"
         const val FEATURED_SHOP = "shop_widget"
         const val MIX_LEFT_CAROUSEL = "left_carousel"
 
+        //additional loading
+        const val LOADING_RECOMMEDATION_FEED = "loading_recomendation_feed"
 
-        //        const val CATEGORY = "category_tokonow"
-//        const val LEGO_3_IMAGE = "lego_3_image"
-//        const val REPURCHASE_PRODUCT = "recent_purchase_tokonow"
-//        const val SHARING_EDUCATION = "tokonow_share"
-//        const val SHARING_REFERRAL = "tokonow_referral"
-//        const val MAIN_QUEST = "tokonow_main_quest"
-//        const val MIX_LEFT_CAROUSEL_ATC = "left_carousel_atc"
-//        const val MEDIUM_PLAY_WIDGET = "play_carousel"
-//        const val SMALL_PLAY_WIDGET = "play_carousel_small"
-
-        //        remove later
-        const val TYPE_DEBUG_DEFAULT = ""
     }
 }
 

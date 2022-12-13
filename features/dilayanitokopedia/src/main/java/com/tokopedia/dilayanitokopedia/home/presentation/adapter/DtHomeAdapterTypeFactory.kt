@@ -5,8 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.dilayanitokopedia.common.view.DtView
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeLoadingMoreModel
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
+import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtHomeCategoryListener
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.HomeLoadingMoreViewHolder
 import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.HomeLoadingStateViewHolder
+import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.recomendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -42,67 +47,22 @@ import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import timber.log.Timber
 
 
 /**
  * Created by irpan on 12/09/22.
  */
 class DtHomeAdapterTypeFactory(
+    private val homeRecommendationFeedListener: DtHomeCategoryListener,
     private val dtView: DtView? = null,
-//    private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
     private val featuredShopListener: FeaturedShopListener,
-//    private val tokoNowCategoryGridListener: TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
-//
-//    private val tokoNowProductCardListener: TokoNowProductCardListener? = null,
-//    private val homeSharingEducationListener: HomeSharingListener? = null,
-//    private val homeEducationalInformationListener: HomeEducationalInformationListener? = null,
-//    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener? = null,
-//    private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocListener? = null,
-//    private val homeQuestSequenceWidgetListener : HomeQuestSequenceWidgetListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerListener? = null,
-//    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
-//    private val homeLeftCarouselAtcListener: HomeLeftCarouselAtcCallback? = null,
     private val homeTopComponentListener: HomeComponentListener? = null,
     private val homeTopCarouselListener: MixTopComponentListener? = null,
-    private val homeLeftCarouselListener: MixLeftComponentListener? = null,
-) : BaseAdapterTypeFactory(),
-    HomeTypeFactory,
-    HomeComponentTypeFactory
-//    TokoNowCategoryGridTypeFactory,
-//    TokoNowRepurchaseTypeFactory,
-//    TokoNowEmptyStateOocTypeFactory,
-//    TokoNowServerErrorTypeFactory
-{
-    init {
-        Timber.d("logging--DtHomeAdapterTypeFactory called")
+    private val homeLeftCarouselListener: MixLeftComponentListener? = null
+) : BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory {
 
-    }
-
-    //    // region Common TokoNow Component
-//    override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
-//    override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
-//    override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
-//    override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
-//    // endregion
-
-//    // region TokoNow Home Component
-//    override fun type(uiModel: HomeSharingWidgetUiModel): Int = HomeSharingWidgetViewHolder.LAYOUT
-//    override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
-//    override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
-//    override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
-//    override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
-//    override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
-//    override fun type(uiModel: HomeProgressBarUiModel): Int = HomeProgressBarViewHolder.LAYOUT
-//    override fun type(uiModel: HomeQuestSequenceWidgetUiModel): Int = HomeQuestSequenceWidgetViewHolder.LAYOUT
-//    override fun type(uiModel: HomeQuestWidgetUiModel): Int = HomeQuestWidgetViewHolder.LAYOUT
-//    override fun type(uiModel: HomeQuestTitleUiModel): Int = HomeQuestTitleViewHolder.LAYOUT
-//    override fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int = HomeQuestAllClaimedWidgetViewHolder.LAYOUT
-//    override fun type(uiModel: HomeSwitcherUiModel): Int = HomeSwitcherViewHolder.LAYOUT
-//    override fun type(uiModel: HomeLeftCarouselAtcUiModel): Int = HomeLeftCarouselAtcViewHolder.LAYOUT
-//    override fun type(uiModel: HomePlayWidgetUiModel): Int = HomePlayWidgetViewHolder.LAYOUT
-//    // endregion
 
     // region Global Home Component
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int = DynamicLegoBannerViewHolder.LAYOUT
@@ -124,45 +84,27 @@ class DtHomeAdapterTypeFactory(
     //current used in DT
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT
     override fun type(mixLeftDataModel: MixLeftDataModel): Int = MixLeftComponentViewHolder.LAYOUT
-
     override fun type(featuredShopDataModel: FeaturedShopDataModel): Int = FeaturedShopViewHolder.LAYOUT
 
-    override fun type(uiModel: HomeLoadingStateUiModel): Int  = HomeLoadingStateViewHolder.LAYOUT
 
-    // endregion
+    //loading from FE.
+    override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
+    override fun type(uiModel: HomeRecommendationFeedDataModel): Int = HomeRecommendationFeedViewHolder.LAYOUT
+    override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int = HomeLoadingMoreViewHolder.LAYOUT
+
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        Timber.d("logging--DtHomeAdapterTypeFactory-createViewHolder called ${type.toString()}")
 
         return when (type) {
-//            // region Common TokoNow Component
-//            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
-//            TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener, tokoNowView)
 
-
-//            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
-//            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
-//            // endregion
-
-//            // region TokoNow Home Component
-//            HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
-//            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener)
-//            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
-//            HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
-//            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, homeEducationalInformationListener)
-//            HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
-//            HomeQuestSequenceWidgetViewHolder.LAYOUT -> HomeQuestSequenceWidgetViewHolder(view, homeQuestSequenceWidgetListener)
-//            HomeQuestWidgetViewHolder.LAYOUT -> HomeQuestWidgetViewHolder(view, homeQuestSequenceWidgetListener)
-//            HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
-//            HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
-//            HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
-//            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, tokoNowView)
-//            HomePlayWidgetViewHolder.LAYOUT -> HomePlayWidgetViewHolder(createPlayWidgetViewHolder(view))
-//            // endregion
 
-            // region Global Home Component
-            // home component - reuse from component
+            //loading more for recommendation feeds.
+            HomeLoadingMoreViewHolder.LAYOUT -> HomeLoadingMoreViewHolder(view)
+
+            HomeRecommendationFeedViewHolder.LAYOUT -> {
+                HomeRecommendationFeedViewHolder(view, homeRecommendationFeedListener, cardInteraction = true)
+            }
 
             BannerComponentViewHolder.LAYOUT -> {
                 BannerComponentViewHolder(view, bannerComponentListener, null)
@@ -183,14 +125,13 @@ class DtHomeAdapterTypeFactory(
                 homeTopCarouselListener,
                 true
             )
+
             // endregion
             else -> {
-                //TODO - should handle biar gak crash
                 super.createViewHolder(view, type)
             }
         }
     }
-
 
 
 }

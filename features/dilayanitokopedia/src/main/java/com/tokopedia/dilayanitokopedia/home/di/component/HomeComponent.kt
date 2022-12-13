@@ -5,6 +5,7 @@ import com.tokopedia.dilayanitokopedia.home.di.module.HomeModule
 import com.tokopedia.dilayanitokopedia.home.di.module.HomeViewModelModule
 import com.tokopedia.dilayanitokopedia.home.di.scope.HomeScope
 import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeFragment
+import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeRecommendationForYouFragment
 import dagger.Component
 
 /**
@@ -19,6 +20,6 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface HomeComponent {
-
-    fun inject(fragmentTokoNow: DtHomeFragment)
+    fun inject(fragmentDtHome: DtHomeFragment)
+    fun inject(fragmentDtRecommendationForYou: DtHomeRecommendationForYouFragment)
 }

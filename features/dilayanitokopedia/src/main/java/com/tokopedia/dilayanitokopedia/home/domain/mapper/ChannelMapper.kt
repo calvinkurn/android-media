@@ -88,7 +88,7 @@ object ChannelMapper {
                     isOutOfStock = it.isOutOfStock,
                     isFreeOngkirActive = it.freeOngkir.isActive,
                     freeOngkirImageUrl = it.freeOngkir.imageUrl,
-                    shopId = it.shop.shopId,
+                    shopId = it.shop.id,
                     hasBuyButton = it.hasBuyButton,
                     labelGroup = it.labelGroup.map { label ->
                         LabelGroup(

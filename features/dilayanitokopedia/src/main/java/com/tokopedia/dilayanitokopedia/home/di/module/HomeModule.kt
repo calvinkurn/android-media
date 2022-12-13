@@ -14,7 +14,7 @@ import dagger.Provides
 class HomeModule {
 
 
-        @HomeScope
+    @HomeScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
@@ -25,14 +25,5 @@ class HomeModule {
     fun provideGrqphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
-
-
-//
-//    @HomeScope
-//    @Provides
-//    fun provideGetRecommendationUseCase(
-//        @ApplicationContext context: Context,
-//        coroutineGqlRepository: GraphqlRepository
-//    ): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
 
 }

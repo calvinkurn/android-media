@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 /**
  * Created by irpan on 12/09/22.
  */
-class CustomLinearLayoutManager(context: Context): LinearLayoutManager(context) {
+class CustomLinearLayoutManager(context: Context) : LinearLayoutManager(context) {
     private var isScrollEnabled = true
 
     fun setScrollEnabled(flag: Boolean) {

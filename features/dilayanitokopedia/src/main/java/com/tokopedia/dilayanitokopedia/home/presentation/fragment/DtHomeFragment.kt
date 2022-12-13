@@ -26,8 +26,9 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
+import com.tokopedia.dilayanitokopedia.common.model.DtShareUniversalModel
 import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
-import com.tokopedia.dilayanitokopedia.common.util.PageInfo
+import com.tokopedia.dilayanitokopedia.common.util.DtUniversalShareUtil
 import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
 import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabStatus
@@ -41,12 +42,15 @@ import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapterTypeFactory
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtDynamicLegoBannerCallback
+import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtHomeCategoryListener
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtLeftCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtSlideBannerCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtTopCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
+import com.tokopedia.dilayanitokopedia.home.presentation.view.NestedRecyclerView
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
+import com.tokopedia.dilayanitokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -56,12 +60,15 @@ import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -73,39 +80,54 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
 
 /**
+ * Dilayani Tokopedia  ( DT )
  * Created by irpan on 07/09/22.
  */
-class DtHomeFragment : Fragment() {
+class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener, PermissionListener {
 
     companion object {
         const val SOURCE = "dilayanitokopedia"
         const val SOURCE_TRACKING = "dilayanitokopedia page"
 
         private const val EXTRA_URL = "url"
+
+
+        //scroll listener
+        private const val RV_DIRECTION_TOP = 1
+        private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
+        const val PAGE_SHARE_NAME = "DilayaniTokopedia"
+        const val SHARE = "share"
+
     }
 
     @Inject
     lateinit var viewModelDtHome: DtHomeViewModel
+
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
-    private var rvHome: RecyclerView? = null
+    private var rvHome: NestedRecyclerView? = null
     private var ivHeaderBackground: ImageView? = null
+
+    private var root: View? = null
+    private var refreshLayout: ToggleableSwipeRefreshLayout? = null
 
 
     private var rvLayoutManager: CustomLinearLayoutManager? = null
@@ -116,9 +138,17 @@ class DtHomeFragment : Fragment() {
 
     private var statusBarState = AnchorTabStatus.MAXIMIZE
 
+    private var shareHome = createShareHomeTokonow()
+
+
+    private var screenshotDetector: ScreenshotDetector? = null
+
+    var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
     private val adapter by lazy {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
+                homeRecommendationFeedListener = createRecommendationCallback(),
                 dtView = createDtView(),
                 featuredShopListener = createFeatureShopCallback(),
                 bannerComponentListener = createSlideBannerCallback(),
@@ -129,6 +159,30 @@ class DtHomeFragment : Fragment() {
             ),
             differ = HomeListDiffer()
         )
+    }
+
+    private fun createRecommendationCallback(): DtHomeCategoryListener {
+        return object : DtHomeCategoryListener {
+            override val windowHeight: Int
+                get() = if (activity != null) {
+                    root?.height ?: 0
+                } else {
+                    0
+                }
+            override val homeMainToolbarHeight: Int
+                get() {
+                    var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                    context?.let { context ->
+                        navToolbar?.let {
+                            height = navToolbar?.height
+                                ?: context.resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                            height += 8f.toDpInt()
+                        }
+                    }
+                    return height
+                }
+        }
+
     }
 
     private var anchorTabAdapter: DtAnchorTabAdapter? = null
@@ -159,6 +213,14 @@ class DtHomeFragment : Fragment() {
         initRecyclerView()
         initAnchorTabMenu()
         initRecyclerScrollListener()
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                context = it,
+                screenShotListener = this,
+                fragment = this,
+                permissionListener = this
+            )
+        }
         setupChooseAddressWidget()
         setupStatusBar()
         updateCurrentPageLocalCacheModelData()
@@ -235,7 +297,13 @@ class DtHomeFragment : Fragment() {
             navToolbar = binding?.dtHomeNavToolbar
             statusBarBackground = binding?.dtHomeStatusBarBackground
             rvHome = binding?.rvHome
+//            rvHome?.setHasFixedSize(true)
+
+            refreshLayout = binding?.homeSwipeRefreshLayout
+
 //            swipeLayout = binding?.swipeRefreshLayout
+
+            root = binding?.root
         }
     }
 
@@ -292,90 +360,112 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun onClickShareButton() {
-//        updateShareHomeData(
-//            pageIdConstituents = listOf(PAGE_TYPE_HOME),
-//            isScreenShot = false,
-//            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty(),
-//            linkerType = LinkerData.NOW_TYPE
+        updateShareHomeData(
+            pageIdConstituents = listOf("home"),
+            isScreenShot = false,
+            thumbNailTitle = "thumbnail title".orEmpty(),
+            linkerType = LinkerData.NOW_TYPE
+        )
+
+        shareClicked(shareHome)
+
+//        val dummyPageinfo = PageInfo(
+//            path = "discovery / dilayani - tokopedia",
+//            name = "Dilayani Tokopedia",
+//            type = "general",
+//            searchApplink = "tokopedia://search-autocomplete?hint=Cari%20di%20Dilayani%20Tokopedia&navsource=tokocabang&srp_page_id=45021&srp_page_title=Dilayani%20Tokopedia",
+//            identifier = "dilayani - tokopedia",
+//            id = 45021,
+////            share = Share(
+////                enabled = true,
+////                title = "Dilayani Tokopedia | Tokopedia",
+////                image = "https://images.tokopedia.net/img/QBrNqa/2022/10/12/facd6ee4-849f-4309-a3c9-69261238929a.png",
+////                url = "https://www.tokopedia.com/discovery/dilayani-tokopedia, description=Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
+////            ),
+//            campaignCode = "tca00031148_dilayani tokopedia_18march22 -18 march24",
+//            searchTitle = "Cari di Dilayani Tokopedia",
+//            showChooseAddress = true,
+//            tokonowMiniCartActive = false,
+////            additionalInfo = AdditionalInfo(category = null, categoryData = null),
+//            redirectionUrl = null,
+//            isAdult = 0,
+//            origin = 0
 //        )
 //
-//        shareClicked(shareHomeTokonow)
+//
+//        showUniversalShareBottomSheet(dummyPageinfo)
+    }
 
-        val dummyPageinfo = PageInfo(
-            path = "discovery / dilayani - tokopedia",
-            name = "Dilayani Tokopedia",
-            type = "general",
-            searchApplink = "tokopedia://search-autocomplete?hint=Cari%20di%20Dilayani%20Tokopedia&navsource=tokocabang&srp_page_id=45021&srp_page_title=Dilayani%20Tokopedia",
-            identifier = "dilayani - tokopedia",
-            id = 45021,
-//            share = Share(
-//                enabled = true,
-//                title = "Dilayani Tokopedia | Tokopedia",
-//                image = "https://images.tokopedia.net/img/QBrNqa/2022/10/12/facd6ee4-849f-4309-a3c9-69261238929a.png",
-//                url = "https://www.tokopedia.com/discovery/dilayani-tokopedia, description=Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
-//            ),
-            campaignCode = "tca00031148_dilayani tokopedia_18march22 -18 march24",
-            searchTitle = "Cari di Dilayani Tokopedia",
-            showChooseAddress = true,
-            tokonowMiniCartActive = false,
-//            additionalInfo = AdditionalInfo(category = null, categoryData = null),
-            redirectionUrl = null,
-            isAdult = 0,
-            origin = 0
+    private fun updateShareHomeData(
+        pageIdConstituents: List<String>,
+        isScreenShot: Boolean,
+        thumbNailTitle: String,
+        linkerType: String,
+        id: String = "",
+        url: String = "https://www.tokopedia.com/now"
+    ) {
+        shareHome?.pageIdConstituents = pageIdConstituents
+        shareHome?.isScreenShot = isScreenShot
+        shareHome?.thumbNailTitle = thumbNailTitle
+        shareHome?.linkerType = linkerType
+        shareHome?.id = id
+        shareHome?.sharingUrl = url
+    }
+
+    private fun shareClicked(shareHomeTokonow: DtShareUniversalModel?) {
+        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+            showUniversalShareBottomSheet(shareHomeTokonow)
+        } else {
+            LinkerManager.getInstance().apply {
+                executeShareRequest(DtUniversalShareUtil.shareRequest(context, shareHomeTokonow))
+            }
+        }
+    }
+
+    private fun showUniversalShareBottomSheet(shareHomeTokonow: DtShareUniversalModel?) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@DtHomeFragment)
+            setUtmCampaignData(
+                pageName = PAGE_SHARE_NAME,
+                userId = userSession.userId,
+                pageIdConstituents = shareHomeTokonow?.pageIdConstituents.orEmpty(),
+                feature = SHARE
+            )
+            setMetaData(
+                tnTitle = shareHomeTokonow?.thumbNailTitle.orEmpty(),
+                tnImage = shareHomeTokonow?.thumbNailImage.orEmpty(),
+            )
+            //set the Image Url of the Image that represents page
+            setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
+        }
+
+        universalShareBottomSheet?.show(
+            childFragmentManager, this,
+            screenshotDetector
         )
-        showUniversalShareBottomSheet(dummyPageinfo)
     }
 
-    private fun showUniversalShareBottomSheet(data: PageInfo?) {
-        data?.let { pageInfo ->
-            val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-                init(bottomSheetShareListener())
-                setUtmCampaignData(
-                    "Dilayani Tokopedia",
-                    if (UserSession(this@DtHomeFragment.requireContext()).userId.isNullOrEmpty()) {
-                        "0"
-                    } else {
-                        UserSession(this@DtHomeFragment.requireContext()).userId
-                    },
-                    viewModelDtHome.getShareUTM(pageInfo),
-                    "share"
-                )
-//                setMetaData(
-//                    pageInfo.share?.title ?: "",
-//                    pageInfo.share?.image ?: ""
-//                )
-//                setOgImageUrl(pageInfo.share?.image ?: "")
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+
+
+        DtUniversalShareUtil.shareOptionRequest(
+            shareModel = shareModel,
+            shareData = shareHome,
+            activity = activity,
+            view = view,
+            onSuccess = {
+                universalShareBottomSheet?.dismiss()
             }
-            universalShareBottomSheet?.show(fragmentManager, this)
-//            shareType = UniversalShareBottomSheet.getShareBottomSheetType()
-//            getDiscoveryAnalytics().trackUnifyShare(
-//                VIEW_DISCOVERY_IRIS,
-//                if (shareType == CUSTOM_SHARE_SHEET) VIEW_UNIFY_SHARE else VIEW_SCREENSHOT_SHARE,
-//                getUserID()
-//            )
-        }
+        )
+
+
     }
 
-    private fun bottomSheetShareListener(): ShareBottomsheetListener {
-        return object : ShareBottomsheetListener {
-            override fun onShareOptionClicked(shareModel: ShareModel) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onCloseOptionClicked() {
-                TODO("Not yet implemented")
-            }
-        }
+    override fun onCloseOptionClicked() {
+        //no-op
     }
 
-//    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String, linkerType: String, id: String = "", url: String = SHARE_HOME_URL) {
-//        shareHomeTokonow?.pageIdConstituents = pageIdConstituents
-//        shareHomeTokonow?.isScreenShot = isScreenShot
-//        shareHomeTokonow?.thumbNailTitle = thumbNailTitle
-//        shareHomeTokonow?.linkerType = linkerType
-//        shareHomeTokonow?.id = id
-//        shareHomeTokonow?.sharingUrl = url
-//    }
 
     private fun addNavBarScrollListener() {
 //        navBarScrollListener?.let {
@@ -408,8 +498,10 @@ class DtHomeFragment : Fragment() {
     private fun getParamDtSRP() = "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalDilayaniTokopedia.SEARCH}"
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
+
         rvHome?.post {
             adapter.submitList(data.items)
+
         }
     }
 
@@ -464,6 +556,7 @@ class DtHomeFragment : Fragment() {
     private fun observeLiveData() {
         observe(viewModelDtHome.homeLayoutList) {
 //            removeAllScrollListener()
+
 
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
@@ -709,31 +802,19 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun showEmptyStateNoAddress() {
-//        if (localCacheModel?.city_id?.isBlank() == true && localCacheModel?.district_id?.isBlank() == true) {
-//            showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
-//        } else {
-//            viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
         showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
-//        }
     }
 
 
-    /**
-     * Handle top carousel onChannelExpired
-     */
     private fun createTopComponentCallback(): HomeComponentListener? {
         return object : HomeComponentListener {
             override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
-                if (channelModel.channelConfig.isAutoRefreshAfterExpired) {
-//                    homeCategoryListener.getDynamicChannelData(visitable, channelModel, channelPosition)
-                } else {
-//                    homeCategoryListener.removeViewHolderAtPosition(channelPosition)
-                }
+                // no-op
             }
         }
     }
 
-    val CLICK_TIME_INTERVAL: Long = 500
+    private val CLICK_TIME_INTERVAL: Long = 500
 
     private var mLastClickTime = System.currentTimeMillis()
 
@@ -772,15 +853,15 @@ class DtHomeFragment : Fragment() {
     private fun createFeatureShopCallback(): FeaturedShopListener {
         return object : FeaturedShopListener {
             override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
-                TODO("Not yet implemented")
+                // no-op
             }
 
             override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
-                TODO("Not yet implemented")
+                // no-op
             }
 
             override fun onFeaturedShopBannerBackgroundClicked(channel: ChannelModel) {
-                TODO("Not yet implemented")
+                // no-op
             }
 
             override fun onFeaturedShopItemImpressed(
@@ -789,7 +870,7 @@ class DtHomeFragment : Fragment() {
                 position: Int,
                 parentPosition: Int
             ) {
-                TODO("Not yet implemented")
+                // no-op
             }
 
             override fun onFeaturedShopItemClicked(
@@ -798,7 +879,8 @@ class DtHomeFragment : Fragment() {
                 position: Int,
                 parentPosition: Int
             ) {
-                TODO("Not yet implemented")
+                // no-op
+
             }
         }
     }
@@ -823,9 +905,11 @@ class DtHomeFragment : Fragment() {
             }
 
             override fun onLocalizingAddressServerDown() {
+                // no-op
             }
 
             override fun onClickChooseAddressTokoNowTracker() {
+                // no-op
             }
 
             override fun needToTrackTokoNow(): Boolean = true
@@ -836,18 +920,22 @@ class DtHomeFragment : Fragment() {
 
             override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
 
-            override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */
+            override fun onLocalizingAddressUpdatedFromBackground() {
+                // no-op
             }
 
-            override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */
+            override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+                // no-op
             }
 
-            override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */
+            override fun onLocalizingAddressLoginSuccess() {
+                // no-op
             }
         })
     }
 
-    private var coachMark: CoachMark2? = null
+    private
+    var coachMark: CoachMark2? = null
 
     private fun showCoachMark() {
         val coachMarkList = arrayListOf<CoachMark2Item>().apply {
@@ -878,7 +966,7 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun initRecyclerScrollListener() {
-        binding?.rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -893,6 +981,10 @@ class DtHomeFragment : Fragment() {
                 }
 
                 updateAnchorTabWhenScroll(recyclerView)
+
+                //for recommendation scroll
+                evaluateHomeComponentOnScroll(recyclerView)
+
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -910,6 +1002,34 @@ class DtHomeFragment : Fragment() {
         })
     }
 
+    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
+
+        /**
+         * because later we will disable scroll up for this parent recyclerview
+         * and makes refresh layout think we can't scroll up (which actually can! we only disable
+         * scroll so that feed recommendation section can scroll its content)
+         */
+        if (recyclerView.computeVerticalScrollOffset() == VERTICAL_SCROLL_FULL_BOTTOM_OFFSET) {
+            refreshLayout?.setCanChildScrollUp(false)
+        } else {
+            refreshLayout?.setCanChildScrollUp(true)
+        }
+        if (recyclerView.canScrollVertically(RV_DIRECTION_TOP)) {
+
+            navToolbar?.showShadow(lineShadow = true)
+            rvHome?.setNestedCanScroll(false)
+        } else {
+            //home feed now can scroll up, so hide maintoolbar shadow
+
+            navToolbar?.hideShadow(lineShadow = true)
+            rvHome?.setNestedCanScroll(true)
+
+
+        }
+
+    }
+
+
     private fun updateAnchorTabWhenScroll(recyclerView: RecyclerView) {
         val visiblePosition = rvLayoutManager?.findFirstCompletelyVisibleItemPosition()
 
@@ -918,7 +1038,7 @@ class DtHomeFragment : Fragment() {
          * get position from anchor tab using visitable
          * select and scroll tab anchor from pisition
          */
-        if (visiblePosition != null && viewModelDtHome.getHomeVisitableList().isNotEmpty()) {
+        if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList().isNotEmpty()) {
             val visitable = viewModelDtHome.getHomeVisitableList()[visiblePosition]
 
             val anchorTabUiModel = viewModelDtHome.menuList.value?.find {
@@ -970,4 +1090,39 @@ class DtHomeFragment : Fragment() {
             ivHeaderBackground?.show()
         }
     }
+
+    private fun createShareHomeTokonow(): DtShareUniversalModel {
+        val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+
+        return DtShareUniversalModel(
+            sharingText = "sharingText".orEmpty(),
+            thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            specificPageName = "title",
+            specificPageDescription = "desc".orEmpty(),
+            linkerType = "dt",
+            sharingUrl = "https://www.tokopedia.com/now"
+        )
+
+
+    }
+
+    override fun screenShotTaken() {
+
+        updateShareHomeData(
+            pageIdConstituents = listOf("home"),
+            isScreenShot = true,
+            thumbNailTitle = "thumbnail title",
+            linkerType = LinkerData.NOW_TYPE
+        )
+
+        showUniversalShareBottomSheet(shareHome)
+
+    }
+
+    override fun permissionAction(action: String, label: String) {
+
+    }
+
+
 }
