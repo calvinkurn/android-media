@@ -10,7 +10,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 class CallTokopediaCareDialog(context: Context) {
 
     companion object {
-        const val imageCallTokopediaCare = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/contact_cs_campaign_voucher_creation.png"
+        private const val imageCallTokopediaCare = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/contact_cs_campaign_voucher_creation.png"
     }
     private var dialogUnify: DialogUnify? = null
     private var onPositiveConfirmed: () -> Unit = {}
