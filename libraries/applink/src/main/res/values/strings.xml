@@ -58,6 +58,8 @@
     <string name="user_identification_info_simple">Dokumen Data Diri</string>
     <string name="talk_title">Diskusi Produk</string>
 
+    <string name="goto_kyc_title">GoTo KYC</string>
+
     <string name="title_topchat">Chat</string>
     <string name="title_inbox">Inbox</string>
 
