@@ -3039,8 +3039,8 @@ class NewShopPageFragment :
                                     shareModel.channel.orEmpty(),
                                     customDimensionShopPage,
                                     userId,
+                                    UniversalShareBottomSheet.getUserType(),
                                     shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
-                                    UniversalShareBottomSheet.getUserType()
                                 )
                             }
 
@@ -3111,12 +3111,6 @@ class NewShopPageFragment :
     private fun showUniversalShareBottomSheet() {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@NewShopPageFragment)
-            setUtmCampaignData(
-                SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
-                userId.ifEmpty { "0" },
-                shopId,
-                SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
-            )
             setMetaData(
                 shopPageHeaderDataModel?.shopName.orEmpty(),
                 shopPageHeaderDataModel?.avatar.orEmpty(),
@@ -3283,7 +3277,7 @@ class NewShopPageFragment :
             }
         }
         universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)
-        universalShareBottomSheet?.getImageFromMedia(true)
+        universalShareBottomSheet?.getImageFromMedia(shopPageParamModel.shopProfileImgUrl.isNotEmpty())
         universalShareBottomSheet?.setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE)
 
         universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector, safeViewAction = {
@@ -3296,6 +3290,12 @@ class NewShopPageFragment :
             universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
             universalShareBottomSheet?.affiliateRequestDataReceived(true)
         })
+        universalShareBottomSheet?.setUtmCampaignData(
+            SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
+            userId.ifEmpty { "0" },
+            shopId,
+            SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
+        )
     }
 
     private fun configShopShareBottomSheetImpressionTracker() {
@@ -3349,7 +3349,7 @@ class NewShopPageFragment :
     }
 
     override fun permissionAction(action: String, label: String) {
-        shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
+        shopPageTracking?.clickUniversalSharingPermission(action.uppercase(), label, shopId, userId)
     }
 
     fun setupShopPageLottieAnimation(lottieUrl: String) {
