@@ -3175,20 +3175,21 @@ class FeedPlusFragment :
                 val item = (adapter.getlist()[rowNumber] as TopadsHeadLineV2Model)
                 val card = item.feedXCard
                 card.followers.isFollowed = !card.followers.isFollowed
+                val isFollowed = card.followers.isFollowed
 
                 feedAnalytics.eventClickFollowitem(
                     getFeedTrackerDataModel(card)
                 )
 
-                if (card.followers.isFollowed) {
+                if (isFollowed) {
                     card.followers.transitionFollow = true
                 }
-                if (!card.followers.isFollowed) {
+                if (!isFollowed) {
                     showToast(
                         getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
-                } else if (card.followers.isFollowed) {
+                } else {
                     showToast(
                         getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
                         Toaster.TYPE_NORMAL
