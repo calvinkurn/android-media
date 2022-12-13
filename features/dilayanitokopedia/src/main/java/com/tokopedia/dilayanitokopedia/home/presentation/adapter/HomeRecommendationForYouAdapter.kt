@@ -1,9 +1,11 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.BannerRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoading
 import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendationTypeFactory
 import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeRecommendationVisitable
@@ -44,7 +46,20 @@ class HomeRecommendationAdapter(
      * @param item item visitable
      */
     override fun bind(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: HomeRecommendationVisitable) {
+
+        adjustWithWidgets(holder, item)
         holder.bind(item, listener)
+    }
+
+    /*
+    provide full width for necessary widget
+     */
+    private fun adjustWithWidgets(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: HomeRecommendationVisitable) {
+        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+
+        when (item) {
+            is HomeRecommendationLoading -> layout.isFullSpan = true
+        }
     }
 
     override fun bind(

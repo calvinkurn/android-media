@@ -29,8 +29,7 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
     private val _homeRecommendationNetworkLiveData: MutableLiveData<Result<HomeRecommendationDataModel>> = MutableLiveData()
     private val loadingModel = HomeRecommendationLoading()
 
-    fun loadInitialPage(
-    ) {
+    fun loadInitialPage() {
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
         launchCatchError(coroutineContext, block = {
             val data = dtGetRecommendationForYouUseCase.executeOnBackground()

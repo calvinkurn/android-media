@@ -63,8 +63,7 @@ class HomeRecommendationFeedViewHolder(
 
     private class ViewPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
         override fun getItem(position: Int): Fragment {
-            if (position == 0) return DtHomeRecommendationForYouFragment()
-            throw java.lang.IllegalStateException("Position is unexpectedly $position")
+            return DtHomeRecommendationForYouFragment()
         }
 
         override fun getCount() = 1

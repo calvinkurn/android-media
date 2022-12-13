@@ -57,7 +57,6 @@ object HomeRecommendationMapper {
                 }
             }
         }
-        Timber.d("logpan3 $visitables")
 
         return HomeRecommendationDataModel(visitables, recommendationProduct.hasNextPage)
     }
