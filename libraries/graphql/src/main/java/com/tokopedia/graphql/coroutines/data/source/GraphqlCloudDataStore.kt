@@ -98,17 +98,17 @@ class GraphqlCloudDataStore @Inject constructor(
     }
 
     private fun putTopAdsTrackingHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
-        var isStatusAvailable = false
+        var isQueryWhiteListed = false
         for (req in requests) {
             val list: List<String> = getQueryListFromQueryString(req.query)
             for (temp in list) {
-                if (temp.startsWith(STATUS_QUERY, ignoreCase = true) || registeredGqlForTopAds.keys.contains(temp)) {
-                    isStatusAvailable = true
+                if (temp.startsWith(STATUS_QUERY, ignoreCase = true) || registeredGqlForTopAds.contains(temp)) {
+                    isQueryWhiteListed = true
                     break
                 }
             }
         }
-        if (isStatusAvailable) {
+        if (isQueryWhiteListed) {
             val newHeader = GraphqlClient.getFunction().topAdsHeader
             if (!newHeader.isNullOrEmpty()) {
                 header[TOP_ADS_TRACKING_KEY] = newHeader

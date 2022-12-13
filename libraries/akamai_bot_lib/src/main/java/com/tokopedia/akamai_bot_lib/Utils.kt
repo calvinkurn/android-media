@@ -70,11 +70,13 @@ val registeredGqlFunctions = mapOf(
     "checkout_general_v2_instant" to "cogn",
     )
 
-val registeredGqlForTopAds = mapOf(
-    "login_token" to "login",
-    "register" to "register",
-    "login_token_v2" to "login",
-    "register_v2" to "register")
+val registeredGqlForTopAds = listOf(
+    "login_token",
+    "register",
+    "login_token_v2",
+    "register_v2",
+    "pdpGetLayout"
+)
 
 fun getAkamaiQuery(query: String): String? {
     return getAkamaiQuery(getQueryListFromQueryString(query))
