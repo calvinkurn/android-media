@@ -37,7 +37,6 @@ object KYCConstant {
     const val PADDING_ZERO = 0
     const val PADDING_0_5F = 0.5f
 
-
     const val QUALITY_100 = 100F
     const val QUALITY_70 = 70F
     const val QUALITY_50 = 50F
