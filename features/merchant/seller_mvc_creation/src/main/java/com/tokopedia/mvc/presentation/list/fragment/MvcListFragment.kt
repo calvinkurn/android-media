@@ -96,8 +96,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
-        //MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
-        showUpdateQuotaBottomSheet(voucher)
+        MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
