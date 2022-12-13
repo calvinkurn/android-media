@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.mvc.data.mapper.toUpdateVoucher
 import com.tokopedia.mvc.domain.entity.UpdateVoucherResult
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.domain.usecase.ChangeVoucherPeriodUseCase
-import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.usecase.UpdateCouponFacadeUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
@@ -17,8 +17,7 @@ import javax.inject.Inject
 
 class VoucherEditPeriodViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getTokenUseCase: GetInitiateVoucherPageUseCase,
-    private val changeVoucherPeriodUseCase: ChangeVoucherPeriodUseCase
+    private val updateVoucherPeriodUseCase: UpdateCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -67,13 +66,12 @@ class VoucherEditPeriodViewModel @Inject constructor(
 
         voucher?.let {
             launchCatchError(dispatchers.io, {
-                val voucherCreationMetadata = getTokenUseCase.getToken()
-                val token = voucherCreationMetadata.token
-                changeVoucherPeriodUseCase.updateVoucherPeriod(
-                    ::onSuccessUpdateVoucher,
-                    ::onFailureUpdateVoucher,
-                    voucher,
-                    token,
+                updateVoucherPeriodUseCase.execute(
+//                    ::onSuccessUpdateVoucher,
+//                    ::onFailureUpdateVoucher,
+//                    ,
+                    it.toUpdateVoucher(),
+                    emptyList(),
                     dateStart,
                     hourStart,
                     dateEnd,

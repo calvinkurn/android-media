@@ -46,6 +46,9 @@ data class UpdateVoucherRequest(
     @SerializedName("image_square")
     @Expose
     val imageSquare: String = "",
+    @SerializedName("image_portrait")
+    @Expose
+    val imagePortrait: String = "",
     @SerializedName("is_public")
     @Expose
     val isPublic: Int = 0,
