@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.TaskStackBuilder
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -26,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -45,6 +48,7 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
 import com.tokopedia.review.databinding.FragmentBulkReviewBinding
@@ -69,6 +73,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.widget.Widget
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
+import com.tokopedia.review.feature.inbox.presentation.ReviewInboxActivity
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -300,6 +305,8 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                     it.stickyButtonUiState
                 )
                 is BulkReviewPageUiState.Submitting -> onBulkReviewPageSubmitting()
+                is BulkReviewPageUiState.Cancelled -> onBulkReviewPageCancelled()
+                is BulkReviewPageUiState.Submitted -> onBulkReviewPageSubmitted(it.userName)
             }
         }
     }
@@ -381,7 +388,6 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     private suspend fun onBulkReviewPageError(throwable: Throwable?) {
         suspendCoroutine<Unit> { continuation ->
             binding?.run {
-                headerBulkReview.isShowBackButton = true
                 setupGlobalErrorUI(throwable)
                 globalErrorBulkReview.show()
                 animatePageUiStateChange(
@@ -404,7 +410,6 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     private suspend fun onBulkReviewPageLoading() {
         suspendCoroutine<Unit> { continuation ->
             binding?.run {
-                headerBulkReview.isShowBackButton = true
                 loaderBulkReview.show()
                 animatePageUiStateChange(
                     rvBulkReviewItemsAlphaTarget = 0F,
@@ -432,7 +437,6 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                 rvBulkReviewItems.post {
                     if (continuation.isActive) {
                         adapter.updateItems(bulkReviewVisitableList)
-                        headerBulkReview.isShowBackButton = true
                         widgetBulkReviewStickyButton.show()
                         rvBulkReviewItems.show()
                         widgetBulkReviewStickyButton.updateUiState(stickyButtonUiState)
@@ -459,7 +463,6 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     private suspend fun onBulkReviewPageSubmitting() {
         suspendCoroutine<Unit> { continuation ->
             binding?.run {
-                headerBulkReview.isShowBackButton = false
                 widgetBulkReviewSubmitLoader.show()
                 coachMarkHandler.tryDismissCoachMark()
                 animatePageUiStateChange(
@@ -475,6 +478,35 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                     loaderBulkReview.gone()
                     continuation.resume(Unit)
                 }
+            }
+        }
+    }
+
+    private fun onBulkReviewPageCancelled() {
+        activity?.run {
+            if (isTaskRoot) {
+                backToReviewPendingPage(String.EMPTY)
+            } else {
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
+    }
+
+    private fun onBulkReviewPageSubmitted(userName: String) {
+        activity?.run {
+            if (isTaskRoot) {
+                backToReviewPendingPage(
+                    getString(R.string.bulk_review_submission_success_message, userName)
+                )
+            } else {
+                val intent = Intent()
+                intent.putExtra(
+                    ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE,
+                    getString(R.string.bulk_review_submission_success_message, userName)
+                )
+                setResult(Activity.RESULT_OK, intent)
+                finish()
             }
         }
     }
@@ -606,6 +638,27 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                 onAnimationEnd()
             }
         } ?: onAnimationEnd()
+    }
+
+    private fun backToReviewPendingPage(message: String) {
+        activity?.run {
+            TaskStackBuilder
+                .create(this)
+                .addNextIntent(RouteManager.getIntent(this, ApplinkConst.HOME))
+                .addNextIntent(RouteManager.getIntent(this, ApplinkConst.INBOX))
+                .addNextIntent(
+                    ReviewInboxActivity.createNewInstance(
+                        context = this,
+                        tab = null,
+                        source = ReviewInboxConstants.SOURCE_REVIEW_INBOX
+                    ).apply {
+                        if (message.isNotBlank()) {
+                            putExtra(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE, message)
+                        }
+                    }
+                )
+                .startActivities()
+        }
     }
 
     private inner class ActivityResultHandler {

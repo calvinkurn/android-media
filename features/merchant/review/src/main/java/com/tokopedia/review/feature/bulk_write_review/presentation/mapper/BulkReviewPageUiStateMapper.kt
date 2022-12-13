@@ -7,10 +7,14 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.typef
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewVisitable
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewPageUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewStickyButtonUiState
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class BulkReviewPageUiStateMapper @Inject constructor() {
+class BulkReviewPageUiStateMapper @Inject constructor(
+    private val userSession: UserSessionInterface
+) {
     fun map(
+        shouldCancelBulkReview: Boolean,
         shouldSubmitReview: Boolean,
         submitBulkReviewRequestState: BulkReviewSubmitRequestState,
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
@@ -18,18 +22,22 @@ class BulkReviewPageUiStateMapper @Inject constructor() {
         getFormRequestState: BulkReviewGetFormRequestState,
         getBadRatingCategoryRequestState: BulkReviewGetBadRatingCategoryRequestState
     ): BulkReviewPageUiState {
-        return when (getFormRequestState) {
-            is BulkReviewGetFormRequestState.Complete.Error -> mapOnBulkReviewPageError(
-                getFormRequestState.throwable
-            )
-            is BulkReviewGetFormRequestState.Complete.Success -> mapOnGetFormSuccess(
-                shouldSubmitReview,
-                submitBulkReviewRequestState,
-                bulkReviewVisitableList,
-                bulkReviewStickyButtonUiState,
-                getBadRatingCategoryRequestState
-            )
-            is BulkReviewGetFormRequestState.Requesting -> mapOnBulkReviewPageLoading()
+        return if (shouldCancelBulkReview) {
+            BulkReviewPageUiState.Cancelled
+        } else {
+            when (getFormRequestState) {
+                is BulkReviewGetFormRequestState.Complete.Error -> mapOnBulkReviewPageError(
+                    getFormRequestState.throwable
+                )
+                is BulkReviewGetFormRequestState.Complete.Success -> mapOnGetFormSuccess(
+                    shouldSubmitReview,
+                    submitBulkReviewRequestState,
+                    bulkReviewVisitableList,
+                    bulkReviewStickyButtonUiState,
+                    getBadRatingCategoryRequestState
+                )
+                is BulkReviewGetFormRequestState.Requesting -> mapOnBulkReviewPageLoading()
+            }
         }
     }
 
@@ -66,8 +74,16 @@ class BulkReviewPageUiStateMapper @Inject constructor() {
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         bulkReviewStickyButtonUiState: BulkReviewStickyButtonUiState
     ): BulkReviewPageUiState {
-        return if (shouldSubmitReview && submitBulkReviewRequestState is BulkReviewSubmitRequestState.Requesting) {
+        return if (
+            shouldSubmitReview &&
+            submitBulkReviewRequestState is BulkReviewSubmitRequestState.Requesting
+        ) {
             BulkReviewPageUiState.Submitting
+        } else if (
+            submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Success &&
+            submitBulkReviewRequestState.result.success == true
+        ) {
+            BulkReviewPageUiState.Submitted(userName = userSession.name)
         } else {
             BulkReviewPageUiState.Showing(
                 items = bulkReviewVisitableList,

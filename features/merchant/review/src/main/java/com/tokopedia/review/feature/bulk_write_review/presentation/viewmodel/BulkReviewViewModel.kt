@@ -148,8 +148,8 @@ class BulkReviewViewModel @Inject constructor(
     private val anonymous = MutableStateFlow(false)
     private val shouldSubmitReview = MutableStateFlow(false)
     private var activeMediaPickerInboxID = ""
-
     // endregion stateflow that need to be saved and restored
+    private val shouldCancelBulkReview = MutableStateFlow(false)
     private val reviewItemsMediaUploadJobs = MutableStateFlow(emptyList<BulkReviewItemMediaUploadJobsUiModel>())
     private val reviewItemsProductInfoUiState = getFormRequestState.mapLatest(
         ::mapProductInfoUiState
@@ -277,6 +277,7 @@ class BulkReviewViewModel @Inject constructor(
     val expandedTextAreaToasterQueue: Flow<CreateReviewToasterUiModel>
         get() = _expandedTextAreaToasterQueue
     val bulkReviewPageUiState = combine(
+        shouldCancelBulkReview,
         shouldSubmitReview,
         submitBulkReviewRequestState,
         bulkReviewVisitableList,
@@ -459,6 +460,7 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onConfirmCancelReviewSubmission() {
         shouldSubmitReview.value = false
+        shouldCancelBulkReview.value = true
         dismissCancelReviewSubmissionDialog()
     }
 
