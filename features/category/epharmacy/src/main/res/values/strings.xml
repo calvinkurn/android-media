@@ -37,4 +37,5 @@
     <string name="epharmacy_reminder_success">Kami akan kirim pengingat jika ada dokter yang tersedia, ya!</string>
     <string name="epharmacy_reminder_fail">Silakan Coba lagi</string>
     <string name="epharmacy_upload_resep_atau_chat_dokter">Upload Resep atau Chat Dokter</string>
+    <string name="epharmacy_local_prescription_not_uploaded_error">Kamu punya pesanan obat keras yang butuh resep dokter. Segera lengkapi, ya!</string>
 </resources>

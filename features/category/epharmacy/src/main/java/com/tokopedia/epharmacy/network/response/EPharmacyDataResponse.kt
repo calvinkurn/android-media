@@ -125,7 +125,7 @@ data class EPharmacyProduct(
 )
 
 data class EPharmacyHeader(
-    @SerializedName("code")
+    @SerializedName("code", alternate = ["error_code"])
     val code: Int? = null,
     @SerializedName("server_process_time")
     val serverProcessTime: String? = ""

@@ -106,25 +106,14 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private fun showToastData(toaster: EPharmacyPrepareProductsGroupResponse.EPharmacyToaster?) {
         toaster?.message?.let { message ->
             if (PRESCRIPTION_ATTACH_SUCCESS == toaster.type) {
-                // TODO
                 EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
-                    "",
-                    "",
-                    "Success",
-                    "",
-                    "",
-                    ""
+                    "Success",message
                 )
                 _uploadError.value = EPharmacyMiniConsultationToaster(false, message)
             } else {
-                // TODO
                 EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
-                    "",
-                    "",
                     "Failed",
-                    "",
-                    "",
-                    ""
+                    message
                 )
                 _uploadError.value = EPharmacyMiniConsultationToaster(true, message)
             }

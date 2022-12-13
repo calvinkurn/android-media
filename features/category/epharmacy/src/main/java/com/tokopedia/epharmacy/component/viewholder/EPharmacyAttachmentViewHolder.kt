@@ -48,6 +48,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val topView = view.findViewById<View>(R.id.transparent_view_top)
     private val bottomView = view.findViewById<View>(R.id.transparent_view_bottom)
     private val ticker = view.findViewById<Ticker>(R.id.ticker)
+    private val divisionSingleProduct = view.findViewById<View>(R.id.division_single_card)
 
     companion object {
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
@@ -123,10 +124,10 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderPartnerData() {
         partnerTitle.show()
         if (dataModel?.enablerLogo.isNullOrBlank()) {
+            enablerImage.hide()
+        } else {
             enablerImage.show()
             enablerImage.loadImage(dataModel?.enablerLogo)
-        } else {
-            enablerImage.hide()
         }
     }
 
@@ -211,6 +212,11 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderDivider() {
+        if(dataModel?.shopInfo?.products?.size == 1 && dataModel?.showUploadWidget == false){
+            divisionSingleProduct.show()
+        }else {
+            divisionSingleProduct.hide()
+        }
         if (dataModel?.showDivider == true) divider.show() else divider.hide()
     }
 }

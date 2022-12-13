@@ -349,9 +349,10 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun onDoneButtonClick(appLink: String?) {
         if (hasAnyError()) {
+            showToast(TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_local_prescription_not_uploaded_error) ?: "")
             updateUi()
         } else {
-            EPharmacyMiniConsultationAnalytics.clickCTAButton("", "", "", "", "")
+            EPharmacyMiniConsultationAnalytics.clickCTAButton("${ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.toaster?.message}", ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString())
             if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
                 activity?.setResult(
                     EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
