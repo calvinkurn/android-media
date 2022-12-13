@@ -525,18 +525,6 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun showSuccessToaster(message : String){
-        view?.let { view ->
-            Toaster.build(
-                view,
-                message,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.smvc_ok)
-            ) { }.show()
-        }
-    }
-
     private fun redirectToQuotaVoucherPage() {
         //TODO: create redirection here
     }

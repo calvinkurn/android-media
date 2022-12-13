@@ -22,9 +22,9 @@ data class UpdateStatusVoucherData(
     @SerializedName("status")
     val status: String = "") {
 
-    fun getIsSuccess() = status == UpdateResponse.STATUS_SUCCESS
+    fun getIsSuccess() = status == CancelUpdateResponse.STATUS_SUCCESS
 }
 
-object UpdateResponse {
+object CancelUpdateResponse {
     internal const val STATUS_SUCCESS = "Success"
 }
