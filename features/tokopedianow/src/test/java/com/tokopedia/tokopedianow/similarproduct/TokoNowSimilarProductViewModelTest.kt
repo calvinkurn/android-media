@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.similarproduct
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -129,7 +130,7 @@ class TokoNowSimilarProductViewModelTest {
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
-        viewModel.similarProductList.verifyValueEquals(null)
+        viewModel.similarProductList.verifyValueEquals(emptyList<Visitable<*>>())
     }
 
     @Test
@@ -144,7 +145,7 @@ class TokoNowSimilarProductViewModelTest {
         } returns returnLocalCacheModel()
 
         viewModel.getSimilarProductList("123")
-        viewModel.similarProductList.verifyValueEquals(null)
+        viewModel.similarProductList.verifyValueEquals(emptyList<Visitable<*>>())
     }
 
     @Test
