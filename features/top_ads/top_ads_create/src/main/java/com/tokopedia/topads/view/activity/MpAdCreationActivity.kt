@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.common.domain.model.TopadsShopInfoV2Model
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.MpAdCreationActivityBinding
+import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
 import com.tokopedia.topads.view.fragment.MpAdCreationOnboardingFragment
 import com.tokopedia.topads.view.fragment.MpAdGroupFragment
@@ -18,7 +20,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class MpAdCreationActivity : BaseActivity() {
+class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
 
     companion object{
         private const val TAG = "MP_TOPADS_CREATE"
@@ -88,5 +90,10 @@ class MpAdCreationActivity : BaseActivity() {
             .add(R.id.mp_ad_creation_container,fragment)
             .addToBackStack(TAG)
             .commit()
+    }
+
+    override fun getComponent(): CreateAdsComponent {
+        return DaggerCreateAdsComponent.builder().baseAppComponent(
+            (application as BaseMainApplication).baseAppComponent).build()
     }
 }

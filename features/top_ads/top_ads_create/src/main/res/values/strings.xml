@@ -170,6 +170,18 @@
     <string name="ad_group_stats_bottomsheet_title">Statistik Grup Iklan</string>
     <string name="ad_group_stats_advertisement_costs_bottomsheet_title">Biaya Iklan</string>
     <string name="ad_group_stats_advertisement_costs_bottomsheet_content">Biaya iklan di pencarian adalah biaya yang dikenakan jika iklanmu diklik di halaman pencarian.\n\nBiaya iklan di rekomendasi adalah Biaya yang dikenakan jika iklanmu diklik  di bagian rekomendasi produk.</string>
+    <string name="ad_group_impression">Tampil</string>
+    <string name="ad_group_click">Klik</string>
+    <string name="ad_group_conversion">Terjual</string>
+    <string name="ad_group_search_stat">di pencarian</string>
+    <string name="ad_group_recom_stat">di rekomendasi</string>
+    <string name="ad_group_filter_bottomsheet_title">Urutkan</string>
+    <string name="ad_group_filter_bottomsheet_cta">Terapkan</string>
+    <string name="ad_group_connection_error_title">Grup iklan gagal ditampilkan</string>
+    <string name="ad_group_connection_error_desc">Oops, ada gangguan pada sistem. Coba klik Muat Ulang, ya.</string>
+    <string name="ad_group_connection_error_cta">Muat Ulang</string>
+    <string name="ad_group_search_error_title">Oops, grup tidak ditemukan</string>
+    <string name="ad_group_search_error_desc">Coba cek lagi nama grup yang kamu cari atau coba buat grup iklan baru.</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

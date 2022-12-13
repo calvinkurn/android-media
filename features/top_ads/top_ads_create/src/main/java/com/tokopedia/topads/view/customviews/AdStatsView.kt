@@ -42,9 +42,9 @@ class AdStatsView @JvmOverloads constructor(
     }
 
     private fun getDummyList() = listOf(
-        AdStatModel("11.098","Tampil",false),
-        AdStatModel("11.098","Klik",false),
-        AdStatModel("11.098","Terjual",false)
+        AdStatModel("11.098","Tampil"),
+        AdStatModel("11.098","Klik"),
+        AdStatModel("11.098","Terjual")
     )
 
     fun submitStatList(list:List<AdStatModel>){
@@ -54,7 +54,7 @@ class AdStatsView @JvmOverloads constructor(
     fun setAllLoading(count:Int){
         val loadingList:MutableList<AdStatModel> = mutableListOf()
         for(i in 0 until count)
-            loadingList.add(AdStatModel())
+            loadingList.add(AdStatModel(loading = true))
         submitStatList(loadingList)
     }
 
