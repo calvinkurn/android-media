@@ -82,7 +82,7 @@ class KycAlaCarteUiTest {
             stubLiveness(projectId)
             atFaceIntroClickNext()
         } upload {
-            hasRedirectUrl(activityTestRule, url)
+            assertThat(timber, hasProjectIdOf(projectId))
         }
     }
 
