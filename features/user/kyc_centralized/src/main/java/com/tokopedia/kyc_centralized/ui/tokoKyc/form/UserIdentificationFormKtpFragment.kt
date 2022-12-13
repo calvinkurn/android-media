@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.form
+package com.tokopedia.kyc_centralized.ui.tokoKyc.form
 
 import android.os.Bundle
 import android.view.Gravity
@@ -15,10 +15,10 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_0_5F
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_16
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_ZERO
-import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
-import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraFragment
-import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.BaseUserIdentificationStepperFragment
-import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.BaseUserIdentificationStepperFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request

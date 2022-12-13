@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.form
+package com.tokopedia.kyc_centralized.ui.tokoKyc.form
 
 
 import android.os.Bundle

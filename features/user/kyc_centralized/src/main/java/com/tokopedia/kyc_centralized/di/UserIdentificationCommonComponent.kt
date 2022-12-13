@@ -2,10 +2,10 @@ package com.tokopedia.kyc_centralized.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.kyc_centralized.ui.cKyc.form.UserIdentificationFormFaceFragment
-import com.tokopedia.kyc_centralized.ui.cKyc.form.UserIdentificationFormFinalFragment
-import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationInfoFragment
-import com.tokopedia.kyc_centralized.ui.cKyc.alacarte.UserIdentificationInfoSimpleFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormFaceFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormFinalFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleFragment
 import dagger.Component
 
 @ActivityScope

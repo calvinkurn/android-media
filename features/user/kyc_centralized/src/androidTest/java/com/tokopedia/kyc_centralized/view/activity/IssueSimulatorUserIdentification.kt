@@ -8,7 +8,7 @@ import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactorySimulateNullPref
 import com.tokopedia.kyc_centralized.kycRobot
 import com.tokopedia.kyc_centralized.stubLiveness
-import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationInfoActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Before
 import org.junit.Rule

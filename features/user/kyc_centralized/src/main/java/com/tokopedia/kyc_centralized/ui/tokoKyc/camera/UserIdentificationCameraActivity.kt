@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.camera
+package com.tokopedia.kyc_centralized.ui.tokoKyc.camera
 
 import android.content.Context
 import android.content.Intent

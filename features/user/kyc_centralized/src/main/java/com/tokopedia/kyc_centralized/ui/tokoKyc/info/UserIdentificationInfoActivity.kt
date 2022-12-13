@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.info
+package com.tokopedia.kyc_centralized.ui.tokoKyc.info
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

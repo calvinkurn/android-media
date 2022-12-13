@@ -12,7 +12,7 @@ import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.kycRobot
 import com.tokopedia.kyc_centralized.stubKtpCamera
 import com.tokopedia.kyc_centralized.stubLiveness
-import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationInfoActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoActivity
 import com.tokopedia.kyc_centralized.upload
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Before

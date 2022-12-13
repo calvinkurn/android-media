@@ -8,9 +8,9 @@ import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
-import com.tokopedia.kyc_centralized.ui.cKyc.form.KycUploadViewModel
-import com.tokopedia.kyc_centralized.ui.cKyc.form.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
-import com.tokopedia.kyc_centralized.ui.cKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail

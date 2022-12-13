@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.info
+package com.tokopedia.kyc_centralized.ui.tokoKyc.info
 
 import android.app.Activity
 import android.content.Intent

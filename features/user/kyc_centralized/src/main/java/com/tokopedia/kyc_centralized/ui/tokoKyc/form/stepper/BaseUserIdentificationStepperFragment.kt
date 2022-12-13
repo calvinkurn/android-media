@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.form.stepper
+package com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper
 
 import android.app.Activity
 import android.content.Intent
@@ -25,10 +25,10 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationFormBinding
-import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationInfoFragment
-import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
-import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraFragment
-import com.tokopedia.kyc_centralized.ui.cKyc.form.UserIdentificationFormActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey

@@ -11,8 +11,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
 import com.tokopedia.kyc_centralized.util.waitOnView
-import com.tokopedia.kyc_centralized.ui.cKyc.camera.UserIdentificationCameraActivity
-import com.tokopedia.kyc_centralized.ui.cKyc.alacarte.UserIdentificationInfoSimpleActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleActivity
 
 class KycRobot {
 

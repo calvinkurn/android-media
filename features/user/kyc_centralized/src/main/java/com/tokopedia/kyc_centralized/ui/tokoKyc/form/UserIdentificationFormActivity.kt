@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.form
+package com.tokopedia.kyc_centralized.ui.tokoKyc.form
 
 import android.content.Context
 import android.content.Intent
@@ -31,7 +31,7 @@ import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
-import com.tokopedia.kyc_centralized.ui.cKyc.form.stepper.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.utils.file.FileUtil

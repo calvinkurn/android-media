@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.alacarte
+package com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte
 
 import android.app.Activity
 import android.content.Intent

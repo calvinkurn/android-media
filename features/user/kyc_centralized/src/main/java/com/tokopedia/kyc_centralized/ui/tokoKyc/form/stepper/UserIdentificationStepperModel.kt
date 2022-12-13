@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.cKyc.form.stepper
+package com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper
 
 import android.os.Parcel
 import android.os.Parcelable

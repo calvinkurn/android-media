@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.kyc_centralized.ui.cKyc.form.KycUploadViewModel
-import com.tokopedia.kyc_centralized.ui.cKyc.info.UserIdentificationViewModel
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel
+import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
