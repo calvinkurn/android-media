@@ -22,14 +22,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kyc_centralized.common.KycUrl
-import com.tokopedia.kyc_centralized.common.KycUrl.SCAN_FACE_FAIL_GENERAL
-import com.tokopedia.kyc_centralized.common.KycUrl.SCAN_FACE_FAIL_NETWORK
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
 import com.tokopedia.kyc_centralized.common.KycServerLogger
+import com.tokopedia.kyc_centralized.common.KycUrl
+import com.tokopedia.kyc_centralized.common.KycUrl.SCAN_FACE_FAIL_GENERAL
+import com.tokopedia.kyc_centralized.common.KycUrl.SCAN_FACE_FAIL_NETWORK
 import com.tokopedia.kyc_centralized.data.model.KycData
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationFinalBinding
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
@@ -39,12 +39,12 @@ import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companio
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.BaseUserIdentificationStepperFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
-import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -78,6 +78,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
     private var retakeActionCode = NOT_RETAKE
     private var allowedSelfie = false
 
+    @Inject
+    lateinit var serverLogger: KycServerLogger
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -203,7 +205,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
     private fun sendErrorTimberLog(throwable: Throwable) {
         Timber.w(throwable, "$LIVENESS_TAG: LIVENESS_UPLOAD_RESULT")
         if (!isKycSelfie) {
-            KycServerLogger.livenessUploadResult(
+            serverLogger.livenessUploadResult(
                 "ErrorUpload",
                 stepperModel?.ktpFile.orEmpty(),
                 stepperModel?.faceFile.orEmpty(),
@@ -212,7 +214,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
             )
 
         } else {
-            KycServerLogger.selfieUploadResult(
+            serverLogger.selfieUploadResult(
                 "ErrorUpload",
                 stepperModel?.ktpFile.orEmpty(),
                 stepperModel?.faceFile.orEmpty(),
@@ -227,7 +229,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
     private fun sendSuccessTimberLog() {
         analytics?.eventClickUploadPhotosTradeIn("success")
 
-        KycServerLogger.kyUploadResult(
+        serverLogger.kyUploadResult(
             "SuccessUpload",
             stepperModel?.ktpFile.orEmpty(),
             stepperModel?.faceFile.orEmpty(),
