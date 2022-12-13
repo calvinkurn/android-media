@@ -28,7 +28,7 @@ class ShopShowcaseListReorderAdapter(
 
         // Handling undragable list
         for (showcase in showcaseList) {
-            if (showcase.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) {
+            if (showcase.type != ShopEtalaseTypeDef.ETALASE_CUSTOM) {
                 generatedSowcaseList += 1
             }
         }

@@ -236,7 +236,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Tradein@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/Tradein@3x.png",
                 "isApplink": true,
                 "title": "Beli dengan Tukar Tambah"
               }
@@ -262,7 +262,7 @@
               {
                 "applink": "tokopedia://fintech/paylater?category=Daging+Iga&price=1000.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fpdp-d4g1ng-1g4-n0nv4r-h&userID=132674703",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
                 "isApplink": true,
                 "title": "Paylater & Cicilan"
               }
@@ -275,7 +275,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
                 "isApplink": false,
                 "title": "Proteksi Gadget"
               }
@@ -288,7 +288,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
                 "isApplink": false,
                 "title": "Order Prioritas"
               }

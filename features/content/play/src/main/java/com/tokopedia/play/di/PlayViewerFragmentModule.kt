@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
+import com.tokopedia.play.view.bottomsheet.PlayFollowBottomSheet
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
 import com.tokopedia.play.view.dialog.interactive.giveaway.InteractiveDialogFragment
@@ -73,4 +74,9 @@ abstract class PlayViewerFragmentModule {
     @IntoMap
     @FragmentKey(PlayMoreActionBottomSheet::class)
     abstract fun getThreeDotsFragment(fragment: PlayMoreActionBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayFollowBottomSheet::class)
+    abstract fun getFollowFragment(fragment: PlayFollowBottomSheet): Fragment
 }

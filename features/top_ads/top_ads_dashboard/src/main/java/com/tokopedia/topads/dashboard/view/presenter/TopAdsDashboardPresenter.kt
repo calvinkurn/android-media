@@ -224,7 +224,7 @@ class TopAdsDashboardPresenter @Inject constructor(
     }
 
     fun getGroupProductData(
-        page: Int, groupId: Int?, search: String, sort: String,
+        page: Int, groupId: String?, search: String, sort: String,
         status: Int?, startDate: String, endDate: String, goalId: Int,
         onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit,
     ) {
