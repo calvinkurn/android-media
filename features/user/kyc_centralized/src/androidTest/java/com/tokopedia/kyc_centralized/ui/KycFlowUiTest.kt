@@ -6,6 +6,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
@@ -64,7 +65,7 @@ class KycFlowUiTest {
 
     @Test
     fun retakeFaceOnlyTest() {
-        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(2))
+        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(KYCConstant.FACE_RETAKE))
         val i = Intent().apply {
             data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
         }
@@ -89,7 +90,7 @@ class KycFlowUiTest {
 
     @Test
     fun retakeKtpOnlyTest() {
-        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(1))
+        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(KYCConstant.KTP_RETAKE))
         val i = Intent().apply {
             data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
         }
@@ -114,7 +115,7 @@ class KycFlowUiTest {
 
     @Test
     fun retakeKtpAndFaceTest() {
-        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(1, 2))
+        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(KYCConstant.KTP_RETAKE, KYCConstant.FACE_RETAKE))
         val i = Intent().apply {
             data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
         }
