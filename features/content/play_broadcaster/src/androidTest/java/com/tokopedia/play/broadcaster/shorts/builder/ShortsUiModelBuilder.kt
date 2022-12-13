@@ -14,8 +14,8 @@ class ShortsUiModelBuilder {
         shortsId: String = "123",
         shortsAllowed: Boolean = true,
         tncList: List<TermsAndConditionUiModel> = listOf(),
-        maxTaggedProduct: Int = 0,
-        maxTitleCharacter: Int = 0,
+        maxTaggedProduct: Int = 30,
+        maxTitleCharacter: Int = 24,
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,

@@ -16,7 +16,6 @@ class PlayShortsCassavaValidator(
     private val analyticFile = "tracker/content/playbroadcaster/play_shorts.json"
 
     fun verify(eventAction: String) {
-        delay(DEFAULT_DELAY)
         ViewMatchers.assertThat(
             cassavaTestRule.validate(analyticFile),
             containsEventAction(eventAction)
