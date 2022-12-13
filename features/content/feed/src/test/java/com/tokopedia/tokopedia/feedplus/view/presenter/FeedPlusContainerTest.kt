@@ -1,20 +1,14 @@
 package com.tokopedia.tokopedia.feedplus.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
-import com.tokopedia.feedplus.domain.usecase.GetContentFormForFeedUseCase
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.coEvery
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
 /**
  * @author by astidhiyaa on 24/09/22
@@ -33,10 +27,11 @@ class FeedPlusContainerTest {
     private lateinit var viewModel: FeedPlusContainerViewModel
 
     private val mockRepo: FeedPlusRepository = mockk(relaxed = true)
+    private val mockUserSession : UserSessionInterface = mockk(relaxed = true)
 
     @Before
     fun setup() {
-        viewModel = FeedPlusContainerViewModel(testDispatcher, mockRepo)
+        viewModel = FeedPlusContainerViewModel(testDispatcher, mockRepo, mockUserSession)
     }
 
 //    @Test
@@ -51,5 +46,4 @@ class FeedPlusContainerTest {
 //        println(result)
 //
 //    }
-
 }

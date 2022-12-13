@@ -3,8 +3,8 @@ package com.tokopedia.feedplus.view.presenter
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedplus.view.repository.FeedDetailRepository
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -29,12 +29,12 @@ class FeedDetailViewModelTest {
 
     private val mockRepo: FeedDetailRepository = mockk(relaxed = true)
 
-    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
+    private val mockMvcUseCase: MVCSummaryUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         viewModel =
-            FeedDetailViewModel(feedDetailRepository = mockRepo, userSession = mockUserSession)
+            FeedDetailViewModel(feedDetailRepository = mockRepo, mvcSummaryUseCase = mockMvcUseCase, dispatcherProvider = testDispatcher)
     }
 
     @Test
@@ -49,5 +49,7 @@ class FeedDetailViewModelTest {
 //        viewModel.getFeedDetailLiveData().getOrAwaitValue().assertType<FeedDetailViewState.LoadingState> {  }
     }
 
-
+    /**
+     * fetch voucher
+     */
 }

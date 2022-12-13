@@ -1,23 +1,24 @@
 package com.tokopedia.tokopedia.feedplus.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
-import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedXTrackViewerResponse
 import com.tokopedia.feedcomponent.data.pojo.VisitChannelTracking
+import com.tokopedia.feedcomponent.data.pojo.shopmutation.FollowShop
+import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
+import com.tokopedia.feedcomponent.people.model.*
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
 import com.tokopedia.kolcommon.data.SubmitReportContentResponse
-import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.data.pojo.like.LikeKolPostData
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
@@ -27,7 +28,6 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.tokopedia.feedplus.helper.assertEqualTo
 import com.tokopedia.tokopedia.feedplus.helper.assertFalse
 import com.tokopedia.tokopedia.feedplus.helper.assertTrue
@@ -36,18 +36,14 @@ import com.tokopedia.tokopedia.feedplus.robot.create
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 import org.junit.Test
-import java.lang.Exception
-import java.lang.reflect.Type
 
 /**
  * @author by astidhiyaa on 23/09/22
@@ -67,13 +63,11 @@ class FeedViewModelTest {
     private val mockLike: SubmitLikeContentUseCase = mockk(relaxed = true)
     private val mockDelete: SubmitActionContentUseCase = mockk(relaxed = true)
     private val mockTopAdsTracker: SendTopAdsUseCase = mockk(relaxed = true)
-    private val mockFavShop: ToggleFavouriteShopUseCase = mockk(relaxed = true)
-    private val mockTrackAffiliate: TrackAffiliateClickUseCase = mockk(relaxed = true)
-    private val mockFollowKol: FollowKolPostGqlUseCase = mockk(relaxed = true)
+    private val mockFollowShop: ShopFollowUseCase = mockk(relaxed = true)
+    private val mockFollowKol: ProfileFollowUseCase = mockk(relaxed = true)
+    private val mockUnFollowKol: ProfileUnfollowedUseCase = mockk(relaxed = true)
 
     private val gqlFailed = MessageErrorException("ooPs")
-    private val mockFailedRx = HashMap<Type, List<GraphqlError>>()
-    private val randomString: String = "randomUrl"
 
     /**
      * Send Report
@@ -92,7 +86,7 @@ class FeedViewModelTest {
             .use {
                 it.vm.sendReport(1, "1", "", "")
                 it.vm.reportResponse.getOrAwaitValue()
-                    .assertType<Success<DeletePostViewModel>> { dt ->
+                    .assertType<Success<DeletePostModel>> { dt ->
                         dt.data.errorMessage.assertEqualTo(expected.content.errorMessage)
                         dt.data.isSuccess.assertTrue()
                     }
@@ -225,17 +219,14 @@ class FeedViewModelTest {
      */
     @Test
     fun `follow kol - success` () {
-        val expected = FollowKolQuery()
+        val expected = ProfileDoFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
+            ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = emptyList(), errorCode = ""))
 
-        val result = HashMap<Type, Any>()
-        result[FollowKolQuery::class.java] = expected
+        coEvery { mockFollowKol.executeOnBackground(any()) } returns expected
 
-        val returnValue = GraphqlResponse(result, mockFailedRx, false)
-
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } returns returnValue
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
-                it.vm.doFollowKol(1, 2)
+                it.vm.doFollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
                     dt ->
                         dt.data.isSuccess.assertTrue()
@@ -246,17 +237,14 @@ class FeedViewModelTest {
 
     @Test
     fun `follow kol - success but failed` () {
-        val expected = FollowKolQuery() //empty
+        val expected = ProfileDoFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
+        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = listOf("Error aja"), errorCode = "404"))
 
-        val result = HashMap<Type, Any>()
-        result[FollowKolQuery::class.java] = expected
+        coEvery { mockFollowKol.executeOnBackground(any()) } returns expected
 
-        val returnValue = GraphqlResponse(result, mockFailedRx, false)
-
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } returns returnValue
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
-                it.vm.doFollowKol(1, 2)
+                it.vm.doFollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertFalse()
@@ -267,10 +255,10 @@ class FeedViewModelTest {
 
     @Test
     fun `follow kol - error` () {
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } throws gqlFailed
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        coEvery { mockFollowKol.executeOnBackground(any()) } throws gqlFailed
+        create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
-                it.vm.doFollowKol(1, 2)
+                it.vm.doFollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Fail> {
                         dt ->
                     dt.throwable.assertType<Exception> {  }
@@ -283,38 +271,33 @@ class FeedViewModelTest {
      */
     @Test
     fun `unfollow kol - success` () {
-        val expected = FollowKolQuery()
+        val expected = ProfileDoUnFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
+        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "1", relation = ""), messages = listOf("Yeay, success"), errorCode = ""))
 
-        val result = HashMap<Type, Any>()
-        result[FollowKolQuery::class.java] = expected
+        coEvery { mockUnFollowKol.executeOnBackground(any()) } returns expected
 
-        val returnValue = GraphqlResponse(result, mockFailedRx, false)
-
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } returns returnValue
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
             .use {
-                it.vm.doUnfollowKol(1, 2)
+                it.vm.doUnfollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertTrue()
-                    dt.data.status.assertEqualTo(FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+                    dt.data.isFollow.assertFalse()
+                    dt.data.status.assertEqualTo(0)
                 }
             }
     }
 
     @Test
     fun `unfollow kol - success but failed` () {
-        val expected = FollowKolQuery() //empty
+        val expected = ProfileDoUnFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
+        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = listOf("Error Aja"), errorCode = "404"))
 
-        val result = HashMap<Type, Any>()
-        result[FollowKolQuery::class.java] = expected
+        coEvery { mockUnFollowKol.executeOnBackground(any()) } returns expected
 
-        val returnValue = GraphqlResponse(result, mockFailedRx, false)
-
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } returns returnValue
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
             .use {
-                it.vm.doUnfollowKol(1, 2)
+                it.vm.doUnfollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertFalse()
@@ -325,17 +308,19 @@ class FeedViewModelTest {
 
     @Test
     fun `unfollow kol - error` () {
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } throws gqlFailed
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        val expected = MessageErrorException("Error Aja")
+
+        coEvery { mockUnFollowKol.executeOnBackground(any()) } throws expected
+
+        create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
             .use {
-                it.vm.doUnfollowKol(1, 2)
+                it.vm.doUnfollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Fail> {
                         dt ->
                     dt.throwable.assertType<Exception> {  }
                 }
             }
     }
-
 
     /**
      * Like KOL
@@ -458,17 +443,14 @@ class FeedViewModelTest {
      */
     @Test
     fun `follow kol from rec - success` () {
-        val expected = FollowKolQuery()
+        val expected = ProfileDoFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
+        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = emptyList(), errorCode = ""))
 
-        val result = HashMap<Type, Any>()
-        result[FollowKolQuery::class.java] = expected
+        coEvery { mockFollowKol.executeOnBackground(any()) } returns expected
 
-        val returnValue = GraphqlResponse(result, mockFailedRx, false)
-
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } returns returnValue
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
-                it.vm.doFollowKolFromRecommendation(1, 2, 3)
+                it.vm.doFollowKolFromRecommendation("1", 2, 3)
                 it.vm.followKolRecomResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertTrue()
@@ -480,32 +462,29 @@ class FeedViewModelTest {
 
     @Test
     fun `follow kol from rec - success but failed` () {
-        val expected = FollowKolQuery() //empty
+        val expected = ProfileDoFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
+        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "", relation = ""), messages = listOf("Error aja"), errorCode = "404"))
 
-        val result = HashMap<Type, Any>()
-        result[FollowKolQuery::class.java] = expected
+        coEvery { mockFollowKol.executeOnBackground(any()) } returns expected
 
-        val returnValue = GraphqlResponse(result, mockFailedRx, false)
-
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } returns returnValue
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
-                it.vm.doFollowKolFromRecommendation(1, 2, 3)
+                it.vm.doFollowKolFromRecommendation("1", 2, 3)
                 it.vm.followKolRecomResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertFalse()
-                    dt.data.isFollow.assertFalse()
-                    dt.data.status.assertEqualTo(FollowKolPostGqlUseCase.PARAM_FOLLOW)
+                    dt.data.isFollow.assertTrue()
+                    dt.data.status.assertEqualTo(1)
                 }
             }
     }
 
     @Test
     fun `follow kol from rec - error` () {
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } throws gqlFailed
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        coEvery { mockFollowKol.executeOnBackground(any()) } throws gqlFailed
+        create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
-                it.vm.doFollowKolFromRecommendation(1, 2, 3)
+                it.vm.doFollowKolFromRecommendation("1", 2, 3)
                 it.vm.followKolRecomResp.getOrAwaitValue().assertType<Fail> {
                         dt ->
                     dt.throwable.assertType<Exception> {
@@ -520,39 +499,31 @@ class FeedViewModelTest {
      */
     @Test
     fun `unfollow kol from rec - success` () {
-        val expected = FollowKolQuery()
+        val expected = ProfileDoUnFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
+        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "1", relation = ""), messages = listOf("Yeay, success"), errorCode = ""))
 
-        val result = HashMap<Type, Any>()
-        result[FollowKolQuery::class.java] = expected
-
-        val returnValue = GraphqlResponse(result, mockFailedRx, false)
-
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } returns returnValue
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        coEvery { mockUnFollowKol.executeOnBackground(any()) } returns expected
+        create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
             .use {
-                it.vm.doUnfollowKolFromRecommendation(1, 2, 3)
+                it.vm.doUnfollowKolFromRecommendation("1", 2, 3)
                 it.vm.followKolRecomResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertTrue()
-                    dt.data.isFollow.assertTrue()
-                    dt.data.status.assertEqualTo(FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+                    dt.data.isFollow.assertFalse()
+                    dt.data.status.assertEqualTo(0)
                 }
             }
     }
 
     @Test
     fun `unfollow kol from rec - success but failed` () {
-        val expected = FollowKolQuery() //empty
+        val expected = ProfileDoUnFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
+        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = listOf("Error aja"), errorCode = "404"))
 
-        val result = HashMap<Type, Any>()
-        result[FollowKolQuery::class.java] = expected
-
-        val returnValue = GraphqlResponse(result, mockFailedRx, false)
-
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } returns returnValue
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        coEvery { mockUnFollowKol.executeOnBackground(any()) } returns expected
+        create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
             .use {
-                it.vm.doUnfollowKolFromRecommendation(1, 2, 3)
+                it.vm.doUnfollowKolFromRecommendation("1", 2, 3)
                 it.vm.followKolRecomResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertFalse()
@@ -564,10 +535,10 @@ class FeedViewModelTest {
 
     @Test
     fun `unfollow kol from rec - error` () {
-        every { mockFollowKol.createObservable(any()).toBlocking().single() } throws gqlFailed
-        create(dispatcher = testDispatcher, followKolPostGqlUseCase = mockFollowKol)
+        coEvery { mockUnFollowKol.executeOnBackground(any()) } throws gqlFailed
+        create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
             .use {
-                it.vm.doUnfollowKolFromRecommendation(1, 2, 3)
+                it.vm.doUnfollowKolFromRecommendation("1", 2, 3)
                 it.vm.followKolRecomResp.getOrAwaitValue().assertType<Fail> {
                         dt ->
                     dt.throwable.assertType<Exception> {
@@ -593,7 +564,7 @@ class FeedViewModelTest {
             .use {
                 it.vm.doDeletePost("1", 1)
                 it.vm.deletePostResp.getOrAwaitValue()
-                    .assertType<Success<DeletePostViewModel>> { dt ->
+                    .assertType<Success<DeletePostModel>> { dt ->
                         dt.data.isSuccess.assertEqualTo(expected.content.success == SubmitPostData.SUCCESS)
                         dt.data.isSuccess.assertTrue()
                     }
@@ -689,16 +660,16 @@ class FeedViewModelTest {
 
     @Test
     fun `fav shop - success` () {
-        val expected = true
-        coEvery { mockFavShop.createObservable(any()).toBlocking().single() } returns expected
+        val expected = ShopFollowModel(followShop = FollowShop(success = true))
+        coEvery { mockFollowShop.executeOnBackground(any()) } returns expected
 
-        create(dispatcher = testDispatcher, doFavoriteShopUseCase = mockFavShop)
+        create(dispatcher = testDispatcher, shopFollowUseCase = mockFollowShop)
             .use {
                 it.vm.doFavoriteShop(Data(), 1)
                 it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Success<FeedPromotedShopViewModel>> {
                     dt ->
                     dt.data.adapterPosition.assertEqualTo(1)
-                    dt.data.isSuccess.assertEqualTo(expected)
+                    dt.data.isSuccess.assertEqualTo(expected.followShop.success)
                     dt.data.isSuccess.assertTrue()
                 }
             }
@@ -706,9 +677,9 @@ class FeedViewModelTest {
 
     @Test
     fun `fav shop - failed from gql` () {
-        coEvery { mockFavShop.createObservable(any()).toBlocking().single() } throws gqlFailed
+        coEvery { mockFollowShop.executeOnBackground(any()) } throws gqlFailed
 
-        create(dispatcher = testDispatcher, doFavoriteShopUseCase = mockFavShop)
+        create(dispatcher = testDispatcher, shopFollowUseCase = mockFollowShop)
             .use {
                 it.vm.doFavoriteShop(Data(), 1)
                 it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Fail> {
@@ -717,60 +688,4 @@ class FeedViewModelTest {
                 }
             }
     }
-
-    /**
- * track affiliate
- **/
-
-    @Test
-    fun `track affiliate - success` (){
-        val expected = true
-        every { TrackAffiliateClickUseCase.createRequestParams(randomString) } returns RequestParams()
-        every { mockTrackAffiliate.createObservable(any()).toBlocking().single() } returns expected
-
-        create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
-            .use {
-                it.vm.doTrackAffiliate(randomString)
-                it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Success<TrackAffiliateViewModel>> {
-                        dt ->
-                    dt.data.isSuccess.assertEqualTo(expected)
-                    dt.data.isSuccess.assertTrue()
-                }
-            }
-    }
-
-    @Test
-    fun `track affiliate - failed from gql` (){
-        val expected = false
-        every { TrackAffiliateClickUseCase.createRequestParams(randomString) } returns RequestParams()
-        every { mockTrackAffiliate.createObservable(any()).toBlocking().single() } returns expected
-
-        create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
-            .use {
-                it.vm.doTrackAffiliate(randomString)
-                it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Success<TrackAffiliateViewModel>> {
-                        dt ->
-                    dt.data.isSuccess.assertEqualTo(expected)
-                    dt.data.isSuccess.assertFalse()
-                }
-            }
-    }
-
-    @Test
-    fun `track affiliate - error from gql` (){
-        every { TrackAffiliateClickUseCase.createRequestParams(randomString) } returns RequestParams()
-        every { mockTrackAffiliate.createObservable(any()).toBlocking().single() } throws gqlFailed
-
-        create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
-            .use {
-                it.vm.doTrackAffiliate(randomString)
-                it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Fail> {
-                        dt -> dt.throwable.assertEqualTo(gqlFailed)
-                }
-            }
-    }
-
-    /**
-     *
-     */
 }

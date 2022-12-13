@@ -16,17 +16,13 @@ import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
-private const val MAX_RATING = 100
-private const val NUM_STARS = 5
-
-class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: FeedDetailRepository,
-                                              private val userSession: UserSessionInterface,
-                                              private val mvcSummaryUseCase: MVCSummaryUseCase,
-                                              private val dispatcherProvider: CoroutineDispatchers
+class FeedDetailViewModel @Inject constructor(
+    private var feedDetailRepository: FeedDetailRepository,
+    private val mvcSummaryUseCase: MVCSummaryUseCase,
+    private val dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel() {
 
     private var feedDetailLiveData: MutableLiveData<FeedDetailViewState> = MutableLiveData()
@@ -109,9 +105,5 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
 
     private fun hasFeed(feedQuery: FeedXGetActivityProductsResponse): Boolean {
         return (feedQuery.products.isNotEmpty())
-    }
-
-    private fun getRating(rating: Float): Double {
-        return rating.toDouble() / MAX_RATING * NUM_STARS
     }
 }
