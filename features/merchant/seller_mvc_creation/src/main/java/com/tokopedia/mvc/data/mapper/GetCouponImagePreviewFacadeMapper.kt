@@ -1,9 +1,9 @@
 package com.tokopedia.mvc.data.mapper
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.campaign.utils.constant.LocaleConstant
 import com.tokopedia.kotlin.extensions.view.INTEGER_MILLION
 import com.tokopedia.kotlin.extensions.view.INTEGER_THOUSAND
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.data.source.ImageGeneratorRemoteDataSource
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -13,8 +13,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 class GetCouponImagePreviewFacadeMapper @Inject constructor() {
@@ -30,8 +28,8 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
     ) = param.toPreviewImageParam()
 
     fun GetCouponImagePreviewFacadeUseCase.GenerateCouponImageParam.toPreviewImageParam(): ImageGeneratorRemoteDataSource.PreviewImageParam {
-        val startTime = voucherConfiguration.startPeriod.parseTo(DEFAULT_VIEW_FORMAT)
-        val endTime = voucherConfiguration.endPeriod.parseTo(DEFAULT_VIEW_FORMAT)
+        val startTime = voucherConfiguration.startPeriod.formatTo(DEFAULT_VIEW_FORMAT)
+        val endTime = voucherConfiguration.endPeriod.formatTo(DEFAULT_VIEW_FORMAT)
         val firstProductImageUrl = topProductImageUrls.getOrNull(FIRST_IMAGE_URL_INDEX).orEmpty()
         val secondProductImageUrl = topProductImageUrls.getOrNull(SECOND_IMAGE_URL_INDEX).orEmpty()
         val thirdProductImageUrl = topProductImageUrls.getOrNull(THIRD_IMAGE_URL_INDEX).orEmpty()
@@ -59,16 +57,6 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             thirdProduct,
             voucherConfiguration.getAudienceTarget()
         )
-    }
-
-    private fun Date.parseTo(desiredOutputFormat: String): String {
-        return try {
-            val outputFormat = SimpleDateFormat(desiredOutputFormat, LocaleConstant.INDONESIA)
-            val output = outputFormat.format(this)
-            output
-        } catch (e: Exception) {
-            ""
-        }
     }
 
     private fun VoucherConfiguration.getCouponCode(isCreateMode: Boolean, prefix: String): String {
