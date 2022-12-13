@@ -362,9 +362,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         totalProductCount: Int
     ) {
         when {
-            isSelectAllCheckboxActive -> {
-                binding?.checkbox?.isChecked = true
-            }
             selectedProductCount.isZero() -> {
                 binding?.checkbox?.isChecked = false
             }
@@ -373,6 +370,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 binding?.checkbox?.isChecked = true
             }
             selectedProductCount == allLoadedProductCount -> {
+                binding?.checkbox?.isChecked = true
+            }
+            isSelectAllCheckboxActive -> {
                 binding?.checkbox?.isChecked = true
             }
         }

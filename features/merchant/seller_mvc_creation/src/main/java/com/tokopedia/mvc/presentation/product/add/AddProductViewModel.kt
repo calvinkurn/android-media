@@ -146,13 +146,10 @@ class AddProductViewModel @Inject constructor(
                 val nonPreorderParentProducts = productsResponse.products.filter { it.preorder.durationDays.isZero() }
                 val currentPageParentProductsIds = nonPreorderParentProducts.map { product -> product.id }
 
-                val voucherConfiguration = currentState.voucherConfiguration
-
-                val validatedParentProducts = validateProducts(voucherConfiguration, currentPageParentProductsIds)
                 val updatedParentProducts = combineParentProductWithVariantData(
                     nonPreorderParentProducts,
                     currentState.selectedProductsIds,
-                    validatedParentProducts
+                    currentState.voucherConfiguration
                 )
 
                 val allParentProducts = currentState.products + updatedParentProducts
@@ -188,10 +185,13 @@ class AddProductViewModel @Inject constructor(
 
     }
 
-    private suspend fun validateProducts(
-        voucherConfiguration: VoucherConfiguration,
-        currentPageParentProductIds: List<Long>
-    ): List<VoucherValidationResult.ValidationProduct> {
+    private suspend fun combineParentProductWithVariantData(
+        currentPageParentProduct: List<Product>,
+        selectedProductIds: Set<Long>,
+        voucherConfiguration: VoucherConfiguration
+    ): List<Product> {
+        val currentPageParentProductIds =  currentPageParentProduct.map { it.id }
+
         val voucherValidationParam = VoucherValidationPartialUseCase.Param(
             benefitIdr = voucherConfiguration.benefitIdr,
             benefitMax = voucherConfiguration.benefitMax,
@@ -207,15 +207,8 @@ class AddProductViewModel @Inject constructor(
             code = voucherConfiguration.voucherCode
         )
 
+        val validatedProducts = voucherValidationPartialUseCase.execute(voucherValidationParam).validationProduct
 
-        return voucherValidationPartialUseCase.execute(voucherValidationParam).validationProduct
-    }
-
-    private fun combineParentProductWithVariantData(
-        currentPageParentProduct: List<Product>,
-        selectedProductIds: Set<Long>,
-        validatedProducts: List<VoucherValidationResult.ValidationProduct>
-    ): List<Product> {
         return currentPageParentProduct.map { product ->
             val validatedParentProduct = findValidatedProduct(product.id, validatedProducts)
             val variants = validatedParentProduct.toProductVariants()
@@ -383,7 +376,7 @@ class AddProductViewModel @Inject constructor(
             if (it.isSelected) {
                 it.copy(isSelected = true, enableCheckbox = true)
             } else {
-               it.copy(isSelected = false, enableCheckbox = false)
+                it.copy(isSelected = false, enableCheckbox = false)
             }
         }
     }
