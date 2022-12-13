@@ -48,7 +48,9 @@ data class Merchant (
     @SerializedName("isClosed")
     val isClosed: Boolean = false,
     @SerializedName("addressLocality")
-    val addressLocality: String = ""
+    val addressLocality: String = "",
+    @SerializedName("additionalData")
+    val additionalData: AdditionalData = AdditionalData()
 ): ImpressHolder()
 
 data class PriceLevel(
@@ -75,3 +77,10 @@ data class State(
     }
 
 }
+
+data class AdditionalData(
+    @SerializedName("topTextBanner")
+    val topTextBanner: String = "",
+    @SerializedName("discountIcon")
+    val discountIcon: String = ""
+)

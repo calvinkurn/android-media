@@ -18,7 +18,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopProductSellerAllEtalaseEmptyViewHolder(
-        val view: View
+    val view: View
 ) : AbstractViewHolder<ShopSellerEmptyProductAllEtalaseUiModel>(view) {
 
     companion object {
@@ -26,17 +26,16 @@ class ShopProductSellerAllEtalaseEmptyViewHolder(
         val LAYOUT = R.layout.item_shop_product_seller_empty_state
     }
 
-    private val viewBinding : ItemShopProductSellerEmptyStateBinding? by viewBinding()
+    private val viewBinding: ItemShopProductSellerEmptyStateBinding? by viewBinding()
     private var labelShopProductSellerEmptyState: Typography? = viewBinding?.labelShopProductSellerEmptyState
     private var imageViewBackgroundPattern: ImageView? = viewBinding?.imageViewBackground
 
     override fun bind(shopSellerEmptyProductAllEtalaseUiModel: ShopSellerEmptyProductAllEtalaseUiModel) {
         labelShopProductSellerEmptyState?.text = MethodChecker.fromHtml(
-                view.resources.getString(R.string.shop_product_seller_empty_state_label)
+            view.resources.getString(R.string.shop_product_seller_empty_state_label)
         )
         imageViewBackgroundPattern?.loadImage(URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND) {
             setPlaceHolder(R.drawable.ic_shop_page_loading_image)
         }
     }
-
 }

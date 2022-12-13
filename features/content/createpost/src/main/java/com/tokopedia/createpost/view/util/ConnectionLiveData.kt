@@ -1,6 +1,5 @@
 package com.tokopedia.createpost.view.util
 
-import android.annotation.TargetApi
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
@@ -11,14 +10,28 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 
-class ConnectionLiveData(private val context: Context) : LiveData<Boolean>() {
+class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
-    private val connectivityManager: ConnectivityManager =
-        context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+    private val appContext = context.applicationContext
 
-    private var connectivityManagerCallback: ConnectivityManager.NetworkCallback? = null
+    private val connectivityManager =
+        appContext.getSystemService(CONNECTIVITY_SERVICE) as? ConnectivityManager
+
+    private val connectivityManagerCallback = object : ConnectivityManager.NetworkCallback() {
+
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            postValue(true)
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            postValue(false)
+        }
+    }
 
     private val networkReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -26,79 +39,49 @@ class ConnectionLiveData(private val context: Context) : LiveData<Boolean>() {
         }
     }
 
-    init {
-        context.getSystemService(CONNECTIVITY_SERVICE)
-    }
-
     private fun updateConnection() {
         postValue(isNetworkAvailable())
-    }
-
-    private fun getConnectivityManagerCallback(): ConnectivityManager.NetworkCallback {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            return object : ConnectivityManager.NetworkCallback() {
-
-                override fun onAvailable(network: Network) {
-                    super.onAvailable(network)
-                    postValue(true)
-                }
-
-                override fun onLost(network: Network) {
-                    super.onLost(network)
-                    postValue(false)
-                }
-            }
-        } else {
-            throw IllegalAccessError("Should not happened")
-        }
     }
 
     override fun onActive() {
         super.onActive()
         updateConnection()
         when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ->
-                connectivityManager.registerDefaultNetworkCallback(getConnectivityManagerCallback())
-
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ->
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
+                registerDefaultNetworkCallback()
+            }
+            Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP -> {
                 lollipopNetworkAvailableRequest()
-
-            else -> context.registerReceiver(
+            }
+            else -> appContext.registerReceiver(
                 networkReceiver,
                 IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
             )
         }
-
     }
 
     override fun onInactive() {
         super.onInactive()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            connectivityManagerCallback?.let { connectivityManager.unregisterNetworkCallback(it) }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            unRegisterNetworkCallback()
         } else {
-            context.unregisterReceiver(networkReceiver)
+            appContext.unregisterReceiver(networkReceiver)
         }
     }
 
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun lollipopNetworkAvailableRequest() {
         val builder = NetworkRequest.Builder()
-            .addTransportType(android.net.NetworkCapabilities.TRANSPORT_CELLULAR)
-            .addTransportType(android.net.NetworkCapabilities.TRANSPORT_WIFI)
-        connectivityManager.registerNetworkCallback(
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+        connectivityManager?.registerNetworkCallback(
             builder.build(),
-            getConnectivityManagerCallback()
+            connectivityManagerCallback
         )
     }
 
     private fun isNetworkAvailable(): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val nw = connectivityManager.activeNetwork ?: return false
+            val nw = connectivityManager?.activeNetwork ?: return false
             val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
             return when {
                 actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
@@ -108,8 +91,17 @@ class ConnectionLiveData(private val context: Context) : LiveData<Boolean>() {
                 else -> false
             }
         } else {
-            val nwInfo = connectivityManager.activeNetworkInfo ?: return false
+            val nwInfo = connectivityManager?.activeNetworkInfo ?: return false
             return nwInfo.isConnected
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun registerDefaultNetworkCallback() {
+        connectivityManager?.registerDefaultNetworkCallback(connectivityManagerCallback)
+    }
+
+    private fun unRegisterNetworkCallback() {
+        connectivityManager?.unregisterNetworkCallback(connectivityManagerCallback)
     }
 }

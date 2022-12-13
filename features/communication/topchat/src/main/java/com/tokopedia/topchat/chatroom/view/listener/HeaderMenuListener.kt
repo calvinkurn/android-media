@@ -23,4 +23,8 @@ interface HeaderMenuListener {
 
     fun onGoToChatSetting()
 
+    fun onClickHeaderMenu()
+
+    fun onClickHeaderMenuItem(menuItemTitle: String)
+
 }

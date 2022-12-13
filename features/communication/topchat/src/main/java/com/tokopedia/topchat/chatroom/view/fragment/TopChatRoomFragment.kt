@@ -75,10 +75,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -188,6 +185,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.trackSuccessDoB
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.topchat.common.util.Utils.isFromBubble
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
@@ -289,6 +287,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
      */
     private var isTickerNotShownYet = true
 
+    /*
+      * Bubble Chat Flag
+     */
+    private var isFromBubble = false
+
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
@@ -324,10 +327,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
+        initBubbleChatFlag()
     }
 
     private fun initSmoothScroller() {
         smoothScroller = CenterSmoothScroller(context)
+    }
+
+    private fun initBubbleChatFlag() {
+        isFromBubble = activity?.isFromBubble() == true
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        }
     }
 
     override fun onCreateView(
@@ -560,6 +571,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initChatTextAreaLayout()
     }
 
+    override fun onResume() {
+        super.onResume()
+        this.isFromBubble = activity?.isFromBubble() == true
+        markAsReadFromBubble()
+    }
+
+    private fun markAsReadFromBubble() {
+        if (isFromBubble) {
+            viewModel.isFromBubble = isFromBubble
+            val currentUnreadMsg = viewModel.unreadMsg.value.orZero()
+            if (currentUnreadMsg > Int.ZERO) {
+                viewModel.isOnStop = false
+                viewModel.markAsRead()
+                val replyId = (viewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
+                TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+            }
+        }
+    }
+
     private fun setupLifecycleObserver() {
         viewLifecycleOwner.lifecycle.addObserver(viewModel)
     }
@@ -674,8 +704,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             view, this, this, this,
             this, this, this,
             this, this,
-            (activity as BaseChatToolbarActivity).getToolbar(), analytics
+            (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
+            it.isFromBubble = activity?.isFromBubble() == true
             topchatViewState = it
         }
     }
@@ -722,7 +753,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun trackClickUpdateStock(product: ProductAttachmentUiModel) {
-        analytics.trackClickUpdateStock(product)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickChangeStockFromBubble(product.productId)
+        } else {
+            analytics.trackClickUpdateStock(product)
+        }
     }
 
     override fun isOCCActive(): Boolean {
@@ -976,7 +1011,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
         analytics.trackClickImageAnnouncement(
-            uiModel.broadcastBlastId.toString(),
+            uiModel.broadcastBlastId,
             uiModel.attachmentId
         )
         super.onImageAnnouncementClicked(uiModel)
@@ -1024,6 +1059,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
+
+        if (isFromBubble && !viewModel.isOnStop) {
+            val replyId = chatBubble?.replyId.orEmpty()
+            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+        }
 
         renderTickerReminder(chatBubble)
     }
@@ -1442,6 +1482,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             showToasterMsgFromUpdateStock(updateProductResult, productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
             viewModel.onGoingStockUpdate.remove(productId)
+
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickSaveStockFromBubble(productId?: "")
+            }
         } else {
             val errorMsg = data?.extras?.getString(EXTRA_UPDATE_MESSAGE) ?: return
             showToasterError(errorMsg)
@@ -1866,6 +1910,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
     }
 
+    override fun onClickHeaderMenu() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuBubble(session.shopId)
+        }
+    }
+
+    override fun onClickHeaderMenuItem(menuItemTitle: String) {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuItemBubble(menuItemTitle)
+        }
+    }
+
     private fun getChatReportUrl(): String {
         var url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
         if (isSeller()) {
@@ -1884,7 +1940,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
-        TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickVoucherFromBubble(session.shopId, data.voucher.voucherId)
+        } else {
+            TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        }
         if (data.isLockToProduct()) {
             goToMvcPage(data.applink)
         } else {
@@ -1933,7 +1993,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
-            finishActivity()
+            if (isFromBubble) {
+                return false
+            } else {
+                finishActivity()
+            }
         }
         return true
     }
@@ -1967,6 +2031,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroy() {
         super.onDestroy()
         unregisterUploadImageReceiver()
+        sendBubbleDismissTracker()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentUiModel) {
@@ -2036,24 +2101,40 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachProduct(menu: AttachmentMenu) {
-        analytics.eventAttachProduct()
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentProductFromBubble(session.shopId)
+        } else {
+            analytics.eventAttachProduct()
+            analytics.trackChatMenuClicked(menu.label)
+        }
         onAttachProductClicked()
     }
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
-        analytics.eventPickImage()
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentImageFromBubble(session.shopId)
+        } else {
+            analytics.eventPickImage()
+            analytics.trackChatMenuClicked(menu.label)
+        }
         pickImageToUpload()
     }
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
-        analytics.trackChatMenuClicked(voucherMenu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentVoucherFromBubble(session.shopId)
+        } else {
+            analytics.trackChatMenuClicked(voucherMenu.label)
+        }
         pickVoucherToUpload()
     }
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentInvoiceFromBubble(session.shopId)
+        } else {
+            analytics.trackChatMenuClicked(menu.label)
+        }
         pickInvoiceToUpload()
     }
 
@@ -2194,6 +2275,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onStickerOpened() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickStickerBubble()
+        }
         topchatViewState?.onStickerOpened()
     }
 
@@ -2477,6 +2561,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             uploadImageBroadcastReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(it).unregisterReceiver(receiver)
             }
+        }
+    }
+
+    private fun sendBubbleDismissTracker() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventDismissBubbleChat(session.shopId, opponentId, messageId)
         }
     }
 
@@ -2836,6 +2926,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         onSuccessGetExistingChatFirstTime(
                             result.data.chatroomViewModel, result.data.chatReplies
                         )
+
+                        if (isFromBubble) {
+                            val replyId = (result.data.chatroomViewModel
+                                .listChat.getOrNull(Int.ZERO) as? BaseChatUiModel)?.replyId.orEmpty()
+                            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+                        }
                     } else {
                         onSuccessResetChatToFirstPage(
                             result.data.chatroomViewModel, result.data.chatReplies
@@ -3078,12 +3174,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         ) { itemMenu, msg ->
             TopChatAnalyticsKt.eventClickMsgMenu(itemMenu.title)
             when (itemMenu.id) {
-                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
-                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
+                MENU_ID_REPLY -> replyBubble(msg, text)
+                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text, msg.replyId)
                 MENU_ID_DELETE_BUBBLE -> confirmDeleteBubble(msg)
             }
         }
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickLongHoldMessageFromBubble(msg.replyId)
+        } else {
+            TopChatAnalyticsKt.eventTapAndHoldBubbleChat(msg.replyId)
+        }
+    }
+
+    private fun replyBubble(msg: BaseChatUiModel, text: CharSequence) {
+        replyCompose?.composeReplyData(msg, text, true)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickReplySelectedMessageFromBubble(msg.replyId)
+        }
     }
 
     private fun confirmDeleteBubble(msg: BaseChatUiModel) {
@@ -3097,11 +3206,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     dismiss()
                 }
                 setPrimaryCTAClickListener {
-                    TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    if (isFromBubble) {
+                        TopChatAnalyticsKt.clickConfirmDeleteSelectedMessageFromBubble(msg.replyId)
+                    } else {
+                        TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    }
                     deleteBubble(msg)
                     dismiss()
                 }
             }.show()
+
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickDeleteSelectedMessageFromBubble(msg.replyId)
+            }
         }
     }
 
@@ -3118,12 +3235,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return shopId
     }
 
-    private fun copyToClipboard(text: CharSequence) {
+    private fun copyToClipboard(text: CharSequence, replyId: String) {
         val clipboard = context?.getSystemService(
             CLIPBOARD_SERVICE
         ) as? ClipboardManager
         val clip = ClipData.newPlainText(CLIPBOARD_CHAT, text)
         clipboard?.setPrimaryClip(clip)
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickCopySelectedMessageFromBubble(replyId)
+        }
     }
 
     override fun getUserName(senderId: String): String {

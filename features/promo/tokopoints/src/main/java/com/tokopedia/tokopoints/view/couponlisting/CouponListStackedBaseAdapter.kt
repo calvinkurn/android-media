@@ -144,9 +144,9 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
             holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
             holder.cv2.setCardBackgroundColor(itemContext.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G200))
         } else {
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
 
         if (item.usage != null) {
@@ -201,10 +201,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
             holder.cvData.layoutParams = layoutParamsCvData
         }
 
-        if (item.upperLeftSection == null
-                || item.upperLeftSection.textAttributes == null
-                || item.upperLeftSection.textAttributes.isEmpty()
-                || item.upperLeftSection.textAttributes[0] == null
+        if (item.upperLeftSection.textAttributes.isEmpty()
                 || TextUtils.isEmpty(item.upperLeftSection.textAttributes[0].text)) {
             holder.tvStackCount.hide()
         } else {
@@ -287,7 +284,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                 holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
             holder.itemView?.let {
-                holder.itemView.setOnClickListener { v ->
+                holder.itemView.setOnClickListener {
                     if (item.isStacked) {
                         mStackedID = item.stackId
                         mPresenter.getCouponInStack(item.stackId)
@@ -389,7 +386,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                 promoView["promoView"] = promotions
 
                 var eventLabel = ""
-                if (data.title != null && data.title.isNotEmpty()) {
+                if (data.title.isNotEmpty()) {
                     eventLabel = data.title
                 }
                 AnalyticsTrackerUtil.sendECommerceEvent(vh.value.context,
@@ -419,7 +416,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         promoClick["promoClick"] = promotions
 
         var eventLabel = ""
-        if (data.title != null && data.title.isNotEmpty()) {
+        if (data.title.isNotEmpty()) {
             eventLabel = data.title
         }
         AnalyticsTrackerUtil.sendECommerceEvent(context,

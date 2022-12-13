@@ -2,4 +2,10 @@
     <string name="cm_app_name">cm_push_notifications</string>
     <string name="cm_app_title_name">Tokopedia</string>
     <string name="cm_tv_coupon_code_copied">Kode Disalin</string>
+
+    <string name="cm_notifications_general_prompt_mainapp_title">Pantau terus update terbaru lewat notifikasi</string>
+    <string name="cm_notifications_general_prompt_mainapp_description">Supaya bisa cek pesananmu &amp; nggak ketinggalan promo menarik dari Tokopedia.</string>
+    <string name="cm_notifications_general_prompt_sellerapp_title">Pantau terus transaksi lewat notifikasi</string>
+    <string name="cm_notifications_general_prompt_sellerapp_description">Supaya tahu kalau ada pesanan baru yang masuk dan chat dari pembelimu!</string>
+    <string name="cm_notifications_general_prompt_turn_on_notification">Nyalakan Notifikasi</string>
 </resources>

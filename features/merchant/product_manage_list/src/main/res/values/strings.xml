@@ -224,5 +224,14 @@
     <string name="content_coach_mark_nav_home_stock_reminder_title">Dapatkan notifikasi terkait stokmu</string>
     <string name="content_coach_mark_nav_home_stock_reminder_desc">Kamu akan menerima notifikasi saat stok produk menipis lewat ikon lonceng di Home. Selain itu, kamu juga akan diingatkan lewat email.</string>
     <string name="product_stock_reminder_label_variant">Varian</string>
+    <string name="product_manage_shop_moderated_title">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
 
+    <string name="product_manage_notify_me_buyer_manage_stock_now">Atur Stok Sekarang</string>
+    <string name="product_manage_notify_me_title">Produkmu ditunggu pembeli!</string>
+
+    <string name="content_coach_mark_notify_me_title">Produkmu ditunggu pembeli, lho! 🚨</string>
+    <string name="content_coach_mark_notify_me_desc">Ikon ini menunjukkan kalau ada pembeli yang memasang pengingat jika produk kembali tersedia.</string>
+    <string name="text_read_article">Baca Artikel</string>
+    <string name="content_coach_mark_label_guarantee_title">Kini, ada tanda “Stok Tersedia” di produkmu, lho!</string>
+    <string name="content_coach_mark_label_guarantee_desc">Tanda ini akan dilihat pembeli di halaman detail produkmu. Klik di sini untuk pelajari lebih lanjut, ya.</string>
 </resources>

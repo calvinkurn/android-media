@@ -7,4 +7,9 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
  */
 data class VideoPropertyUiModel(
         val state: PlayViewerVideoState
-)
+) {
+    companion object {
+        val Empty: VideoPropertyUiModel
+            get() = VideoPropertyUiModel(state = PlayViewerVideoState.Unknown)
+    }
+}

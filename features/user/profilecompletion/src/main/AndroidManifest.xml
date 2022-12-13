@@ -44,10 +44,6 @@
                     android:host="@string/host_user"
                     android:pathPattern="@string/path_add_name_register"
                     android:scheme="@string/internal_scheme" />
-                <data
-                    android:host="@string/host_user"
-                    android:pathPattern="@string/path_add_name_register_clean_view"
-                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -96,7 +92,7 @@
         </activity>
         <activity
             android:name=".addphone.view.activity.AddPhoneActivity"
-            android:label="@string/title_add_phone"
+            android:label="@string/add_phone_title_add_phone"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
@@ -110,6 +106,25 @@
                 <data
                     android:host="@string/host_user"
                     android:pathPattern="@string/path_add_phone"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".addphone.view.activity.NewAddPhoneActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_new_add_phone"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

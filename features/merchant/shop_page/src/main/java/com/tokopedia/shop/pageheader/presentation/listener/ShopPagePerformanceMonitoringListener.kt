@@ -1,6 +1,6 @@
-package com.tokopedia.shop.pageheader.presentation.listener;
+package com.tokopedia.shop.pageheader.presentation.listener
 
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 
 interface ShopPagePerformanceMonitoringListener {
     fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface?

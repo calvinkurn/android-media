@@ -8,11 +8,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_18"
         android:paddingTop="@dimen/dp_18"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
         android:lines="1"
         app:typographyWeight="bold"
         app:typographyType="body_2"
@@ -23,10 +23,10 @@
     <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/check"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="0dp"
         android:background="@null"
         android:visibility="gone"
-        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginEnd="16dp"
         app:srcCompat="@drawable/ic_check_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/title"
@@ -37,7 +37,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="@dimen/dp_negative_8"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintEnd_toEndOf="parent"

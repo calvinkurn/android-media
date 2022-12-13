@@ -13,6 +13,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -91,6 +93,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE_START_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
@@ -553,7 +556,14 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         loaderDialog?.loaderText?.apply {
             setType(Typography.DISPLAY_2)
         }
-        loaderDialog?.setLoadingText(Html.fromHtml(TM_SUMMARY_DIALOG_TITLE))
+        val ss = SpannableString(TM_SUMMARY_DIALOG_TITLE)
+        ss.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0, TM_SUMMARY_DIALOG_TITLE_START_TEXT.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        loaderDialog?.setLoadingText(ss)
+        loaderDialog?.loaderText?.gravity= Gravity.CENTER_HORIZONTAL
         loaderDialog?.show()
     }
 
@@ -796,7 +806,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
         bundle.putInt(BUNDLE_PROGRAM_TYPE, programActionType)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
-        tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
+        tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW_EXTEND, bundle)
         closeLoadingDialog()
         setButtonState()
     }
@@ -931,6 +941,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT){
                     tmTracker?.clickCouponCreationBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 }
+                if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_EXTEND){
+                    tmTracker?.clickProgramExtensionCouponBack(arguments?.getInt(BUNDLE_SHOP_ID).toString(), arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS).toString())
+                }
                 else{
                     tmTracker?.clickCouponCreationBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 }
@@ -991,7 +1004,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     tmTracker?.clickCouponCreationFromProgramList(
                         arguments?.getInt(BUNDLE_SHOP_ID).toString()
                     )
-                } else {
+                }
+                else if (arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_EXTEND){
+                    tmTracker?.clickProgramExtensionCouponCreation(arguments?.getInt(BUNDLE_SHOP_ID).toString(), arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS).toString())
+                }
+                else {
                     tmTracker?.clickCouponCreationButton(
                         arguments?.getInt(BUNDLE_SHOP_ID).toString()
                     )
@@ -1128,7 +1145,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 !isCollapsedPremium
             }
         }
-
+        setTickerText(context?.resources?.getString(R.string.tm_vip_coupon_ticker_text).orEmpty())
         icArrowVip.setOnClickListener {
             isCollapsedVip = if (isCollapsedVip) {
                 icArrowVip?.animate()?.rotation(ROTATION_180)?.duration = 100L
@@ -1143,6 +1160,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         initTotalTransactionAmount()
 
+    }
+
+    private fun setTickerText(text:String){
+        ticker.setTextDescription(text)
     }
 
     private fun renderProgram(timeWindow: TimeWindow?) {
@@ -1409,8 +1430,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             tmCouponStartTimeUnix = startTime
                             val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                             tmCouponStartTimeUnix?.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
-                            tmCouponStartTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toInt())
-                            tmCouponStartTimeUnix?.set(Calendar.MINUTE, selectedMinute.toInt())
+                            tmCouponStartTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toIntOrZero())
+                            tmCouponStartTimeUnix?.set(Calendar.MINUTE, selectedMinute.toIntOrZero())
                             updatedStartTimeCoupon = tmCouponStartTimeUnix?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
@@ -1422,8 +1443,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             tmCouponEndTimeUnix = startTime
                             val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                             tmCouponEndTimeUnix?.time = sdf.parse(updatedEndTimeCoupon + "00") ?: Date()
-                            tmCouponEndTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toInt())
-                            tmCouponEndTimeUnix?.set(Calendar.MINUTE, selectedMinute.toInt())
+                            tmCouponEndTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toIntOrZero())
+                            tmCouponEndTimeUnix?.set(Calendar.MINUTE, selectedMinute.toIntOrZero())
                             updatedEndTimeCoupon = tmCouponEndTimeUnix?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()

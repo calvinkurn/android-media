@@ -293,7 +293,7 @@ class DiscoveryDataMapper {
                 productName = productName,
                 slashedPrice = slashedPrice,
                 formattedPrice = formattedPrice,
-                discountPercentage = if (dataItem.discountPercentage?.toIntOrZero() != 0) {
+                discountPercentage = if (!dataItem.discountPercentage.isNullOrEmpty() && dataItem.discountPercentage?.toIntOrZero() != 0) {
                     "${dataItem.discountPercentage}%"
                 } else {
                     ""
@@ -357,7 +357,8 @@ class DiscoveryDataMapper {
                             minOrderWording = bundleDetails?.minOrderWording ?: "",
                             isSelected = false,
                             totalSold = 0,
-                            shopInfo = null, //bundleShopUiModel,
+                            shopInfo = bundleShopUiModel,
+                            bundleType = bundleData.bundleType ?: "",
                             products = bundleProductUiModel.apply {
                                 bundleData.bundleProducts?.forEach { bundleProducts ->
                                     add(BundleProductUiModel(

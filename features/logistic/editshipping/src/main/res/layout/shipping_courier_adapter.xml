@@ -19,7 +19,7 @@
             android:layout_height="35dp"
             app:srcCompat="@drawable/ic_14_google"
             android:layout_weight="0.1"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="4dp"
             android:layout_gravity="left"
             android:contentDescription="null"/>
 

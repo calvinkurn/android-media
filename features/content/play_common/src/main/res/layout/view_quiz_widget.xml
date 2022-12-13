@@ -50,5 +50,4 @@
             tools:listitem="@layout/item_quiz_option" />
 
     </com.tokopedia.play_common.view.RoundedLinearLayout>
-
 </merge>

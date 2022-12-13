@@ -50,6 +50,9 @@ data class SearchProductModel(
     val isPostProcessing: Boolean
         get() = searchProduct.header.meta.isPostProcessing
 
+    val isShowButtonAtc: Boolean
+        get() = searchProduct.header.meta.showButtonAtc
+
     val backendFilters: String
         get() = searchProduct.backendFilters
 
@@ -126,6 +129,9 @@ data class SearchProductModel(
 
         @SerializedName("isPostProcessing")
         val isPostProcessing: Boolean = false,
+
+        @SerializedName("showButtonAtc")
+        val showButtonAtc: Boolean = false,
     )
 
     data class SearchProductData(
@@ -497,6 +503,10 @@ data class SearchProductModel(
             @SerializedName("customVideoURL")
             @Expose
             val customVideoURL: String = "",
+
+            @SerializedName("parentId")
+            @Expose
+            val parentId: String = "",
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -757,6 +767,10 @@ data class SearchProductModel(
             @Expose
             val subtitle: String = "",
 
+            @SerializedName("icon_subtitle")
+            @Expose
+            val iconSubtitle: String = "",
+
             @SerializedName("url")
             @Expose
             val url: String = "",
@@ -906,6 +920,10 @@ data class SearchProductModel(
             @SerializedName("min_order")
             @Expose
             val minOrder: String = "",
+
+            @SerializedName("stockbar")
+            @Expose
+            val stockBar: InspirationCarouselStockBar = InspirationCarouselStockBar(),
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -944,6 +962,28 @@ data class SearchProductModel(
         @SerializedName("image_url")
         @Expose
         val imageUrl: String = ""
+    )
+
+    data class InspirationCarouselStockBar(
+        @SerializedName("stock")
+        @Expose
+        val stock: Int = 0,
+
+        @SerializedName("original_stock")
+        @Expose
+        val originalStock: Int = 0,
+
+        @SerializedName("percentage_value")
+        @Expose
+        val percentageValue: Int = 0,
+
+        @SerializedName("value")
+        @Expose
+        val value: String = "",
+
+        @SerializedName("color")
+        @Expose
+        val color: String = "",
     )
 
     data class InspirationCarouselCardButton(

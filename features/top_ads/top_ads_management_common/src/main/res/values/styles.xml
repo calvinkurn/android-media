@@ -1,26 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="TopadsProductSortRadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/topads_create_radio_btn_sort_selector</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:layout_marginRight">16dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">#F531353B</item>
-    </style>
     <style name="TopadsProductFilterRadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
         <item name="android:button">@null</item>
         <item name="android:background">@drawable/topads_radio_btn_filter_selector</item>
         <item name="android:textSize">14sp</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/topads_text_filter_color_selector</item>
+        <item name="android:textColor">@color/top_ads_management_common_dms_text_filter_color_selector</item>
         <item name="android:padding">8dp</item>
     </style>
 
     <style name="Theme.TopAds.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/dark_N50</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
@@ -41,7 +32,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyType">body_3</item>
         <item name="typographyWeight">bold</item>
-        <item name="android:textColor">@color/topads_heading_color</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 
     <style name="CardView.Text">
@@ -49,7 +40,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyWeight">reguler</item>
         <item name="typographyType">small</item>
-        <item name="android:textColor">@color/topads_common_select_color_unchecked</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
 

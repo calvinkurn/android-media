@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -20,6 +21,8 @@ import com.tokopedia.fakeresponse.presentation.livedata.Success
 import com.tokopedia.fakeresponse.presentation.viewmodels.AddGqlVM
 import com.tokopedia.fakeresponse.presentation.viewmodels.data.AddGqlData
 import com.tokopedia.fakeresponse.toast
+import kotlinx.android.synthetic.main.fake_activity_add_gql.*
+import org.json.JSONArray
 
 class AddGqlActivity : BaseActivity() {
 
@@ -27,12 +30,15 @@ class AddGqlActivity : BaseActivity() {
     lateinit var etCustomName: EditText
     lateinit var etResponse: EditText
     lateinit var toolbar: Toolbar
+    var radioGroup: RadioGroup? = null
 
     override fun getLayout() = R.layout.fake_activity_add_gql
     lateinit var viewModel: AddGqlVM
 
     var id: Int? = null
     var isFromChuck: Boolean = false
+    var isResponseSuccess = true
+    var isDelayResponseEnable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +65,13 @@ class AddGqlActivity : BaseActivity() {
         etCustomName = findViewById(R.id.etCustomName)
         etResponse = findViewById(R.id.etResponse)
         toolbar = findViewById(R.id.toolbar)
-
+        radioGroup = findViewById(R.id.rgCheckedResponseState)
+        radioGroup?.setOnCheckedChangeListener { _, i ->
+            isResponseSuccess = (i == R.id.rbCheckedSuccess)
+        }
+        cbDelayResponse.setOnCheckedChangeListener { compoundButton, b ->
+            isDelayResponseEnable = b
+        }
         id = intent.extras?.get(Router.BUNDLE_ARGS_ID) as Int?
         isFromChuck = intent.extras?.get(Router.BUNDLE_ARGS_FROM_CHUCK) as Boolean? ?: false
 
@@ -80,6 +92,14 @@ class AddGqlActivity : BaseActivity() {
                 is Success<GqlRecord> -> {
                     etGqlName.setText(it.data.gqlOperationName)
                     etCustomName.setText(it.data.customTag)
+                    isResponseSuccess = it.data.isResponseSuccess
+                    if (it.data.isResponseSuccess) {
+                        rbCheckedSuccess.isChecked = true
+                    } else {
+                        rbCheckedError.isChecked = true
+                    }
+
+                    cbDelayResponse.isChecked = it.data.isDelayResponse
 
                     try {
                         setPrettyText(it.data.response, etResponse)
@@ -94,6 +114,7 @@ class AddGqlActivity : BaseActivity() {
             when (it) {
                 is Success<Long> -> {
                     toast("New entry added")
+                    finish()
                 }
                 is Fail -> {
                     toast(it.ex.message)
@@ -107,6 +128,7 @@ class AddGqlActivity : BaseActivity() {
             when (it) {
                 is Success<Boolean> -> {
                     toast("New entry updated")
+                    finish()
                 }
                 is Fail -> {
                     toast(it.ex.message)
@@ -145,7 +167,13 @@ class AddGqlActivity : BaseActivity() {
     fun updateUi(transactionEntity: TransactionEntity) {
 
         val parserRuleProvider = ParserRuleProvider()
-        etGqlName.setText(parserRuleProvider.parse(transactionEntity.requestBody ?: ""))
+        val jsonArray = JSONArray(transactionEntity.requestBody ?: "[]")
+        if (jsonArray.length() > 0) {
+            val item = jsonArray.getJSONObject(0)
+            val query = item.optString("query") ?: ""
+            val formattedOperationName = parserRuleProvider.parse(query)
+            etGqlName.setText(formattedOperationName)
+        }
 
         var response = transactionEntity.responseBody ?: ""
         response = gson.toJson(jsonParser.parse(response))
@@ -185,7 +213,13 @@ class AddGqlActivity : BaseActivity() {
         val response = etResponse.text.toString()
 
         val addGqlData =
-                AddGqlData(gqlQueryName = gqlName, response = response, customTag = customName)
+            AddGqlData(
+                gqlQueryName = gqlName,
+                response = response,
+                customTag = customName,
+                isResponseSuccess = isResponseSuccess,
+                isDelayResponse = isDelayResponseEnable
+            )
 
         if (isExistingRecord()) {
             viewModel.updateRecord(id!!, addGqlData)

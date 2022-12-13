@@ -72,10 +72,10 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
         arguments?.let {
             if (it.getInt(InboxMessageConstant.PARAM_NAV) == 1) {
                 allowDelete = DISABLE_DELETE
-                item.icon.alpha = DISABLE_DELETE
+                item.icon?.alpha = DISABLE_DELETE
             } else {
                 allowDelete = ENABLE_DELETE
-                item.icon.alpha = ENABLE_DELETE
+                item.icon?.alpha = ENABLE_DELETE
             }
         }
     }

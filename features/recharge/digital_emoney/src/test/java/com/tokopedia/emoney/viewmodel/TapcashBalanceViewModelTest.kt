@@ -49,11 +49,11 @@ class TapcashBalanceViewModelTest {
     val writeResultFailedSize = "0614A3859256C46C23792A757F400F3C258FB7A98578D9009C40B65448823BB65448823B30FA7200000400000400009000"
 
     val dummyResponseNoCrypto = """
-        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"","rrn":0,"amount":10000,"button_text":"Top-up Sekarang","image_issuer":"https://ecs7.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
+        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"","rrn":0,"amount":10000,"button_text":"Top-up Sekarang","image_issuer":"https://images.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
     """.trimIndent()
 
     val dummyResponseWithCrypto = """
-        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"0600271031CADAAE000000000000000085A00E33BD0F26DFDB71CA6C6CBCE500","rrn":0,"amount":20000,"button_text":"Top-up Sekarang","image_issuer":"https://ecs7.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
+        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"0600271031CADAAE000000000000000085A00E33BD0F26DFDB71CA6C6CBCE500","rrn":0,"amount":20000,"button_text":"Top-up Sekarang","image_issuer":"https://images.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
     """.trimIndent()
 
     @Before
@@ -82,7 +82,7 @@ class TapcashBalanceViewModelTest {
         every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultFail
 
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "", 0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -96,7 +96,7 @@ class TapcashBalanceViewModelTest {
         every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultFail
 
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -112,7 +112,7 @@ class TapcashBalanceViewModelTest {
         every { isoDep.transceive(byteRequest) } returns challangeResultFail
 
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -131,7 +131,7 @@ class TapcashBalanceViewModelTest {
         every { tapcashBalanceViewModel.getCardData(secureResult, terminalRandomNumber,challangeResult) } returns ""
 
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -150,7 +150,7 @@ class TapcashBalanceViewModelTest {
         every { tapcashBalanceViewModel.getCardData(secureResult, terminalRandomNumber,challangeResult) } returns null
 
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -167,7 +167,7 @@ class TapcashBalanceViewModelTest {
         every { isoDep.transceive(secureByteRequest) } answers { throw IOException() }
 
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -275,7 +275,7 @@ class TapcashBalanceViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         checkAssertEmoneyInquiry((tapcashBalanceViewModel.tapcashInquiry.value as EmoneyInquiry), mapTapcashtoEmoney(balanceTapcash, ))
@@ -303,7 +303,7 @@ class TapcashBalanceViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         checkAssertEmoneyInquiry((tapcashBalanceViewModel.tapcashInquiry.value as EmoneyInquiry), mapTapcashtoEmoney(balanceTapcash))
@@ -331,7 +331,7 @@ class TapcashBalanceViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         checkAssertEmoneyInquiry((tapcashBalanceViewModel.tapcashInquiry.value as EmoneyInquiry), mapTapcashtoEmoney(balanceTapcash, "004E20"))
@@ -359,7 +359,7 @@ class TapcashBalanceViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceFailed
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
@@ -387,7 +387,7 @@ class TapcashBalanceViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
         //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "",0, "")
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
@@ -456,7 +456,7 @@ class TapcashBalanceViewModelTest {
         every { isoDep.isConnected } returns false
 
         //when
-        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte, 0)
+        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte)
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -471,7 +471,7 @@ class TapcashBalanceViewModelTest {
         val terminalRandomNumberByte = NFCUtils.hexStringToByteArray(terminalRandomNumber)
 
         //when
-        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte, 0)
+        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte)
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -490,7 +490,7 @@ class TapcashBalanceViewModelTest {
         every { isoDep.transceive(recheckSecureByteRequest) } returns recheckSecureByteResult
         every { isoDep.transceive(COMMAND_GET_CHALLENGE) } answers  { throw IOException()}
         //when
-        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte, 0)
+        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte)
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
@@ -509,7 +509,7 @@ class TapcashBalanceViewModelTest {
         every { isoDep.transceive(recheckSecureByteRequest) } returns recheckSecureByteResult
         every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
         //when
-        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte, 0)
+        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte)
 
         //then
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")

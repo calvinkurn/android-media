@@ -29,18 +29,25 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kolcommon.util.TimeConverter
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -50,8 +57,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_media_preview.*
 import javax.inject.Inject
 
@@ -156,10 +161,10 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun onSuccessGetDetail(data: PostDetailUiModel) {
-        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
+        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel
         dynamicPost?.let {
             bindToolbar(it)
-            val mediaGrid = it.contentList.filterIsInstance<MultimediaGridViewModel>().firstOrNull()
+            val mediaGrid = it.contentList.filterIsInstance<MultimediaGridModel>().firstOrNull()
             if (mediaGrid != null){
                 bindMedia(mediaGrid.mediaItemList)
             }
@@ -380,7 +385,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
+    private fun bindToolbar(dynamicPost: DynamicPostModel) {
         val templateHeader = dynamicPost.template.cardpost.header
         val header = dynamicPost.header
         postAuthor = header.followCta.authorType
@@ -452,9 +457,12 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     @SuppressLint("Method Call Prohibited")
     private fun doComment() {
+        val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
+        val postType = arguments?.getString(PARAM_POST_TYPE)
+        val isFollowed = arguments?.getBoolean(PARAM_IS_POST_FOLLOWED, true)
         activity?.let {
             val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)
-                KolCommentActivity.getCallingIntent(it, mediaPreviewViewModel.postId.toInt(), 0) to REQ_CODE_COMMENT
+                KolCommentNewActivity.getCallingIntent(it, mediaPreviewViewModel.postId.toInt(), 0,authorId,isFollowed,postType) to REQ_CODE_COMMENT
             else RouteManager.getIntent(it, ApplinkConst.LOGIN) to REQ_CODE_LOGIN
 
             startActivityForResult(intent, reqCode)
