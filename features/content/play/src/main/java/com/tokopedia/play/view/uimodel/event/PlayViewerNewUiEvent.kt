@@ -85,6 +85,13 @@ data class AtcSuccessEvent(
     val sectionInfo: ProductSectionUiModel.Section?,
     val isProductFeatured: Boolean,
 ) : PlayViewerNewUiEvent()
+data class OCCSuccessEvent(
+    val product: PlayProductUiModel.Product,
+    val isVariant: Boolean,
+    val cartId: String,
+    val sectionInfo: ProductSectionUiModel.Section?,
+    val isProductFeatured: Boolean,
+) : PlayViewerNewUiEvent()
 
 //---------------------
 
@@ -117,3 +124,10 @@ object OpenUserReportEvent : PlayViewerNewUiEvent()
  */
 data class ChangeCampaignReminderSuccess(val isReminded: Boolean, val message: String) : PlayViewerNewUiEvent()
 data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiEvent()
+
+/**
+ * Follow
+ */
+
+object FailedFollow: PlayViewerNewUiEvent()
+

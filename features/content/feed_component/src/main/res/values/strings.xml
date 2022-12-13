@@ -204,9 +204,11 @@
     <string name="feeds_asgc_restock_text">Barang Restock</string>
 
     //video Tab in feed
-    <string name="feed_video_tab_success_add_reminder">Pengingat berhasil terpasang!</string>
-    <string name="feed_video_tab_success_remove_reminder">Pengingat berhasil terhapus!</string>
+    <string name="feed_video_tab_success_add_reminder">Kami akan kirim pengingat, ya!</string>
+    <string name="feed_video_tab_success_remove_reminder">Yaah, pengingat batal dikirim.</string>
     <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="feed_video_tab_failed_to_set_reminder_text">Gagal pasang pengingat. Coba lagi, ya.</string>
+    <string name="feed_video_tab_failed_to_unset_reminder_text">Gagal batalkan pengingat. Coba lagi, ya.</string>
     <string name="feed_asgc_diskon_toko">Barang Diskon</string>
     <string name="feed_asgc_flash_sale_toko">Flash Sale</string>
     <string name="feed_asgc_rilisan_special">Rilisan Spesial</string>
@@ -241,6 +243,8 @@
 
     <!--Follow Bottom Sheet-->
     <string name="feed_follow_bottom_sheet_success_toaster_text" tools:ignore="UnusedResources">Kamu berhasil follow toko. Yuk, buruan beli produknya sebelum kehabisan!</string>
+    <string name="feed_follow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil mengikuti akun ini</string>
+    <string name="feed_unfollow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil berhenti mengikuti akun ini</string>
     <string name="feed_asgc_campaign_cta_copywriting_text">Eksklusif untuk Follower Toko</string>
     <string name="feed_follow_bottom_sheet_button_text">Follow</string>
     <string name="feed_follow_bottom_sheet_title_text">Follow toko ini dulu, yuk!</string>

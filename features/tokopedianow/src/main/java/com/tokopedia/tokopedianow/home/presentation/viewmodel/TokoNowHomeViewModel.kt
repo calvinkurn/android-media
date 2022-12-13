@@ -90,6 +90,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SUCCESS_CODE
@@ -103,6 +104,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
@@ -129,6 +131,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getQuestWidgetListUseCase: GetQuestWidgetListUseCase,
     private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val getHomeReferralUseCase: GetHomeReferralUseCase,
+    private val referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -136,6 +139,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     companion object {
         private const val DEFAULT_INDEX = 1
+        private const val SUCCESS_CODE = "200"
     }
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -170,6 +174,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _invalidatePlayImpression
     val updateToolbarNotification: LiveData<Boolean>
         get() = _updateToolbarNotification
+    val referralEvaluate: LiveData<Result<HomeReceiverReferralDialogUiModel>>
+        get() = _referralEvaluate
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -187,6 +193,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _homeSwitchServiceTracker = MutableLiveData<HomeSwitchServiceTracker>()
     private val _invalidatePlayImpression = MutableLiveData<Boolean>()
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
+    private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -277,22 +284,22 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     /**
-     * Handle on scroll event, load more if reached bottom of TokoMart Home.
+     * Handle on scroll event, load more if reached bottom of the homepage.
      * All items loaded when token returned from dynamic channel is empty.
      *
      * @param lastVisibleItemIndex last item index visible on user screen
      * @param localCacheModel address data cache from choose address widget
      * @param removeAbleWidgets list of widgets that can be dismissed by user
      */
-    fun onScrollTokoMartHome(
+    fun onScroll(
         lastVisibleItemIndex: Int,
         localCacheModel: LocalCacheModel,
         removeAbleWidgets: List<HomeRemoveAbleWidget>
     ) {
-        launchCatchError(block = {
-            if (shouldLoadMore(lastVisibleItemIndex)) {
-                showProgressBar()
+        if (shouldLoadMore(lastVisibleItemIndex)) {
+            showProgressBar()
 
+            launchCatchError(block = {
                 val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                     token = channelToken,
                     localCacheModel = localCacheModel
@@ -316,9 +323,9 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
 
                 _homeLayoutList.postValue(Success(data))
+            }) {
+                // do nothing
             }
-        }) {
-            // do nothing
         }
     }
 
@@ -610,6 +617,18 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
+    }
+
+    /**
+     * get dialog data after user click link referral
+     */
+    fun getReceiverHomeDialog(referralData: String) {
+        launchCatchError(block = {
+            val data = referralEvaluateJoinUseCase.execute(referralData)
+            _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel()))
+        }, onError = {
+            _referralEvaluate.postValue(Fail(it))
+        })
     }
 
     /**
@@ -1117,8 +1136,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
-        val layoutList = homeLayoutItemList.toMutableList()
-        val isLoading = layoutList.firstOrNull { it.layout == HomeProgressBarUiModel } != null
+        val layoutList = getHomeVisitableList()
+        val isLoading = layoutList.firstOrNull { it == HomeProgressBarUiModel } != null
         val scrolledToBottom = lastVisibleItemIndex == layoutList.count() - DEFAULT_INDEX
         return scrolledToBottom && !isLoading && !allItemsLoaded
     }

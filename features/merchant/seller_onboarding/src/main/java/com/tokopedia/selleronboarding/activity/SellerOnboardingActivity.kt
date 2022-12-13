@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
@@ -80,12 +79,6 @@ class SellerOnboardingActivity : BaseActivity() {
         setupButtonClickListener()
 
         binding?.pageIndicatorSob?.setIndicator(sobAdapter.dataSize)
-        NotificationSettingsUtils(applicationContext).sendNotificationPromptEvent()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        NotificationSettingsUtils(applicationContext).checkNotificationPermission(this)
     }
 
     private fun handleAppLink() {

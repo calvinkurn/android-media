@@ -76,7 +76,18 @@ class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>,
         val index = getContentExploreIndex()
         return if (getRegisteredFragment(index) is ContentExploreFragment) {
             getRegisteredFragment(index) as? ContentExploreFragment?
-        } else null
+        } else {
+            null
+        }
+    }
+
+    private fun getContentVideo(): VideoTabFragment? {
+        val index: Int = getVideoTabIndex()
+        return if (getRegisteredFragment(index) is VideoTabFragment) {
+            getRegisteredFragment(index) as? VideoTabFragment?
+        } else {
+            null
+        }
     }
 
     fun getContentExploreIndex(): Int {
@@ -87,8 +98,19 @@ class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>,
         }
         return 0
     }
+    fun getVideoTabIndex(): Int {
+        for (i in 0 until count) {
+            if (itemList[i].type == FeedTabs.TYPE_CUSTOM && itemList[i].key == FeedTabs.TYPE_VIDEO) {
+                return i
+            }
+        }
+        return 0
+    }
 
     fun isContextExploreExist(): Boolean {
         return getContentExplore() != null
+    }
+    fun isVideoTabExist(): Boolean {
+        return getContentVideo() != null
     }
 }
