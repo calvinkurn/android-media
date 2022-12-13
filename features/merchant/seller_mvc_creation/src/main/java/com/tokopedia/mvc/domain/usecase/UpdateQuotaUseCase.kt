@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.mvc.data.response.UpdateQuotaResponse
+import com.tokopedia.mvc.util.constant.CommonConstant.SELLER_APP_PAGE_SOURCE
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
@@ -25,7 +26,6 @@ class UpdateQuotaUseCase @Inject constructor(
         private const val UPDATE_ALL_PERIOD = "update_next_period"
         private const val TOKEN_KEY = "token"
         private const val SOURCE_KEY = "source"
-        private const val SELLERAPP = "android-sellerapp"
     }
 
     private val mutation = object : GqlQueryInterface {
@@ -60,7 +60,7 @@ class UpdateQuotaUseCase @Inject constructor(
             QUOTA to quota,
             UPDATE_ALL_PERIOD to updateAllPeriod,
             TOKEN_KEY to token,
-            SOURCE_KEY to SELLERAPP,
+            SOURCE_KEY to SELLER_APP_PAGE_SOURCE,
         )
         return GraphqlRequest(
             mutation,
