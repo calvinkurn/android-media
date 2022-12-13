@@ -43,7 +43,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.unifyprinciples.R as RUnify
 
@@ -89,11 +88,11 @@ class BannerComponentViewHolder(
 
     init {
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewDetachedFromWindow(p0: View?) {
+            override fun onViewDetachedFromWindow(p0: View) {
                 pauseAutoScroll()
             }
 
-            override fun onViewAttachedToWindow(p0: View?) {
+            override fun onViewAttachedToWindow(p0: View) {
                 resumeAutoScroll()
             }
         })
@@ -152,7 +151,7 @@ class BannerComponentViewHolder(
         }
     }
 
-    private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main) {
+    private fun autoScrollCoroutine() {
         if (isAutoScroll) {
             val nextPagePosition = if (currentPagePosition >= lastPagePosition) {
                 0
