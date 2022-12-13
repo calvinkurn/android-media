@@ -69,7 +69,6 @@ import com.tokopedia.reviewcommon.extension.combine
 import com.tokopedia.reviewcommon.extension.get
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -99,7 +98,6 @@ class BulkReviewViewModel @Inject constructor(
     private val getBadRatingCategoryUseCase: BulkReviewGetBadRatingCategoryUseCase,
     private val uploaderUseCase: UploaderUseCase,
     private val submitUseCase: BulkReviewSubmitUseCase,
-    private val userSession: UserSessionInterface,
     private val bulkReviewProductInfoUiStateMapper: BulkReviewProductInfoUiStateMapper,
     private val bulkReviewRatingUiStateMapper: BulkReviewRatingUiStateMapper,
     private val bulkReviewBadRatingCategoryUiStateMapper: BulkReviewBadRatingCategoryUiStateMapper,
@@ -115,6 +113,10 @@ class BulkReviewViewModel @Inject constructor(
 
     companion object {
         const val BAD_RATING_CATEGORY_THRESHOLD = 2
+
+        private const val RATING_1 = 1
+        private const val RATING_2 = 2
+        private const val RATING_3 = 3
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val DELAY_WAIT_FOR_UI_STATE_RESTORATION = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
@@ -148,6 +150,7 @@ class BulkReviewViewModel @Inject constructor(
     private val anonymous = MutableStateFlow(false)
     private val shouldSubmitReview = MutableStateFlow(false)
     private var activeMediaPickerInboxID = ""
+
     // endregion stateflow that need to be saved and restored
     private val shouldCancelBulkReview = MutableStateFlow(false)
     private val reviewItemsMediaUploadJobs = MutableStateFlow(emptyList<BulkReviewItemMediaUploadJobsUiModel>())
@@ -400,7 +403,7 @@ class BulkReviewViewModel @Inject constructor(
         updateReviewItemTestimony(inboxID, text)
         showExpandedTextAreaBottomSheet(
             inboxID = inboxID,
-            title = StringRes(R.string.review_create_best_title),
+            title = StringRes(getExpandedTextAreaTitle(inboxID)),
             hint = getReviewItemHint(inboxID),
             text = getReviewItemTestimony(inboxID),
             allowEmpty = true
@@ -1363,7 +1366,7 @@ class BulkReviewViewModel @Inject constructor(
             (_badRatingCategoryBottomSheetUiState.value as? BulkReviewBadRatingCategoryBottomSheetUiState.Showing)?.inboxID?.let { inboxID ->
                 showExpandedTextAreaBottomSheet(
                     inboxID = inboxID,
-                    title = StringRes(R.string.bulk_review_bad_rating_category_bottom_sheet_title),
+                    title = StringRes(getExpandedTextAreaTitle(inboxID)),
                     hint = StringRes(R.string.hint_bulk_review_bad_rating_category_expanded_text_area),
                     text = getReviewItemTestimony(inboxID),
                     allowEmpty = false
@@ -1561,6 +1564,15 @@ class BulkReviewViewModel @Inject constructor(
             getBadRatingCategoryUseCase(Unit).collectLatest { requestState ->
                 getBadRatingCategoryRequestState.value = requestState
             }
+        }
+    }
+
+    private fun getExpandedTextAreaTitle(inboxID: String): Int {
+        return when (reviewItemsRating.value.find { it.inboxID == inboxID }?.rating) {
+            RATING_1 -> R.string.review_create_worst_title
+            RATING_2 -> R.string.review_form_bad_title
+            RATING_3 -> R.string.review_form_neutral_title
+            else -> R.string.review_create_best_title
         }
     }
 }
