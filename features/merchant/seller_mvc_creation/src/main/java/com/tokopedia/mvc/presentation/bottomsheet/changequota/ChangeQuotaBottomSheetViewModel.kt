@@ -10,8 +10,8 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.domain.usecase.UpdateQuotaUseCase
-import com.tokopedia.mvc.presentation.bottomsheet.changequota.mapper.VoucherToChangeQuotaUiModel.toChangeQuotaUiModel
-import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.ChangeQuotaModel
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.mapper.ModelMapper.toUpdateQuotaModelMapper
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaModel
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaUiState
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect.SuccessToGetDetailVoucher
@@ -43,7 +43,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
     private var _changeQuotaUiModel = MutableLiveData<UpdateQuotaEffect>()
     val changeQuotaUiModel: LiveData<UpdateQuotaEffect>
         get() = _changeQuotaUiModel
-    private var changeQuotaModel: ChangeQuotaModel = ChangeQuotaModel()
+    private var updateQuotaModel: UpdateQuotaModel = UpdateQuotaModel()
 
     fun getVoucherDetail(id: Long) {
         launchCatchError(
@@ -51,8 +51,8 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
             block = {
                 val param = MerchantPromotionGetMVDataByIDUseCase.Param(id)
                 val response = merchantPromotionGetMVDataByIDUseCase.execute(param)
-                _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(response.toChangeQuotaUiModel()))
-                changeQuotaModel = response.toChangeQuotaUiModel()
+                _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(response.toUpdateQuotaModelMapper()))
+                updateQuotaModel = response.toUpdateQuotaModelMapper()
                 setOptionsApplyPeriodCoupon(APPLY_ONLY_THIS_PERIOD_COUPON)
             },
             onError = { error ->
@@ -67,7 +67,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
             minimumQuota > inputQuota -> {
                 _inputQuotaValidation.update {
                     val estimation =
-                        calculateEstimation(changeQuotaModel.maxBenefit.orZero(), inputQuota)
+                        calculateEstimation(updateQuotaModel.maxBenefit.orZero(), inputQuota)
                     it.copy(
                         isValidInput = false,
                         isInputOnUnderMinimumReq = true,
@@ -78,7 +78,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
             }
             inputQuota > MAX_QUOTA -> {
                 val estimation =
-                    calculateEstimation(changeQuotaModel.maxBenefit.orZero(), inputQuota)
+                    calculateEstimation(updateQuotaModel.maxBenefit.orZero(), inputQuota)
                 _inputQuotaValidation.update {
                     it.copy(
                         isValidInput = false,
@@ -90,7 +90,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
             }
             else -> {
                 val estimation =
-                    calculateEstimation(changeQuotaModel.maxBenefit.orZero(), inputQuota)
+                    calculateEstimation(updateQuotaModel.maxBenefit.orZero(), inputQuota)
                 _inputQuotaValidation.update {
                     it.copy(
                         isValidInput = true,
@@ -102,10 +102,10 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
     }
 
     private fun getMinimumQuotaOnVoucher(): Long {
-        return if (changeQuotaModel.voucherStatus == VoucherStatus.NOT_STARTED) {
+        return if (updateQuotaModel.voucherStatus == VoucherStatus.NOT_STARTED) {
             MIN_QUOTA_FOR_NOT_STARTED_CAMPAIGN.toLong()
         } else {
-            changeQuotaModel.currentQuota
+            updateQuotaModel.currentQuota
         }
     }
 
@@ -115,8 +115,8 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
                 isSelectedOptions = position != RESTART_DATA_ACTIVITY
             )
         }
-        changeQuotaModel =
-            changeQuotaModel.copy(isApplyToAllPeriodCoupon = position == APPLY_ALL_PERIOD_COUPON)
+        updateQuotaModel =
+            updateQuotaModel.copy(isApplyToAllPeriodCoupon = position == APPLY_ALL_PERIOD_COUPON)
     }
 
     fun calculateEstimation(maxBenefit: Long, quotaInput: Long): Long {
@@ -129,23 +129,23 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
             block = {
                 val metadataParam = GetInitiateVoucherPageUseCase.Param(
                     VoucherAction.UPDATE,
-                    changeQuotaModel.voucherType,
-                    changeQuotaModel.isVoucherProduct
+                    updateQuotaModel.voucherType,
+                    updateQuotaModel.isVoucherProduct
                 )
                 val metadataDeferred =
                     async { getInitiateVoucherPageUseCase.execute(metadataParam) }
                 val token = metadataDeferred.await()
                 val updateQuotaStatus = updateQuota.execute(
-                    changeQuotaModel.voucherId,
+                    updateQuotaModel.voucherId,
                     quota,
-                    changeQuotaModel.isApplyToAllPeriodCoupon,
+                    updateQuotaModel.isApplyToAllPeriodCoupon,
                     token.token
                 )
                 if (updateQuotaStatus) {
                     _changeQuotaUiModel.postValue(
                         UpdateQuotaEffect.SuccessToUpdate(
-                            changeQuotaModel.voucherName,
-                            changeQuotaModel.isApplyToAllPeriodCoupon
+                            updateQuotaModel.voucherName,
+                            updateQuotaModel.isApplyToAllPeriodCoupon
                         )
                     )
                 }
@@ -153,7 +153,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
             onError = { error ->
                 _changeQuotaUiModel.postValue(
                     UpdateQuotaEffect.FailToUpdate(
-                        changeQuotaModel.voucherName,
+                        updateQuotaModel.voucherName,
                         error
                     )
                 )
@@ -162,14 +162,14 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
     }
 
     fun restartVoucher() {
-        changeQuotaModel = changeQuotaModel.copy(isApplyToAllPeriodCoupon = false)
-        _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(changeQuotaModel))
+        updateQuotaModel = updateQuotaModel.copy(isApplyToAllPeriodCoupon = false)
+        _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(updateQuotaModel))
         setOptionsApplyPeriodCoupon(
             if (isMultiPeriod()) RESTART_DATA_ACTIVITY else APPLY_ONLY_THIS_PERIOD_COUPON
         )
     }
 
     private fun isMultiPeriod(): Boolean {
-        return changeQuotaModel.isMultiPeriod
+        return updateQuotaModel.isMultiPeriod
     }
 }

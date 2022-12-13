@@ -11,6 +11,6 @@ data class UpdateQuotaUiState(
 sealed class UpdateQuotaEffect{
     data class SuccessToUpdate(val nameVoucher : String, val isApplyToAllPeriodCoupon : Boolean) : UpdateQuotaEffect()
     data class FailToUpdate(val nameVoucher : String, val throwable: Throwable) : UpdateQuotaEffect()
-    data class SuccessToGetDetailVoucher(val changeQuotaModel: ChangeQuotaModel) : UpdateQuotaEffect()
+    data class SuccessToGetDetailVoucher(val updateQuotaModel: UpdateQuotaModel) : UpdateQuotaEffect()
     data class FailToGetDetailVoucher(val throwable: Throwable) : UpdateQuotaEffect()
 }

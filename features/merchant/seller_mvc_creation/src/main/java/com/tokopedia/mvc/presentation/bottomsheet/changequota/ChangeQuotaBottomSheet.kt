@@ -1,7 +1,6 @@
 package com.tokopedia.mvc.presentation.bottomsheet.changequota
 
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,14 +15,13 @@ import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaUiState
-import com.tokopedia.mvc.util.EditTextWatcher
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaFormBinding
 import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaShimmerBinding
-import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.ChangeQuotaModel
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaModel
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect
 import javax.inject.Inject
 
@@ -56,7 +54,6 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetChangeQuotaBinding>()
 
-    private var listenerQty: TextWatcher? = null
     private var onSuccessListener: (String) -> Unit =
         {}
     private var onFailedListener: (String) -> Unit =
@@ -124,11 +121,10 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
     }
 
     private fun setViewListener() {
-        listenerQty = EditTextWatcher {
-            viewModel.isValidInput(it.toLongOrZero())
-        }
         binding?.run {
-            formLayout?.textFieldDiscountQuota?.editText?.addTextChangedListener(listenerQty)
+            formLayout?.textFieldDiscountQuota?.editText?.afterTextChanged {
+                viewModel.isValidInput(it.toLongOrZero())
+            }
             formLayout?.radiosMultipleCoupon?.setOnCheckedChangeListener { _, position ->
                 viewModel.setOptionsApplyPeriodCoupon(position)
             }
@@ -167,7 +163,7 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
                 is UpdateQuotaEffect.SuccessToGetDetailVoucher -> {
                     loadingLayout?.root?.gone()
                     formLayout?.root?.visible()
-                    handlingVoucherUi(uiModel.changeQuotaModel)
+                    handlingVoucherUi(uiModel.updateQuotaModel)
                 }
                 is UpdateQuotaEffect.FailToGetDetailVoucher -> {
                     dismiss()
@@ -195,7 +191,7 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun handlingVoucherUi(voucher: ChangeQuotaModel) {
+    private fun handlingVoucherUi(voucher: UpdateQuotaModel) {
         binding?.layoutFormChangeQuota?.run {
             val estimationSpending = viewModel.calculateEstimation(
                 voucher.maxBenefit.orZero(),
