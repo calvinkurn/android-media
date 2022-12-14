@@ -128,17 +128,21 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         var finalString = firstString.toBlankOrString()
         context?.let {
             val secondString = it.resources.getString(R.string.chatbot_csat_opsional).toBlankOrString()
-            finalString = "<b>$firstString</b> <font color='${
-                context?.let { it1 ->
-                    ColorUtil.getColorFromResToString(
-                        it1,
-                        R.color.chatbot_dms_optional_text
-                    )
-                }
-            }'> $secondString </font>"
+            finalString = "<b>$firstString</b>" + getOptionalText(secondString)
         }
 
         return finalString
+    }
+
+    private fun getOptionalText(secondString: String) : String {
+        return "<font color='${
+            context?.let { it1 ->
+                ColorUtil.getColorFromResToString(
+                    it1,
+                    R.color.chatbot_dms_optional_text
+                )
+            }
+        }'> $secondString </font>"
     }
 
     //Calculates the length of alphanumeric characters

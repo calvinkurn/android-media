@@ -4,10 +4,10 @@
     android:id="@+id/layout_border"
     android:layout_width="wrap_content"
     android:layout_height="40dp"
-    android:layout_marginBottom="@dimen/csat_dp_10"
-    android:layout_marginLeft="@dimen/csat_dp_5"
-    android:layout_marginRight="@dimen/csat_dp_5"
-    android:layout_marginTop="@dimen/csat_dp_10"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="10dp"
     android:background="@color/Unify_G500"
     android:orientation="horizontal">
 
@@ -15,7 +15,7 @@
         android:id="@+id/layout_inside"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/csat_dp_0.1">
+        android:layout_margin="0.1dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/filter_name"

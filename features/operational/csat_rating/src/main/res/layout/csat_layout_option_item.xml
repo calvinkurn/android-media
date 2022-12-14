@@ -5,17 +5,17 @@
     android:id="@+id/layout_border"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/csat_dp_5"
-    android:layout_marginTop="@dimen/csat_dp_5"
-    android:layout_marginRight="@dimen/csat_dp_5"
-    android:layout_marginBottom="@dimen/csat_dp_5"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="5dp"
     android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/layout_inside"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/csat_dp_0.1"
+        android:layout_margin="0.1dp"
         android:background="@drawable/rounded_stroke_grey"
         android:paddingLeft="12dp"
         android:paddingTop="8dp"
