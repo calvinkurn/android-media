@@ -434,7 +434,7 @@ class ProductListFragment : BaseDaggerFragment() {
         selectedProducts: List<SelectedProduct>,
         selectedParentProductImageUrls: List<String>
     ) {
-        SummaryActivity.start(context, voucherConfiguration)
+        SummaryActivity.start(context, voucherConfiguration, selectedProducts)
     }
 }
 

@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -29,6 +30,8 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
@@ -43,6 +46,7 @@ import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_TIME_FORMAT
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class SummaryFragment :
     BaseDaggerFragment(),
@@ -57,12 +61,14 @@ class SummaryFragment :
         fun newInstance(
             pageMode: PageMode,
             voucherId: Long,
-            voucherConfiguration: VoucherConfiguration?
+            voucherConfiguration: VoucherConfiguration?,
+            selectedProducts: List<SelectedProduct>
         ): SummaryFragment {
             return SummaryFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                     putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
                     putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
                 }
             }
@@ -72,6 +78,7 @@ class SummaryFragment :
     private var binding by autoClearedNullable<SmvcFragmentSummaryBinding>()
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val configuration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
+    private val selectedProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
     private val voucherId by lazy { arguments?.getLong(BundleConstant.BUNDLE_VOUCHER_ID) }
     private val redirectionHelper = SummaryPageRedirectionHelper(this)
 
@@ -109,8 +116,8 @@ class SummaryFragment :
         redirectionHelper.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onAddProductResult() {
-        println("ok")
+    override fun onAddProductResult(products: List<Product>) {
+        viewModel.updateProductList(products)
     }
 
     override fun onViewProductResult() {
@@ -253,6 +260,9 @@ class SummaryFragment :
             tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
                                     else getString(R.string.smvc_voucher_private_label)
             llVoucherCode.isVisible = !isVoucherPublic
+            llVoucherMultiperiod.isVisible = totalPeriod.isMoreThanZero()
+            tpgVoucherMultiperiod.text = getString(R.string.smvc_summary_page_multiperiod_format, totalPeriod)
+            tpgVoucherMultiperiodAction.setOnClickListener(::onMultiPeriodClicked)
             try {
                 val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
                 tpgVoucherStartPeriod.text = formatter.format(startPeriod)
@@ -306,6 +316,10 @@ class SummaryFragment :
             .show(childFragmentManager)
     }
 
+    private fun onMultiPeriodClicked(view: View) {
+        // TODO: open BS multipediod list
+    }
+
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         // TODO: redirect to step 1
     }
@@ -319,11 +333,11 @@ class SummaryFragment :
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToAddProductPage(activity ?: return, configuration)
+        redirectionHelper.redirectToAddProductPage(this, configuration)
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToViewProductPage(activity ?: return, configuration, listOf())
+        redirectionHelper.redirectToViewProductPage(this, pageMode ?: return, configuration, selectedProducts)
     }
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {

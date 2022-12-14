@@ -7,6 +7,8 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
@@ -27,8 +29,17 @@ class SummaryViewModel @Inject constructor(
     val configuration: LiveData<VoucherConfiguration> get() = _configuration
     val maxExpense = Transformations.map(configuration) { getMaxExpenses(it) }
 
+    private val _products = MutableLiveData<SelectedProduct>()
+    val products: LiveData<SelectedProduct> get() = _products
+
     fun setConfiguration(configuration: VoucherConfiguration) {
         _configuration.value = configuration
+    }
+
+    fun updateProductList(products: List<Product>) {
+        _configuration.value = configuration.value?.copy(
+            productIds = products.map { it.id }
+        )
     }
 
     fun setupEditMode(voucherId: Long) {
