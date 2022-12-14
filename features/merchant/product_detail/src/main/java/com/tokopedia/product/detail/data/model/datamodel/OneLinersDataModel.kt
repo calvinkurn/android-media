@@ -45,6 +45,6 @@ data class OneLinersDataModel(
     }
 
     val shouldRenderContent
-        get() = oneLinersContent != null && oneLinersContent?.isVisible == true
+        get() = oneLinersContent?.isVisible == true
 
 }

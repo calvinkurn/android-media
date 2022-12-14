@@ -104,9 +104,7 @@ class OneLinersViewHolder(
 
     private fun ItemOneLinersContentBinding.renderCoachMark(shouldShowCoachmark: Boolean) {
         if (shouldShowCoachmark) {
-            oneLinersIconStart.let {
-                listener.showOneLinersImsCoachMark(it)
-            }
+            listener.showOneLinersImsCoachMark(oneLinersIconStart)
         }
     }
 
