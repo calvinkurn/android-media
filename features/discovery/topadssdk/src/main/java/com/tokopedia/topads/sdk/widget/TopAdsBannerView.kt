@@ -93,7 +93,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var topAdsFlashSaleTimer:TimerUnifySingle? = null
     private var linearLayoutMerchantVoucher:LinearLayout? = null
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
-        TopAdsUrlHitter(context)
+        TopAdsUrlHitter(context.applicationContext)
     }
 
     override fun onAttachedToWindow() {
