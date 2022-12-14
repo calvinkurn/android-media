@@ -92,7 +92,7 @@ class SpecialReleaseViewHolder(
         if (bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(
                 bannerItem.gradientColor,
                 itemView.context
-            ) || element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING
+            )
         ) {
             binding?.homeComponentSpecialReleaseRv?.setPadding(
                 Int.ZERO,
