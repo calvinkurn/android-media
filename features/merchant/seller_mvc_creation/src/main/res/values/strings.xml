@@ -157,6 +157,8 @@
     <string name="smvc_kode_kupon_label">Kode Kupon</string>
     <string name="smvc_periode_mulai_label">Periode Mulai</string>
     <string name="smvc_periode_berakhir_label">Periode Berakhir</string>
+    <string name="smvc_diulang_selama_label">Diulang Selama</string>
+    <string name="smvc_lihat_jadwal_label">Lihat Jadwal</string>
     <string name="smvc_pengaturan_kupon_label">Pengaturan Kupon</string>
     <string name="smvc_tipe_promo_label">Tipe Promo</string>
     <string name="smvc_tipe_potongan_label">Tipe Potongan</string>
@@ -284,6 +286,7 @@
     <string name="smvc_summary_page_error_dialog_desc">Kupon gagal dibuat karena [Alasan gagal]. Tunggu beberapa saat atau coba lagi buat kuponmu, ya.</string>
     <string name="smvc_summary_page_error_dialog_negative_action">Ke Daftar Kupon</string>
     <string name="smvc_summary_page_error_dialog_positive_action">Coba Lagi</string>
+    <string name="smvc_summary_page_multiperiod_format">%d Bulan</string>
 
 
     <!--Voucher Creation Step One-->
@@ -315,5 +318,34 @@
     <string name="smvc_input_empty_error">Kamu belum mengisi informasi ini.</string>
     <string name="smvc_voucher_name_placeholder_label">Contoh Diskon Extra 10%</string>
     <string name="smvc_voucher_code_placeholder_label">SEPTCERIA</string>
+
+    <string name="smvc_edu_center_about_my_coupon">Tentang Kupon Toko Saya</string>
+    <string name="smvc_edu_center_read_article">Baca Artikel</string>
+    <string name="smvc_delete_voucher_confirmation_title_of_dialog">Yakin batalkan kupon?</string>
+    <string name="smvc_delete_voucher_confirmation_body_dialog">Dengan klik Batalkan, kupon akan otomatis terhapus dari halaman Daftar Kupon.</string>
+    <string name="smvc_canceled_voucher_confirmation_title_of_dialog">Yakin hentikan kupon?</string>
+    <string name="smvc_canceled_voucher_confirmation_body_dialog">Dengan menghentikan kupon %s, calon pembeli tidak dapat menggunakan kupon ini, lho!</string>
+    <string name="smvc_yes_deleted_voucher">Ya, Batalkan</string>
+    <string name="smvc_yes_canceled_voucher">Ya, Hentikan</string>
+    <string name="smvc_cannot_deleted_call_tokopedia_care_title_dialog">Kupon dari Tokopedia tidak bisa dibatalkan sendiri</string>
+    <string name="smvc_cannot_deleted_call_tokopedia_care_desc_dialog">Kalau mau batalkan kupon ini, coba hubungi Tokopedia Care, ya.</string>
+    <string name="smvc_cannot_canceled_call_tokopedia_care_title_dialog">Kupon dari Tokopedia tidak bisa dihentikan sendiri</string>
+    <string name="smvc_cannot_canceled_call_tokopedia_care_desc_dialog">Kalau mau hentikan kupon ini, coba hubungi Tokopedia Care, ya.</string>
+    <string name="smvc_call_tokopedia_care">Hubungi Tokopedia Care</string>
+    <string name="smvc_failed_to_deleted_voucher">Kupon %s gagal dibatalkan.</string>
+    <string name="smvc_success_to_deleted_voucher">Kupon %s berhasil dibatalkan.</string>
+    <string name="smvc_failed_to_cancel_voucher">Kupon %s gagal dihentikan.</string>
+    <string name="smvc_success_to_cancel_voucher">Kupon %s berhasil dihentikan.</string>
+    <string name="smvc_reset_button">Reset</string>
+    <string name="smvc_this_coupon_and_other">Kupon ini dan jadwal-jadwal berikutnya</string>
+    <string name="smvc_just_for_this_coupon">Kupon ini saja</string>
+    <string name="smvc_quota_title">Kuota Kupon</string>
+    <string name="smvc_title_bottom_sheet_change_quota">Ubah Kuota</string>
+    <string name="smvc_error_max_quota">Maks. %d kupon</string>
+    <string name="smvc_error_min_quota">Min. %d kupon</string>
+    <string name="smvc_success_change_quota_single">Kuota kupon %s berhasil diubah</string>
+    <string name="smvc_success_change_quota_multi_period">Kuota kupon %s dan jadwal-jadwal berikutnya berhasil diubah.</string>
+    <string name="smvc_failed_change_quota">Kuota kupon %s gagal diubah.</string>
+
 
 </resources>
