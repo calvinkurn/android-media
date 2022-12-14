@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldDiscountQuota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_text_field_input_type="number"
+        app:unify_text_field_label="@string/smvc_quota_title"
+        app:unify_text_field_placeholder="@string/smvc_quota_title" />
+
+    <RadioGroup
+        android:id="@+id/radios_multiple_coupon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/textFieldDiscountQuota"
+        app:layout_constraintStart_toStartOf="@+id/textFieldDiscountQuota"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldDiscountQuota"
+        tools:visibility="gone">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/radio_just_one_coupon"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:text="@string/smvc_just_for_this_coupon" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/radio_apply_all_coupon"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:layoutDirection="rtl"
+            android:text="@string/smvc_this_coupon_and_other" />
+
+    </RadioGroup>
+
+    <com.tokopedia.mvc.common.customview.SpendingEstimationLabelView
+        android:id="@+id/labelSpendingEstimation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:description_placeholder_text="@string/smvc_summary_page_max_expense_desc"
+        app:layout_constraintEnd_toEndOf="@+id/textFieldDiscountQuota"
+        app:layout_constraintStart_toStartOf="@+id/textFieldDiscountQuota"
+        app:layout_constraintTop_toBottomOf="@+id/radios_multiple_coupon"
+        app:title_placeholder_text="@string/smvc_summary_page_max_expense_title"
+        tools:spending_estimation_placeholder_text="Rp3.200.000" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnMvcSaveP"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/smvc_ok"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/labelSpendingEstimation"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnMvcCancel"
+        app:layout_constraintTop_toBottomOf="@+id/labelSpendingEstimation" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnMvcCancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/smvc_reset_button"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="alternate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnMvcSaveP"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/labelSpendingEstimation"
+        app:layout_constraintTop_toBottomOf="@+id/labelSpendingEstimation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
