@@ -328,10 +328,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener = listener
             )
             ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
-            ProductCustomInfoTitleViewHolder.LAYOUT -> ProductCustomInfoTitleViewHolder(
-                view = view,
-                listener = listener
-            )
+            ProductCustomInfoTitleViewHolder.LAYOUT -> ProductCustomInfoTitleViewHolder(view = view)
             else -> super.createViewHolder(view, type)
         }
     }

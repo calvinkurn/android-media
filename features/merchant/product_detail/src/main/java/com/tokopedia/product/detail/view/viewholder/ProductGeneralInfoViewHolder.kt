@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
@@ -40,7 +41,7 @@ class ProductGeneralInfoViewHolder(
     }
 
     private val binding = ItemDynamicGeneralInfoBinding.bind(view)
-    private val contentBinding by lazy {
+    private val contentBinding by lazyThreadSafetyNone {
         ItemDynamicInfoContentBinding.bind(binding.vsGeneralInfo.inflate())
     }
 
@@ -97,7 +98,7 @@ class ProductGeneralInfoViewHolder(
     }
 
     private fun ItemDynamicInfoContentBinding.renderHeader(element: ProductGeneralInfoDataModel) {
-        val isDarkModel = binding.root.context.isDarkMode()
+        val isDarkModel = root.context.isDarkMode()
         val iconUrl = element.getIconUrl(isDarkModel = isDarkModel)
 
         infoImage.showIfWithBlock(predicate = iconUrl.isNotBlank()) { loadIcon(iconUrl) }

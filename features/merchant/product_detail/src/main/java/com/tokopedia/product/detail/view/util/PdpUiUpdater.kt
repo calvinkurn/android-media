@@ -1051,8 +1051,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             p2.customInfoTitle.forEach {
                 when (it.componentName) {
                     ProductDetailConstant.OTHER_OFFERS -> {
-                        title = it.title
-                        status = ProductCustomInfoTitleDataModel.Status.fromString(it.status)
+                        if (status == ProductCustomInfoTitleDataModel.Status.PLACEHOLDER) {
+                            title = it.title
+                            status = ProductCustomInfoTitleDataModel.Status.fromString(it.status)
+                        }
                     }
                 }
             }
