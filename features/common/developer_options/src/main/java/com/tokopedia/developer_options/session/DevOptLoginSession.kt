@@ -2,6 +2,7 @@ package com.tokopedia.developer_options.session
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.developer_options.config.DevOptConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.util.EncoderDecoder
@@ -32,6 +33,7 @@ class DevOptLoginSession(private val context: Context) {
 
     fun clear() {
         sharedPref.edit().clear().apply()
+        DevOptConfig.setChuckNotifEnabled(context, false)
     }
 
     private fun getPassword(): String? {

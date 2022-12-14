@@ -31,7 +31,7 @@ public class DevOptConfig {
 
     public static boolean isDevOptOnNotifEnabled(Context context) {
         SharedPreferences cache = context.getSharedPreferences(DEV_OPT_ON_NOTIF_ENABLED, Context.MODE_PRIVATE);
-        return cache.getBoolean(IS_DEV_OPT_ON_NOTIF_ENABLED, true);
+        return cache.getBoolean(IS_DEV_OPT_ON_NOTIF_ENABLED, false);
     }
 
     public static void setDevOptOnNotifEnabled(Context context, boolean isDevOptOnNotifEnabled) {

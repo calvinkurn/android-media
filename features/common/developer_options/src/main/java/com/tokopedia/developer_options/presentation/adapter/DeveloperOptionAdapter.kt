@@ -196,11 +196,7 @@ class DeveloperOptionAdapter(
 
     init {
         initializeList()
-        if (GlobalConfig.isSellerApp()) {
-            removeSellerAppItems()
-        } else {
-            removeMainAppItems()
-        }
+
     }
 
     fun initializeList() {
@@ -210,6 +206,13 @@ class DeveloperOptionAdapter(
         } else {
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
+            removeWidget(DevOptsAuthorizationUiModel::class.java)
+        }
+
+        if (GlobalConfig.isSellerApp()) {
+            removeSellerAppItems()
+        } else {
+            removeMainAppItems()
         }
     }
 
