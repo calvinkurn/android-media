@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.data.mapper.UpdateVoucherMapper
 import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
@@ -36,6 +37,9 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var mapper: UpdateVoucherMapper
 
     private val viewModel: VoucherEditPeriodViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory).get(VoucherEditPeriodViewModel::class.java)
@@ -75,8 +79,10 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setUpView()
         binding?.btnMvcSavePeriod?.setOnClickListener {
-            viewModel.validateAndUpdateDateTime(voucher)
-            binding?.btnMvcSavePeriod?.isLoading = true
+            voucher?.let {
+                viewModel.validateAndUpdateDateTime(it)
+                binding?.btnMvcSavePeriod?.isLoading = true
+            }
         }
     }
 

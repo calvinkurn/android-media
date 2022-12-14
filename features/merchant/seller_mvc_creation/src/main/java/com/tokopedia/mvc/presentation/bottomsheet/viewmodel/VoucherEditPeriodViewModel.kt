@@ -56,30 +56,28 @@ class VoucherEditPeriodViewModel @Inject constructor(
         _hourEndLiveData.value = endDate?.time?.toFormattedString(HOUR_FORMAT)
     }
 
-    fun validateAndUpdateDateTime(voucher: Voucher?) {
+    fun validateAndUpdateDateTime(voucher: Voucher) {
         val dateStart = _dateStartLiveData.value ?: return
         val dateEnd = _dateEndLiveData.value ?: return
         val hourStart = _hourStartLiveData.value ?: return
         val hourEnd = _hourEndLiveData.value ?: return
-        voucher?.let {
-            launchCatchError(
-                block = {
-                    val result = withContext(dispatchers.io) {
-                        updateVoucherPeriodUseCase.execute(
-                            mapper.toUpdateVoucher(it, dateStart, dateEnd),
-                            emptyList(),
-                            dateStart,
-                            hourStart,
-                            dateEnd,
-                            hourEnd
-                        )
-                    }
-                    _updateVoucherPeriodStateLiveData.value = Success(result)
-                },
-                onError = {
-                    _updateVoucherPeriodStateLiveData.value = Fail(it)
+        launchCatchError(
+            block = {
+                val result = withContext(dispatchers.io) {
+                    updateVoucherPeriodUseCase.execute(
+                        mapper.toUpdateVoucher(voucher, dateStart, dateEnd),
+                        voucher.productIds.map { it.parentProductId },
+                        dateStart,
+                        hourStart,
+                        dateEnd,
+                        hourEnd
+                    )
                 }
-            )
-        }
+                _updateVoucherPeriodStateLiveData.value = Success(result)
+            },
+            onError = {
+                _updateVoucherPeriodStateLiveData.value = Fail(it)
+            }
+        )
     }
 }

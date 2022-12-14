@@ -2,15 +2,15 @@ package com.tokopedia.mvc.domain.usecase
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.mvc.data.request.GenerateImageParams
-import com.tokopedia.mvc.data.response.GetProductsByProductIdResponse
+import com.tokopedia.mvc.domain.entity.ProductResult
 import com.tokopedia.mvc.domain.entity.ShopData
 import com.tokopedia.mvc.domain.entity.UpdateVoucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.util.GenerateImageParamsBuilder
 import com.tokopedia.mvc.util.constant.ImageGeneratorConstant
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -20,16 +20,12 @@ class UpdateCouponFacadeUseCase @Inject constructor(
     private val initiateCouponUseCase: GetInitiateVoucherPageUseCase,
     private val getShopBasicDataUseCase: ShopBasicDataUseCase,
     private val imageBuilder: GenerateImageParamsBuilder,
-    private val getMostSoldProductsUseCase: GetMostSoldProductsUseCase,
-    private val userSession: UserSessionInterface
+    private val productListUseCase: ProductListUseCase
 ) {
 
     companion object {
         private const val SECOND_IMAGE_URL_INDEX = 1
         private const val THIRD_IMAGE_URL_INDEX = 2
-        private const val IS_UPDATE_MODE = true
-        private const val IS_TO_CREATE_NEW_COUPON = false
-        private const val EMPTY_STRING = ""
     }
 
     suspend fun execute(
@@ -47,8 +43,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
 
             val shop = shopDeferred.await()
             val topProducts = topProductsDeferred.await()
-            val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
-            val warehouseId = topProducts.data.firstOrNull()?.warehouses?.firstOrNull()?.id.orEmpty()
+            val topProductImageUrls = topProducts.products.map { it.picture }
 
             val generateImageDeferred = async {
                 generateImage(
@@ -178,16 +173,18 @@ class UpdateCouponFacadeUseCase @Inject constructor(
         return initiateCouponUseCase.getToken()
     }
 
-    private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
-        getMostSoldProductsUseCase.params = GetMostSoldProductsUseCase.createParams(userSession.shopId, productIds)
-        return getMostSoldProductsUseCase.executeOnBackground()
-    }
-
-    private fun getImageUrlOrEmpty(pictures: List<GetProductsByProductIdResponse.Picture>): String {
-        if (pictures.isEmpty()) {
-            return EMPTY_STRING
-        }
-
-        return pictures[0].urlThumbnail
+    private suspend fun getMostSoldProducts(productIds: List<Long>): ProductResult {
+        val productListParam = ProductListUseCase.Param(
+            searchKeyword = "",
+            warehouseId = 0,
+            categoryIds = emptyList(),
+            showcaseIds = emptyList(),
+            page = NumberConstant.FIRST_PAGE,
+            pageSize = productIds.size,
+            sortId = "SOLD",
+            sortDirection = "DESC",
+            productIdInclude = productIds
+        )
+        return productListUseCase.execute(productListParam)
     }
 }

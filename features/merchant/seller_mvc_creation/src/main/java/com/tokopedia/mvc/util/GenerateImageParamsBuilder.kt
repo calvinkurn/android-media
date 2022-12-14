@@ -67,20 +67,20 @@ class GenerateImageParamsBuilder @Inject constructor() {
             else -> ImageGeneratorConstants.VoucherNominalSymbol.RB
         }
 
-        val formattedDiscountAmount: Float = when {
-            amount < THOUSAND -> amount.toFloat()
-            amount >= MILLION -> (amount / MILLION)
-            amount >= THOUSAND -> (amount / THOUSAND)
-            else -> amount.toFloat()
+        val formattedDiscountAmount: Long = when {
+            amount < THOUSAND -> amount.toLong()
+            amount >= MILLION -> (amount / MILLION).toLong()
+            amount >= THOUSAND -> (amount / THOUSAND).toLong()
+            else -> amount.toLong()
         }
 
         val startTime = convertFormatDate(
-            voucher.voucherStartDate,
+            voucher.startTime,
             DateTimeUtils.DASH_DATE_FORMAT,
             DATE_FORMAT
         )
         val endTime = convertFormatDate(
-            voucher.voucherEndDate,
+            voucher.finishTime,
             DateTimeUtils.DASH_DATE_FORMAT,
             DATE_FORMAT
         )
@@ -106,10 +106,10 @@ class GenerateImageParamsBuilder @Inject constructor() {
             voucherCode = voucher.voucherCode,
             voucherStartDate = startTime,
             voucherEndDate = endTime,
-            productCount = voucher.productImageUrls.size.toString(),
-            productImage1 = voucher.productImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL_INDEX),
-            productImage2 = voucher.productImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL_INDEX),
-            productImage3 = voucher.productImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL_INDEX),
+            productCount = parentProductImageUrls.size.toString(),
+            productImage1 = parentProductImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL_INDEX),
+            productImage2 = parentProductImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL_INDEX),
+            productImage3 = parentProductImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL_INDEX),
             audienceTarget = audienceTarget
         )
     }

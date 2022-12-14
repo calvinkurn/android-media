@@ -35,7 +35,7 @@ class UpdateVoucherMapper @Inject constructor() {
         )
     }
 
-    fun toUpdateVoucher(voucher: Voucher, dateStart: String, dateEnd: String): UpdateVoucher {
+    fun toUpdateVoucher(voucher: Voucher, dateStart: String = "", dateEnd: String = ""): UpdateVoucher {
         with(voucher) {
             return UpdateVoucher(
                 platform = EMPTY,
@@ -43,8 +43,8 @@ class UpdateVoucherMapper @Inject constructor() {
                 shopLogo = EMPTY,
                 shopName = EMPTY,
                 voucherCode = code,
-                voucherStartDate = dateStart,
-                voucherEndDate = dateEnd,
+                startTime = dateStart,
+                finishTime = dateEnd,
                 productCount = 0,
                 productImageUrls = emptyList(),
                 audienceTarget = VoucherTargetBuyer.ALL_BUYER,
