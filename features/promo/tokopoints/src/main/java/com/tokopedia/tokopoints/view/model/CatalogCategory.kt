@@ -29,16 +29,16 @@ data class CatalogCategory(
 
     override fun describeContents() = 0
 
-    override fun writeToParcel(parcel: Parcel?, p1: Int) {
-        parcel?.writeInt(id)
-        parcel?.writeString(name)
-        parcel?.writeString(imageId)
-        parcel?.writeString(imageUrl)
-        parcel?.writeLong(timeRemainingSeconds)
-        parcel?.writeString(slug)
-        parcel?.writeInt(parentID)
-        parcel?.writeByte((if (isSelected) 1 else 0).toByte())
-        parcel?.writeByte((if (isHideSubCategory) 1 else 0).toByte())
+    override fun writeToParcel(parcel: Parcel, p1: Int) {
+        parcel.writeInt(id)
+        parcel.writeString(name)
+        parcel.writeString(imageId)
+        parcel.writeString(imageUrl)
+        parcel.writeLong(timeRemainingSeconds)
+        parcel.writeString(slug)
+        parcel.writeInt(parentID)
+        parcel.writeByte((if (isSelected) 1 else 0).toByte())
+        parcel.writeByte((if (isHideSubCategory) 1 else 0).toByte())
     }
 
     private constructor(`in`: Parcel) : this(

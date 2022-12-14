@@ -61,7 +61,6 @@ class ShopModule(val context: Context) {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
     }
 
-
     @Provides
     fun provideShopPageSharedPref(
         @ApplicationContext context: Context

@@ -272,6 +272,9 @@
     <string name="stfs_product_item_total_stock_non_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]></string>
     <string name="stfs_product_item_manage_button_text">Atur Diskon</string>
     <string name="stfs_product_item_edit_button_text">Ubah</string>
+    <string name="product_sse_submission_progress_dialog_title">Tunggu sebentar, ya...</string>
+    <string name="stfs_product_sse_submission_progress_dialog_description">%1d dari %2d varian produk sedang diajukan. Jangan tutup halaman ini, ya.</string>
+
 
 
     <string name="stfs_stfs_manage_location_title">Atur Lokasi</string>
@@ -293,5 +296,18 @@
 
     <!--Accessibility: ImageView Content Description-->
     <string name="stfs_content_description_scroll_up">Scroll up</string>
+
+    <string name="stfs_bottomsheet_error_product_submission_sse_list_ticker_description">Kamu bisa perbaiki dan ajukan lagi varian produkmu yang bermasalah.</string>
+    <string name="stfs_bottomsheet_error_product_submission_sse_list_title">Varian produk gagal diajukan</string>
+    <string name="stfs_bottomsheet_error_product_submission_sse_item_sku">SKU: %1s</string>
+
+    <string name="stfs_dialog_error_product_submission_sse_title_partial_success">Yaah, beberapa varian produkmu gagal diajukan</string>
+    <string name="stfs_dialog_error_product_submission_sse_title_full_error">Yaah, semua varian produkmu gagal diajukan</string>
+    <string name="stfs_dialog_error_product_submission_sse_error_description">Periksa dan perbaiki dulu produk-produkmu ya.</string>
+    <string name="stfs_dialog_error_product_submission_sse_error_cta">Lihat Produk</string>
+
+    <string name="stfs_widget_campaign_product_submission_item_variant_format">(%1d/%2d varian)</string>
+    <string name="stfs_widget_campaign_product_submission_title_format">Sedang mengajukan produk di %1d campaign.</string>
+
 
 </resources>

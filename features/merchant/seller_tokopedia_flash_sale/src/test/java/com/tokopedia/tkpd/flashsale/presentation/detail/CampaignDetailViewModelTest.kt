@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.flashsale.presentation.detail
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.tkpd.flashsale.data.mapper.FlashSaleMonitorSubmitProductSseMapper
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
@@ -50,6 +51,18 @@ class CampaignDetailViewModelTest {
     lateinit var doFlashSaleSellerRegistrationUseCase: DoFlashSaleSellerRegistrationUseCase
 
     @RelaxedMockK
+    lateinit var getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase
+
+    @RelaxedMockK
+    lateinit var  flashSaleTkpdProductSubmissionMonitoringSse: FlashSaleTkpdProductSubmissionMonitoringSse
+
+    @RelaxedMockK
+    lateinit var  flashSaleMonitorSubmitProductSseMapper: FlashSaleMonitorSubmitProductSseMapper
+
+    @RelaxedMockK
+    lateinit var  doFlashSaleProductSubmitAcknowledgeUseCase: DoFlashSaleProductSubmitAcknowledgeUseCase
+
+    @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
@@ -79,6 +92,10 @@ class CampaignDetailViewModelTest {
             doFlashSaleProductReserveUseCase,
             doFlashSaleProductDeleteUseCase,
             doFlashSaleSellerRegistrationUseCase,
+            getFlashSaleProductSubmissionProgressUseCase,
+            flashSaleTkpdProductSubmissionMonitoringSse,
+            flashSaleMonitorSubmitProductSseMapper,
+            doFlashSaleProductSubmitAcknowledgeUseCase,
             userSessionInterface,
             sharedPreference,
             tracker

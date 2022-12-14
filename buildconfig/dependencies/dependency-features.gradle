@@ -74,7 +74,6 @@ ext {
             travelPassenger                 : ":features:travel:travel_passenger",
 
             deals                           : ":features:entertainment:deals",
-            digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
             commonEntertainment             : ":features:entertainment:common_entertainment",
 
@@ -267,6 +266,9 @@ ext {
             notifCenter                     : ":features:communication:notifcenter",
             orderhistory                    : ":features:communication:orderhistory",
             attachvoucher                   : ":features:communication:attachvoucher",
+            tokochat                        : ":features:communication:tokochat",
+            tokochat_common                 : ":features:communication:tokochat_common",
+            tokochat_config_common          : ":features:communication:tokochat_config_common",
 
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
@@ -284,6 +286,7 @@ ext {
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            privacycenter                   : ":features:user:privacycenter",
             profileCompletion               : ":features:user:profilecompletion",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",

@@ -10,6 +10,9 @@ public class RemoteConfigKey {
     public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
     public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
 
+    public static final String CUSTOMER_ENABLE_ROBUST = "android_customer_robust_enable";
+    public static final String SELLER_ENABLE_ROBUST = "android_sellerapp_robust_enable";
+
     public static final String MAINAPP_SHOW_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
     public static final String APP_SHARE_DESCRIPTION = "app_share_description";
     public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
@@ -176,8 +179,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
     public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
-    public static final String MAINAPP_DEALS_ENABLE_PDP = "android_enable_deals_pdp";
-    public static final String MAINAPP_DEALS_ENABLE_CHECKOUT = "android_enable_deals_checkout";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -293,16 +294,20 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
 
+    public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
     public static final String SEARCH_DEBUG_LOG = "android_search_debug_enable";
 
     public static final String HOME_USE_GQL_FED_QUERY = "android_home_use_gql_fed_query";
 
-    public static final String ENABLE_TICKER_NOTIFY_ME = "android_show_ticker_notify_me";
-
     public static final String ENABLE_SEND_SUCCESS_LOG_BRANCH = "android_enable_success_log_branch";
 
     public static final String ENABLE_NEW_SHARE_SELLER = "android_sellerapp_enable_new_share";
 
+    public static final String ENABLE_STOCK_AVAILABLE = "android_enable_stock_available";
+
+    public static final String RECOM_USE_GQL_FED_QUERY = "android_recom_use_gql_fed_query";
+
+    public static final String HOME_USE_NEW_PULL_REFRESH = "android_home_use_new_pull_refresh";
 }
