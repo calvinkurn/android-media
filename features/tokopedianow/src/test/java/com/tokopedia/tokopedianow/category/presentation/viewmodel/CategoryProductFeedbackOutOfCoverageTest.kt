@@ -9,10 +9,6 @@ import io.mockk.every
 import org.junit.Test
 
 class CategoryProductFeedbackOutOfCoverageTest:CategoryTestFixtures() {
-        companion object {
-            private const val PRODUCT_FEEDBACK_DATA_VIEW_POSITION = 12
-        }
-
         override fun setUp() {
             super.setUp()
             `Given address data null`()

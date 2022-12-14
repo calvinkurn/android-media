@@ -4,9 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
@@ -24,24 +22,25 @@ object PayLaterHelper {
     private const val TYPE_HOW_TO_USE = 3
     private const val TYPE_HOW_TO_USE_II = 4
 
-
     fun handleClickNavigation(
         context: Context?,
         detail: Detail,
         customUrl: String,
-        callAddOccApi:() -> Unit,
+        callAddOccApi: () -> Unit,
         openHowToUse: (Bundle) -> Unit,
         openGoPay: (Bundle) -> Unit
     ) {
         when (detail.cta.cta_type) {
             TYPE_APP_LINK ->
-            {
-                callAddOccApi()
-            }
+                {
+                    callAddOccApi()
+                }
             TYPE_WEB_VIEW -> {
-                if (shouldShowGoPayBottomSheet(detail))
+                if (shouldShowGoPayBottomSheet(detail)) {
                     openGoPay(PayLaterBundleGenerator.getGoPayBundle(detail.cta))
-                else routeToWebView(context, customUrl)
+                } else {
+                    routeToWebView(context, customUrl)
+                }
             }
             TYPE_HOW_TO_USE, TYPE_HOW_TO_USE_II -> {
                 if (detail.gatewayDetail?.howToUse != null) {
@@ -52,8 +51,9 @@ object PayLaterHelper {
     }
 
     private fun routeToWebView(context: Context?, webLink: String?) {
-        if (!webLink.isNullOrEmpty())
+        if (!webLink.isNullOrEmpty()) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
+        }
     }
 
     private fun setAdditionalParam(
@@ -62,10 +62,12 @@ object PayLaterHelper {
         gatewayCode: String?,
         gatewayId: String?
     ): String {
-        return (ApplinkConst.PAYLATER + "?productID=${productId}" +
+        return (
+            ApplinkConst.PAYLATER + "?productID=$productId" +
                 "&tenure=$tenure" +
                 "&gatewayCode=${gatewayCode ?: ""}" +
-                "&gatewayID=${gatewayId ?: ""}").encodeToUtf8()
+                "&gatewayID=${gatewayId ?: ""}"
+            ).encodeToUtf8()
     }
 
     fun setCustomProductUrl(
@@ -73,25 +75,32 @@ object PayLaterHelper {
         payLaterArgsDescriptor: PayLaterArgsDescriptor
     ): String {
         return detail.cta.android_url +
-                "?productID=${payLaterArgsDescriptor.productId}" +
-                "&tenure=${detail.tenure}" +
-                "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
-                "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
-                "&productURL=${
-                    detail.tenure?.let { selectedTenure ->
-                        setAdditionalParam(
-                            payLaterArgsDescriptor.productId,
-                            selectedTenure,
-                            detail.gatewayDetail?.gatewayCode,
-                            detail.gatewayDetail?.gateway_id
-                        )
-                    }
-                }"
+            (
+                if
+                (detail.cta.android_url?.contains("?") == true) {
+                    "&productID=${payLaterArgsDescriptor.productId}"
+                } else {
+                    "?productID=${payLaterArgsDescriptor.productId}"
+                }
+                ) +
+            "&tenure=${detail.tenure}" +
+            "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
+            "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
+            "&productURL=${
+            detail.tenure?.let { selectedTenure ->
+                setAdditionalParam(
+                    payLaterArgsDescriptor.productId,
+                    selectedTenure,
+                    detail.gatewayDetail?.gatewayCode,
+                    detail.gatewayDetail?.gateway_id
+                )
+            }
+            }"
     }
 
     // currently will be closed from backend
-    private fun shouldShowGoPayBottomSheet(detail: Detail) = !detail.cta.android_url.isNullOrEmpty()
-            && detail.cta.bottomSheet != null && detail.cta.bottomSheet.isShow == true
+    private fun shouldShowGoPayBottomSheet(detail: Detail) = !detail.cta.android_url.isNullOrEmpty() &&
+        detail.cta.bottomSheet != null && detail.cta.bottomSheet.isShow == true
 
     fun convertPriceValueToIdrFormat(price: Number, hasSpace: Boolean): String {
         val kursIndonesia = DecimalFormat.getInstance(Locale.ENGLISH) as DecimalFormat
@@ -102,13 +111,17 @@ object PayLaterHelper {
         formatRp.monetaryDecimalSeparator = '.'
         formatRp.decimalSeparator = '.'
         kursIndonesia.decimalFormatSymbols = formatRp
-        val result: String = if (price is Int)
+        val result: String = if (price is Int) {
             kursIndonesia.format(price.toLong())
-        else kursIndonesia.format(price)
+        } else {
+            kursIndonesia.format(price)
+        }
         val res = result.replace(",", ".")
-        return if (res.startsWith("Rp"))
+        return if (res.startsWith("Rp")) {
             res
-        else "Rp$res"
+        } else {
+            "Rp$res"
+        }
     }
 
     fun getProductNameList(modelList: ArrayList<BasePayLaterWidgetUiModel>?): String {
