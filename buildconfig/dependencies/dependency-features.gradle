@@ -74,7 +74,6 @@ ext {
             travelPassenger                 : ":features:travel:travel_passenger",
 
             deals                           : ":features:entertainment:deals",
-            digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
             commonEntertainment             : ":features:entertainment:common_entertainment",
 

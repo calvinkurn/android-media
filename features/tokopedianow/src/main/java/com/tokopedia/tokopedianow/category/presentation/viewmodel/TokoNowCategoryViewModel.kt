@@ -8,11 +8,9 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.PREFIX_ALL
@@ -32,12 +30,11 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
@@ -76,7 +73,6 @@ class TokoNowCategoryViewModel @Inject constructor (
     getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     cartService: CartService,
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-    getRecommendationUseCase: GetRecommendationUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
@@ -90,7 +86,6 @@ class TokoNowCategoryViewModel @Inject constructor (
         getMiniCartListSimplifiedUseCase,
         cartService,
         getWarehouseUseCase,
-        getRecommendationUseCase,
         setUserPreferenceUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
@@ -177,19 +172,16 @@ class TokoNowCategoryViewModel @Inject constructor (
         return TitleDataView(
             titleType = CategoryTitle(headerDataView.title),
             hasSeeAllCategoryButton = true,
-            serviceType = chooseAddressData?.service_type.orEmpty(),
-            is15mAvailable = chooseAddressData?.warehouses?.find { it.service_type == ServiceType.NOW_15M }?.warehouse_id.orZero() != 0L
+            chooseAddressData = chooseAddressData
         )
     }
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
-        val recomData =
-            TokoNowRecommendationCarouselUiModel(
-                pageName = TOKONOW_CLP,
-                isBindWithPageName = true,
-                miniCartSource = MiniCartSource.TokonowCategoryPage
+        val recomData = TokoNowProductRecommendationUiModel(
+            requestParam = createProductRecommendationRequestParam(
+                pageName = TOKONOW_CLP
             )
-        recomData.categoryId = getRecomCategoryId(recomData)
+        )
         return listOf(
             createAisleDataView(),
             recomData
@@ -413,9 +405,9 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     override fun getRecomCategoryId(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
+        pageName: String
     ): List<String> {
-        if (recommendationCarouselDataView.pageName == TOKONOW_NO_RESULT) return listOf()
+        if (pageName == TOKONOW_NO_RESULT) return listOf()
 
         val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
         val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
