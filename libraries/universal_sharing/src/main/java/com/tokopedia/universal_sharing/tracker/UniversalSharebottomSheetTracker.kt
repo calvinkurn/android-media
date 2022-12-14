@@ -1,6 +1,7 @@
 package com.tokopedia.universal_sharing.tracker
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSession
@@ -94,7 +95,7 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
     }
 
     private fun generateDefaultTracker(event: String, eventAction: String, isAffiliate: Boolean, id: String, category: String): MutableMap<String, Any> {
-        val data = TrackAppUtils.gtmData(event, category, eventAction, "${getTickerType(isAffiliate)} - $id")
+        val data = TrackAppUtils.gtmData(event, category, eventAction, "${getTickerType(isAffiliate)} - $id - ${Int.ZERO}")
         return data.apply {
             this[EVENT_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
             this[EVENT_CURRENT_SITE] = VALUE_CURRENT_SITE
