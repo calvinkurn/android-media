@@ -2,7 +2,7 @@ package com.tokopedia.play_common.shortsuploader.model
 
 import androidx.work.Data
 import androidx.work.workDataOf
-import java.lang.StringBuilder
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * Created By : Jonathan Darwin on November 28, 2022
@@ -14,6 +14,18 @@ data class PlayShortsUploadModel(
     val mediaUri: String,
     val coverUri: String,
 ) {
+
+    val notificationId: Int
+        get() = shortsId.toIntOrZero()
+
+    /**
+     * Need to differentiate notification Id between in progress & success / error
+     * since [notificationId] is already set for Foreground Work and will be dismissed
+     * automatically when the worker is done.
+     */
+    val notificationIdAfterUpload: Int
+        get() = notificationId + 1
+
     fun format(): Data {
         return workDataOf(
             KEY_SHORTS_ID to shortsId,

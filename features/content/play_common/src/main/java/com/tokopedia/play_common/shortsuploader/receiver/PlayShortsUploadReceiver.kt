@@ -3,6 +3,7 @@ package com.tokopedia.play_common.shortsuploader.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.di.DaggerPlayShortsUploaderComponent
@@ -22,6 +23,8 @@ class PlayShortsUploadReceiver : BroadcastReceiver() {
 
         val uploadDataRaw = intent?.getStringExtra(EXTRA_UPLOAD_DATA).orEmpty()
         val uploadData = PlayShortsUploadModel.parse(uploadDataRaw)
+
+        NotificationManagerCompat.from(context).cancel(uploadData.notificationIdAfterUpload)
 
         playShortsUploader.upload(uploadData)
     }

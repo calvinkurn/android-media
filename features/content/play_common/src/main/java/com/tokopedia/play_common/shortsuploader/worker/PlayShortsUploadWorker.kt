@@ -110,8 +110,18 @@ class PlayShortsUploadWorker(
                 Result.success(workDataOf(PlayShortsUploadConst.SHORTS_ID to uploadData.shortsId))
             }
             catch (e: Exception) {
-                snapshotHelper.deleteLocalFile()
-                updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
+                /**
+                 * updateChannelStatus to TranscodingFailed may error
+                 * if no network connection
+                 */
+                try {
+                    snapshotHelper.deleteLocalFile()
+                    updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
+                }
+                catch (e: Exception) {
+
+                }
+
                 broadcastFail()
 
                 Result.failure(inputData)
