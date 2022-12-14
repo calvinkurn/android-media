@@ -24,7 +24,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
     companion object {
         private const val REQUEST_PARAM_VOUCHER_ID = "voucher_id"
         private const val REQUEST_PARAM_SOURCE = "source"
-        private const val SOURCE = "fe-mobile"
+        private const val SOURCE = "android-sellerapp"
     }
 
     private val query = object : GqlQueryInterface {

@@ -27,7 +27,7 @@ class VoucherDetailViewModel @Inject constructor(
     private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase,
     private val getProductsUseCase: ProductListUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
-    private val merchantPromotionUpdateStatusMVUseCase: MerchantPromotionUpdateStatusMVUseCase,
+    private val cancelVoucherUseCase: CancelVoucherUseCase,
     private val shopBasicDataUseCase: ShopBasicDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
@@ -81,13 +81,6 @@ class VoucherDetailViewModel @Inject constructor(
                     isVoucherProduct = data.isVoucherProduct
                 )
                 val metadata = getInitiateVoucherPageUseCase.execute(metadataParam)
-
-                val param = MerchantPromotionUpdateStatusMVUseCase.Param(
-                    voucherId = data.voucherId,
-                    token = metadata.token,
-                    bottomSheetType = bottomSheetType
-                )
-                merchantPromotionUpdateStatusMVUseCase.execute(param)
                 _updateVoucherStatusData.value = Success(data.voucherName)
             },
             onError = { error ->
