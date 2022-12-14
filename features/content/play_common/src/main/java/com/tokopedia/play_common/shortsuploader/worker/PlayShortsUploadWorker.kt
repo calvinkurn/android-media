@@ -95,26 +95,6 @@ class PlayShortsUploadWorker(
     override suspend fun doWork(): Result {
         return withContext(dispatchers.io) {
             try {
-                Log.d("<LOG>", "Start Uploading...")
-                Log.d("<LOG>", uploadData.toString())
-                Log.d("<LOG>", updateChannelUseCase.toString())
-                Log.d("<LOG>", addMediaUseCase.toString())
-                Log.d("<LOG>", dispatchers.toString())
-                Log.d("<LOG>", snapshotHelper.toString())
-
-//                broadcastInit()
-//                delay(3000)
-//                updateProgress()
-//                delay(3000)
-//                updateProgress()
-//                delay(3000)
-//                updateProgress()
-//                delay(3000)
-//                updateProgress()
-//                delay(3000)
-//                updateProgress()
-//                delay(3000)
-
                 broadcastInit()
                 updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 
@@ -132,8 +112,6 @@ class PlayShortsUploadWorker(
                 Result.success(workDataOf(PlayShortsUploadConst.SHORTS_ID to uploadData.shortsId))
             }
             catch (e: Exception) {
-                Log.d("<LOG>", "ERROR UPLOAD : $e")
-
                 snapshotHelper.deleteLocalFile()
                 updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
                 broadcastFail()
@@ -277,8 +255,6 @@ class PlayShortsUploadWorker(
             PlayShortsUploadConst.PROGRESS to progress,
             PlayShortsUploadConst.UPLOAD_DATA to uploadData.toString(),
         )
-
-        Log.d("<LOG>", "data : $data")
 
         setProgress(
             workDataOf(
