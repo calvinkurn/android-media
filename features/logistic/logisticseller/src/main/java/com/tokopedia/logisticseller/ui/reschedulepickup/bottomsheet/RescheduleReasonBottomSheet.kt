@@ -6,17 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.logisticseller.R
-import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleReasonBinding
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
+import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleReasonBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 
-class RescheduleReasonBottomSheet(
-    private val reasonOptionModels: List<RescheduleReasonOptionModel>,
-    private val listener: ChooseReasonListener
-) : BottomSheetUnify() {
+class RescheduleReasonBottomSheet : BottomSheetUnify() {
 
+    private var reasonOptionModels: List<RescheduleReasonOptionModel> = listOf()
+    private var listener: ChooseReasonListener? = null
     private var binding by autoCleared<BottomsheetRescheduleReasonBinding>()
 
     init {
@@ -31,6 +30,14 @@ class RescheduleReasonBottomSheet(
 
     interface ChooseReasonListener {
         fun onReasonChosen(reasonChosen: RescheduleReasonOptionModel)
+    }
+
+    fun setOptions(data: List<RescheduleReasonOptionModel>) {
+        this.reasonOptionModels = data
+    }
+
+    fun setListener(listener: ChooseReasonListener) {
+        this.listener = listener
     }
 
     override fun onCreateView(
@@ -55,14 +62,21 @@ class RescheduleReasonBottomSheet(
     private fun setupView() {
         setTitle(getString(R.string.title_reschedule_reason_bottomsheet))
         val listWidgetData = ArrayList<ListItemUnify>().apply {
-            addAll(reasonOptionModels.map { reason -> ListItemUnify(title = reason.reason, description = "") })
+            addAll(
+                reasonOptionModels.map { reason ->
+                    ListItemUnify(
+                        title = reason.reason,
+                        description = ""
+                    )
+                }
+            )
         }
 
         binding.rvReason.run {
             setData(listWidgetData)
             onLoadFinish {
                 setOnItemClickListener { adapterView, view, index, l ->
-                    listener.onReasonChosen(reasonOptionModels[index])
+                    listener?.onReasonChosen(reasonOptionModels[index])
                     dismiss()
                 }
             }
