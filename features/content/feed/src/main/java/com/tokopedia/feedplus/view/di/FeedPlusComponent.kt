@@ -13,6 +13,7 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.feedplus.view.fragment.PlayFeedSeeMoreFragment
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoTabComponent.di.PlayVideoTabRepositoryModule
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -30,7 +31,8 @@ import retrofit2.Retrofit
         FeedFloatingButtonManagerModule::class,
         ShopRecomModule::class,
         PeopleModule::class,
-        FeedComponentViewModelModule::class
+        FeedComponentViewModelModule::class,
+        PlayVideoTabRepositoryModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )

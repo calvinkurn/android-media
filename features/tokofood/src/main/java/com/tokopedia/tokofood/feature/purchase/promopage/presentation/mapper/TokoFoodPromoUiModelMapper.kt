@@ -76,6 +76,7 @@ object TokoFoodPromoUiModelMapper {
                                     isAvailable: Boolean): TokoFoodPromoItemUiModel {
         return TokoFoodPromoItemUiModel(
             isAvailable = isAvailable,
+            isSelected = coupon.isSelected,
             highlightWording = if (isAvailable) coupon.topBannerTitle else "",
             title = coupon.title,
             timeValidityWording = coupon.expiryInfo,

@@ -92,7 +92,7 @@
         </activity>
         <activity
             android:name=".addphone.view.activity.AddPhoneActivity"
-            android:label="@string/title_add_phone"
+            android:label="@string/add_phone_title_add_phone"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"

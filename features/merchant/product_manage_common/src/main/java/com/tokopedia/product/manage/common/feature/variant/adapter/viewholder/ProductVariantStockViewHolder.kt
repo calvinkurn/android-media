@@ -159,7 +159,7 @@ class ProductVariantStockViewHolder(
                 variant.notifymeCount.toString()
             ).parseAsHtml()
             show()
-            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attention, 0, 0, 0)
+            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_oos, 0, 0, 0)
         }
     }
 

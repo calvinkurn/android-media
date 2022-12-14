@@ -40,6 +40,7 @@ class FilterMapper {
                     FilterByCondition.FeaturedOnly.id -> FilterByCondition.FeaturedOnly
                     FilterByCondition.CampaignOnly.id -> FilterByCondition.CampaignOnly
                     FilterByCondition.NotifyMeOnly.id -> FilterByCondition.NotifyMeOnly
+                    FilterByCondition.StockAvailableOnly.id -> FilterByCondition.StockAvailableOnly
                     else -> FilterByCondition.FeaturedOnly // FilterOption.FEATURED_ONLY
                 }
             }

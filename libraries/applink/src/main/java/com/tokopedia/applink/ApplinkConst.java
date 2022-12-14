@@ -15,6 +15,8 @@ public interface ApplinkConst {
     String HOME_ACCOUNT_SELLER = "tokopedia://home/account/seller";
     String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
+    String FEED_EXPLORE = "tokopedia://feed/explore";
+    String FEED_VIDEO = "tokopedia://feed/video";
     String FIND = "tokopedia://find";
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
@@ -165,6 +167,8 @@ public interface ApplinkConst {
             "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    String TOKO_CHAT = "tokopedia://tokochat";
+
     String CHATBOT_HOST = "chatbot";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
@@ -759,5 +763,14 @@ public interface ApplinkConst {
 
     interface GeneralInfo {
         String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
+    }
+
+    interface TokoChat {
+        String PARAM_SOURCE = "tokochatSource";
+        String ORDER_ID_GOJEK = "orderIdGojek";
+        String ORDER_ID_TKPD = "orderIdTkpd";
+
+        //bundle params
+        String IS_FROM_TOKOFOOD_POST_PURCHASE = "isFromTokoFoodPostPurchase";
     }
 }
