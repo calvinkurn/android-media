@@ -45,10 +45,6 @@ class AddProductViewModel @Inject constructor(
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    companion object {
-        private const val ONE_PRODUCT = 1
-    }
-
     private val _uiState = MutableStateFlow(AddProductUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -147,11 +143,11 @@ class AddProductViewModel @Inject constructor(
                 )
 
                 val productsResponse = getProductsUseCase.execute(param)
-                val nonPreorderParentProducts = productsResponse.products.filter { it.preorder.durationDays.isZero() }
-                val currentPageParentProductsIds = nonPreorderParentProducts.map { product -> product.id }
+                val parentProducts = productsResponse.products.readyStockProductOnly()
+                val currentPageParentProductsIds = parentProducts.map { product -> product.id }
 
                 val updatedParentProducts = combineParentProductWithVariantData(
-                    nonPreorderParentProducts,
+                    parentProducts,
                     currentState.selectedProductsIds,
                     currentState.voucherConfiguration
                 )
@@ -161,7 +157,7 @@ class AddProductViewModel @Inject constructor(
 
                 val selectedProductCount = findSelectedProductCount(currentPageParentProductsIds, selectedParentProductIds)
 
-                val checkboxState = findCheckboxState(selectedProductCount, productsResponse.total)
+                val checkboxState = determineCheckboxState(selectedProductCount, productsResponse.total)
 
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(allParentProducts.count(), productsResponse.total))
                 _uiState.update {
@@ -293,31 +289,12 @@ class AddProductViewModel @Inject constructor(
         val modifiedProducts = currentState.products.mapIndexed { index, product ->
             val isProductOnAutoSelectRange = index < maxProductSelection
 
-            when {
-                !product.isEligible -> {
-                    product.copy(isSelected = false, enableCheckbox = false)
-                }
-                isProductOnAutoSelectRange -> {
-
-                    val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
-                    val isSelected = if (isOnSearchMode) {
-                        //If is on search product mode. Only product from search result should be selected
-                        isProductDisplayedOnSearchResult
-                    } else {
-                        //If we're not in search product mode. Select all loaded products
-                        true
-                    }
-
-                    //To make sure only eligible variant products will be selected
-                    val eligibleVariantsOnly = product.originalVariants.eligibleVariantOnly()
-
-                    product.copy(isSelected = isSelected, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
-                }
-                !isProductOnAutoSelectRange -> {
-                    product.copy(isSelected = false, enableCheckbox = false)
-                }
-                else -> product
-            }
+            determineShouldSelectProduct(
+                product,
+                currentlyDisplayedProductIds,
+                isOnSearchMode,
+                isProductOnAutoSelectRange
+            )
         }
 
         _uiState.update {
@@ -329,7 +306,6 @@ class AddProductViewModel @Inject constructor(
             )
         }
     }
-
 
     private fun handleUncheckAllProduct() = launch(dispatchers.computation) {
         val disabledProducts = currentState.products.map { it.copy(isSelected = false, enableCheckbox = true) }
@@ -389,13 +365,17 @@ class AddProductViewModel @Inject constructor(
 
     private fun updateProductAsSelected(selectedProductId: Long, products: List<Product>) : List<Product> {
         return products.map {
-
             if (it.id == selectedProductId) {
 
                 val hasVariants = it.originalVariants.isNotEmpty()
                 if (hasVariants) {
-                    val eligibleVariantsOnly = it.originalVariants.filter { variant -> variant.isEligible }.map { variant -> variant.variantProductId }.toSet()
-                    it.copy(isSelected = true, enableCheckbox = true, originalVariants = it.originalVariants, selectedVariantsIds = eligibleVariantsOnly)
+                    val eligibleVariantsOnly = it.originalVariants.eligibleVariantIdsOnly()
+                    it.copy(
+                        isSelected = true,
+                        enableCheckbox = true,
+                        originalVariants = it.originalVariants,
+                        selectedVariantsIds = eligibleVariantsOnly
+                    )
                 } else {
                     it.copy(isSelected = true, enableCheckbox = true)
                 }
@@ -643,10 +623,6 @@ class AddProductViewModel @Inject constructor(
         return filter { it.isSelected }.map { it.id }.toSet()
     }
 
-    private fun List<Product.Variant>.eligibleVariantOnly(): Set<Long> {
-        return filter { it.isEligible }.map { it.variantProductId }.toSet()
-    }
-
     private fun VoucherValidationResult.ValidationProduct?.toProductVariants(): List<Product.Variant> {
         if (this == null) return emptyList()
 
@@ -660,12 +636,22 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    private fun List<Product.Variant>.eligibleVariantIdsOnly(): Set<Long> {
+        return filter { variant -> variant.isEligible }
+            .map { variant -> variant.variantProductId }
+            .toSet()
+    }
+
     private fun List<Product.Variant>.allVariantIds(): Set<Long> {
         return map { it.variantProductId }.toSet()
     }
 
     private fun AddProductUiState.CheckboxState.isChecked(): Boolean {
         return this == AddProductUiState.CheckboxState.CHECKED
+    }
+
+    private fun List<Product>.readyStockProductOnly(): List<Product> {
+        return filter { it.preorder.durationDays.isZero() }
     }
 
     private fun findSelectedProductCount(
@@ -681,7 +667,7 @@ class AddProductViewModel @Inject constructor(
         return selectedProductCount
     }
 
-    private fun findCheckboxState(
+    private fun determineCheckboxState(
         selectedProductCount: Int,
         totalProductCount: Int
     ): AddProductUiState.CheckboxState {
@@ -695,4 +681,40 @@ class AddProductViewModel @Inject constructor(
         return checkboxState
     }
 
+    private fun determineShouldSelectProduct(
+        product: Product,
+        currentlyDisplayedProductIds: List<Long>,
+        isOnSearchMode: Boolean,
+        isProductOnAutoSelectRange: Boolean
+    ): Product {
+        return when {
+            !product.isEligible -> {
+                product.copy(isSelected = false, enableCheckbox = false)
+            }
+            isProductOnAutoSelectRange -> {
+
+                val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
+                val isSelected = if (isOnSearchMode) {
+                    //If is on search product mode. Only product from search result should be selected
+                    isProductDisplayedOnSearchResult
+                } else {
+                    //If we're not in search product mode. Select all loaded products
+                    true
+                }
+
+                //To make sure only eligible variant will be selected
+                val eligibleVariantIdsOnly = product.originalVariants.eligibleVariantIdsOnly()
+
+                product.copy(
+                    isSelected = isSelected,
+                    enableCheckbox = true,
+                    selectedVariantsIds = eligibleVariantIdsOnly
+                )
+            }
+            !isProductOnAutoSelectRange -> {
+                product.copy(isSelected = false, enableCheckbox = false)
+            }
+            else -> product
+        }
+    }
 }
