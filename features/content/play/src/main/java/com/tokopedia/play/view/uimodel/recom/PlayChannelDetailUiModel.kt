@@ -6,11 +6,12 @@ import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificat
  * Created by jegul on 23/07/21
  */
 data class PlayChannelDetailUiModel(
-        val shareInfo: PlayShareInfoUiModel = PlayShareInfoUiModel(),
-        val channelInfo: PlayChannelInfoUiModel = PlayChannelInfoUiModel(),
-        val rtnConfigInfo: PlayRealTimeNotificationConfig = PlayRealTimeNotificationConfig(),
-        val videoInfo: PlayVideoConfigUiModel = PlayVideoConfigUiModel(),
-        val emptyBottomSheetInfo: PlayEmptyBottomSheetInfoUiModel = PlayEmptyBottomSheetInfoUiModel(),
-        val bottomSheetTitle: String = "",
-        val exploreWidgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
+    val shareInfo: PlayShareInfoUiModel = PlayShareInfoUiModel(),
+    val channelInfo: PlayChannelInfoUiModel = PlayChannelInfoUiModel(),
+    val rtnConfigInfo: PlayRealTimeNotificationConfig = PlayRealTimeNotificationConfig(),
+    val videoInfo: PlayVideoConfigUiModel = PlayVideoConfigUiModel(),
+    val emptyBottomSheetInfo: PlayEmptyBottomSheetInfoUiModel = PlayEmptyBottomSheetInfoUiModel(),
+    val bottomSheetTitle: String = "",
+    val popupConfig: PlayPopUpConfigUiModel = PlayPopUpConfigUiModel(),
+    val exploreWidgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
 )

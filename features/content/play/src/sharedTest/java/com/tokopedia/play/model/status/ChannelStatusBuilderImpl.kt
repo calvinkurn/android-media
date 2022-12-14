@@ -7,6 +7,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusConfig
 import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 
 /**
  * Created by kenny.hadisaputra on 11/05/22
@@ -34,9 +35,11 @@ class ChannelStatusBuilderImpl : ChannelStatusBuilder {
     override fun buildStatusConfig(
         bannedModel: BannedUiModel,
         freezeModel: FreezeUiModel,
+        archiveModel: ArchivedUiModel,
     ) = PlayStatusConfig(
         bannedModel = bannedModel,
         freezeModel = freezeModel,
+        archivedModel = archiveModel,
     )
 
     override fun buildBannedModel(
@@ -54,4 +57,11 @@ class ChannelStatusBuilderImpl : ChannelStatusBuilder {
     ) = FreezeUiModel(
         title = title,
     )
+
+    override fun buildArchiveModel(
+        title: String,
+        description: String,
+        appLink: String,
+        btnTitle: String
+    ): ArchivedUiModel = ArchivedUiModel(title, description, btnTitle, appLink)
 }

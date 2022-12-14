@@ -51,7 +51,7 @@
 
     <!--Engagement Tools-->
 
-    <string name="play_interactive_follow_success">Berhasil follow toko.</string>
+    <string name="play_interactive_follow_success">Yay, berhasil follow kreator ini!</string>
 
     <string name="play_quiz_finished">Lihat hasil game di sini, ya.</string>
 
@@ -120,7 +120,12 @@
     <string name="play_product_pinned">Pin Dipasang</string>
     <string name="play_product_pinned_atc">+</string>
     <string name="play_product_pinned_info_separator">\u00b7</string>
+    <string name="play_follow_popup_header_title">Suka videonya kreator ini?</string>
     <string name="play_voucher_header">Kupon bisa dipilih di halaman Keranjang jika ada produk dari toko</string>
+
+    <string name="play_archived_title">Video telah dihapus</string>
+    <string name="play_archived_description">Video ini telah dihapus.</string>
+    <string name="play_failed_follow">Oops, gagal follow kreator.</string>
 
     <string name="play_explore_widget_header_title">Video lainnya</string>
 </resources>

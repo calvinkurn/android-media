@@ -100,8 +100,6 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     }
                     show_cart
                     show_pinned_product
-                    active
-                    freezed
                     has_promo
                     reminder{
                       is_set
@@ -134,7 +132,8 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       background_color
                     }
                     has_follow_button
-                    empty_bottom_sheet{
+                    status
+                    empty_bottom_sheet {
                         copy_text_header
                         copy_text_body
                         copy_text_redirect_button
@@ -144,6 +143,17 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       group
                       source_id
                       source_type
+                    }
+                    channel_archived_screen {
+                      title
+                      description
+                      button_text
+                      button_app_link
+                    }
+                    pop_up {
+                      is_enabled
+                      duration_to_pop_up
+                      copy_text_bottomsheet
                     }
                   }
                   app_link
