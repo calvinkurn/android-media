@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -34,11 +32,7 @@ class TokoNowWishlistViewModel @Inject constructor(
         launch(dispatchers.io){
             addToWishlistUseCase.setParams(productId, userSession.userId)
             val result = addToWishlistUseCase.executeOnBackground()
-            if (result is Success) {
-                _addToWishlistLiveData.postValue(Success(result.data))
-            } else if (result is Fail) {
-                _addToWishlistLiveData.postValue(Fail(result.throwable))
-            }
+            _addToWishlistLiveData.postValue(result)
         }
     }
 
@@ -46,11 +40,7 @@ class TokoNowWishlistViewModel @Inject constructor(
         launch(dispatchers.io){
             removeFromWishlistUseCase.setParams(productId, userSession.userId)
             val result = removeFromWishlistUseCase.executeOnBackground()
-            if (result is Success) {
-                _removeFromWishlistLiveData.postValue(Success(result.data))
-            } else if (result is Fail) {
-                _removeFromWishlistLiveData.postValue(Fail(result.throwable))
-            }
+            _removeFromWishlistLiveData.postValue(result)
         }
     }
 
