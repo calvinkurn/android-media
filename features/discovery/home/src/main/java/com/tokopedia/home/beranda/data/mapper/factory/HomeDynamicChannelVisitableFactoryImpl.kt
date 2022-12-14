@@ -505,7 +505,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                                                   verticalPosition: Int): Visitable<*> {
         val viewModel = DynamicLegoBannerDataModel(
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
-                isCache = isCache
+                isCache = isCache,
+                cardInteraction = true
         )
         if (!isCache) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
@@ -604,7 +605,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel,
                 verticalPosition
             ),
-            isCache = isCache
+            isCache = isCache,
+            cardInteraction = true
         )
     }
 
