@@ -3063,16 +3063,16 @@ class NewShopPageFragment :
         var ogDescription = shopPageHeaderDataModel?.location.orEmpty()
         if (shopPageHeaderWidgetList.isNotEmpty()) {
             val performanceWidget = shopPageHeaderWidgetList.filter { it.type == ShopPageParamModel.ShopInfoType.SHOP_PERFORMANCE.typeName }
-            val performanceBadgeTextWidget = performanceWidget.first().components.filter {
+            val performanceBadgeTextWidget = performanceWidget.firstOrNull()?.components?.filter {
                 (it.type == ShopPageParamModel.ShopInfoType.BADGE_TEXT.typeName)
-            }
+            }.orEmpty()
             if (performanceBadgeTextWidget.isNotEmpty()) {
                 val opsHourWidget = performanceBadgeTextWidget.filter {
-                    (it as ShopHeaderBadgeTextValueComponentUiModel).text[Int.ONE].textHtml ==
+                    (it as ShopHeaderBadgeTextValueComponentUiModel).text.getOrNull(Int.ONE)?.textHtml ==
                         ShopPageParamModel.ShopPerformanceLabel.OPERATIONAL_HOURS.labelName
                 }
                 if (opsHourWidget.isNotEmpty()) {
-                    var infoValue = (opsHourWidget.first() as ShopHeaderBadgeTextValueComponentUiModel).text[Int.ZERO].textHtml
+                    var infoValue = (opsHourWidget.firstOrNull() as? ShopHeaderBadgeTextValueComponentUiModel)?.text?.getOrNull(Int.ONE)?.textHtml.orEmpty()
                     if (infoValue != getString(R.string.shop_ops_hour_open_all_day) && infoValue != getString(R.string.shop_ops_hour_holiday)) {
                         infoValue = "Buka $infoValue WIB"
                     }
@@ -3143,11 +3143,11 @@ class NewShopPageFragment :
         shopPageParamModel.shopBadge = shopType
 
         // shop performance info params
-        shopPageParamModel.isHeadless = shopPageHeaderWidgetList.isEmpty()
         if (shopPageHeaderWidgetList.isNotEmpty()) {
             val performanceWidget = shopPageHeaderWidgetList.filter { it.type == ShopPageParamModel.ShopInfoType.SHOP_PERFORMANCE.typeName }
             var totalShopInfo = Int.ZERO
-            performanceWidget.first().components.forEach {
+            shopPageParamModel.isHeadless = performanceWidget.isEmpty()
+            performanceWidget.firstOrNull()?.components?.forEach {
                 if (totalShopInfo >= IMG_GENERATOR_SHOP_INFO_MAX_SIZE) {
                     return@forEach
                 }
@@ -3349,7 +3349,7 @@ class NewShopPageFragment :
     }
 
     override fun permissionAction(action: String, label: String) {
-        shopPageTracking?.clickUniversalSharingPermission(action.uppercase(), label, shopId, userId)
+        shopPageTracking?.clickUniversalSharingPermission(action, label.replaceFirstChar(Char::titlecase), shopId, userId)
     }
 
     fun setupShopPageLottieAnimation(lottieUrl: String) {

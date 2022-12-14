@@ -72,13 +72,13 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
         return arrayListOf(
             Bundle().apply {
                 putString(EVENT_CREATIVE_NAME, NOT_SET)
-                putInt(EVENT_CREATIVE_SLOT, 1)
+                putString(EVENT_CREATIVE_SLOT, "1")
                 putString(EVENT_ITEM_ID, "")
                 putString(EVENT_ITEM_NAME, "")
             },
             Bundle().apply {
                 putString(EVENT_CREATIVE_NAME, NOT_SET)
-                putInt(EVENT_CREATIVE_SLOT, 2)
+                putString(EVENT_CREATIVE_SLOT, "2")
                 putString(EVENT_ITEM_ID, "")
                 putString(EVENT_ITEM_NAME, "")
             }
