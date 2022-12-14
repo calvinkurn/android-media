@@ -255,6 +255,7 @@ class MoreMenuViewModel @Inject constructor(
         )
     }
 
+    // Can be used from bottomsheet recurring period
     private fun getOtherScheduleListMenu(): List<MoreMenuUiModel> {
         return listOf(
             MoreMenuUiModel.Coupon(
