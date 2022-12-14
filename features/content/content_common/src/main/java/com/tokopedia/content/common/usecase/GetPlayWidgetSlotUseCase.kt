@@ -25,6 +25,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
         cursor: String,
         sourceType: String,
         sourceId: String,
+        isWifi: Boolean,
     ): WidgetSlot {
         val request = mapOf(
             KEY_REQ to  mapOf(
@@ -32,6 +33,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                 KEY_CURSOR to cursor,
                 KEY_SOURCE_TYPE to sourceType,
                 KEY_SOURCE_ID to sourceId,
+                KEY_WIFI to isWifi,
             )
         )
         setRequestParams(request)
@@ -44,6 +46,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
         private const val KEY_CURSOR = "cursor"
         private const val KEY_SOURCE_TYPE = "source_type"
         private const val KEY_SOURCE_ID = "source_id"
+        private const val KEY_WIFI = "is_wifi"
 
         const val QUERY_NAME = "GetPlayWidgetSlotUseCaseQuery"
         const val QUERY = """

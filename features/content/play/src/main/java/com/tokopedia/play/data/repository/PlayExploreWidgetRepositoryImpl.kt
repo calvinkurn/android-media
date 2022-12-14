@@ -7,6 +7,7 @@ import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayExploreWidgetMapper
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,6 +20,7 @@ class PlayExploreWidgetRepositoryImpl @Inject constructor(
     private val getPlayWidgetSlotUseCase: GetPlayWidgetSlotUseCase,
     private val mapper: PlayExploreWidgetMapper,
     private val reminderMapper: PlayWidgetUiMapper,
+    private val connectionUtil: PlayWidgetConnectionUtil,
     private val dispatcher: CoroutineDispatchers
 ) : PlayExploreWidgetRepository {
 
@@ -34,6 +36,7 @@ class PlayExploreWidgetRepositoryImpl @Inject constructor(
                 cursor = cursor,
                 sourceId = sourceId,
                 sourceType = sourceType,
+                isWifi = connectionUtil.isEligibleForHeavyDataUsage(),
             )
         )
     }
