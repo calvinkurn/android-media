@@ -410,7 +410,7 @@ class ShipmentPresenterPrescriptionIdsTest {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(null, listOf())
+                        GroupData(null, null, listOf(), null, null)
                     )
                 )
             )
@@ -431,7 +431,7 @@ class ShipmentPresenterPrescriptionIdsTest {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(null, listOf())
+                        GroupData(null, null, listOf(), null, null)
                     )
                 )
             )
@@ -477,7 +477,10 @@ class ShipmentPresenterPrescriptionIdsTest {
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
-                            null, null
+                            null, null,
+                            null,
+                            null,
+                            null
                         )
                     )
                 )
@@ -502,7 +505,10 @@ class ShipmentPresenterPrescriptionIdsTest {
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
                             null,
-                            listOf()
+                            null,
+                            listOf(),
+                            null,
+                            null
                         )
                     )
                 )
@@ -533,7 +539,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     shopInfo = listOf(
                                         ProductsInfo(
                                             shopId = "6554231",
-                                            products = listOf(
+                                            products = arrayListOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389388,
                                                     isEthicalDrug = true,
@@ -541,7 +547,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -552,7 +558,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                         ),
                                         ProductsInfo(
                                             shopId = "6554232",
-                                            products = listOf(
+                                            products = arrayListOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389387,
                                                     isEthicalDrug = true,
@@ -560,7 +566,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -585,9 +591,13 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
+                                    prescriptionCTA = null
                                 )
                             ),
-                            attachmentPageTickerText = null
+                            attachmentPageTickerText = null,
+                            attachmentPageTickerLogoUrl = null,
+                            toaster = null,
+                            papPrimaryCTA = null
                         ),
                     )
                 )
@@ -666,7 +676,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     shopInfo = listOf(
                                         ProductsInfo(
                                             shopId = "6554231",
-                                            products = listOf(
+                                            products = arrayListOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389388,
                                                     isEthicalDrug = true,
@@ -674,7 +684,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -699,9 +709,13 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
+                                    prescriptionCTA = null
                                 )
                             ),
-                            attachmentPageTickerText = null
+                            attachmentPageTickerText = null,
+                            attachmentPageTickerLogoUrl = null,
+                            toaster = null,
+                            papPrimaryCTA = null
                         ),
                     )
                 )
@@ -754,7 +768,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     shopInfo = listOf(
                                         ProductsInfo(
                                             shopId = "6554231",
-                                            products = listOf(
+                                            products = arrayListOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389388,
                                                     isEthicalDrug = true,
@@ -762,7 +776,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389389,
@@ -771,7 +785,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -791,25 +805,18 @@ class ShipmentPresenterPrescriptionIdsTest {
                                         doctorDetails = null,
                                         endTime = null,
                                         medicalRecommendation = null,
-                                        prescription = listOf(
-                                            GroupData.EpharmacyGroup.ConsultationData.Prescription(
-                                                documentUrl = null,
-                                                id = null,
-                                                type = null
-                                            ),
-                                            GroupData.EpharmacyGroup.ConsultationData.Prescription(
-                                                documentUrl = null,
-                                                id = null,
-                                                type = null
-                                            )
-                                        ),
+                                        prescription = listOf(),
                                         startTime = ""
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
+                                    prescriptionCTA = null
                                 )
                             ),
-                            attachmentPageTickerText = null
+                            attachmentPageTickerText = null,
+                            attachmentPageTickerLogoUrl = null,
+                            toaster = null,
+                            papPrimaryCTA = null
                         ),
                     )
                 )
@@ -865,7 +872,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = false,
-                uploadedImageCount = 2,
+                uploadedImageCount = 1,
                 epharmacyGroupIds = arrayListOf("123"),
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554231"),
@@ -904,7 +911,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     shopInfo = listOf(
                                         ProductsInfo(
                                             shopId = "6554231",
-                                            products = listOf(
+                                            products = arrayListOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389389,
                                                     isEthicalDrug = true,
@@ -912,7 +919,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389388,
@@ -921,7 +928,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -932,7 +939,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                         ),
                                         ProductsInfo(
                                             shopId = "6554234",
-                                            products = listOf(
+                                            products = arrayListOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389382,
                                                     isEthicalDrug = true,
@@ -940,7 +947,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -960,29 +967,19 @@ class ShipmentPresenterPrescriptionIdsTest {
                                         doctorDetails = null,
                                         endTime = null,
                                         medicalRecommendation = null,
-                                        prescription = listOf(
-                                            GroupData.EpharmacyGroup.ConsultationData.Prescription(
-                                                documentUrl = null,
-                                                id = null,
-                                                type = null
-                                            ),
-                                            GroupData.EpharmacyGroup.ConsultationData.Prescription(
-                                                documentUrl = null,
-                                                id = null,
-                                                type = null
-                                            )
-                                        ),
+                                        prescription = listOf(),
                                         startTime = ""
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
+                                    prescriptionCTA = null
                                 ),
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "124",
                                     shopInfo = listOf(
                                         ProductsInfo(
                                             shopId = "6554231",
-                                            products = listOf(
+                                            products = arrayListOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389387,
                                                     isEthicalDrug = true,
@@ -990,7 +987,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389386,
@@ -999,7 +996,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1037,13 +1034,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
+                                    prescriptionCTA = null
                                 ),
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "125",
                                     shopInfo = listOf(
                                         ProductsInfo(
                                             shopId = "6554232",
-                                            products = listOf(
+                                            products = arrayListOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389384,
                                                     isEthicalDrug = true,
@@ -1051,7 +1049,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389385,
@@ -1060,7 +1058,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = 1,
+                                                    quantity = "1",
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1085,9 +1083,13 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
+                                    prescriptionCTA = null
                                 )
                             ),
-                            attachmentPageTickerText = null
+                            attachmentPageTickerText = null,
+                            attachmentPageTickerLogoUrl = null,
+                            toaster = null,
+                            papPrimaryCTA = null
                         ),
                     )
                 )
@@ -1187,7 +1189,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = true,
-                uploadedImageCount = 4,
+                uploadedImageCount = 3,
                 epharmacyGroupIds = arrayListOf("123", "124", "125"),
                 enablerNames = listOf(""),
                 shopIds = listOf(
@@ -1243,7 +1245,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 2150389388,
                                 "",
                                 "",
-                                1
+                                "1"
                             )
                         ),
                         "6554231",
@@ -1303,7 +1305,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 2150389388,
                                 "",
                                 "",
-                                1
+                                "1"
                             )
                         ),
                         "6554231",
@@ -1365,7 +1367,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 2150389388,
                                 "",
                                 "",
-                                1
+                                "1"
                             )
                         ),
                         "6554231",
@@ -1468,7 +1470,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 2150389388,
                                 "",
                                 "",
-                                1
+                                "1"
                             )
                         ),
                         "6554231",
@@ -1480,18 +1482,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                 ),
                 2,
                 "qwerty",
-                arrayListOf(
-                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
-                        "",
-                        "",
-                        ""
-                    ),
-                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
-                        "",
-                        "",
-                        ""
-                    )
-                ),
+                arrayListOf(),
                 "321",
                 "123",
                 null
@@ -1577,7 +1568,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = false,
-                uploadedImageCount = 2,
+                uploadedImageCount = 1,
                 epharmacyGroupIds = arrayListOf("123"),
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554231", "6554234"),
@@ -1613,7 +1604,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopInfo = listOf(
                     ProductsInfo(
                         shopId = "6554231",
-                        products = listOf(
+                        products = arrayListOf(
                             ProductsInfo.Product(
                                 productId = 2150389388,
                                 isEthicalDrug = true,
@@ -1621,7 +1612,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             )
                         ),
                         partnerLogoUrl = "",
@@ -1632,7 +1623,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                     ),
                     ProductsInfo(
                         shopId = "6554232",
-                        products = listOf(
+                        products = arrayListOf(
                             ProductsInfo.Product(
                                 productId = 2150389387,
                                 isEthicalDrug = true,
@@ -1640,7 +1631,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             )
                         ),
                         partnerLogoUrl = "",
@@ -1737,7 +1728,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopInfo = listOf(
                     ProductsInfo(
                         shopId = "6554231",
-                        products = listOf(
+                        products = arrayListOf(
                             ProductsInfo.Product(
                                 productId = 2150389389,
                                 isEthicalDrug = true,
@@ -1745,7 +1736,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389388,
@@ -1754,7 +1745,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             )
                         ),
                         partnerLogoUrl = "",
@@ -1765,7 +1756,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                     ),
                     ProductsInfo(
                         shopId = "6554234",
-                        products = listOf(
+                        products = arrayListOf(
                             ProductsInfo.Product(
                                 productId = 2150389382,
                                 isEthicalDrug = true,
@@ -1773,7 +1764,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             )
                         ),
                         partnerLogoUrl = "",
@@ -1788,25 +1779,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                 tokoConsultationId = "123",
                 partnerConsultationId = "321",
                 consultationStatus = 2,
-                prescription = listOf(
-                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
-                        documentUrl = null,
-                        id = null,
-                        type = null
-                    ),
-                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
-                        documentUrl = null,
-                        id = null,
-                        type = null
-                    )
-                ),
+                prescription = listOf(),
             ),
             EPharmacyMiniConsultationResult(
                 epharmacyGroupId = "124",
                 shopInfo = listOf(
                     ProductsInfo(
                         shopId = "6554231",
-                        products = listOf(
+                        products = arrayListOf(
                             ProductsInfo.Product(
                                 productId = 2150389387,
                                 isEthicalDrug = true,
@@ -1814,7 +1794,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389386,
@@ -1823,7 +1803,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             )
                         ),
                         partnerLogoUrl = "",
@@ -1858,7 +1838,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                 shopInfo = listOf(
                     ProductsInfo(
                         shopId = "6554232",
-                        products = listOf(
+                        products = arrayListOf(
                             ProductsInfo.Product(
                                 productId = 2150389384,
                                 isEthicalDrug = true,
@@ -1866,7 +1846,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389385,
@@ -1875,7 +1855,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = 1,
+                                quantity = "1",
                             )
                         ),
                         partnerLogoUrl = "",
@@ -1964,7 +1944,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals(
             UploadPrescriptionUiModel(
                 hasInvalidPrescription = true,
-                uploadedImageCount = 4,
+                uploadedImageCount = 3,
                 epharmacyGroupIds = arrayListOf("123", "124", "125"),
                 enablerNames = listOf(""),
                 shopIds = listOf("6554231", "6554231", "6554232"),

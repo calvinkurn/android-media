@@ -2576,7 +2576,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                     shipmentCartItemModel.setTokoConsultationId(epharmacyGroup.getConsultationData().getTokoConsultationId());
                                                                     shipmentCartItemModel.setPartnerConsultationId(epharmacyGroup.getConsultationData().getPartnerConsultationId());
                                                                     shipmentCartItemModel.setConsultationDataString(epharmacyGroup.getConsultationData().getConsultationString());
-                                                                    mapPrescriptionCount.put(epharmacyGroup.getEpharmacyGroupId(), epharmacyGroup.getConsultationData().getPrescription().size());
+                                                                    mapPrescriptionCount.put(epharmacyGroup.getEpharmacyGroupId(), 1);
                                                                     updated = true;
                                                                     break;
                                                                 } else if (epharmacyGroup.getPrescriptionImages() != null && !epharmacyGroup.getPrescriptionImages().isEmpty()) {
@@ -2717,7 +2717,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                             shipmentCartItemModel.setTokoConsultationId(result.getTokoConsultationId());
                                                             shipmentCartItemModel.setPartnerConsultationId(result.getPartnerConsultationId());
                                                             shipmentCartItemModel.setConsultationDataString(result.getConsultationString());
-                                                            mapPrescriptionCount.put(result.getEpharmacyGroupId(), result.getPrescription().size());
+                                                            mapPrescriptionCount.put(result.getEpharmacyGroupId(), 1);
                                                             updated = true;
                                                             break;
                                                         } else if (result.getPrescriptionImages() != null && !result.getPrescriptionImages().isEmpty()) {
