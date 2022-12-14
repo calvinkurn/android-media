@@ -9,6 +9,7 @@ import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 
 /**
@@ -45,18 +46,12 @@ class ProductCarouselUiView(
                 )
             }
 
-            override fun onAtcClicked(
+            override fun onTransactionClicked(
                 viewHolder: ProductCarouselViewHolder.PinnedProduct,
-                product: PlayProductUiModel.Product
+                product: PlayProductUiModel.Product,
+                action: ProductAction
             ) {
-                listener.onAtcClicked(this@ProductCarouselUiView, product)
-            }
-
-            override fun onBuyClicked(
-                viewHolder: ProductCarouselViewHolder.PinnedProduct,
-                product: PlayProductUiModel.Product
-            ) {
-                listener.onBuyClicked(this@ProductCarouselUiView, product)
+                listener.onTransactionClicked(this@ProductCarouselUiView, product, action)
             }
         }
     )
@@ -168,7 +163,6 @@ class ProductCarouselUiView(
         fun onProductImpressed(view: ProductCarouselUiView, productMap: Map<PlayProductUiModel.Product, Int>)
         fun onProductClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product, position: Int)
 
-        fun onAtcClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product)
-        fun onBuyClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product)
+        fun onTransactionClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product, action: ProductAction)
     }
 }

@@ -29,11 +29,11 @@ class FeedXCardSubtitlesAnimationHandler(
     private var timer: Timer? = null
 
     private val onAttachListener = object : View.OnAttachStateChangeListener {
-        override fun onViewAttachedToWindow(v: View?) {
+        override fun onViewAttachedToWindow(v: View) {
             startTimer()
         }
 
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             stopAnimation()
         }
     }
@@ -136,19 +136,19 @@ class FeedXCardSubtitlesAnimationHandler(
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
 
                 translateAnimObjTwo.addListener(object : AnimatorListener {
-                    override fun onAnimationStart(animation: Animator?) {
+                    override fun onAnimationStart(animation: Animator) {
                     }
 
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         setDataIntoViews()
                         afterAnimationComplete()
                         translateAnimObjTwo.removeAllListeners()
                     }
 
-                    override fun onAnimationCancel(animation: Animator?) {
+                    override fun onAnimationCancel(animation: Animator) {
                     }
 
-                    override fun onAnimationRepeat(animation: Animator?) {
+                    override fun onAnimationRepeat(animation: Animator) {
                     }
 
                 })

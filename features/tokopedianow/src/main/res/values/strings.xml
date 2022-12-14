@@ -58,7 +58,6 @@
     <string name="tokopedianow_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
     <string name="tokopedianow_category_is_failed_to_display_description">Klik ikon di samping untuk coba lagi</string>
     <string name="tokopedianow_search_bar_hint">Cari di Tokopedia NOW!</string>
-    <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
     <string name="tokopedianow_dynamic_header_subtitle_default_value">Berakhir dalam</string>
 
@@ -159,9 +158,10 @@
     <string name="tokopedianow_20m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
     <string name="tokopedianow_20m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>
 
-    <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu belanja di Tokopedia NOW!, <b>dapat kupon cashback hingga %3$s.</b> <font color=\'%1$s\'><a href=\'%2$s\'>Selengkapnya</a></font>]]></string>
-    <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Kamu sudah dapat referral dari temanmu. Yuk, belanja sekarang, dapatkan <b>kupon cashback %1$s!</b>]]></string>
-    <string name="tokopedianow_home_referral_widget_button_text_sender">Bagikan ke Temanmu</string>
+    <string name ="tokopedianow_home_referral_widget_title">Mau cashback %1$s?</string>
+    <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu cobain belanja di NOW! <font color=\'%1$s\'>Selengkapnya</font>]]></string>
+    <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Yuk, <b>%1$s</b> untuk pakai kuponnya sebelum hangus!]]></string>
+    <string name="tokopedianow_home_referral_widget_button_text_sender">Ajak Belanja NOW!</string>
     <string name="tokopedianow_home_referral_widget_button_text_receiver">Cek Detail</string>
     <string name="tokopedianow_home_referral_toaster">Oops, referral sedang ada kendala. Tunggu sebentar dan coba lagi nanti, ya.</string>
     <string name="tokopedianow_home_referral_share_title">Bagi Link Referral Tokopedia NOW &amp;  Dapatkan Cashback 20rb</string>
@@ -255,4 +255,25 @@
     <string name="tokopedianow_recipe_apply_filter_button_text">Tampilkan</string>
     <string name="tokopedianow_refresh_recommendation">Cek rekomendasi baru? <![CDATA[<font color=#00AA5B><b>Tampilkan</b></font>]]></string>
     <string name="tokopedianow_real_time_recom_title">Dibeli bersama %s.</string>
+    <string name="error_already_referral">Oops, kamu sudah pernah dapat kupon Belanja NOW! dari temanmu.</string>
+    <string name="error_referral_on_limit">Yaah, kupon Belanja NOW! dari temanmu sudah mencapai batas maksimum.</string>
+    <string name="error_referral_click_their_own_link">Kupon Belanja NOW! hanya bisa dipakai sama temanmu yang pengguna baru.</string>
+    <string name="error_referrral_recurring_user">Yaah, kupon Belanja NOW! hanya berlaku khusus pengguna baru saja.</string>
+
+    <string name="tokopedianow_content_description_quantity_editor_view_add">tombol tambah</string>
+    <string name="tokopedianow_content_description_quantity_editor_view_sub">tombol kurang</string>
+
+    <string name="tokopedianow_product_card_similar_product">Pilihan Serupa</string>
+    <string name="tokopedianow_product_card_percentage">%d%%</string>
+    <string name="tokopedianow_product_card_wishlist_add_success">Barang berhasil disimpan di Wishlist. Kamu akan dapat notifikasi saat stok kembali.</string>
+    <string name="tokopedianow_product_card_wishlist_add_fail">Oops, barang gagal disimpan di Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_remove_success">Barang sudah dihapus dari Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_remove_fail">Oops, barang gagal dihapus dari Wishlist.</string>
+
+    <string name="tokopedianow_toaster_ok">Oke</string>
+    <string name="tokopedianow_toaster_retry">Coba Lagi</string>
+    <string name="tokopedianow_toaster_see">Lihat</string>
+
+    <string name="tokopedianow_product_card_similar_product_error_description">Tidak Ada Produk Serupa yang Tersedia</string>
+
 </resources>
