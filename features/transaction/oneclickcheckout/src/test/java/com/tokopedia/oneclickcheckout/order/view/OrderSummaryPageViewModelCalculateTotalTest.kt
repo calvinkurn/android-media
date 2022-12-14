@@ -178,8 +178,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(
             products = mutableListOf(
-                OrderProduct(productId = 1, parentId = "1", orderQuantity = 5, productPrice = 1000.0, wholesalePriceList = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100.0))),
-                OrderProduct(productId = 2, parentId = "1", orderQuantity = 5, productPrice = 1000.0, wholesalePriceList = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100.0)))
+                OrderProduct(productId = "1", parentId = "1", orderQuantity = 5, productPrice = 1000.0, wholesalePriceList = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100.0))),
+                OrderProduct(productId = "2", parentId = "1", orderQuantity = 5, productPrice = 1000.0, wholesalePriceList = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100.0)))
             )
         )
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -212,8 +212,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(
             products = mutableListOf(
-                OrderProduct(productId = 1, parentId = "1", orderQuantity = 5, productPrice = 1000.0, wholesalePriceList = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100.0))),
-                OrderProduct(productId = 2, parentId = "2", orderQuantity = 5, productPrice = 1000.0, wholesalePriceList = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100.0)))
+                OrderProduct(productId = "1", parentId = "1", orderQuantity = 5, productPrice = 1000.0, wholesalePriceList = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100.0))),
+                OrderProduct(productId = "2", parentId = "2", orderQuantity = 5, productPrice = 1000.0, wholesalePriceList = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100.0)))
             )
         )
         orderSummaryPageViewModel.orderProfile.value = helper.preference
