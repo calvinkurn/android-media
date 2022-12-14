@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.product.variant.review
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -101,9 +102,10 @@ class ReviewVariantAdapter : RecyclerView.Adapter<ReviewVariantAdapter.ViewHolde
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submit(newVariants: List<Variant>) {
         this.variants = newVariants
-        notifyItemRangeChanged(Int.ZERO, variants.size)
+        notifyDataSetChanged()
     }
 
     fun snapshot(): List<Variant> {

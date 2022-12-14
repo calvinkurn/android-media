@@ -304,6 +304,8 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                 binding?.checkbox?.setIndeterminate(false)
             }
         }
+
+        binding?.checkbox?.skipAnimation()
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
