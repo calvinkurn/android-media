@@ -76,7 +76,7 @@ class CatalogHomepageViewModel @Inject constructor(
         }
     }
 
-    private fun onAvailableCatalogListData(catalogListResponse: CatalogListResponse) {
+    private fun onAvailableCatalogListData(catalogIdentifier : String , catalogListResponse: CatalogListResponse) {
         if (catalogListResponse.catalogGetList.catalogsList.isNullOrEmpty()) {
             onFailHomeData(IllegalStateException("No Catalog List Response Data"))
         } else {

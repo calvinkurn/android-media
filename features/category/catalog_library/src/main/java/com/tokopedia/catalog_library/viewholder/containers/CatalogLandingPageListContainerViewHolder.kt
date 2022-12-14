@@ -18,6 +18,7 @@ class CatalogLandingPageListContainerViewHolder(val view: View, private val cata
 
     override fun bind(element: CatalogLandingListDataModel?) {
         if (!element?.catalogProductList.isNullOrEmpty()) {
+            view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_landing_page_list_header).text = "Semua katalog ${element?.categoryName}"
             val catalogListRv = view.findViewById<RecyclerView>(R.id.catalog_landing_page_list_rv)
             catalogListRv.apply {
                 adapter = element?.catalogProductList?.let { catalogProductList ->

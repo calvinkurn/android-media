@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -20,6 +19,8 @@ import com.tokopedia.catalog_library.di.CatalogLibraryComponent
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -29,8 +30,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
-import kotlinx.android.synthetic.main.fragment_catalog_homepage.global_error_page
-import kotlinx.android.synthetic.main.fragment_category_landing_page.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -38,6 +37,8 @@ import javax.inject.Inject
 class CatalogLandingPageFragment: Fragment(),
     HasComponent<CatalogLibraryComponent>, CatalogLibraryListener {
 
+    private var globalError : GlobalError? = null
+    private var categoryName = ""
     @JvmField
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
@@ -64,37 +65,21 @@ class CatalogLandingPageFragment: Fragment(),
         CatalogLibraryUiUpdater(mutableMapOf()).also {
             it.setUpForLandingPage()
         }
-    private var shimmerLayout: ScrollView? = null
-
-    private val categoryIdentifier = ""
-    private val sortType = "0"
-    private val rows = ""
 
     companion object {
         const val CATALOG_LANDING_PAGE_FRAGMENT_TAG = "CATALOG_LANDING_PAGE_FRAGMENT_TAG"
         private const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
         fun newInstance(categoryName: String?): CatalogLandingPageFragment {
-            //            val bundle = Bundle()
-//            bundle.putString(ARG_CATEGORY_NAME, categoryName)
-//            fragment.arguments = bundle
-            return CatalogLandingPageFragment()
+            return CatalogLandingPageFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_CATEGORY_NAME, categoryName)
+                }
+            }
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        component.inject(this)
-        shimmerLayout = view.findViewById(R.id.shimmer_layout)
-        initHeaderTitle(view)
-//        view.findViewById<HeaderUnify>(R.id.clp_header)
-//        val headerUnify = HeaderUnify(view.context)
-        //clp_header.headerTitle = arguments?.getString(ARG_CATEGORY_NAME, "").toString()
-        activity?.let {
-            getDataFromViewModel()
-            showShimmer()
-        }
-        setupRecyclerView(view)
-        setObservers()
+        private const val VIRAL_SORT_TYPE = "5"
+        private const val TOP_FIVE_SORT_TYPE = "6"
+        private const val TOP_FIVE_TOTAL_ROWS = "5"
+        private const val VIRAL_TOTAL_ROWS = "1"
     }
 
     override fun onCreateView(
@@ -103,6 +88,29 @@ class CatalogLandingPageFragment: Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_category_landing_page, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        component.inject(this)
+        extractArguments()
+        initViews(view)
+        initData()
+    }
+
+    private fun extractArguments() {
+        categoryName = arguments?.getString(ARG_CATEGORY_NAME, "") ?: ""
+    }
+
+    private fun initViews(view: View) {
+        globalError = view.findViewById(R.id.global_error_page)
+        initHeaderTitle(view)
+        setupRecyclerView(view)
+    }
+
+    private fun initData() {
+        setObservers()
+        getDataFromViewModel()
     }
 
     private fun setupRecyclerView(view: View) {
@@ -138,14 +146,15 @@ class CatalogLandingPageFragment: Fragment(),
     }
 
     private fun initHeaderTitle(view: View){
-        //view.findViewById<HeaderUnify>(R.id.clp_header)
-        val headerUnify = HeaderUnify(view.context)
-        val bundle = Bundle()
-        clp_header.headerTitle = arguments?.getString(ARG_CATEGORY_NAME, "").toString()
+        view.findViewById<HeaderUnify>(R.id.clp_header).apply {
+            headerTitle = categoryName
+            setNavigationOnClickListener {
+                activity?.supportFragmentManager?.popBackStack()
+            }
+        }
     }
 
     private fun updateUi() {
-        hideShimmer()
         catalogLandingRecyclerView?.show()
         val newData = catalogLibraryUiUpdater.mapOfData.values.toList()
         submitList(newData)
@@ -156,39 +165,36 @@ class CatalogLandingPageFragment: Fragment(),
     }
 
     private fun onError(e: Throwable) {
-        shimmerLayout?.hide()
         catalogLandingRecyclerView?.hide()
         if (e is UnknownHostException
             || e is SocketTimeoutException
         ) {
-            global_error_page.setType(GlobalError.NO_CONNECTION)
+            globalError?.setType(GlobalError.NO_CONNECTION)
         } else {
-            global_error_page.setType(GlobalError.SERVER_ERROR)
+            globalError?.setType(GlobalError.SERVER_ERROR)
         }
 
-        global_error_page.show()
-        global_error_page.setOnClickListener {
+        globalError?.show()
+        globalError?.setOnClickListener {
             catalogLandingRecyclerView?.show()
-            shimmerLayout?.show()
             global_error_page.hide()
+            addShimmer()
+            updateUi()
             getDataFromViewModel()
         }
     }
 
     private fun getDataFromViewModel() {
-        landingPageViewModel?.getCatalogTopFiveData("handphone", "6", "5")
-        landingPageViewModel?.getCatalogMostViralData("handphone", "5", "1")
-        landingPageViewModel?.getCatalogListData("handphone", "", "")
+        landingPageViewModel?.getCatalogTopFiveData(categoryName, TOP_FIVE_SORT_TYPE, TOP_FIVE_TOTAL_ROWS)
+        landingPageViewModel?.getCatalogMostViralData(categoryName, VIRAL_SORT_TYPE, VIRAL_TOTAL_ROWS)
+        landingPageViewModel?.getCatalogListData(categoryName, "", "10")
     }
 
-    private fun showShimmer() {
-        if (catalogLibraryUiUpdater.mapOfData.isEmpty())
-            shimmerLayout?.show()
+    private fun addShimmer() {
+        catalogLibraryUiUpdater.apply {
+            updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_TOP_FIVE, CatalogLibraryConstant.CATALOG_TOP_FIVE, CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE))
+            updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_MOST_VIRAL, CatalogLibraryConstant.CATALOG_MOST_VIRAL, CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL))
+            updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_LIST, CatalogLibraryConstant.CATALOG_LIST, CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS))
+        }
     }
-
-    private fun hideShimmer() {
-        if (catalogLibraryUiUpdater.mapOfData.isNotEmpty())
-            shimmerLayout?.hide()
-    }
-
 }

@@ -1,12 +1,12 @@
 package com.tokopedia.catalog_library.viewholder.components
 
 import android.view.View
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -17,7 +17,7 @@ class CatalogTopFiveItemViewHolder(val view: View): RecyclerView.ViewHolder(view
         }
         view.findViewById<Typography>(R.id.catalog_top_five_product_title).text = catalogListResponse.name
 
-        view.findViewById<LinearLayout>(R.id.catalog_top_five_layout).setOnClickListener {
+        view.findViewById<CardUnify2>(R.id.catalog_top_five_layout).setOnClickListener {
             catalogLibraryListener.onProductCardClicked(catalogListResponse.applink)
         }
     }

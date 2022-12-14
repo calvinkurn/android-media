@@ -12,9 +12,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogLandingPageViewModel @Inject constructor(private val catalogListUseCase1: CatalogListUseCase,
-                                                      private val catalogListUseCase2: CatalogListUseCase,
-                                                      private val catalogListUseCase3: CatalogListUseCase) : ViewModel(){
+class CatalogLandingPageViewModel @Inject constructor(private val catalogTopFiveUseCase: CatalogListUseCase,
+                                                      private val catalogMostViralUseCase: CatalogListUseCase,
+                                                      private val catalogProductListUseCase: CatalogListUseCase) : ViewModel(){
 
     private val _catalogLandingPageLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
     val catalogLandingPageLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> = _catalogLandingPageLiveData
@@ -26,8 +26,8 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogListUse
         sortType: String,
         rows: String
     ) {
-        catalogListUseCase1.cancelJobs()
-        catalogListUseCase1.getCatalogListData(
+        catalogTopFiveUseCase.cancelJobs()
+        catalogTopFiveUseCase.getCatalogListData(
             ::onAvailableCatalogTopFiveData,
             ::onFailLandingPageData,
             categoryIdentifier,
@@ -41,8 +41,8 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogListUse
         sortType: String,
         rows: String
     ) {
-        catalogListUseCase2.cancelJobs()
-        catalogListUseCase2.getCatalogListData(
+        catalogMostViralUseCase.cancelJobs()
+        catalogMostViralUseCase.getCatalogListData(
             ::onAvailableCatalogMostViralData,
             ::onFailLandingPageData,
             categoryIdentifier,
@@ -56,8 +56,8 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogListUse
         sortType: String,
         rows: String
     ) {
-        catalogListUseCase3.cancelJobs()
-        catalogListUseCase3.getCatalogListData(
+        catalogProductListUseCase.cancelJobs()
+        catalogProductListUseCase.getCatalogListData(
             ::onAvailableCatalogListData,
             ::onFailLandingPageData,
             categoryIdentifier,
@@ -66,8 +66,8 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogListUse
         )
     }
 
-    private fun onAvailableCatalogTopFiveData(catalogListResponse: CatalogListResponse) {
-        if (catalogListResponse.catalogGetList.catalogsList.isNullOrEmpty()) {
+    private fun onAvailableCatalogTopFiveData(categoryIdentifier : String ,catalogListResponse: CatalogListResponse) {
+        if (catalogListResponse.catalogGetList.catalogsList.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
             catalogListResponse.let {
@@ -76,8 +76,8 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogListUse
         }
     }
 
-    private fun onAvailableCatalogMostViralData(catalogListResponse: CatalogListResponse) {
-        if (catalogListResponse.catalogGetList.catalogsList.isNullOrEmpty()) {
+    private fun onAvailableCatalogMostViralData(categoryIdentifier : String, catalogListResponse: CatalogListResponse) {
+        if (catalogListResponse.catalogGetList.catalogsList.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
             catalogListResponse.let {
@@ -86,12 +86,12 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogListUse
         }
     }
 
-    private fun onAvailableCatalogListData(catalogListResponse: CatalogListResponse) {
-        if (catalogListResponse.catalogGetList.catalogsList.isNullOrEmpty()) {
+    private fun onAvailableCatalogListData(categoryIdentifier : String, catalogListResponse: CatalogListResponse) {
+        if (catalogListResponse.catalogGetList.catalogsList.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
             catalogListResponse.let {
-                _catalogLandingPageLiveData.postValue(Success(mapCatalogListData(it)))
+                _catalogLandingPageLiveData.postValue(Success(mapCatalogListData(categoryIdentifier, it)))
             }
         }
     }
@@ -124,11 +124,12 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogListUse
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun mapCatalogListData(data: CatalogListResponse): CatalogLibraryDataModel {
+    private fun mapCatalogListData(categoryIdentifier : String, data: CatalogListResponse): CatalogLibraryDataModel {
         val catalogLandingListDataModel =
             CatalogLandingListDataModel(
                 CatalogLibraryConstant.CATALOG_LIST,
                 CatalogLibraryConstant.CATALOG_LIST,
+                categoryIdentifier,
                 data.catalogGetList.catalogsList
             )
         listOfComponents.add(catalogLandingListDataModel)

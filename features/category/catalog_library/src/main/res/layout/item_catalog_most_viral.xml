@@ -24,7 +24,9 @@
             <com.tokopedia.iconunify.IconUnify
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:icon_name="FIRE" />
+                app:icon_name="FIRE"
+                android:layout_marginStart="2dp"
+                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
@@ -32,6 +34,7 @@
                 android:text="Lagi Viral, nih!"
                 android:layout_gravity="center_vertical"
                 app:typographyType="heading_5"
+                android:layout_marginStart="8dp"
                 android:textColor="@color/Unify_Static_White"
                 />
         </LinearLayout>
@@ -43,17 +46,21 @@
             android:background="@drawable/catalog_viral_product_white_bg"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp" >
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:layout_marginTop="12dp"
+            >
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/catalog_product_viral_image"
                 android:layout_width="54dp"
-                android:layout_height="54dp" />
+                android:layout_height="54dp"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_gravity="center"
                 android:orientation="vertical" >
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -61,7 +68,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Product Title"
-                    android:layout_marginTop="12dp"
                     android:layout_marginBottom="4dp"
                     app:typographyType="heading_5"
                     app:typographyWeight="bold" />

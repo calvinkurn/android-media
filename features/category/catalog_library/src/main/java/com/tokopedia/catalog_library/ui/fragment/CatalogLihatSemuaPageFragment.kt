@@ -20,6 +20,11 @@ import com.tokopedia.catalog_library.di.CatalogLibraryComponent
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -173,15 +178,14 @@ class CatalogLihatSemuaPageFragment : Fragment(),
 
     override fun onCategoryItemClicked(categoryName: String?) {
         super.onCategoryItemClicked(categoryName)
-        val bundle = Bundle()
-        val catalogLihatSemuaPageFragment = CatalogLihatSemuaPageFragment()
-        bundle.putString(ARG_CATEGORY_NAME, categoryName)
-        catalogLihatSemuaPageFragment.arguments = bundle
-        requireActivity().supportFragmentManager.beginTransaction().addToBackStack("").replace(
-            R.id.catalog_home_frag,
-            CatalogLandingPageFragment(),
-            CatalogLandingPageFragment.CATALOG_LANDING_PAGE_FRAGMENT_TAG
-        ).commit()
+        requireActivity().supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(CatalogLandingPageFragment::class.java.simpleName)
+            .replace(
+                R.id.catalog_home_frag,
+                CatalogLandingPageFragment.newInstance(categoryName),
+                CatalogLandingPageFragment.CATALOG_LANDING_PAGE_FRAGMENT_TAG
+            ).commit()
     }
 
     private fun showShimmer() {
