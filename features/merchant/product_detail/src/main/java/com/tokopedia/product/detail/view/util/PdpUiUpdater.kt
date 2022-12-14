@@ -172,7 +172,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.OTHER_OFFERS] as? ProductCustomInfoTitleDataModel
 
     fun updateDataP1(
-        context: Context?,
         dataP1: DynamicProductInfoP1?,
         loadInitialData: Boolean = false
     ) {
