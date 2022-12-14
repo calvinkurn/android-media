@@ -59,6 +59,7 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
 
         if (page == PageType.SHOP.value) {
             data[TRACKER_ID] = VALUE_TRACKER_ID_CLICK_AFFILIATE
+            data[SHOP_ID] =  id
         }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
