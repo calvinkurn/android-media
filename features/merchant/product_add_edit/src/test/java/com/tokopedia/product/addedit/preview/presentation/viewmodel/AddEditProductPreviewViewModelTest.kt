@@ -4,6 +4,7 @@ import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PREFIX_CACHE
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -424,7 +425,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When updatePhotos expect have update photo`(){
-        val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3")
+        val originalImage = arrayListOf("0/tkpd/cache/${PREFIX_CACHE}1", "0/tkpd/cache/${PREFIX_CACHE}2", "0/tkpd/cache/${PREFIX_CACHE}3")
         val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","","")
         val product = inputProductModelDummy()
         val expectedResult = arrayListOf("a/0/tkpd/102012.jpg","www.blank.com/cache/", "www.blank.com/cache/")
@@ -438,7 +439,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When updatePhotos expect have new photo but not edited and edited photo`(){
-        val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3", "a/0/tkpd/102013.jpg")
+        val originalImage = arrayListOf("0/tkpd/cache/${PREFIX_CACHE}1", "0/tkpd/cache/${PREFIX_CACHE}2", "0/tkpd/cache/${PREFIX_CACHE}3", "a/0/tkpd/102013.jpg")
         val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","", "","")
         val product = inputProductModelDummy()
         val expectedResult = arrayListOf("a/0/tkpd/102012.jpg","www.blank.com/cache/", "www.blank.com/cache/", "a/0/tkpd/102013.jpg")
