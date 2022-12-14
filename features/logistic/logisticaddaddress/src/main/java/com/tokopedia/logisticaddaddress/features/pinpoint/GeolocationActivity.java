@@ -6,9 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import android.os.Handler;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -16,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 import com.tokopedia.logisticaddaddress.R;
@@ -35,19 +40,24 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+
 public class GeolocationActivity extends BaseActivity implements ITransactionAnalyticsGeoLocationPinPoint {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
     public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
     private static final String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final Long MAPS_UNAVAILABLE_TOASTER_DELAY = 1000L;
 
     private Bundle mBundle;
     private boolean isFromMarketPlace = false;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     private PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
-    @Inject RetrofitInteractor mRepository;
-    @Inject UserSession mUser;
+    @Inject
+    RetrofitInteractor mRepository;
+    @Inject
+    UserSession mUser;
 
     /**
      * Usage = DistrictRecommendationAddress // DistrictRecommendationAddress Tx // Shipment // ShopOpen // Seller
@@ -85,7 +95,17 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                 .geolocationModule(new GeolocationModule(this, null))
                 .build()
                 .inject(this);
+        checkMapsAvailability();
+    }
 
+    private void checkMapsAvailability() {
+        View view = findViewById(android.R.id.content);
+        if (view != null) {
+            MapsAvailabilityHelper.INSTANCE.onMapsAvailableState(view, this::onMapsNotAvailable, this::onMapsAvailable);
+        }
+    }
+
+    private Unit onMapsAvailable() {
         permissionCheckerHelper.checkPermission(this, permission, new PermissionCheckerHelper.PermissionCheckListener() {
             @Override
             public void onPermissionDenied(@NotNull String permissionText) {
@@ -104,6 +124,12 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                 inflateFragment();
             }
         }, getString(R.string.need_permission_location));
+        return Unit.INSTANCE;
+    }
+
+    private Unit onMapsNotAvailable() {
+        new Handler().postDelayed(this::finish, MAPS_UNAVAILABLE_TOASTER_DELAY);
+        return Unit.INSTANCE;
     }
 
     @Override

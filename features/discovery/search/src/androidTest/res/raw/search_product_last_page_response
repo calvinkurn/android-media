@@ -438,7 +438,7 @@
               {
                 "name": "Official Store",
                 "key": "shop_tier",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                 "value": "2",
                 "is_new": false,
                 "input_type": "checkbox",
@@ -495,7 +495,7 @@
               {
                 "name": "Power Merchant",
                 "key": "shop_tier",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                 "value": "1",
                 "is_new": false,
                 "input_type": "checkbox",

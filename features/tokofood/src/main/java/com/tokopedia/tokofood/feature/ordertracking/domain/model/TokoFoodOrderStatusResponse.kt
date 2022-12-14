@@ -16,6 +16,8 @@ data class TokoFoodOrderStatusResponse(
         @SerializedName("orderStatus")
         val orderStatus: TokoFoodOrderDetailResponse.TokofoodOrderDetail.OrderStatus = TokoFoodOrderDetailResponse.TokofoodOrderDetail.OrderStatus(),
         @SerializedName("payment")
-        val payment: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Payment = TokoFoodOrderDetailResponse.TokofoodOrderDetail.Payment()
+        val payment: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Payment = TokoFoodOrderDetailResponse.TokofoodOrderDetail.Payment(),
+        @SerializedName("driverDetails")
+        val driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails? = TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails(),
     )
 }

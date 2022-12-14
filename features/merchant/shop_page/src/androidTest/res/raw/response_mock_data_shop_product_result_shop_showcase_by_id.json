@@ -76,7 +76,7 @@
         "alias": "discount",
         "uri": "https://m.tokopedia.com/tokocampaign07?discount=1",
         "useAce": true,
-        "badge": "https://ecs7.tokopedia.net/img/official_store/diskon-badge.png",
+        "badge": "https://images.tokopedia.net/img/official_store/diskon-badge.png",
         "aceDefaultSort": 10,
         "rules": []
       }, {

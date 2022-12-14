@@ -57,8 +57,8 @@ class TokoNowHomeViewModelTestMixLeftAddToCart : TokoNowHomeViewModelTestFixture
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart("3", quantity, "1", type)
-        viewModel.addProductToCart("5", quantity, "2", type)
+        viewModel.addProductToCart("", "3", quantity, "1", type)
+        viewModel.addProductToCart("", "5", quantity, "2", type)
 
         val chooseAddressWidget = TokoNowChooseAddressWidgetUiModel(id = "0")
 

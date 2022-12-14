@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
@@ -21,6 +22,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -41,8 +43,9 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
-import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
+import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
@@ -201,6 +204,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
+    val createAffiliateCookieAtcProduct: LiveData<AffiliateAtcProductModel>
+        get() = _createAffiliateCookieAtcProduct
+    private val _createAffiliateCookieAtcProduct = MutableLiveData<AffiliateAtcProductModel>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -289,8 +296,10 @@ class ShopHomeViewModel @Inject constructor(
             val addToCartSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCart(shopId, product)
             }
-            if (addToCartSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE)
+            if (addToCartSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCart(addToCartSubmitData.data)
+                checkShouldCreateAffiliateCookieAtcProduct(ShopPageAtcTracker.AtcType.ADD, product)
+            }
             else
                 onErrorAddToCart(MessageErrorException(addToCartSubmitData.data.message.first()))
         }) {
@@ -308,8 +317,10 @@ class ShopHomeViewModel @Inject constructor(
             val addToCartOccSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCartOcc(shopId, product)
             }
-            if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE)
+            if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCartOcc(addToCartOccSubmitData.data)
+                checkShouldCreateAffiliateCookieAtcProduct(ShopPageAtcTracker.AtcType.ADD, product)
+            }
             else
                 onErrorAddToCartOcc(MessageErrorException(addToCartOccSubmitData.data.message.first()))
         }) {
@@ -481,7 +492,8 @@ class ShopHomeViewModel @Inject constructor(
             shopId,
             productName = product.name,
             price = product.displayedPrice,
-            userId = userId
+            userId = userId,
+            atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
         )
         return addToCartUseCaseRx.createObservable(requestParams).toBlocking().first()
     }
@@ -958,10 +970,12 @@ class ShopHomeViewModel @Inject constructor(
         val addToCartRequestParams = com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase.getMinimumParams(
             productId = shopHomeProductUiModel.id,
             shopId = shopId,
-            quantity = quantity
+            quantity = quantity,
+            atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            val atcType = ShopPageAtcTracker.AtcType.ADD
             trackAddToCart(
                 it.data.cartId,
                 it.data.productId.toString(),
@@ -969,9 +983,10 @@ class ShopHomeViewModel @Inject constructor(
                 shopHomeProductUiModel.displayedPrice,
                 shopHomeProductUiModel.isVariant,
                 it.data.quantity,
-                ShopPageAtcTracker.AtcType.ADD,
+                atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopHomeProductUiModel)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -1012,10 +1027,27 @@ class ShopHomeViewModel @Inject constructor(
                 atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopHomeProductUiModel)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
+    }
+
+    private fun checkShouldCreateAffiliateCookieAtcProduct(
+        atcType: ShopPageAtcTracker.AtcType,
+        shopHomeProductUiModel: ShopHomeProductUiModel
+    ) {
+        when (atcType) {
+            ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
+                _createAffiliateCookieAtcProduct.postValue(AffiliateAtcProductModel(
+                    shopHomeProductUiModel.id,
+                    shopHomeProductUiModel.isVariant,
+                    shopHomeProductUiModel.stock
+                ))
+            }
+            else -> {}
+        }
     }
 
     private fun removeItemCart(
@@ -1184,5 +1216,9 @@ class ShopHomeViewModel @Inject constructor(
             componentName
         )
         _shopPageAtcTracker.postValue(shopPageAtcTracker)
+    }
+
+    fun isWidgetBundle(data: ShopPageWidgetLayoutUiModel): Boolean {
+        return data.widgetType == WidgetType.BUNDLE
     }
 }

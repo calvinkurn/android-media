@@ -116,6 +116,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerCastExt
+    implementation rootProject.ext.playServicesDependencies.cast
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 

@@ -19,7 +19,9 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
         val newItem = newList[newItemPosition]
 
         return if (oldItem is HomeProductRecomUiModel && newItem is HomeProductRecomUiModel) {
-            oldItem.recomWidget == newItem.recomWidget
+            oldItem.id == newItem.id
+        } else if (oldItem is HomeLeftCarouselAtcUiModel && newItem is HomeLeftCarouselAtcUiModel) {
+            oldItem.id == newItem.id
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
         } else if (oldItem is TokoNowRepurchaseUiModel && newItem is TokoNowRepurchaseUiModel) {
@@ -28,10 +30,6 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
             oldItem.id == newItem.id
         } else if (oldItem is HomeSharingReferralWidgetUiModel && newItem is HomeSharingReferralWidgetUiModel) {
             oldItem.id == newItem.id
-        } else if (oldItem is HomeLeftCarouselAtcUiModel && newItem is HomeLeftCarouselAtcUiModel) {
-            oldItem.id == newItem.id
-        } else if (oldItem is HomeLayoutUiModel && newItem is HomeLayoutUiModel) {
-            oldItem.visitableId == newItem.visitableId
         } else {
             oldItem == newItem
         }
@@ -39,6 +37,17 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition] == newList[newItemPosition]
+    }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        return if (oldItem is HomeLayoutUiModel && newItem is HomeLayoutUiModel) {
+            oldItem.getChangePayload(newItem)
+        } else {
+            super.getChangePayload(oldItemPosition, newItemPosition)
+        }
     }
 
     override fun getOldListSize() = oldList.size

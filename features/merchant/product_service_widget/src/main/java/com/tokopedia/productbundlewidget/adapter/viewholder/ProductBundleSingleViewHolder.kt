@@ -138,7 +138,8 @@ class ProductBundleSingleViewHolder(
             bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
             bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
             bundleDetail.totalSold.isZero() -> ""
-            else -> itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+            else -> itemView.context.getString(R.string.product_bundle_bundle_sold,
+                bundleDetail.totalSold.toString())
         }
     }
 

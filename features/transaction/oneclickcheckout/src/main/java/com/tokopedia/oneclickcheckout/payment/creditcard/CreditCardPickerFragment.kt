@@ -60,7 +60,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                 domStorageEnabled = true
                 builtInZoomControls = false
                 displayZoomControls = true
-                setAppCacheEnabled(true)
+//                setAppCacheEnabled(true)
             }
             webView.webViewClient = PaymentMethodWebViewClient()
             webSettings?.mediaPlaybackRequiresUserGesture = false

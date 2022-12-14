@@ -7,13 +7,13 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryAisleViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryChooseAddressViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
@@ -23,6 +23,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleList
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
 
 class CategoryTypeFactoryImpl(
     tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
@@ -38,7 +39,8 @@ class CategoryTypeFactoryImpl(
     recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridListener,
     private val tokoNowProductCardListener: TokoNowProductCardListener,
-    private val recomWidgetBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?
+    private val recomWidgetBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?,
+    feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ): BaseSearchCategoryTypeFactoryImpl(
         tokoNowEmptyStateOocListener,
         chooseAddressListener,
@@ -50,7 +52,8 @@ class CategoryTypeFactoryImpl(
         switcherWidgetListener,
         tokoNowEmptyStateNoResultListener,
         recommendationCarouselListener,
-        recomWidgetBindPageNameListener
+        recomWidgetBindPageNameListener,
+        feedbackWidgetListener
 ), CategoryTypeFactory {
 
     override fun type(categoryAisleDataView: CategoryAisleDataView) = CategoryAisleViewHolder.LAYOUT

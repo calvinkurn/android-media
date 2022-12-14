@@ -127,7 +127,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
-        webSettings.setAppCacheEnabled(false);
+//        webSettings.setAppCacheEnabled(false);
         MethodChecker.setAllowMixedContent(webSettings);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
     }

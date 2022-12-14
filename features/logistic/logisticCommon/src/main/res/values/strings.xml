@@ -5,4 +5,5 @@
     <string name="delayed_eta_bottomsheet_title">Perubahan estimasi tiba pesananmu</string>
     <string name="delayed_eta_bottomsheet_description"><![CDATA[Hai Toppers, saat ini pesananmu sudah dalam perjalanan. Tetapi, ada keterlambatan sehingga pesananmu baru akan tiba %1$s. Kami meminta maaf & tetap berusaha agar barangmu bisa tiba secepatnya.]]></string>
     <string name="delayed_eta_bottomsheet_button_title">Mengerti</string>
+    <string name="gms_unavailable_error">Oops, perangkat kamu belum mendukung pinpoint.</string>
 </resources>

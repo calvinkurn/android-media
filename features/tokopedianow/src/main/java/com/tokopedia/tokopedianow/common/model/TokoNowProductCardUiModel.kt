@@ -7,6 +7,7 @@ import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 
 data class TokoNowProductCardUiModel(
+    val channelId: String,
     val productId: String,
     val shopId: String,
     val quantity: Int,

@@ -48,7 +48,7 @@ object TopadsFeedXMapper {
             appLink = data?.applinks ?: "",
             badgeURL = data?.cpm?.badges?.firstOrNull()?.imageUrl ?: "",
             description = data?.cpm?.decription ?: "",
-            id = data?.id ?: "",
+            id = data?.cpm?.cpmShop?.id ?: "",
             logoURL = data?.cpm?.cpmImage?.fullEcs ?: "",
             name = authorName,
             type = 2,
@@ -71,8 +71,6 @@ object TopadsFeedXMapper {
             mods = listOf(),
             transitionFollow = cpmData.data.firstOrNull()?.cpm?.cpmShop?.isFollowed ?: false
         )
-
-
 
         return FeedXCard(
             typename = TYPE_TOPADS_HEADLINE_NEW,

@@ -90,12 +90,14 @@ import com.tokopedia.wishlist.databinding.FragmentWishlistCollectionDetailBindin
 import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_ADD_ITEM_TO_COLLECTION
+import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_ADD_WISHLIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_DELETE_WISHLIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
+import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2CleanerBottomSheetAdapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -104,6 +106,7 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2CleanerBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics.sendClickShareButtonCollectionEvent
 import com.tokopedia.wishlistcollection.data.params.*
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
@@ -116,10 +119,17 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_SHOW
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_SHOW_CLEANER_BOTTOMSHEET
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_SHARING
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_PRIVATE_SELF
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_PUBLIC_OTHERS
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_PUBLIC_SELF
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.getStringCollectionType
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
@@ -130,8 +140,12 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistColl
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -143,10 +157,14 @@ import kotlin.math.roundToInt
 import com.tokopedia.wishlist.R as Rv2
 
 @Keep
-class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener,
-    CoroutineScope, BottomSheetUpdateWishlistCollectionName.ActionListener,
+class WishlistCollectionDetailFragment :
+    BaseDaggerFragment(),
+    WishlistV2Adapter.ActionListener,
+    CoroutineScope,
+    BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetWishlistCollectionAdapter.ActionListener,
-    BottomSheetAddCollectionWishlist.ActionListener, ActionListenerFromPdp,
+    BottomSheetAddCollectionWishlist.ActionListener,
+    ActionListenerFromPdp,
     ActionListenerBottomSheetMenu {
     private var binding by autoClearedNullable<FragmentWishlistCollectionDetailBinding>()
     private lateinit var collectionItemsAdapter: WishlistV2Adapter
@@ -162,6 +180,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var newCollectionDetailTitle = ""
     private var isBulkDeleteShow = false
     private var isBulkAddShow = false
+    private var isBulkAddFromOtherCollectionShow = false
+    private var isShowingCleanerBottomSheet = false
+    private var listSelectedProductIdsFromOtherCollection = arrayListOf<String>()
     private var listSelectedProductIds = arrayListOf<String>()
     private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
     private lateinit var trackingQueue: TrackingQueue
@@ -201,6 +222,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var toolbarDesc = ""
     private val coachMarkItemSharingIcon = ArrayList<CoachMark2Item>()
     private var coachMarkSharingIcon: CoachMark2? = null
+    private var _currCheckCollectionType = 0
+    private var _maxBulk = 0L
+    private var _toasterMaxBulk = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -231,20 +255,30 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             return WishlistCollectionDetailFragment().apply {
                 arguments = bundle.apply {
                     putString(
-                        ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID, this.getString(
+                        ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID,
+                        this.getString(
                             ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID
                         )
                     )
                     putString(
-                        EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, this.getString(
+                        EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL,
+                        this.getString(
                             EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
                         )
                     )
                     putBoolean(EXTRA_IS_BULK_ADD, this.getBoolean(EXTRA_IS_BULK_ADD))
-                    putString(EXTRA_COLLECTION_ID_DESTINATION, this.getString(
-                        EXTRA_COLLECTION_ID_DESTINATION))
-                    putString(EXTRA_COLLECTION_NAME_DESTINATION, this.getString(
-                        EXTRA_COLLECTION_NAME_DESTINATION))
+                    putString(
+                        EXTRA_COLLECTION_ID_DESTINATION,
+                        this.getString(
+                            EXTRA_COLLECTION_ID_DESTINATION
+                        )
+                    )
+                    putString(
+                        EXTRA_COLLECTION_NAME_DESTINATION,
+                        this.getString(
+                            EXTRA_COLLECTION_NAME_DESTINATION
+                        )
+                    )
                 }
             }
         }
@@ -274,17 +308,23 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val SRC_WISHLIST = "wishlist"
+        private const val SRC_WISHLIST_SHARING = "sharing"
         private const val SRC_WISHLIST_PAGE = "wishlist page"
         private const val OPTION_CLEANER_MANUAL = "sendiri"
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
         private const val TOTAL_LOADER = 5
         private const val COLLECTION_ITEMS_EMPTY = "COLLECTION_ITEMS_EMPTY"
-        private const val TYPE_COLLECTION_PRIVATE_SELF = 1
-        private const val TYPE_COLLECTION_SHARE = "2"
-        private const val TYPE_COLLECTION_PUBLIC_SELF = 3
-        private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
         private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 1888
         private const val COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE = "coachmark-wishlist-sharing-icon-detail-page"
+        private const val CHECK_COLLECTION_TYPE_FOR_SHOWING_PILIH_BARANG = 1
+        private const val CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE = 2
+        private const val CHECK_COLLECTION_TYPE_FOR_DIALOG_CONFIRMATION = 3
+        private const val ERROR_GENERAL_SYSTEM_FAILURE_ADD_BULK = 1L
+        private const val ERROR_MAX_QTY_FAILURE_ADD_BULK = 2L
+        private const val ERROR_PARTIAL_MAX_QTY_VALIDATION_FAILURE_ADD_BULK = 3L
+        private const val ERROR_COLLECTION_IS_PRIVATE_ADD_BULK = 4L
+        private const val ERROR_MAX_BULK_VALIDATION_FAILURE = 5L
+        private const val COLLECTION_ID_SEMUA_WISHLIST = "0"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -355,6 +395,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         observeSavingItemToCollections()
         observeUpdateAccessWishlistCollection()
         observeGetCollectionSharingData()
+        observingCollectionType()
+        observingAddWishlistBulk()
     }
 
     private fun observingDeleteProgress() {
@@ -438,8 +480,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         } else {
                             var errorMessage =
                                 context?.getString(Rv2.string.wishlist_v2_common_error_msg)
-                            if (deleteCollectionItems.data.message.isNotEmpty()) errorMessage =
-                                deleteCollectionItems.data.message
+                            if (deleteCollectionItems.data.message.isNotEmpty()) {
+                                errorMessage =
+                                    deleteCollectionItems.data.message
+                            }
                             errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                         }
                     }
@@ -486,14 +530,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 binding?.run { rvWishlistCollectionDetail.scrollToPosition(0) }
                             }
                             setSwipeRefreshLayout()
-
                         } else {
                             listSelectedProductIds.clear()
                             finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
                             var errorMessage =
                                 context?.getString(Rv2.string.wishlist_v2_common_error_msg)
-                            if (bulkDeleteWishlistV2.message.isNotEmpty()) errorMessage =
-                                bulkDeleteWishlistV2.message
+                            if (bulkDeleteWishlistV2.message.isNotEmpty()) {
+                                errorMessage =
+                                    bulkDeleteWishlistV2.message
+                            }
                             errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                         }
                     }
@@ -573,9 +618,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 showSearchBar()
                                 showFilter()
                             }
-                            if (!collectionDetail.showDeleteProgress) updateTotalLabel(
-                                collectionDetail.totalData
-                            )
+                            if (!collectionDetail.showDeleteProgress) {
+                                updateTotalLabel(
+                                    collectionDetail.totalData
+                                )
+                            }
                         }
 
                         toolbarTitle = collectionDetail.headerTitle
@@ -585,7 +632,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             if (collectionDetail.description.isNotEmpty()) {
                                 isToolbarHasDesc = true
                                 toolbarDesc = collectionDetail.description
-                                updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
+                                if (!isBulkAddFromOtherCollectionShow) updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
                             } else {
                                 updateToolbarTitle(toolbarTitle)
                             }
@@ -607,10 +654,16 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
                         collectionType = collectionDetail.collectionType
                         if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
-                            hideGearIcon()
+                            checkCollectionType(CHECK_COLLECTION_TYPE_FOR_SHOWING_PILIH_BARANG)
                         }
                         setupIconToolbar()
                         listSettingButtons = collectionDetail.setting.buttons
+                        _maxBulk = collectionDetail.addWishlistBulkConfig.maxBulk
+                        _toasterMaxBulk = collectionDetail.addWishlistBulkConfig.addWishlistBulkToaster.message
+
+                        if (isShowingCleanerBottomSheet && collectionDetail.storageCleanerBottomsheet.title.isNotEmpty()) {
+                            showBottomSheetCleaner(WishlistV2Utils.mapToStorageCleanerBottomSheet(collectionDetail.storageCleanerBottomsheet))
+                        }
                     }
                 }
                 is Fail -> {
@@ -719,6 +772,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             intent.putExtra(WishlistCollectionConsts.EXTRA_NEED_REFRESH, true)
                             activity?.setResult(Activity.RESULT_OK, intent)
                             activity?.finish()
+                        } else if (isBulkAddFromOtherCollectionShow) {
+                            isBulkAddFromOtherCollectionShow = false
+                            showToasterActionLihat(result.data.dataItem.message, Toaster.TYPE_NORMAL, result.data.dataItem.collectionId)
                         }
                     } else {
                         val errorMessage = if (result.data.errorMessage.isNotEmpty()) {
@@ -775,7 +831,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                     userId = userSession.userId,
                                     view = view,
                                     childFragmentManager = childFragmentManager,
-                                    fragment = this@WishlistCollectionDetailFragment)
+                                    fragment = this@WishlistCollectionDetailFragment
+                                )
                             }
                         }
                     } else {
@@ -790,6 +847,105 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
+    private fun observingCollectionType() {
+        wishlistCollectionDetailViewModel.collectionType.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    collectionType = result.data.collectionType
+                    if (result.data.collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        when (_currCheckCollectionType) {
+                            CHECK_COLLECTION_TYPE_FOR_SHOWING_PILIH_BARANG -> {
+                                if (!isBulkAddFromOtherCollectionShow) showSelectItemsOption()
+                            }
+                            CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE -> {
+                                turnOnBulkAddFromOtherCollectionsMode()
+                            }
+                            CHECK_COLLECTION_TYPE_FOR_DIALOG_CONFIRMATION -> {
+                                showBulkAddFromOtherCollectionConfirmationDialog()
+                            }
+                            else -> {
+                                if (!isBulkAddFromOtherCollectionShow) showSelectItemsOption()
+                            }
+                        }
+                    } else {
+                        doRefresh()
+                    }
+                }
+                is Fail -> {
+                    doRefresh()
+                }
+            }
+        }
+    }
+
+    private fun observingAddWishlistBulk() {
+        wishlistCollectionDetailViewModel.addWishlistBulkResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.success) {
+                        showBottomSheetCollection(
+                            childFragmentManager,
+                            listSelectedProductIdsFromOtherCollection.joinToString(),
+                            SRC_WISHLIST_COLLECTION_SHARING
+                        )
+                    } else {
+                        when (result.data.errorType) {
+                            ERROR_GENERAL_SYSTEM_FAILURE_ADD_BULK -> {
+                                showIndefiniteToasterWithCTA(
+                                    message = result.data.message,
+                                    actionText = result.data.button.text,
+                                    type = Toaster.TYPE_ERROR
+                                ) { doAddWishlistBulk() }
+                            }
+
+                            ERROR_MAX_QTY_FAILURE_ADD_BULK -> {
+                                showToasterWithCTA(
+                                    message = result.data.message,
+                                    actionText = result.data.button.text,
+                                    type = Toaster.TYPE_ERROR
+                                ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
+                            }
+
+                            ERROR_PARTIAL_MAX_QTY_VALIDATION_FAILURE_ADD_BULK -> {
+                                showToasterWithCTA(
+                                    message = result.data.message,
+                                    actionText = result.data.button.text,
+                                    type = Toaster.TYPE_ERROR
+                                ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
+                            }
+
+                            ERROR_COLLECTION_IS_PRIVATE_ADD_BULK -> {
+                                doRefresh()
+                            }
+
+                            ERROR_MAX_BULK_VALIDATION_FAILURE -> {
+                                showToasterActionOke(
+                                    message = result.data.message,
+                                    type = Toaster.TYPE_ERROR
+                                )
+                            }
+                        }
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+
+                    val labelError = String.format(
+                        getString(Rv2.string.on_error_observing_add_bulk_wishlist_string_builder),
+                        userSession.userId ?: "",
+                        errorMessage,
+                        result.throwable.message ?: ""
+                    )
+                    // log error type to newrelic
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
+                    // log to crashlytics
+                    logToCrashlytics(labelError, result.throwable)
                 }
             }
         }
@@ -842,8 +998,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         var errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
         } ?: ""
-        if (errorMessage.isEmpty()) errorMessage =
-            getString(Rv2.string.wishlist_v2_failed_to_get_information)
+        if (errorMessage.isEmpty()) {
+            errorMessage =
+                getString(Rv2.string.wishlist_v2_failed_to_get_information)
+        }
         setDescription(errorMessage)
     }
 
@@ -934,7 +1092,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
         }
@@ -944,6 +1102,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         collectionId =
             arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID) ?: ""
         isBulkAddShow = arguments?.getBoolean(EXTRA_IS_BULK_ADD) ?: false
+        isShowingCleanerBottomSheet = arguments?.getBoolean(EXTRA_IS_SHOW_CLEANER_BOTTOMSHEET) ?: false
         collectionIdDestination = arguments?.getString(EXTRA_COLLECTION_ID_DESTINATION) ?: ""
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
         paramGetCollectionItems.collectionId = collectionId
@@ -1031,15 +1190,19 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 )
             )
         }
-        if (coachMarkSharingIcon == null)
+        if (coachMarkSharingIcon == null) {
             coachMarkSharingIcon = CoachMark2(requireContext())
+        }
 
         coachMarkSharingIcon?.let {
             if (!it.isShowing) {
                 it.showCoachMark(coachMarkItemSharingIcon, null)
             }
-            CoachMarkPreference.setShown(requireContext(),
-                COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE, true)
+            CoachMarkPreference.setShown(
+                requireContext(),
+                COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE,
+                true
+            )
         }
     }
 
@@ -1051,9 +1214,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder().apply {
                     if (WishlistV2RemoteConfigRollenceUtil.isEnableRollenceWishlistSharing()) {
-                        if (collectionType == TYPE_COLLECTION_PRIVATE_SELF
-                            || collectionType == TYPE_COLLECTION_PUBLIC_SELF
-                            || collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
+                            collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
+                            collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
+                        ) {
                             addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
                         }
                     }
@@ -1092,6 +1256,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun handleCollectionSharing() {
+        sendClickShareButtonCollectionEvent(collectionId, collectionType.getStringCollectionType(), userSession.userId)
         if (collectionType == TYPE_COLLECTION_PRIVATE_SELF) {
             showDialogSharePermission()
         } else {
@@ -1135,7 +1300,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         val params = UpdateWishlistCollectionParams(
             id = collectionId.toLongOrZero(),
             name = collectionName,
-            access = TYPE_COLLECTION_SHARE.toLongOrZero()
+            access = TYPE_COLLECTION_SHARE.toLong()
         )
         wishlistCollectionDetailViewModel.updateAccessWishlistCollection(params)
     }
@@ -1352,7 +1517,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         paramGetCollectionItems.inCollection = inCollection*/
         paramGetCollectionItems.page = currPage
         wishlistCollectionDetailViewModel.getWishlistCollectionItems(
-            paramGetCollectionItems, wishlistPref?.getTypeLayout(),
+            paramGetCollectionItems,
+            wishlistPref?.getTypeLayout(),
             paramGetCollectionItems.source == SOURCE_AUTOMATIC_DELETION
         )
     }
@@ -1643,7 +1809,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 paramGetCollectionItems.sortFilters.removeAll { it.name == name }
                 paramGetCollectionItems.sortFilters.add(
                     GetWishlistCollectionItemsParams.WishlistSortFilterParam(
-                        name = filterItem.name, selected = arrayListOf(optionId)
+                        name = filterItem.name,
+                        selected = arrayListOf(optionId)
                     )
                 )
                 doRefresh()
@@ -1763,53 +1930,109 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
         bottomSheetThreeDotsMenu.setAdapter(threeDotsMenuBottomSheetAdapter)
         bottomSheetThreeDotsMenu.setListener(object :
-            WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener {
-            override fun onThreeDotsMenuItemSelected(
-                wishlistItem: WishlistV2UiModel.Item,
-                additionalItem: WishlistV2UiModel.Item.Buttons.AdditionalButtonsItem
-            ) {
-                bottomSheetThreeDotsMenu.dismiss()
-                if (additionalItem.url.isNotEmpty()) {
-                    RouteManager.route(context, additionalItem.url)
-                } else {
-                    when (additionalItem.action) {
-                        SHARE_LINK_PRODUCT -> {
-                            showShareBottomSheet(wishlistItem)
-                            WishlistV2Analytics.clickShareLinkProduct(
-                                wishlistId = wishlistItem.wishlistId,
-                                productId = wishlistItem.id, userId = userSession.userId
-                            )
-                        }
-                        MENU_DELETE_WISHLIST -> {
-                            if (paramGetCollectionItems.collectionId == "0") {
-                                showDeleteConfirmationDialog(wishlistItem.id)
-                            } else {
-                                showDeleteCollectionItemConfirmationDialog(
-                                    countDelete,
-                                    wishlistItem.id
+                WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener {
+                override fun onThreeDotsMenuItemSelected(
+                    wishlistItem: WishlistV2UiModel.Item,
+                    additionalItem: WishlistV2UiModel.Item.Buttons.AdditionalButtonsItem
+                ) {
+                    bottomSheetThreeDotsMenu.dismiss()
+                    if (additionalItem.url.isNotEmpty()) {
+                        RouteManager.route(context, additionalItem.url)
+                    } else {
+                        when (additionalItem.action) {
+                            SHARE_LINK_PRODUCT -> {
+                                showShareBottomSheet(wishlistItem)
+                                WishlistV2Analytics.clickShareLinkProduct(
+                                    wishlistId = wishlistItem.wishlistId,
+                                    productId = wishlistItem.id,
+                                    userId = userSession.userId
                                 )
                             }
+                            MENU_DELETE_WISHLIST -> {
+                                if (paramGetCollectionItems.collectionId == "0") {
+                                    showDeleteConfirmationDialog(wishlistItem.id)
+                                } else {
+                                    showDeleteCollectionItemConfirmationDialog(
+                                        countDelete,
+                                        wishlistItem.id
+                                    )
+                                }
+                            }
+                            MENU_ADD_ITEM_TO_COLLECTION -> {
+                                showWishlistCollectionHostBottomSheetActivity(wishlistItem, false)
+                            }
+                            MENU_ADD_WISHLIST -> {
+                                addToWishlist(wishlistItem, userSession.userId, collectionId)
+                            }
                         }
-                        MENU_ADD_ITEM_TO_COLLECTION -> {
-                            val applinkCollection =
-                                "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
-                            val intentBottomSheetWishlistCollection =
-                                RouteManager.getIntent(context, applinkCollection)
-                            intentBottomSheetWishlistCollection.putExtra(
-                                IS_PRODUCT_ACTIVE,
-                                wishlistItem.available
-                            )
-                            startActivityForResult(
-                                intentBottomSheetWishlistCollection,
-                                ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
-                            )
+                    }
+                    WishlistCollectionAnalytics.sendClickOptionOnThreeDotMenuEvent(additionalItem.text)
+                }
+            })
+        bottomSheetThreeDotsMenu.show(childFragmentManager)
+    }
+
+    private fun showWishlistCollectionHostBottomSheetActivity(wishlistItem: WishlistV2UiModel.Item, checkSourceWishlist: Boolean) {
+        var applinkCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}"
+        applinkCollection += if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS && checkSourceWishlist) {
+            "&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST_SHARING"
+        } else {
+            "&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
+        }
+        val intentBottomSheetWishlistCollection =
+            RouteManager.getIntent(context, applinkCollection)
+        intentBottomSheetWishlistCollection.putExtra(
+            IS_PRODUCT_ACTIVE,
+            wishlistItem.available
+        )
+        startActivityForResult(
+            intentBottomSheetWishlistCollection,
+            ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
+        )
+    }
+
+    private fun addToWishlist(wishlistItem: WishlistV2UiModel.Item, userId: String, collectionId: String) {
+        wishlistCollectionDetailViewModel.addWishListV2(
+            productId = wishlistItem.id,
+            userId = userId,
+            listener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                    showToasterActionOke(
+                        message = errorMessage,
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    if (result.success) {
+                        showWishlistCollectionHostBottomSheetActivity(wishlistItem, true)
+                    } else {
+                        showToasterWithCTA(
+                            message = result.message,
+                            actionText = result.button.text,
+                            type = Toaster.TYPE_ERROR
+                        ) {
+                            if (result.button.action == OPEN_WISHLIST) {
+                                goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST)
+                            }
                         }
                     }
                 }
-                WishlistCollectionAnalytics.sendClickOptionOnThreeDotMenuEvent(additionalItem.text)
-            }
-        })
-        bottomSheetThreeDotsMenu.show(childFragmentManager)
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {}
+            },
+            sourceCollectionId = collectionId
+        )
     }
 
     private fun showBulkAddConfirmationDialog() {
@@ -1827,6 +2050,34 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             WishlistV2Analytics.clickBatalOnPopUpMultipleWishlistProduct()
         }
         dialog?.show()
+    }
+
+    private fun showBulkAddFromOtherCollectionConfirmationDialog() {
+        val dialog =
+            context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(getString(Rv2.string.collection_item_add_bulk_from_other_collection_confirmation_title, listSelectedProductIdsFromOtherCollection.size))
+        dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_save_label))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            doAddWishlistBulk()
+        }
+        dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog?.show()
+    }
+
+    private fun doAddWishlistBulk() {
+        val paramCollectionSharing = AddWishlistBulkParams.CollectionSharing(
+            sourceCollectionId = collectionId
+        )
+        val addBulkParams = AddWishlistBulkParams(
+            listProductId = listSelectedProductIdsFromOtherCollection,
+            userId = userSession.userId,
+            collectionSharing = paramCollectionSharing
+        )
+        wishlistCollectionDetailViewModel.addWishlistBulk(addBulkParams)
     }
 
     private fun doSaveBulkItems() {
@@ -1950,32 +2201,34 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
         bottomSheetCleaner.setAdapter(cleanerAdapter)
         bottomSheetCleaner.setListener(object :
-            WishlistV2CleanerBottomSheet.BottomsheetCleanerListener {
-            override fun onButtonCleanerClicked(index: Int) {
-                if (index == 0 || index == -1) {
-                    // manual
-                    isAutoDeletion = false
-                    bulkDeleteMode = 1
-                    bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams()
-                } else if (index == 1) {
-                    // auto
-                    isAutoDeletion = true
-                    bulkDeleteMode = 2
-                    paramGetCollectionItems.source = SOURCE_AUTOMATIC_DELETION
+                WishlistV2CleanerBottomSheet.BottomsheetCleanerListener {
+                override fun onButtonCleanerClicked(index: Int) {
+                    if (index == 0 || index == -1) {
+                        // manual
+                        isAutoDeletion = false
+                        bulkDeleteMode = 1
+                        bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams()
+                    } else if (index == 1) {
+                        // auto
+                        isAutoDeletion = true
+                        bulkDeleteMode = 2
+                        paramGetCollectionItems.source = SOURCE_AUTOMATIC_DELETION
+                    }
+                    WishlistCollectionAnalytics.sendClickLihatBarangButtonOnCleanerBottomsheetEvent(
+                        if (index == 1) OPTION_CLEANER_AUTOMATIC else OPTION_CLEANER_MANUAL
+                    )
+                    onTickerCTASortFromLatest()
+                    turnOnBulkDeleteMode(true)
+                    view?.let {
+                        Toaster.build(
+                            it,
+                            getString(Rv2.string.wishlist_v2_terlama_disimpan),
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_NORMAL
+                        ).show()
+                    }
                 }
-                WishlistCollectionAnalytics.sendClickLihatBarangButtonOnCleanerBottomsheetEvent(
-                    if (index == 1) OPTION_CLEANER_AUTOMATIC else OPTION_CLEANER_MANUAL
-                )
-                onTickerCTASortFromLatest()
-                turnOnBulkDeleteMode(true)
-                view?.let {
-                    Toaster.build(
-                        it, getString(Rv2.string.wishlist_v2_terlama_disimpan),
-                        Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL
-                    ).show()
-                }
-            }
-        })
+            })
         bottomSheetCleaner.show(childFragmentManager)
     }
 
@@ -1984,56 +2237,64 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         val shareListener = object : ShareBottomsheetListener {
 
             override fun onShareOptionClicked(shareModel: ShareModel) {
-                val linkerShareResult = DataMapper.getLinkerShareData(LinkerData().apply {
-                    type = LinkerData.PRODUCT_TYPE
-                    uri = wishlistItem.url
-                    id = wishlistItem.id
-                    feature = shareModel.feature
-                    channel = shareModel.channel
-                    campaign = shareModel.campaign
-                    ogTitle = "${wishlistItem.name} - ${wishlistItem.priceFmt}"
-                    ogDescription = wishlistItem.shop.name
-                    if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
-                        ogImageUrl = shareModel.ogImgUrl
+                val linkerShareResult = DataMapper.getLinkerShareData(
+                    LinkerData().apply {
+                        type = LinkerData.PRODUCT_TYPE
+                        uri = wishlistItem.url
+                        id = wishlistItem.id
+                        feature = shareModel.feature
+                        channel = shareModel.channel
+                        campaign = shareModel.campaign
+                        ogTitle = "${wishlistItem.name} - ${wishlistItem.priceFmt}"
+                        ogDescription = wishlistItem.shop.name
+                        if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                            ogImageUrl = shareModel.ogImgUrl
+                        }
                     }
-                })
+                )
 
                 LinkerManager.getInstance().executeShareRequest(
-                    LinkerUtils.createShareRequest(0, linkerShareResult, object : ShareCallback {
-                        override fun urlCreated(linkerShareResult: LinkerShareResult?) {
-                            val shareString = getString(
-                                Rv2.string.wishlist_v2_share_text,
-                                wishlistItem.name, wishlistItem.priceFmt,
-                                wishlistItem.shop.name
-                            ) + "\n${linkerShareResult?.url}"
-                            shareModel.subjectName = userSession.shopName
-                            SharingUtil.executeShareIntent(
-                                shareModel,
-                                linkerShareResult,
-                                activity,
-                                view,
-                                shareString
-                            )
-                            shareModel.channel?.let { ch ->
-                                WishlistV2Analytics.clickSharingChannel(
-                                    wishlistId = wishlistItem.wishlistId,
-                                    productId = wishlistItem.id,
-                                    userId = userSession.userId,
-                                    channel = ch
+                    LinkerUtils.createShareRequest(
+                        0,
+                        linkerShareResult,
+                        object : ShareCallback {
+                            override fun urlCreated(linkerShareResult: LinkerShareResult?) {
+                                val shareString = getString(
+                                    Rv2.string.wishlist_v2_share_text,
+                                    wishlistItem.name,
+                                    wishlistItem.priceFmt,
+                                    wishlistItem.shop.name
+                                ) + "\n${linkerShareResult?.url}"
+                                shareModel.subjectName = userSession.shopName
+                                SharingUtil.executeShareIntent(
+                                    shareModel,
+                                    linkerShareResult,
+                                    activity,
+                                    view,
+                                    shareString
                                 )
+                                shareModel.channel?.let { ch ->
+                                    WishlistV2Analytics.clickSharingChannel(
+                                        wishlistId = wishlistItem.wishlistId,
+                                        productId = wishlistItem.id,
+                                        userId = userSession.userId,
+                                        channel = ch
+                                    )
+                                }
+                                universalShareBottomSheet?.dismiss()
                             }
-                            universalShareBottomSheet?.dismiss()
-                        }
 
-                        override fun onError(linkerError: LinkerError?) {}
-                    })
+                            override fun onError(linkerError: LinkerError?) {}
+                        }
+                    )
                 )
             }
 
             override fun onCloseOptionClicked() {
                 WishlistV2Analytics.clickCloseShareBottomSheet(
                     wishlistId = wishlistItem.wishlistId,
-                    productId = wishlistItem.id, userId = userSession.userId
+                    productId = wishlistItem.id,
+                    userId = userSession.userId
                 )
             }
         }
@@ -2048,8 +2309,23 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         universalShareBottomSheet.show(childFragmentManager, this@WishlistCollectionDetailFragment)
         WishlistV2Analytics.viewOnSharingChannel(
             wishlistId = wishlistItem.wishlistId,
-            productId = wishlistItem.id, userId = userSession.userId
+            productId = wishlistItem.id,
+            userId = userSession.userId
         )
+    }
+
+    private fun showToasterWithCTA(message: String, actionText: String, type: Int, listener: View.OnClickListener) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.build(v, message, Toaster.LENGTH_LONG, type, actionText, listener).show()
+        }
+    }
+
+    private fun showIndefiniteToasterWithCTA(message: String, actionText: String, type: Int, listener: View.OnClickListener) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.build(v, message, Toaster.LENGTH_INDEFINITE, type, actionText, listener).show()
+        }
     }
 
     private fun showToaster(message: String, actionText: String, type: Int) {
@@ -2100,6 +2376,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun goToWishlistCollection(collectionId: String) {
         val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
         intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, false)
+        startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_COLLECTION_DETAIL)
+    }
+
+    private fun goToWishlistCollectionDetailShowCleanerBottomSheet(collectionId: String) {
+        turnOffBulkAddFromOtherCollection()
+        val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
+        intentCollectionDetail.putExtra(EXTRA_IS_SHOW_CLEANER_BOTTOMSHEET, true)
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_COLLECTION_DETAIL)
     }
 
@@ -2209,7 +2492,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 RouteManager.route(it, recommendationItem.appUrl)
             } else {
                 val intent = RouteManager.getIntent(
-                    it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     recommendationItem.productId.toString()
                 )
                 startActivity(intent)
@@ -2275,7 +2559,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         paramGetCollectionItems.sortFilters.clear()
         paramGetCollectionItems.sortFilters.add(
             GetWishlistCollectionItemsParams.WishlistSortFilterParam(
-                name = FILTER_SORT, selected = listOptionIdSelected as ArrayList<String>
+                name = FILTER_SORT,
+                selected = listOptionIdSelected as ArrayList<String>
             )
         )
 
@@ -2334,17 +2619,21 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun setBottomButton() {
-        val showButton = listSelectedProductIds.isNotEmpty()
+        val showButton = listSelectedProductIds.isNotEmpty() || listSelectedProductIdsFromOtherCollection.isNotEmpty()
 
         if (showButton) {
             if (isBulkAddShow) {
                 setBulkAddButton()
+            } else if (isBulkAddFromOtherCollectionShow) {
+                setBulkAddFromOtherCollectionButton()
             } else {
                 setLabelDeleteButton()
             }
         } else {
             if (isBulkAddShow) {
                 setDefaultAddCollectionButton()
+            } else if (isBulkAddFromOtherCollectionShow) {
+                setDefaultAddCollectionFromOthersButton()
             } else {
                 setDefaultLabelDeleteButton()
             }
@@ -2359,6 +2648,26 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
         collectionItemsAdapter.setCheckbox(position, isChecked)
         setBottomButton()
+    }
+
+    override fun onValidateCheckBulkOption(productId: String, isChecked: Boolean, position: Int) {
+        if (!isChecked) {
+            if (validateCheckedItem()) {
+                listSelectedProductIdsFromOtherCollection.add(productId)
+                collectionItemsAdapter.setCheckbox(position, true)
+                setBottomButton()
+            } else {
+                showToasterActionOke(message = _toasterMaxBulk, Toaster.TYPE_ERROR)
+            }
+        } else {
+            listSelectedProductIdsFromOtherCollection.remove(productId)
+            collectionItemsAdapter.setCheckbox(position, false)
+            setBottomButton()
+        }
+    }
+
+    private fun validateCheckedItem(): Boolean {
+        return (listSelectedProductIdsFromOtherCollection.size < _maxBulk && _toasterMaxBulk.isNotEmpty())
     }
 
     private fun setLabelDeleteButton() {
@@ -2448,6 +2757,17 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    private fun setDefaultAddCollectionFromOthersButton() {
+        binding?.run {
+            bottomButtonLayout.visible()
+            containerDeleteCollectionDetail.gone()
+            containerDeleteSemuaWishlist.gone()
+            containerAddBulk.visible()
+            bulkAddButton.isEnabled = false
+            bulkAddButton.text = getString(Rv2.string.add_collection_bulk_from_other_collection_default_label)
+        }
+    }
+
     private fun hideBottomButtonLayout() {
         binding?.run { bottomButtonLayout.gone() }
     }
@@ -2478,8 +2798,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             containerDeleteCollectionDetail.visible()
             deleteButtonCollectionDetail.isEnabled = false
             deleteButtonCollectionDetail.text = getString(Rv2.string.wishlist_v2_delete_text)
-            if (collectionId == "0") deleteButtonCollectionDetail.buttonVariant =
-                UnifyButton.Variant.FILLED
+            if (collectionId == "0") {
+                deleteButtonCollectionDetail.buttonVariant =
+                    UnifyButton.Variant.FILLED
+            }
         }
     }
 
@@ -2500,6 +2822,29 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         )
                     setOnClickListener {
                         showBulkAddConfirmationDialog()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setBulkAddFromOtherCollectionButton() {
+        binding?.run {
+            containerDeleteSemuaWishlist.gone()
+            containerDeleteCollectionDetail.gone()
+            bottomButtonLayout.visible()
+            containerAddBulk.visible()
+            bulkAddButton.apply {
+                isEnabled = true
+                buttonVariant = UnifyButton.Variant.FILLED
+                if (listSelectedProductIdsFromOtherCollection.isNotEmpty()) {
+                    text =
+                        getString(
+                            Rv2.string.add_collection_bulk_from_other_collection_label,
+                            listSelectedProductIdsFromOtherCollection.size
+                        )
+                    setOnClickListener {
+                        checkCollectionType(CHECK_COLLECTION_TYPE_FOR_DIALOG_CONFIRMATION)
                     }
                 }
             }
@@ -2615,7 +2960,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun onCollectionSettingsClicked(collectionId: String, collectionName: String) {
         bottomSheetCollectionSettings =
-            BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId, listSettingButtons)
+            BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId, collectionType, listSettingButtons)
         bottomSheetCollectionSettings.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCollectionSettings.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetCollectionSettings.show(childFragmentManager)
@@ -2658,6 +3003,27 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         setDefaultAddCollectionButton()
     }
 
+    private fun turnOnBulkAddFromOtherCollectionsMode() {
+        binding?.run {
+            wishlistCollectionDetailStickyCountManageLabel.apply {
+                llAturDanLayout.visible().also {
+                    iconGearCollectionDetail.gone()
+                    wishlistCollectionSelectItemOption.gone()
+                    wishlistCollectionDetailManageLabel.visible()
+                    wishlistCollectionDetailManageLabel.text =
+                        getString(Rv2.string.wishlist_cancel_manage_label)
+                    wishlistCollectionDetailManageLabel.setOnClickListener {
+                        isBulkAddFromOtherCollectionShow = false
+                        turnOffBulkAddFromOtherCollection()
+                    }
+                }
+                llTotalBarang.visible()
+            }
+        }
+        onPilihBarangClicked()
+        updateCustomToolbarTitleAndSubTitle(getString(Rv2.string.collection_other_select_items_label, toolbarTitle), toolbarDesc)
+    }
+
     private fun turnOffBulkMode() {
         onManageClicked(showCheckbox = false, isDeleteOnly = false, isBulkAdd = false)
         binding?.run {
@@ -2688,8 +3054,25 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun turnOffBulkDeleteMode() {
         isBulkDeleteShow = false
         turnOffBulkMode()
-        if (isToolbarHasDesc) updateCustomToolbarTitleAndSubTitle(toolbarTitle, toolbarDesc)
-        else updateToolbarTitle(toolbarTitle)
+        if (isToolbarHasDesc) {
+            updateCustomToolbarTitleAndSubTitle(toolbarTitle, toolbarDesc)
+        } else {
+            updateToolbarTitle(toolbarTitle)
+        }
+    }
+
+    private fun onPilihBarangClicked() {
+        isBulkAddFromOtherCollectionShow = true
+        disableSwipeRefreshLayout()
+        listSelectedProductIds.clear()
+        collectionItemsAdapter.showCheckboxAddBulkFromOthers()
+        showSearchBar()
+        showFilter()
+        setBottomButton()
+        binding?.run {
+            wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
+            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.gone()
+        }
     }
 
     override fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean) {
@@ -2717,10 +3100,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         containerDeleteSemuaWishlist.visible()
                         deleteButtonCollection.apply {
                             isEnabled = isAutoDeletion
-                            text = if (isAutoDeletion) getString(
-                                Rv2.string.wishlist_v2_delete_text_counter,
-                                countRemovableAutomaticDelete
-                            ) else getString(Rv2.string.wishlist_v2_delete_text)
+                            text = if (isAutoDeletion) {
+                                getString(
+                                    Rv2.string.wishlist_v2_delete_text_counter,
+                                    countRemovableAutomaticDelete
+                                )
+                            } else {
+                                getString(Rv2.string.wishlist_v2_delete_text)
+                            }
                             if (isAutoDeletion) {
                                 setOnClickListener {
                                     bulkDeleteAdditionalParams =
@@ -2736,10 +3123,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
                         addButtonCollection.apply {
                             isEnabled = isAutoDeletion
-                            text = if (isAutoDeletion) getString(
-                                Rv2.string.add_collection_text_counter,
-                                countRemovableAutomaticDelete
-                            ) else getString(Rv2.string.add_collection_text)
+                            text = if (isAutoDeletion) {
+                                getString(
+                                    Rv2.string.add_collection_text_counter,
+                                    countRemovableAutomaticDelete
+                                )
+                            } else {
+                                getString(Rv2.string.add_collection_text)
+                            }
                             if (isAutoDeletion) {
                                 setOnClickListener {
                                     showBottomSheetCollection(
@@ -2785,10 +3176,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             deleteButtonCollectionDetail.apply {
                 isEnabled = isAutoDeletion
                 if (collectionId == "0") buttonVariant = UnifyButton.Variant.FILLED
-                text = if (isAutoDeletion) getString(
-                    Rv2.string.wishlist_v2_delete_text_counter,
-                    countRemovableAutomaticDelete
-                ) else getString(Rv2.string.wishlist_v2_delete_text)
+                text = if (isAutoDeletion) {
+                    getString(
+                        Rv2.string.wishlist_v2_delete_text_counter,
+                        countRemovableAutomaticDelete
+                    )
+                } else {
+                    getString(Rv2.string.wishlist_v2_delete_text)
+                }
                 if (isAutoDeletion) {
                     setOnClickListener {
                         bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(
@@ -2938,6 +3333,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun doRefresh() {
+        _currCheckCollectionType = 0
         isToolbarHasDesc = false
         listSelectedProductIds.clear()
         onLoadMore = false
@@ -2955,7 +3351,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         binding?.run {
             swipeRefreshLayout.isRefreshing = true
             wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
-            if (isBulkAddShow || isBulkDeleteShow) {
+            if (isBulkAddShow || isBulkDeleteShow || isBulkAddFromOtherCollectionShow) {
                 wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
                 wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.gone()
             } else {
@@ -3039,8 +3435,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
+        var listProductId = listSelectedProductIds
+        if (isBulkAddFromOtherCollectionShow) listProductId = listSelectedProductIdsFromOtherCollection
         val bottomSheetCreateCollection =
-            BottomSheetCreateNewCollectionWishlist.newInstance(listSelectedProductIds, SRC_WISHLIST_PAGE)
+            BottomSheetCreateNewCollectionWishlist.newInstance(listProductId, SRC_WISHLIST_PAGE)
         bottomSheetCreateCollection.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
@@ -3054,14 +3452,63 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    private fun showSelectItemsOption() {
+        binding?.run {
+            wishlistCollectionDetailStickyCountManageLabel.iconGearCollectionDetail.gone()
+            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionSelectItemOption.apply {
+                visible()
+                setOnClickListener {
+                    checkCollectionType(CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE)
+                }
+            }
+        }
+    }
+
+    private fun checkCollectionType(checkCollectionTypePurpose: Int) {
+        _currCheckCollectionType = checkCollectionTypePurpose
+        wishlistCollectionDetailViewModel.getWishlistCollectionType(collectionId)
+    }
+
+    private fun turnOffBulkAddFromOtherCollection() {
+        listSelectedProductIdsFromOtherCollection.clear()
+        isBulkAddFromOtherCollectionShow = false
+        if (isToolbarHasDesc) {
+            updateCustomToolbarTitleAndSubTitle(toolbarTitle, toolbarDesc)
+        } else {
+            updateToolbarTitle(toolbarTitle)
+        }
+
+        collectionItemsAdapter.hideCheckbox()
+        setSwipeRefreshLayout()
+        binding?.run {
+            containerDeleteSemuaWishlist.gone()
+            containerAddBulk.gone()
+            containerDeleteCollectionDetail.gone()
+            showSearchBar()
+            showFilter()
+            wishlistCollectionDetailStickyCountManageLabel.apply {
+                iconGearCollectionDetail.gone()
+                wishlistCollectionDetailManageLabel.gone()
+                wishlistDivider.visible()
+                wishlistCollectionDetailTypeLayoutIcon.visible()
+                wishlistCollectionSelectItemOption.visible()
+                wishlistCollectionSelectItemOption.setOnClickListener {
+                    checkCollectionType(CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE)
+                }
+            }
+        }
+    }
+
     override fun onCollectionItemClicked(name: String, id: String) {
+        var listProductId = listSelectedProductIds
+        if (isBulkAddFromOtherCollectionShow) listProductId = listSelectedProductIdsFromOtherCollection
         val addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(
             collectionId = id,
             collectionName = name,
-            productIds = listSelectedProductIds
+            productIds = listProductId
         )
         bottomSheetCollection.saveToCollection(addWishlistParam)
-        WishlistCollectionAnalytics.sendClickCollectionFolderEvent(id, listSelectedProductIds.toString(), SRC_WISHLIST)
+        WishlistCollectionAnalytics.sendClickCollectionFolderEvent(id, listProductId.toString(), SRC_WISHLIST)
     }
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
@@ -3103,8 +3550,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onSuccessSaveToNewCollection(dataItem: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems.DataItem) {
         showToasterActionLihat(dataItem.message, Toaster.TYPE_NORMAL, dataItem.collectionId)
-        turnOffBulkMode()
-        updateToolbarTitle(toolbarTitle)
+        if (!isBulkAddFromOtherCollectionShow) {
+            turnOffBulkMode()
+            updateToolbarTitle(toolbarTitle)
+        } else {
+            turnOffBulkAddFromOtherCollection()
+        }
     }
 
     override fun onFailedSaveToNewCollection(errorMessage: String?) {

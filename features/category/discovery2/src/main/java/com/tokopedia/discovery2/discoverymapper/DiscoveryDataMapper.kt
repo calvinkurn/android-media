@@ -357,7 +357,7 @@ class DiscoveryDataMapper {
                             minOrderWording = bundleDetails?.minOrderWording ?: "",
                             isSelected = false,
                             totalSold = 0,
-                            shopInfo = null, //bundleShopUiModel,
+                            shopInfo = bundleShopUiModel,
                             bundleType = bundleData.bundleType ?: "",
                             products = bundleProductUiModel.apply {
                                 bundleData.bundleProducts?.forEach { bundleProducts ->
