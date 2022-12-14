@@ -173,10 +173,10 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             }
         }
 
-        const val MAX_HOUR_OF_DAY = 23
-        const val MAX_MINUTE_OF_DAY = 59
-        const val MIN_TIME_OF_DAY = 0
-        const val HOUR_INTERVAL = 1
-        const val MINUTE_INTERVAL = 30
+        private const val MAX_HOUR_OF_DAY = 23
+        private const val MAX_MINUTE_OF_DAY = 59
+        private const val MIN_TIME_OF_DAY = 0
+        private const val HOUR_INTERVAL = 1
+        private const val MINUTE_INTERVAL = 30
     }
 }

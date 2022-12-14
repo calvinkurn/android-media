@@ -183,8 +183,8 @@ class UpdateCouponFacadeUseCase @Inject constructor(
     }
 
     companion object {
-        const val SOLD = "SOLD"
-        const val SORT_DIRECTION = "DESC"
+        private const val SOLD = "SOLD"
+        private const val SORT_DIRECTION = "DESC"
         private const val SECOND_IMAGE_URL_INDEX = 1
         private const val THIRD_IMAGE_URL_INDEX = 2
     }

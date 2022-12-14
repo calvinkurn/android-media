@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.util.StringHandler
-import com.tokopedia.mvc.util.constant.VoucherTypeConst
 import javax.inject.Inject
 
 class MoreMenuViewModel @Inject constructor(
@@ -39,7 +39,7 @@ class MoreMenuViewModel @Inject constructor(
             } else {
                 voucher.type.let { type ->
                     menuItem = when (type) {
-                        VoucherTypeConst.FREE_ONGKIR -> {
+                        PromoType.FREE_SHIPPING.id -> {
                             // TODO adjust this
                             getOngoingOptionsListMenu()
                         }

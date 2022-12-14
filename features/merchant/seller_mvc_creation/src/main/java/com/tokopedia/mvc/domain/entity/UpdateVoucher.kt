@@ -15,7 +15,6 @@ data class UpdateVoucher(
     val voucherCode: String = "",
     val startTime: String = "",
     val finishTime: String = "",
-    val productCount: Long = 0,
     val productImageUrls: List<String> = emptyList(),
     val audienceTarget: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val voucherName: String = "",

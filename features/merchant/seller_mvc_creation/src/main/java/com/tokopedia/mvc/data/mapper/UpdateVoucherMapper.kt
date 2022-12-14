@@ -45,7 +45,6 @@ class UpdateVoucherMapper @Inject constructor() {
                 voucherCode = code,
                 startTime = dateStart,
                 finishTime = dateEnd,
-                productCount = 0,
                 productImageUrls = emptyList(),
                 audienceTarget = VoucherTargetBuyer.ALL_BUYER,
                 type = type,

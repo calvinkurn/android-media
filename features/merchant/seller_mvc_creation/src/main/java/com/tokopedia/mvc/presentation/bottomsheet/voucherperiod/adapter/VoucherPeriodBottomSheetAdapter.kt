@@ -21,11 +21,11 @@ class VoucherPeriodBottomSheetAdapter :
             dateText.text = item.formatTextToDisplayDate()
         }
 
-        fun DateStartEndData.formatTextToDisplayDate(): String {
+        private fun DateStartEndData.formatTextToDisplayDate(): String {
             return "${dateStart.formatDateToDisplayDate()}, $hourStart - ${dateEnd.formatDateToDisplayDate()}, $hourEnd"
         }
 
-        fun String.formatDateToDisplayDate(): String {
+        private fun String.formatDateToDisplayDate(): String {
             return this.toDate(DASH_DATE_FORMAT).formatTo(DATE_YEAR_PRECISION)
         }
     }

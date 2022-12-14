@@ -14,8 +14,8 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetCouponDisplayBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.DisplayVoucherViewModel
-import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherType
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -44,7 +44,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         setTitle(context?.resources?.getString(R.string.voucher_bs_coupon_display_title).toBlankOrString())
         initInjector()
         initObservers()
-        viewModel.setSelectedVoucherChip(VoucherType.Horizontal)
+        viewModel.setSelectedVoucherChip(ImageRatio.HORIZONTAL)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -57,7 +57,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
     private fun initObservers() {
         viewModel.selectedDisplayVoucherType.observe(viewLifecycleOwner) { voucherType ->
             when (voucherType) {
-                is VoucherType.Horizontal -> {
+                ImageRatio.HORIZONTAL -> {
                     binding?.apply {
                         horizontalChip.chipType = ChipsUnify.TYPE_SELECTED
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
@@ -66,7 +66,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
                     }
                 }
-                is VoucherType.Square -> {
+                ImageRatio.SQUARE -> {
                     binding?.apply {
                         horizontalChip.chipType = ChipsUnify.TYPE_NORMAL
                         squareChip.chipType = ChipsUnify.TYPE_SELECTED
@@ -75,7 +75,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
                     }
                 }
-                is VoucherType.Vertical -> {
+                ImageRatio.VERTICAL -> {
                     binding?.apply {
                         horizontalChip.chipType = ChipsUnify.TYPE_NORMAL
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
@@ -93,23 +93,24 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
     }
 
-    private fun setUpImage(url : String?) {
-        if (url == null)
+    private fun setUpImage(url: String?) {
+        if (url == null) {
             return
-        binding?.voucherImage?.loadImage(url){
+        }
+        binding?.voucherImage?.loadImage(url) {
             setCacheStrategy(MediaCacheStrategy.RESOURCE)
         }
     }
 
     private fun setOnClickListeners() {
         binding?.horizontalChip?.setOnClickListener {
-            viewModel.setSelectedVoucherChip(VoucherType.Horizontal)
+            viewModel.setSelectedVoucherChip(ImageRatio.HORIZONTAL)
         }
         binding?.verticalChip?.setOnClickListener {
-            viewModel.setSelectedVoucherChip(VoucherType.Vertical)
+            viewModel.setSelectedVoucherChip(ImageRatio.VERTICAL)
         }
         binding?.squareChip?.setOnClickListener {
-            viewModel.setSelectedVoucherChip(VoucherType.Square)
+            viewModel.setSelectedVoucherChip(ImageRatio.SQUARE)
         }
     }
 
@@ -120,7 +121,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
             .inject(this)
     }
 
-    private fun changeImageViewHeight(height : Float) {
+    private fun changeImageViewHeight(height: Float) {
         binding?.voucherImage?.layoutParams?.height = height.toInt()
         binding?.voucherImage?.requestLayout()
     }
