@@ -13,6 +13,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetThreeDotsMenuBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.MoreMenuAdapter
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.MoreMenuViewModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
@@ -28,6 +29,8 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private var sheetTitle: String = ""
     private var binding by autoClearedNullable<SmvcBottomsheetThreeDotsMenuBinding>()
     private var adapter: MoreMenuAdapter? = null
+    private var voucherStatus: VoucherStatus? = null
+    private var isFromVoucherDetailPage: Boolean = false
     init {
         isFullpage = false
     }
@@ -50,9 +53,8 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         setTitle(sheetTitle)
         binding?.recyclerView?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        voucher?.let {
-            this.menuItem = viewModel.getMenuList(it)
-        }
+        this.menuItem = viewModel.getMenuList(voucher, isFromVoucherDetailPage, voucherStatus)
+
         adapter?.clearAllElements()
         adapter?.addElement(menuItem)
 
@@ -76,12 +78,16 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         fun newInstance(
             context: FragmentActivity,
             voucher: Voucher?,
-            title: String = context.resources?.getString(R.string.voucher_three_bots_title).toBlankOrString()
+            title: String = context.resources?.getString(R.string.voucher_three_bots_title).toBlankOrString(),
+            isFromVoucherDetailPage: Boolean = false,
+            voucherStatus: VoucherStatus = VoucherStatus.PROCESSING
         ): MoreMenuBottomSheet {
             return MoreMenuBottomSheet().apply {
                 this.context = context
                 this.voucher = voucher
                 this.sheetTitle = title
+                this.isFromVoucherDetailPage = isFromVoucherDetailPage
+                this.voucherStatus = voucherStatus
             }
         }
     }

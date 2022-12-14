@@ -22,12 +22,6 @@ class UpdateCouponFacadeUseCase @Inject constructor(
     private val imageBuilder: GenerateImageParamsBuilder,
     private val productListUseCase: ProductListUseCase
 ) {
-
-    companion object {
-        private const val SECOND_IMAGE_URL_INDEX = 1
-        private const val THIRD_IMAGE_URL_INDEX = 2
-    }
-
     suspend fun execute(
         updateVoucher: UpdateVoucher,
         parentProductId: List<Long>,
@@ -106,9 +100,9 @@ class UpdateCouponFacadeUseCase @Inject constructor(
         startHour: String,
         endDate: String,
         endHour: String,
-        imageUrl: String = "",
-        imageSquare: String = "",
-        imagePortrait: String = ""
+        imageUrl: String,
+        imageSquare: String,
+        imagePortrait: String
     ): Boolean {
         return updateCouponUseCase.updateVoucherPeriod(
             voucher, token, startDate, startHour, endDate, endHour, imageUrl, imageSquare, imagePortrait
@@ -181,10 +175,17 @@ class UpdateCouponFacadeUseCase @Inject constructor(
             showcaseIds = emptyList(),
             page = NumberConstant.FIRST_PAGE,
             pageSize = productIds.size,
-            sortId = "SOLD",
-            sortDirection = "DESC",
+            sortId = SOLD,
+            sortDirection = SORT_DIRECTION,
             productIdInclude = productIds
         )
         return productListUseCase.execute(productListParam)
+    }
+
+    companion object {
+        const val SOLD = "SOLD"
+        const val SORT_DIRECTION = "DESC"
+        private const val SECOND_IMAGE_URL_INDEX = 1
+        private const val THIRD_IMAGE_URL_INDEX = 2
     }
 }

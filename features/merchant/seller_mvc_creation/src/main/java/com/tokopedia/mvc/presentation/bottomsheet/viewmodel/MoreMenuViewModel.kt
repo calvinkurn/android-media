@@ -16,65 +16,87 @@ class MoreMenuViewModel @Inject constructor(
 
     private var menuItem: List<MoreMenuUiModel> = emptyList()
 
-    fun getMenuList(voucher: Voucher): List<MoreMenuUiModel> {
-        voucher.type.let { type ->
-            menuItem = when (type) {
-                VoucherTypeConst.FREE_ONGKIR -> {
-                    // TODO adjust this
-                    getOngoingOptionsListMenu()
+    fun getMenuList(
+        voucher: Voucher?,
+        isFromVoucherDetail: Boolean,
+        voucherStatus: VoucherStatus?
+    ): List<MoreMenuUiModel> {
+        if (isFromVoucherDetail) {
+            when (voucherStatus) {
+                VoucherStatus.ONGOING -> {
+                    getVoucherDetailUpcomingOptionsListMenu()
+                }
+                VoucherStatus.NOT_STARTED -> {
+                    getVoucherDetailOngoingOptionsListMenu()
                 }
                 else -> {
-                    // ONGOING
-                    if (voucher.isOngoingPromo()) {
-                        // return vps voucher menu
-                        if (voucher.isVps) {
-                            getOngoingVpsSubsidyMenu()
+                    getVoucherDetailEndedStoppedOptionsListMenu()
+                }
+            }
+        } else {
+            if (voucher == null) {
+                return menuItem
+            } else {
+                voucher.type.let { type ->
+                    menuItem = when (type) {
+                        VoucherTypeConst.FREE_ONGKIR -> {
+                            // TODO adjust this
+                            getOngoingOptionsListMenu()
                         }
-                        // return subsidy voucher menu, isVps is always false here
-                        else if (voucher.isSubsidy) {
-                            getOngoingVpsSubsidyMenu()
-                        }
-                        // return seller create voucher menu
-                        getOngoingOptionsListMenu()
-                    }
-                    // UPCOMING
-                    else if (voucher.isUpComingPromo()) {
-                        // return vps voucher menu
-                        if (voucher.isVps) {
-                            getUpcomingVpsSubsidyMenu()
-                        }
-                        // return subsidy voucher menu
-                        else if (voucher.isSubsidy) {
-                            getUpcomingVpsSubsidyMenu()
-                        }
-                        // return seller created voucher menu
-                        else {
-                            getUpcomingOptionsListMenu()
-                        }
-                    }
-                    // STOPPED and ENDED
-                    else {
-                        when (voucher.status) {
-                            VoucherStatus.ENDED -> {
+                        else -> {
+                            // ONGOING
+                            if (voucher.isOngoingPromo()) {
+                                // return vps voucher menu
                                 if (voucher.isVps) {
-                                    getEndedVpsSubsidyListMenu()
-                                } else if (voucher.isSubsidy) {
-                                    getEndedVpsSubsidyListMenu()
-                                } else {
-                                    getEndedOrCancelledOptionsListMenu()
+                                    getOngoingVpsSubsidyMenu()
+                                }
+                                // return subsidy voucher menu, isVps is always false here
+                                else if (voucher.isSubsidy) {
+                                    getOngoingVpsSubsidyMenu()
+                                }
+                                // return seller create voucher menu
+                                getOngoingOptionsListMenu()
+                            }
+                            // UPCOMING
+                            else if (voucher.isUpComingPromo()) {
+                                // return vps voucher menu
+                                if (voucher.isVps) {
+                                    getUpcomingVpsSubsidyMenu()
+                                }
+                                // return subsidy voucher menu
+                                else if (voucher.isSubsidy) {
+                                    getUpcomingVpsSubsidyMenu()
+                                }
+                                // return seller created voucher menu
+                                else {
+                                    getUpcomingOptionsListMenu()
                                 }
                             }
-                            VoucherStatus.STOPPED -> {
-                                if (voucher.isVps) {
-                                    getCancelledVpsSubsidyListMenu()
-                                } else if (voucher.isSubsidy) {
-                                    getCancelledVpsSubsidyListMenu()
-                                } else {
-                                    getEndedOrCancelledOptionsListMenu()
+                            // STOPPED and ENDED
+                            else {
+                                when (voucher.status) {
+                                    VoucherStatus.ENDED -> {
+                                        if (voucher.isVps) {
+                                            getEndedVpsSubsidyListMenu()
+                                        } else if (voucher.isSubsidy) {
+                                            getEndedVpsSubsidyListMenu()
+                                        } else {
+                                            getEndedOrCancelledOptionsListMenu()
+                                        }
+                                    }
+                                    VoucherStatus.STOPPED -> {
+                                        if (voucher.isVps) {
+                                            getCancelledVpsSubsidyListMenu()
+                                        } else if (voucher.isSubsidy) {
+                                            getCancelledVpsSubsidyListMenu()
+                                        } else {
+                                            getEndedOrCancelledOptionsListMenu()
+                                        }
+                                    }
+                                    else ->
+                                        getEndedOrCancelledOptionsListMenu()
                                 }
                             }
-                            else ->
-                                getEndedOrCancelledOptionsListMenu()
                         }
                     }
                 }
@@ -82,6 +104,7 @@ class MoreMenuViewModel @Inject constructor(
         }
         return menuItem
     }
+
     private fun getUpcomingOptionsListMenu(): List<MoreMenuUiModel> {
         return listOf(
             MoreMenuUiModel.Coupon(
@@ -144,13 +167,24 @@ class MoreMenuViewModel @Inject constructor(
         )
     }
 
-    private fun getVoucherDetailUpcomingOngoingOptionsListMenu(): List<MoreMenuUiModel> {
+    private fun getVoucherDetailUpcomingOptionsListMenu(): List<MoreMenuUiModel> {
         return listOf(
             MoreMenuUiModel.TermsAndConditions(
                 StringHandler.ResourceString(R.string.voucher_bs_terms_conditions)
             ),
             MoreMenuUiModel.Clear(
                 StringHandler.ResourceString(R.string.voucher_bs_ubah_batalkan)
+            )
+        )
+    }
+
+    private fun getVoucherDetailOngoingOptionsListMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.TermsAndConditions(
+                StringHandler.ResourceString(R.string.voucher_bs_terms_conditions)
+            ),
+            MoreMenuUiModel.Stop(
+                StringHandler.ResourceString(R.string.voucher_bs_ubah_hentikan)
             )
         )
     }
