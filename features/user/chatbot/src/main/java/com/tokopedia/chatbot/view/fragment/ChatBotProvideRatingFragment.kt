@@ -132,7 +132,7 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
                 context?.let { it1 ->
                     ColorUtil.getColorFromResToString(
                         it1,
-                        R.color.chatbot_optional_text
+                        R.color.chatbot_dms_optional_text
                     )
                 }
             }'> $secondString </font>"
