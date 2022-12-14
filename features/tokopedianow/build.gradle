@@ -99,6 +99,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation project(path: ':features:transaction:wishlist_common')
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

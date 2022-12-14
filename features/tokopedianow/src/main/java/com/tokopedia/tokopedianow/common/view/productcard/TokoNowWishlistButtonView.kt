@@ -78,7 +78,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         viewModel.addToWishlistLiveData.observe(context as AppCompatActivity) {
             when (it) {
                 is Success -> {
-                    if (it.data.wishlistAdd?.success == true) {
+                    if (it.data.success == true) {
                         listener?.onWishlistButtonClicked(
                             productId = mProductId,
                             isWishlistSelected = true,
@@ -116,7 +116,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         viewModel.removeFromWishlistLiveData.observe(context as AppCompatActivity) {
             when (it) {
                 is Success -> {
-                    if (it.data.wishlistRemove?.success == true) {
+                    if (it.data.success == true) {
                         listener?.onWishlistButtonClicked(
                             productId = mProductId,
                             isWishlistSelected = false,
