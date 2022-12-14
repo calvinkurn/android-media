@@ -224,7 +224,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     discoATCRequestParams.shopId,
                     productInfo
                 ),
-                pageName = pageIdentifier
+                pageName = pageIdentifier,
+                pageId = "0"
             )
             launchCatchError(block = {
                 affiliateCookieHelper.initCookie(
@@ -609,7 +610,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
         val pageDetail = AffiliatePageDetail(
             source = AffiliateSdkPageSource.Discovery(),
-            pageName = pageIdentifier
+            pageName = pageIdentifier,
+            pageId = "0"
         )
         launchCatchError(block = {
             affiliateCookieHelper.initCookie(
