@@ -2509,12 +2509,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToProtectionMore(CartItemModel cartItemModel) {
-        Context context = getContext();
-        if (context != null) {
+        Activity activity = getActivity();
+        if (activity != null) {
             mTrackerPurchaseProtection.eventClickOnPelajari(userSessionInterface.getUserId(),
                     cartItemModel.getProtectionTitle(), cartItemModel.getProtectionPricePerProduct(),
                     cartItemModel.getAnalyticsProductCheckoutData().getProductCategoryId());
-            Intent intent = RouteManager.getIntent(context, ApplinkConstInternalFintech.INSURANCE_INFO);
+            Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalFintech.INSURANCE_INFO);
             intent.putExtra(ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL, cartItemModel.getProtectionLinkUrl());
             startActivity(intent);
         }
