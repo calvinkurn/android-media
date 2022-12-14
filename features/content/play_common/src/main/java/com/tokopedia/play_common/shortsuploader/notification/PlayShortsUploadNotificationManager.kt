@@ -11,15 +11,11 @@ import androidx.work.ForegroundInfo
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.model.orEmpty
 import com.tokopedia.play_common.shortsuploader.receiver.PlayShortsUploadReceiver
-import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.withContext
 
 /**
@@ -45,7 +41,10 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     private var uploadData: PlayShortsUploadModel? = null
 
     private val notificationId: Int
-        get() = uploadData?.shortsId.toIntOrZero()
+        get() = uploadData?.notificationId.orZero()
+
+    private val notificationIdAfterUpload: Int
+        get() = uploadData?.notificationIdAfterUpload.orZero()
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -142,9 +141,9 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(notificationId, notification)
+        notificationManager.notify(notificationIdAfterUpload, notification)
 
-        return ForegroundInfo(notificationId, notification)
+        return ForegroundInfo(notificationIdAfterUpload, notification)
     }
 
     fun onError(): ForegroundInfo {
@@ -182,9 +181,9 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(notificationId, notification)
+        notificationManager.notify(notificationIdAfterUpload, notification)
 
-        return ForegroundInfo(notificationId, notification)
+        return ForegroundInfo(notificationIdAfterUpload, notification)
     }
 
     private companion object {

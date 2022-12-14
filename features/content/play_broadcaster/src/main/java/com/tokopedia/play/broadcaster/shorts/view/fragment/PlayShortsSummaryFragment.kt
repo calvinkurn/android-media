@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -189,6 +190,7 @@ class PlayShortsSummaryFragment @Inject constructor(
 
         when(curr.uploadState) {
             is PlayShortsUploadUiState.Success -> {
+                activity?.setResult(Activity.RESULT_OK)
                 activity?.finish()
             }
             is PlayShortsUploadUiState.Loading -> {
