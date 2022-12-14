@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/information_ticker"
+        app:tickerType="announcement"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/edit_period_ticker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:id="@+id/edtMvcStartDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:unify_text_field_label_static="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/information_ticker"
+        tools:layout_height="20dp"
+        app:unify_text_field_append_drawable_icon_2="@drawable/ic_calendar"/>
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:id="@+id/edtMvcEndDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:unify_text_field_label_static="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtMvcStartDate"
+        tools:layout_height="20dp"
+        app:unify_text_field_append_drawable_icon_1="@drawable/ic_calendar"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnMvcSavePeriod"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/edit_period_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtMvcEndDate" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

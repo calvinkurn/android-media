@@ -10,9 +10,25 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant
-import com.tokopedia.campaign.utils.extension.*
+import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.startLoading
+import com.tokopedia.campaign.utils.extension.stopLoading
+import com.tokopedia.campaign.utils.extension.toDate
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getPercentFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toCalendar
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -37,8 +53,9 @@ import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
+import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
@@ -89,6 +106,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private var stateButtonBroadCastBinding by autoClearedNullable<SmvcVoucherDetailButtonSectionState1Binding>()
     private var stateButtonShareBinding by autoClearedNullable<SmvcVoucherDetailButtonSectionState2Binding>()
     private var stateButtonDuplicateBinding by autoClearedNullable<SmvcVoucherDetailButtonSectionState3Binding>()
+    private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -630,9 +648,33 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun openThreeDotsBottomSheet(data: VoucherDetailData) {
-        val bottomSheetType = viewModel.getThreeDotsBottomSheetType(data)
-        ThreeDotsMenuBottomSheet.newInstance(data.voucherName, bottomSheetType)
-            .show(childFragmentManager, "")
+        val voucherStatus = viewModel.getThreeDotsBottomSheetType(data)
+        activity?.let {
+            moreMenuBottomSheet =
+                MoreMenuBottomSheet.newInstance(
+                    context = it,
+                    voucher = null,
+                    isFromVoucherDetailPage = true,
+                    voucherStatus =
+                    voucherStatus
+                )
+            moreMenuBottomSheet?.setOnMenuClickListener { menu ->
+                onClickListenerForMoreMenu(menu)
+            }
+            moreMenuBottomSheet?.show(childFragmentManager, "")
+        }
+    }
+
+    private fun onClickListenerForMoreMenu(menuUiModel: MoreMenuUiModel) {
+        moreMenuBottomSheet?.dismiss()
+        when (menuUiModel) {
+            is MoreMenuUiModel.Clear -> {
+            }
+            is MoreMenuUiModel.TermsAndConditions -> {
+            }
+            else -> {
+            }
+        }
     }
 
     private fun getVoucherDetailData(voucherId: Long) {

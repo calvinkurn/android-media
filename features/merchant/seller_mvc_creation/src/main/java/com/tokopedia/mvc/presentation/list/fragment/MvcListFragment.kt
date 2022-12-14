@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -27,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
@@ -42,9 +44,13 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.ChangeQuotaBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterClickListener
@@ -57,8 +63,10 @@ import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
 import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
+import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -83,6 +91,10 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
     private val filterList = ArrayList<SortFilterItem>()
     private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
+    private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
+    private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
+    private var displayVoucherBottomSheet: DisplayVoucherBottomSheet? = null
+    private var voucherPeriodBottomSheet: VoucherPeriodBottomSheet? = null
 
     private var eduCenterBottomSheet: EduCenterBottomSheet? = null
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
@@ -119,7 +131,122 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
     }
 
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
-        MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
+        showMoreMenuBottomSheet(voucher)
+    }
+
+    private fun showMoreMenuBottomSheet(voucher: Voucher) {
+        activity?.let {
+            moreMenuBottomSheet =
+                MoreMenuBottomSheet.newInstance(
+                    it,
+                    voucher
+                )
+            moreMenuBottomSheet?.setOnMenuClickListener { menu ->
+                onClickListenerForMoreMenu(menu, voucher)
+            }
+            moreMenuBottomSheet?.show(childFragmentManager, "")
+        }
+    }
+
+    private fun onClickListenerForMoreMenu(menuUiModel: MoreMenuUiModel, voucher: Voucher) {
+        moreMenuBottomSheet?.dismiss()
+        when (menuUiModel) {
+            is MoreMenuUiModel.Coupon -> {
+                // TODO change this
+                showDisplayVoucherBottomSheet(voucher)
+            }
+            is MoreMenuUiModel.EditPeriod -> {
+                showEditPeriodBottomSheet(voucher)
+            }
+            is MoreMenuUiModel.Edit -> {
+                // TODO change this , using for testing
+                showVoucherPeriodBottomSheet()
+            }
+            is MoreMenuUiModel.Clipboard -> {
+            }
+            is MoreMenuUiModel.Broadcast -> {
+                SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
+            }
+            is MoreMenuUiModel.Download -> {
+            }
+            is MoreMenuUiModel.Clear -> {
+            }
+            is MoreMenuUiModel.Share -> {
+            }
+            is MoreMenuUiModel.Stop -> {
+            }
+            is MoreMenuUiModel.Copy -> {
+            }
+            is MoreMenuUiModel.TermsAndConditions -> {
+            }
+            else -> {
+            }
+        }
+    }
+
+    // DUMMY DATA . USED FOR TESTING > REMOVE THEM
+    private fun showVoucherPeriodBottomSheet() {
+        val list = mutableListOf<DateStartEndData>(
+            DateStartEndData("2022-05-10", "2022-05-20", "00:30", "05:30"),
+            DateStartEndData("2022-06-11", "2022-06-21", "01:30", "06:30"),
+            DateStartEndData("2022-07-12", "2022-07-22", "02:30", "05:30"),
+            DateStartEndData("2022-08-13", "2022-08-23", "03:30", "07:30"),
+            DateStartEndData("2022-09-14", "2022-09-24", "04:30", "08:30"),
+            DateStartEndData("2022-10-15", "2022-10-25", "05:30", "09:30")
+        )
+        activity?.let {
+            voucherPeriodBottomSheet =
+                VoucherPeriodBottomSheet.newInstance(
+                    title = context?.resources?.getString(R.string.voucher_bs_period_title_1)
+                        .toBlankOrString(),
+                    dateList = list
+                )
+            voucherPeriodBottomSheet?.show(childFragmentManager, "")
+        }
+    }
+
+    private fun showEditPeriodBottomSheet(voucher: Voucher) {
+        activity?.let {
+            voucherEditPeriodBottomSheet =
+                VoucherEditPeriodBottomSheet.newInstance(
+                    voucher,
+                    onSuccessUpdateVoucherPeriod,
+                    onFailureUpdateVoucherPeriod
+                )
+            voucherEditPeriodBottomSheet?.show(childFragmentManager, "")
+        }
+    }
+
+    private var onSuccessUpdateVoucherPeriod: () -> Unit = {
+        loadInitialDataList()
+        view?.run {
+            Toaster.build(
+                this,
+                context?.getString(R.string.edit_period_success_edit_period).toBlankOrString(),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                context?.getString(R.string.edit_period_button_text).toBlankOrString()
+            )
+        }
+    }
+
+    private var onFailureUpdateVoucherPeriod: (String) -> Unit = { message ->
+        val errorMessage = if (message.isNotBlank()) {
+            message
+        } else {
+            context?.getString(R.string.smvc_general_error).toBlankOrString()
+        }
+        view?.showToasterError(errorMessage)
+    }
+
+    private fun showDisplayVoucherBottomSheet(voucher: Voucher) {
+        activity?.let {
+            displayVoucherBottomSheet =
+                DisplayVoucherBottomSheet.newInstance(
+                    voucher
+                )
+            displayVoucherBottomSheet?.show(childFragmentManager, "")
+        }
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
@@ -149,7 +276,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
     }
 
     override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
-        MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
+        showMoreMenuBottomSheet(voucher)
     }
 
     private fun setupObservables() {
@@ -281,7 +408,8 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
             pageSize = PAGE_SIZE,
             onLoadNextPage = {
                 // TODO: Implement loading
-            }, onLoadNextPageFinished = {
+            },
+            onLoadNextPageFinished = {
                 // TODO: Implement loading
             }
         )
@@ -354,7 +482,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
     }
 
     private fun redirectToCreateVoucherPage() {
-        //For sample only. Will redirect to add product page.
+        // For sample only. Will redirect to add product page.
         val voucherConfiguration = VoucherConfiguration(
             benefitIdr = 25_000,
             benefitMax = 500_000,
@@ -527,6 +655,6 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
     }
 
     private fun redirectToQuotaVoucherPage() {
-        //TODO: create redirection here
+        // TODO: create redirection here
     }
 }

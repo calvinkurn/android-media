@@ -13,7 +13,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
 import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
-import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -80,18 +79,8 @@ class VoucherDetailViewModel @Inject constructor(
         }
     }
 
-    fun getThreeDotsBottomSheetType(data: VoucherDetailData): Int {
-        return when (data.voucherStatus) {
-            VoucherStatus.NOT_STARTED -> {
-                ThreeDotsMenuBottomSheet.TYPE_CANCEL
-            }
-            VoucherStatus.ONGOING -> {
-                ThreeDotsMenuBottomSheet.TYPE_STOP
-            }
-            else -> {
-                ThreeDotsMenuBottomSheet.TYPE_DEFAULT
-            }
-        }
+    fun getThreeDotsBottomSheetType(data: VoucherDetailData): VoucherStatus {
+        return data.voucherStatus
     }
 
     fun generateVoucherImage() {
