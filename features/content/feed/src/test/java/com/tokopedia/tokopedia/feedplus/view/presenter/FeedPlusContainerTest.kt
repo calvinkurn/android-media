@@ -33,17 +33,4 @@ class FeedPlusContainerTest {
     fun setup() {
         viewModel = FeedPlusContainerViewModel(testDispatcher, mockRepo, mockUserSession)
     }
-
-//    @Test
-//    fun `check dynamic tab` () {
-//        val expected = FeedTabs.Response(feedTabs = FeedTabs(feedData = emptyList()))
-//        coEvery { mockTab.executeOnBackground() } returns expected
-//
-//        viewModel.getWhitelist(true)
-//
-//        val result = viewModel.whitelistResp.getOrAwaitValue().toString()
-//
-//        println(result)
-//
-//    }
 }

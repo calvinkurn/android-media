@@ -1,20 +1,36 @@
 package com.tokopedia.tokopedia.feedplus.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
+import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.FeedXTrackViewerResponse
+import com.tokopedia.feedcomponent.data.pojo.PostUpcomingCampaign
+import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
 import com.tokopedia.feedcomponent.data.pojo.VisitChannelTracking
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.FollowShop
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
 import com.tokopedia.feedcomponent.people.model.*
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
+import com.tokopedia.feedcomponent.shoprecom.model.FeedXRecomWidget
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomItem
+import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
@@ -28,6 +44,9 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.tokopedia.feedplus.helper.assertEqualTo
 import com.tokopedia.tokopedia.feedplus.helper.assertFalse
 import com.tokopedia.tokopedia.feedplus.helper.assertTrue
@@ -66,6 +85,11 @@ class FeedViewModelTest {
     private val mockFollowShop: ShopFollowUseCase = mockk(relaxed = true)
     private val mockFollowKol: ProfileFollowUseCase = mockk(relaxed = true)
     private val mockUnFollowKol: ProfileUnfollowedUseCase = mockk(relaxed = true)
+    private val mockDynamicFeed : GetDynamicFeedNewUseCase = mockk(relaxed = true)
+    private val mockShopRecom : ShopRecomUseCase = mockk(relaxed = true)
+    private val mockAtc : AddToCartUseCase = mockk(relaxed = true)
+    private val mockPlayWidget : PlayWidgetTools = mockk(relaxed = true)
+    private val mockPostReminderCampaign: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
 
     private val gqlFailed = MessageErrorException("ooPs")
 
@@ -602,26 +626,6 @@ class FeedViewModelTest {
             }
     }
 
-    /**
-     * ATC
-     */
-
-    /**
-     * Toggle Fav Shop
-     */
-
-    /**
-     * Do auto refresh
-     */
-
-    /**
-     * Add wishlist
-     */
-
-    /**
-     * TopAds tracker
-     */
-
     @Test
     fun `top ads - when topads is clicked hit tracker hitClick`() {
         create(dispatcher = testDispatcher, sendTopAdsUseCase = mockTopAdsTracker)
@@ -685,6 +689,181 @@ class FeedViewModelTest {
                 it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Fail> {
                         dt -> dt.throwable.assertEqualTo(gqlFailed)
                         dt.throwable.assertType<MessageErrorException> {  }
+                }
+            }
+    }
+
+    /**
+     * Fetch latest widget
+     */
+
+    @Test
+    fun `fetch latest widget success not empty` () {
+        val expected = FeedXData(feedXHome = FeedXHome(items = listOf(FeedXCard(), FeedXCard()), mods = emptyList(), pagination = FeedXPaginationInfo(cursor = "", hasNext = false, totalData = 0)))
+        coEvery { mockDynamicFeed.executeForCDP(any(), any(), any()) } returns expected
+
+        create(dispatcher = testDispatcher, getDynamicFeedNewUseCase = mockDynamicFeed)
+            .use {
+                it.vm.fetchLatestFeedPostWidgetData("1",1)
+                it.vm.feedWidgetLatestData.getOrAwaitValue().assertType<Success<FeedWidgetData>> {
+                        dt -> dt.data.feedXCard.assertEqualTo(expected.feedXHome.items.first())
+                }
+            }
+
+    }
+
+    @Test
+    fun `fetch latest widget success  empty` () {
+        val expected = FeedXData(feedXHome = FeedXHome(items = emptyList(), mods = emptyList(), pagination = FeedXPaginationInfo(cursor = "", hasNext = false, totalData = 0)))
+        coEvery { mockDynamicFeed.executeForCDP(any(), any(), any()) } returns expected
+
+        create(dispatcher = testDispatcher, getDynamicFeedNewUseCase = mockDynamicFeed)
+            .use {
+                it.vm.fetchLatestFeedPostWidgetData("1",1)
+                it.vm.feedWidgetLatestData.getOrAwaitValue().assertType<Fail> {
+                        dt -> dt.throwable.assertType<CustomUiMessageThrowable> {it.errorMessageId.assertEqualTo(R.string.feed_result_empty)  }
+                }
+            }
+    }
+
+    @Test
+    fun `fetch latest widget failed` () {
+        coEvery { mockDynamicFeed.executeForCDP(any(), any(), any()) } throws gqlFailed
+
+        create(dispatcher = testDispatcher, getDynamicFeedNewUseCase = mockDynamicFeed)
+            .use {
+                it.vm.fetchLatestFeedPostWidgetData("1",1)
+                it.vm.feedWidgetLatestData.getOrAwaitValue().assertType<Fail> {
+                        dt -> dt.throwable.assertType<CustomUiMessageThrowable> {it.errorMessageId.assertEqualTo(R.string.feed_result_empty)  }
+                }
+            }
+    }
+
+    /**
+     * shop recom
+     */
+
+    @Test
+    fun `shop recom is shown` () {
+        val expected = UserShopRecomModel(feedXRecomWidget = FeedXRecomWidget(isShown = true, items = listOf(ShopRecomItem())))
+        coEvery { mockShopRecom.executeOnBackground(any(),any(), any()) } returns expected
+
+        create(dispatcher = testDispatcher, shopRecomUseCase = mockShopRecom)
+            .use {
+                it.vm.getShopRecomWidget("")
+                it.vm.shopRecom.value.shopRecomUiModel.isShown.assertTrue()
+                it.vm.shopRecom.value.shopRecomUiModel.items.isNotEmpty().assertTrue()
+            }
+    }
+
+    @Test
+    fun `shop recom is not shown` () {
+        val expected = UserShopRecomModel(feedXRecomWidget = FeedXRecomWidget(isShown = false, items = listOf(ShopRecomItem())))
+        coEvery { mockShopRecom.executeOnBackground(any(),any(), any()) } returns expected
+
+        create(dispatcher = testDispatcher, shopRecomUseCase = mockShopRecom)
+            .use {
+                it.vm.getShopRecomWidget("")
+                it.vm.shopRecom.value.shopRecomUiModel.isShown.assertFalse()
+            }
+    }
+
+    @Test
+    fun `shop recom is failed` () {
+        coEvery { mockShopRecom.executeOnBackground(any(),any(), any()) } throws gqlFailed
+        create(dispatcher = testDispatcher, shopRecomUseCase = mockShopRecom)
+            .use {
+                it.vm.getShopRecomWidget("1",)
+                it.vm.shopRecom.value.onError.assertEqualTo(gqlFailed.message)
+            }
+    }
+
+    /**
+     * atc
+     */
+
+    @Test
+    fun `atc gql return not success` () {
+        val expected = AddToCartDataModel(status = "NOT FOUND", data = DataModel(success = 0), errorMessage = arrayListOf("Error"))
+        coEvery { mockAtc.executeOnBackground() } returns expected
+
+        create(dispatcher = testDispatcher, atcUseCase = mockAtc)
+            .use {
+                it.vm.addtoCartProduct(FeedXProduct(), "1","1", true, "")
+                it.vm.atcResp.getOrAwaitValue().assertType<Fail> {}
+            }
+    }
+
+    /**
+     * auto refresh
+     */
+
+    @Test
+    fun `auto refresh play widget - success` () {
+        val expected = PlayWidget()
+
+        coEvery { mockPlayWidget.mapWidgetToModel(any(), any(), any()) } returns PlayWidgetState()
+        coEvery { mockPlayWidget.getWidgetFromNetwork(any(), testDispatcher.io) } returns expected
+
+        create(dispatcher = testDispatcher, playWidgetTools = mockPlayWidget)
+            .use {
+                it.vm.doAutoRefreshPlayWidget()
+                it.vm.playWidgetModel.getOrAwaitValue().assertType<Success<CarouselPlayCardModel>> {}
+            }
+    }
+
+    @Test
+    fun `auto refresh play widget - failed` () {
+        coEvery { mockPlayWidget.getWidgetFromNetwork(any(), any()) } throws gqlFailed
+
+        create(dispatcher = testDispatcher, playWidgetTools = mockPlayWidget)
+            .use {
+                it.vm.doAutoRefreshPlayWidget()
+                it.vm.playWidgetModel.getOrAwaitValue().assertType<Fail> {
+                        dt ->  dt.throwable.assertEqualTo(gqlFailed)
+                }
+            }
+    }
+
+    /**
+     * set - unset reminder
+     */
+
+    @Test
+    fun `set unset reminder - succes from gql` () {
+        val expected = PostUpcomingCampaign(response = UpcomingCampaignResponse(success = true))
+        coEvery { mockPostReminderCampaign.executeOnBackground() } returns expected
+        create(dispatcher = testDispatcher, postUpcomingCampaignReminderUseCase = mockPostReminderCampaign)
+            .use {
+                it.vm.setUnsetReminder(FeedXCampaign(id = "123"), 1)
+                it.vm.asgcReminderButtonStatus.getOrAwaitValue().assertType<Success<FeedAsgcCampaignResponseModel>> {
+                    it.data.reminderStatus
+                }
+            }
+    }
+
+    @Test
+    fun `set unset reminder - error from gql` () {
+        val expected = PostUpcomingCampaign(response = UpcomingCampaignResponse(errorMessage = "Error Aja", success = false))
+        coEvery { mockPostReminderCampaign.executeOnBackground() } returns expected
+        create(dispatcher = testDispatcher, postUpcomingCampaignReminderUseCase = mockPostReminderCampaign)
+            .use {
+                it.vm.setUnsetReminder(FeedXCampaign(id = "123"), 1)
+                it.vm.asgcReminderButtonStatus.getOrAwaitValue().assertType<Fail> {
+                    dt -> dt.throwable.message.assertEqualTo(expected.response.errorMessage)
+                }
+            }
+    }
+
+    @Test
+    fun `set unset reminder - failed` () {
+        coEvery { mockPostReminderCampaign.executeOnBackground() } throws gqlFailed
+
+        create(dispatcher = testDispatcher, postUpcomingCampaignReminderUseCase = mockPostReminderCampaign)
+            .use {
+                it.vm.setUnsetReminder(FeedXCampaign(id = "123"), 1)
+                it.vm.asgcReminderButtonStatus.getOrAwaitValue().assertType<Fail> {
+                        dt ->  dt.throwable.assertEqualTo(gqlFailed)
                 }
             }
     }
