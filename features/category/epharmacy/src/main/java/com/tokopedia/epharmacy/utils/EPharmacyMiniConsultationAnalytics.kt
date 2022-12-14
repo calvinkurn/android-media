@@ -59,18 +59,14 @@ object EPharmacyMiniConsultationAnalytics {
     }
 
     fun viewAttachPrescriptionResult(
-        consultationId: String,
-        enablerName: String,
         successFailed: String,
         approvalReason: String,
-        ePharmacyGroupId: String,
-        prescriptionId: String
     ) {
         Tracker.Builder()
             .setEvent(EventKeys.VIEW_PG_IRIS)
             .setEventAction(ActionKeys.VIEW_ATTACH_PRESCRIPTION_RESULT)
             .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
-            .setEventLabel("$consultationId - $enablerName - $successFailed - $approvalReason - $ePharmacyGroupId - $prescriptionId")
+            .setEventLabel("$successFailed - $approvalReason")
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.ATTACH_PRESCRIPTION_RESULT)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
@@ -118,17 +114,14 @@ object EPharmacyMiniConsultationAnalytics {
     }
 
     fun clickCTAButton(
-        consultationId: String,
-        enablerName: String,
         approvalReason: String,
         ePharmacyGroupId: String,
-        prescriptionId: String
     ) {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_PG)
             .setEventAction(ActionKeys.CLICK_LANJUT_KE_PENGIRIMAN)
             .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
-            .setEventLabel("$consultationId - $enablerName - $approvalReason - $ePharmacyGroupId - $prescriptionId")
+            .setEventLabel("$approvalReason - $ePharmacyGroupId")
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.ATTACH_PRESCRIPTION_BUTTON)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)

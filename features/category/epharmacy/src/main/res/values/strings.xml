@@ -1,7 +1,5 @@
 <resources>
     <string name="epharmacy_ketentuan_foto_resep">Ketentuan foto resep</string>
-    <string name="epharmacy_upload_foto_resep">Upload Foto Resep</string>
-    <string name="epharmacy_foto_resep_dokter">Foto Resep Dokter</string>
     <string name="epharmacy_upload_title">Upload Foto Resep</string>
     <string name="epharmacy_upload_instruction_1">Pastikan seluruh bagian kertas terlihat dan dapat terbaca</string>
     <string name="epharmacy_upload_instruction_2">Upload foto resep sesuai dengan obat yang dibeli</string>
@@ -26,10 +24,8 @@
     <string name="epharmacy_partner_resmi">Partner resmi</string>
     <string name="epharmacy_tampilkan_lebih_sedikit">Tampilkan lebih sedikit</string>
 
-    <string name="epharmacy_toko_ini_adalah_partner_resmi">Toko ini adalah partner resmi</string>
     <string name="epharmacy_lanjut_ke_pengiriman">Lanjut ke Pengiriman</string>
     <string name="epharmacy_ticker_rejected_error_description">Pesanan ini tidak bisa diproses karena pembelian obat kerasnya tidak disetujui dokter.</string>
-    <string name="epharmacy_no_digital_prescription">Yaah, dokter tidak memberikan resep digital.</string>
 
     <string name="epharmacy_reminder_title">Yaah, belum ada dokter yang tersedia saat ini</string>
     <string name="epharmacy_reminder_description">Semua dokter mungkin sedang sibuk. Silakan hubungi dokter di %s – %s WIB.</string>
@@ -37,4 +33,5 @@
     <string name="epharmacy_reminder_success">Kami akan kirim pengingat jika ada dokter yang tersedia, ya!</string>
     <string name="epharmacy_reminder_fail">Silakan Coba lagi</string>
     <string name="epharmacy_upload_resep_atau_chat_dokter">Upload Resep atau Chat Dokter</string>
+    <string name="epharmacy_local_prescription_not_uploaded_error">Kamu punya pesanan obat keras yang butuh resep dokter. Segera lengkapi, ya!</string>
 </resources>

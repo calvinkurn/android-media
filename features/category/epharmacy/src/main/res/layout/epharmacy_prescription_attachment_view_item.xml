@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/shop_name"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="display_3"
         android:text="@string/epharmacy_partner_resmi"
@@ -85,7 +85,7 @@
         app:closeButtonVisibility="gone"
         app:tickerType="error"
         app:descriptionText="@string/epharmacy_ticker_rejected_error_description"
-        app:layout_constraintTop_toBottomOf="@id/enabler_image"
+        app:layout_constraintTop_toBottomOf="@id/partner_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
@@ -137,6 +137,16 @@
         android:textColor="@color/Unify_NN600"
         />
 
+    <View
+        android:id="@+id/division_single_card"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        app:layout_constraintTop_toBottomOf="@id/product_image_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"
+        android:visibility="gone"
+        />
 
     <include
         android:id="@+id/product_accordion_view"
@@ -145,7 +155,7 @@
         layout="@layout/epharmacy_accordion_products_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_image_card"
+        app:layout_constraintTop_toBottomOf="@id/division_single_card"
         tools:visibility="visible"
         android:visibility="gone"
         />

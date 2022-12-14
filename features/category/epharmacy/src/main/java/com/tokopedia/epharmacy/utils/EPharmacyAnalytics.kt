@@ -47,6 +47,8 @@ interface LabelKeys {
     companion object {
         const val IN_WORKING_HOURS = "in working hours"
         const val OUTSIDE_WORKING_HOURS = "outside working hours"
+        const val SUCCESS = "Success"
+        const val FAILED = "Failed"
     }
 }
 
