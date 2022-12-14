@@ -300,8 +300,6 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (progressBar != null)
-            progressBar.setIndeterminate(false);
     }
 
     public BackButtonListener getBackButtonListener() {
