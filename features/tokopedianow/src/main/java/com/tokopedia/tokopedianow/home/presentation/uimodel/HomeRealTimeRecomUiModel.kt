@@ -1,10 +1,10 @@
 package com.tokopedia.tokopedianow.home.presentation.uimodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 
 data class HomeRealTimeRecomUiModel(
     val channelId: String = "",
@@ -13,11 +13,11 @@ data class HomeRealTimeRecomUiModel(
     val productImageUrl: String = "",
     val warehouseId: String = "",
     val category: String = "",
-    val widget: RecommendationWidget? = null,
+    val productList: List<TokoNowProductCardCarouselItemUiModel> = emptyList(),
     val pageName: String = "",
     val enabled: Boolean = false,
     val widgetState: RealTimeRecomWidgetState = RealTimeRecomWidgetState.IDLE,
-    val carouselState: Int = RecommendationCarouselData.STATE_LOADING,
+    val carouselState: TokoNowProductRecommendationState = TokoNowProductRecommendationState.LOADING,
     @TokoNowLayoutType val type: String = PRODUCT_RECOM
 ) {
 
@@ -35,7 +35,6 @@ data class HomeRealTimeRecomUiModel(
     }
 
     fun shouldFetch(): Boolean {
-        val productList = widget?.recommendationItemList.orEmpty()
         return productList.isEmpty() && enabled
     }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.common.analytics
 
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 
 interface RealTimeRecommendationAnalytics {
 
@@ -15,20 +15,20 @@ interface RealTimeRecommendationAnalytics {
     fun trackProductImpression(
         headerName: String,
         productId: String,
-        recomItem: RecommendationItem,
+        item: TokoNowProductCardCarouselItemUiModel,
         position: Int
     )
 
     fun trackProductClick(
         headerName: String,
         productId: String,
-        recomItem: RecommendationItem,
+        item: TokoNowProductCardCarouselItemUiModel,
         position: Int
     )
 
     fun trackAddToCart(
         productId: String,
-        recomItem: RecommendationItem,
+        item: TokoNowProductCardCarouselItemUiModel,
         quantity: Int
     )
 }

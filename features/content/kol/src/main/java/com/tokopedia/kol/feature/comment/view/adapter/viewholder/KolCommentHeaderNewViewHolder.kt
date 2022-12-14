@@ -22,7 +22,11 @@ class KolCommentHeaderNewViewHolder(itemView: View, private val viewListener: Ko
     private val commentViewListener: KolCommentNewCardView.Listener =
         object : KolCommentNewCardView.Listener {
 
-            override fun onMenuClicked(id: String?, canDeleteComment: Boolean) {
+            override fun onMenuClicked(
+                id: String?,
+                canDeleteComment: Boolean,
+                canReportComment: Boolean
+            ) {
             }
 
             override fun onHashtagClicked(hashtag: String) {
