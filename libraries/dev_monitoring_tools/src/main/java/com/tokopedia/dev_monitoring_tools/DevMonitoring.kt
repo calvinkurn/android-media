@@ -42,7 +42,7 @@ class DevMonitoring(private var context: Context) {
         TooLargeTool.startLogging(application, TooLargeToolFormatter(minSizeLog, devMonitoringToolsConfig.userJourneySize), TooLargeToolLogger())
     }
 
-    fun initLeakCanary(enable: Boolean = true) {
-        DevMonitoringExtension.initLeakCanary(enable)
+    fun initLeakCanary(enable: Boolean = true, isEnableStrictMode: Boolean = false, application: Application) {
+        DevMonitoringExtension.initLeakCanary(enable, isEnableStrictMode, application)
     }
 }
