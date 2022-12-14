@@ -1,7 +1,6 @@
 package com.tokopedia.play_common.shortsuploader.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -19,7 +18,6 @@ import com.tokopedia.play_common.util.VideoSnapshotHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
