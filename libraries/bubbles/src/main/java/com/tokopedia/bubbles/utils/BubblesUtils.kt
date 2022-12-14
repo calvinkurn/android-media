@@ -22,10 +22,14 @@ object BubblesUtils {
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .submit(imageWidth, imageHeight)
-                .get(BITMAP_TIMEOUT, TimeUnit.SECONDS)
+                .get(getBitmapTimeout(), TimeUnit.SECONDS)
         } catch (e: Exception) {
             getBitmapWhenError(context, imageWidth, imageHeight)
         }
+    }
+
+    private fun getBitmapTimeout(): Long {
+        return BITMAP_TIMEOUT
     }
 
     private fun getBitmapWhenError(context: Context, imageWidth: Int, imageHeight: Int): Bitmap? {
