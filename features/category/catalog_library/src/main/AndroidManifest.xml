@@ -14,8 +14,40 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/catalog_host"
+                    android:host="@string/catalog_library_host"
                     android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.CatalogLibraryKategoriActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/catalog_library_host"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/applink_catalog_kategori"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.CatalogLibraryKategoriCategoryActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/catalog_library_host"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/applink_catalog_kategori_category"/>
             </intent-filter>
         </activity>
     </application>

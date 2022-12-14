@@ -1,5 +1,5 @@
 <resources>
-    <string name="catalog_host" translatable="false">catalog</string>
+    <string name="catalog_library_host" translatable="false">catalog-library</string>
     <string name="catalog_lihat_semua">Lihat Semua</string>
     <string name="catalog_homepage_title">Katalog Tokopedia</string>
     <string name="top_5_category_terlaris_di_toped">Top 5 category terlaris di toped</string>

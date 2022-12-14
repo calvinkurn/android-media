@@ -110,6 +110,7 @@ class CatalogLandingPageFragment: Fragment(),
 
     private fun initData() {
         setObservers()
+        updateUi()
         getDataFromViewModel()
     }
 
@@ -126,6 +127,7 @@ class CatalogLandingPageFragment: Fragment(),
         landingPageViewModel?.catalogLandingPageLiveDataResponse?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    // TODO if data not received for an API . Remove its shimmer component
                     it.data.listOfComponents.forEach { component ->
                         catalogLibraryUiUpdater.updateModel(component)
                     }
@@ -149,7 +151,7 @@ class CatalogLandingPageFragment: Fragment(),
         view.findViewById<HeaderUnify>(R.id.clp_header).apply {
             headerTitle = categoryName
             setNavigationOnClickListener {
-                activity?.supportFragmentManager?.popBackStack()
+                activity?.finish()
             }
         }
     }

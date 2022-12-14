@@ -35,28 +35,28 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="104dp"
-                android:layout_height="176dp"
+                android:layout_height="150dp"
                 app:loader_type="rect"
                 android:layout_marginStart="8dp"
                 />
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="104dp"
-                android:layout_height="176dp"
+                android:layout_height="150dp"
                 app:loader_type="rect"
                 android:layout_marginStart="8dp"
                 />
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="104dp"
-                android:layout_height="176dp"
+                android:layout_height="150dp"
                 app:loader_type="rect"
                 android:layout_marginStart="8dp"
                 />
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="104dp"
-                android:layout_height="176dp"
+                android:layout_height="150dp"
                 app:loader_type="rect"
                 android:layout_marginStart="8dp"
                 />
