@@ -44,6 +44,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.ChangeQuotaBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterClickListener
@@ -58,7 +59,6 @@ import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
-import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -505,6 +505,24 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
                 getString(R.string.smvc_ok)
             ) { }.show()
         }
+    }
+
+    private fun showUpdateQuotaBottomSheet(voucher: Voucher){
+        val bottomSheet = ChangeQuotaBottomSheet.newInstance(
+            getString(R.string.smvc_title_bottom_sheet_change_quota),
+            voucher.id
+        )
+
+        bottomSheet.setOnSuccessUpdateQuotaListener {message ->
+            showSuccessToaster(message)
+            loadInitialDataList()
+        }
+
+        bottomSheet.setOnFailedQuotaListener {message ->
+            view?.showToasterError(message, getString(R.string.smvc_ok))
+        }
+
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun redirectToQuotaVoucherPage() {
