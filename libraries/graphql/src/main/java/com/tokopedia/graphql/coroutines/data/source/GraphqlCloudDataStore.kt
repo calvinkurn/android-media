@@ -17,6 +17,9 @@ import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.Const
+import com.tokopedia.graphql.util.registeredGqlForTopAds
+import com.tokopedia.graphql.util.STATUS_QUERY
+import com.tokopedia.graphql.util.TOP_ADS_TRACKING_KEY
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER
 import com.tokopedia.graphql.util.Const.TKPD_AKAMAI

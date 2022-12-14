@@ -41,14 +41,14 @@ import okhttp3.internal.http2.ConnectionShutdownException;
 import retrofit2.Response;
 import rx.Observable;
 
-import static com.tokopedia.akamai_bot_lib.UtilsKt.STATUS_QUERY;
-import static com.tokopedia.akamai_bot_lib.UtilsKt.TOP_ADS_TRACKING_KEY;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getAkamaiQuery;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getQueryListFromQueryString;
-import static com.tokopedia.akamai_bot_lib.UtilsKt.getRegisteredGqlForTopAds;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
 import static com.tokopedia.graphql.util.Const.TKPD_AKAMAI;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.STATUS_QUERY;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.TOP_ADS_TRACKING_KEY;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.getRegisteredGqlForTopAds;
 
 /**
  * Retrieve the response from Cloud and dump the same in disk if cache was enable by consumer.
