@@ -304,6 +304,7 @@ ext {
             logintestapp                    : ":testapp-features:user:logintestapp",
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking",
+            watch                           : ":features:watch",
             tokofood                        : ":features:tokofood"
     ]
 }
