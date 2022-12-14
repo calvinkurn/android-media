@@ -425,6 +425,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
+    implementation project(rootProject.ext.features.watch)
 }
 
 apply plugin: 'com.google.gms.google-services'
