@@ -86,7 +86,7 @@ class CampaignDetailViewModelTest {
     lateinit var selectedProductObserver: Observer<in List<Pair<Long, Long>>>
 
     @RelaxedMockK
-    lateinit var productReserveObserver: Observer<Pair<ProductReserveResult, String>>
+    lateinit var productReserveObserver: Observer<in Pair<ProductReserveResult, String>>
 
     @RelaxedMockK
     lateinit var productDeleteObserver: Observer<in ProductDeleteResult>
@@ -270,12 +270,172 @@ class CampaignDetailViewModelTest {
         runBlocking {
             with(viewModel) {
                 // Given
-                val dummySubmittedProductResponse =
-                    DummyDataHelper.generateDummySubmittedProductData()
-                val dummyWaitingForSelectionProductData =
-                    DummyDataHelper.generateWaitingForSelectionProductData()
+                val dummySubmittedProductResponse = DummyDataHelper.generateDummySubmittedProductData()
+                val dummyWaitingForSelectionProductData = DummyDataHelper.generateWaitingForSelectionProductData()
                 val expectedResult = Success(dummyWaitingForSelectionProductData)
 
+                coEvery { getFlashSaleSubmittedProductListUseCase.execute(dummyCampaignId) } returns dummySubmittedProductResponse
+
+                // When
+                getSubmittedProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = submittedProduct.getOrAwaitValue()
+                assertEquals(expectedResult, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch submitted product success and campaignStatus is WAITING_FOR_SELECTION, observer will successfully receive the data`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(status = FlashSaleStatus.WAITING_FOR_SELECTION)
+                val sellerEligibility =
+                    SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+                coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+                coEvery { getFlashSaleDetailForSellerUseCase.execute(dummyCampaignId) } returns dummyCampaignDetailData
+                getCampaignDetail(dummyCampaignId)
+
+                val dummySubmittedProductResponse = DummyDataHelper.generateDummySubmittedProductData()
+                val dummyWaitingForSelectionProductData = DummyDataHelper.generateWaitingForSelectionProductData()
+                val expectedResult = Success(dummyWaitingForSelectionProductData)
+                coEvery { getFlashSaleSubmittedProductListUseCase.execute(dummyCampaignId) } returns dummySubmittedProductResponse
+
+                // When
+                getSubmittedProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = submittedProduct.getOrAwaitValue()
+                assertEquals(expectedResult, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch submitted product success and campaignStatus is ON_SELECTION_PROCESS, observer will successfully receive the data`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(status = FlashSaleStatus.ON_SELECTION_PROCESS)
+                val sellerEligibility =
+                    SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+                coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+                coEvery { getFlashSaleDetailForSellerUseCase.execute(dummyCampaignId) } returns dummyCampaignDetailData
+                getCampaignDetail(dummyCampaignId)
+
+                val dummySubmittedProductResponse = DummyDataHelper.generateDummySubmittedProductData()
+                val dummyOnSelectionProcessItem = DummyDataHelper.generateOnSelectionProcessProductData()
+                val expectedResult = Success(dummyOnSelectionProcessItem)
+                coEvery { getFlashSaleSubmittedProductListUseCase.execute(dummyCampaignId) } returns dummySubmittedProductResponse
+
+                // When
+                getSubmittedProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = submittedProduct.getOrAwaitValue()
+                assertEquals(expectedResult, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch submitted product success and campaignStatus is FINISHED_PROCESS_SELECTION, observer will successfully receive the data`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(status = FlashSaleStatus.SELECTION_FINISHED)
+                val sellerEligibility =
+                    SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+                coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+                coEvery { getFlashSaleDetailForSellerUseCase.execute(dummyCampaignId) } returns dummyCampaignDetailData
+                getCampaignDetail(dummyCampaignId)
+
+                val dummySubmittedProductResponse = DummyDataHelper.generateDummySubmittedProductData()
+                val dummyFinishedProcessSelectionItem = DummyDataHelper.generateSelectionFinishedProductData()
+                val expectedResult = Success(dummyFinishedProcessSelectionItem)
+                coEvery { getFlashSaleSubmittedProductListUseCase.execute(dummyCampaignId) } returns dummySubmittedProductResponse
+
+                // When
+                getSubmittedProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = submittedProduct.getOrAwaitValue()
+                assertEquals(expectedResult, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch submitted product success and campaignStatus is ONGOING, observer will successfully receive the data`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(status = FlashSaleStatus.ONGOING)
+                val sellerEligibility =
+                    SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+                coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+                coEvery { getFlashSaleDetailForSellerUseCase.execute(dummyCampaignId) } returns dummyCampaignDetailData
+                getCampaignDetail(dummyCampaignId)
+
+                val dummySubmittedProductResponse = DummyDataHelper.generateDummySubmittedProductData()
+                val dummyOngoingItem = DummyDataHelper.generateOngoingAndFinishedProductData()
+                val expectedResult = Success(dummyOngoingItem)
+                coEvery { getFlashSaleSubmittedProductListUseCase.execute(dummyCampaignId) } returns dummySubmittedProductResponse
+
+                // When
+                getSubmittedProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = submittedProduct.getOrAwaitValue()
+                assertEquals(expectedResult, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch submitted product success and campaignStatus is REJECTED, observer will successfully receive the data`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(status = FlashSaleStatus.REJECTED)
+                val sellerEligibility =
+                    SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+                coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+                coEvery { getFlashSaleDetailForSellerUseCase.execute(dummyCampaignId) } returns dummyCampaignDetailData
+                getCampaignDetail(dummyCampaignId)
+
+                val dummySubmittedProductResponse = DummyDataHelper.generateDummySubmittedProductData()
+                val dummyRejectedItem = DummyDataHelper.generateOngoingAndRejectedProductData()
+                val expectedResult = Success(dummyRejectedItem)
+                coEvery { getFlashSaleSubmittedProductListUseCase.execute(dummyCampaignId) } returns dummySubmittedProductResponse
+
+                // When
+                getSubmittedProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = submittedProduct.getOrAwaitValue()
+                assertEquals(expectedResult, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch submitted product success and campaignStatus is FINISHED, observer will successfully receive the data`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(status = FlashSaleStatus.FINISHED)
+                val sellerEligibility =
+                    SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+                coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+                coEvery { getFlashSaleDetailForSellerUseCase.execute(dummyCampaignId) } returns dummyCampaignDetailData
+                getCampaignDetail(dummyCampaignId)
+
+                val dummySubmittedProductResponse = DummyDataHelper.generateDummySubmittedProductData()
+                val dummyFinishedItem = DummyDataHelper.generateOngoingAndFinishedProductData()
+                val expectedResult = Success(dummyFinishedItem)
                 coEvery { getFlashSaleSubmittedProductListUseCase.execute(dummyCampaignId) } returns dummySubmittedProductResponse
 
                 // When
@@ -344,6 +504,79 @@ class CampaignDetailViewModelTest {
 
                 // When
                 getSubmittedProductVariant(dummyCampaignId, 0, true, "")
+
+                // Then
+                val actualResult = error.getOrAwaitValue()
+                assertEquals(dummyThrowable, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when call reserveProduct success, observer will receive request status accordingly`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyProductReserveResultData = DummyDataHelper.generateDummyProductReserveResultData()
+
+                coEvery { doFlashSaleProductReserveUseCase.execute(any()) } returns dummyProductReserveResultData
+
+                // When
+                reserveProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = productReserveResult.getOrAwaitValue()
+                assertEquals(dummyProductReserveResultData, actualResult.first)
+            }
+        }
+    }
+
+    @Test
+    fun `when call reserveProduct fail, observer will return error`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyThrowable = MessageErrorException("Server Error")
+                coEvery { doFlashSaleProductReserveUseCase.execute(any()) } throws dummyThrowable
+
+                // When
+                reserveProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = error.getOrAwaitValue()
+                assertEquals(dummyThrowable, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when call deleteProduct success, observer will receive request status accordingly`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyDeleteProductResultData = ProductDeleteResult(true, "")
+                coEvery { doFlashSaleProductDeleteUseCase.execute(any()) } returns dummyDeleteProductResultData
+
+                // When
+                deleteProduct(dummyCampaignId)
+
+                // Then
+                val actualResult = productDeleteResult.getOrAwaitValue()
+                assertEquals(dummyDeleteProductResultData, actualResult)
+            }
+        }
+    }
+
+    @Test
+    fun `when call deleteProduct fail, observer will return error`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyThrowable = MessageErrorException("Server Error")
+                coEvery { doFlashSaleProductDeleteUseCase.execute(any()) } throws dummyThrowable
+
+                // When
+                deleteProduct(dummyCampaignId)
 
                 // Then
                 val actualResult = error.getOrAwaitValue()
@@ -511,7 +744,8 @@ class CampaignDetailViewModelTest {
         with(viewModel) {
             // Given
             val dummyTabName = FlashSaleListPageTab.UPCOMING
-            val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(dummyTabName)
+            val dummyCampaignDetailData =
+                DummyDataHelper.generateDummyCampaignDetailData(dummyTabName)
             val sellerEligibility =
                 SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
 
@@ -534,7 +768,8 @@ class CampaignDetailViewModelTest {
         with(viewModel) {
             // Given
             val dummyTabName = FlashSaleListPageTab.REGISTERED
-            val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(dummyTabName)
+            val dummyCampaignDetailData =
+                DummyDataHelper.generateDummyCampaignDetailData(dummyTabName)
             val sellerEligibility =
                 SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
 
@@ -557,7 +792,8 @@ class CampaignDetailViewModelTest {
         with(viewModel) {
             // Given
             val dummyTabName = FlashSaleListPageTab.ONGOING
-            val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(dummyTabName)
+            val dummyCampaignDetailData =
+                DummyDataHelper.generateDummyCampaignDetailData(dummyTabName)
             val sellerEligibility =
                 SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
 
@@ -580,7 +816,8 @@ class CampaignDetailViewModelTest {
         with(viewModel) {
             // Given
             val dummyTabName = FlashSaleListPageTab.FINISHED
-            val dummyCampaignDetailData = DummyDataHelper.generateDummyCampaignDetailData(dummyTabName)
+            val dummyCampaignDetailData =
+                DummyDataHelper.generateDummyCampaignDetailData(dummyTabName)
             val sellerEligibility =
                 SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
 

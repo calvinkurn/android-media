@@ -1,11 +1,16 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
 import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProductData
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingItem
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingRejectedItem
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
@@ -14,7 +19,7 @@ import java.util.*
 import kotlin.collections.List
 
 object DummyDataHelper {
-    fun generateDummyCampaignDetailData(tabName: FlashSaleListPageTab = FlashSaleListPageTab.UPCOMING): FlashSale {
+    fun generateDummyCampaignDetailData(tabName: FlashSaleListPageTab = FlashSaleListPageTab.UPCOMING, status: FlashSaleStatus = FlashSaleStatus.UPCOMING): FlashSale {
         val flashSaleStartDate = GregorianCalendar(2022, 10, 10, 0, 0, 0).time
         val flashSaleEndDate = GregorianCalendar(2022, 10, 20, 0, 0, 0).time
         val flashSaleReview = GregorianCalendar(2022, 10, 5, 0, 0, 0).time
@@ -41,7 +46,7 @@ object DummyDataHelper {
             flashSaleSubmission,
             false,
             FlashSale.FormattedDate("", ""),
-            FlashSaleStatus.UPCOMING,
+            status,
             emptyList(),
             tabName
         )
@@ -101,6 +106,105 @@ object DummyDataHelper {
         )
     }
 
+    fun generateOnSelectionProcessProductData(): List<OnSelectionProcessItem> {
+        return listOf(
+            OnSelectionProcessItem(
+                0,
+                true,
+                true,
+                0,
+                0,
+                "Sample Product",
+                "",
+                SubmittedProduct.ProductCriteria(0),
+                0,
+                "",
+                SubmittedProduct.Price(0.0, 0.0, 0.0),
+                SubmittedProduct.Discount(0, 0, 0),
+                SubmittedProduct.DiscountedPrice(0.0, 0.0, 0.0),
+                ProductStockStatus.MULTI_VARIANT_MULTI_LOCATION,
+                listOf(),
+                0
+            )
+        )
+    }
+
+    fun generateSelectionFinishedProductData(): List<FinishedProcessSelectionItem> {
+        return listOf(
+            FinishedProcessSelectionItem(
+                0,
+                true,
+                true,
+                0,
+                0,
+                "Sample Product",
+                "",
+                SubmittedProduct.ProductCriteria(0),
+                0,
+                "",
+                SubmittedProduct.Price(0.0, 0.0, 0.0),
+                SubmittedProduct.Discount(0, 0, 0),
+                SubmittedProduct.DiscountedPrice(0.0, 0.0, 0.0),
+                ProductStockStatus.MULTI_VARIANT_MULTI_LOCATION,
+                listOf(),
+                0,
+                0,
+                ""
+            )
+        )
+    }
+
+    fun generateOngoingAndFinishedProductData(): List<OngoingItem> {
+        return listOf(
+            OngoingItem(
+                0,
+                true,
+                true,
+                0,
+                0,
+                0,
+                0,
+                "Sample Product",
+                "",
+                SubmittedProduct.ProductCriteria(0),
+                0,
+                "",
+                SubmittedProduct.Price(0.0, 0.0, 0.0),
+                SubmittedProduct.Discount(0, 0, 0),
+                SubmittedProduct.DiscountedPrice(0.0, 0.0, 0.0),
+                ProductStockStatus.MULTI_VARIANT_MULTI_LOCATION,
+                listOf(),
+                0,
+                ""
+            )
+        )
+    }
+
+    fun generateOngoingAndRejectedProductData(): List<OngoingRejectedItem> {
+        return listOf(
+            OngoingRejectedItem(
+                0,
+                true,
+                true,
+                0,
+                0,
+                0,
+                "Sample Product",
+                "",
+                SubmittedProduct.ProductCriteria(0),
+                0,
+                "",
+                SubmittedProduct.Price(0.0, 0.0, 0.0),
+                SubmittedProduct.Discount(0, 0, 0),
+                SubmittedProduct.DiscountedPrice(0.0, 0.0, 0.0),
+                ProductStockStatus.MULTI_VARIANT_MULTI_LOCATION,
+                listOf(),
+                0,
+                ""
+            )
+        )
+    }
+
     fun generateDummyFlashSaleData(): FlashSale {
         val flashSaleStartDate = GregorianCalendar(2022, 10, 10, 0, 0, 0).time
         val flashSaleEndDate = GregorianCalendar(2022, 10, 20, 0, 0, 0).time
@@ -132,6 +236,10 @@ object DummyDataHelper {
             emptyList(),
             FlashSaleListPageTab.UPCOMING
         )
+    }
+
+    fun generateDummyProductReserveResultData(): ProductReserveResult {
+        return ProductReserveResult(true, "", "")
     }
 
     fun generateDummyTimelineBottomSheetModel(): CampaignDetailBottomSheetModel {
