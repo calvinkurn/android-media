@@ -153,7 +153,7 @@ class EditorViewModel @Inject constructor(
 
     fun isShopAvailable(): Boolean {
         val shopId = userSession.shopId
-        return shopId.isNotEmpty() && shopId != EMPTY_SHOP_ID
+        return shopId != EMPTY_SHOP_ID
     }
 
     private fun updateEditedItem(originalUrl: String) {

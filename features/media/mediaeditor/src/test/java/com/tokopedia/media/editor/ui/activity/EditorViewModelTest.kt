@@ -9,9 +9,13 @@ import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
+import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
 import org.junit.Rule
 import io.mockk.Runs
@@ -29,9 +33,13 @@ class EditorViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
 
     private val saveImageRepo = mockk<SaveImageRepository>()
+    private val userSession = mockk<UserSessionInterface>()
+    private val addLogoRepository = mockk<AddLogoFilterRepository>()
 
     private val viewModel = EditorViewModel(
-        saveImageRepo
+        saveImageRepo,
+        addLogoRepository,
+        userSession
     )
 
     @Test
@@ -205,6 +213,31 @@ class EditorViewModelTest {
 
     @Suppress("UNCHECKED_CAST")
     @Test
+    fun `save image to gallery with overlay logo`() {
+        // Given
+        val dataList = createUiModelState(0, -1)
+        dataList.first().apply {
+            editList.add(
+                EditorDetailUiModel(
+                    resultUrl = this.getOriginalUrl(),
+                    editorToolType = EditorToolType.ADD_LOGO
+                )
+            )
+        }
+
+        // When
+        every { addLogoRepository.flattenImage(any(), any(), any() ) } returns addLogoPath
+        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
+            (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
+        }
+        viewModel.saveToGallery(dataList) {}
+
+        // Then
+        verify { saveImageRepo.saveToGallery(any(), any()) }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
     fun `save captured image to gallery`() {
         // Given
         val cameraDataIndex = pathSampleList.size - 1
@@ -248,6 +281,32 @@ class EditorViewModelTest {
         verify { saveImageRepo.saveToCache(any(), any(), any()) }
     }
 
+    @Test
+    fun `check if user have shop`() {
+        // Given
+        var isShopAvail = false
+
+        // When
+        every { userSession.shopId } returns userShopId
+        isShopAvail = viewModel.isShopAvailable()
+
+        // Then
+        assertEquals(true, isShopAvail)
+    }
+
+    @Test
+    fun `check if user have no shop`() {
+        // Given
+        var isShopAvail = false
+
+        // When
+        every { userSession.shopId } returns EditorViewModel.EMPTY_SHOP_ID
+        isShopAvail = viewModel.isShopAvailable()
+
+        // Then
+        assertEquals(false, isShopAvail)
+    }
+
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {
         return pathSampleList.mapIndexed { index, path ->
             val stateList = listOf<EditorDetailUiModel>().toMutableList()
@@ -269,6 +328,7 @@ class EditorViewModelTest {
     companion object {
         private const val tokopediaCacheDir = "com.tokopedia.tkpd/cache/Tokopedia"
         private const val removeBackgroundPath = "/storage/sdcard/Pictures/remove_background.jpg"
+        private const val addLogoPath = "/storage/sdcard/Pictures/add_logo.jpg"
 
         private val pathSampleList = listOf(
             "/storage/sdcard/Pictures/Image1.jpg",
@@ -279,5 +339,6 @@ class EditorViewModelTest {
         )
 
         private const val videoKey = "/storage/sdcard/Pictures/Video1.mp4"
+        private const val userShopId = "13580123"
     }
 }
