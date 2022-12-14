@@ -1,6 +1,7 @@
 package com.tokopedia.mvc.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.mvc.di.module.ImageGeneratorModule
 import com.tokopedia.mvc.di.module.CommonViewModelModule
 import com.tokopedia.mvc.di.module.MerchantVoucherCreationModule
 import com.tokopedia.mvc.di.module.MerchantVoucherCreationViewModelModule
@@ -27,6 +28,7 @@ import dagger.Component
 @MerchantVoucherCreationScope
 @Component(
     modules = [MerchantVoucherCreationModule::class, MerchantVoucherCreationViewModelModule::class,
+        ImageGeneratorModule::class,
         CommonViewModelModule::class],
     dependencies = [BaseAppComponent::class]
 )

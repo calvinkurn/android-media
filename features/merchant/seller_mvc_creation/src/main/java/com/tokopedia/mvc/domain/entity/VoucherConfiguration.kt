@@ -24,5 +24,6 @@ data class VoucherConfiguration(
     val voucherCodePrefix: String = "",
     val voucherCode: String = "",
     val startPeriod: Date = Date(),
-    val endPeriod: Date = Date()
+    val endPeriod: Date = Date(),
+    val totalPeriod: Int = 0
 ) : Parcelable

@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryPreviewBinding
@@ -30,7 +31,9 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -48,7 +51,6 @@ class SummaryFragment :
     companion object {
         private const val CORNER_RADIUS_HEADER = 16
         private const val TNC_LINK = "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
-        private const val VOUCHER_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/mvc/mvc_voucher.png"
         private const val UPLOAD_ERROR_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/error_upload_coupon.png"
 
         @JvmStatic
@@ -131,10 +133,19 @@ class SummaryFragment :
                 layoutProducts.updateProductData(it)
                 layoutInfo.updatePageInfo(it)
             }
+            viewModel.previewImage(
+                isCreateMode = false,
+                voucherConfiguration = it,
+                parentProductIds = it.productIds,
+                imageRatio = ImageRatio.SQUARE
+            )
         }
         viewModel.maxExpense.observe(viewLifecycleOwner) {
             binding?.layoutSubmission?.labelSpendingEstimation
                 ?.spendingEstimationText = it.getCurrencyFormatted()
+        }
+        viewModel.couponImage.observe(viewLifecycleOwner) {
+            binding?.layoutPreview?.ivPreview?.loadImage(it)
         }
     }
 
@@ -158,10 +169,7 @@ class SummaryFragment :
     private fun SmvcFragmentSummaryPreviewBinding.setupLayoutPreview() {
         val greenDark = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val greenLight = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN200)
-        val drawable = GradientDrawable(
-            GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(greenDark, greenLight)
-        )
+        val drawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(greenDark, greenLight))
         val corner = CORNER_RADIUS_HEADER.toPx().toFloat()
         drawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, corner, corner, corner, corner)
         viewBg.background = drawable
@@ -239,17 +247,12 @@ class SummaryFragment :
     private fun SmvcVoucherDetailVoucherInfoSectionBinding.updatePageInfo(
         information: VoucherConfiguration
     ) {
-        val resources = root.context.resources
         with(information) {
-            val targetItems = resources.getStringArray(R.array.target_items)
             tpgVoucherName.text = voucherName
             tpgVoucherCode.text = voucherCode
-            tpgVoucherTarget.text = if (isVoucherPublic) {
-                getString(R.string.smvc_voucher_public_label)
-            } else {
-                getString(R.string.smvc_voucher_private_label)
-            }
-            llVoucherCode.isVisible = isVoucherPublic
+            tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
+                                    else getString(R.string.smvc_voucher_private_label)
+            llVoucherCode.isVisible = !isVoucherPublic
             try {
                 val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
                 tpgVoucherStartPeriod.text = formatter.format(startPeriod)
@@ -295,6 +298,14 @@ class SummaryFragment :
         }
     }
 
+    private fun showSuccessUploadBottomSheet(configuration: VoucherConfiguration) {
+        SuccessUploadBottomSheet
+            .createInstance(configuration)
+            .setOnAdsClickListener(::onSuccessBottomsheetAdsClick)
+            .setOnBroadCastClickListener(::onSuccessBottomsheetBroadCastClick)
+            .show(childFragmentManager)
+    }
+
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         // TODO: redirect to step 1
     }
@@ -313,5 +324,13 @@ class SummaryFragment :
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
         redirectionHelper.redirectToViewProductPage(activity ?: return, configuration, listOf())
+    }
+
+    private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {
+        // TODO implement broadcast redirection
+    }
+
+    private fun onSuccessBottomsheetAdsClick(voucherConfiguration: VoucherConfiguration) {
+        // TODO implement ads redirection
     }
 }
