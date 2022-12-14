@@ -417,7 +417,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         helper.shippingRecommendationData.shippingDurationUiModels[0].shippingCourierViewModelList = firstDurationCouriers
         helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
-            shipment = helper.shipment.copy(recommendationSpId = helper.secondCourierFirstDuration.productData.shipperProductId, recommendationServiceId = helper.firstDuration.serviceData.serviceId)
+            shipment = helper.shipment.copy(recommendationSpId = helper.secondCourierFirstDuration.productData.shipperProductId.toString(), recommendationServiceId = helper.firstDuration.serviceData.serviceId.toString())
         )
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
