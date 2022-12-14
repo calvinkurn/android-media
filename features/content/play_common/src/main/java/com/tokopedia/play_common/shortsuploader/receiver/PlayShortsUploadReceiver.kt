@@ -9,7 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
-import com.tokopedia.play_common.shortsuploader.di.DaggerPlayShortsUploaderComponent
+import com.tokopedia.play_common.shortsuploader.di.uploader.DaggerPlayShortsUploaderComponent
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject

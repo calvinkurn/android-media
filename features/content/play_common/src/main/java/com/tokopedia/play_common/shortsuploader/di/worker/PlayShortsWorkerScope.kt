@@ -1,4 +1,4 @@
-package com.tokopedia.play_common.shortsuploader.di
+package com.tokopedia.play_common.shortsuploader.di.worker
 
 import javax.inject.Scope
 

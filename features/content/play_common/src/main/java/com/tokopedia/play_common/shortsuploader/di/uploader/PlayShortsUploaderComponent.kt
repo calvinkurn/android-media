@@ -1,8 +1,6 @@
-package com.tokopedia.play_common.shortsuploader.di
+package com.tokopedia.play_common.shortsuploader.di.uploader
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
-import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.play_common.shortsuploader.receiver.PlayShortsUploadReceiver
 import dagger.Component
 
@@ -12,6 +10,7 @@ import dagger.Component
 @Component(
     modules = [
         PlayShortsUploaderModule::class,
+        PlayShortsUploaderInternalModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

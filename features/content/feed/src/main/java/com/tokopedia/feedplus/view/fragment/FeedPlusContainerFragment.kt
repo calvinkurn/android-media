@@ -65,6 +65,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
@@ -153,6 +154,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     lateinit var playShortsInFeedAnalytic: PlayShortsInFeedAnalytic
+
+    @Inject
+    lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
 
     @JvmField @Inject
     var coachMarkManager: ContentCoachMarkManager? = null
@@ -549,7 +553,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         type = Toaster.TYPE_NORMAL,
                         actionText = getString(R.string.feed_upload_shorts_see_video),
                         clickListener = View.OnClickListener {
-                            playShortsInFeedAnalytic.clickRedirectToChannelRoom(
+                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
                                 uploadData.authorId,
                                 uploadData.authorType,
                                 uploadData.shortsId

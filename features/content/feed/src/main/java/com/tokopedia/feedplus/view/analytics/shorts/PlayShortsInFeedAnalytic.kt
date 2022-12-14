@@ -77,32 +77,6 @@ class PlayShortsInFeedAnalytic @Inject constructor() {
     }
 
     /**
-     * Row 66
-     */
-    fun clickRedirectToChannelRoom(
-        authorId: String,
-        authorType: String,
-        channelId: String
-    ) {
-        TrackApp.getInstance().gtm
-            .sendGeneralEvent(
-                mapOf(
-                    EVENT_NAME to EVENT_CLICK_CONTENT,
-                    EVENT_ACTION to String.format(
-                        EVENT_ACTION_CLICK_FORMAT,
-                        "lihat video uploaded"
-                    ),
-                    EVENT_CATEGORY to EVENT_CATEGORY_SHORTS,
-                    EVENT_LABEL to "$authorId - ${getAnalyticAuthorType(authorType)} - $channelId",
-                    EVENT_BUSINESSUNIT to PLAY,
-                    EVENT_CURRENTSITE to MARKETPLACE,
-                    EVENT_TRACKER_ID to "37589",
-                    EVENT_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId
-                )
-            )
-    }
-
-    /**
      * Row 79
      */
     fun viewShortsEntryPoint() {
