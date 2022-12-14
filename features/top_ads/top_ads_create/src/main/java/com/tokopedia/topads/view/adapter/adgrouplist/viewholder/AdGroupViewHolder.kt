@@ -30,14 +30,7 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
 
     init {
        binding?.adGroupItemHeader?.setOnClickListener {
-           selected = if(!selected){
-               selectAdGroup()
-               true
-           }
-           else{
-               unselectAdGroup()
-               false
-           }
+           listener.onAdGroupClicked(bindingAdapterPosition,!selected)
        }
     }
 
@@ -47,6 +40,8 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
                adGroupTitleTv.text = data.groupName
                bindTopRow(data.adGroupStats)
                bindBottomRow(data.adGroupSetting)
+               selected = data.selected
+               bindSelectedState()
            }
        }
     }
@@ -96,6 +91,13 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
         attachStatClickListeners(binding?.adStatsBottomRow,1)
     }
 
+    private fun bindSelectedState(){
+        if(selected){
+            selectAdGroup()
+        }
+        else unselectAdGroup()
+    }
+
     private fun attachStatClickListeners(view:AdStatsView?,index:Int){
         view?.setOnClickListener {
             listener.onAdStatClicked(getBottomSheetInstance(index))
@@ -125,8 +127,14 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
         binding?.adGroupContainer?.background = itemView.context.getDrawable(R.drawable.low_emphasis_border)
         binding?.adGroupFooter?.backgroundTintList = null
     }
+
+    override fun onViewRecycled() {
+        selected = false
+        super.onViewRecycled()
+    }
     
     interface AdGroupListener{
         fun onAdStatClicked(bottomSheet:BottomSheetUnify)
+        fun onAdGroupClicked(index:Int,active:Boolean)
     }
 }

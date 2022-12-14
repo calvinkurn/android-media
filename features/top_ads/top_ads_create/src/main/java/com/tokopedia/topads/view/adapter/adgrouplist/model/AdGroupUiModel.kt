@@ -10,6 +10,7 @@ class AdGroupUiModel(
     val groupName:String = "",
     var adGroupSetting: AdGroupSettingData = AdGroupSettingData(),
     var adGroupStats:AdGroupStatsData = AdGroupStatsData(),
+    var selected:Boolean = false
 ) : Visitable<AdGroupTypeFactory> {
     override fun type(typeFactory: AdGroupTypeFactory) = typeFactory.type(this)
 }

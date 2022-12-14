@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.topads.common.data.model.AdGroupsParams
 import com.tokopedia.topads.common.data.raw.TOP_ADS_GROUPS_GQL
 import com.tokopedia.topads.common.data.response.TopAdsGroupsResponse
-import com.tokopedia.topads.common.data.util.DateTimeUtils
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toString

@@ -55,6 +55,7 @@ class MpAdsGroupsViewModel @Inject constructor(
     val hasNextLiveData:LiveData<Boolean> = _hasNextLiveData
 
     private var adGroupListStartIndex = NO_POSITION
+    private var selectedAdGroupIndex = NO_POSITION
 
     var sortParam = ""
     var searchKeyword = ""
@@ -65,8 +66,8 @@ class MpAdsGroupsViewModel @Inject constructor(
     private var totalItemCount = 0
 
     fun loadFirstPage(shopId:String){
+        reset()
         createShimmerList()
-        currentPage=1
         getTopAdsGroupsUseCase.getAdGroups(
             shopId,
             searchKeyword,
@@ -82,7 +83,6 @@ class MpAdsGroupsViewModel @Inject constructor(
         totalItemCount = data.response?.page?.total ?: 1
         val mappedList = AdGroupMapper.getAdGroupsFromDashboardResponse(data)
         createDataList(mappedList.first)
-        val ids = getGroupsIds()
         createAdGroupList(mappedList.second)
     }
 
@@ -90,13 +90,21 @@ class MpAdsGroupsViewModel @Inject constructor(
         createErrorList(GlobalError.SERVER_ERROR)
     }
 
-    fun loadMorePages(shopId:String,page:Int){
+    private fun reset(){
+        currentPage=1
+        currentItemCount = 0
+        totalItemCount = 0
+        _hasNextLiveData.value = true
+        setAdGroupStartPosition(NO_POSITION)
+        setSelectedAdGroupPosition(NO_POSITION)
+    }
+
+    fun loadMorePages(shopId:String){
         createInfiniteLoadingVisitableList()
-        currentPage++
         getTopAdsGroupsUseCase.getAdGroups(
             shopId,
             searchKeyword,
-            page,
+            currentPage+1,
             sortParam,
             ::onLoadMoreSuccess,
             ::onLoadMoreFailure
@@ -122,11 +130,11 @@ class MpAdsGroupsViewModel @Inject constructor(
 
     private fun onLoadMoreSuccess(data:TopAdsGroupsResponse){
         removeInfiniteLoadingVisitableList()
+        currentPage++
         if(!isLastPage()){
             currentItemCount += data.response?.data?.size.orZero()
             val mappedList = AdGroupMapper.getAdGroupsFromDashboardResponse(data)
             updateDataList(mappedList.first)
-            val ids = getGroupsIds()
             addMoreAdGroups(mappedList.second)
         }
         _hasNextLiveData.value = !isLastPage()
@@ -137,10 +145,9 @@ class MpAdsGroupsViewModel @Inject constructor(
     }
 
     private fun createInfiniteLoadRetryList(){
-        if(visitableList.last() is AdGroupUiModel){
-            visitableList.add(ReloadInfiniteUiModel())
-            updateVisitableLiveData()
-        }
+        removeInfiniteLoadingVisitableList()
+        visitableList.add(ReloadInfiniteUiModel())
+        updateVisitableLiveData()
     }
 
     private fun createDummyList(){
@@ -157,7 +164,7 @@ class MpAdsGroupsViewModel @Inject constructor(
                 ReloadInfiniteUiModel()
             )
         )
-        adGroupListStartIndex = 1
+        setAdGroupStartPosition(1)
         updateVisitableLiveData()
     }
 
@@ -166,14 +173,14 @@ class MpAdsGroupsViewModel @Inject constructor(
         visitableList.clear()
         visitableList.add(CreateAdGroupUiModel())
         visitableList.addAll(groupList)
-        adGroupListStartIndex = 1
+        setAdGroupStartPosition(1)
         updateVisitableLiveData()
     }
 
     // Call this method to add Ad groups to the existing visitable list
     private fun addMoreAdGroups(groupList:List<AdGroupUiModel>){
         visitableList.addAll(groupList)
-        adGroupListStartIndex = 1
+        setAdGroupStartPosition(1)
         updateVisitableLiveData()
     }
 
@@ -183,7 +190,6 @@ class MpAdsGroupsViewModel @Inject constructor(
         visitableList.clear()
         visitableList.add(CreateAdGroupUiModel())
         visitableList.add(AdGroupShimmerUiModel())
-        adGroupListStartIndex = NO_POSITION
         updateVisitableLiveData()
     }
 
@@ -192,7 +198,6 @@ class MpAdsGroupsViewModel @Inject constructor(
         visitableList.clear()
         visitableList.add(CreateAdGroupUiModel())
         visitableList.add(ErrorUiModel(errorType))
-        adGroupListStartIndex = NO_POSITION
         updateVisitableLiveData()
     }
 
@@ -215,6 +220,16 @@ class MpAdsGroupsViewModel @Inject constructor(
     // Call this method to check whether any more pages can be loaded
     private fun isLastPage() = currentItemCount>=totalItemCount
 
+    // Call this method to set Ad Group starting index in visitables list
+    private fun setAdGroupStartPosition(position:Int){
+        adGroupListStartIndex = position
+    }
+
+    // Call this method to set selected Ad Group index in Ad Group data list
+    private fun setSelectedAdGroupPosition(position:Int){
+        selectedAdGroupIndex = position
+    }
+
     /*
       Call this method to get the combined groupId's of the requested page
       By default it returns for the current page
@@ -233,5 +248,33 @@ class MpAdsGroupsViewModel @Inject constructor(
             grpIdsString.toString()
         }
         else ""
+    }
+
+    fun chooseAdGroup(selectedPos:Int){
+        if(selectedAdGroupIndex!= NO_POSITION){
+            val alreadySelectedIndex = selectedAdGroupIndex + adGroupListStartIndex
+            unselectGroup(alreadySelectedIndex)
+        }
+        selectGroup(selectedPos)
+        setSelectedAdGroupPosition(selectedPos - adGroupListStartIndex)
+        updateVisitableLiveData()
+    }
+
+    fun unChooseAdGroup(selectedPos:Int){
+        unselectGroup(selectedPos)
+        setSelectedAdGroupPosition(NO_POSITION)
+        updateVisitableLiveData()
+    }
+
+    private fun selectGroup(index:Int){
+        if(index < visitableList.size && visitableList[index] is AdGroupUiModel){
+            (visitableList[index] as AdGroupUiModel).selected = true
+        }
+    }
+
+    private fun unselectGroup(index:Int){
+        if(index < visitableList.size && visitableList[index] is AdGroupUiModel){
+            (visitableList[index] as AdGroupUiModel).selected = false
+        }
     }
 }

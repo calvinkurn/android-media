@@ -22,6 +22,7 @@ import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFact
 import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.AdGroupViewHolder
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ErrorViewHolder
+import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ReloadInfiniteViewHolder
 import com.tokopedia.topads.view.model.MpAdsGroupsViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,7 +31,8 @@ import javax.inject.Inject
 class MpAdGroupFragment : BaseDaggerFragment(),
     AdGroupViewHolder.AdGroupListener,
     FilterGeneralDetailBottomSheet.Callback,
-    ErrorViewHolder.ErrorListener {
+    ErrorViewHolder.ErrorListener,
+    ReloadInfiniteViewHolder.ReloadInfiniteScrollListener{
 
     companion object{
         fun newInstance() : MpAdGroupFragment{
@@ -102,16 +104,14 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         binding?.adGroupRv?.apply {
             layoutManager = linearLayoutManager
             adapter = adGroupAdapter
-            endlessScrollListener?.let {
-                addOnScrollListener(it)
-            }
+            addRecyclerViewScrollListeners()
         }
     }
 
     private fun createEndlessRecyclerViewListener() {
        endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                adGroupViewModel.loadMorePages(shopId, page)
+                adGroupViewModel.loadMorePages(shopId)
             }
         }
     }
@@ -127,7 +127,10 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun getAdGroupTypeFactory() : AdGroupTypeFactory = AdGroupTypeFactoryImpl(this, this)
+    private fun getAdGroupTypeFactory() : AdGroupTypeFactory = AdGroupTypeFactoryImpl(
+        this,
+        this,
+        this)
 
 
     @Suppress("UNCHECKED_CAST")
@@ -150,6 +153,12 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     private fun removeRecyclerViewScrollListeners(){
         endlessScrollListener?.let {
             binding?.adGroupRv?.removeOnScrollListener(it)
+        }
+    }
+
+    private fun addRecyclerViewScrollListeners(){
+        endlessScrollListener?.let {
+            binding?.adGroupRv?.addOnScrollListener(it)
         }
     }
 
@@ -200,19 +209,29 @@ class MpAdGroupFragment : BaseDaggerFragment(),
                 if(it.inputState=="true"){
                   adGroupViewModel.sortParam = it.key
                   resetAdGroupList()
+                  return
                 }
             }
+            adGroupViewModel.sortParam = ""
+            resetAdGroupList()
         }
     }
     // Filter Logic End
 
     //Call this method to reset the ad group list
     private fun resetAdGroupList(){
+        removeRecyclerViewScrollListeners()
+        addRecyclerViewScrollListeners()
         adGroupViewModel.loadFirstPage(shopId)
     }
 
     override fun onAdStatClicked(bottomSheet: BottomSheetUnify) {
         bottomSheet.show(childFragmentManager,"")
+    }
+
+    override fun onAdGroupClicked(index: Int, active: Boolean) {
+        if(active) adGroupViewModel.chooseAdGroup(index)
+        else adGroupViewModel.unChooseAdGroup(index)
     }
 
     override fun getScreenName() = ""
@@ -223,4 +242,8 @@ class MpAdGroupFragment : BaseDaggerFragment(),
 
     }
 
+    // Reload Logic
+    override fun onReload() {
+        adGroupViewModel.loadMorePages(shopId)
+    }
 }

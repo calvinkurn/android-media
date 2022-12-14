@@ -2,8 +2,11 @@ package com.tokopedia.topads.utils
 
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.View
 import com.tokopedia.topads.constants.SpanConstant
 
 object SpannableUtils {
@@ -36,6 +39,27 @@ object SpannableUtils {
         }
     }
 
+    private fun getClickSpannable(spannable:SpannableString,substring:String,listener:(() -> Unit)?){
+        val startIndex = spannable.indexOf(substring)
+        val endIndex = startIndex + substring.length
+        if(startIndex!= NOT_FOUND){
+            spannable.setSpan(
+                object : ClickableSpan(){
+                    override fun onClick(v: View) {
+                        listener?.invoke()
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.isUnderlineText = false
+                    }
+                },
+                startIndex,
+                endIndex,
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
     /*
        To pass spans, Annote the spanType in Span class with @SpanConstant
        Ex: SpannableUtils.applySpannable(
@@ -54,6 +78,7 @@ object SpannableUtils {
                 when(it1.spanType){
                     SpanConstant.COLOR_SPAN -> getColoredSpannable(result,it.substring,(it1 as Span<Int>).spanValue)
                     SpanConstant.TYPEFACE_SPAN -> getTypeFaceSpannable(result,it.substring,(it1 as Span<Int>).spanValue)
+                    SpanConstant.CLICK_SPAN -> getClickSpannable(result,it.substring,(it1 as Span<(() -> Unit)?>).spanValue)
                 }
             }
         }

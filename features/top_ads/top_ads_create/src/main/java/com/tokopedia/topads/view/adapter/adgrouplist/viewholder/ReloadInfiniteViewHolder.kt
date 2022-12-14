@@ -2,6 +2,7 @@ package com.tokopedia.topads.view.adapter.adgrouplist.viewholder
 
 import android.graphics.Typeface
 import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.res.ResourcesCompat
@@ -14,7 +15,7 @@ import com.tokopedia.topads.utils.SpannedString
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ReloadInfiniteUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ReloadInfiniteViewHolder(itemView:View) : AbstractViewHolder<ReloadInfiniteUiModel>(itemView) {
+class ReloadInfiniteViewHolder(itemView:View,private val listener:ReloadInfiniteScrollListener?) : AbstractViewHolder<ReloadInfiniteUiModel>(itemView) {
 
     companion object{
         @LayoutRes
@@ -32,14 +33,20 @@ class ReloadInfiniteViewHolder(itemView:View) : AbstractViewHolder<ReloadInfinit
     private fun setupReloadText(){
         val reloadString = itemView.context.resources.getString(R.string.mp_ad_creation_grp_list_infinite_reload_text)
         val ctaColor = ResourcesCompat.getColor(itemView.context.resources,com.tokopedia.unifyprinciples.R.color.Unify_GN500,null)
+        reloadTv?.movementMethod = LinkMovementMethod.getInstance()
         reloadTv?.text = SpannableUtils.applySpannable(
             reloadString,
             SpannedString(RELOAD_TEXT, listOf(
                 Span(SpanConstant.COLOR_SPAN,ctaColor),
-                Span(SpanConstant.TYPEFACE_SPAN,Typeface.BOLD)
+                Span(SpanConstant.TYPEFACE_SPAN,Typeface.BOLD),
+                Span(SpanConstant.CLICK_SPAN,{listener?.onReload()})
             ))
         )
     }
 
     override fun bind(element: ReloadInfiniteUiModel?) {}
+
+    interface ReloadInfiniteScrollListener{
+        fun onReload()
+    }
 }
