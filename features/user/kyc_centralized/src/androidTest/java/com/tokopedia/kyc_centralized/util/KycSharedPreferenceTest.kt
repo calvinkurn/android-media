@@ -3,7 +3,7 @@ package com.tokopedia.kyc_centralized.util
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.*
