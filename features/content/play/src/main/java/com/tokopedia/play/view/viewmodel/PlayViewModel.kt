@@ -1032,6 +1032,15 @@ class PlayViewModel @AssistedInject constructor(
             NextPageWidgets -> onActionWidget(isNextPage = true)
             RefreshWidget -> onActionWidget(isNextPage = false)
             is UpdateReminder -> updateReminderWidget(action.channelId, action.reminderType)
+            DismissExploreWidget -> {
+                //Resetting
+                _exploreWidget.update {
+                    it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty)
+                }
+                mChannelData?.channelDetail?.exploreWidgetConfig?.let {
+                    updateWidgetParam(group = it.group, sourceId = it.sourceId, sourceType = it.sourceType)
+                }
+            }
         }
     }
 

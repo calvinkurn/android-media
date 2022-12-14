@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.dialog
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -25,10 +26,7 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.action.ClickChipWidget
-import com.tokopedia.play.view.uimodel.action.NextPageWidgets
-import com.tokopedia.play.view.uimodel.action.RefreshWidget
-import com.tokopedia.play.view.uimodel.action.UpdateReminder
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -246,6 +244,16 @@ class PlayExploreWidgetFragment @Inject constructor(
         position: Int
     ) {
         viewModel.submitAction(UpdateReminder(item.channelId, reminderType))
+    }
+
+    override fun dismiss() {
+        viewModel.submitAction(DismissExploreWidget)
+        super.dismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        viewModel.submitAction(DismissExploreWidget)
+        super.onCancel(dialog)
     }
 
     companion object {
