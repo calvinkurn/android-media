@@ -18,7 +18,9 @@ import kotlinx.android.synthetic.main.animated_rating_picker_create_review.view.
  * @property renderInitialReviewWithData If you want to animating the view without any trigger
  */
 class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
-        context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    val attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     companion object {
@@ -55,14 +57,13 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
             styleable.recycle()
         }
 
-
         LayoutInflater.from(context).inflate(R.layout.animated_rating_picker_create_review, this)
         listOfStarsView = listOf(
-                AnimCreateReviewModel(false, anim_1_create_review),
-                AnimCreateReviewModel(false, anim_2_create_review),
-                AnimCreateReviewModel(false, anim_3_create_review),
-                AnimCreateReviewModel(false, anim_4_create_review),
-                AnimCreateReviewModel(false, anim_5_create_review)
+            AnimCreateReviewModel(false, anim_1_create_review),
+            AnimCreateReviewModel(false, anim_2_create_review),
+            AnimCreateReviewModel(false, anim_3_create_review),
+            AnimCreateReviewModel(false, anim_4_create_review),
+            AnimCreateReviewModel(false, anim_5_create_review)
         )
         listOfStarsView.forEachIndexed { index, animatedStarsView ->
             animatedStarsView.reviewView.setOnClickListener {
@@ -125,22 +126,16 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         }
     }
 
-    private val normalNonAnimated = object : Runnable {
-        override fun run() {
-            if (count <= clickAt) {
-                val reviewData = listOfStarsView[count.dec()]
-                if (isNormalAnim(reviewData)) {
-                    reviewData.isAnimated = true
-                    reviewData.reviewView.toggleStar()
-                }
-                count++
-                handle.post(this)
-            } else {
-                lastReview = clickAt
-                count = INITIAL_COUNT
-                handle.removeCallbacks(this)
+    private val normalNonAnimated = Runnable {
+        listOfStarsView.forEach { reviewData ->
+            if (isNormalAnim(reviewData)) {
+                reviewData.isAnimated = true
+                reviewData.reviewView.toggleStar()
             }
+            count++
         }
+        lastReview = clickAt
+        count = INITIAL_COUNT
     }
 
     private val reverseAnimated = object : Runnable {
@@ -161,22 +156,16 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         }
     }
 
-    private val reverseNonAnimated = object : Runnable {
-        override fun run() {
-            if (countMinus > clickAt) {
-                val reviewData = listOfStarsView[countMinus.dec()]
-                if (shouldReserveAnim(reviewData)) {
-                    reviewData.isAnimated = false
-                    reviewData.reviewView.toggleStar()
-                }
-                countMinus--
-                handle.post(this)
-            } else {
-                lastReview = clickAt
-                countMinus = INITIAL_COUNT_MINUS
-                handle.removeCallbacks(this)
+    private val reverseNonAnimated = Runnable {
+        listOfStarsView.forEach { reviewData ->
+            if (shouldReserveAnim(reviewData)) {
+                reviewData.isAnimated = false
+                reviewData.reviewView.toggleStar()
             }
+            countMinus--
         }
+        lastReview = clickAt
+        countMinus = INITIAL_COUNT_MINUS
     }
 
     private fun shouldReserveAnim(reviewData: AnimCreateReviewModel): Boolean {
@@ -224,7 +213,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         this.listener = listener
     }
 
-    //Reset stars
+    // Reset stars
     fun resetStars() {
         clickAt = INITIAL_RATING
         lastReview = INITIAL_RATING
