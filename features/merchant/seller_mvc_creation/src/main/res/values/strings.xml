@@ -297,6 +297,17 @@
     <string name="smvc_success_to_deleted_voucher">Kupon %s berhasil dibatalkan.</string>
     <string name="smvc_failed_to_cancel_voucher">Kupon %s gagal dihentikan.</string>
     <string name="smvc_success_to_cancel_voucher">Kupon %s berhasil dihentikan.</string>
+    <string name="smvc_reset_button">Reset</string>
+    <string name="smvc_this_coupon_and_other">Kupon ini dan jadwal-jadwal berikutnya</string>
+    <string name="smvc_just_for_this_coupon">Kupon ini saja</string>
+    <string name="smvc_quota_title">Kuota Kupon</string>
+    <string name="smvc_title_bottom_sheet_change_quota">Ubah Kuota</string>
+    <string name="smvc_error_max_quota">Maks. %d kupon</string>
+    <string name="smvc_error_min_quota">Min. %d kupon</string>
+    <string name="smvc_success_change_quota_single">Kuota kupon %s berhasil diubah</string>
+    <string name="smvc_success_change_quota_multi_period">Kuota kupon %s dan jadwal-jadwal berikutnya berhasil diubah.</string>
+    <string name="smvc_failed_change_quota">Kuota kupon %s gagal diubah.</string>
+
 
     <!--Success Upload Bottomsheet-->
     <string name="smvc_success_upload_title">Yay, kupon berhasil dibuat!</string>
