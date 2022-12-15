@@ -3,7 +3,9 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
@@ -38,6 +40,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class BroadcastViewHolder constructor(
@@ -74,8 +77,9 @@ class BroadcastViewHolder constructor(
     private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(
         R.id.broadcast_fx_chat
     )
-    private val cta: LinearLayout? = itemView?.findViewById(R.id.ll_cta_container)
+    private val cta: ConstraintLayout? = itemView?.findViewById(R.id.ll_cta_container)
     private val ctaText: Typography? = itemView?.findViewById(R.id.topchat_cta_broadcast_tv)
+    private val ctaLabel: Label? = itemView?.findViewById(R.id.topchat_cta_broadcast_label)
     private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(
         R.id.rv_product_carousel
     )
@@ -375,12 +379,34 @@ class BroadcastViewHolder constructor(
         val banner = element.banner ?: return
         ctaText?.let {
             var text: String? = banner.broadcastCtaText
-            if (text.isNullOrBlank()) {
+            if (doesHaveBroadcastCtaText(banner)) {
                 text = getString(R.string.title_topchat_see_detail)
+
+                // Change text into disabled when label show & the user is seller
+                if (shouldShowBroadcastCtaLabel(banner)) {
+                    it.setTextColor(MethodChecker.getColor(
+                        itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+                }
             }
             it.text = text
         }
+        ctaLabel?.let {
+            if (shouldShowBroadcastCtaLabel(banner)) {
+                it.text = banner.broadcastCtaLabel
+                it.show()
+            } else {
+                it.hide()
+            }
+        }
         ImageAnnouncementViewHolderBinder.bindCtaClick(banner, cta, imageAnnouncementListener)
+    }
+
+    private fun shouldShowBroadcastCtaLabel(banner: ImageAnnouncementUiModel): Boolean {
+        return !banner.broadcastCtaLabel.isNullOrBlank() && commonListener.isSeller()
+    }
+
+    private fun doesHaveBroadcastCtaText(banner: ImageAnnouncementUiModel): Boolean {
+        return !banner.broadcastCtaText.isNullOrBlank()
     }
 
     companion object {
