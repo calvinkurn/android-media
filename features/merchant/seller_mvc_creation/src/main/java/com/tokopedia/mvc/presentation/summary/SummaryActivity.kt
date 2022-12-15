@@ -17,21 +17,8 @@ class SummaryActivity: BaseSimpleActivity() {
     companion object {
         fun start(
             context: Context?,
-            voucherConfiguration: VoucherConfiguration
-        ) {
-            val bundle = Bundle().apply {
-                putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
-                putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
-            }
-            val starter = Intent(context, SummaryActivity::class.java)
-                .putExtras(bundle)
-            context?.startActivity(starter)
-        }
-
-        fun start(
-            context: Context?,
             voucherConfiguration: VoucherConfiguration,
-            selectedProducts: List<SelectedProduct>,
+            selectedProducts: List<SelectedProduct> = emptyList(),
         ) {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)

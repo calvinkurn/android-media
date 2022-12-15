@@ -116,8 +116,8 @@ class SummaryFragment :
         redirectionHelper.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onAddProductResult(products: List<Product>) {
-        viewModel.updateProductList(products)
+    override fun onAddProductResult() {
+        println("sdasd")
     }
 
     override fun onViewProductResult() {
@@ -333,11 +333,11 @@ class SummaryFragment :
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToAddProductPage(this, configuration)
+        redirectionHelper.redirectToAddProductPage(this, configuration, selectedProducts)
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToViewProductPage(this, pageMode ?: return, configuration, selectedProducts)
+        redirectionHelper.redirectToViewProductPage(this, configuration, selectedProducts)
     }
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {

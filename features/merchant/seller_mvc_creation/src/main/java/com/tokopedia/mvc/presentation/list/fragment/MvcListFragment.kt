@@ -59,7 +59,6 @@ import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
-import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -530,21 +529,6 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
     }
 
     private fun redirectToQuotaVoucherPage() {
-        val voucherConfiguration = VoucherConfiguration(
-            voucherId = NumberConstant.VOUCHER_ID_NOT_CREATED,
-            benefitIdr = 25_000,
-            benefitMax = 500_000,
-            benefitPercent = 0,
-            benefitType = BenefitType.NOMINAL,
-            promoType = PromoType.FREE_SHIPPING,
-            isVoucherProduct = true,
-            minPurchase = 50_000,
-            productIds = emptyList(),
-            targetBuyer = VoucherTargetBuyer.ALL_BUYER,
-            0
-        )
-
-
-        SummaryActivity.start(activity?:return, voucherConfiguration)
+        //TODO: create redirection here
     }
 }
