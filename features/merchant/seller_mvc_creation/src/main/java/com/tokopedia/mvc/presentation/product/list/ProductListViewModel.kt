@@ -44,7 +44,7 @@ class ProductListViewModel @Inject constructor(
 
     fun processEvent(event: ProductListEvent) {
         when(event) {
-            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.pageMode, event.voucherConfiguration, event.selectedProducts)
+            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.pageMode, event.voucherConfiguration, event.selectedProducts, event.showCtaUpdateProductOnToolbar)
             is ProductListEvent.MarkProductForDeletion -> handleMarkProductForDeletion(event.productId)
             ProductListEvent.TapContinueButton -> handleRedirection()
             ProductListEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
@@ -68,7 +68,8 @@ class ProductListViewModel @Inject constructor(
     private fun getProductsAndProductsMetadata(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration,
-        selectedProducts: List<SelectedProduct>
+        selectedProducts: List<SelectedProduct>,
+        showCtaUpdateProductOnToolbar: Boolean
     ) {
         launchCatchError(
             dispatchers.io,
@@ -113,7 +114,8 @@ class ProductListViewModel @Inject constructor(
                         originalPageMode = pageMode,
                         currentPageMode = pageMode,
                         maxProductSelection = metadata.maxProduct,
-                        voucherConfiguration = voucherConfiguration
+                        voucherConfiguration = voucherConfiguration,
+                        showCtaChangeProductOnToolbar = showCtaUpdateProductOnToolbar
                     )
                 }
 

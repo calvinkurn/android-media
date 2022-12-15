@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 
 class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListener) {
@@ -26,18 +26,23 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
     }
 
     fun redirectToAddProductPage(activity: Activity, configuration: VoucherConfiguration) {
-        val intent = AddProductActivity.buildEditModeIntent(
-            activity,
-            configuration
+        val intent = ProductListActivity.buildIntentForVoucherSummaryPage(
+            context = activity,
+            pageMode = PageMode.CREATE,
+            showCtaChangeProductOnToolbar = false,
+            voucherConfiguration = configuration,
+            selectedProducts = emptyList()
         )
         activity.startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
     }
 
     fun redirectToViewProductPage(activity: Activity, configuration: VoucherConfiguration, selectedProducts: List<SelectedProduct>) {
-        val intent = ProductListActivity.buildEditModeIntent(
-            activity,
-            configuration,
-            selectedProducts
+        val intent = ProductListActivity.buildIntentForVoucherSummaryPage(
+            context = activity,
+            pageMode = PageMode.EDIT,
+            showCtaChangeProductOnToolbar = true,
+            voucherConfiguration = configuration,
+            selectedProducts = selectedProducts
         )
         activity.startActivityForResult(intent, REQUEST_CODE_VIEW_PRODUCT)
     }

@@ -17,6 +17,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -55,7 +56,8 @@ class ProductListFragment : BaseDaggerFragment() {
         fun newInstance(
             pageMode: PageMode,
             voucherConfiguration: VoucherConfiguration,
-            selectedProducts: List<SelectedProduct>
+            selectedProducts: List<SelectedProduct>,
+            showCtaChangeProductOnToolbar: Boolean
         ): ProductListFragment {
             return ProductListFragment().apply {
                 arguments = Bundle().apply {
@@ -68,6 +70,10 @@ class ProductListFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
                     )
+                    putBoolean(
+                        BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR,
+                        showCtaChangeProductOnToolbar
+                    )
                 }
             }
         }
@@ -76,6 +82,8 @@ class ProductListFragment : BaseDaggerFragment() {
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val selectedParentProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS) }
     private val voucherConfiguration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
+    private val showCtaChangeProductOnToolbar by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR).orFalse() }
+
     private var binding by autoClearedNullable<SmvcFragmentProductListBinding>()
 
     private val productAdapter by lazy {
@@ -119,7 +127,8 @@ class ProductListFragment : BaseDaggerFragment() {
             ProductListEvent.FetchProducts(
                 pageMode ?: PageMode.CREATE,
                 voucherConfiguration ?: return,
-                selectedParentProducts?.toList().orEmpty()
+                selectedParentProducts?.toList().orEmpty(),
+                showCtaChangeProductOnToolbar
             )
         )
     }
@@ -212,7 +221,7 @@ class ProductListFragment : BaseDaggerFragment() {
 
 
     private fun handleUiState(uiState: ProductListUiState) {
-        renderToolbar(uiState.originalPageMode, uiState.currentPageMode)
+        renderToolbar(uiState.originalPageMode, uiState.currentPageMode, uiState.showCtaChangeProductOnToolbar)
         renderTopSection(uiState.currentPageMode, uiState.products.count(), uiState.maxProductSelection)
         renderLoadingState(uiState.isLoading)
         renderList(uiState.products)
@@ -223,13 +232,15 @@ class ProductListFragment : BaseDaggerFragment() {
         renderButton(uiState.originalPageMode)
     }
 
-    private fun renderToolbar(originalPageMode: PageMode, currentPageMode: PageMode) {
-        if (currentPageMode == PageMode.CREATE) {
-            binding?.header?.actionTextView?.gone()
-        } else {
-            binding?.header?.actionTextView?.visible()
-            binding?.header?.actionText = getString(R.string.smvc_update_product)
-            binding?.header?.subheaderView?.gone()
+    private fun renderToolbar(originalPageMode: PageMode, currentPageMode: PageMode, showCtaChangeProductOnToolbar: Boolean) {
+        when {
+            currentPageMode == PageMode.CREATE -> {
+                binding?.header?.actionTextView?.gone()
+            }
+            showCtaChangeProductOnToolbar -> {
+                binding?.header?.actionTextView?.visible()
+                binding?.header?.actionText = getString(R.string.smvc_update_product)
+            }
         }
 
         val showSubtitle = originalPageMode == PageMode.CREATE
