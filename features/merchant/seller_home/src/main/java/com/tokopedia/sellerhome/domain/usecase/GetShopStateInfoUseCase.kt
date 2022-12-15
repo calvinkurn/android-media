@@ -29,7 +29,7 @@ class GetShopStateInfoUseCase @Inject constructor(
         setTypeClass(GetShopStateInfoResponse::class.java)
     }
 
-    suspend fun execute(
+    suspend fun executeInBackground(
         shopId: String,
         dataKey: String,
         pageSource: String

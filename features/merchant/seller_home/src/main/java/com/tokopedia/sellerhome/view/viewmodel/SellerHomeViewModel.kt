@@ -51,7 +51,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -461,7 +460,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getShopStateInfo() {
         launchCatchError(context = dispatcher.io, block = {
             val useCase = getShopStateInfoUseCase.get()
-            val response = useCase.execute(
+            val response = useCase.executeInBackground(
                 shopId = userSession.get().shopId,
                 dataKey = SELLER_INFO_STATE_KEY,
                 pageSource = SELLER_HOME_PAGE_NAME
