@@ -2144,7 +2144,7 @@ class FeedAnalyticTracker
         isCommentPage: Boolean,
         contentSlotValue: String = "",
         hasVoucher: Boolean = false,
-        authorType: String
+        authorType: String = ""
     ) {
 
         val map = mapOf(

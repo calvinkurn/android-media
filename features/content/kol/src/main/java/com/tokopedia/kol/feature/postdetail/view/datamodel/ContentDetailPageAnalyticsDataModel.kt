@@ -27,7 +27,7 @@ data class ContentDetailPageAnalyticsDataModel(
     val trackerId: String = "",
     val shareMedia: String = "",
     val hashtag: String = "",
-    val authorType: String
+    val authorType: String = ""
 ) {
     val isTypeVOD: Boolean
         get() = type == TYPE_FEED_X_CARD_PLAY
