@@ -219,26 +219,6 @@ class FeedViewModelTest {
     }
 
     /**
-     * Get First Page
-     */
-
-    @Test
-    fun `get first page - success without play widget` (){ // with login
-        create(dispatcher = testDispatcher, feedXTrackViewerUseCase = mockTrackViewer)
-            .use {
-            }
-    }
-
-    @Test
-    fun `get first page - success with play widget` (){
-
-    }
-
-    /**
-     * Get Next Page
-     */
-
-    /**
      * Follow Kol - havent handle already follow?
      */
     @Test

@@ -20,7 +20,7 @@ import java.net.HttpURLConnection
 import javax.inject.Inject
 
 class FeedDetailViewModel @Inject constructor(
-    private var feedDetailRepository: FeedDetailRepository,
+    private val feedDetailRepository: FeedDetailRepository,
     private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel() {
