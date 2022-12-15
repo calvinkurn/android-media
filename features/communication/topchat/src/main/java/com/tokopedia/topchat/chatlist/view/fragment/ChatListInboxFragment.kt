@@ -500,7 +500,7 @@ open class ChatListInboxFragment :
         viewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
-            } else if (viewModel.shouldShowBubbleTicker()) {
+            } else if (viewModel.shouldShowBubbleTicker() && shouldEnableBubbleChat()) {
                 addBubbleChatTicker()
             }
         }
@@ -1046,6 +1046,10 @@ open class ChatListInboxFragment :
 
     private fun isFromTopChatRoom(): Boolean {
         return activity is TopChatRoomActivity
+    }
+
+    private fun shouldEnableBubbleChat(): Boolean {
+        return true
     }
 
     fun setIndicatorCurrentActiveChat(msgId: String? = null) {

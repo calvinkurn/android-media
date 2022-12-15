@@ -369,7 +369,7 @@ open class ChatListFragment constructor() :
         chatItemListViewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
-            } else if (chatItemListViewModel.shouldShowBubbleTicker()) {
+            } else if (chatItemListViewModel.shouldShowBubbleTicker() && shouldEnableBubbleChat()) {
                 addBubbleChatTicker()
             }
         }
@@ -956,6 +956,10 @@ open class ChatListFragment constructor() :
 
     private fun isFromTopChatRoom(): Boolean {
         return activity is TopChatRoomActivity
+    }
+
+    private fun shouldEnableBubbleChat(): Boolean {
+        return true
     }
 
     override fun onResume() {
