@@ -4,6 +4,12 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.type.OriginalPrice
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
  * Created By : Jonathan Darwin on December 12, 2022
@@ -77,6 +83,41 @@ class ShortsUiModelBuilder {
                     enable = tncBuyer
                 ),
             )
+        }
+    }
+
+    fun buildProductTagSectionList(
+        size: Int = 2,
+    ): List<ProductTagSectionUiModel> {
+        return List(1) {
+            ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(size) { productCounter ->
+                ProductUiModel(productCounter.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
+            })
+        }
+    }
+
+    fun buildEtalaseProducts(
+        size: Int = 2,
+        hasNextPage: Boolean = false,
+    ): PagedDataUiModel<ProductUiModel> {
+        return PagedDataUiModel(
+            dataList = buildProductTagSectionList(size).flatMap { it.products },
+            hasNextPage = hasNextPage,
+        )
+    }
+
+    fun buildTags(
+        size: Int = 3
+    ): Set<PlayTagUiModel> {
+        return mutableSetOf<PlayTagUiModel>().apply {
+            repeat(size) {
+                add(
+                    PlayTagUiModel(
+                        tag = "Tag $it",
+                        isChosen = false,
+                    )
+                )
+            }
         }
     }
 }

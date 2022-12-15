@@ -19,7 +19,7 @@ import dagger.Component
         PlayShortsFragmentModule::class,
         ContentCreationProductTagBindTestModule::class,
         UGCOnboardingTestModule::class,
-        PlayShortsUploaderModule::class,
+        PlayShortsUploaderTestModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

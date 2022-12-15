@@ -53,17 +53,8 @@ class PlayShortsPreparationAnalyticTest {
     private val mockShortsConfig = uiModelBuilder.buildShortsConfig()
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
     private val mockAccountShop = mockAccountList[0]
-
-    private val mockSection = List(1) {
-        ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(2) {
-            ProductUiModel(it.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
-        })
-    }
-    private val mockProduct = mockSection.flatMap { it.products }
-    private val mockEtalaseProducts = PagedDataUiModel(
-        dataList = mockProduct,
-        hasNextPage = false,
-    )
+    private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList()
+    private val mockEtalaseProducts = uiModelBuilder.buildEtalaseProducts()
 
     init {
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
@@ -74,7 +65,7 @@ class PlayShortsPreparationAnalyticTest {
         coEvery { mockBroRepo.getCampaignList() } returns emptyList()
         coEvery { mockBroRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
         coEvery { mockBroRepo.setProductTags(any(), any()) } returns Unit
-        coEvery { mockBroRepo.getProductTagSummarySection(any()) } returns mockSection
+        coEvery { mockBroRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
 
         PlayShortsInjector.set(
             DaggerPlayShortsTestComponent.builder()
@@ -143,5 +134,13 @@ class PlayShortsPreparationAnalyticTest {
         clickContinueOnLeaveConfirmationPopup()
 
         cassavaValidator.verify("click - lanjut persiapan bottom sheet")
+    }
+
+    @Test
+    fun testAnalytic_clickNextOnPreparationPage() {
+        completeMandatoryMenu()
+        clickContinueOnPreparationPage()
+
+        cassavaValidator.verify("click - lanjut post creation")
     }
 }

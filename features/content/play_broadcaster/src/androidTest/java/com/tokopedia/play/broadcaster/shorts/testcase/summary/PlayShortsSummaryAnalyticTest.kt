@@ -7,14 +7,18 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.shorts.analytic.helper.PlayShortsAnalyticHelper
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsCassavaValidator
-import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsInjector
-import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsLauncher
+import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.play.broadcaster.type.OriginalPrice
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -50,6 +54,10 @@ class PlayShortsSummaryAnalyticTest {
     private val mockShortsConfig = uiModelBuilder.buildShortsConfig()
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
     private val mockAccountShop = mockAccountList[0]
+    private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList()
+    private val mockEtalaseProducts = uiModelBuilder.buildEtalaseProducts()
+    private val mockTags = uiModelBuilder.buildTags()
+    private val mockException = Exception("Network Error")
 
     init {
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
@@ -59,6 +67,13 @@ class PlayShortsSummaryAnalyticTest {
         coEvery { mockUgcOnboardingRepo.validateUsername(any()) } returns Pair(true, "")
         coEvery { mockUgcOnboardingRepo.insertUsername(any()) } returns true
         coEvery { mockUgcOnboardingRepo.acceptTnc() } returns true
+        coEvery { mockBroRepo.getEtalaseList() } returns emptyList()
+        coEvery { mockBroRepo.getCampaignList() } returns emptyList()
+        coEvery { mockBroRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
+        coEvery { mockBroRepo.setProductTags(any(), any()) } returns Unit
+        coEvery { mockBroRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
+        coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
+        coEvery { mockShortsRepo.saveTag(any(), any()) } returns true
 
         PlayShortsInjector.set(
             DaggerPlayShortsTestComponent.builder()
@@ -80,38 +95,67 @@ class PlayShortsSummaryAnalyticTest {
         )
     }
 
-    @Before
-    fun setUp() {
-        launcher.launchActivity()
+    private fun setupSummaryFlow(setupMock: () -> Unit) {
+        launcher.launchActivity {
+            setupMock()
+        }
+
+        completeMandatoryMenu()
+
+        clickContinueOnPreparationPage()
     }
 
     @Test
     fun testAnalytic_clickBackOnSummaryPage() {
+        setupSummaryFlow {
+            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
+        }
 
+        clickBackOnSummaryPage()
+
+        cassavaValidator.verify("click - back summary page")
     }
 
     @Test
     fun testAnalytic_clickContentTag() {
+        setupSummaryFlow {
+            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
+        }
 
+        clickContentTag()
+
+        cassavaValidator.verify("click - content tag")
     }
 
     @Test
     fun testAnalytic_clickUploadVideo() {
+        setupSummaryFlow {
+            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
+        }
 
+        clickContentTag()
+        clickUploadVideo()
+
+        cassavaValidator.verify("click - upload video")
     }
 
     @Test
     fun testAnalytic_openScreenSummaryPage() {
+        setupSummaryFlow {
+            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
+        }
 
+        cassavaValidator.verifyOpenScreen("/play broadcast short - summary page - ${mockAccountShop.id} - seller")
     }
 
     @Test
     fun testAnalytic_clickRefreshContentTag() {
+        setupSummaryFlow {
+            coEvery { mockShortsRepo.getTagRecommendation(any()) } throws mockException
+        }
 
-    }
+        clickRefreshContentTag()
 
-    @Test
-    fun testAnalytic_clickNextOnPreparationPage() {
-
+        cassavaValidator.verify("click - refresh content tags")
     }
 }

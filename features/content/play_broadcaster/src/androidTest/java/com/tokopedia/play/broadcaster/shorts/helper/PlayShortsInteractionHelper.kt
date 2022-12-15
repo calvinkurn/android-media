@@ -45,6 +45,10 @@ fun completeMandatoryMenu() {
     clickCloseProductSummaryBottomSheet()
 }
 
+fun clickContinueOnPreparationPage() {
+    click(R.id.btn_next)
+}
+
 /** Switch Account */
 fun clickToolbar() {
     click(contentCommonR.id.text_com_toolbar_subtitle)
@@ -129,4 +133,21 @@ fun clickSubmitProductTag() {
 
 fun clickCloseProductSummaryBottomSheet() {
     click(unifyR.id.bottom_sheet_close)
+}
+
+/** Summary page */
+fun clickBackOnSummaryPage() {
+    click(R.id.ic_back)
+}
+
+fun clickContentTag(idx: Int = 0) {
+    clickItemRecyclerView(R.id.rv_tags_recommendation, 0)
+}
+
+fun clickUploadVideo() {
+    click(R.id.btn_upload_video)
+}
+
+fun clickRefreshContentTag() {
+    click(unifyR.id.refreshID)
 }
