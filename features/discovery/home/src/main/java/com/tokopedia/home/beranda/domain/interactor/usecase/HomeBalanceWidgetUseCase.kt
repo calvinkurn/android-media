@@ -59,77 +59,49 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 var homeBalanceModel = getHomeBalanceModel(homeHeaderDataModel)
                 var indexDataRegistered = 0
 
-                if (previousHeaderDataModel != null) {
-                    getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach { getHomeBalanceItem ->
-                        when (getHomeBalanceItem.type) {
-                            BALANCE_TYPE_GOPAY -> {
-                                val placeHolderGopay = BalanceDrawerItemModel(
-                                    drawerItemType = TYPE_WALLET_APP_LINKED,
-                                    headerTitle = getHomeBalanceItem.title
-                                )
-                                homeBalanceModel.balanceDrawerItemModels.add(placeHolderGopay)
-                                indexDataRegistered++
-                            }
-                            BALANCE_TYPE_REWARDS -> {
-                                val placeHolderRewards = BalanceDrawerItemModel(
-                                    drawerItemType = TYPE_REWARDS,
-                                    headerTitle = getHomeBalanceItem.title
-                                )
-                                homeBalanceModel.balanceDrawerItemModels.add(placeHolderRewards)
-                                indexDataRegistered++
-                            }
-                            BALANCE_TYPE_SUBSCRIPTIONS -> {
-                                homeBalanceModel = getSubscriptionsData(
-                                    homeBalanceModel,
-                                    getHomeBalanceItem.title,
-                                    getHomeBalanceItem.data
-                                )
-                                homeBalanceModel.balancePositionSubscriptions = indexDataRegistered
-                                indexDataRegistered++
-                            }
+                getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach { getHomeBalanceItem ->
+                    when (getHomeBalanceItem.type) {
+                        BALANCE_TYPE_GOPAY -> {
+                            val placeHolderGopay = BalanceDrawerItemModel(
+                                drawerItemType = TYPE_WALLET_APP_LINKED,
+                                headerTitle = getHomeBalanceItem.title
+                            )
+                            homeBalanceModel.balanceDrawerItemModels.add(placeHolderGopay)
+                            indexDataRegistered++
+                        }
+                        BALANCE_TYPE_REWARDS -> {
+                            val placeHolderRewards = BalanceDrawerItemModel(
+                                drawerItemType = TYPE_REWARDS,
+                                headerTitle = getHomeBalanceItem.title
+                            )
+                            homeBalanceModel.balanceDrawerItemModels.add(placeHolderRewards)
+                            indexDataRegistered++
+                        }
+                        BALANCE_TYPE_SUBSCRIPTIONS -> {
+                            homeBalanceModel = getSubscriptionsData(
+                                homeBalanceModel,
+                                getHomeBalanceItem.title,
+                                getHomeBalanceItem.data
+                            )
+                            homeBalanceModel.balancePositionSubscriptions = indexDataRegistered
+                            indexDataRegistered++
                         }
                     }
-                    indexDataRegistered = 0
+                }
+                indexDataRegistered = 0
+
+                if (previousHeaderDataModel != null) {
                     homeBalanceModel.balanceDrawerItemModels.forEachIndexed { index, it ->
                         if (it.state == BalanceDrawerItemModel.STATE_LOADING) {
                             if (it.drawerItemType == TYPE_WALLET_APP_LINKED) {
-                                homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, it.headerTitle, index)
+                                homeBalanceModel =
+                                    getDataUsingWalletApp(homeBalanceModel, it.headerTitle, index)
                             } else if (it.drawerItemType == TYPE_REWARDS) {
-                                homeBalanceModel = getTokopointData(homeBalanceModel, it.headerTitle, index)
+                                homeBalanceModel =
+                                    getTokopointData(homeBalanceModel, it.headerTitle, index)
                             }
                         }
                     }
-                } else {
-                    getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach { getHomeBalanceItem ->
-                        when (getHomeBalanceItem.type) {
-                            BALANCE_TYPE_GOPAY -> {
-                                val placeHolderGopay = BalanceDrawerItemModel(
-                                    drawerItemType = TYPE_WALLET_APP_LINKED,
-                                    headerTitle = getHomeBalanceItem.title
-                                )
-                                homeBalanceModel.balanceDrawerItemModels.add(placeHolderGopay)
-                                indexDataRegistered++
-                            }
-                            BALANCE_TYPE_REWARDS -> {
-                                val placeHolderRewards = BalanceDrawerItemModel(
-                                    drawerItemType = TYPE_REWARDS,
-                                    headerTitle = getHomeBalanceItem.title
-                                )
-                                homeBalanceModel.balanceDrawerItemModels.add(placeHolderRewards)
-                                indexDataRegistered++
-                            }
-                            BALANCE_TYPE_SUBSCRIPTIONS -> {
-                                homeBalanceModel = getSubscriptionsData(
-                                    homeBalanceModel,
-                                    getHomeBalanceItem.title,
-                                    getHomeBalanceItem.data
-                                )
-                                homeBalanceModel.balancePositionSubscriptions = indexDataRegistered
-                                indexDataRegistered++
-                            }
-                        }
-                    }
-                    indexDataRegistered = 0
                 }
                 return homeHeaderDataModel.copy(
                     headerDataModel = homeHeaderDataModel.headerDataModel?.copy(
