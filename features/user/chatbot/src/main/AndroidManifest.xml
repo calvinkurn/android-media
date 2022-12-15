@@ -22,6 +22,11 @@
         </activity>
         <activity android:name=".view.activity.ChatbotVideoActivity"/>
         <activity
+            android:name=".view.activity.ChatbotOnboardingActivity"
+            android:theme="@style/Theme.AppCompat.Transparent">
+        </activity>
+
+        <activity
             android:name=".view.activity.ChatbotActivity"
             android:exported="false"
             android:label="@string/title_chat_bot"

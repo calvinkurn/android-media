@@ -202,6 +202,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
             layout="@layout/item_sale_atc_wishlist_feed_detail_layout"
             app:layout_constraintStart_toStartOf="@id/productLayout"
             app:layout_constraintEnd_toEndOf="parent"

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/label_product_showcase"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:text="@string/action_refresh_showcases"
             android:textColor="@color/Unify_G500"
-            android:textSize="@dimen/fontSize_lvl2"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_refresh_message"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_refresh_message" />

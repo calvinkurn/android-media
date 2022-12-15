@@ -83,10 +83,12 @@ fun createProductUiModel(
     stockAlertActive: Boolean = false,
     stockAlertCount: Int = 0,
     maxStock: Int? = null,
+    isShopModerate: Boolean = false,
     haveNotifyMeOOS: Boolean = false,
     notifyMeOOSCount: String = "0",
     notifyMeOOSWording: String = "",
-    isEmptyStock: Boolean = false
+    isEmptyStock: Boolean = false,
+    isLabelGuarantee: Boolean = false
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -113,9 +115,11 @@ fun createProductUiModel(
         stockAlertActive,
         stockAlertCount,
         maxStock,
+        isShopModerate,
         haveNotifyMeOOS,
         notifyMeOOSCount,
         notifyMeOOSWording,
-        isEmptyStock
+        isEmptyStock,
+        isLabelGuarantee
     )
 }

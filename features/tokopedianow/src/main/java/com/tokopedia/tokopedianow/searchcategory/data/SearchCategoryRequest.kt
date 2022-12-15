@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.data
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.UrlParamUtils.generateUrlParamString
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.query.GetRepurchaseWidget
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
@@ -10,6 +11,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.CategoryFilterModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
@@ -58,6 +60,20 @@ internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlReq
         )
     )
 }
+
+internal fun getFeedbackFieldToggleData(
+    graphqlResponse: GraphqlResponse
+) : GetFeedbackFieldModel {
+    return graphqlResponse
+        .getData<GetFeedbackFieldModel?>(GetFeedbackFieldModel::class.java) ?: GetFeedbackFieldModel()
+}
+
+internal fun createFeedbackFieldToggleRequest() : GraphqlRequest = GraphqlRequest(
+    FEEDBACK_FIELD_TOGGLE_QUERY,
+    GetFeedbackFieldModel::class.java,
+    mapOf()
+)
+
 
 private fun createRepurchaseQueryParam(params: Map<String, Any>): String {
     val categoryID = params[CATEGORY_ID]?.toString() ?: ""
@@ -345,5 +361,21 @@ private const val DYNAMIC_CHANNEL_QUERY = """
               }
             }
         }
+    }
+"""
+
+private const val FEEDBACK_FIELD_TOGGLE_QUERY = """
+    {
+      TokonowFeedbackFieldToggle(){
+        header{
+          process_time
+          error_code
+          messages
+          reason
+        }
+        data{
+          isActive
+        }
+      }
     }
 """

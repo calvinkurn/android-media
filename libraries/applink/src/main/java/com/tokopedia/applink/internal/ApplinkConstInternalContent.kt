@@ -44,4 +44,6 @@ object ApplinkConstInternalContent {
 
     const val PLAY_PATH_LITE = "play/channel/"
 
+    internal const val INTERNAL_FEATURE_PREVENTION = "$INTERNAL_CONTENT/content-prevention"
+
 }

@@ -97,7 +97,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
-    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.websocket)
     implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
@@ -106,6 +105,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.agerestriction)
     implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.autocompleteComponent)
+    implementation projectOrAar(rootProject.ext.features.tokochat_common)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
@@ -256,6 +256,12 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspector)
     } else {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebugger)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebuggerNoop)
     }
 
     // in~house dependencies

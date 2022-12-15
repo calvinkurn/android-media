@@ -165,7 +165,9 @@ class TokoNowCategoryViewModel @Inject constructor (
                 repurchaseWidget = categoryModel.tokonowRepurchaseWidget,
         )
 
-        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
+        val isActive = categoryModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive
+
+        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct,isActive)
 
         sendOpenScreenTrackingUrl(categoryModel)
         setSharingModel(categoryModel)

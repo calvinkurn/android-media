@@ -9,6 +9,7 @@ object TokoFoodAnalyticsConstants {
     const val DESTINATION_ID = "destinationId"
     const val PRODUCT_ID = "productId"
     const val TRACKER_ID = "trackerId"
+    const val PROMO_ID = "promoId"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
     const val GOFOOD_PAGENAME = "gofood"
@@ -75,6 +76,11 @@ object TokoFoodAnalyticsConstants {
     const val USER_ID_FORMAT = "UserID %s"
     const val VIEW_MERCHANT_PAGE = "view_merchant_page"
 
+    const val IMPRESSION_ON_PROMO_BUTTON = "impression on promo button"
+    const val TRACKER_ID_37402 = "37402"
+    const val CLICK_ON_PROMO_BUTTON = "click on promo button"
+    const val TRACKER_ID_37403 = "37403"
+
     //Search Page
     const val CLICK_SEARCH_BAR_TOKOFOOD = "click search bar tokofood"
     const val TRACKER_ID_35766 = "35766"
@@ -117,5 +123,21 @@ object TokoFoodAnalyticsConstants {
     const val TRACKER_ID_36853 = "36853"
     const val VIEW_MERCHANT_CARD_IN_SRP_TOKOFOOD = "view merchant card in SRP tokofood"
     const val TRACKER_ID_36854 = "36854"
+    const val VIEW_COACHMARK = "view coachmark"
+    const val TRACKER_ID_39609 = "39609"
+    const val COMPONENT_SEARCH_BAR = "component:search_bar"
+    const val TITLE_PREFIX = "title:"
+    const val SUBTITLE_PREFIX = "subtitle:"
+
+    //tokochat trackers
+    const val TOKOCHAT_ORDER_DETAIL = "tokochat order detail"
+    const val CLICK_CHAT_FROM_ORDER_DETAIL = "click chat from order detail"
+
+    const val TRACKER_ID_39065 = "39065"
+    const val BUYER = "buyer"
+    const val TOKOFOOD_SOURCE = "Tokofood"
+
+
+    const val COMMUNICATION = "communication"
 
 }

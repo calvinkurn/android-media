@@ -183,6 +183,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
             android:id="@+id/product_atc_wishlist_section"
             layout="@layout/item_sale_atc_wishlist_layout"
             app:layout_constraintStart_toStartOf="@id/productLayout"

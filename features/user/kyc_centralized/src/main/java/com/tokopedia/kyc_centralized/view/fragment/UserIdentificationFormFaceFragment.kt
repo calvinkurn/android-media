@@ -10,6 +10,9 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -52,28 +55,27 @@ class UserIdentificationFormFaceFragment :
     }
 
     private fun initObserver() {
-        kycUploadViewModel.encryptImageLiveData.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer {
-                when (it) {
-                    is Success -> {
-                        viewBinding?.button?.isEnabled = true
-                    }
-                    is Fail -> {
-                        ErrorHandler.getErrorMessage(
-                            activity,
-                            it.throwable,
-                            ErrorHandler.Builder().apply {
-                                className = UserIdentificationFormFaceFragment::class.java.name
-                            }.build()
-                        )
-                        NetworkErrorHelper.showRedSnackbar(
-                            activity,
-                            context?.resources?.getString(R.string.error_text_image_fail_to_encrypt).orEmpty()
-                        )
-                    }
+        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    viewBinding?.button?.isEnabled = true
                 }
-            })
+                is Fail -> {
+                    ErrorHandler.getErrorMessage(
+                        activity,
+                        it.throwable,
+                        ErrorHandler.Builder().apply {
+                            className = UserIdentificationFormFaceFragment::class.java.name
+                        }.build()
+                    )
+                    NetworkErrorHelper.showRedSnackbar(
+                        activity,
+                        context?.resources?.getString(R.string.error_text_image_fail_to_encrypt)
+                            .orEmpty()
+                    )
+                }
+            }
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -156,14 +158,24 @@ class UserIdentificationFormFaceFragment :
     }
 
     private fun goToKycSelfie() {
-        val intent = context?.let { createIntent(it, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId) }
+        val intent = context?.let {
+            createIntent(
+                it,
+                UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE,
+                projectId
+            )
+        }
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
     }
 
     private fun goToKycLiveness() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LIVENESS_DETECTION, projectId.toString())
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.KYC_LIVENESS,
+            projectId.toString()
+        )
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_KTP_PATH, stepperModel?.ktpFile)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+        intent.putExtra(PARAM_PROJECT_ID, projectId)
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
     }
 
@@ -176,7 +188,7 @@ class UserIdentificationFormFaceFragment :
         fun createInstance(kycType: String): Fragment {
             return UserIdentificationFormFaceFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                    putString(PARAM_KYC_TYPE, kycType)
                 }
             }
         }

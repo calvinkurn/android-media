@@ -13,7 +13,7 @@
               "mealPlan": "Sarapan sudah termasuk dalam harga.",
               "breakFast": "Sarapan Gratis",
               "icon": "breakfast_included",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-breakfast_included.png"
             },
             "occupancyInfo": {
               "maxOccupancy": 2,
@@ -28,7 +28,7 @@
               "isRefundAble": false,
               "refundStatus": "Non-refundable",
               "icon": "non_refundable",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-non_refundable.png"
             },
             "creditcardInfo": {
               "isCCRequired": true,
@@ -86,369 +86,369 @@
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Peralatan mandi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "TV",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Minibar",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Handuk",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Lemari es",
                   "icon": "refrigerator",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-refrigerator.png"
                 },
                 {
                   "name": "Brankas",
                   "icon": "safety_box",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-safety_box.png"
                 },
                 {
                   "name": "Lemari",
                   "icon": "wardrobe",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-wardrobe.png"
                 },
                 {
                   "name": "Pengering rambut",
                   "icon": "hair_dryer",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-hair_dryer.png"
                 },
                 {
                   "name": "Kamar rias",
                   "icon": "dressing_room",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-dressing_room.png"
                 },
                 {
                   "name": "Sebotol air",
                   "icon": "mineral_water",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-mineral_water.png"
                 },
                 {
                   "name": "Pembuat teh/kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Fasilitas setrika",
                   "icon": "iron",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-iron.png"
                 },
                 {
                   "name": "Shower",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Bathtub",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Telepon",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Jam alarm/layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Hot tub",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Dapur kecil",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Jubah mandi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja kerja",
                   "icon": "desk",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-desk.png"
                 },
                 {
                   "name": "Area tempat duduk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kipas angin",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Toilet",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Sandal",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "TV satelit",
                   "icon": "cable_tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-cable_tv.png"
                 },
                 {
                   "name": "Bathtub atau shower",
                   "icon": "shower",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-shower.png"
                 },
                 {
                   "name": "TV layar datar",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Lantai keramik/marmer",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan",
                   "icon": "view",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-view.png"
                 },
                 {
                   "name": "Jam alarm",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Ruang makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ketel listrik",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Peralatan dapur",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Kelambu nyamuk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kompor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan laut",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan taman",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Alat bersih-bersih",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Mesin kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Furnitur outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Area makan outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Lantai atas hanya bisa diakses dengan tangga",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Papan Jemur Baju",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tisu toilet",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ranjang sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kamar mandi luas",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Handuk kolam",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Anggur atau sampanye",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Buah-buahan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tempat sampah",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Gelas anggur",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Sikat gigi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sampo",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Kondisioner",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sabun",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Shower cap",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Stop kontak dekat tempat tidur",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Adaptor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Bantal non-bulu",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Loker",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Alarm kebakaran",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemadam api",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Akses kunci",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Balkon",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Brankas laptop",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Yukata",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 }
               ],
               "mainFacility": [
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 }
               ],
               "roomImages": [
@@ -527,7 +527,7 @@
               "mealPlan": "Sarapan sudah termasuk dalam harga.",
               "breakFast": "Sarapan Gratis",
               "icon": "breakfast_included",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-breakfast_included.png"
             },
             "occupancyInfo": {
               "maxOccupancy": 2,
@@ -542,7 +542,7 @@
               "isRefundAble": false,
               "refundStatus": "Non-refundable",
               "icon": "non_refundable",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-non_refundable.png"
             },
             "creditcardInfo": {
               "isCCRequired": true,
@@ -600,369 +600,369 @@
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Peralatan mandi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "TV",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Minibar",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Handuk",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Lemari es",
                   "icon": "refrigerator",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-refrigerator.png"
                 },
                 {
                   "name": "Brankas",
                   "icon": "safety_box",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-safety_box.png"
                 },
                 {
                   "name": "Lemari",
                   "icon": "wardrobe",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-wardrobe.png"
                 },
                 {
                   "name": "Pengering rambut",
                   "icon": "hair_dryer",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-hair_dryer.png"
                 },
                 {
                   "name": "Kamar rias",
                   "icon": "dressing_room",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-dressing_room.png"
                 },
                 {
                   "name": "Sebotol air",
                   "icon": "mineral_water",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-mineral_water.png"
                 },
                 {
                   "name": "Pembuat teh/kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Fasilitas setrika",
                   "icon": "iron",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-iron.png"
                 },
                 {
                   "name": "Shower",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Bathtub",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Telepon",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Jam alarm/layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Hot tub",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Dapur kecil",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Jubah mandi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja kerja",
                   "icon": "desk",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-desk.png"
                 },
                 {
                   "name": "Area tempat duduk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kipas angin",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Toilet",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Sandal",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "TV satelit",
                   "icon": "cable_tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-cable_tv.png"
                 },
                 {
                   "name": "Bathtub atau shower",
                   "icon": "shower",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-shower.png"
                 },
                 {
                   "name": "TV layar datar",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Lantai keramik/marmer",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan",
                   "icon": "view",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-view.png"
                 },
                 {
                   "name": "Jam alarm",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Ruang makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ketel listrik",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Peralatan dapur",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Kelambu nyamuk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kolam renang pribadi",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Kompor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan kolam renang",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Alat bersih-bersih",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Mesin kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Teras",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Furnitur outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Area makan outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Papan Jemur Baju",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tisu toilet",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ranjang sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kamar mandi luas",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kolam dengan pemandangan",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Handuk kolam",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Anggur atau sampanye",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Buah-buahan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tempat sampah",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Gelas anggur",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Sikat gigi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sampo",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Kondisioner",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sabun",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Shower cap",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Stop kontak dekat tempat tidur",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Adaptor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Bantal non-bulu",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Loker",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Alarm kebakaran",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemadam api",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Akses kunci",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Brankas laptop",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Yukata",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 }
               ],
               "mainFacility": [
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 }
               ],
               "roomImages": [
@@ -1081,7 +1081,7 @@
               "mealPlan": "Sarapan sudah termasuk dalam harga.",
               "breakFast": "Sarapan Gratis",
               "icon": "breakfast_included",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-breakfast_included.png"
             },
             "occupancyInfo": {
               "maxOccupancy": 2,
@@ -1096,7 +1096,7 @@
               "isRefundAble": false,
               "refundStatus": "Non-refundable",
               "icon": "non_refundable",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-non_refundable.png"
             },
             "creditcardInfo": {
               "isCCRequired": true,
@@ -1154,364 +1154,364 @@
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Peralatan mandi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "TV",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Minibar",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Handuk",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Lemari es",
                   "icon": "refrigerator",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-refrigerator.png"
                 },
                 {
                   "name": "Brankas",
                   "icon": "safety_box",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-safety_box.png"
                 },
                 {
                   "name": "Lemari",
                   "icon": "wardrobe",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-wardrobe.png"
                 },
                 {
                   "name": "Pengering rambut",
                   "icon": "hair_dryer",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-hair_dryer.png"
                 },
                 {
                   "name": "Kamar rias",
                   "icon": "dressing_room",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-dressing_room.png"
                 },
                 {
                   "name": "Sebotol air",
                   "icon": "mineral_water",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-mineral_water.png"
                 },
                 {
                   "name": "Pembuat teh/kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Fasilitas setrika",
                   "icon": "iron",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-iron.png"
                 },
                 {
                   "name": "Shower",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Bathtub",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Telepon",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Jam alarm/layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Dapur kecil",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Jubah mandi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja kerja",
                   "icon": "desk",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-desk.png"
                 },
                 {
                   "name": "Area tempat duduk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kipas angin",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Toilet",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Sandal",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "TV satelit",
                   "icon": "cable_tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-cable_tv.png"
                 },
                 {
                   "name": "Bathtub atau shower",
                   "icon": "shower",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-shower.png"
                 },
                 {
                   "name": "TV layar datar",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Lantai keramik/marmer",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan",
                   "icon": "view",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-view.png"
                 },
                 {
                   "name": "Jam alarm",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Ruang makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ketel listrik",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Peralatan dapur",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Kelambu nyamuk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kolam renang pribadi",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Kompor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan kolam renang",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Alat bersih-bersih",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Mesin kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Teras",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Furnitur outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Area makan outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Papan Jemur Baju",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tisu toilet",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ranjang sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kamar mandi luas",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kolam dengan pemandangan",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Handuk kolam",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Anggur atau sampanye",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Buah-buahan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tempat sampah",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Gelas anggur",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Sikat gigi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sampo",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Kondisioner",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sabun",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Shower cap",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Stop kontak dekat tempat tidur",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Adaptor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Bantal non-bulu",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Loker",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Alarm kebakaran",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemadam api",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Akses kunci",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Brankas laptop",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Yukata",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 }
               ],
               "mainFacility": [
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 }
               ],
               "roomImages": [
@@ -1610,7 +1610,7 @@
               "mealPlan": "Sarapan sudah termasuk dalam harga.",
               "breakFast": "Sarapan Gratis",
               "icon": "breakfast_included",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-breakfast_included.png"
             },
             "occupancyInfo": {
               "maxOccupancy": 4,
@@ -1625,7 +1625,7 @@
               "isRefundAble": false,
               "refundStatus": "Non-refundable",
               "icon": "non_refundable",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-non_refundable.png"
             },
             "creditcardInfo": {
               "isCCRequired": true,
@@ -1683,389 +1683,389 @@
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Peralatan mandi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "TV",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Minibar",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Handuk",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Lemari es",
                   "icon": "refrigerator",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-refrigerator.png"
                 },
                 {
                   "name": "Brankas",
                   "icon": "safety_box",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-safety_box.png"
                 },
                 {
                   "name": "Lemari",
                   "icon": "wardrobe",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-wardrobe.png"
                 },
                 {
                   "name": "Pengering rambut",
                   "icon": "hair_dryer",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-hair_dryer.png"
                 },
                 {
                   "name": "Kamar rias",
                   "icon": "dressing_room",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-dressing_room.png"
                 },
                 {
                   "name": "Sebotol air",
                   "icon": "mineral_water",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-mineral_water.png"
                 },
                 {
                   "name": "Pembuat teh/kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Fasilitas setrika",
                   "icon": "iron",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-iron.png"
                 },
                 {
                   "name": "Shower",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Bathtub",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Telepon",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Jam alarm/layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Hot tub",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Dapur kecil",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Jubah mandi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja kerja",
                   "icon": "desk",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-desk.png"
                 },
                 {
                   "name": "Area tempat duduk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kipas angin",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Toilet",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Sandal",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "TV satelit",
                   "icon": "cable_tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-cable_tv.png"
                 },
                 {
                   "name": "Bathtub atau shower",
                   "icon": "shower",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-shower.png"
                 },
                 {
                   "name": "Kamar terhubung",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "TV layar datar",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Lantai keramik/marmer",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan",
                   "icon": "view",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-view.png"
                 },
                 {
                   "name": "Jam alarm",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Ruang makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ketel listrik",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Peralatan dapur",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Kelambu nyamuk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kolam renang pribadi",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Kompor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan taman",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan kolam renang",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Alat bersih-bersih",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Mesin kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Furnitur outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Area makan outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Lantai atas hanya bisa diakses dengan tangga",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Papan Jemur Baju",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tisu toilet",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ranjang sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kamar mandi luas",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kolam dengan pemandangan",
                   "icon": "swimming_pool",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
                 },
                 {
                   "name": "Handuk kolam",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Anggur atau sampanye",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Buah-buahan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tempat sampah",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Gelas anggur",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Sikat gigi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sampo",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Kondisioner",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sabun",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Shower cap",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Stop kontak dekat tempat tidur",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Adaptor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Bantal non-bulu",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Loker",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Alarm kebakaran",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemadam api",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Akses kunci",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Balkon",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Brankas laptop",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Teras",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Yukata",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 }
               ],
               "mainFacility": [
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 }
               ],
               "roomImages": [
@@ -2159,7 +2159,7 @@
               "mealPlan": "Sarapan sudah termasuk dalam harga.",
               "breakFast": "Sarapan Gratis",
               "icon": "breakfast_included",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-breakfast_included.png"
             },
             "occupancyInfo": {
               "maxOccupancy": 2,
@@ -2174,7 +2174,7 @@
               "isRefundAble": false,
               "refundStatus": "Non-refundable",
               "icon": "non_refundable",
-              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+              "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-non_refundable.png"
             },
             "creditcardInfo": {
               "isCCRequired": true,
@@ -2232,369 +2232,369 @@
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Peralatan mandi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "TV",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Minibar",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Handuk",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Lemari es",
                   "icon": "refrigerator",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-refrigerator.png"
                 },
                 {
                   "name": "Brankas",
                   "icon": "safety_box",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-safety_box.png"
                 },
                 {
                   "name": "Lemari",
                   "icon": "wardrobe",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-wardrobe.png"
                 },
                 {
                   "name": "Pengering rambut",
                   "icon": "hair_dryer",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-hair_dryer.png"
                 },
                 {
                   "name": "Kamar rias",
                   "icon": "dressing_room",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-dressing_room.png"
                 },
                 {
                   "name": "Sebotol air",
                   "icon": "mineral_water",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-mineral_water.png"
                 },
                 {
                   "name": "Pembuat teh/kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Fasilitas setrika",
                   "icon": "iron",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-iron.png"
                 },
                 {
                   "name": "Shower",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Bathtub",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Telepon",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Jam alarm/layanan bangun tidur",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Hot tub",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Dapur kecil",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Jubah mandi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja kerja",
                   "icon": "desk",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-desk.png"
                 },
                 {
                   "name": "Area tempat duduk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kipas angin",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Toilet",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 },
                 {
                   "name": "Sandal",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "TV satelit",
                   "icon": "cable_tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-cable_tv.png"
                 },
                 {
                   "name": "Bathtub atau shower",
                   "icon": "shower",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-shower.png"
                 },
                 {
                   "name": "TV layar datar",
                   "icon": "tv",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-tv.png"
                 },
                 {
                   "name": "Sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Lantai keramik/marmer",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan",
                   "icon": "view",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-view.png"
                 },
                 {
                   "name": "Jam alarm",
                   "icon": "clock",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-clock.png"
                 },
                 {
                   "name": "Ruang makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ketel listrik",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Peralatan dapur",
                   "icon": "kitchen",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-kitchen.png"
                 },
                 {
                   "name": "Kelambu nyamuk",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kompor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan laut",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemandangan taman",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Alat bersih-bersih",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Mesin kopi",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Meja makan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Furnitur outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Area makan outdoor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Lantai atas hanya bisa diakses dengan tangga",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Papan Jemur Baju",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tisu toilet",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Ranjang sofa",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Kamar mandi luas",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Handuk kolam",
                   "icon": "towel",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
                 },
                 {
                   "name": "Anggur atau sampanye",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Buah-buahan",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Tempat sampah",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Gelas anggur",
                   "icon": "bar",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
                 },
                 {
                   "name": "Sikat gigi",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sampo",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Kondisioner",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Sabun",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Shower cap",
                   "icon": "toiletries",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-toiletries.png"
                 },
                 {
                   "name": "Stop kontak dekat tempat tidur",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Adaptor",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Bantal non-bulu",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Loker",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Alarm kebakaran",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Pemadam api",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Akses kunci",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Balkon",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Brankas laptop",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 },
                 {
                   "name": "Yukata",
                   "icon": "default",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
                 }
               ],
               "mainFacility": [
                 {
                   "name": "AC",
                   "icon": "ac",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
                 },
                 {
                   "name": "Kamar mandi pribadi",
                   "icon": "bathtub",
-                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                  "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bathtub.png"
                 }
               ],
               "roomImages": [

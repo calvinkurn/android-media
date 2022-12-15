@@ -55,7 +55,7 @@
         <LinearLayout
             android:id="@+id/smile_layout"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_chatbot_45"
+            android:layout_height="40dp"
             android:layout_marginTop="16dp"
             android:weightSum="5"
             app:layout_constraintLeft_toLeftOf="parent"

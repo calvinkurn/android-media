@@ -38,16 +38,19 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
         uiModel?.let {
-            productCardBigGrid?.setImageProductViewHintListener(it, object : ViewHintListener {
-                override fun onViewHint() {
-                    listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+            productCardBigGrid?.setImageProductViewHintListener(
+                it,
+                object : ViewHintListener {
+                    override fun onViewHint() {
+                        listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+                    }
                 }
-            })
+            )
         }
     }
 
     private fun setupAddToCartListener(listener: ShopHomeFlashSaleWidgetListener) {
-        uiModel?.let{ shopHomeProductUiModel ->
+        uiModel?.let { shopHomeProductUiModel ->
             productCardBigGrid?.setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
                     listener.onProductAtcNonVariantQuantityEditorChanged(
@@ -106,7 +109,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                             )
                         }
                     }
-                })
+                }
+            )
         }
     }
 

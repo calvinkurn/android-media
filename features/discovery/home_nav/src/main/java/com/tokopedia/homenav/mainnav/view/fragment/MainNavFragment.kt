@@ -177,7 +177,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        observeCategoryListData()
         viewModel.mainNavLiveData.observe(viewLifecycleOwner, Observer {
             populateAdapterData(it)
         })
@@ -368,15 +367,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             return (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
         }
         return null
-    }
-
-    private fun observeCategoryListData(){
-        onRefresh()
-        viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
-            if(it is Fail){
-
-            }
-        })
     }
 
     private fun initAdapter() {

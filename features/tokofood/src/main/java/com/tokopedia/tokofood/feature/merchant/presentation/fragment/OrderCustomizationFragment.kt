@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -165,6 +166,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackgroundColor()
         setDataFromCacheManagerOrArguments()
         observeUpdateCart()
 
@@ -278,6 +280,14 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     }
                 }
             }
+        }
+    }
+
+    private fun setupBackgroundColor() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            )
         }
     }
 

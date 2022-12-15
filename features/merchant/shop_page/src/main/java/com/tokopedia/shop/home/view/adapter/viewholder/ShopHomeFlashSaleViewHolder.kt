@@ -84,7 +84,7 @@ class ShopHomeFlashSaleViewHolder(
         setupFlashSaleBackgroundView(
             productList = flashSaleItem?.productList.orEmpty(),
             startBackGroundColor = flashSaleItem?.firstBackgroundColor,
-            endBackGroundColor = flashSaleItem?.secondBackgroundColor,
+            endBackGroundColor = flashSaleItem?.secondBackgroundColor
         )
         setupFlashSaleCountDownTimer(element)
         if (!GlobalConfig.isSellerApp())
@@ -156,7 +156,7 @@ class ShopHomeFlashSaleViewHolder(
         doubleBackGroundView?.hide()
         multipleBackGroundView?.hide()
         // show different background based on products size
-        when(productList.size) {
+        when (productList.size) {
             SINGLE -> { singleBackGroundView?.show() }
             DOUBLE -> { doubleBackGroundView?.show() }
             else -> { multipleBackGroundView?.show() }
@@ -266,11 +266,13 @@ class ShopHomeFlashSaleViewHolder(
         // add product place holder if product list size > 5 and metada is not empty
         val isUsingPlaceHolder = isUsingPlaceHolder(totalProduct, totalProductWording)
         if (isUsingPlaceHolder) {
-            productList.add(ShopHomeProductUiModel().apply {
-                this.isProductPlaceHolder = isUsingPlaceHolder
-                this.totalProduct = totalProduct
-                this.totalProductWording = totalProductWording
-            })
+            productList.add(
+                ShopHomeProductUiModel().apply {
+                    this.isProductPlaceHolder = isUsingPlaceHolder
+                    this.totalProduct = totalProduct
+                    this.totalProductWording = totalProductWording
+                }
+            )
         }
         // set flash sale ui model for click handling purpose
         productCarouselAdapter.setFsUiModel(model)

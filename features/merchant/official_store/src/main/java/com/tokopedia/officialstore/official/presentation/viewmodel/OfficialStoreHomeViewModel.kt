@@ -11,7 +11,6 @@ import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.officialstore.official.presentation.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.TopAdsHeadlineConstant.PAGE
 import com.tokopedia.officialstore.TopAdsHeadlineConstant.SEEN_ADS
 import com.tokopedia.officialstore.category.data.model.Category
@@ -20,7 +19,17 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialStoreDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.officialstore.official.presentation.mapper.OfficialHomeMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -33,14 +42,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialStoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsBannerDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -371,15 +372,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         _officialStoreLiveData.postValue()
     }
 
-    fun removeRecomWidget(){
-        _officialStoreListVisitable.run {
-            removeAll {
-                it is BestSellerDataModel
-            }
-            _officialStoreLiveData.postValue(this)
-        }
-    }
-
     fun removeFlashSale(){
         _officialStoreListVisitable.run {
             removeAll {
@@ -387,21 +379,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             }
             _officialStoreLiveData.postValue(this)
         }
-    }
-
-    fun removeRecommendation(){
-        _officialStoreListVisitable.run {
-            removeAll { it is ProductRecommendationDataModel || it is ProductRecommendationTitleDataModel }
-            _officialStoreLiveData.postValue(this)
-        }
-    }
-
-    fun removeTopAdsHeadlineWidget() {
-        _officialStoreListVisitable.run {
-            removeAll { it is OfficialTopAdsHeadlineDataModel }
-            _officialStoreLiveData.postValue(this)
-        }
-
     }
 
     fun resetState() {

@@ -1,7 +1,7 @@
 {
   "readme": "Search Product P0 Tracking - General Search, Impression Organic and Top Ads, Click Organic And Top Ads",
   "mode": "exact",
-  "query" : [
+  "query": [
     {
       "event": "clickTopNav",
       "eventCategory": "top nav|top nav - .+",
@@ -19,7 +19,7 @@
       "searchFilter": ".*",
       "androidId": ".*",
       "component": ".+",
-      "externalReference" : ".*"
+      "externalReference": ".*"
     },
     {
       "event": "view_item_list",
@@ -143,6 +143,66 @@
           "dimension100": ".*",
           "dimension115": ".*",
           "dimension131": ".*"
+        }
+      ]
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "add to cart - carousel product",
+      "eventCategory": "srp_search",
+      "eventLabel": ".* \\- .* \\- .*",
+      "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": ".*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "quantity": ".+"
+        }
+      ]
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "add to cart - product",
+      "eventCategory": "srp_search",
+      "eventLabel": ".*",
+      "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": ".*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "quantity": ".+"
+        }
+      ]
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "add to cart - product - topads",
+      "eventCategory": "srp_search",
+      "eventLabel": ".*",
+      "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": ".*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "quantity": ".+"
         }
       ]
     }

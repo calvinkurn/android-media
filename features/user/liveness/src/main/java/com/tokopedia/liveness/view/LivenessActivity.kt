@@ -7,6 +7,7 @@ import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK as livenessSdk
 import android.Manifest
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -16,6 +17,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
@@ -56,10 +58,10 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         )
 
         intent?.data?.let {
-            val projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
+            val projectId = it.getQueryParameter(PARAM_PROJECT_ID)?.toIntOrNull()
 
             intent?.extras?.apply {
-                putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId.toInt())
+                projectId?.let { it1 -> putInt(PARAM_PROJECT_ID, it1) }
             }
         }
 
@@ -142,10 +144,19 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
     }
 
     override fun getRequiredPermissions(): Array<String> {
-        return arrayOf(
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+            )
+        }else{
+            arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE
-        )
+            )
+        }
+
     }
 
     override fun onPermissionGranted() { }

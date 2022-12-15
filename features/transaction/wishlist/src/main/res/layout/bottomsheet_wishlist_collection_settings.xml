@@ -6,82 +6,10 @@
     android:layout_margin="8dp"
     android:paddingBottom="20dp">
 
-    <LinearLayout
-        android:id="@+id/ll_kebab_menu_1"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:paddingTop="18dp"
-        android:paddingBottom="18dp">
-
-        <com.tokopedia.iconunify.IconUnify
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:icon_name="EDIT"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/wishlist_collection_setting_tv_menu_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/collection_item_kebab_menu_1"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"
-            app:typographyType="heading_5"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_kebab_menu_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_kebab_menu_1"
-        android:paddingTop="18dp"
-        android:paddingBottom="18dp">
-
-        <com.tokopedia.iconunify.IconUnify
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:icon_name="BACKGROUND"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/wishlist_collection_setting_tv_menu_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/collection_settings_menu"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"
-            app:typographyType="heading_5"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_kebab_menu_3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_kebab_menu_2"
-        android:paddingTop="18dp"
-        android:paddingBottom="18dp">
-
-        <com.tokopedia.iconunify.IconUnify
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:icon_name="DELETE"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/wishlist_collection_setting_tv_menu_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/collection_item_kebab_menu_2"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"
-            app:typographyType="heading_5"/>
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

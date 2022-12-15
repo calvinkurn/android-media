@@ -1547,7 +1547,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putExtra(ApplinkConst.Chat.INVOICE_DATE, " 6 May 2021")
             putExtra(
                 ApplinkConst.Chat.INVOICE_IMAGE_URL,
-                "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg"
+                "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg"
             )
             putExtra(
                 ApplinkConst.Chat.INVOICE_URL,

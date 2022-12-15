@@ -14,7 +14,7 @@
                 "attributes": {
                   "name": "PBB Kota Cilegon",
                   "operator_labels": [],
-                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/new-pbb.png",
+                  "image_url": "https://images.tokopedia.net/img/recharge/operator/new-pbb.png",
                   "description": ""
                 }
               },
@@ -24,7 +24,7 @@
                 "attributes": {
                   "name": "PBB Kab. Tangerang",
                   "operator_labels": [],
-                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/new-pbb.png",
+                  "image_url": "https://images.tokopedia.net/img/recharge/operator/new-pbb.png",
                   "description": ""
                 }
               }
@@ -39,7 +39,7 @@
                 "attributes": {
                   "name": "PBB Kab. Gunungkidul",
                   "operator_labels": [],
-                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/new-pbb.png",
+                  "image_url": "https://images.tokopedia.net/img/recharge/operator/new-pbb.png",
                   "description": ""
                 }
               },
@@ -49,7 +49,7 @@
                 "attributes": {
                   "name": "PBB Kab. Bantul",
                   "operator_labels": [],
-                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/new-pbb.png",
+                  "image_url": "https://images.tokopedia.net/img/recharge/operator/new-pbb.png",
                   "description": ""
                 }
               }

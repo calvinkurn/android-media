@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
@@ -43,8 +43,6 @@ class FeedPlusTopAdsShopTestCase {
             FeedViewModel(
                 baseDispatcher = baseDispatcher,
                 userSession = mockk(),
-                doFavoriteShopUseCase = mockk(),
-                followKolPostGqlUseCase =  mockk(),
                 likeKolPostUseCase = mockk(),
                 addToCartUseCase = mockk(),
                 trackAffiliateClickUseCase = trackAffiliateClickUseCase,
@@ -58,7 +56,13 @@ class FeedPlusTopAdsShopTestCase {
                 trackVisitChannelBroadcasterUseCase = mockk(),
                 feedXTrackViewerUseCase = mockk(),
                 checkUpcomingCampaignReminderUseCase = mockk(),
-                postUpcomingCampaignReminderUseCase = mockk()
+                postUpcomingCampaignReminderUseCase = mockk(),
+                shopRecomUseCase = mockk(),
+                shopRecomMapper = mockk(),
+                shopFollowUseCase = mockk(),
+                doFollowUseCase = mockk(),
+                doUnfollowUseCase = mockk(),
+                profileMutationMapper = mockk()
             )
         )
     }
@@ -90,7 +94,7 @@ class FeedPlusTopAdsShopTestCase {
         feedViewModel.doTrackAffiliate(trackUrl)
         assertEquals(
             feedViewModel.trackAffiliateResp.value,
-            Success(TrackAffiliateViewModel(true, trackUrl))
+            Success(TrackAffiliateModel(true, trackUrl))
         )
     }
 

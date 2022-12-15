@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
+import androidx.core.content.ContextCompat
 import com.tokopedia.tokofood.databinding.TokofoodPartialOrderDetailStickyHelpButtonBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
@@ -24,9 +25,14 @@ class OrderTrackingStickyHelpButton @JvmOverloads constructor(
             this,
             true
         )
+        setBackgroundColor()
     }
 
     private var navigator: OrderTrackingNavigator? = null
+
+    private fun setBackgroundColor() {
+        binding?.orderTrackingStickyHelpButton?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+    }
 
     fun setupHelpButton(orderId: String, primaryButton: ActionButtonsUiModel.ActionButton, merchantData: MerchantDataUiModel?) {
         binding?.btnOrderTrackingSecondaryHelp?.run {

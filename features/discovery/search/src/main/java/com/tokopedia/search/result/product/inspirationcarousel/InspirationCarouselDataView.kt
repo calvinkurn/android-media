@@ -6,13 +6,14 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.search.analytics.SearchTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
 
@@ -33,6 +34,7 @@ class InspirationCarouselDataView(
     class Option(
         val title: String = "",
         val subtitle: String = "",
+        val iconSubtitle: String = "",
         val url: String = "",
         val applink: String = "",
         val bannerImageUrl: String = "",
@@ -118,6 +120,7 @@ class InspirationCarouselDataView(
             val parentId: String = "",
             val minOrder: String = "",
             val trackingOption: Int = 0,
+            val stockBarDataView: StockBarDataView = StockBarDataView(),
         ): ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory> {
 
@@ -148,20 +151,6 @@ class InspirationCarouselDataView(
             fun shouldOpenVariantBottomSheet(): Boolean =
                 parentId != "" && parentId != ZERO_PARENT_ID
 
-            fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
-                return DataLayer.mapOf(
-                        "name", name,
-                        "id", id,
-                        "price", price,
-                        "brand", "none / other",
-                        "category", "none / other",
-                        "variant", "none / other",
-                        "list", "/search - carousel",
-                        "position", optionPosition,
-                        "attribution", "none / other"
-                )
-            }
-
             fun getInspirationCarouselInfoProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
                         "id", id,
@@ -169,33 +158,6 @@ class InspirationCarouselDataView(
                         "creative", name,
                         "position", optionPosition,
                         "category", "none / other"
-                )
-            }
-
-            fun getInspirationCarouselListProductImpressionAsObjectDataLayer(): Any {
-                return DataLayer.mapOf(
-                        "name", name,
-                        "id", id,
-                        "price", price,
-                        "brand", "none / other",
-                        "category", "none / other",
-                        "variant", "none / other",
-                        "list", "/search - carousel",
-                        "position", optionPosition
-                )
-            }
-
-            fun getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams: String): Any {
-                return DataLayer.mapOf(
-                        "brand", "none / other",
-                        "category", "none / other",
-                        "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
-                        "id", id,
-                        "list", "/search - carousel chips",
-                        "name", name,
-                        "position", position,
-                        "price", price,
-                        "variant", "none / other"
                 )
             }
 
@@ -238,6 +200,7 @@ class InspirationCarouselDataView(
                     "shop_id", shopId,
                     "shop_name", shopName,
                     "shop_type", "none / other",
+                    "variant", "none / other",
                 )
             }
 

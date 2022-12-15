@@ -60,11 +60,11 @@
         <LinearLayout
             android:id="@+id/smile_layout"
             android:layout_width="@dimen/unify_space_0"
-            android:layout_height="@dimen/dp_chatbot_60"
+            android:layout_height="40dp"
             android:layout_marginTop="@dimen/dp_chatbot_10"
             android:weightSum="5"
-            app:layout_constraintLeft_toLeftOf="@id/txt_help_title"
-            app:layout_constraintRight_toRightOf="@id/txt_help_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_help_title"
             android:orientation="horizontal">
 

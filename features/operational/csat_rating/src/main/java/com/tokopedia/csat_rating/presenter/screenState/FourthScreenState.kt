@@ -17,7 +17,7 @@ class FourthScreenState(private val mCaption: String, private val mQuestion: Str
     }
 
     override fun getFourthEmoji(): Int {
-        return R.drawable.rating_active_4
+        return R.drawable.emoji_active_4
     }
 
     override fun getMessageColor(): Int {

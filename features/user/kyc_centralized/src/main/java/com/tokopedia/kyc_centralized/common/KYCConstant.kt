@@ -14,7 +14,7 @@ object KYCConstant {
     const val NOT_SUPPORT_LIVENESS = -9
     const val IS_FILE_LIVENESS_IMAGE_NOT_EXIST = -11
     const val EXTRA_IS_SOURCE_SELLER = "source_seller"
-    const val PARAM_PROJECT_ID = "projectId"
+//    const val PARAM_PROJECT_ID = "projectId"
     const val KTP_RETAKE = 1
     const val FACE_RETAKE = 2
     const val USER_EXIT = -9

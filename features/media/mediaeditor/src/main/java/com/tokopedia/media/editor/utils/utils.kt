@@ -94,6 +94,11 @@ fun cropCenterImage(
         val bitmapWidth = bitmap.width
         val bitmapHeight = bitmap.height
 
+        // if source image is already have ratio target then skip crop
+        if (bitmapWidth.toFloat() / bitmapHeight == autoCropRatio) {
+            return null
+        }
+
         var newWidth = bitmapWidth
         var newHeight = (bitmapWidth * autoCropRatio).toInt()
 

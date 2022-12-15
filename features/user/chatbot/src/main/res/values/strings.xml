@@ -71,6 +71,8 @@
     <string name="chatbot_migration_list_item_2">Temukan TANYA di bagian bawah halaman Tokopedia Care dan klik “Mulai Chat!”</string>
     <string name="chatbot_invoice_button">Pilih</string>
     <string name="chatbot_placeholder_date">1 Jan</string>
+    <string name="chatbot_video_upload_onboarding_title">Fitur baru, bisa upload video 🎦</string>
+    <string name="chatbot_video_upload_onboarding_description">Klik ikon (+) dan pilih 1 atau lebih video kamu. Pastikan ukurannya &#60;800MB per video, ya.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

@@ -9,6 +9,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_SHOW_INTRO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -18,7 +23,7 @@ import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
+class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     private var viewBinding by autoClearedNullable<FragmentUserIdentificationInfoSimpleBinding>()
     private var projectId = 0
@@ -27,7 +32,11 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     private var redirectUrl = ""
     private var kycType = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = FragmentUserIdentificationInfoSimpleBinding.inflate(inflater, container, false)
         return viewBinding?.root
     }
@@ -35,14 +44,14 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.intent?.data?.let {
-            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
-            showWrapperLayout = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO).toBoolean()
-            redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
-            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            projectId = it.getQueryParameter(PARAM_PROJECT_ID).toIntOrZero()
+            showWrapperLayout = it.getQueryParameter(PARAM_SHOW_INTRO).toBoolean()
+            redirectUrl = it.getQueryParameter(PARAM_REDIRECT_URL).orEmpty()
+            kycType = it.getQueryParameter(PARAM_KYC_TYPE).orEmpty()
         }
 
         if (kycType.isEmpty()) {
-            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            kycType = arguments?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
         if (showWrapperLayout) {
@@ -73,19 +82,20 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     }
 
     private fun startKyc() {
-        val intent = RouteManager.getIntent(requireContext(),
-                ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
-                projectId.toString(),
-                redirectUrl
+        val intent = RouteManager.getIntent(
+            requireContext(),
+            ApplinkConstInternalUserPlatform.KYC_FORM,
+            projectId.toString(),
+            redirectUrl
         )
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+        intent.putExtra(PARAM_KYC_TYPE, kycType)
         startActivityForResult(intent, KYC_REQUEST_CODE)
     }
 
     private fun finishAndRedirectKycResult() {
         activity?.let {
             it.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
+                putExtra(PARAM_REDIRECT_URL, redirectUrl)
             })
             it.finish()
         }
@@ -93,8 +103,8 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == KYC_REQUEST_CODE) {
-            when(resultCode) {
+        if (requestCode == KYC_REQUEST_CODE) {
+            when (resultCode) {
                 Activity.RESULT_OK -> {
                     if (showWrapperLayout) {
                         viewBinding?.layoutBenefit?.root?.hide()

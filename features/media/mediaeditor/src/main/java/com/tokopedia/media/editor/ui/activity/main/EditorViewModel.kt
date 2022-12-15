@@ -44,7 +44,7 @@ class EditorViewModel @Inject constructor(
         } else {
             // if state not last edit (user did undo and do edit again) then we will remove last state until current redo state)
             if (state.backValue != 0) {
-                for (i in 0 until state.backValue) {
+                (0 until state.backValue).forEach { _ ->
                     if (state.editList.last().removeBackgroundUrl != null) {
                         state.removedBackgroundUrl = null
                         state.removeBackgroundStartState = 0
@@ -111,7 +111,7 @@ class EditorViewModel @Inject constructor(
         }
 
         // save camera image that didn't have edit state
-        if (cameraImageList.isNotEmpty()) {
+        if (cameraImageList.size != 0) {
             saveImageRepository.saveToGallery(cameraImageList) {}
         }
 

@@ -2,6 +2,7 @@ package com.tokopedia.play_common.websocket
 
 import android.content.Context
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
@@ -22,7 +23,7 @@ class PlayWebSocketImpl(
         clientBuilder: OkHttpClient.Builder,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers,
-        private val context: Context,
+        @ApplicationContext private val context: Context,
         private val localCacheHandler: LocalCacheHandler,
 ) : PlayWebSocket {
 

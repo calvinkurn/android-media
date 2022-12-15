@@ -16,6 +16,8 @@ data class FeedXCampaign(
     var startTime: String = "",
     @SerializedName("endTime")
     var endTime: String = "",
+    @SerializedName("restrictions")
+    val restrictions: List<FeedXRestriction> = emptyList(),
     var reminder: FeedASGCUpcomingReminderStatus = FeedASGCUpcomingReminderStatus.Off(id.toLongOrZero())
 ) {
     val campaignId: Long
@@ -33,11 +35,17 @@ data class FeedXCampaign(
     val isFlashSaleToko: Boolean
         get() = name == ASGC_FLASH_SALE_TOKO || name == FLASH_SALE_TOKO
 
+    val isRSFollowersRestrictionOn: Boolean
+        get() = restrictions.firstOrNull()?.let {
+            it.label == FOLLOWERS_ONLY_RESTRICTION && it.isActive
+        } ?: false
+
     companion object {
         private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"//Rilisan Spesial
         private const val RILISAN_SPECIAL = "Rilisan Spesial"
         private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
         private const val FLASH_SALE_TOKO = "Flash Sale Toko"
+        private const val FOLLOWERS_ONLY_RESTRICTION = "followers_only"
         const val ONGOING = "ongoing"
         const val UPCOMING = "upcoming"
     }

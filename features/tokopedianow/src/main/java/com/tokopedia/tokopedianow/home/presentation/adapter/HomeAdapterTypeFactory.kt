@@ -42,6 +42,8 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddres
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -109,7 +111,9 @@ class HomeAdapterTypeFactory(
     private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
     private val homeLeftCarouselAtcListener: HomeLeftCarouselAtcCallback? = null,
     private val homeLeftCarouselListener: MixLeftComponentListener? = null,
-    private val playWidgetCoordinator: PlayWidgetCoordinator? = null
+    private val playWidgetCoordinator: PlayWidgetCoordinator? = null,
+    private val rtrListener: RealTimeRecommendationListener? = null,
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -173,7 +177,7 @@ class HomeAdapterTypeFactory(
 
             // region TokoNow Home Component
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
-            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener)
+            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener, rtrListener, rtrAnalytics)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
             HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
@@ -184,7 +188,7 @@ class HomeAdapterTypeFactory(
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
-            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, tokoNowView)
+            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, tokoNowView, rtrListener, rtrAnalytics)
             HomePlayWidgetViewHolder.LAYOUT -> HomePlayWidgetViewHolder(createPlayWidgetViewHolder(view))
             // endregion
 

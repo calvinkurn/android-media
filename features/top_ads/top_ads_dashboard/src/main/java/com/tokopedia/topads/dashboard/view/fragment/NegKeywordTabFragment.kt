@@ -280,7 +280,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()
         adapter.getSelectedItems().forEach {
-            ads.add(it.result.keywordId.toString())
+            ads.add(it.result.keywordId)
         }
         return ads
     }

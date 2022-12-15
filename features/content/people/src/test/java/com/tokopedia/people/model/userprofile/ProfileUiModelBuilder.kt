@@ -13,11 +13,11 @@ class ProfileUiModelBuilder {
     fun buildProfile(
         userID: String = "1",
         encryptedUserID: String = "1",
-        imageCover: String = "",
+        imageCover: String = "123.jpg",
         name: String = "Jonathan Darwin",
         username: String = "jonathandarwin",
         biography: String = "testing",
-        badges: List<Any?> = emptyList(),
+        badges: List<String> = emptyList(),
         stats: ProfileStatsUiModel = ProfileStatsUiModel.Empty,
         shareLink: LinkUiModel = LinkUiModel.Empty,
         liveInfo: LivePlayChannelUiModel = LivePlayChannelUiModel.Empty,

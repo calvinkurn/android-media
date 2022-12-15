@@ -2,32 +2,32 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl5"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:paddingBottom="24dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleCalculationDetail"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
         android:text="@string/title_calculation_shop_performance"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDescCalculationDetail"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         android:textColor="@color/Unify_N700_96"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitleCalculationDetail"
@@ -44,24 +44,24 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleTipsDetail"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
         android:text="@string/title_tips_shop_performance"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/separatorCalculation"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDescTipsDetail"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         android:textColor="@color/Unify_N700_96"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitleTipsDetail"
@@ -78,11 +78,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMoreInfoPerformanceDetail"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         android:textColor="@color/Unify_N700_96"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/separatorTips"

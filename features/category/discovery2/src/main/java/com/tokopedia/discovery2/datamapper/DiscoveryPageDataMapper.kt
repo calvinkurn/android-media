@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
 import com.tokopedia.discovery2.Constant.Calendar.STATIC
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
+import com.tokopedia.discovery2.Constant.TopAdsSdk.TOP_ADS_GSLP_TDN
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
@@ -21,12 +22,15 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import java.util.LinkedList
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -41,7 +45,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData,isLoggedIn,shouldHideSingleProdCard)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, discoveryResponse.queryParamMapWithRpc, discoveryResponse.queryParamMapWithoutRpc, userAddressData, isLoggedIn, shouldHideSingleProdCard)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
             pageInfo.identifier?.let { identifier ->
@@ -61,6 +65,8 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
 class DiscoveryPageDataMapper(
     private val pageInfo: PageInfo,
     private val queryParameterMap: Map<String, String?>,
+    private val queryParameterMapWithRpc: Map<String, String>,
+    private val queryParameterMapWithoutRpc: Map<String, String>,
     private val localCacheModel: LocalCacheModel?,
     private val isLoggedIn: Boolean,
     private val shouldHideSingleProdCard: Boolean
@@ -133,6 +139,7 @@ class DiscoveryPageDataMapper(
                 listComponents.addAll(parseProductVerticalList(component))
             }
             ComponentNames.BannerInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
+            ComponentNames.ContentCard.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
             ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
@@ -392,7 +399,7 @@ class DiscoveryPageDataMapper(
     }
 
     private fun parseProductVerticalList(component: ComponentsItem,showEmptyState:Boolean = true): List<ComponentsItem> {
-        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        val listComponents: LinkedList<ComponentsItem> = LinkedList()
 
         if (component.verticalProductFailState) {
             listComponents.add(component)
@@ -433,6 +440,23 @@ class DiscoveryPageDataMapper(
                         }
                     })
                 }
+                if (component.properties?.index != null &&
+                    component.properties?.index!! > Int.ZERO &&
+                    component.properties?.index!! < listComponents.size &&
+                    !component.properties?.targetedComponentId.isNullOrEmpty())
+                 {
+                    getComponent(
+                        component.properties?.targetedComponentId!!,
+                        component.pageEndPoint
+                    )?.let {
+                        if(it.name == ComponentNames.DiscoTDNBanner.componentName){
+                            it.design = TOP_ADS_GSLP_TDN
+                            it.recomQueryProdId = component.recomQueryProdId
+                        }
+                        listComponents.add(component.properties?.index!! + Int.ONE, it)
+                    }
+                }
+
                 if (Utils.nextPageAvailable(component,component.componentsPerPage) && component.showVerticalLoader) {
                     listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
                 } else if (component.getComponentsItem()?.size == 0 && showEmptyState) {
@@ -575,4 +599,18 @@ fun getPageInfo(pageName: String): PageInfo {
         return it.pageInfo
     }
     return PageInfo()
+}
+
+fun getMapWithoutRpc(pageName: String): Map<String, String>? {
+    discoveryPageData[pageName]?.let {
+        return it.queryParamMapWithoutRpc
+    }
+    return null
+}
+
+fun getMapWithRpc(pageName: String): Map<String, String>? {
+    discoveryPageData[pageName]?.let {
+        return it.queryParamMapWithRpc
+    }
+    return null
 }

@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kyc_centralized.util.waitOnView
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity
 
@@ -64,7 +65,7 @@ class KycResultRobot {
     }
 
     fun hasLivenessIntent(count: Int = 1) {
-        intended(hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION.replace("{projectId}", "-1")), times(count))
+        intended(hasData(ApplinkConstInternalUserPlatform.KYC_LIVENESS.replace("{projectId}", "-1")), times(count))
     }
 
 }

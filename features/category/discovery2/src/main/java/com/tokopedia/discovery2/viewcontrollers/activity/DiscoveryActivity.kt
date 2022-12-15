@@ -2,27 +2,22 @@ package com.tokopedia.discovery2.viewcontrollers.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
-import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
-import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
-import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
@@ -33,8 +28,8 @@ import com.tokopedia.discovery2.di.DiscoveryRepoProvider
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil.setWindowFlag
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tokopoints_item_layout.*
 import javax.inject.Inject
@@ -75,6 +70,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val CAMPAIGN_ID= "campaign_id"
         const val VARIANT_ID= "variant_id"
         const val SHOP_ID= "shop_id"
+        const val QUERY_PARENT= "query"
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -198,5 +194,35 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
                 trackingQueue)
     }
 
+    fun requestStatusBarDark() {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            requestStatusBarLight()
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                setWindowFlag(
+                    this,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    false
+                )
+                this.window.statusBarColor = Color.TRANSPARENT
+            }
+        }
+    }
+
+    fun requestStatusBarLight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            setWindowFlag(
+                this,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                false
+            )
+            this.window.statusBarColor = Color.TRANSPARENT
+        }
+    }
 
 }

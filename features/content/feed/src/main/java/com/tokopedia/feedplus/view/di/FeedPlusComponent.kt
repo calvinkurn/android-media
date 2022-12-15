@@ -4,25 +4,34 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.di.FeedComponentModule
-import com.tokopedia.feedplus.view.fragment.*
+import com.tokopedia.feedcomponent.di.FeedComponentViewModelModule
+import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
+import com.tokopedia.feedcomponent.people.di.PeopleModule
+import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
+import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment
+import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
+import com.tokopedia.feedplus.view.fragment.PlayFeedSeeMoreFragment
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
 
 /**
  * @author by nisie on 5/15/17.
  */
 @FeedPlusScope
-@Component(modules = [
+@Component(
+    modules = [
         FeedPlusModule::class,
         FeedComponentModule::class,
         ViewModelModule::class,
         PlayWidgetModule::class,
-        FeedFloatingButtonManagerModule::class
-     ],
+        FeedFloatingButtonManagerModule::class,
+        ShopRecomModule::class,
+        PeopleModule::class,
+        FeedComponentViewModelModule::class
+    ],
     dependencies = [BaseAppComponent::class]
 )
 interface FeedPlusComponent {

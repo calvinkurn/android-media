@@ -13,6 +13,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.databinding.FragmentResolutionSuccessBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.*
 
 class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
 
@@ -55,7 +56,10 @@ class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
     private fun routeToDetail() {
         if (url.isNotEmpty()) {
             activity?.let {
-                RouteManager.route(it, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                RouteManager.route(
+                    it,
+                    String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
+                )
                 it.finish()
             }
         }

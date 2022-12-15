@@ -51,7 +51,7 @@ class GetBundleInfoUseCase @Inject constructor(
                         originalQuota
                         maxOrder
                         bundleStats {
-                            Sold
+                            SoldItem
                         }
                         shopInformation {
                             ShopName

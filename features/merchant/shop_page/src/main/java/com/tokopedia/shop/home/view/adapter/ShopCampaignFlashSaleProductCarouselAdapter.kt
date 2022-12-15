@@ -12,8 +12,8 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
-class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSaleWidgetListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSaleWidgetListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var flashSaleUiModel: ShopHomeFlashSaleUiModel? = null
     var flashSaleProductList: List<ShopHomeProductUiModel> = listOf()

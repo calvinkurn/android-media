@@ -26,6 +26,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -234,19 +235,8 @@ class Utils {
             return addressQueryParameterMap
         }
 
-        fun addQueryParamMap(queryParameterMap: MutableMap<String, String?>): MutableMap<String, String> {
-            val queryParamValues: MutableMap<String,String> = mutableMapOf()
-            if(!queryParameterMap[DYNAMIC_SUBTITLE].isNullOrEmpty()){
-                queryParamValues[RPC_DYNAMIC_SUBTITLE] = queryParameterMap[DYNAMIC_SUBTITLE]!!.toEncodedString()
-            }
-            if(!queryParameterMap[TARGET_TITLE_ID].isNullOrEmpty()){
-                queryParamValues[RPC_TARGET_TITLE_ID] = queryParameterMap[TARGET_TITLE_ID]!!
-            }
-            if(!queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty()){
-                queryParamValues[RPC_PRODUCT_ID] = queryParameterMap[RECOM_PRODUCT_ID]!!
-            }
-
-            return queryParamValues
+        fun addQueryParamMap(queryParameterMap: MutableMap<String, String?>): String {
+            return queryParameterMap[QUERY_PARENT] ?: ""
         }
 
         fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {

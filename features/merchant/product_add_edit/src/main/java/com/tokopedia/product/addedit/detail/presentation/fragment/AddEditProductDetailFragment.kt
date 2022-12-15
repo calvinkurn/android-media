@@ -39,6 +39,8 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS
@@ -81,6 +83,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SPECIFICATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
@@ -114,6 +117,7 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
 import com.tokopedia.product.addedit.tooltip.model.NumericWithDescriptionTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.tracking.MediaImprovementTracker
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
@@ -587,6 +591,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     productPhotoAdapter?.let {
                         viewModel.validateProductPhotoInput(it.itemCount)
                     }
+                }
+                REQUEST_CODE_IMAGE_IMPROVEMENT -> {
+                    updateImageListFromIntentData(data)
                 }
                 REQUEST_CODE_CATEGORY -> {
                     hasCategoryFromPicker = true
@@ -1405,14 +1412,38 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val isAdding = viewModel.isAdding || !isEditing
         val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
-        // tracking
-        if (isEditing) {
-            ProductEditMainTracking.trackAddPhoto(shopId)
+        if(Rollence.getImagePickerRollence()) {
+            val pageSource = if(!isEditing) PageSource.AddProduct else PageSource.EditProduct
+            doTracking(isEditing)
+            val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
+                ctx,
+                maxProductPhotoCount,
+                pageSource,
+                ArrayList(imageUrlOrPathList)
+            )
+            startActivityForResult(intent, REQUEST_CODE_IMAGE_IMPROVEMENT)
         } else {
-            ProductAddMainTracking.trackAddPhoto(shopId)
+            // tracking
+            if (isEditing) {
+                ProductEditMainTracking.trackAddPhoto(shopId)
+            } else {
+                ProductAddMainTracking.trackAddPhoto(shopId)
+            }
+
+            val intent = ImagePickerAddEditNavigation.getIntent(
+                ctx,
+                ArrayList(imageUrlOrPathList),
+                maxProductPhotoCount,
+                isAdding
+            )
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
-        val intent = ImagePickerAddEditNavigation.getIntent(ctx, ArrayList(imageUrlOrPathList), maxProductPhotoCount, isAdding)
-        startActivityForResult(intent, REQUEST_CODE_IMAGE)
+    }
+
+    private fun doTracking(isEdit : Boolean){
+        val userId = UserSession(context).userId
+        val shopId = UserSession(context).shopId
+        MediaImprovementTracker.sendProductActionTracker(isEdit, userId, shopId)
     }
 
     private fun setupProductSubmitButtonViews() {
@@ -2340,5 +2371,16 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 isProductConditionNew,
                 viewModel.hasVariants
         )
+    }
+
+    private fun updateImageListFromIntentData(data: Intent){
+        val result = MediaPicker.result(data)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(result.editedImages.toMutableList(),
+            result.originalPaths.toMutableList())
+        productPictureList = newUpdatedPhotos.pictureList
+        productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
+        productPhotoAdapter?.let {
+            viewModel.validateProductPhotoInput(it.itemCount)
+        }
     }
 }

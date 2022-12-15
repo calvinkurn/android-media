@@ -311,3 +311,25 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -keepclassmembers,allowobfuscation class * {
  @com.google.gson.annotations.SerializedName <fields>;
 }
+
+# Modiface
+-keep class com.modiface.mfemakeupkit.** {*;}
+-keep enum com.modiface.mfemakeupkit.** {*;}
+-keep interface com.modiface.mfemakeupkit.** {*;}
+-keepclassmembers class com.modiface.mfemakeupkit.** {
+  private static native <methods>;
+  *;
+}
+
+# Gojek
+# Courier SDK
+-keep class !com.gojek.courier.BuildConfig, com.gojek.courier.** { *; }
+-keepclasseswithmembers class * {
+    @com.gojek.courier.annotation.* <methods>;
+}
+-if interface * { @com.gojek.courier.annotation.* <methods>; }
+-keepclassmembers,allowshrinking,allowobfuscation interface * {
+    @com.gojek.courier.annotation.* <methods>;
+}
+# Conversations Chat SDK
+-keepclassmembers class com.gojek.conversations.babble.** { *; }

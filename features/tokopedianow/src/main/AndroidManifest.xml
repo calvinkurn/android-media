@@ -41,7 +41,6 @@
             android:name="com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -59,7 +58,6 @@
             android:name=".datefilter.presentation.activity.TokoNowDateFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -133,7 +131,6 @@
             android:name="com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -152,7 +149,6 @@
             android:name="com.tokopedia.tokopedianow.educationalinfo.presentation.activity.TokoNowEducationalInfoActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -256,7 +252,6 @@
             android:name="com.tokopedia.tokopedianow.recipelist.presentation.activity.TokoNowRecipeFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -295,7 +290,6 @@
             android:name="com.tokopedia.tokopedianow.recipesearch.presentation.activity.TokoNowRecipeSearchIngredientActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
 
             <intent-filter>
@@ -315,7 +309,6 @@
             android:name="com.tokopedia.tokopedianow.recipedetail.presentation.activity.TokoNowRecipeSimilarProductActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

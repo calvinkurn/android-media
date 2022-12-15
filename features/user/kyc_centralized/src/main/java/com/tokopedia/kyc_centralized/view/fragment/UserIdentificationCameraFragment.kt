@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,7 @@ import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
@@ -53,11 +54,17 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
         if (arguments != null) {
             viewMode = arguments?.getInt(ARG_VIEW_MODE, 1) ?: 1
         }
-        analytics = UserIdentificationCommonAnalytics.createInstance(activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1)
-                ?: 1)
+        analytics = UserIdentificationCommonAnalytics
+            .createInstance(
+                activity?.intent?.getIntExtra(PARAM_PROJECT_ID, 1) ?: 1
+            )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = FragmentCameraFocusViewBinding.inflate(inflater, container, false)
         return viewBinding?.root
     }
@@ -126,11 +133,17 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
     }
 
     private fun checkPermission(isGranted: () -> Unit = {}) {
+        val listPermission = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+            )
+        } else {
+            arrayOf(PermissionCheckerHelper.Companion.PERMISSION_CAMERA)
+        }
+
         activity?.let {
-            permissionCheckerHelper.request(it, arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                PermissionCheckerHelper.Companion.PERMISSION_CAMERA
-            )) {
+            permissionCheckerHelper.request(it, listPermission) {
                 isGranted.invoke()
             }
         }
@@ -243,7 +256,8 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
 
     fun saveToFile(result: PictureResult) {
         mCaptureNativeSize = viewBinding?.fullCameraView?.pictureSize
-        val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(Bitmap.CompressFormat.JPEG, FILE_NAME_KYC)
+        val cameraResultFile =
+            ImageProcessingUtil.getTokopediaPhotoPath(Bitmap.CompressFormat.JPEG, FILE_NAME_KYC)
         result.toFile(cameraResultFile) {
             if (it != null && it.exists()) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
@@ -268,7 +282,8 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
             )
             showImagePreview()
         } else {
-            Toast.makeText(context, getString(R.string.error_upload_image_kyc), Toast.LENGTH_LONG).show()
+            Toast.makeText(context, getString(R.string.error_upload_image_kyc), Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -304,7 +319,7 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showImagePreview() {
-        when(viewMode) {
+        when (viewMode) {
             PARAM_VIEW_MODE_KTP -> {
                 viewBinding?.subtitle?.setText(R.string.camera_ktp_subtitle_preview)
                 viewBinding?.imagePreviewKtp?.visibility = View.VISIBLE
@@ -357,10 +372,19 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
         get() = viewBinding?.fullCameraView != null &&
             viewBinding?.fullCameraView?.visibility == View.VISIBLE
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (context != null) {
-            permissionCheckerHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+            permissionCheckerHelper.onRequestPermissionsResult(
+                context,
+                requestCode,
+                permissions,
+                grantResults
+            )
         }
     }
 
@@ -374,7 +398,7 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
             val fragment = UserIdentificationCameraFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_VIEW_MODE, viewMode)
-            bundle.putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+            bundle.putInt(PARAM_PROJECT_ID, projectId)
             fragment.arguments = bundle
             return fragment
         }

@@ -13,16 +13,23 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_QTY_NOTES
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
+import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EpharmacyPrescriptionDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiExternalUseCase: Lazy<AddToCartOccMultiExternalUseCase>,
-                                                        private val getOccCartUseCase: GetOccCartUseCase,
-                                                        private val updateCartOccUseCase: UpdateCartOccUseCase,
-                                                        private val executorDispatchers: CoroutineDispatchers) {
+class OrderSummaryPageCartProcessor @Inject constructor(
+    private val atcOccMultiExternalUseCase: Lazy<AddToCartOccMultiExternalUseCase>,
+    private val getOccCartUseCase: GetOccCartUseCase,
+    private val updateCartOccUseCase: UpdateCartOccUseCase,
+    private val getPrescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine,
+    private val executorDispatchers: CoroutineDispatchers
+) {
 
     suspend fun atcOcc(productIds: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()
@@ -66,21 +73,39 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                         },
                         throwable = null,
                         addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
-                        profileCode = orderData.profileCode
+                        profileCode = orderData.profileCode,
+                        imageUpload = orderData.imageUpload
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext ResultGetOccCart(
-                        orderCart = OrderCart(),
-                        orderPreference = OrderPreference(),
-                        orderProfile = OrderProfile(),
-                        orderPayment = OrderPayment(),
-                        orderPromo = OrderPromo(),
-                        globalEvent = null,
-                        throwable = t,
-                        addressState = AddressState(),
-                        profileCode = ""
+                    orderCart = OrderCart(),
+                    orderPreference = OrderPreference(),
+                    orderProfile = OrderProfile(),
+                    orderPayment = OrderPayment(),
+                    orderPromo = OrderPromo(),
+                    globalEvent = null,
+                    throwable = t,
+                    addressState = AddressState(),
+                    profileCode = "",
+                    imageUpload = ImageUploadDataModel()
                 )
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
+
+    suspend fun getPrescriptionId(checkoutId: String): EpharmacyPrescriptionDataModel {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                val prescriptionIds =
+                    getPrescriptionIdsUseCase.setParams(checkoutId, GetPrescriptionIdsUseCaseCoroutine.SOURCE_OCC).executeOnBackground()
+                return@withContext PrescriptionMapper.mapPrescriptionResponse(prescriptionIds)
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext EpharmacyPrescriptionDataModel()
             }
         }
         OccIdlingResource.decrement()
@@ -239,5 +264,6 @@ class ResultGetOccCart(
     val globalEvent: OccGlobalEvent? = null,
     val throwable: Throwable? = null,
     val addressState: AddressState = AddressState(),
-    val profileCode: String = ""
+    val profileCode: String = "",
+    val imageUpload: ImageUploadDataModel = ImageUploadDataModel()
 )

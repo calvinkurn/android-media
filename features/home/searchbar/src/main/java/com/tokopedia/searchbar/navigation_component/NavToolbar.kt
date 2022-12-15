@@ -525,6 +525,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    //this needed to enable coachmark on wishlist detail page
+    fun getShareIconView(): View? {
+        val shareIconPosition = navIconAdapter?.getShareIconPosition()
+        shareIconPosition?.let {
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
     internal fun setBackgroundAlpha(alpha: Float) {
         navToolbar.apply {
             val drawable = background
@@ -648,6 +658,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         toolbarCustomViewContent?.let {
             val parentLayout = layoutCustomView
             it.id = generateViewId()
+            parentLayout.removeAllViews()
             parentLayout.addView(it)
         }
     }
@@ -696,6 +707,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             DrawableCompat.setTint(wrappedDrawable, color)
             navIconBack.setImageDrawable(it)
         }
+    }
+
+    fun setCustomBackButton(icon: Int = IconUnify.ARROW_BACK, color: Int) {
+        navIconBack.setImage(newIconId = icon,
+                newLightEnable = color,
+                newLightDisable = color,
+                newDarkDisable = color,
+                newDarkEnable = color)
     }
 
     private fun setBackButtonColorBasedOnTheme() {

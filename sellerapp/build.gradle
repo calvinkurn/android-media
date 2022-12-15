@@ -213,7 +213,6 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.features.developerOptionsNoop)
     }
-    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
@@ -307,6 +306,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
@@ -338,6 +338,12 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspector)
     } else {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebugger)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebuggerNoop)
     }
 
     if (rootProject.ext.debugToolsEnabled) {

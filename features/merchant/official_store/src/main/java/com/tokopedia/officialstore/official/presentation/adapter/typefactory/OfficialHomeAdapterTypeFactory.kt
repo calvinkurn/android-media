@@ -168,7 +168,6 @@ class OfficialHomeAdapterTypeFactory(
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(view, dcEventHandler)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(view)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(view, featuredShopListener)
-            DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(view, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(view, dcEventHandler)
             MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(view, mixLeftComponentListener, homeComponentListener, recycledViewPool)
             MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(view, homeComponentListener, mixTopComponentListener)

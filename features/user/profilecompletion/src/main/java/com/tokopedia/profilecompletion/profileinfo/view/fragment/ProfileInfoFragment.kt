@@ -151,15 +151,13 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
         binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
         setProfilePicture()
+        initListener()
+    }
 
-        val isUsingRollenceCloseAccount = isUsingRollenceCloseAccount()
-        binding?.dividerCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
-        binding?.tgCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
-        if (isUsingRollenceCloseAccount) {
-            binding?.tgCloseAccount?.setOnClickListener {
-                closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_KLIK)
-                checkFinancialAssets()
-            }
+    private fun initListener() {
+        binding?.textCloseAccount?.setOnClickListener {
+            closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_KLIK)
+            checkFinancialAssets()
         }
     }
 
@@ -376,7 +374,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             },
             ProfileInfoItemUiModel(
                 ProfileInfoConstants.PHONE,
-                title = getString(R.string.title_phone),
+                title = getString(R.string.add_phone_title_phone),
                 itemValue = data.profileInfoData.msisdn,
                 showVerifiedTag = showVerifiedTag(data),
                 placeholder = getString(R.string.profile_info_placeholder_phone)
@@ -772,14 +770,6 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun isUsingRollenceCloseAccount(): Boolean {
-        val newCloseAccountAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-            ROLLENCE_KEY_CLOSE_ACCOUNT,
-            ""
-        ).orEmpty()
-        return newCloseAccountAbTestKey.isNotEmpty()
-    }
-
     companion object {
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
@@ -804,7 +794,6 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val WEBVIEW_PARAM_HIDE_TITLEBAR = "${com.tokopedia.webview.KEY_TITLEBAR}=false"
         private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED = "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
-        private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
         private const val LIMIT_STACKTRACE = 1000
         private val DIFFERENT_EXCEPTION = Throwable(message = "Value is different from User Session")
 

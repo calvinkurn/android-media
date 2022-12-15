@@ -169,7 +169,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
+                imageUrl = "https://images.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
                 slashedPrice = "Rp200",
                 discountPercentage = "20",
                 similarProducts = emptyList(),

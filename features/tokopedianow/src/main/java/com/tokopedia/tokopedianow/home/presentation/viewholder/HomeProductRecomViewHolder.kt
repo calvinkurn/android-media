@@ -13,17 +13,22 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselW
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeProductRecomBinding
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
     itemView: View,
     private val tokoNowView: TokoNowView? = null,
-    private val listener: HomeProductRecomListener? = null
+    private val listener: HomeProductRecomListener? = null,
+    private val rtrListener: RealTimeRecommendationListener? = null,
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener {
 
@@ -40,6 +45,26 @@ class HomeProductRecomViewHolder(
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
         isOoc = element.id == PRODUCT_RECOM_OOC
+        renderProductCarousel(element)
+        setOnScrollListener()
+        restoreScrollState()
+        if (isOoc) {
+            binding?.divider?.show()
+            val spaceZero = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+            val spaceSixTeen = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+            binding?.carouselProductRecom?.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
+        }
+        renderRealTimeRecommendation(element)
+    }
+
+    override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            renderProductCarousel(element = element)
+            renderRealTimeRecommendation(element = element)
+        }
+    }
+
+    private fun renderProductCarousel(element: HomeProductRecomUiModel) {
         binding?.carouselProductRecom?.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
@@ -48,13 +73,13 @@ class HomeProductRecomViewHolder(
             basicListener = this,
             tokonowListener = this
         )
-        setOnScrollListener()
-        restoreScrollState()
-        if (isOoc) {
-            binding?.divider?.show()
-            val spaceZero = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-            val spaceSixTeen = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-            binding?.carouselProductRecom?.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
+    }
+
+    private fun renderRealTimeRecommendation(element: HomeProductRecomUiModel) {
+        binding?.realTimeRecommendationCarousel?.apply {
+            listener = rtrListener
+            analytics = rtrAnalytics
+            bind(element.realTimeRecom)
         }
     }
 

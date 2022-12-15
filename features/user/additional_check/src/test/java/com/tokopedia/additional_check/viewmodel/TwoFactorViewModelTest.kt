@@ -3,17 +3,14 @@ package com.tokopedia.additional_check.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.additional_check.data.*
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
-import com.tokopedia.additional_check.domain.usecase.GetSimpleProfileUseCase
+import com.tokopedia.additional_check.domain.usecase.RecoverGoogleTinkUseCase
 import com.tokopedia.additional_check.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.encryption.security.AeadEncryptor
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
@@ -32,8 +29,7 @@ class TwoFactorViewModelTest {
     val useCase = mockk<ShowInterruptUseCase>(relaxed = true)
     val offerInterruptUseCase = mockk<OfferInterruptUseCase>(relaxed = true)
     val fingerprintPreference = mockk<FingerprintPreference>(relaxed = true)
-	val aeadEncryptorImpl = mockk<AeadEncryptor>(relaxed = true)
-	val getSimpleProfileUseCase = mockk<GetSimpleProfileUseCase>(relaxed = true)
+    val recoverGoogleTinkUseCase = mockk<RecoverGoogleTinkUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val pref = mockk<AdditionalCheckPreference>(relaxed = true)
@@ -54,8 +50,7 @@ class TwoFactorViewModelTest {
             useCase,
             offerInterruptUseCase,
             fingerprintPreference,
-			getSimpleProfileUseCase,
-			aeadEncryptorImpl,
+            recoverGoogleTinkUseCase,
             dispatcher
         )
     }
@@ -290,6 +285,14 @@ class TwoFactorViewModelTest {
         verify(exactly = 0) {
             onSuccess1(any())
             onError(any())
+        }
+    }
+
+    @Test
+    fun `recover test`() {
+        viewModel.refreshUserSession { }
+        coVerify {
+            recoverGoogleTinkUseCase.invoke(Unit)
         }
     }
 

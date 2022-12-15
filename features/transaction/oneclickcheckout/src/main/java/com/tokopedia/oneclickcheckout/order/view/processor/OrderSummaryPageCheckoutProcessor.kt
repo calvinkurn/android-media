@@ -12,6 +12,7 @@ import com.tokopedia.oneclickcheckout.order.data.checkout.AddOnItem
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
 import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata
 import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
+import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata.Companion.PRESCRIPTION_IDS_METADATA
 import com.tokopedia.oneclickcheckout.order.data.checkout.ParamCart
 import com.tokopedia.oneclickcheckout.order.data.checkout.ParamData
 import com.tokopedia.oneclickcheckout.order.data.checkout.ProductData
@@ -88,7 +89,8 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
         orderPayment: OrderPayment,
         orderTotal: OrderTotal,
         userId: String,
-        orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce
+        orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce,
+        prescriptionIds: List<String?>?
     ): Pair<CheckoutOccResult?, OccGlobalEvent?> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -152,6 +154,14 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                         )
                     )
                 }
+            }
+            if (prescriptionIds != null && prescriptionIds.isNotEmpty()) {
+                orderMetadata.add(
+                    OrderMetadata(
+                        PRESCRIPTION_IDS_METADATA,
+                        prescriptionIds.toString()
+                    )
+                )
             }
             val param = CheckoutOccRequest(
                 Profile(profile.profileId),

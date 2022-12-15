@@ -11,6 +11,7 @@ import com.tokopedia.play.robot.Robot
 import com.tokopedia.play.robot.RobotWithValue
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.share.PlayShareExperience
@@ -72,6 +73,7 @@ class PlayViewModelRobot(
     timerFactory: TimerFactory,
     castPlayerHelper: CastPlayerHelper,
     playShareExperience: PlayShareExperience,
+    chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     playLog: PlayLog,
     liveRoomMetricsCommon: PlayLiveRoomMetricsCommon,
@@ -100,6 +102,7 @@ class PlayViewModelRobot(
         castPlayerHelper,
         playShareExperience,
         playLog,
+        chatManagerFactory,
         chatStreamsFactory,
         liveRoomMetricsCommon,
     )
@@ -180,7 +183,7 @@ class PlayViewModelRobot(
     }
 
     fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: PlayProductUiModel.Product = productTagBuilder.buildProductLine()) {
-        viewModel.onShowVariantSheet(bottomSheetHeight, action = action, product = product)
+        viewModel.onShowVariantSheet(bottomSheetHeight)
     }
 
     fun hideVariantBottomSheet() {
@@ -272,6 +275,7 @@ fun givenPlayViewModelRobot(
     timerFactory: TimerFactory = mockk(relaxed = true),
     castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
+    chatManagerFactory: ChatManager.Factory = mockk(relaxed = true),
     chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
     playLog: PlayLog = mockk(relaxed = true),
     liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = mockk(relaxed = true),
@@ -299,6 +303,7 @@ fun givenPlayViewModelRobot(
         timerFactory = timerFactory,
         castPlayerHelper = castPlayerHelper,
         playShareExperience = playShareExperience,
+        chatManagerFactory = chatManagerFactory,
         chatStreamsFactory = chatStreamsFactory,
         playLog = playLog,
         liveRoomMetricsCommon = liveRoomMetricsCommon,

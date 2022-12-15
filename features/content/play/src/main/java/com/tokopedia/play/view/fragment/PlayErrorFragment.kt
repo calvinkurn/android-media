@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -34,7 +33,8 @@ import javax.inject.Inject
  * Created by mzennis on 2020-01-10.
  */
 class PlayErrorFragment @Inject constructor(
-    private val analytic: PlayAnalytic
+    private val analytic: PlayAnalytic,
+    private val router: Router,
 ): TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private lateinit var parentViewModel: PlayParentViewModel
@@ -136,7 +136,7 @@ class PlayErrorFragment @Inject constructor(
                 globalError.setType(GlobalError.PAGE_NOT_FOUND)
                 globalError.setActionClickListener {
                     activity?.let { activity ->
-                        RouteManager.route(activity, ApplinkConst.HOME)
+                        router.route(activity, ApplinkConst.HOME)
                     }
                 }
             }

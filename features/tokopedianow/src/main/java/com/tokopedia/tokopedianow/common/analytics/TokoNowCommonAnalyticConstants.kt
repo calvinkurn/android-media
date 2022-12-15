@@ -25,12 +25,15 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_WAREHOUSE_ID = "warehouseId"
         const val EVENT_PROMO_VIEW = "promoView"
         const val EVENT_PROMO_CLICK = "promoClick"
+        const val EVENT_VIEW_IRIS = "viewIris"
+        const val EVENT_CLICK = "click"
     }
 
     object CATEGORY{
         const val EVENT_CATEGORY_TOP_NAV = "tokonow - top nav"
         const val EVENT_CATEGORY_TOKOPEDIA_NOW = "tokopedia now"
         const val EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW = "top nav - tokopedia now"
+        const val EVENT_CATEGORY_TOKONOW_HOMEPAGE = "tokonow - homepage"
     }
 
     object KEY {
@@ -69,6 +72,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_PRICE = "price"
         const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val KEY_WAREHOUSE_ID = "warehouseId"
+        const val KEY_TRACKER_ID = "trackerId"
     }
 
     object VALUE {

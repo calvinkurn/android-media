@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
@@ -40,6 +41,8 @@ class GetOccCartData(
         val customerData: CustomerData = CustomerData(),
         @SerializedName("payment_additional_data")
         val paymentAdditionalData: PaymentAdditionalData = PaymentAdditionalData(),
+        @SerializedName("image_upload")
+        val imageUpload: ImageUploadResponse = ImageUploadResponse(),
         @SerializedName("prompt")
         val prompt: OccPromptResponse = OccPromptResponse(),
         @SerializedName("total_product_price")

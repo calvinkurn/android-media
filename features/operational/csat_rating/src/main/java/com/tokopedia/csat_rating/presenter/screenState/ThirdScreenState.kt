@@ -14,7 +14,7 @@ class ThirdScreenState(private val mCaption: String, private val mQuestion: Stri
     }
 
     override fun getThirdEmoji(): Int {
-        return R.drawable.rating_active_3
+        return R.drawable.emoji_active_3
     }
 
     override fun getMessage(): String {

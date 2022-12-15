@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.preview.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -10,7 +9,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_DRAFT_ID

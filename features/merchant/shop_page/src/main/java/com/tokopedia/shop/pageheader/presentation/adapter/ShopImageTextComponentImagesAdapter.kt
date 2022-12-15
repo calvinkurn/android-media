@@ -3,7 +3,6 @@ package com.tokopedia.shop.pageheader.presentation.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageTextComponentImageViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageTextComponentImageViewHolder.Companion.LAYOUT_RES
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageTextComponentUiModel
@@ -25,5 +24,4 @@ class ShopImageTextComponentImagesAdapter : RecyclerView.Adapter<ShopPerformance
         listImageData = listImages
         notifyDataSetChanged()
     }
-
 }

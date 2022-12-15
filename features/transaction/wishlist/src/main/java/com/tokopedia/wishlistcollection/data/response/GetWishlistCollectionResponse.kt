@@ -1,6 +1,8 @@
 package com.tokopedia.wishlistcollection.data.response
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class GetWishlistCollectionResponse(
 		@SerializedName("get_wishlist_collections")
@@ -94,8 +96,16 @@ data class GetWishlistCollectionResponse(
 						val id: String = "",
 
 						@SerializedName("actions")
-						val actions: List<Any> = emptyList()
-					)
+						val actions: List<Action> = emptyList(),
+
+                        @SerializedName("indicator")
+                        val indicator: Indicator = Indicator()
+					) {
+                        data class Indicator(
+                            @SerializedName("title")
+                            val title: String = ""
+                        )
+                    }
 
 					data class Placeholder(
 						@SerializedName("image_url")
@@ -144,6 +154,18 @@ data class GetWishlistCollectionResponse(
 							val message: String = ""
 						)
 					}
-			}
-		}
-	}
+
+                    @Parcelize
+                    data class Action(
+                        @SerializedName("text")
+                        val text: String = "",
+
+                        @SerializedName("action")
+                        val action: String = "",
+
+                        @SerializedName("url")
+                        val url: String = ""
+                    ) : Parcelable
+                }
+		    }
+	    }

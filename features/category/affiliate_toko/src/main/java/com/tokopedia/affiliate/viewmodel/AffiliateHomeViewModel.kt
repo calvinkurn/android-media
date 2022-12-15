@@ -59,10 +59,16 @@ class AffiliateHomeViewModel @Inject constructor(
     private var firstTime = true
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
     private var selectedDateMessage = DateUtils().getMessage(selectedDateRange)
+    private var dateUpdateDescription = ""
     private var selectedDateValue = "30"
     var lastSelectedChip: ItemTypesItem? = null
 
     private var itemTypes = emptyList<ItemTypesItem>()
+
+    companion object {
+        private const val FILTER_LAST_THIRTY_DAYS = "LastThirtyDays"
+        private const val CONVERSION_METRIC = "conversion"
+    }
 
     private fun isAffiliateShopAdpEnabled() =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
@@ -76,19 +82,21 @@ class AffiliateHomeViewModel @Inject constructor(
                 affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
             progressBar.value = false
         }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
-            errorMessage.value = it
-        })
+                progressBar.value = false
+                it.printStackTrace()
+                errorMessage.value = it
+            })
     }
 
     fun getAnnouncementInformation() {
         launchCatchError(block = {
             affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_HOME)
+                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
+                    PAGE_ANNOUNCEMENT_HOME
+                )
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     fun getAffiliatePerformance(page: Int, isFullLoad: Boolean = false) {
@@ -96,15 +104,15 @@ class AffiliateHomeViewModel @Inject constructor(
             if (firstTime) {
                 affiliateUserPerformanceUseCase.getAffiliateFilter().let { filters ->
                     filters.data?.getAffiliateDateFilter?.forEach { filter ->
-                        if (filter?.filterType == "LastThirtyDays") {
+                        if (filter?.filterType == FILTER_LAST_THIRTY_DAYS) {
                             filter.filterDescription?.let { selectedDateMessage = it }
                             filter.filterValue?.let { selectedDateValue = it }
                             filter.filterTitle?.let { selectedDateRange = it }
+                            filter.updateDescription?.let { dateUpdateDescription = it }
                         }
                     }
                     firstTime = false
                 }
-
             }
             var performanceList: AffiliateUserPerformaListItemData? = null
             if (page == PAGE_ZERO) {
@@ -120,9 +128,10 @@ class AffiliateHomeViewModel @Inject constructor(
             if (!isFullLoad) shimmerVisibility.value = true
             if (isAffiliateShopAdpEnabled() && (firstTime || isFullLoad)) {
                 itemTypes =
-                    affiliatePerformanceItemTypeUseCase.affiliatePerformanceItemTypeList().getItemTypeList.data.itemTypes
+                    affiliatePerformanceItemTypeUseCase
+                        .affiliatePerformanceItemTypeList()
+                        .getItemTypeList.data.itemTypes
             }
-
 
             affiliatePerformanceDataUseCase.affiliateItemPerformanceList(
                 selectedDateValue,
@@ -140,17 +149,16 @@ class AffiliateHomeViewModel @Inject constructor(
                 )?.let { visitable ->
                     affiliateDataList.value = visitable
                 }
-
             }
         }, onError = {
-            if (page == PAGE_ZERO) {
-                dataPlatformShimmerVisibility.value = false
-            } else {
-                shimmerVisibility.value = false
-            }
-            it.printStackTrace()
-            errorMessage.value = it
-        })
+                if (page == PAGE_ZERO) {
+                    dataPlatformShimmerVisibility.value = false
+                } else {
+                    shimmerVisibility.value = false
+                }
+                it.printStackTrace()
+                errorMessage.value = it
+            })
     }
 
     fun getUserName(): String {
@@ -178,7 +186,8 @@ class AffiliateHomeViewModel @Inject constructor(
                 AffiliateDateFilterModel(
                     AffiliateDateFilterData(
                         selectedDateRange,
-                        selectedDateMessage
+                        selectedDateMessage,
+                        dateUpdateDescription
                     )
                 )
             )
@@ -216,25 +225,29 @@ class AffiliateHomeViewModel @Inject constructor(
     ) {
         itemTypesList.forEachIndexed { index, item ->
             when (index) {
-                0 -> item.isSelected =
-                    lastSelectedChip == null || lastSelectedChip?.name == item.name
+                0 ->
+                    item.isSelected =
+                        lastSelectedChip == null || lastSelectedChip?.name == item.name
                 else -> item.isSelected = lastSelectedChip?.name == item.name
             }
         }
-        if (itemTypesList.isNotEmpty())
+        if (itemTypesList.isNotEmpty()) {
             tempList.add(
                 AffiliatePerformanceChipRVModel(
                     itemTypesList.sortedBy { it.order }
                 )
             )
+        }
     }
 
-    private fun getListFromData(affiliatePerformanceResponse: AffiliateUserPerformaListItemData?): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
+    private fun getListFromData(
+        affiliatePerformanceResponse: AffiliateUserPerformaListItemData?
+    ): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
         val performanceTempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         affiliatePerformanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
-                if (metrics?.order != NO_UI_METRICS) {
+                if (metrics?.order != NO_UI_METRICS && metrics?.metricType != CONVERSION_METRIC) {
                     performanceTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
             }
@@ -251,6 +264,7 @@ class AffiliateHomeViewModel @Inject constructor(
             selectedDateRange = range.text
             selectedDateValue = range.value
             selectedDateMessage = range.message
+            dateUpdateDescription = range.updateDescription
             rangeChanged.value = true
         }
     }

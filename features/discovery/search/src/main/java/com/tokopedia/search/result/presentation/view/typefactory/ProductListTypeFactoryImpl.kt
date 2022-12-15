@@ -33,7 +33,7 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
-import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewListener
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchViewHolder
 import com.tokopedia.search.result.product.banner.BannerDataView

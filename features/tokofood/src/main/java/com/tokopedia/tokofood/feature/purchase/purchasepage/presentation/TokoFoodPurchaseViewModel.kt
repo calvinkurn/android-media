@@ -589,7 +589,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         const val TOTO_LATITUDE = "-6.2216771"
         const val TOTO_LONGITUDE = "106.8184023"
 
-        private const val UPDATE_QUANTITY_DEBOUCE_TIME = 1000L
+        private const val UPDATE_QUANTITY_DEBOUCE_TIME = 500L
 
         private const val INDEX_BEFORE_FROM_HEADER = 2
         private const val INDEX_BEFORE_FROM_TICKER = 3

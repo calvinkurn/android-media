@@ -132,6 +132,7 @@
         android:paddingVertical="@dimen/dp_topchat_11">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/topchat_cta_broadcast_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -80,6 +80,8 @@
 /features/tokofood/                                     @tokopedia/android-minionstuart-dev
 /features/merchant/shop_admin/                          @tokopedia/android-minionstuart-dev
 /features/merchant/shop_admin_common/                   @tokopedia/android-minionstuart-dev
+/features/merchant/product_ar/                          @tokopedia/android-minionstuart-dev
+/libraries/bubbles/                                     @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
 /features/merchant/product_add_edit/                    @tokopedia/android-minionken-dev
@@ -99,6 +101,7 @@
 /features/merchant/campaign_common/                     @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_flash_sale               @tokopedia/android-minionken-dev
 /features/promo/mvc_widget  					        @tokopedia/android-minionken-dev
+/features/merchant/seller_tokopedia_flash_sale          @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
@@ -199,6 +202,7 @@
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev @tokopedia/android-minionlance-dev
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
 /features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
+/features/media/mediaeditor/                            @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionken-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -230,6 +234,7 @@
 /features/user/additional_check/                        @tokopedia/android-minionkevin-dev
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
 /features/user/telephony_masking/                       @tokopedia/android-minionkevin-dev
+/features/user/privacycenter/                           @tokopedia/android-minionkevin-dev
 
 /features/communication/attachcommon/                   @tokopedia/android-minionkevin-dev
 /features/communication/attachinvoice/                  @tokopedia/android-minionkevin-dev
@@ -339,6 +344,8 @@
 /libraries/oms/											@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
+/libraries/journey_debugger/			                @tokopedia/android-core-dev
+/libraries/journey_debugger_no_op/					    @tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionken-dev
 /libraries/push_notification/							@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
@@ -372,6 +379,7 @@
 /libraries/universal_sharing/							@tokopedia/android-core-dev
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 
+/config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev
 /dynamic-features-customerapp_pro/                      @tokopedia/android-core-dev

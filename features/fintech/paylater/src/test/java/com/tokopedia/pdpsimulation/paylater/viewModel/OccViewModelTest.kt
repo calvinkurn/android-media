@@ -14,6 +14,7 @@ import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.common.domain.model.Options
 import com.tokopedia.pdpsimulation.common.domain.model.Products
 import com.tokopedia.pdpsimulation.common.domain.model.Selections
+import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
 import com.tokopedia.pdpsimulation.common.domain.model.Variant
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
@@ -58,7 +59,7 @@ class OccViewModelTest {
 
     @Test
     fun productDetailSuccessTest() {
-        val baseProductDetail = BaseProductDetailClass(GetProductV3("A","a",null,30.0,null,
+        val baseProductDetail = BaseProductDetailClass(GetProductV3("A","a", ShopDetail("ef"),30.0,null,
             Variant(
                 listOf(Selections(listOf(Options(value = "a"))),Selections(listOf(Options(value = "a")))),
             listOf(Products("a", listOf(1)))),9, CampaignDetail(40.0,0.0)
@@ -78,6 +79,51 @@ class OccViewModelTest {
 
     }
 
+
+    @Test
+    fun productDetailSetVariantSuccessTest() {
+        val baseProductDetail = BaseProductDetailClass(GetProductV3("A","a", ShopDetail("ef"),30.0,null,
+            Variant(
+                listOf(Selections(listOf(Options(value = "a"))),Selections(listOf(Options(value = "a")))),
+                listOf(Products("", listOf(0)))),9, CampaignDetail(40.0,0.0)
+        ))
+
+
+        coEvery {
+            productDetailUseCase.getProductDetail(any(), any(), "")
+        } coAnswers {
+            firstArg<(BaseProductDetailClass) -> Unit>().invoke(baseProductDetail)
+        }
+        viewModel.getProductDetail("")
+        Assert.assertEquals(
+            (viewModel.productDetailLiveData.value as Success).data,
+            baseProductDetail.getProductV3
+        )
+
+    }
+
+
+    @Test
+    fun productDetailSuccessWithCampaignTest() {
+        val baseProductDetail = BaseProductDetailClass(GetProductV3("A","a", ShopDetail("ef"),30.0,null,
+            Variant(
+                listOf(Selections(listOf(Options(value = "a"))),Selections(listOf(Options(value = "a")))),
+                listOf(Products("a", listOf(1)))),9, CampaignDetail(40.0,10.0)
+        ))
+
+
+        coEvery {
+            productDetailUseCase.getProductDetail(any(), any(), "")
+        } coAnswers {
+            firstArg<(BaseProductDetailClass) -> Unit>().invoke(baseProductDetail)
+        }
+        viewModel.getProductDetail("")
+        Assert.assertEquals(
+            (viewModel.productDetailLiveData.value as Success).data,
+            baseProductDetail.getProductV3
+        )
+
+    }
 
     @Test
     fun productDetailSuccessTestFailedCondition() {
@@ -133,6 +179,22 @@ class OccViewModelTest {
         Assert.assertEquals(
                 (viewModel.payLaterActivationDetailLiveData.value as Success).data,
                 basePayLaterOptimizedModel
+        )
+    }
+
+
+    @Test
+    fun successPayLaterActivationConditionFail() {
+        val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(emptyList(), "")
+        coEvery {
+            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
+        } coAnswers {
+            firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
+        }
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
+        Assert.assertEquals(
+            (viewModel.payLaterActivationDetailLiveData.value as Fail).throwable.message,
+          "Empty State"
         )
     }
 

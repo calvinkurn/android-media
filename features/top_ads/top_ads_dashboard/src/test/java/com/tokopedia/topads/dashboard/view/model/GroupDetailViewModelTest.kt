@@ -247,8 +247,8 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `getGroupKeywordData success`() {
-        val expected = 10
-        var actual = 0
+        val expected = "10"
+        var actual = "0"
         val data =
             KeywordsResponse(getTopadsDashboardKeywords = KeywordsResponse.GetTopadsDashboardKeywords
                 (listOf(KeywordsResponse.GetTopadsDashboardKeywords.DataItem(keywordId = expected))))

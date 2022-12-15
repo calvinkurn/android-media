@@ -17,6 +17,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
         const val ALLOW_REPORT = "allow_report"
         const val ALLOW_DELETE = "allow_delete"
         const val ALLOW_EDIT = "allow_edit"
+        const val ALLOW_BLOCK = "allow_block"
 
         fun createInstance(
             context: Context,
@@ -24,7 +25,8 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
             onReplyBottomSheetClickedListener: OnReplyBottomSheetClickedListener,
             allowReport: Boolean,
             allowDelete: Boolean,
-            allowEdit: Boolean
+            allowEdit: Boolean,
+            allowBlock: Boolean
         ): TalkReplyReportBottomSheet = TalkReplyReportBottomSheet().apply {
             arguments = Bundle()
             arguments?.let {
@@ -32,6 +34,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
                 it.putBoolean(ALLOW_REPORT, allowReport)
                 it.putBoolean(ALLOW_DELETE, allowDelete)
                 it.putBoolean(ALLOW_EDIT, allowEdit)
+                it.putBoolean(ALLOW_BLOCK, allowBlock)
             }
             this.onReplyBottomSheetClickedListener = onReplyBottomSheetClickedListener
             val view = View.inflate(context, R.layout.widget_talk_report_bottom_sheet, null)
@@ -44,6 +47,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
     private var allowReport = false
     private var allowDelete = false
     private var allowEdit = false
+    private var allowBlock = false
     private var onReplyBottomSheetClickedListener: OnReplyBottomSheetClickedListener? = null
 
     private var binding: WidgetTalkReportBottomSheetBinding by autoCleared<WidgetTalkReportBottomSheetBinding> {  }
@@ -56,6 +60,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
 
     private fun initView() {
         showReportWithCondition()
+        showBlockWithCondition()
         showDeleteWithCondition()
         showEditProductWithCondition()
     }
@@ -66,6 +71,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
             allowReport = it.getBoolean(ALLOW_REPORT)
             allowDelete = it.getBoolean(ALLOW_DELETE)
             allowEdit = it.getBoolean(ALLOW_EDIT)
+            allowBlock = it.getBoolean(ALLOW_BLOCK)
         }
     }
 
@@ -76,6 +82,18 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
                 this.dismiss()
             }
             binding.talkReplyReport.show()
+            binding.dividerTalkReplyReport.show()
+        }
+    }
+
+    private fun showBlockWithCondition() {
+        if (allowBlock) {
+            binding.talkReplyBlock.setOnClickListener {
+                onReplyBottomSheetClickedListener?.onBlockOptionClicked()
+                this.dismiss()
+            }
+            binding.talkReplyBlock.show()
+            binding.dividerTalkReplyBlock.show()
         }
     }
 
