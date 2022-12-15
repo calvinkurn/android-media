@@ -81,6 +81,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -500,7 +501,7 @@ open class ChatListInboxFragment :
         viewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
-            } else if (viewModel.shouldShowBubbleTicker() && shouldEnableBubbleChat()) {
+            } else if (viewModel.shouldShowBubbleTicker() && Utils.getShouldBubbleChatEnabled()) {
                 addBubbleChatTicker()
             }
         }
@@ -1046,10 +1047,6 @@ open class ChatListInboxFragment :
 
     private fun isFromTopChatRoom(): Boolean {
         return activity is TopChatRoomActivity
-    }
-
-    private fun shouldEnableBubbleChat(): Boolean {
-        return true
     }
 
     fun setIndicatorCurrentActiveChat(msgId: String? = null) {

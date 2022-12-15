@@ -82,6 +82,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -369,7 +370,7 @@ open class ChatListFragment constructor() :
         chatItemListViewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
-            } else if (chatItemListViewModel.shouldShowBubbleTicker() && shouldEnableBubbleChat()) {
+            } else if (chatItemListViewModel.shouldShowBubbleTicker() && Utils.getShouldBubbleChatEnabled()) {
                 addBubbleChatTicker()
             }
         }
