@@ -87,7 +87,8 @@ class SpecialReleaseViewHolder(
     }
 
     private fun setBackground(element: SpecialReleaseDataModel) {
-        val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(R.dimen.special_release_rv_padding)
+        val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding)
+        val specialReleaseRvPaddingStyleBottom = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding_style_bottom)
         val bannerItem = element.channelModel.channelBanner
         if (bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(
                 bannerItem.gradientColor,
@@ -98,7 +99,7 @@ class SpecialReleaseViewHolder(
                 Int.ZERO,
                 Int.ZERO,
                 Int.ZERO,
-                specialReleaseRvPadding
+                specialReleaseRvPaddingStyleBottom
             )
             binding?.background?.gone()
         } else {
