@@ -14,19 +14,20 @@ data class ContentDetailPageAnalyticsDataModel(
     val itemName: String = "",
     val rowNumber: Int = 0,
     val mediaType: String = "",
-    val mediaUrl:String = "",
+    val mediaUrl: String = "",
     val productId: String = "",
     val channelId: String = "", //used for VOD only
     val duration: Long = 0L, //used for Videos only,
     val feedXProduct: FeedXProduct = FeedXProduct(),
-    val productPosition :Int = 0,
+    val productPosition: Int = 0,
     val isMute: Boolean = false,
     val source: String = "",
     val isFollowed: Boolean = false,
     val type: String = "",
     val trackerId: String = "",
-    val shareMedia: String= "",
-    val hashtag :String = ""
+    val shareMedia: String = "",
+    val hashtag: String = "",
+    val authorType: String
 ) {
     val isTypeVOD: Boolean
         get() = type == TYPE_FEED_X_CARD_PLAY

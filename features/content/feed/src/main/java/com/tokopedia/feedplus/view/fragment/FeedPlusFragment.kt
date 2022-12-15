@@ -1398,7 +1398,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         type: String,
         isFollowed: Boolean,
-        isVideo: Boolean
+        isVideo: Boolean,
+        authorType: String
     ) {
         val dialog =
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
@@ -1415,7 +1416,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 shopId,
                 type,
                 isFollowed,
-                isVideo
+                isVideo,
+                authorType
             )
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
@@ -1669,7 +1671,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     authorId,
                     mediaType,
                     trackerId = trackerIdReport,
-                    campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed)
+                    campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed),
+                    authorType
                 )
                 if (userSession.isLoggedIn) {
                     context?.let {
@@ -1703,7 +1706,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     postType,
                     isFollowed, authorId, mediaType,
                     trackerId = "17986",
-                    campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed)
+                    campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed),
+                    authorType = authorType
                 )
                 if (userSession.isLoggedIn)
                     onHeaderActionClick(
@@ -1722,12 +1726,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     authorId,
                     postType,
                     isFollowed,
-                    isVideo = mediaType == MediaType.VIDEO
+                    isVideo = mediaType == MediaType.VIDEO,
+                    authorType
                 )
                 feedAnalytics.clickDeleteThreeDotsPage(
                     finalId, authorId,
                     postType,
-                    isFollowed, mediaType
+                    isFollowed, mediaType,
+                    authorType
                 )
 
             }
@@ -1739,14 +1745,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             }
             sheet.onEdit = {
-                openEditPostPage(caption, postId.toString(), authorId)
+                openEditPostPage(caption, postId, authorId)
             }
 
             sheet.onClosedClicked = {
                 feedAnalytics.eventCloseThreeDotBS(
                     finalId,
                     postType,
-                    isFollowed, authorId
+                    isFollowed, authorId,
+                    authorType
                 )
 
             }
@@ -1829,7 +1836,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: Boolean,
         shopId: String,
         mediaType: String?,
-        playChannelId: String
+        playChannelId: String,
+        authorType: String
     ) {
         val trackerId = getTrackerIdForCampaignSaleTracker(
             positionInFeed,
@@ -1847,6 +1855,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed),
                 positionInFeed = positionInFeed,
                 contentSlotValue = getContentScoreFromPosition(positionInFeed),
+                authorType = authorType
             ),
             doubleTap = type,
             isLiked = isLiked,
@@ -2105,7 +2114,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         postType = TYPE_TOPADS_HEADLINE_NEW,
                         isFollowed = isFollowed,
                         shopId = id,
-                        contentSlotValue = getContentScoreFromPosition(positionInFeed)
+                        contentSlotValue = getContentScoreFromPosition(positionInFeed),
+                        authorType = item.feedXCard.author.type.toString()
                     )
                 )
             }
@@ -2269,7 +2279,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     isFollowed,
                     mediaType,
                     contentScore = contentScore,
-                    hasVoucher = hasVoucher
+                    hasVoucher = hasVoucher,
+                    authorType = ""
                 )
             else
                 feedAnalytics.eventAddToCartFeedVOD(
@@ -2284,7 +2295,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     isFollowed,
                     mediaType,
                     contentScore = contentScore,
-                    hasVoucher = hasVoucher
+                    hasVoucher = hasVoucher,
+                    authorType = ""
                 )
         } else {
             feedAnalytics.sendClickAddToCartAsgcProductTagBottomSheet(
@@ -2297,7 +2309,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 1,
                 item.shopName,
                 contentScore = contentScore,
-                hasVoucher = hasVoucher
+                hasVoucher = hasVoucher,
+                authorType = ""
             )
         }
 
@@ -2469,7 +2482,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     mediaType = mediaType,
                     saleStatus = card.campaign.status,
                     saleType = card.campaign.name,
-                    hasVoucher = card.hasVoucher
+                    hasVoucher = card.hasVoucher,
+                    authorType = card.author.type.toString()
                 ),
                 viewModelFactory,
                 customMvcTracker = customMvcTracker
@@ -2524,7 +2538,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         positionInFeed: Int,
         trackerid: String = "",
         campaignStatus: String = "",
-        hasVoucher: Boolean = false
+        hasVoucher: Boolean = false,
+        authorType: String = ""
     ) {
         val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
         val contentScore = getContentScoreFromPosition(positionInFeed)
@@ -2539,7 +2554,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             trackerid,
             campaignStatus,
             contentScore = contentScore,
-            hasVoucher = hasVoucher
+            hasVoucher = hasVoucher,
+            authorType = authorType
         )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
@@ -2668,7 +2684,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.followers.isFollowed,
             false,
             (feedXCard.contentScore).firstOrNull()?.value ?: String.EMPTY,
-            feedXCard.hasVoucher
+            feedXCard.hasVoucher,
+            authorType = feedXCard.author.type.toString()
         )
     }
 
@@ -2704,14 +2721,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         authorType: String,
         isFollowed: Boolean,
         startTime: Long
-
     ) {
         if (activity != null) {
             feedAnalytics.clickOnVideo(
                 postId,
                 authorId,
                 isFollowed,
-                getContentScoreFromPosition(positionInFeed)
+                getContentScoreFromPosition(positionInFeed),
+                authorType
             )
             val videoDetailIntent =
                 RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
@@ -3345,7 +3362,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         if (type == TYPE_TOPADS_HEADLINE_NEW) {
             sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
-            feedAnalytics.clickSekSekarang(postId, shopId, type, isFollowed)
+            feedAnalytics.clickSekSekarang(
+                postId,
+                shopId,
+                type,
+                isFollowed,
+                feedXCard.author.type.toString()
+            )
         } else {
             val trackerId =
                 if (feedXCard.campaign.isFlashSaleToko || feedXCard.campaign.isRilisanSpl) {
@@ -3651,7 +3674,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.playChannelId,
                 item.mediaType,
                 positionInFeed = item.positionInFeed,
-                hasVoucher = feedTrackerData?.hasVoucher ?: false
+                hasVoucher = feedTrackerData?.hasVoucher ?: false,
+                authorType = feedTrackerData?.authorType ?: ""
             )
         }
     }
@@ -3663,7 +3687,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         isFollowed: Boolean,
         mediaType: String,
-        hasVoucher: Boolean
+        hasVoucher: Boolean,
+        authorType: String
     ) {
         if (postTagItemList.isNotEmpty())
             feedAnalytics.eventImpressionProductBottomSheet(
@@ -3674,7 +3699,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 isFollowed,
                 false,
                 mediaType = mediaType,
-                hasVoucher = hasVoucher
+                hasVoucher = hasVoucher,
+                authorType = authorType
             )
     }
 
@@ -3781,7 +3807,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         product = product,
         productId = product.id,
         mediaIndex = feedXCard.lastCarouselIndex,
-        hasVoucher = feedXCard.hasVoucher
+        hasVoucher = feedXCard.hasVoucher,
+        authorType = feedXCard.author.type.toString()
     )
 
     private fun getFeedTrackerDataModelFromPosition(

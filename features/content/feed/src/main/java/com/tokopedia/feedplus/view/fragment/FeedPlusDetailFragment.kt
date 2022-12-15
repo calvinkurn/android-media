@@ -597,7 +597,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 campaignStatus = item.saleStatus,
                 product = item.product,
                 productId = item.product.id,
-                isProductDetailPage = true
+                isProductDetailPage = true,
+                authorType = authorType
             )
         )
         val bundle = Bundle()
@@ -623,7 +624,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 item.postType,
                 item.isFollowed,
                 item.shopName,
-                item.playChannelId
+                item.playChannelId,
+                authorType = authorType
             )
         }
         sheet.addToWIshListCB = {
@@ -679,7 +681,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 item.isFollowed,
                 item.shopName,
                 item.playChannelId,
-                campaignTrackerValue
+                campaignTrackerValue,
+                authorType = authorType
             )
         }
     }
@@ -696,7 +699,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 isFollowed = item.isFollowed,
                 shopId = item.shopId,
                 contentSlotValue = contentScore,
-                isProductDetailPage = true
+                isProductDetailPage = true,
+                authorType = authorType
             )
         )
 
@@ -733,7 +737,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         isFollowed: Boolean,
         shopName: String,
         playChannelId: String,
-        campaignStatusValue: String = ""
+        campaignStatusValue: String = "",
+        authorType: String
     ) {
         //send tracker data
         if (campaignStatusValue.isEmpty()) {
@@ -750,7 +755,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     isFollowed,
                     "",
                     contentScore = contentScore,
-                    hasVoucher = hasVoucher
+                    hasVoucher = hasVoucher,
+                    authorType = authorType
                 )
             else
                 feedAnalytics.eventAddToCartFeedVOD(
@@ -765,7 +771,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     isFollowed,
                     "",
                     contentScore = contentScore,
-                    hasVoucher = hasVoucher
+                    hasVoucher = hasVoucher,
+                    authorType = authorType
                 )
         } else {
             feedAnalytics.sendClickAddToCartAsgcProductDetail(
@@ -778,7 +785,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 1,
                 shopName,
                 contentScore = contentScore,
-                hasVoucher = hasVoucher
+                hasVoucher = hasVoucher,
+                authorType = authorType
             )
         }
 
@@ -873,7 +881,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                         shopId = shopId,
                         campaignStatus = getTrackerCampaignStatusSuffix(),
                         contentSlotValue = contentScore,
-                        positionInFeed = positionInFeed
+                        positionInFeed = positionInFeed,
+                        authorType = authorType
                     )
                 )
                 RouteManager.route(context, ApplinkConst.WISHLIST)
@@ -1054,7 +1063,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 isFollowed,
                 true,
                 "",
-                trackerId = if (saleType.isNotEmpty()) "13439" else ""
+                trackerId = if (saleType.isNotEmpty()) "13439" else "",
+                authorType = authorType
             )
         }
     }
