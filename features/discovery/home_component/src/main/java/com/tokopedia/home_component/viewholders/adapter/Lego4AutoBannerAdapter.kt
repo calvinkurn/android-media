@@ -16,10 +16,10 @@ import com.tokopedia.unifycomponents.CardUnify2
  * @author by yoasfs on 28/07/20
  */
 class Lego4AutoBannerAdapter(
-        private val listener: Lego4AutoBannerListener?,
-        private val positionInWidget: Int,
-        private val isCacheData: Boolean,
-        private val dataModel: Lego4AutoDataModel
+    private val listener: Lego4AutoBannerListener?,
+    private val positionInWidget: Int,
+    private val isCacheData: Boolean,
+    private val dataModel: Lego4AutoDataModel
 ) : RecyclerView.Adapter<Lego4AutoComponentViewHolder>() {
     companion object {
         private const val LEGO_4_BANNER_SIZE = 4
@@ -28,10 +28,12 @@ class Lego4AutoBannerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Lego4AutoComponentViewHolder {
         val layout = Lego4AutoTabletConfiguration.getLayout(parent.context, dataModel.channelModel.channelConfig.borderStyle)
         val viewHolder = Lego4AutoComponentViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false))
-        if(viewType == LAYOUT_MOBILE_PADDING || viewType == LAYOUT_TABLET_PADDING) {
-            viewHolder.cardUnify.animateOnPress = if(dataModel.cardInteraction) {
+        if (layout == LAYOUT_MOBILE_PADDING || viewType == LAYOUT_TABLET_PADDING) {
+            viewHolder.cardUnify.animateOnPress = if (dataModel.cardInteraction) {
                 CardUnify2.ANIMATE_OVERLAY_BOUNCE
-            } else CardUnify2.ANIMATE_OVERLAY
+            } else {
+                CardUnify2.ANIMATE_OVERLAY
+            }
         }
         return viewHolder
     }

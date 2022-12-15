@@ -54,6 +54,8 @@ class SpecialReleaseViewHolder(
     private var isCacheData = false
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
+    private var isUsingPadding = false
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_special_release
@@ -61,6 +63,7 @@ class SpecialReleaseViewHolder(
 
     override fun bind(element: SpecialReleaseDataModel) {
         isCacheData = element.isCache
+        isUsingPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING
         mappingView(channel = element.channelModel)
         setHeaderComponent(element = element)
         setChannelDivider(element = element)
@@ -87,21 +90,24 @@ class SpecialReleaseViewHolder(
     }
 
     private fun setBackground(element: SpecialReleaseDataModel) {
-        val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(R.dimen.special_release_rv_padding)
         val bannerItem = element.channelModel.channelBanner
         if (bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(
                 bannerItem.gradientColor,
                 itemView.context
-            ) || element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING
+            ) || isUsingPadding
         ) {
+            val specialReleaseRvPaddingStyleBottom = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding_style_bottom)
+            binding?.homeComponentSpecialReleaseRv?.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.special_release_padding_card_compat_padding).toFloat()
             binding?.homeComponentSpecialReleaseRv?.setPadding(
                 Int.ZERO,
                 Int.ZERO,
                 Int.ZERO,
-                specialReleaseRvPadding
+                specialReleaseRvPaddingStyleBottom
             )
             binding?.background?.gone()
         } else {
+            val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding)
+            binding?.homeComponentSpecialReleaseRv?.translationY = Float.ZERO
             binding?.homeComponentSpecialReleaseRv?.setPadding(
                 Int.ZERO,
                 specialReleaseRvPadding,
@@ -156,7 +162,7 @@ class SpecialReleaseViewHolder(
                         channel.channelViewAllCard,
                         this,
                         channel.channelBanner.imageUrl,
-                        channel.channelBanner.gradientColor,
+                        if(isUsingPadding) arrayListOf() else channel.channelBanner.gradientColor,
                         channel.layout
                     )
                 )
