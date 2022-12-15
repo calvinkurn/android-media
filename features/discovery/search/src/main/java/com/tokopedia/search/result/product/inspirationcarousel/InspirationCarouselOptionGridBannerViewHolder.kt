@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.graphics.drawable.ColorDrawable
 import android.view.View
@@ -8,8 +8,6 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselOptionGridBannerBinding
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationCarouselOptionGridBannerViewHolder(

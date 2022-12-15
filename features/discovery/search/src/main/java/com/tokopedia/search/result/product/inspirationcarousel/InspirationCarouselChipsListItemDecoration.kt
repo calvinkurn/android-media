@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration
+package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.graphics.Rect
 import android.view.View

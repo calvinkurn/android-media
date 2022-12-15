@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.graphics.Rect
 import android.view.View
@@ -10,9 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -22,13 +19,6 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselChipsAdapter
-import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
-import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
-import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.InspirationCarouselChipsListItemDecoration
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
@@ -40,9 +30,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class InspirationCarouselViewHolder(
-        itemView: View,
-        private val inspirationCarouselListener: InspirationCarouselListener,
-        private val recycledViewPool: RecyclerView.RecycledViewPool,
+    itemView: View,
+    private val inspirationCarouselListener: InspirationCarouselListener,
+    private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : AbstractViewHolder<InspirationCarouselDataView>(itemView), CoroutineScope {
 
     companion object {

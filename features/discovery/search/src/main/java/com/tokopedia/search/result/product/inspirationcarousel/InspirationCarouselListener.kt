@@ -1,8 +1,4 @@
-package com.tokopedia.search.result.presentation.view.listener
-
-
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+package com.tokopedia.search.result.product.inspirationcarousel
 
 interface InspirationCarouselListener {
 

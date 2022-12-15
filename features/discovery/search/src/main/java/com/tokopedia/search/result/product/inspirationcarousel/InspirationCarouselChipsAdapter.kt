@@ -1,11 +1,8 @@
-package com.tokopedia.search.result.presentation.view.adapter
+package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselChipsItemViewHolder
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 
 class InspirationCarouselChipsAdapter(
     private val inspirationCarouselAdapterPosition: Int,
