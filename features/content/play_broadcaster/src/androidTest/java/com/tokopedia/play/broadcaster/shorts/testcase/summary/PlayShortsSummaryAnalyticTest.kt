@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.shorts.testcase.preparation.setup.cover
+package com.tokopedia.play.broadcaster.shorts.testcase.summary
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -12,12 +12,9 @@ import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.helper.*
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsCassavaValidator
+import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsInjector
+import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsLauncher
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -30,7 +27,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 15, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
-class PlayShortsSetupCoverAnalyticTest {
+class PlayShortsSummaryAnalyticTest {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
@@ -53,30 +50,15 @@ class PlayShortsSetupCoverAnalyticTest {
     private val mockShortsConfig = uiModelBuilder.buildShortsConfig()
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
     private val mockAccountShop = mockAccountList[0]
-    private val mockAccountUser = mockAccountList[1]
-
-    private val mockSection = List(1) {
-        ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(2) {
-            ProductUiModel(it.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
-        })
-    }
-    private val mockProduct = mockSection.flatMap { it.products }
-    private val mockEtalaseProducts = PagedDataUiModel(
-        dataList = mockProduct,
-        hasNextPage = false,
-    )
 
     init {
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
-        coEvery { mockAccountManager.switchAccount(any(), any()) } returns mockAccountUser
         coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
         coEvery { mockShortsRepo.getShortsConfiguration(any(), any()) } returns mockShortsConfig
-        coEvery { mockBroRepo.getEtalaseList() } returns emptyList()
-        coEvery { mockBroRepo.getCampaignList() } returns emptyList()
-        coEvery { mockBroRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
-        coEvery { mockBroRepo.setProductTags(any(), any()) } returns Unit
-        coEvery { mockBroRepo.getProductTagSummarySection(any()) } returns mockSection
+        coEvery { mockUgcOnboardingRepo.validateUsername(any()) } returns Pair(true, "")
+        coEvery { mockUgcOnboardingRepo.insertUsername(any()) } returns true
+        coEvery { mockUgcOnboardingRepo.acceptTnc() } returns true
 
         PlayShortsInjector.set(
             DaggerPlayShortsTestComponent.builder()
@@ -101,29 +83,35 @@ class PlayShortsSetupCoverAnalyticTest {
     @Before
     fun setUp() {
         launcher.launchActivity()
-
-        completeMandatoryMenu()
-
-        clickMenuCover()
     }
 
     @Test
-    fun testAnalytic_clickCloseOnCoverForm() {
+    fun testAnalytic_clickBackOnSummaryPage() {
 
-        clickBackCoverForm()
-
-        cassavaValidator.verify("click - close cover page")
     }
 
     @Test
-    fun testAnalytic_clickSelectCoverOnCoverForm() {
-        clickSelectCover()
+    fun testAnalytic_clickContentTag() {
 
-        cassavaValidator.verify("click - edit cover")
     }
 
     @Test
-    fun testAnalytic_openScreenCoverForm() {
-        cassavaValidator.verifyOpenScreen("/play broadcast short - cover page - ${mockAccountShop.id} - seller")
+    fun testAnalytic_clickUploadVideo() {
+
+    }
+
+    @Test
+    fun testAnalytic_openScreenSummaryPage() {
+
+    }
+
+    @Test
+    fun testAnalytic_clickRefreshContentTag() {
+
+    }
+
+    @Test
+    fun testAnalytic_clickNextOnPreparationPage() {
+
     }
 }

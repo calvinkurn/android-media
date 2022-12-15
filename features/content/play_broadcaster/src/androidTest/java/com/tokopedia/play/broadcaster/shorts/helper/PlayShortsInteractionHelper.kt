@@ -31,6 +31,20 @@ fun clickContinueOnLeaveConfirmationPopup() {
     click(dialogR.id.dialog_btn_primary)
 }
 
+fun completeMandatoryMenu() {
+    clickMenuTitle()
+    inputTitle()
+    submitTitle()
+
+    clickMenuProduct()
+    delay()
+    selectProduct()
+    delay()
+    clickSubmitProductTag()
+    delay()
+    clickCloseProductSummaryBottomSheet()
+}
+
 /** Switch Account */
 fun clickToolbar() {
     click(contentCommonR.id.text_com_toolbar_subtitle)
@@ -102,4 +116,17 @@ fun clickBackCoverForm() {
 
 fun clickSelectCover() {
     click(R.id.cl_cover_form_preview)
+}
+
+/** Product Tag */
+fun selectProduct(idx: Int = 0) {
+    clickItemRecyclerView(R.id.rv_products, idx)
+}
+
+fun clickSubmitProductTag() {
+    click(R.id.btn_next)
+}
+
+fun clickCloseProductSummaryBottomSheet() {
+    click(unifyR.id.bottom_sheet_close)
 }

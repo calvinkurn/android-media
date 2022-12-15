@@ -13,6 +13,11 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.play.broadcaster.type.OriginalPrice
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -49,14 +54,27 @@ class PlayShortsPreparationAnalyticTest {
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
     private val mockAccountShop = mockAccountList[0]
 
+    private val mockSection = List(1) {
+        ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(2) {
+            ProductUiModel(it.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
+        })
+    }
+    private val mockProduct = mockSection.flatMap { it.products }
+    private val mockEtalaseProducts = PagedDataUiModel(
+        dataList = mockProduct,
+        hasNextPage = false,
+    )
+
     init {
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
         coEvery { mockShortsRepo.getShortsConfiguration(any(), any()) } returns mockShortsConfig
-        coEvery { mockUgcOnboardingRepo.validateUsername(any()) } returns Pair(true, "")
-        coEvery { mockUgcOnboardingRepo.insertUsername(any()) } returns true
-        coEvery { mockUgcOnboardingRepo.acceptTnc() } returns true
+        coEvery { mockBroRepo.getEtalaseList() } returns emptyList()
+        coEvery { mockBroRepo.getCampaignList() } returns emptyList()
+        coEvery { mockBroRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
+        coEvery { mockBroRepo.setProductTags(any(), any()) } returns Unit
+        coEvery { mockBroRepo.getProductTagSummarySection(any()) } returns mockSection
 
         PlayShortsInjector.set(
             DaggerPlayShortsTestComponent.builder()
@@ -104,11 +122,8 @@ class PlayShortsPreparationAnalyticTest {
 
     @Test
     fun testAnalytic_clickMenuCover() {
-        clickMenuTitle()
-        inputTitle()
-        submitTitle()
 
-        /** TODO: need to add product first before enabling cover menu */
+        completeMandatoryMenu()
 
         clickMenuCover()
 
