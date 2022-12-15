@@ -120,4 +120,42 @@ class ShortsUiModelBuilder {
             }
         }
     }
+
+    fun buildLastTaggedProducts(
+        size: Int = 10,
+        hasNextPage: Boolean = true,
+        nextCursor: String = "",
+    ): com.tokopedia.content.common.producttag.view.uimodel.PagedDataUiModel<com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel> {
+        return com.tokopedia.content.common.producttag.view.uimodel.PagedDataUiModel(
+            dataList = List(size) {
+                com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel(
+                    id = it.toString(),
+                    shopID = it.toString(),
+                    shopName = "Shop $it",
+                    shopBadge = listOf(),
+                    name = "Product $it",
+                    coverURL = "",
+                    webLink = "",
+                    appLink = "",
+                    star = (it % 5).toString(),
+                    price = (it * 10000).toDouble(),
+                    priceFmt = "Rp ${(it * 10000)}",
+                    isDiscount = true,
+                    discount = 5.0,
+                    discountFmt = "5%",
+                    priceOriginal = (it * 10000).toDouble(),
+                    priceOriginalFmt = "Rp ${(it * 10000).toDouble()}",
+                    priceDiscount = (it * 10000).toDouble(),
+                    priceDiscountFmt = "Rp ${(it * 10000).toDouble()}",
+                    totalSold = it,
+                    totalSoldFmt = it.toString(),
+                    isBebasOngkir = false,
+                    bebasOngkirStatus = "",
+                    bebasOngkirURL = "",
+                )
+            },
+            hasNextPage = hasNextPage,
+            nextCursor = nextCursor,
+        )
+    }
 }

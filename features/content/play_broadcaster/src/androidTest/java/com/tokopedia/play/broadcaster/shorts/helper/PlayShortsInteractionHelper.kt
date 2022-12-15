@@ -122,7 +122,7 @@ fun clickSelectCover() {
     click(R.id.cl_cover_form_preview)
 }
 
-/** Product Tag */
+/** Product Picker SGC */
 fun selectProduct(idx: Int = 0) {
     clickItemRecyclerView(R.id.rv_products, idx)
 }
@@ -133,6 +133,19 @@ fun clickSubmitProductTag() {
 
 fun clickCloseProductSummaryBottomSheet() {
     click(unifyR.id.bottom_sheet_close)
+}
+
+/** Product Picker UGC */
+fun clickBreadcrumb() {
+    click(contentCommonR.id.tv_cc_product_tag_product_source)
+}
+
+fun clickCloseBreadcrumb() {
+    click(unifyR.id.bottom_sheet_close)
+}
+
+fun clickProductTagSourceTokopedia() {
+    click(contentCommonR.id.cl_global_search)
 }
 
 /** Summary page */
