@@ -53,7 +53,7 @@ class HomeFragmentRefreshTest {
          * But if 3 minutes rule reached, total refresh will be above 2
          */
         private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 3
-        private const val TOTAL_PARTIAL_HEADER_RESUME_COUNT = 2
+        private const val TOTAL_PARTIAL_HEADER_RESUME_COUNT = 1
 
         private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
         private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 180001L
@@ -138,8 +138,7 @@ class HomeFragmentRefreshTest {
 
         /**
          * Assert data changes count
-         * Partial refresh will only trigger 2 data changes
-         * - Home Balance Widget
+         * Partial refresh will only trigger 1 data changes
          * - Dynamic channel
          */
         Thread.sleep(DELAY_PROCESS)
