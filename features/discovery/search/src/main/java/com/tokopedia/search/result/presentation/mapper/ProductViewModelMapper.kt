@@ -312,6 +312,7 @@ class ProductViewModelMapper {
             InspirationCarouselDataView.Option(
                     opt.title,
                     opt.subtitle,
+                    opt.iconSubtitle,
                     opt.url,
                     opt.applink,
                     opt.bannerImageUrl,

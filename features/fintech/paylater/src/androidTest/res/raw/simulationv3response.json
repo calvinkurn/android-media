@@ -250,8 +250,8 @@
                     "gateway_detail": {
                       "id": 2,
                       "name": "Kredivo",
-                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
-                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_light_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_dark_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
                       "how_to_use": {
                         "notes": [],
                         "steps": [
@@ -368,8 +368,8 @@
                     "gateway_detail": {
                       "id": 3,
                       "name": "Home Credit",
-                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
-                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_light_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_dark_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
                       "how_to_use": {
                         "notes": [],
                         "steps": [
@@ -745,8 +745,8 @@
                     "gateway_detail": {
                       "id": 3,
                       "name": "Home Credit",
-                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
-                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_light_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_dark_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
                       "how_to_use": {
                         "notes": [],
                         "steps": [
@@ -1001,8 +1001,8 @@
                     "gateway_detail": {
                       "id": 2,
                       "name": "Kredivo",
-                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
-                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_light_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_dark_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
                       "how_to_use": {
                         "notes": [],
                         "steps": [
@@ -1119,8 +1119,8 @@
                     "gateway_detail": {
                       "id": 3,
                       "name": "Home Credit",
-                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
-                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_light_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_dark_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
                       "how_to_use": {
                         "notes": [],
                         "steps": [
@@ -1496,8 +1496,8 @@
                     "gateway_detail": {
                       "id": 2,
                       "name": "Kredivo",
-                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
-                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_light_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_dark_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
                       "how_to_use": {
                         "notes": [],
                         "steps": [
@@ -1614,8 +1614,8 @@
                     "gateway_detail": {
                       "id": 3,
                       "name": "Home Credit",
-                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
-                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_light_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_dark_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
                       "how_to_use": {
                         "notes": [],
                         "steps": [

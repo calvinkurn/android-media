@@ -173,7 +173,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     }
 
     private fun fetchAdDetails() {
-        sharedEditHeadlineViewModel.getHeadlineAdId(groupId.toIntOrZero(),
+        sharedEditHeadlineViewModel.getHeadlineAdId(groupId,
             userSession.shopId,
             this::onError)
     }

@@ -213,7 +213,7 @@ abstract class TopchatRoomTest {
 
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
-        const val productThumbnail = "https://ecs7-p.tokopedia.net/img/cache/350/attachment/" +
+        const val productThumbnail = "https://images.tokopedia.net/img/cache/350/attachment/" +
                 "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
         const val productPrice = "Rp 23.000.000"
     }

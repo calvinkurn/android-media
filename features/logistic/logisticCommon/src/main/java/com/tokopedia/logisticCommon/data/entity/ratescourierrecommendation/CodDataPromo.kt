@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -10,6 +11,7 @@ class CodDataPromo(
         val isCodAvailable: Int? = null,
         @SerializedName("cod_text")
         val codText: String? = null,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("cod_price")
         val codPrice: Int? = null,
         @SerializedName("formatted_price")

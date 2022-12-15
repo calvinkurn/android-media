@@ -9,7 +9,7 @@ import com.tokopedia.sessioncommon.R
 class LocationAdminDialog(context: Context?, dismissListener: (() -> Unit)? = null) {
 
     companion object {
-        private const val IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ic_location_admin_info.png"
+        private const val IMAGE_URL = "https://images.tokopedia.net/android/others/ic_location_admin_info.png"
     }
 
     private var dialog: DialogUnify? = null

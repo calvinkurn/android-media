@@ -23,8 +23,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.play.widget.data.PlayWidget
-import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -34,6 +32,8 @@ import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -86,6 +86,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -2048,5 +2049,17 @@ class ShopHomeViewModelTest {
         assert(viewModel.miniCartUpdate.value == null)
         assert(viewModel.miniCartUpdate.value == null)
         assert(viewModel.shopPageAtcTracker.value == null)
+    }
+
+    @Test
+    fun `when widget type is bundle expect isWidgetBundle to return true`() {
+        val testData = ShopPageWidgetLayoutUiModel(widgetType = WidgetType.BUNDLE)
+        assertTrue(viewModel.isWidgetBundle(testData))
+    }
+
+    @Test
+    fun `when widget type is not bundle expect isWidgetBundle to return false`() {
+        val testData = ShopPageWidgetLayoutUiModel(widgetType = WidgetType.CAMPAIGN)
+        assertFalse(viewModel.isWidgetBundle(testData))
     }
 }

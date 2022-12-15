@@ -107,6 +107,11 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                                   service_id
                                   service_order
                                   status
+                                  service_based_shipment {
+                                      is_available
+                                      text_price
+                                      text_eta
+                                  }
                                   range_price {
                                       min_price
                                       max_price
