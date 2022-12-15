@@ -175,4 +175,10 @@ object UohConsts {
     const val TDN_RADIUS = 16
 
     const val PMS_IMAGE_URL = "https://images.tokopedia.net/img/android/uoh/saldo_tempo.png"
+
+    const val BELI_LAGI_LABEL = "Beli Lagi"
+    const val ULAS_LABEL = "Ulas"
+    const val EVENT_LABEL_CART_EXISTING = "toaster"
+    const val EVENT_LABEL_CART_REDIRECTION = "cart"
+    const val EVENT_LABEL_OCC_REDIRECTION = "occ"
 }

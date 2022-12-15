@@ -10,11 +10,14 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.UohListItemBinding
+import com.tokopedia.unifyorderhistory.util.UohConsts.BELI_LAGI_LABEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_LABEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_URL
+import com.tokopedia.unifyorderhistory.util.UohConsts.ULAS_LABEL
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 
@@ -142,6 +145,9 @@ class UohOrderListViewHolder(
                     buttonVariant =
                         UohUtils.getButtonVariant(item.dataObject.metadata.buttons[0].type)
                 }
+                if (item.dataObject.metadata.buttons[0].label == BELI_LAGI_LABEL) {
+                    UohAnalytics.sendViewBeliLagiButtonEvent()
+                }
             } else {
                 binding.uohBtnAction1.gone()
             }
@@ -154,6 +160,9 @@ class UohOrderListViewHolder(
                         UohUtils.getButtonType(item.dataObject.metadata.buttons[1].variantColor)
                     buttonVariant =
                         UohUtils.getButtonVariant(item.dataObject.metadata.buttons[1].type)
+                }
+                if (item.dataObject.metadata.buttons[1].label == ULAS_LABEL) {
+                    UohAnalytics.sendViewBeriUlasanButtonEvent()
                 }
             } else {
                 binding.uohBtnAction2.gone()

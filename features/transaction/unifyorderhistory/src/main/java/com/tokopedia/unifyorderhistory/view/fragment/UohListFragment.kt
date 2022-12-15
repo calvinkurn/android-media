@@ -52,6 +52,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITIN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
@@ -121,6 +122,8 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.DIPROSES
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
+import com.tokopedia.unifyorderhistory.util.UohConsts.EVENT_LABEL_CART_EXISTING
+import com.tokopedia.unifyorderhistory.util.UohConsts.EVENT_LABEL_CART_REDIRECTION
 import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
 import com.tokopedia.unifyorderhistory.util.UohConsts.FLIGHT_STATUS_OK
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FINISH_ORDER
@@ -265,6 +268,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var _atcVerticalCategory = ""
     private var trackingQueue: TrackingQueue? = null
     private var _buttonAction = ""
+    private var _atcOccParams: AddToCartOccMultiRequestParams? = null
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -830,13 +834,30 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 )
                             }
 
-                            UohAnalytics.clickBeliLagiOnOrderCardMP(
-                                "",
-                                userSession.userId,
-                                arrayListProducts,
-                                _atcVerticalCategory,
-                                result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
-                            )
+                            if (_buttonAction == GQL_MP_ATC) {
+                                UohAnalytics.clickBeliLagiOnOrderCardMP(
+                                    "",
+                                    userSession.userId,
+                                    arrayListProducts,
+                                    _atcVerticalCategory,
+                                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
+                                )
+                                UohAnalytics.sendClickBeliLagiButtonEvent(
+                                    EVENT_LABEL_CART_EXISTING,
+                                    arrayListProducts,
+                                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString(),
+                                    userSession.userId,
+                                    _atcVerticalCategory
+                                )
+                            } else if (_buttonAction == GQL_MP_ATC_REDIRECTION) {
+                                UohAnalytics.sendClickBeliLagiButtonEvent(
+                                    EVENT_LABEL_CART_REDIRECTION,
+                                    arrayListProducts,
+                                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString(),
+                                    userSession.userId,
+                                    _atcVerticalCategory
+                                )
+                            }
                         }
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
@@ -845,6 +866,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)
                         ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohAnalytics.sendViewErrorToasterBeliLagiEvent()
                 }
             }
         }
@@ -855,10 +877,17 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             when (it) {
                 is Success -> {
                     RouteManager.route(context, ApplinkConst.OCC)
+
+                    UohAnalytics.sendClickBeliLagiOccButtonEvent(
+                        _atcOccParams,
+                        userSession.userId,
+                        _atcVerticalCategory
+                    )
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)
                         ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohAnalytics.sendViewErrorToasterBeliLagiEvent()
                 }
             }
         }
@@ -2345,9 +2374,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun atcOcc(orderData: UohListOrder.Data.UohOrders.Order) {
+        _atcVerticalCategory = orderData.verticalCategory
         if (orderData.metadata.listProducts.isNotEmpty()) {
-            val atcOccParams = OrderDataMapper.mapOrderDataToOccParams(orderData)
-            uohListViewModel.doAtcOccMulti(atcOccParams)
+            _atcOccParams = OrderDataMapper.mapOrderDataToOccParams(orderData)
+            _atcOccParams?.let { occParams ->
+                uohListViewModel.doAtcOccMulti(occParams)
+            }
         }
     }
 
@@ -2391,5 +2423,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     override fun onPause() {
         super.onPause()
         trackingQueue?.sendAll()
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 }
