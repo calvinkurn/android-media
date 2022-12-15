@@ -7,57 +7,36 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/toolbar_textview"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:elevation="4dp"
-        android:gravity="center"
-        android:text="@string/csat_survey_toolbar_text"
-        android:textColor="@color/Unify_NN950"
-        app:typographyType="heading_3"
-        app:typographyWeight="bold"
-        android:theme="?toolbarTheme"
-        app:elevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/divider_1"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginBottom="16dp"
-        android:background="@color/csat_dms_divider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_textview" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_help_title"
+        android:id="@+id/rating_txt_help_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:paddingTop="20dp"
-        android:text="@string/csat_txt_help_title"
-        android:textColor="@color/Unify_NN950"
+        android:gravity="start"
+        tools:text="SASS"
+        android:textColor="@color/Unify_N700_96"
         app:typographyWeight="bold"
-        app:typographyType="display_2"
+        app:typographyType="heading_3"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_1" />
+
+        />
 
     <LinearLayout
         android:id="@+id/smile_layout"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:weightSum="5"
-        app:layout_constraintLeft_toLeftOf="@id/txt_help_title"
-        app:layout_constraintRight_toRightOf="@id/txt_help_title"
-        app:layout_constraintTop_toBottomOf="@id/txt_help_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rating_txt_help_title"
         android:orientation="horizontal">
 
     </LinearLayout>
@@ -68,9 +47,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:textColor="@color/csat_dms_reaction_green"
+        android:textColor="@color/Unify_GN500"
         app:typographyType="display_2"
+        app:typographyWeight="bold"
         app:layout_constraintTop_toBottomOf="@id/smile_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Memuaskan" />
 
     <View
@@ -79,7 +61,9 @@
         android:layout_height="2dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/csat_dms_divider"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_smile_selected" />
@@ -89,31 +73,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:gravity="center"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:textColor="@color/Unify_NN950"
-        app:typographyType="display_2"
-        android:textStyle="bold"
+        android:gravity="start"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyWeight="bold"
+        app:typographyType="display_1"
         app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Apa yang sebaiknya dipertahankan dari layanan kami?" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="18dp"
         android:orientation="vertical"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:showDividers="end"
+        android:id="@+id/filter_layout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_feedback_question"
         app:layout_scrollFlags="enterAlways">
 
-        <com.tokopedia.csat_rating.adapter.CustomQuickOptionView
+        <com.tokopedia.csat_rating.adapter.chatbot_csat.ChatBotQuickOptionViewCsat
             android:id="@+id/filter_review"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
     </LinearLayout>
@@ -122,19 +109,16 @@
         android:id="@+id/txt_finished"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_margin="24dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="16dp"
         android:background="@drawable/bg_button_state"
         android:gravity="center"
-        android:text="@string/csat_submit"
-        android:textColor="@color/Unify_Static_White"
-        app:typographyType="display_2"
+        android:text="Selesai"
+        android:textColor="@color/Unify_N0"
         app:typographyWeight="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="display_2"
+        app:layout_constraintTop_toBottomOf="@+id/filter_layout"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-

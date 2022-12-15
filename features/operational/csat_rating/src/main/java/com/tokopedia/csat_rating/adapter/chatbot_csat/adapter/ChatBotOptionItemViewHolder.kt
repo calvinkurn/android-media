@@ -1,9 +1,9 @@
-package com.tokopedia.chatbot.view.customview.csat.adapter
+package com.tokopedia.csat_rating.adapter.chatbot_csat.adapter
 
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chatbot.R
+import com.tokopedia.csat_rating.R
 import com.tokopedia.csat_rating.adapter.OptionItemViewHolder
 import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterListener
@@ -15,20 +15,24 @@ class ChatBotOptionItemViewHolder(itemView: View, listener: QuickSingleFilterLis
     override fun updateData(filterItem: QuickFilterItem) {
         filterName?.text = filterItem.name
         filterName?.context?.let {
-            filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         }
-
-        layoutInside1.setBackgroundResource(R.drawable.ic_csat_check_box_bg)
     }
 
     override fun updateItemColor(selected: Boolean) {
         if (selected) {
             itemView.context?.let {
-                MethodChecker.setBackground(layoutInside1, MethodChecker.getDrawable(it, R.drawable.ic_checked_csat_option))
+                MethodChecker.setBackground(
+                    layoutInside1,
+                    MethodChecker.getDrawable(it, R.drawable.ic_checked_csat_option)
+                )
             }
         } else {
             itemView.context?.let {
-                MethodChecker.setBackground(layoutInside1, MethodChecker.getDrawable(it, R.drawable.ic_csat_check_box_bg))
+                MethodChecker.setBackground(
+                    layoutInside1,
+                    MethodChecker.getDrawable(it, R.drawable.ic_csat_check_box_bg)
+                )
             }
         }
     }
