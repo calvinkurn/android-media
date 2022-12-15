@@ -959,10 +959,6 @@ open class ChatListFragment constructor() :
         return activity is TopChatRoomActivity
     }
 
-    private fun shouldEnableBubbleChat(): Boolean {
-        return true
-    }
-
     override fun onResume() {
         super.onResume()
         if (!isFromTopChatRoom()) {
