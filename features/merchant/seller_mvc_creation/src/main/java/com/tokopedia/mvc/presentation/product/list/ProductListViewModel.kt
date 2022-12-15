@@ -44,7 +44,15 @@ class ProductListViewModel @Inject constructor(
 
     fun processEvent(event: ProductListEvent) {
         when(event) {
-            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.pageMode, event.voucherConfiguration, event.selectedProducts)
+            is ProductListEvent.FetchProducts -> {
+                getProductsAndProductsMetadata(
+                    event.pageMode,
+                    event.voucherConfiguration,
+                    event.selectedProducts,
+                    event.showCtaUpdateProductOnToolbar,
+                    event.isEntryPointFromVoucherSummaryPage
+                )
+            }
             is ProductListEvent.MarkProductForDeletion -> handleMarkProductForDeletion(event.productId)
             ProductListEvent.TapContinueButton -> handleRedirection()
             ProductListEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
@@ -61,14 +69,16 @@ class ProductListViewModel @Inject constructor(
             ProductListEvent.ApplyBulkDeleteProduct -> handleBulkDeleteProducts()
             ProductListEvent.TapCtaChangeProduct -> handleSwitchPageMode()
             is ProductListEvent.AddNewProductToSelection -> handleAddNewProductToSelection(event.newProducts)
+            ProductListEvent.TapCtaAddProduct -> handleCtaAddNewProduct()
         }
     }
-
 
     private fun getProductsAndProductsMetadata(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration,
-        selectedProducts: List<SelectedProduct>
+        selectedProducts: List<SelectedProduct>,
+        showCtaUpdateProductOnToolbar: Boolean,
+        isEntryPointFromVoucherSummaryPage: Boolean
     ) {
         launchCatchError(
             dispatchers.io,
@@ -111,9 +121,11 @@ class ProductListViewModel @Inject constructor(
                         isLoading = false,
                         products = updatedProducts,
                         originalPageMode = pageMode,
-                        pageMode = pageMode,
+                        currentPageMode = pageMode,
                         maxProductSelection = metadata.maxProduct,
-                        voucherConfiguration = voucherConfiguration
+                        voucherConfiguration = voucherConfiguration,
+                        showCtaChangeProductOnToolbar = showCtaUpdateProductOnToolbar,
+                        isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage
                     )
                 }
 
@@ -154,7 +166,7 @@ class ProductListViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isSelectAllActive = true,
-                selectedProductsIds = selectedProducts.selectedProductsOnly(),
+                selectedProductsIdsToBeRemoved = selectedProducts.selectedProductsOnly(),
                 products = selectedProducts
             )
         }
@@ -165,7 +177,7 @@ class ProductListViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isSelectAllActive = false,
-                selectedProductsIds = emptySet(),
+                selectedProductsIdsToBeRemoved = emptySet(),
                 products = disabledProducts
             )
         }
@@ -176,7 +188,7 @@ class ProductListViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                selectedProductsIds = updatedProducts.selectedProductsOnly(),
+                selectedProductsIdsToBeRemoved = updatedProducts.selectedProductsOnly(),
                 products = updatedProducts
             )
         }
@@ -214,7 +226,7 @@ class ProductListViewModel @Inject constructor(
                 it.copy(
                     isSelectAllActive = false,
                     products = updatedProducts,
-                    selectedProductsIds = updatedProducts.selectedProductsOnly(),
+                    selectedProductsIdsToBeRemoved = updatedProducts.selectedProductsOnly(),
                 )
             }
         }
@@ -228,7 +240,7 @@ class ProductListViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isSelectAllActive = false,
-                    selectedProductsIds = updatedProducts.selectedProductsOnly(),
+                    selectedProductsIdsToBeRemoved = updatedProducts.selectedProductsOnly(),
                     products = updatedProducts
                 )
             }
@@ -246,7 +258,8 @@ class ProductListViewModel @Inject constructor(
                 ProductListEffect.ShowVariantBottomSheet(
                     parentProduct.isSelected,
                     selectedProduct,
-                    selectedVariantIds
+                    selectedVariantIds,
+                    currentState.currentPageMode
                 )
             )
         }
@@ -298,22 +311,15 @@ class ProductListViewModel @Inject constructor(
                 .take(THREE_TOP_SELLING_PRODUCT_IMAGE_URL)
                 .map { it.picture }
 
-            if (currentState.originalPageMode == PageMode.CREATE) {
-                _uiEffect.tryEmit(
-                    ProductListEffect.ProceedToVoucherPreviewPage(
-                        currentState.voucherConfiguration,
-                        selectedProducts,
-                        topSellingProductImageUrls
-                    )
+
+            _uiEffect.tryEmit(
+                ProductListEffect.ProceedToVoucherPreviewPage(
+                    currentState.voucherConfiguration,
+                    selectedProducts,
+                    topSellingProductImageUrls
                 )
-            } else {
-                _uiEffect.tryEmit(
-                    ProductListEffect.SendResultToCallerPage(
-                        selectedProducts,
-                        topSellingProductImageUrls
-                    )
-                )
-            }
+            )
+
         }
     }
 
@@ -328,7 +334,7 @@ class ProductListViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     products = modifiedProducts,
-                    selectedProductsIds = modifiedProducts.selectedProductsOnly()
+                    selectedProductsIdsToBeRemoved = modifiedProducts.selectedProductsOnly()
                 )
             }
 
@@ -341,19 +347,57 @@ class ProductListViewModel @Inject constructor(
             val modifiedProducts = currentState.products.map {
                 it.copy(enableCheckbox = true, isDeletable = true)
             }
-            _uiState.update { it.copy(products = modifiedProducts, pageMode = PageMode.CREATE) }
+            _uiState.update { it.copy(products = modifiedProducts, currentPageMode = PageMode.CREATE) }
         }
     }
 
     private fun handleAddNewProductToSelection(newProducts: List<Product>) {
         launch(dispatchers.computation) {
-            val newlyAddedProducts = newProducts.map { it.copy(isSelected = false) }
-            val modifiedProducts = currentState.products + newlyAddedProducts
-            _uiState.update { it.copy(products = modifiedProducts) }
+            val toBeRemoveProductIds = currentState.selectedProductsIdsToBeRemoved
+
+            val updatedProducts = newProducts.map { newProduct ->
+                if (newProduct.id !in toBeRemoveProductIds) {
+                    //Newly added product should not be marked for removal
+                    newProduct.copy(isSelected = false)
+                } else {
+                    newProduct
+                }
+            }
+
+            _uiState.update { it.copy(products = updatedProducts) }
         }
     }
 
     private fun List<Product>.selectedProductsOnly(): Set<Long> {
         return filter { it.isSelected }.map { it.id }.toSet()
+    }
+
+
+    private fun handleCtaAddNewProduct() {
+        val originalPageMode = currentState.originalPageMode
+        val isEntryPointFromVoucherSummaryPage = currentState.isEntryPointFromVoucherSummaryPage
+
+        launch(dispatchers.computation) {
+            if (originalPageMode == PageMode.CREATE && isEntryPointFromVoucherSummaryPage) {
+                emitRedirectToAddProductPageEvent()
+                return@launch
+            }
+
+            if (originalPageMode  == PageMode.CREATE) {
+                _uiEffect.tryEmit(ProductListEffect.BackToPreviousPage)
+                return@launch
+            }
+
+            if (originalPageMode == PageMode.EDIT) {
+                emitRedirectToAddProductPageEvent()
+            }
+        }
+
+    }
+
+    private fun emitRedirectToAddProductPageEvent() {
+        val currentlySelectedParentProduct = currentState.products.map { it.id }
+        val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(productIds = currentlySelectedParentProduct)
+        _uiEffect.tryEmit(ProductListEffect.RedirectToAddProductPage(modifiedVoucherConfiguration))
     }
 }

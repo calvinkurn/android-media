@@ -24,7 +24,10 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.slideDown
+import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -54,6 +57,7 @@ import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -147,12 +151,14 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         setupSearchBar()
         setupButton()
         setupToolbar()
+        binding?.cardUnify2?.cardType = CardUnify2.TYPE_CLEAR
     }
 
     private fun setupToolbar() {
         binding?.header?.setNavigationOnClickListener {
             activity?.finish()
         }
+        binding?.header?.headerSubTitle = getString(R.string.smvc_add_product_subtitle)
     }
 
     private fun setupButton() {
@@ -199,6 +205,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             applyPaddingToLastItem()
             attachDividerItemDecoration()
+            attachOnScrollListener(
+                onScrollDown = {
+                    binding?.sortFilter?.slideDown()
+                }, onScrollUp = {
+                    binding?.sortFilter?.slideUp()
+                }
+            )
             adapter = productAdapter
 
             attachPaging(this, pagingConfig) { page, _ ->
@@ -276,7 +289,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun handleUiState(uiState: AddProductUiState) {
         renderLoadingState(uiState.isLoading)
 
-        renderSelectAllCheckbox(uiState)
+        renderSelectAllCheckbox(uiState.checkboxState, uiState.selectedProductCount, uiState.totalProducts)
         renderMaxProductSelection(uiState.maxProductSelection)
 
         //Filter
@@ -342,18 +355,38 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         }
     }
 
-    private fun renderSelectAllCheckbox(uiState: AddProductUiState) {
-        binding?.checkbox?.isChecked = uiState.isSelectAllCheckboxActive
+    private fun renderSelectAllCheckbox(
+        checkboxState: AddProductUiState.CheckboxState,
+        selectedProductCount: Int,
+        totalProductCount: Int
+    ) {
+        when (checkboxState) {
+            AddProductUiState.CheckboxState.CHECKED -> {
+                binding?.checkbox?.isChecked = true
+                binding?.checkbox?.setIndeterminate(false)
+                binding?.checkbox?.skipAnimation()
+            }
+            AddProductUiState.CheckboxState.UNCHECKED -> {
+                binding?.checkbox?.isChecked = false
+                binding?.checkbox?.setIndeterminate(false)
+                binding?.checkbox?.skipAnimation()
+            }
+            AddProductUiState.CheckboxState.INDETERMINATE -> {
+                binding?.checkbox?.setIndeterminate(true)
+                binding?.checkbox?.isChecked = true
+                binding?.checkbox?.skipAnimation()
+            }
+        }
 
-        val checkboxWording = if (uiState.selectedProductCount.isZero()) {
+        val checkboxWording = if (checkboxState == AddProductUiState.CheckboxState.UNCHECKED) {
             getString(R.string.smvc_select_all)
         } else {
             getString(
                 R.string.smvc_placeholder_check_all_selected_product_count,
-                uiState.selectedProductCount,
-                uiState.totalProducts
+                selectedProductCount,
+                totalProductCount
             )
-        } 
+        }
         binding?.tpgSelectAll?.text = checkboxWording
     }
 

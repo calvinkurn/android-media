@@ -30,7 +30,10 @@
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:minLines="1"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toStartOf="@+id/iconDelete"
         app:layout_constraintStart_toEndOf="@+id/imgVariant"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,8 +45,8 @@
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
         android:textColor="@color/Unify_NN600"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toStartOf="@+id/iconDelete"
         app:layout_constraintStart_toEndOf="@+id/imgVariant"
         app:layout_constraintTop_toBottomOf="@+id/tpgVariantName"
@@ -63,7 +66,7 @@
         app:layout_constraintStart_toEndOf="@+id/imgVariant"
         app:layout_constraintTop_toBottomOf="@+id/tpgPrice"
         app:typographyType="paragraph_3"
-        tools:text="Total stok: 5" />
+        tools:text="Stok: 5" />
 
     <View
         android:id="@+id/separator"
@@ -100,7 +103,7 @@
         android:layout_marginEnd="10dp"
         app:icon_enable_state="true"
         app:icon_name="DELETE"
-        app:layout_constraintBottom_toBottomOf="@+id/tpgStock"
+        app:layout_constraintBottom_toBottomOf="@+id/separator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tpgVariantName" />
 

@@ -10,4 +10,6 @@ object BundleConstant {
     const val BUNDLE_KEY_PAGE_MODE = "page_mode"
     const val BUNDLE_KEY_VOUCHER_FILTER = "voucher_filter"
     const val BUNDLE_KEY_VOUCHER_LIST = "voucher_list"
+    const val BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR = "show_cta_change_product_on_toolbar"
+    const val BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE = "is_entry_point_from_voucher_summary_page"
 }

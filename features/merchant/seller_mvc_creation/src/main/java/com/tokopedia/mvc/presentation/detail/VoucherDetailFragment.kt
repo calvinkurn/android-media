@@ -847,12 +847,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
-        val intent = ProductListActivity.buildEditModeIntent(
+        val intent = ProductListActivity.buildIntentForVoucherDetailPage(
             activity ?: return,
+            showCtaChangeProductOnToolbar = voucherDetail.voucherStatus == VoucherStatus.PROCESSING,
             voucherDetail.toVoucherConfiguration(),
             voucherDetail.toSelectedProducts()
         )
 
-        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION)
     }
 }

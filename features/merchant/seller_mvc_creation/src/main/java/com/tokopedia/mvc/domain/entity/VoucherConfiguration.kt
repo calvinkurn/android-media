@@ -9,6 +9,7 @@ import java.util.*
 
 @Parcelize
 data class VoucherConfiguration(
+    val voucherId: Long = 0,
     val benefitIdr: Long = 0,
     val benefitMax: Long = 0,
     val benefitPercent: Int = 0,

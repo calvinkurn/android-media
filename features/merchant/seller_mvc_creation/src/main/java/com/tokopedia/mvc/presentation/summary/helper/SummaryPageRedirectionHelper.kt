@@ -8,6 +8,7 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 
@@ -33,39 +34,25 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
         }
     }
 
-    fun redirectToAddProductPage(
-        fragment: Fragment,
-        configuration: VoucherConfiguration
-    ) {
-        val context = fragment.context ?: return
-        val intent = AddProductActivity.buildEditModeIntent(
-            context,
-            configuration
+    fun redirectToAddProductPage(activity: Activity, configuration: VoucherConfiguration) {
+        val intent = ProductListActivity.buildIntentForVoucherSummaryPage(
+            context = activity,
+            pageMode = PageMode.CREATE,
+            showCtaChangeProductOnToolbar = false,
+            voucherConfiguration = configuration,
+            selectedProducts = emptyList()
         )
-        fragment.startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
+        activity.startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
     }
 
-    fun redirectToViewProductPage(
-        fragment: Fragment,
-        pageMode: PageMode,
-        configuration: VoucherConfiguration,
-        selectedProducts: List<SelectedProduct>
-    ) {
-        val context = fragment.context ?: return
-        if (pageMode == PageMode.EDIT) {
-            ProductListActivity.start(
-                context,
-                configuration,
-                selectedProducts
-            )
-        } else {
-            val intent = ProductListActivity.buildEditModeIntent(
-                context,
-                configuration,
-                selectedProducts
-            )
-            fragment.startActivityForResult(intent, REQUEST_CODE_VIEW_PRODUCT)
-        }
-
+    fun redirectToViewProductPage(activity: Activity, configuration: VoucherConfiguration, selectedProducts: List<SelectedProduct>) {
+        val intent = ProductListActivity.buildIntentForVoucherSummaryPage(
+            context = activity,
+            pageMode = PageMode.EDIT,
+            showCtaChangeProductOnToolbar = true,
+            voucherConfiguration = configuration,
+            selectedProducts = selectedProducts
+        )
+        activity.startActivityForResult(intent, REQUEST_CODE_VIEW_PRODUCT)
     }
 }

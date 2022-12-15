@@ -17,8 +17,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
@@ -44,21 +44,23 @@ import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
-import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
+import com.tokopedia.mvc.presentation.bottomsheet.changequota.ChangeQuotaBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterClickListener
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.model.EduCenterMenuModel
-import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
+import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.PageState
 import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
+import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
 import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -356,6 +358,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
     private fun redirectToCreateVoucherPage() {
         //For sample only. Will redirect to add product page.
         val voucherConfiguration = VoucherConfiguration(
+            voucherId = NumberConstant.VOUCHER_ID_NOT_CREATED,
             benefitIdr = 25_000,
             benefitMax = 500_000,
             benefitPercent = 0,
@@ -374,7 +377,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
             voucherConfiguration
         )
 
-        startActivityForResult(intent, 100)
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_FROM_SCRATCH)
     }
 
     private fun setEduCenterBottomSheet() {
@@ -508,7 +511,40 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         }
     }
 
+    private fun showUpdateQuotaBottomSheet(voucher: Voucher){
+        val bottomSheet = ChangeQuotaBottomSheet.newInstance(
+            getString(R.string.smvc_title_bottom_sheet_change_quota),
+            voucher.id
+        )
+
+        bottomSheet.setOnSuccessUpdateQuotaListener {message ->
+            showSuccessToaster(message)
+            loadInitialDataList()
+        }
+
+        bottomSheet.setOnFailedQuotaListener {message ->
+            view?.showToasterError(message, getString(R.string.smvc_ok))
+        }
+
+        bottomSheet.show(childFragmentManager)
+    }
+
     private fun redirectToQuotaVoucherPage() {
-        //TODO: create redirection here
+        val voucherConfiguration = VoucherConfiguration(
+            voucherId = NumberConstant.VOUCHER_ID_NOT_CREATED,
+            benefitIdr = 25_000,
+            benefitMax = 500_000,
+            benefitPercent = 0,
+            benefitType = BenefitType.NOMINAL,
+            promoType = PromoType.FREE_SHIPPING,
+            isVoucherProduct = true,
+            minPurchase = 50_000,
+            productIds = emptyList(),
+            targetBuyer = VoucherTargetBuyer.ALL_BUYER,
+            0
+        )
+
+
+        SummaryActivity.start(activity?:return, voucherConfiguration)
     }
 }

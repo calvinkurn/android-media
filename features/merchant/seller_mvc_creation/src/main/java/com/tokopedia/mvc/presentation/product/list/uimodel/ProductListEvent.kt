@@ -9,7 +9,9 @@ sealed class ProductListEvent {
     data class FetchProducts(
         val pageMode: PageMode,
         val voucherConfiguration: VoucherConfiguration,
-        val selectedProducts: List<SelectedProduct>
+        val selectedProducts: List<SelectedProduct>,
+        val showCtaUpdateProductOnToolbar: Boolean,
+        val isEntryPointFromVoucherSummaryPage: Boolean
     ) : ProductListEvent()
     object EnableSelectAllCheckbox : ProductListEvent()
     object DisableSelectAllCheckbox : ProductListEvent()
@@ -27,4 +29,5 @@ sealed class ProductListEvent {
         val selectedVariantIds: Set<Long>
     ) : ProductListEvent()
     object TapCtaChangeProduct : ProductListEvent()
+    object TapCtaAddProduct: ProductListEvent()
 }
