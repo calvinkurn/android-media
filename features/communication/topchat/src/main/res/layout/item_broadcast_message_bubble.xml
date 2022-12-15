@@ -140,7 +140,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:paddingEnd="8dp"
             android:text="@string/title_topchat_see_detail"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             android:ellipsize="end"
