@@ -87,7 +87,7 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         adapterPosition: Int,
         customOrderDetail: CustomOrderDetail? = null
     ) {
-        productListItems.getOrNull(dataSetPosition)?.productUiModel?.apply {
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.run {
             var sameCustomProductExist = false
             val sameCustomProduct = this.customOrderDetails.firstOrNull { it.cartId == cartTokoFood.cartId }
             sameCustomProductExist = sameCustomProduct != null
@@ -104,8 +104,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
                 isAtc = cartTokoFood.quantity.isMoreThanZero()
                 customOrderDetail?.let { customOrderDetails.add(it) }
             }
-            notifyItemChanged(adapterPosition)
         }
+        notifyItemChanged(adapterPosition)
     }
 
     fun updateCartProductUiModel(
