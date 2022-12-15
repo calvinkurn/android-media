@@ -13,6 +13,7 @@ data class PlayShortsUploadModel(
     val authorType: String,
     val mediaUri: String,
     val coverUri: String,
+    val shortsVideoSourceId: String
 ) {
 
     val notificationId: Int
@@ -33,6 +34,7 @@ data class PlayShortsUploadModel(
             KEY_ACCOUNT_TYPE to authorType,
             KEY_MEDIA_URI to mediaUri,
             KEY_COVER_URI to coverUri,
+            KEY_SHORTS_VIDEO_SOURCE_ID to shortsVideoSourceId
         )
     }
 
@@ -43,6 +45,7 @@ data class PlayShortsUploadModel(
             KEY_ACCOUNT_TYPE to authorType,
             KEY_MEDIA_URI to mediaUri,
             KEY_COVER_URI to coverUri,
+            KEY_SHORTS_VIDEO_SOURCE_ID to shortsVideoSourceId
         ).toString()
     }
 
@@ -54,6 +57,7 @@ data class PlayShortsUploadModel(
                 authorType = "",
                 mediaUri = "",
                 coverUri = "",
+                shortsVideoSourceId = ""
             )
 
         fun parse(inputData: Data): PlayShortsUploadModel {
@@ -63,21 +67,24 @@ data class PlayShortsUploadModel(
                 authorType = inputData.getString(KEY_ACCOUNT_TYPE).orEmpty(),
                 mediaUri = inputData.getString(KEY_MEDIA_URI).orEmpty(),
                 coverUri = inputData.getString(KEY_COVER_URI).orEmpty(),
+                shortsVideoSourceId = inputData.getString(KEY_SHORTS_VIDEO_SOURCE_ID).orEmpty()
             )
         }
 
         fun parse(rawData: String): PlayShortsUploadModel {
             return try {
-                val map = if(rawData.isEmpty())
+                val map = if (rawData.isEmpty()) {
                     mapOf()
-                else rawData
-                    .replace(OPEN_BRACKET, "")
-                    .replace(CLOSE_BRACKET, "")
-                    .split(ELEMENT_SEPARATOR)
-                    .associate {
-                        val (key, value) = it.split(KEY_VALUE_SEPARATOR)
-                        key to value
-                    }
+                } else {
+                    rawData
+                        .replace(OPEN_BRACKET, "")
+                        .replace(CLOSE_BRACKET, "")
+                        .split(ELEMENT_SEPARATOR)
+                        .associate {
+                            val (key, value) = it.split(KEY_VALUE_SEPARATOR)
+                            key to value
+                        }
+                }
 
                 PlayShortsUploadModel(
                     shortsId = map[KEY_SHORTS_ID].orEmpty(),
@@ -85,9 +92,9 @@ data class PlayShortsUploadModel(
                     authorType = map[KEY_ACCOUNT_TYPE].orEmpty(),
                     mediaUri = map[KEY_MEDIA_URI].orEmpty(),
                     coverUri = map[KEY_COVER_URI].orEmpty(),
+                    shortsVideoSourceId = map[KEY_SHORTS_VIDEO_SOURCE_ID].orEmpty()
                 )
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 Empty
             }
         }
@@ -97,6 +104,7 @@ data class PlayShortsUploadModel(
         private const val KEY_ACCOUNT_TYPE = "KEY_ACCOUNT_TYPE"
         private const val KEY_MEDIA_URI = "KEY_MEDIA_URI"
         private const val KEY_COVER_URI = "KEY_COVER_URI"
+        private const val KEY_SHORTS_VIDEO_SOURCE_ID = "KEY_SHORTS_VIDEO_SOURCE_ID"
 
         private const val OPEN_BRACKET = "{"
         private const val CLOSE_BRACKET = "}"

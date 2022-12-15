@@ -11,6 +11,7 @@ data class PlayShortsConfigUiModel(
     val tncList: List<TermsAndConditionUiModel>,
     val maxTitleCharacter: Int,
     val maxTaggedProduct: Int,
+    val shortsVideoSourceId: String
 ) {
     companion object {
 
@@ -23,6 +24,7 @@ data class PlayShortsConfigUiModel(
                 tncList = emptyList(),
                 maxTitleCharacter = DEFAULT_MAX_TITLE_CHARACTER,
                 maxTaggedProduct = 0,
+                shortsVideoSourceId = ""
             )
     }
 }

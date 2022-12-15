@@ -14,4 +14,7 @@ data class PlayShortsConfig(
 
     @SerializedName("max_tagged_product")
     val maxTaggedProduct: Int = 0,
+
+    @SerializedName("short_video_source_id")
+    val shortVideoSourceId: String = ""
 )
