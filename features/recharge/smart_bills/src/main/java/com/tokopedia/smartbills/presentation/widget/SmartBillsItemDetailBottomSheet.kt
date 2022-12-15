@@ -12,6 +12,7 @@ import com.tokopedia.smartbills.data.SmartBillsItemDetail
 import com.tokopedia.smartbills.databinding.ViewSmartBillsItemDetailBinding
 import com.tokopedia.smartbills.databinding.ViewSmartBillsItemDetailItemBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * @author by resakemal on 17/05/20
@@ -22,7 +23,7 @@ class SmartBillsItemDetailBottomSheet : BottomSheetUnify() {
     private var categoryName = ""
     private var details: List<SmartBillsItemDetail> = listOf()
 
-    private lateinit var binding: ViewSmartBillsItemDetailBinding
+    private var binding by autoClearedNullable<ViewSmartBillsItemDetailBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,7 @@ class SmartBillsItemDetailBottomSheet : BottomSheetUnify() {
     private fun initBottomSheet() {
         setCloseClickListener { dismiss() }
         binding = ViewSmartBillsItemDetailBinding.inflate(LayoutInflater.from(context))
-        setChild(binding.root)
+        setChild(binding?.root)
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -45,7 +46,7 @@ class SmartBillsItemDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView(view: View) {
-        with(binding) {
+        binding?.run {
             tvSmartBillsItemDetailTitle.text = if (categoryName.isNotEmpty()) {
                 String.format(getString(R.string.smart_bills_item_detail_title), categoryName)
             } else {

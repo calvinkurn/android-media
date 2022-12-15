@@ -1,5 +1,6 @@
 package com.tokopedia.rechargegeneral.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
@@ -31,6 +32,7 @@ class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(
     private var binding: ViewRechargeGeneralWidgetProductSelectDropdownBottomSheetBinding
 
     var dropdownData: List<RechargeGeneralProductSelectData> = listOf()
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             with(binding.rvProductSelectDropdown.adapter as DigitalProductSelectDropdownAdapter) {
