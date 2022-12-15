@@ -18,7 +18,6 @@ import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleMan
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.junit.Before
 import org.junit.Rule
@@ -99,62 +98,73 @@ class PlayShortsSetupProductSGCAnalyticTest {
         launcher.launchActivity()
 
         clickMenuProduct()
-        delay()
+        delay(1000)
     }
 
     @Test
     fun testAnalytic_clickSearchBarOnProductSetup() {
+        delay(1000)
         clickSearchBarProductPickerSGC()
+        delay(1000)
 
         cassavaValidator.verify("click - search product")
     }
 
     @Test
     fun testAnalytic_clickProductSorting() {
-        /** DONE */
+
+        delay(1000)
         clickSortChip()
+        delay(1000)
 
         cassavaValidator.verify("click - product sort")
     }
 
     @Test
     fun testAnalytic_clickCampaignAndEtalaseFilter() {
+        delay(1000)
         clickEtalaseAndCampaignChip()
+        delay(1000)
 
         cassavaValidator.verify("click - filter product etalase")
     }
 
     @Test
     fun testAnalytic_clickCloseOnProductChooser() {
+        delay(1000)
         clickCloseBottomSheet()
+        delay(1000)
 
         cassavaValidator.verify("click - close button on product bottom sheet")
     }
 
     @Test
     fun testAnalytic_clickSelectProductOnProductSetup() {
-        /** DONE */
-        delay()
+        delay(1000)
         selectProduct()
-        delay()
+        delay(1000)
 
         cassavaValidator.verify("click - product card")
     }
 
     @Test
     fun testAnalytic_clickCloseOnProductSortingBottomSheet() {
+        delay(1000)
         clickSortChip()
+        delay(1000)
         clickCloseBottomSheet()
+        delay(1000)
 
         cassavaValidator.verify("click - close sort product")
     }
 
     @Test
     fun testAnalytic_clickProductSortingType() {
+        delay(1000)
         clickSortChip()
-        delay()
+        delay(1000)
         selectSortType()
-        delay()
+        delay(1000)
         clickSaveSort()
 
         cassavaValidator.verify("click - sort type")
@@ -162,17 +172,18 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_viewProductSortingBottomSheet() {
+        delay(1000)
         clickSortChip()
-        delay()
+        delay(1000)
 
         cassavaValidator.verify("view - sorting bottom sheet")
     }
 
     @Test
     fun testAnalytic_clickCloseOnProductFilterBottomSheet() {
-        /** DONE */
+        delay(1000)
         clickEtalaseAndCampaignChip()
-        delay()
+        delay(1000)
         clickCloseBottomSheet()
 
         cassavaValidator.verify("click - close filter bottom sheet")
@@ -180,12 +191,13 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickCampaignCard() {
-        /** DONE */
+        
         /** 0 for header, 1..x for the campaign */
         val firstCampaignIdx = 1
 
+        delay(1000)
         clickEtalaseAndCampaignChip()
-        delay()
+        delay(1000)
         selectEtalaseOrCampaign(firstCampaignIdx)
 
         cassavaValidator.verify("click - campaign card")
@@ -193,11 +205,12 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickEtalaseCard() {
-        /** DONE */
+        
         /** 2 for campaign header + etalase header */
         val totalHeader = 2
         val firstEtalaseIdx = mockCampaignList.size + totalHeader
 
+        delay(1000)
         clickEtalaseAndCampaignChip()
         delay(1000)
         selectEtalaseOrCampaign(firstEtalaseIdx)
@@ -208,15 +221,16 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_viewProductFilterBottomSheet() {
+        delay(1000)
         clickEtalaseAndCampaignChip()
-        delay()
+        delay(1000)
 
         cassavaValidator.verify("view - filter bottom sheet")
     }
 
     @Test
     fun testAnalytic_viewProductChooser() {
-        /** DONE */
+        
         delay(1000)
 
         cassavaValidator.verify("view - product selection bottom sheet")
@@ -224,9 +238,10 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickSaveButtonOnProductSetup() {
-        /** DONE */
+
+        delay(1000)
         selectProduct()
-        delay()
+        delay(1000)
         clickSubmitProductTag()
 
         cassavaValidator.verify("click - save product card")
@@ -234,11 +249,12 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickAddMoreProductOnProductSetup() {
-        /** DONE */
+
+        delay(1000)
         selectProduct()
-        delay()
+        delay(1000)
         clickSubmitProductTag()
-        delay()
+        delay(1000)
         clickAddMoreProduct()
 
         cassavaValidator.verify("click - add product card")
@@ -246,11 +262,12 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickCloseOnProductSummary() {
-        /** DONE */
+
+        delay(1000)
         selectProduct()
-        delay()
+        delay(1000)
         clickSubmitProductTag()
-        delay()
+        delay(1000)
         clickCloseBottomSheet()
 
         cassavaValidator.verify("click - back product selection page")
@@ -258,23 +275,25 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickDeleteProductOnProductSetup() {
-        /** DONE */
+
+        delay(1000)
         selectProduct()
-        delay()
+        delay(1000)
         clickSubmitProductTag()
-        delay()
+        delay(1000)
         clickDeleteOnFirstProduct()
-        delay()
+        delay(1000)
 
         cassavaValidator.verify("click - delete a product tagged")
     }
 
     @Test
     fun testAnalytic_clickDoneOnProductSetup() {
+        delay(1000)
         selectProduct()
-        delay()
+        delay(1000)
         clickSubmitProductTag()
-        delay()
+        delay(1000)
         clickNextOnProductPickerSummary()
 
         cassavaValidator.verify("click - save product tag")
@@ -282,10 +301,11 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_viewProductSummary() {
+        delay(1000)
         selectProduct()
-        delay()
+        delay(1000)
         clickSubmitProductTag()
-        delay()
+        delay(1000)
 
         cassavaValidator.verify("view - product selection summary")
     }
