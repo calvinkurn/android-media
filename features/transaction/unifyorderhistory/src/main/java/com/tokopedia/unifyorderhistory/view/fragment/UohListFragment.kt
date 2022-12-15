@@ -885,11 +885,22 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     )
                 }
                 is Fail -> {
-                    context?.getString(R.string.fail_cancellation)
-                        ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    showToaster(getErrorMessage(it.throwable), Toaster.TYPE_ERROR)
                     UohAnalytics.sendViewErrorToasterBeliLagiEvent()
                 }
             }
+        }
+    }
+
+    private fun getErrorMessage(throwable: Throwable): String {
+        return if (throwable is MessageErrorException) {
+            throwable.message
+                ?: getString(R.string.fail_cancellation)
+        } else {
+            context?.let {
+                ErrorHandler.getErrorMessage(it, throwable)
+            }
+                ?: getString(R.string.fail_cancellation)
         }
     }
 
