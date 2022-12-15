@@ -18,7 +18,7 @@ class CatalogTopFiveAdapter(private val catalogDataList: ArrayList<CatalogListRe
     }
 
     override fun onBindViewHolder(holder: CatalogTopFiveItemViewHolder, position: Int) {
-        holder.bind(catalogDataList[position], catalogLibraryListener)
+        holder.bind(position + 1 , catalogDataList[position], catalogLibraryListener)
     }
 
     override fun getItemCount() = catalogDataList.size

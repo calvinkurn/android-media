@@ -33,4 +33,16 @@
 
     </LinearLayout>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/catalog_top_five_rank"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:gravity="center"
+        tools:text="#1"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_Static_White"
+        android:background="@drawable/catalog_rank_tag_bg"
+        />
+
 </com.tokopedia.unifycomponents.CardUnify2>

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
@@ -198,5 +199,10 @@ class CatalogLandingPageFragment: Fragment(),
             updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_MOST_VIRAL, CatalogLibraryConstant.CATALOG_MOST_VIRAL, CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL))
             updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_LIST, CatalogLibraryConstant.CATALOG_LIST, CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS))
         }
+    }
+
+    override fun onProductCardClicked(applink: String?) {
+        super.onProductCardClicked(applink)
+        RouteManager.route(context, applink)
     }
 }
