@@ -86,3 +86,12 @@ fun submitTitle() {
 fun clickBackTitleForm() {
     click(R.id.ic_close_title_form)
 }
+
+/** Cover Form */
+fun clickBackCoverForm() {
+    click(R.id.ic_close_cover_form)
+}
+
+fun clickSelectCover() {
+    click(R.id.cl_cover_form_preview)
+}
