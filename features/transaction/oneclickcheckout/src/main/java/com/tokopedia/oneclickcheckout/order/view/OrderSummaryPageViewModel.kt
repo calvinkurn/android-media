@@ -598,7 +598,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun setInsuranceCheck(checked: Boolean) {
         if (orderShipment.value.getRealShipperProductId() > 0 && orderShipment.value.insurance.isCheckInsurance != checked) {
             orderShipment.value.insurance.isCheckInsurance = checked
-            orderShipment.value.insurance.isFirstLoad = false
             calculateTotal()
         }
     }
