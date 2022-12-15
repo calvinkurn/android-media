@@ -139,15 +139,19 @@ class BannerComponentViewHolder(
     }
 
     fun scrollTo(position: Int) {
+        val resources = itemView.context.resources
+        val width = resources.displayMetrics.widthPixels
+        val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
         if (isUsingDotsAndInfiniteScroll) {
-            val resources = itemView.context.resources
-            val width = resources.displayMetrics.widthPixels
-            val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
             pauseAutoScroll()
             rvBanner.smoothScrollBy(width - paddings, 0, autoScrollInterpolator, FLING_DURATION)
         } else {
             pauseAutoScroll()
-            rvBanner.smoothScrollToPosition(position)
+            if(position == 0) {
+                rvBanner.smoothScrollToPosition(position)
+            } else {
+                rvBanner.smoothScrollBy(width - paddings, 0, null, FLING_DURATION_OLD)
+            }
         }
     }
 
@@ -353,6 +357,7 @@ class BannerComponentViewHolder(
         private val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
         private val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
         private const val FLING_DURATION = 600
+        private const val FLING_DURATION_OLD = 300
     }
 
     class CubicBezierSnapHelper(private val context: Context) : PagerSnapHelper() {
