@@ -378,14 +378,18 @@ class BroadcastViewHolder constructor(
     private fun bindCta(element: BroadCastUiModel) {
         val banner = element.banner ?: return
         ctaText?.let {
-            var text: String? = banner.broadcastCtaText
+            var text: String? = getString(R.string.title_topchat_see_detail)
             if (doesHaveBroadcastCtaText(banner)) {
-                text = getString(R.string.title_topchat_see_detail)
+                text = banner.broadcastCtaText
 
                 // Change text into disabled when label show & the user is seller
                 if (shouldShowBroadcastCtaLabel(banner)) {
-                    it.setTextColor(MethodChecker.getColor(
-                        itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+                    it.setTextColor(
+                        MethodChecker.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                        )
+                    )
                 }
             }
             it.text = text
