@@ -446,6 +446,10 @@ class ProductListFragment : BaseDaggerFragment() {
         pageMode: PageMode
     ) {
         SummaryActivity.start(context, voucherConfiguration, selectedProducts)
+        val returnIntent = Intent()
+        returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
+        activity?.setResult(Activity.RESULT_OK, returnIntent)
+        activity?.finish()
     }
 
     private fun backToPreviousPage() {

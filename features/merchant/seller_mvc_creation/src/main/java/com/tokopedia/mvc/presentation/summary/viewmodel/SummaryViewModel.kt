@@ -29,17 +29,15 @@ class SummaryViewModel @Inject constructor(
     val configuration: LiveData<VoucherConfiguration> get() = _configuration
     val maxExpense = Transformations.map(configuration) { getMaxExpenses(it) }
 
-    private val _products = MutableLiveData<SelectedProduct>()
-    val products: LiveData<SelectedProduct> get() = _products
+    private val _products = MutableLiveData<List<SelectedProduct>>()
+    val products: LiveData<List<SelectedProduct>> get() = _products
 
     fun setConfiguration(configuration: VoucherConfiguration) {
         _configuration.value = configuration
     }
 
-    fun updateProductList(products: List<Product>) {
-        _configuration.value = configuration.value?.copy(
-            productIds = products.map { it.id }
-        )
+    fun updateProductList(products: List<SelectedProduct>) {
+        _products.value = products
     }
 
     fun setupEditMode(voucherId: Long) {
@@ -51,6 +49,7 @@ class SummaryViewModel @Inject constructor(
                 )
                 val result = merchantPromotionGetMVDataByIDUseCase.execute(param)
                 _configuration.postValue(result.toVoucherConfiguration())
+                _products.postValue(result.toSelectedProducts())
             },
             onError = {
                 _error.postValue(it)

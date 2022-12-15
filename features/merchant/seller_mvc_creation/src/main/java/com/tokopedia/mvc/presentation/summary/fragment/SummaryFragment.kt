@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
@@ -30,7 +31,6 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
-import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -46,7 +46,6 @@ import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_TIME_FORMAT
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class SummaryFragment :
     BaseDaggerFragment(),
@@ -117,11 +116,11 @@ class SummaryFragment :
     }
 
     override fun onAddProductResult() {
-        println("sdasd")
+        activity?.finish()
     }
 
     override fun onViewProductResult() {
-        println("ok view")
+        activity?.finish()
     }
 
     private fun setupPageMode() {
@@ -129,6 +128,7 @@ class SummaryFragment :
             viewModel.setupEditMode(voucherId ?: return)
         } else {
             viewModel.setConfiguration(configuration ?: return)
+            viewModel.updateProductList(selectedProducts)
         }
     }
 
@@ -153,6 +153,15 @@ class SummaryFragment :
         }
         viewModel.couponImage.observe(viewLifecycleOwner) {
             binding?.layoutPreview?.ivPreview?.loadImage(it)
+        }
+        viewModel.error.observe(viewLifecycleOwner) {
+            view?.showToasterError(it)
+        }
+        viewModel.products.observe(viewLifecycleOwner) {
+            binding?.layoutProducts?.tpgProductList?.text = getString(
+                R.string.smvc_summary_page_product_format,
+                it.size
+            )
         }
     }
 
@@ -333,11 +342,11 @@ class SummaryFragment :
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToAddProductPage(this, configuration, selectedProducts)
+        redirectionHelper.redirectToAddProductPage(this, configuration, viewModel.products.value.orEmpty())
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToViewProductPage(this, configuration, selectedProducts)
+        redirectionHelper.redirectToViewProductPage(this, configuration, viewModel.products.value.orEmpty())
     }
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {
