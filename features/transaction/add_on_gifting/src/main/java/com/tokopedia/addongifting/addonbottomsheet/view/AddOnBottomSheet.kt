@@ -89,11 +89,13 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val viewBinding = initializeView(addOnProductData)
-        this.viewBinding = viewBinding
+        if (::addOnProductData.isInitialized && ::source.isInitialized) {
+            val viewBinding = initializeView(addOnProductData)
+            this.viewBinding = viewBinding
 
-        initializeObserver(viewBinding)
-        initializeData(addOnProductData)
+            initializeObserver(viewBinding)
+            initializeData(addOnProductData)
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
