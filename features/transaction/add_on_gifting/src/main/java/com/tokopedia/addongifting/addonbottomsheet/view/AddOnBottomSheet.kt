@@ -48,7 +48,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val source: String) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
+class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
     companion object {
         const val DELAY_ADJUST_RECYCLER_VIEW_MARGIN = 200L
@@ -67,6 +67,9 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
     private var measureRecyclerViewPaddingDebounceJob: Job? = null
     private var delayScrollJob: Job? = null
     private var isChecked = false
+
+    internal lateinit var addOnProductData: AddOnProductData
+    internal lateinit var source: String
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AddOnViewModel::class.java)
