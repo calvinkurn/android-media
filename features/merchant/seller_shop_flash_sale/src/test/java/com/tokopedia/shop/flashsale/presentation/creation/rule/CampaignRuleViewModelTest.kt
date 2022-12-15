@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.creation.rule
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
@@ -24,13 +25,14 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.Calendar.DATE
 import java.util.concurrent.TimeUnit
 
@@ -1255,9 +1257,68 @@ class CampaignRuleViewModelTest {
             }
         }
     }
-    
+
     @Test
-    fun `check validateCampaignRuleInput output is false`(){
+    fun `check getCampaignRelationIds when return is list is emtpy`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod("getCampaignRelationIds", Long::class.java)
+        method.isAccessible = true
+        viewModel.onNotRequireUniqueAccountSelected()
+        val result = method.invoke(viewModel, 1) as List<Long>
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun `check getCampaignRelationIds when return is list is one and the value is id 1`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod("getCampaignRelationIds", Long::class.java)
+        method.isAccessible = true
+        viewModel.onRequireUniqueAccountSelected()
+        viewModel.onAllowCampaignRelation()
+        val result = method.invoke(viewModel, 1) as List<Long>
+        assertFalse(result.isEmpty())
+        assertEquals(1, result.get(0))
+    }
+
+    @Test
+    fun `check getCampaignRelationIds when return is list is two and the value is id 1001, 1002`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod("getCampaignRelationIds", Long::class.java)
+        method.isAccessible = true
+        viewModel.onRequireUniqueAccountSelected()
+        viewModel.onDisallowCampaignRelation()
+        viewModel.onRelatedCampaignsChanged(CampaignDataGenerator.generateRelatedCampaigns())
+        val result = method.invoke(viewModel, 1002) as List<Long>
+        assertFalse(result.isEmpty())
+        assertEquals(1002, result.get(1))
+    }
+
+    @Test
+    fun `check getCampaignRelationIds when relatedCampaigns is null`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod("getCampaignRelationIds", Long::class.java)
+        method.isAccessible = true
+        viewModel.onRequireUniqueAccountSelected()
+        viewModel.onDisallowCampaignRelation()
+        val result = method.invoke(viewModel, 1002) as List<Long>
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun `check getCampaignRelationIds when relatedCampaigns is empty list`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod("getCampaignRelationIds", Long::class.java)
+        method.isAccessible = true
+        viewModel.onRequireUniqueAccountSelected()
+        viewModel.onDisallowCampaignRelation()
+        viewModel.onRelatedCampaignsChanged(arrayListOf())
+        val result = method.invoke(viewModel, 1002) as List<Long>
+        assertFalse(result.isEmpty())
+        assertEquals(1002, result.get(0))
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput output is false`() {
         runBlocking {
             viewModel.onRegularPaymentMethodSelected()
             viewModel.onNotRequireUniqueAccountSelected()
@@ -1272,26 +1333,366 @@ class CampaignRuleViewModelTest {
     }
 
     @Test
-    fun `check validateCampaignRuleInput output is false a`(){
+    fun `check validateCampaignRuleInput output is false a`() {
         runBlocking {
             val method =
                 viewModel.javaClass.getDeclaredMethod("initInputValidationCollector")
             method.isAccessible = true
-            launch {
-                method.invoke(viewModel)
-            }
-            viewModel.onRegularPaymentMethodSelected()
-            viewModel.onNotRequireUniqueAccountSelected()
-            viewModel.onAllowCampaignRelation()
-            viewModel.onRelatedCampaignsChanged(CampaignDataGenerator.generateRelatedCampaigns())
-
+            method.invoke(viewModel)
             assertFalse(viewModel.isAllInputValid.getOrAwaitValue())
         }
+    }
+
+    @Test
+    fun `check isRelatedCampaignValid output is false when relatedCampaignsValue is empty`() {
+        runBlocking {
+
+            val selectedPaymentType =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
+            selectedPaymentType?.value = null
+            val isUniqueBuyer =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
+            isUniqueBuyer?.value = false
+            val isCampaignRelation=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
+            isCampaignRelation?.value = false
+            val relatedCampaigns =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
+                    "_relatedCampaigns"
+                )
+            relatedCampaigns?.value = arrayListOf()
+
+            val method =
+                viewModel.javaClass.getDeclaredMethod("initInputValidationCollector")
+            method.isAccessible = true
+            method.invoke(viewModel)
+            assertFalse(viewModel.isAllInputValid.getOrAwaitValue())
+        }
+    }
+
+    @Test
+    fun `check isRelatedCampaignValid output is false when relatedCampaignsValue is null`() {
+        runBlocking {
+
+            val selectedPaymentType=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
+            selectedPaymentType?.value = null
+            val isUniqueBuyer=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
+            isUniqueBuyer?.value = false
+            val isCampaignRelation=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
+            isCampaignRelation?.value = false
+            val relatedCampaigns =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
+                    "_relatedCampaigns"
+                )
+            relatedCampaigns?.value = null
+
+            val method =
+                viewModel.javaClass.getDeclaredMethod("initInputValidationCollector")
+            method.isAccessible = true
+            method.invoke(viewModel)
+            assertFalse(viewModel.isAllInputValid.getOrAwaitValue())
+        }
+    }
+
+
+    @Test
+    fun `check isRelatedCampaignValid output is false when relatedCampaignsValue is has one value`() {
+        runBlocking {
+
+            val selectedPaymentType=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
+            selectedPaymentType?.value = null
+            val isUniqueBuyer =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
+            isUniqueBuyer?.value = false
+            val isCampaignRelation=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
+            isCampaignRelation?.value = false
+            val relatedCampaigns =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
+                    "_relatedCampaigns"
+                )
+            relatedCampaigns?.value = CampaignDataGenerator.generateRelatedCampaigns()
+
+            val method =
+                viewModel.javaClass.getDeclaredMethod("initInputValidationCollector")
+            method.isAccessible = true
+            method.invoke(viewModel)
+            assertFalse(viewModel.isAllInputValid.getOrAwaitValue())
+        }
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput output is BothSectionsInvalid`() {
+        runBlocking {
+            val selectedPaymentType=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
+            selectedPaymentType?.value = null
+            val isUniqueBuyer=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
+            isUniqueBuyer?.value = false
+            val isCampaignRelation=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
+            isCampaignRelation?.value = false
+            val relatedCampaigns =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
+                    "_relatedCampaigns"
+                )
+            relatedCampaigns?.value = arrayListOf()
+
+            val method =
+                viewModel.javaClass.getDeclaredMethod(
+                    "validateCampaignRuleInput",
+                    CampaignUiModel::class.java
+                )
+            method.isAccessible = true
+            val result = method.invoke(
+                viewModel,
+                CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false)
+            ) as CampaignRuleValidationResult
+            assertTrue(result is CampaignRuleValidationResult.BothSectionsInvalid)
+        }
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput output is InvalidPaymentMethod`() {
+        runBlocking {
+            val selectedPaymentType=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
+            selectedPaymentType?.value = null
+            val isUniqueBuyer=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
+            isUniqueBuyer?.value = true
+            val isCampaignRelation=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
+            isCampaignRelation?.value = false
+            val relatedCampaigns =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
+                    "_relatedCampaigns"
+                )
+            relatedCampaigns?.value = arrayListOf()
+
+            val method =
+                viewModel.javaClass.getDeclaredMethod(
+                    "validateCampaignRuleInput",
+                    CampaignUiModel::class.java
+                )
+            method.isAccessible = true
+            val result = method.invoke(
+                viewModel,
+                CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false)
+            ) as CampaignRuleValidationResult
+            assertTrue(result is CampaignRuleValidationResult.InvalidPaymentMethod)
+        }
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput output is TNCNotAccepted`() {
+        runBlocking {
+            val selectedPaymentType=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
+            selectedPaymentType?.value = PaymentType.INSTANT
+            val isUniqueBuyer=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
+            isUniqueBuyer?.value = true
+            val isCampaignRelation=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
+            isCampaignRelation?.value = false
+            val relatedCampaigns=
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
+                    "_relatedCampaigns"
+                )
+            relatedCampaigns?.value = CampaignDataGenerator.generateRelatedCampaigns()
+            val isTNCConfirmed =
+                viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean>>("_isTNCConfirmed")
+            isTNCConfirmed?.value = false
+
+            val method =
+                viewModel.javaClass.getDeclaredMethod(
+                    "validateCampaignRuleInput",
+                    CampaignUiModel::class.java
+                )
+            method.isAccessible = true
+            val result = method.invoke(
+                viewModel,
+                CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false)
+            ) as CampaignRuleValidationResult
+            assertTrue(result is CampaignRuleValidationResult.TNCNotAccepted)
+        }
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput output is InvalidCampaignTime`() {
+        val selectedPaymentType=
+            viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
+        selectedPaymentType?.value = PaymentType.INSTANT
+        val isUniqueBuyer=
+            viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
+        isUniqueBuyer?.value = true
+        val isCampaignRelation=
+            viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
+        isCampaignRelation?.value = false
+        val relatedCampaigns=
+            viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
+                "_relatedCampaigns"
+            )
+        relatedCampaigns?.value = CampaignDataGenerator.generateRelatedCampaigns()
+        val isTNCConfirmed =
+            viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean>>("_isTNCConfirmed")
+        isTNCConfirmed?.value = true
+
+        val input = CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = true)
+            .copy(upcomingDate = createBeforeToDay())
+
+        val method =
+            viewModel.javaClass.getDeclaredMethod(
+                "validateCampaignRuleInput",
+                CampaignUiModel::class.java
+            )
+        method.isAccessible = true
+        val result = method.invoke(
+            viewModel,
+            input
+        ) as CampaignRuleValidationResult
+        assertTrue(result is CampaignRuleValidationResult.InvalidCampaignTime)
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput return false`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod(
+                "validateCampaignRuleInput",
+                PaymentType::class.java,
+                java.lang.Boolean::class.java,
+                java.lang.Boolean::class.java,
+                java.util.List::class.java
+            )
+        method.isAccessible = true
+        val result = method.invoke(
+            viewModel, null, null, null, null
+        ) as Boolean
+        assertFalse(result)
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput return true`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod(
+                "validateCampaignRuleInput",
+                PaymentType::class.java,
+                java.lang.Boolean::class.java,
+                java.lang.Boolean::class.java,
+                java.util.List::class.java
+            )
+        method.isAccessible = true
+        val result = method.invoke(
+            viewModel, PaymentType.INSTANT, true, true, CampaignDataGenerator.generateRelatedCampaigns()
+        ) as Boolean
+        assertTrue(result)
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput return false because list is empty`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod(
+                "validateCampaignRuleInput",
+                PaymentType::class.java,
+                java.lang.Boolean::class.java,
+                java.lang.Boolean::class.java,
+                java.util.List::class.java
+            )
+        method.isAccessible = true
+        val result = method.invoke(
+            viewModel, PaymentType.INSTANT, false, false, arrayListOf<RelatedCampaign>()
+        ) as Boolean
+        assertFalse(result)
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput return false because list is null`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod(
+                "validateCampaignRuleInput",
+                PaymentType::class.java,
+                java.lang.Boolean::class.java,
+                java.lang.Boolean::class.java,
+                java.util.List::class.java
+            )
+        method.isAccessible = true
+        val result = method.invoke(
+            viewModel, PaymentType.INSTANT, false, false, null
+        ) as Boolean
+        assertFalse(result)
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput when isUniqueBuyer is null and isCampaignRelation, relatedCampaigns is null`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod(
+                "validateCampaignRuleInput",
+                PaymentType::class.java,
+                java.lang.Boolean::class.java,
+                java.lang.Boolean::class.java,
+                java.util.List::class.java
+            )
+        method.isAccessible = true
+        val result = method.invoke(
+            viewModel, PaymentType.INSTANT, null, null, null
+        ) as Boolean
+        assertFalse(result)
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput when isUniqueBuyer is null and isCampaignRelation but relatedCampaigns is empty`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod(
+                "validateCampaignRuleInput",
+                PaymentType::class.java,
+                java.lang.Boolean::class.java,
+                java.lang.Boolean::class.java,
+                java.util.List::class.java
+            )
+        method.isAccessible = true
+        val result = method.invoke(
+            viewModel, PaymentType.INSTANT, null, null, emptyList<RelatedCampaign>()
+        ) as Boolean
+        assertFalse(result)
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput when isUniqueBuyer is null and isCampaignRelation but relatedCampaigns is one`() {
+        val method =
+            viewModel.javaClass.getDeclaredMethod(
+                "validateCampaignRuleInput",
+                PaymentType::class.java,
+                java.lang.Boolean::class.java,
+                java.lang.Boolean::class.java,
+                java.util.List::class.java
+            )
+        method.isAccessible = true
+        val result = method.invoke(
+            viewModel, PaymentType.INSTANT, null, null, CampaignDataGenerator.generateRelatedCampaigns()
+        ) as Boolean
+        assertFalse(result)
     }
 
     private inline fun <reified T> T.setPrivateProperty(name: String, value: Any?) {
         T::class.java.getDeclaredField(name)
             .apply { isAccessible = true }
             .set(this, value)
+    }
+
+    inline fun <reified T : Any, R> T.getPrivateProperty(name: String): R? =
+        T::class.java.getDeclaredField(name)
+            .apply { isAccessible = true }
+            .get(this) as R
+
+    private fun createBeforeToDay(): Date {
+        val formatter = SimpleDateFormat("yyyy-MM-dd")
+        val text = "2022-01-06"
+        return formatter.parse(text)
     }
 }
