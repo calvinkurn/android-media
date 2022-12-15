@@ -14,7 +14,10 @@ class CatalogMostViralAdapter(private val catalogDataList: ArrayList<CatalogList
         parent: ViewGroup,
         viewType: Int
     ): CatalogMostViralItemViewHolder {
-        return CatalogMostViralItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_catalog_most_viral, parent, false))
+        return CatalogMostViralItemViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_catalog_most_viral, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: CatalogMostViralItemViewHolder, position: Int) {

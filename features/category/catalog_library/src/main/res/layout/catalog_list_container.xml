@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Katalog lainnya buat inspirasimu"
+        android:layout_marginTop="24dp"
+        android:text="@string/katalog_lainnya_buat_inspirasimu"
         app:typographyType="display_1"
         app:typographyWeight="bold" />
 
