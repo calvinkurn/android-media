@@ -1440,12 +1440,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setProgressBarVisibility(true)
     }
 
-    private fun setupSectionWidgetView() {
-        recyclerView?.post {
-
-        }
-    }
-
     private fun stopLayoutCustomMetric(widgets: List<BaseWidgetUiModel<*>>) {
         val isFromCache = widgets.firstOrNull()?.isFromCache == true
         stopCustomMetric(
