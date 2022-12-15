@@ -68,8 +68,8 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     private var delayScrollJob: Job? = null
     private var isChecked = false
 
-    internal lateinit var addOnProductData: AddOnProductData
-    internal lateinit var source: String
+    internal var addOnProductData: AddOnProductData = AddOnProductData()
+    internal var source: String = ""
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AddOnViewModel::class.java)
@@ -89,13 +89,11 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (::addOnProductData.isInitialized && ::source.isInitialized) {
-            val viewBinding = initializeView(addOnProductData)
-            this.viewBinding = viewBinding
+        val viewBinding = initializeView(addOnProductData)
+        this.viewBinding = viewBinding
 
-            initializeObserver(viewBinding)
-            initializeData(addOnProductData)
-        }
+        initializeObserver(viewBinding)
+        initializeData(addOnProductData)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }

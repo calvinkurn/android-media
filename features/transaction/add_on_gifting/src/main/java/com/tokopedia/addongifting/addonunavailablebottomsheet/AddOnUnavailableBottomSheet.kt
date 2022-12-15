@@ -19,14 +19,12 @@ class AddOnUnavailableBottomSheet : BottomSheetUnify() {
     private var adapter: AddOnUnavailableAdapter? = null
     private var viewBinding: LayoutAddOnUnavailableBottomSheetBinding? = null
 
-    internal lateinit var addOnProductData: AddOnProductData
+    internal var addOnProductData: AddOnProductData = AddOnProductData()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (::addOnProductData.isInitialized) {
-            val viewBinding = initializeView()
-            this.viewBinding = viewBinding
-            renderData()
-        }
+        val viewBinding = initializeView()
+        this.viewBinding = viewBinding
+        renderData()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
