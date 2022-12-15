@@ -135,6 +135,43 @@ fun clickCloseProductSummaryBottomSheet() {
     click(unifyR.id.bottom_sheet_close)
 }
 
+fun clickSearchBarProductPickerSGC() {
+    click(R.id.search_bar)
+}
+
+fun clickSortChip() {
+    click(R.id.chips_sort)
+}
+
+fun clickEtalaseAndCampaignChip() {
+    click(R.id.chips_etalase)
+}
+
+fun selectSortType() {
+    clickItemRecyclerView(R.id.rv_sort, 1)
+}
+
+fun clickSaveSort() {
+    click(unifyR.id.bottom_sheet_action)
+}
+
+fun selectEtalaseOrCampaign(idx: Int) {
+    clickItemRecyclerView(R.id.rv_etalase, idx)
+}
+
+fun clickAddMoreProduct() {
+    click(unifyR.id.bottom_sheet_action)
+}
+
+fun clickDeleteOnFirstProduct() {
+    clickItemRecyclerView(R.id.rv_product_summaries, 1, R.id.ic_product_summary_delete)
+}
+
+fun clickNextOnProductPickerSummary() {
+    click(R.id.btn_done)
+}
+
+
 /** Product Picker UGC */
 fun clickBreadcrumb() {
     click(contentCommonR.id.tv_cc_product_tag_product_source)

@@ -123,6 +123,7 @@ class ProductSummaryBottomSheet @Inject constructor(
             handleAddMoreProduct()
         }
         setCloseClickListener {
+            analytic.clickCloseOnProductSummary()
             mListener?.onFinish(this)
         }
 
