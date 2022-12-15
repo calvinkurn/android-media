@@ -26,7 +26,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/information_ticker"
         tools:layout_height="20dp"
-        app:unify_text_field_append_drawable_icon_2="@drawable/ic_calendar"/>
+        app:unify_text_field_append_drawable_icon_2="@drawable/ic_voucher_calendar"/>
 
     <com.tokopedia.unifycomponents.TextAreaUnify2
         android:id="@+id/edtMvcEndDate"
@@ -38,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtMvcStartDate"
         tools:layout_height="20dp"
-        app:unify_text_field_append_drawable_icon_1="@drawable/ic_calendar"/>
+        app:unify_text_field_append_drawable_icon_1="@drawable/ic_voucher_calendar"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnMvcSavePeriod"
