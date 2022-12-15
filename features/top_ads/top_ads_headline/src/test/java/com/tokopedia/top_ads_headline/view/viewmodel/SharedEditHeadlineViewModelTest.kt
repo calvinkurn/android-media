@@ -35,14 +35,14 @@ class SharedEditHeadlineViewModelTest {
     fun `getHeadlineAdId exception test`() {
         val exc = spyk(Throwable())
         coEvery { topAdsGetGroupProductUseCase.execute(any()) } throws exc
-        viewModel.getHeadlineAdId(1, "2") {}
+        viewModel.getHeadlineAdId("1", "2") {}
 
         verify { exc.printStackTrace() }
     }
 
     @Test
     fun `getHeadlineAd should execute topAdsGetGroupProductUseCase`() {
-        viewModel.getHeadlineAdId(1, "2", {})
+        viewModel.getHeadlineAdId("1", "2", {})
         coVerify { topAdsGetGroupProductUseCase.execute(any()) }
     }
 
@@ -50,7 +50,7 @@ class SharedEditHeadlineViewModelTest {
         every { nonGroupResponse.topadsDashboardGroupProducts.data } returns listOf(
             WithoutGroupDataItem())
         coEvery { topAdsGetGroupProductUseCase.execute(any()) } returns nonGroupResponse
-        viewModel.getHeadlineAdId(1, "2") { onError?.invoke(it) }
+        viewModel.getHeadlineAdId("1", "2") { onError?.invoke(it) }
     }
 
     @Test
