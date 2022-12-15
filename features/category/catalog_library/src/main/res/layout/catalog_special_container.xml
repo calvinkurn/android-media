@@ -10,12 +10,13 @@
         android:id="@+id/catalog_special_header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kategori Special Buatmu"
+            android:text="@string/kategori_Special_Buatmu"
             android:layout_weight="2"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
@@ -38,7 +39,10 @@
         android:id="@+id/catalog_special_grid_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numColumns="4"
-         />
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:numColumns="4" />
 
 </LinearLayout>

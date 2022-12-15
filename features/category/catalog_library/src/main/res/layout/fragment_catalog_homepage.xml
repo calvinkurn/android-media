@@ -5,33 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <com.tokopedia.iconunify.IconUnify-->
-<!--        android:id="@+id/backIcon"-->
-<!--        android:layout_width="18dp"-->
-<!--        android:layout_height="18dp"-->
-<!--        app:icon_name="ARROW_BACK"-->
-<!--        android:layout_margin="10dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--    <com.tokopedia.unifyprinciples.Typography-->
-<!--        android:id="@+id/katalog_tokopedia"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        tools:text="Katalog Tokopedia"-->
-<!--        app:typographyType="display_1"-->
-<!--        app:typographyWeight="bold"-->
-<!--        android:textColor="@color/Unify_NN950"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/backIcon"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:layout_marginStart="10dp"-->
-<!--        />-->
-
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/catalog_home_header"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
+        app:unify_header_is_show_shadow="false"
         app:unify_header_is_show_back_button="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

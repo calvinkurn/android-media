@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
 import kotlinx.android.synthetic.main.fragment_catalog_homepage.global_error_page
 import kotlinx.android.synthetic.main.fragment_category_landing_page.*
 import java.net.SocketTimeoutException
@@ -72,11 +71,12 @@ class CatalogLandingPageFragment: Fragment(),
 
     companion object {
         const val CATALOG_LANDING_PAGE_FRAGMENT_TAG = "CATALOG_LANDING_PAGE_FRAGMENT_TAG"
-        private const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
+        const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
         fun newInstance(categoryName: String?): CatalogLandingPageFragment {
-            //            val bundle = Bundle()
-//            bundle.putString(ARG_CATEGORY_NAME, categoryName)
-//            fragment.arguments = bundle
+            val fragment = CatalogLandingPageFragment()
+            val bundle = Bundle()
+            bundle.putString(ARG_CATEGORY_NAME, categoryName)
+            fragment.arguments = bundle
             return CatalogLandingPageFragment()
         }
     }

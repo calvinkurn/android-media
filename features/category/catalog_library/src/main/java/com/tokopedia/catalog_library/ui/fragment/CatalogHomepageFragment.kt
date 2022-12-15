@@ -14,8 +14,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
-import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
+import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.di.CatalogLibraryComponent
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
@@ -191,5 +191,19 @@ class CatalogHomepageFragment : Fragment(),
     override fun onProductCardClicked(applink: String?) {
         super.onProductCardClicked(applink)
         RouteManager.route(context, applink)
+    }
+
+    override fun onCategoryItemClicked(categoryName: String?) {
+        super.onCategoryItemClicked(categoryName)
+        val bundle = Bundle()
+        val fragment = CatalogLandingPageFragment()
+        bundle.putString(CatalogLandingPageFragment.ARG_CATEGORY_NAME, categoryName)
+        fragment.arguments = bundle
+        requireActivity().supportFragmentManager.beginTransaction().addToBackStack("").replace(
+            R.id.catalog_home_frag,
+            CatalogLandingPageFragment(),
+            CatalogLandingPageFragment.CATALOG_LANDING_PAGE_FRAGMENT_TAG
+        ).commit()
+
     }
 }
