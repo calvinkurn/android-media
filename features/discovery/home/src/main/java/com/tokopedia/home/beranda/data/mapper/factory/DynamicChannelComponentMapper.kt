@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.mapper.factory
 
+import android.annotation.SuppressLint
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.*
@@ -8,6 +9,9 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 
 object DynamicChannelComponentMapper {
+    @SuppressLint("UnsupportedDarkModeColor")
+    private const val BACKGROUND_WHITE = "#FFFFFF"
+
     fun mapHomeChannelToComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int): ChannelModel {
         val borderStyle = channel.styleParam.parseBorderStyle()
         return ChannelModel(
@@ -57,7 +61,7 @@ object DynamicChannelComponentMapper {
                     channel.banner.cta.couponCode
                 ),
                 gradientColor = if (borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING) {
-                    arrayListOf()
+                    arrayListOf(BACKGROUND_WHITE)
                 } else {
                     channel.banner.gradientColor
                 }
