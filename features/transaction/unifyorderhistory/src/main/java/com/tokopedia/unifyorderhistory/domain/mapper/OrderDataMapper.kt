@@ -10,10 +10,10 @@ import com.tokopedia.unifyorderhistory.util.UohConsts
 object OrderDataMapper {
 
     fun mapOrderDataToOccParams(orderData: UohListOrder.Data.UohOrders.Order): AddToCartOccMultiRequestParams {
-        val jsonArray: JsonArray =
-            JsonParser.parseString(orderData.metadata.listProducts).asJsonArray
         val listAtcOccMulti = arrayListOf<AddToCartOccMultiCartParam>()
         try {
+            val jsonArray: JsonArray =
+                JsonParser.parseString(orderData.metadata.listProducts).asJsonArray
             for (x in 0 until jsonArray.size()) {
                 val objParam = jsonArray.get(x).asJsonObject
                 listAtcOccMulti.add(
