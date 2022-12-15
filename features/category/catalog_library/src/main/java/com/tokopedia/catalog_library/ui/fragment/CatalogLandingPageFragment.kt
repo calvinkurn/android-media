@@ -30,6 +30,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_catalog_homepage.global_error_page
+import kotlinx.android.synthetic.main.fragment_category_landing_page.*
 import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
