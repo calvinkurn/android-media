@@ -2342,6 +2342,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun atc(orderData: UohListOrder.Data.UohOrders.Order) {
+        _listParamAtcMulti.clear()
         if (orderData.metadata.listProducts.isNotEmpty()) {
             _atcVerticalCategory = orderData.verticalCategory
             val jsonArray: JsonArray = JsonParser().parse(orderData.metadata.listProducts).asJsonArray
