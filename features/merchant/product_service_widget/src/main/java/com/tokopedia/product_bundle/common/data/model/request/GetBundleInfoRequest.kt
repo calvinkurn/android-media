@@ -34,7 +34,7 @@ data class RequestData(
     @SerializedName("BundleStats")
     val bundleStats: Boolean = false,
     @SerializedName("IncludeNonBundleVariant")
-    val includeNonBundleVariant: Boolean = false
+    val includeNonBundleVariant: Boolean = true
 )
 
 data class ProductInfo(
