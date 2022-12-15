@@ -23,12 +23,14 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Assert.assertEquals
 import java.util.Calendar.DATE
 import java.util.concurrent.TimeUnit
 
@@ -182,8 +184,12 @@ class CampaignRuleViewModelTest {
             with(viewModel) {
                 val campaignId: Long = 1001
                 val relatedCampaignId: Long = 1002
-                val relatedCampaigns = CampaignDataGenerator.generateRelatedCampaigns(campaignId = relatedCampaignId)
-                val result = CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false, relatedCampaigns = relatedCampaigns)
+                val relatedCampaigns =
+                    CampaignDataGenerator.generateRelatedCampaigns(campaignId = relatedCampaignId)
+                val result = CampaignDataGenerator.generateCampaignUiModel(
+                    isUniqueBuyer = false,
+                    relatedCampaigns = relatedCampaigns
+                )
                 val expected = Success(result)
 
                 coEvery {
@@ -340,7 +346,8 @@ class CampaignRuleViewModelTest {
 
                 saveCampaignCreationDraft()
 
-                val actual = saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual =
+                    saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
                 assert(response.data.isSuccess)
                 assertEquals(expected, actual)
             }
@@ -365,7 +372,12 @@ class CampaignRuleViewModelTest {
                 )
                 val result = CampaignDataGenerator.generateCampaignCreationResult(isSuccess = false)
                 val response = Success(result)
-                val expected = CampaignRuleActionResult.Fail(CampaignRuleError(result.errorTitle, result.errorMessage))
+                val expected = CampaignRuleActionResult.Fail(
+                    CampaignRuleError(
+                        result.errorTitle,
+                        result.errorMessage
+                    )
+                )
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -379,7 +391,8 @@ class CampaignRuleViewModelTest {
 
                 saveCampaignCreationDraft()
 
-                val actual = saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual =
+                    saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
                 assert(!response.data.isSuccess)
                 assertEquals(expected, actual)
             }
@@ -403,7 +416,8 @@ class CampaignRuleViewModelTest {
                     campaignData = campaign,
                 )
                 val dummyThrowable = MessageErrorException("Error Occurred")
-                val expected = CampaignRuleActionResult.Fail(CampaignRuleError(cause = dummyThrowable))
+                val expected =
+                    CampaignRuleActionResult.Fail(CampaignRuleError(cause = dummyThrowable))
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -417,7 +431,8 @@ class CampaignRuleViewModelTest {
 
                 saveCampaignCreationDraft()
 
-                val actual = saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual =
+                    saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
                 assertEquals(expected, actual)
             }
         }
@@ -439,7 +454,8 @@ class CampaignRuleViewModelTest {
 
                 saveCampaignCreationDraft()
 
-                val actual = saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual =
+                    saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
                 assertEquals(expected, actual)
             }
         }
@@ -465,7 +481,8 @@ class CampaignRuleViewModelTest {
 
                 saveCampaignCreationDraft()
 
-                val actual = saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual =
+                    saveDraftActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
                 assertEquals(expected, actual)
             }
         }
@@ -502,7 +519,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignButtonClicked()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assert(creation.isSuccess)
                 assertEquals(expected, actual)
             }
@@ -525,8 +545,14 @@ class CampaignRuleViewModelTest {
                     isCampaignRelation = true,
                     campaignData = campaign,
                 )
-                val creation = CampaignDataGenerator.generateCampaignCreationResult(isSuccess = false)
-                val expected = CampaignRuleActionResult.Fail(CampaignRuleError(creation.errorTitle, creation.errorMessage))
+                val creation =
+                    CampaignDataGenerator.generateCampaignCreationResult(isSuccess = false)
+                val expected = CampaignRuleActionResult.Fail(
+                    CampaignRuleError(
+                        creation.errorTitle,
+                        creation.errorMessage
+                    )
+                )
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -540,7 +566,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignButtonClicked()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assert(!creation.isSuccess)
                 assertEquals(expected, actual)
             }
@@ -573,7 +602,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignButtonClicked()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assert(response.data.isEligible)
                 assertEquals(expected, actual)
             }
@@ -590,9 +622,11 @@ class CampaignRuleViewModelTest {
                     isUniqueBuyer = false,
                     upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
                 )
-                val result = CampaignDataGenerator.generateCampaignCreationEligibility(isEligible = false)
+                val result =
+                    CampaignDataGenerator.generateCampaignCreationEligibility(isEligible = false)
                 val response = Success(result)
-                val expected = CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
+                val expected =
+                    CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -606,7 +640,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignButtonClicked()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assert(!response.data.isEligible)
                 assertEquals(expected, actual)
             }
@@ -624,7 +661,8 @@ class CampaignRuleViewModelTest {
                     upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
                 )
                 val dummyThrowable = MessageErrorException("Error Occurred")
-                val expected = CampaignRuleActionResult.Fail(CampaignRuleError(cause = dummyThrowable))
+                val expected =
+                    CampaignRuleActionResult.Fail(CampaignRuleError(cause = dummyThrowable))
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -638,7 +676,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignButtonClicked()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assertEquals(expected, actual)
             }
         }
@@ -676,7 +717,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignConfirmed()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assertEquals(expected, actual)
             }
         }
@@ -699,8 +743,14 @@ class CampaignRuleViewModelTest {
                     campaignData = campaign,
                     isUpdate = false,
                 )
-                val creation = CampaignDataGenerator.generateCampaignCreationResult(isSuccess = false)
-                val expected = CampaignRuleActionResult.Fail(CampaignRuleError(creation.errorTitle, creation.errorMessage))
+                val creation =
+                    CampaignDataGenerator.generateCampaignCreationResult(isSuccess = false)
+                val expected = CampaignRuleActionResult.Fail(
+                    CampaignRuleError(
+                        creation.errorTitle,
+                        creation.errorMessage
+                    )
+                )
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -714,7 +764,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignConfirmed()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assert(!creation.isSuccess)
                 assertEquals(expected, actual)
             }
@@ -737,7 +790,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignConfirmed()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assertEquals(expected, actual)
             }
         }
@@ -763,7 +819,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignConfirmed()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assertEquals(expected, actual)
             }
         }
@@ -789,7 +848,10 @@ class CampaignRuleViewModelTest {
 
                 onCreateCampaignConfirmed()
 
-                val actual = createCampaignActionState.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                val actual = createCampaignActionState.getOrAwaitValue(
+                    time = 0L,
+                    timeUnit = TimeUnit.SECONDS
+                )
                 assertEquals(expected, actual)
             }
         }
@@ -913,7 +975,8 @@ class CampaignRuleViewModelTest {
             with(viewModel) {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false)
-                val expected = CampaignDataGenerator.generateMerchantCampaignTNCRequest(isUniqueBuyer = false)
+                val expected =
+                    CampaignDataGenerator.generateMerchantCampaignTNCRequest(isUniqueBuyer = false)
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -935,7 +998,8 @@ class CampaignRuleViewModelTest {
             with(viewModel) {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel()
-                val expected = CampaignDataGenerator.generateMerchantCampaignTNCRequest(isCampaignRelation = false)
+                val expected =
+                    CampaignDataGenerator.generateMerchantCampaignTNCRequest(isCampaignRelation = false)
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -956,8 +1020,14 @@ class CampaignRuleViewModelTest {
         runBlocking {
             with(viewModel) {
                 val campaignId: Long = 1001
-                val campaign = CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false, isCampaignRelation = false)
-                val expected = CampaignDataGenerator.generateMerchantCampaignTNCRequest(isUniqueBuyer = false, isCampaignRelation = false)
+                val campaign = CampaignDataGenerator.generateCampaignUiModel(
+                    isUniqueBuyer = false,
+                    isCampaignRelation = false
+                )
+                val expected = CampaignDataGenerator.generateMerchantCampaignTNCRequest(
+                    isUniqueBuyer = false,
+                    isCampaignRelation = false
+                )
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -978,8 +1048,10 @@ class CampaignRuleViewModelTest {
         runBlocking {
             with(viewModel) {
                 val campaignId: Long = 1001
-                val campaign = CampaignDataGenerator.generateCampaignUiModel(isCampaignRelation = false)
-                val expected = CampaignDataGenerator.generateMerchantCampaignTNCRequest(isCampaignRelation = false)
+                val campaign =
+                    CampaignDataGenerator.generateCampaignUiModel(isCampaignRelation = false)
+                val expected =
+                    CampaignDataGenerator.generateMerchantCampaignTNCRequest(isCampaignRelation = false)
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -1015,10 +1087,14 @@ class CampaignRuleViewModelTest {
             with(viewModel) {
                 val campaignId: Long = 1001
                 val relatedCampaignId: Long = 1002
-                val relatedCampaigns = CampaignDataGenerator.generateRelatedCampaigns(campaignId = relatedCampaignId)
+                val relatedCampaigns =
+                    CampaignDataGenerator.generateRelatedCampaigns(campaignId = relatedCampaignId)
                 val expectedRelatedCampaign = emptyList<RelatedCampaign>()
                 val expectedFlag = true
-                val result = CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false, relatedCampaigns = relatedCampaigns)
+                val result = CampaignDataGenerator.generateCampaignUiModel(
+                    isUniqueBuyer = false,
+                    relatedCampaigns = relatedCampaigns
+                )
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -1041,7 +1117,8 @@ class CampaignRuleViewModelTest {
         runBlocking {
             with(viewModel) {
                 val relatedCampaignId: Long = 1002
-                val relatedCampaigns = CampaignDataGenerator.generateRelatedCampaigns(campaignId = relatedCampaignId)
+                val relatedCampaigns =
+                    CampaignDataGenerator.generateRelatedCampaigns(campaignId = relatedCampaignId)
                 val expectedRelatedCampaign = null
                 val expectedFlag = true
 
@@ -1060,7 +1137,8 @@ class CampaignRuleViewModelTest {
         runBlocking {
             with(viewModel) {
                 val campaignId: Long = 1001
-                val expected = CampaignDataGenerator.generateRelatedCampaigns(campaignId = campaignId)
+                val expected =
+                    CampaignDataGenerator.generateRelatedCampaigns(campaignId = campaignId)
 
                 onRelatedCampaignsChanged(expected)
 
@@ -1076,9 +1154,13 @@ class CampaignRuleViewModelTest {
             with(viewModel) {
                 val campaignId: Long = 1001
                 val relatedCampaignId: Long = 1002
-                val relatedCampaigns = CampaignDataGenerator.generateRelatedCampaigns(campaignId = relatedCampaignId)
+                val relatedCampaigns =
+                    CampaignDataGenerator.generateRelatedCampaigns(campaignId = relatedCampaignId)
                 val expected = AddRelatedCampaignRequest(campaignId, relatedCampaigns)
-                val result = CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false, relatedCampaigns = relatedCampaigns)
+                val result = CampaignDataGenerator.generateCampaignUiModel(
+                    isUniqueBuyer = false,
+                    relatedCampaigns = relatedCampaigns
+                )
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -1099,9 +1181,13 @@ class CampaignRuleViewModelTest {
         runBlocking {
             with(viewModel) {
                 val campaignId: Long = 1001
-                val relatedCampaigns = CampaignDataGenerator.generateRelatedCampaigns(campaignId = campaignId)
+                val relatedCampaigns =
+                    CampaignDataGenerator.generateRelatedCampaigns(campaignId = campaignId)
                 val expected = AddRelatedCampaignRequest(campaignId, emptyList())
-                val result = CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = false, relatedCampaigns = relatedCampaigns)
+                val result = CampaignDataGenerator.generateCampaignUiModel(
+                    isUniqueBuyer = false,
+                    relatedCampaigns = relatedCampaigns
+                )
 
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
@@ -1130,5 +1216,82 @@ class CampaignRuleViewModelTest {
                 assertEquals(expected, actual)
             }
         }
+    }
+
+    @Test
+    fun `check is isInputChanged are change and then restart the TNC Confirmation Status`() {
+        runBlocking {
+            val method =
+                viewModel.javaClass.getDeclaredMethod("resetTNCConfirmationStatusIfDataChanged")
+
+            method.isAccessible = true
+            method.invoke(viewModel)
+            assertFalse(viewModel.isTNCConfirmed.getOrAwaitValue())
+        }
+    }
+
+    @Test
+    fun `check isInputChanged are false and then restart the TNC Confirmation Status is not running`() {
+        runBlocking {
+            viewModel.setPrivateProperty("initialPaymentType", PaymentType.INSTANT)
+            viewModel.setPrivateProperty("initialUniqueBuyer", true)
+            viewModel.setPrivateProperty("initialCampaignRelation", true)
+            viewModel.setPrivateProperty(
+                "initialCampaignRelations",
+                CampaignDataGenerator.generateRelatedCampaigns()
+            )
+
+            viewModel.onInstantPaymentMethodSelected()
+            viewModel.onNotRequireUniqueAccountSelected()
+            viewModel.onAllowCampaignRelation()
+            viewModel.onRelatedCampaignsChanged(CampaignDataGenerator.generateRelatedCampaigns())
+            val method =
+                viewModel.javaClass.getDeclaredMethod("resetTNCConfirmationStatusIfDataChanged")
+
+            method.isAccessible = true
+            method.invoke(viewModel)
+            verify(exactly = 0) {
+                viewModel.onTNCCheckboxUnchecked()
+            }
+        }
+    }
+    
+    @Test
+    fun `check validateCampaignRuleInput output is false`(){
+        runBlocking {
+            viewModel.onRegularPaymentMethodSelected()
+            viewModel.onNotRequireUniqueAccountSelected()
+            viewModel.onAllowCampaignRelation()
+            viewModel.onRelatedCampaignsChanged(CampaignDataGenerator.generateRelatedCampaigns())
+            val method =
+                viewModel.javaClass.getDeclaredMethod("initInputValidationCollector")
+            method.isAccessible = true
+            method.invoke(viewModel)
+            assertTrue(viewModel.isAllInputValid.getOrAwaitValue())
+        }
+    }
+
+    @Test
+    fun `check validateCampaignRuleInput output is false a`(){
+        runBlocking {
+            val method =
+                viewModel.javaClass.getDeclaredMethod("initInputValidationCollector")
+            method.isAccessible = true
+            launch {
+                method.invoke(viewModel)
+            }
+            viewModel.onRegularPaymentMethodSelected()
+            viewModel.onNotRequireUniqueAccountSelected()
+            viewModel.onAllowCampaignRelation()
+            viewModel.onRelatedCampaignsChanged(CampaignDataGenerator.generateRelatedCampaigns())
+
+            assertFalse(viewModel.isAllInputValid.getOrAwaitValue())
+        }
+    }
+
+    private inline fun <reified T> T.setPrivateProperty(name: String, value: Any?) {
+        T::class.java.getDeclaredField(name)
+            .apply { isAccessible = true }
+            .set(this, value)
     }
 }
