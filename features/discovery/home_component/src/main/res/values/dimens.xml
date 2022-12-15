@@ -37,7 +37,8 @@
     <dimen name="special_release_price_height">28dp</dimen>
     <dimen name="special_release_timer_height">16dp</dimen>
     <dimen name="special_release_rv_padding">10dp</dimen>
-    <dimen name="special_release_rv_padding_style_bottom">12dp</dimen>
+    <dimen name="special_release_rv_padding_style_bottom">8dp</dimen>
+    <dimen name="special_release_padding_card_compat_padding">-4.0dp</dimen>
 
     <dimen name="home_mission_widget_image_size">128dp</dimen>
     <dimen name="home_mission_widget_margin_horizontal_subtitle">8dp</dimen>
