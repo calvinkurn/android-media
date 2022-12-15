@@ -325,7 +325,7 @@ class ShopHomeNplCampaignViewHolder(
                     Date()
                 }
             }
-            if (days > Int.ONE) {
+            if (days >= Int.ONE) {
                 timerUnify?.gone()
                 timerMoreThanOneDay?.apply {
                     text =
