@@ -10,7 +10,8 @@ sealed class ProductListEvent {
         val pageMode: PageMode,
         val voucherConfiguration: VoucherConfiguration,
         val selectedProducts: List<SelectedProduct>,
-        val showCtaUpdateProductOnToolbar: Boolean
+        val showCtaUpdateProductOnToolbar: Boolean,
+        val isEntryPointFromVoucherSummaryPage: Boolean
     ) : ProductListEvent()
     object EnableSelectAllCheckbox : ProductListEvent()
     object DisableSelectAllCheckbox : ProductListEvent()

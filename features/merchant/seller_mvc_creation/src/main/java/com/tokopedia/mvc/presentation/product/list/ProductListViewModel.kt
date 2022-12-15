@@ -44,7 +44,15 @@ class ProductListViewModel @Inject constructor(
 
     fun processEvent(event: ProductListEvent) {
         when(event) {
-            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.pageMode, event.voucherConfiguration, event.selectedProducts, event.showCtaUpdateProductOnToolbar)
+            is ProductListEvent.FetchProducts -> {
+                getProductsAndProductsMetadata(
+                    event.pageMode,
+                    event.voucherConfiguration,
+                    event.selectedProducts,
+                    event.showCtaUpdateProductOnToolbar,
+                    event.isEntryPointFromVoucherSummaryPage
+                )
+            }
             is ProductListEvent.MarkProductForDeletion -> handleMarkProductForDeletion(event.productId)
             ProductListEvent.TapContinueButton -> handleRedirection()
             ProductListEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
@@ -69,7 +77,8 @@ class ProductListViewModel @Inject constructor(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration,
         selectedProducts: List<SelectedProduct>,
-        showCtaUpdateProductOnToolbar: Boolean
+        showCtaUpdateProductOnToolbar: Boolean,
+        isEntryPointFromVoucherSummaryPage: Boolean
     ) {
         launchCatchError(
             dispatchers.io,
@@ -115,7 +124,8 @@ class ProductListViewModel @Inject constructor(
                         currentPageMode = pageMode,
                         maxProductSelection = metadata.maxProduct,
                         voucherConfiguration = voucherConfiguration,
-                        showCtaChangeProductOnToolbar = showCtaUpdateProductOnToolbar
+                        showCtaChangeProductOnToolbar = showCtaUpdateProductOnToolbar,
+                        isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage
                     )
                 }
 
@@ -365,17 +375,29 @@ class ProductListViewModel @Inject constructor(
 
     private fun handleCtaAddNewProduct() {
         val originalPageMode = currentState.originalPageMode
+        val isEntryPointFromVoucherSummaryPage = currentState.isEntryPointFromVoucherSummaryPage
 
         launch(dispatchers.computation) {
-            if (originalPageMode == PageMode.EDIT) {
-                val currentlySelectedParentProduct = currentState.products.map { it.id }
-                val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(productIds = currentlySelectedParentProduct)
-                _uiEffect.tryEmit(ProductListEffect.RedirectToAddProductPage(modifiedVoucherConfiguration))
-            } else {
+            if (originalPageMode == PageMode.CREATE && isEntryPointFromVoucherSummaryPage) {
+                emitRedirectToAddProductPageEvent()
+                return@launch
+            }
+
+            if (originalPageMode  == PageMode.CREATE) {
                 _uiEffect.tryEmit(ProductListEffect.BackToPreviousPage)
+                return@launch
+            }
+
+            if (originalPageMode == PageMode.EDIT) {
+                emitRedirectToAddProductPageEvent()
             }
         }
 
     }
 
+    private fun emitRedirectToAddProductPageEvent() {
+        val currentlySelectedParentProduct = currentState.products.map { it.id }
+        val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(productIds = currentlySelectedParentProduct)
+        _uiEffect.tryEmit(ProductListEffect.RedirectToAddProductPage(modifiedVoucherConfiguration))
+    }
 }

@@ -47,6 +47,7 @@ class ProductListActivity : AppCompatActivity() {
                 )
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
                 putBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR, showCtaChangeProductOnToolbar)
+                putBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE, true)
             }
 
             val intent = Intent(context, ProductListActivity::class.java)
@@ -69,6 +70,7 @@ class ProductListActivity : AppCompatActivity() {
                 )
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
                 putBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR, showCtaChangeProductOnToolbar)
+                putBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE, false)
             }
 
             val intent = Intent(context, ProductListActivity::class.java)
@@ -84,6 +86,7 @@ class ProductListActivity : AppCompatActivity() {
     }
     private val voucherConfiguration by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private val showCtaChangeProductOnToolbar by lazy { intent?.extras?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR) }
+    private val isEntryPointFromVoucherSummaryPage by lazy { intent?.extras?.getBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,11 +96,18 @@ class ProductListActivity : AppCompatActivity() {
         val voucherConfiguration = voucherConfiguration ?: return
         val products = (selectedProducts as? List<SelectedProduct>).orEmpty()
         val showCtaChangeProductOnToolbar = showCtaChangeProductOnToolbar.orFalse()
+        val isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage.orFalse()
 
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.container,
-                ProductListFragment.newInstance(pageMode, voucherConfiguration, products, showCtaChangeProductOnToolbar)
+                ProductListFragment.newInstance(
+                    pageMode,
+                    voucherConfiguration,
+                    products,
+                    showCtaChangeProductOnToolbar,
+                    isEntryPointFromVoucherSummaryPage
+                )
             )
             .commit()
     }

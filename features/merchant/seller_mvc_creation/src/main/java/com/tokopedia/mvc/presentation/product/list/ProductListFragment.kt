@@ -57,7 +57,8 @@ class ProductListFragment : BaseDaggerFragment() {
             pageMode: PageMode,
             voucherConfiguration: VoucherConfiguration,
             selectedProducts: List<SelectedProduct>,
-            showCtaChangeProductOnToolbar: Boolean
+            showCtaChangeProductOnToolbar: Boolean,
+            isEntryPointFromVoucherSummaryPage: Boolean
         ): ProductListFragment {
             return ProductListFragment().apply {
                 arguments = Bundle().apply {
@@ -74,6 +75,10 @@ class ProductListFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR,
                         showCtaChangeProductOnToolbar
                     )
+                    putBoolean(
+                        BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE,
+                        isEntryPointFromVoucherSummaryPage
+                    )
                 }
             }
         }
@@ -83,6 +88,7 @@ class ProductListFragment : BaseDaggerFragment() {
     private val selectedParentProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS) }
     private val voucherConfiguration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private val showCtaChangeProductOnToolbar by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR).orFalse() }
+    private val isEntryPointFromVoucherSummaryPage by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE).orFalse() }
 
     private var binding by autoClearedNullable<SmvcFragmentProductListBinding>()
 
@@ -128,7 +134,8 @@ class ProductListFragment : BaseDaggerFragment() {
                 pageMode ?: PageMode.CREATE,
                 voucherConfiguration ?: return,
                 selectedParentProducts?.toList().orEmpty(),
-                showCtaChangeProductOnToolbar
+                showCtaChangeProductOnToolbar,
+                isEntryPointFromVoucherSummaryPage
             )
         )
     }

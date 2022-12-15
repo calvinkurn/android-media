@@ -13,6 +13,7 @@ data class ProductListUiState(
     val originalPageMode: PageMode = PageMode.CREATE,
     val currentPageMode: PageMode = PageMode.CREATE,
     val showCtaChangeProductOnToolbar: Boolean = false,
+    val isEntryPointFromVoucherSummaryPage: Boolean = false,
     val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(
         voucherId = NumberConstant.VOUCHER_ID_NOT_CREATED,
         benefitIdr = 0,
