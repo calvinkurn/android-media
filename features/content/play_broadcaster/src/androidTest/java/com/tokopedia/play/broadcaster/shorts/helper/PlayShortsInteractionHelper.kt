@@ -23,6 +23,14 @@ fun clickCloseBottomSheet() {
     click(unifyR.id.bottom_sheet_close)
 }
 
+fun clickClosePreparationPage() {
+    click(contentCommonR.id.img_com_toolbar_nav_icon)
+}
+
+fun clickContinueOnLeaveConfirmationPopup() {
+    click(dialogR.id.dialog_btn_primary)
+}
+
 /** Switch Account */
 fun clickToolbar() {
     click(contentCommonR.id.text_com_toolbar_subtitle)

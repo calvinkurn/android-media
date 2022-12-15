@@ -114,4 +114,19 @@ class PlayShortsPreparationAnalyticTest {
 
         cassavaValidator.verify("click - add cover on preparation page")
     }
+
+    @Test
+    fun testAnalytic_viewLeavePreparationConfirmationPopup() {
+        clickClosePreparationPage()
+
+        cassavaValidator.verify("view - yakin mau keluar botom sheet")
+    }
+
+    @Test
+    fun testAnalytic_clickContinueOnLeaveConfirmationPopup() {
+        clickClosePreparationPage()
+        clickContinueOnLeaveConfirmationPopup()
+
+        cassavaValidator.verify("click - lanjut persiapan bottom sheet")
+    }
 }
