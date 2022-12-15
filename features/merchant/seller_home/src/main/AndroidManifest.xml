@@ -13,7 +13,7 @@
         android:supportsRtl="true">
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
-            android:exported="false"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SellerHomeTheme"
