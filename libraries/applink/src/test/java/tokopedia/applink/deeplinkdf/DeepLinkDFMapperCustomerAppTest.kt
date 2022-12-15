@@ -215,12 +215,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check global internal digital deal slug base appLink then should return DF_ENTERTAINMENT in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-slug/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
-    }
-
-    @Test
     fun `check global internal digital deal brand detail base appLink then should return DF_ENTERTAINMENT in customerapp`() {
         val appLink = "${ApplinkConstInternalDeals.INTERNAL_DEALS}/brand-detail-new/"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
@@ -745,6 +739,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check add phone appLink then should return DF_USER_SETTINGS in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/add-phone"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
+    fun `check new add phone appLink then should return DF_USER_SETTINGS in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/new-add-phone"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 

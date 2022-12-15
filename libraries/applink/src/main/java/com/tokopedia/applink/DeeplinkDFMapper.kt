@@ -53,7 +53,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
@@ -152,6 +151,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.NEW_ADD_PHONE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_GENDER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_NAME
@@ -494,7 +494,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(DEALS_HOMEPAGE) ||
                         it.startsWith(DEALS_BRAND_PAGE) ||
                         it.startsWith(DEALS_CATEGORY_PAGE) ||
-                        it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE) ||
                         it.startsWith(DEALS_BRAND_DETAIL_PAGE)
             }, DF_ENTERTAINMENT, R.string.title_entertainment, { DFWebviewFallbackUrl.ENTERTAINMENT_DEALS }))
 
@@ -513,6 +512,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 (it.startsWith(SETTING_PROFILE)
                         || it.startsWith(ADD_PHONE)
+                        || it.startsWith(NEW_ADD_PHONE)
                         || it.startsWith(ADD_EMAIL)
                         || it.startsWith(ADD_BOD)
                         || it.startsWithPattern(CHANGE_NAME)

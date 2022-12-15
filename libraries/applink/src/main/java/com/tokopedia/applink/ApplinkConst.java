@@ -15,6 +15,8 @@ public interface ApplinkConst {
     String HOME_ACCOUNT_SELLER = "tokopedia://home/account/seller";
     String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
+    String FEED_EXPLORE = "tokopedia://feed/explore";
+    String FEED_VIDEO = "tokopedia://feed/video";
     String FIND = "tokopedia://find";
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";

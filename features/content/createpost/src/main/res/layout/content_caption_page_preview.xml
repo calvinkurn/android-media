@@ -40,7 +40,7 @@
                 tools:listitem="@layout/content_preview_post_view_item"
                 tools:visibility="visible" />
 
-            <com.tokopedia.affiliatecommon.view.widget.ClearFocusEditText
+            <com.tokopedia.createpost.view.util.widget.ClearFocusEditText
                 android:id="@+id/caption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

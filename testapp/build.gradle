@@ -15,6 +15,7 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
 kapt {
     correctErrorTypes = true
     generateStubs = false
@@ -142,6 +143,7 @@ dependencies {
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
     //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
     implementation projectOrAar(rootProject.ext.features.developerOptions)
+    implementation project(rootProject.ext.features.watch)
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT

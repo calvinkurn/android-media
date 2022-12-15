@@ -18,6 +18,8 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedExplore
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedVideo
 import com.tokopedia.applink.content.DeeplinkMapperContent.getWebHostWebViewLink
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
@@ -243,6 +245,10 @@ object DeeplinkMapper {
             DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
 
+        val appLinkFeed =
+            DeeplinkMapperContent.getRegisteredNavigationFeedVideoFromHttp(uri, deeplink)
+        if (appLinkFeed.isNotBlank()) return appLinkFeed
+
         val applinkDigital =
             DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
@@ -413,6 +419,14 @@ object DeeplinkMapper {
             ApplinkConst.FEED,
             targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeed() }
         ),
+        DLP.exact(
+            ApplinkConst.FEED_EXPLORE,
+            targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeedExplore() }
+        ),
+        DLP.exact(
+            ApplinkConst.FEED_VIDEO,
+            targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedVideo(deeplink) }
+        ),
         DLP(
             Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),
             targetDeeplink = { _, _, _, _ -> ApplinkConstInternalPromo.PROMO_LIST }
@@ -505,7 +519,7 @@ object DeeplinkMapper {
         DLP.exact(ApplinkConst.KYC_NO_PARAM, ApplinkConstInternalUserPlatform.KYC_INFO_BASE),
         DLP.startWith(ApplinkConst.KYC_FORM_NO_PARAM, ApplinkConstInternalUserPlatform.KYC_FORM_BASE),
         DLP.startWith(ApplinkConst.KYC_FORM, ApplinkConstInternalUserPlatform.KYC_FORM),
-        DLP.startWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM) { _, _, deeplink, _ -> DeeplinkMapperUser.getKycInternalApplink(deeplink) },
+        DLP.startWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM) { _, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredUserNavigation(deeplink) },
         DLP.exact(ApplinkConst.SETTING_BANK, ApplinkConstInternalGlobal.SETTING_BANK),
         DLP.exact(ApplinkConst.OTP, ApplinkConstInternalUserPlatform.COTP),
         DLP.startWith(ApplinkConst.QR_LOGIN, ApplinkConstInternalUserPlatform.QR_LOGIN),

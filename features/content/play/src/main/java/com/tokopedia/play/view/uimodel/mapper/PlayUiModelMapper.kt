@@ -12,6 +12,9 @@ import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.recom.BannedUiModel
+import com.tokopedia.play.view.uimodel.recom.FreezeUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusConfig
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel

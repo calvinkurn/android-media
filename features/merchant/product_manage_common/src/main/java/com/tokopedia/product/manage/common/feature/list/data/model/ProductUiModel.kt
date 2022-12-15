@@ -54,12 +54,11 @@ data class ProductUiModel(
     fun isEmpty(): Boolean = status == ProductStatus.EMPTY || stock == 0
     fun hasTopAds(): Boolean = topAdsInfo?.isTopAds == true || topAdsInfo?.isAutoAds == true
 
-    fun hasEditPriceAccess() = access?.editPrice == true
+    fun hasEditPriceAccess() = access?.editPrice == true && !isShopModerate
     fun hasEditProductAccess() = access?.editProduct == true
 
     fun getCampaignTypeCount() = campaignTypeList?.count().orZero()
     fun isSuspend(): Boolean = suspendLevel != 0
     fun isSuspendLevelTwoUntilFour(): Boolean = suspendLevel > 1
     fun isNotSuspendLevelTwoUntilFour(): Boolean = !(isSuspendLevelTwoUntilFour())
-
 }

@@ -330,7 +330,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         val selectedShippingCourierUiModel =
             shippingCourierViewModelList.firstOrNull { it.isSelected && (hasSelectedSpIdFromRates || !it.productData.isUiRatesHidden) }
                 ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
-                ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
+                ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
                 ?: shippingCourierViewModelList.first()
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
@@ -470,7 +470,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     // fallback if recommendation is also ui rates hidden
                     val recommendedShippingCourierUiModel =
                         shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
-                            ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
+                            ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
                     if (recommendedShippingCourierUiModel != null) {
                         recommendedShippingCourierUiModel.isSelected = true
                         selectedShippingCourierUiModel = recommendedShippingCourierUiModel

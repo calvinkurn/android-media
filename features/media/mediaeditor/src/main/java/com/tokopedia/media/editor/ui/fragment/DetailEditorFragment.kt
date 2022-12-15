@@ -737,7 +737,9 @@ class DetailEditorFragment @Inject constructor(
                         viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
                     currentMatrix?.let {
                         initialMatrixValue.forEachIndexed { index, value ->
-                            if (value != currentMatrix[index]) isEdited = true
+                            if (value != currentMatrix[index]) {
+                                isEdited = true
+                            }
                         }
                     }
                 }
