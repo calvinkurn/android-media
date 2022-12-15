@@ -255,7 +255,6 @@ open class HomeRevampViewModel @Inject constructor(
                         }
                     }
                 } else {
-                    updateHeaderData(headerModel, index)
                     val currentHeaderDataModel =
                         homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(headerModel)
                     val visitable = updateHeaderData(currentHeaderDataModel, index)
