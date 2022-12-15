@@ -46,7 +46,7 @@ import javax.net.ssl.SSLHandshakeException
 class GraphqlCloudDataStore @Inject constructor(
     private val api: GraphqlApiSuspend,
     val cacheManager: GraphqlCacheManager,
-    private val fingerprintManager: FingerprintManager,
+    private val fingerprintManager: FingerprintManager
 ) : GraphqlDataStore {
 
     /*
