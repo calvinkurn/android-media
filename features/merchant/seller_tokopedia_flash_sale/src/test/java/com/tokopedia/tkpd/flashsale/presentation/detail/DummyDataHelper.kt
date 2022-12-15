@@ -1,9 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
-import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
-import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
-import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProductData
+import com.tokopedia.tkpd.flashsale.domain.entity.*
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus
@@ -342,5 +339,9 @@ object DummyDataHelper {
             showCriteria = true,
             showProductCriteria = true
         )
+    }
+
+    fun generateDummyFlashSaleProductSubmissionProgress(): FlashSaleProductSubmissionProgress {
+        return FlashSaleProductSubmissionProgress(isOpenSse = true)
     }
 }

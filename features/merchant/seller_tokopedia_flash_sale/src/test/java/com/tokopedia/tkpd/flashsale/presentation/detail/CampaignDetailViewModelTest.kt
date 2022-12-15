@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.*
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.mapper.ProductCheckingResultMapper
 import com.tokopedia.tkpd.flashsale.util.tracker.CampaignDetailPageTracker
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -21,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -907,6 +909,138 @@ class CampaignDetailViewModelTest {
             // Then
             val actualResult = isTriggeredFromDelete()
             assertEquals(dummyDeleteStateValue, actualResult)
+        }
+    }
+
+    @Test
+    fun `when sendSeeCriteriaClickEvent clicked, will trigger respective tracker`() {
+        with(viewModel) {
+            // When
+            sendSeeCriteriaClickEvent(dummyCampaignId)
+
+            // Then
+            coVerify { tracker.sendClickSeeCriteriaEvent(dummyCampaignId.toString()) }
+        }
+    }
+
+    @Test
+    fun `when sendRegisterClickEvent clicked, will trigger respective tracker`() {
+        with(viewModel) {
+            // When
+            sendRegisterClickEvent(dummyCampaignId)
+
+            // Then
+            coVerify { tracker.sendClickRegisterEvent(dummyCampaignId.toString()) }
+        }
+    }
+
+    @Test
+    fun `when sendCheckReasonClickEvent clicked, will trigger respective tracker`() {
+        with(viewModel) {
+            // When
+            sendCheckReasonClickEvent(dummyCampaignId)
+
+            // Then
+            coVerify { tracker.sendClickCheckReasonEvent(dummyCampaignId.toString()) }
+        }
+    }
+
+    @Test
+    fun `when sendBulkChooseClickEvent clicked, will trigger respective tracker`() {
+        with(viewModel) {
+            // When
+            sendBulkChooseClickEvent(dummyCampaignId)
+
+            // Then
+            coVerify { tracker.sendClickBulkChooseEvent(dummyCampaignId.toString()) }
+        }
+    }
+
+    @Test
+    fun `when sendAddProductClickEvent clicked, will trigger respective tracker`() {
+        with(viewModel) {
+            // When
+            sendAddProductClickEvent(dummyCampaignId)
+
+            // Then
+            coVerify { tracker.sendClickAddProductEvent(dummyCampaignId.toString()) }
+        }
+    }
+
+    @Test
+    fun `when sendDeleteClickEvent clicked, will trigger respective tracker`() {
+        with(viewModel) {
+            // When
+            sendDeleteClickEvent(dummyCampaignId)
+
+            // Then
+            coVerify { tracker.sendClickDeleteEvent(dummyCampaignId.toString()) }
+        }
+    }
+
+    @Test
+    fun `when sendEditClickEvent clicked, will trigger respective tracker`() {
+        with(viewModel) {
+            // When
+            sendEditClickEvent(dummyCampaignId)
+
+            // Then
+            coVerify { tracker.sendClickEditEvent(dummyCampaignId.toString()) }
+        }
+    }
+
+    @Test
+    fun `when call isCoachMarkShown, will return the value accordingly`() {
+        with(viewModel) {
+            // Given
+            val expectedResult = false
+
+            // When
+            isCoachMarkShown()
+
+            // Then
+            val actualValue = isCoachMarkShown()
+            assertEquals(expectedResult, actualValue)
+        }
+    }
+
+    @Test
+    fun `when call setSharedPrefCoachMarkAlreadyShown, will set the value accordingly`() {
+        with(viewModel) {
+            // When
+            setSharedPrefCoachMarkAlreadyShown()
+
+            // Then
+            coVerify {
+                sharedPreference.edit()
+                    .putBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, true)
+                    .apply()
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch getFlashSaleSubmissionProgress, will emit the value accordingly`() {
+        runBlocking {
+            with(viewModel) {
+                // Given
+                val dummyResponse = DummyDataHelper.generateDummyFlashSaleProductSubmissionProgress()
+                val expectedEvent = CampaignDetailViewModel.UiEffect.OnSseOpen
+                coEvery { getFlashSaleProductSubmissionProgressUseCase.execute(any()) } returns dummyResponse
+
+                val emittedValue = arrayListOf<CampaignDetailViewModel.UiEffect>()
+                val job = launch {
+                    uiEffect.toList(emittedValue)
+                }
+
+                // When
+                getFlashSaleSubmissionProgress(dummyCampaignId.toString())
+
+                // Then
+                val actualEvent = emittedValue.last()
+                assertEquals(expectedEvent, actualEvent)
+                job.cancel()
+            }
         }
     }
 }
