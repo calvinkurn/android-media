@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -243,10 +245,12 @@ class ProductListFragment : BaseDaggerFragment() {
         when {
             currentPageMode == PageMode.CREATE -> {
                 binding?.header?.actionTextView?.gone()
+                binding?.header?.isShowBackButton = true
             }
             showCtaChangeProductOnToolbar -> {
                 binding?.header?.actionTextView?.visible()
                 binding?.header?.actionText = getString(R.string.smvc_update_product)
+                binding?.header?.useCloseIcon()
             }
         }
 
@@ -457,6 +461,11 @@ class ProductListFragment : BaseDaggerFragment() {
             voucherConfiguration
         )
         startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION)
+    }
+
+    private fun HeaderUnify.useCloseIcon() {
+        isShowBackButton = false
+        navigationIcon = ContextCompat.getDrawable(activity ?: return, R.drawable.ic_smvc_close)
     }
 
 }
