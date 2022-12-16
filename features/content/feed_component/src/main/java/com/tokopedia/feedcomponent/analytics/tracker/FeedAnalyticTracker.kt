@@ -19,6 +19,7 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Categor
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_MENU
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CONTENT_FEED_TIMELINE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.ADD_TO_CART
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CLICK_CONTENT
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CLICK_FEED
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CLICK_PG
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CONTENT
@@ -100,6 +101,7 @@ class FeedAnalyticTracker
 
     private object Event {
         const val CLICK_FEED = "clickFeed"
+        const val CLICK_CONTENT = "clickContentÏ"
         const val CLICK_SOCIAL_COMMERCE = "clickSocialCommerce"
         const val OPEN_SCREEN = "openScreen"
         const val ADD_TO_CART = "addToCart"
@@ -171,7 +173,8 @@ class FeedAnalyticTracker
 
     }
 
-    fun getEvent(isCampaign: Boolean) = if (isCampaign) CLICK_PG else CLICK_FEED
+    fun getEvent(isCampaign: Boolean, authorType: String = "") =
+        if (authorType == UGC_AUTHOR_TYPE || authorType == FollowCta.AUTHOR_UGC) CLICK_CONTENT else if (isCampaign) CLICK_PG else CLICK_FEED
 
     object Screen {
         const val FEED = "/feed"
@@ -541,7 +544,7 @@ class FeedAnalyticTracker
                 hasVoucher
             )
         }
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, campaignStatus)
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, campaignStatus, authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -594,7 +597,11 @@ class FeedAnalyticTracker
                 trackerData.hasVoucher
             )
         }
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, trackerData.campaignStatus)
+        var map = getCommonMap(
+            CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            trackerData.campaignStatus,
+            trackerData.authorType
+        )
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -627,7 +634,7 @@ class FeedAnalyticTracker
             if (trackerData.isProductDetailPage) CATEGORY_FEED_TIMELINE_FEED_DETAIL else CATEGORY_FEED_TIMELINE_BOTTOMSHEET
 
 
-        var map = getCommonMap(category)
+        var map = getCommonMap(category, authorType = trackerData.authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1068,7 +1075,10 @@ class FeedAnalyticTracker
                     feedTrackerData.contentSlotValue,
                     feedTrackerData.hasVoucher
                 )
-        var map = getCommonMap(campaignStatus = feedTrackerData.campaignStatus)
+        var map = getCommonMap(
+            campaignStatus = feedTrackerData.campaignStatus,
+            authorType = feedTrackerData.authorType
+        )
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1334,7 +1344,7 @@ class FeedAnalyticTracker
         val isFollowed = feedTrackerData.isFollowed
         val shopId = feedTrackerData.shopId
         val mediaType = feedTrackerData.mediaType
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1364,7 +1374,7 @@ class FeedAnalyticTracker
         val shopId = feedTrackerData.shopId
         val mediaType = feedTrackerData.mediaType
 
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1411,7 +1421,10 @@ class FeedAnalyticTracker
                     feedTrackerData.contentSlotValue,
                     feedTrackerData.hasVoucher
                 )
-        var map = getCommonMap(campaignStatus = feedTrackerData.campaignStatus)
+        var map = getCommonMap(
+            campaignStatus = feedTrackerData.campaignStatus,
+            authorType = feedTrackerData.authorType
+        )
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1436,7 +1449,7 @@ class FeedAnalyticTracker
         val type = feedTrackerData.postType
         val isFollowed = feedTrackerData.isFollowed
         val mediaType = feedTrackerData.mediaType
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1507,7 +1520,7 @@ class FeedAnalyticTracker
         val isFollowed = feedTrackerData.isFollowed
         val shopId = feedTrackerData.shopId
         val mediaType = feedTrackerData.mediaType
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1533,7 +1546,7 @@ class FeedAnalyticTracker
         val isFollowed = feedTrackerData.isFollowed
         val mediaType = feedTrackerData.mediaType
         val type = feedTrackerData.postType
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1567,7 +1580,7 @@ class FeedAnalyticTracker
         val shopId = feedTrackerData.shopId
         val mediaType = feedTrackerData.mediaType
 
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1770,7 +1783,7 @@ class FeedAnalyticTracker
         isFollowed: Boolean,
         authorType: String
     ) {
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE)
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE, authorType = authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1858,7 +1871,11 @@ class FeedAnalyticTracker
                     feedTrackerData.contentSlotValue,
                     feedTrackerData.hasVoucher
                 )
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, campaignStatus)
+        var map = getCommonMap(
+            CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            campaignStatus,
+            authorType = feedTrackerData.authorType
+        )
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1980,7 +1997,7 @@ class FeedAnalyticTracker
         shopId: String,
         authorType: String
     ) {
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU, authorType = authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -2010,7 +2027,7 @@ class FeedAnalyticTracker
         campaignStatus: String = "",
         authorType: String
     ) {
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU, campaignStatus)
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU, campaignStatus, authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -2038,7 +2055,7 @@ class FeedAnalyticTracker
         val isFollowed = feedTrackerData.isFollowed
         val shopId = feedTrackerData.postId
 
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU, authorType = feedTrackerData.authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -2295,8 +2312,7 @@ class FeedAnalyticTracker
         authorId: String,
         isVideoPost: Boolean,
         isFollowed: Boolean,
-        postType: String,
-        authorType: String
+        postType: String
     ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
@@ -2309,7 +2325,7 @@ class FeedAnalyticTracker
                     postType,
                     isFollowed,
                     if (isVideoPost) TYPE_VIDEO else TYPE_IMAGE,
-                    authorType
+                    authorId
                 )
             ),
             KEY_EVENT_LABEL to String.format(
@@ -2437,7 +2453,7 @@ class FeedAnalyticTracker
         val activityId = feedTrackerData.postId
         val isFollowed = feedTrackerData.isFollowed
         val mediaType = feedTrackerData.mediaType
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -2468,7 +2484,7 @@ class FeedAnalyticTracker
         val channelId = feedTrackerData.postId
         val isFollowed = feedTrackerData.isFollowed
         val mediaType = feedTrackerData.mediaType
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         val type = feedTrackerData.postType
         map = map.plus(
             mutableMapOf(
@@ -2498,7 +2514,7 @@ class FeedAnalyticTracker
         contentScore: String,
         authorType: String
     ) {
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -2523,7 +2539,7 @@ class FeedAnalyticTracker
         val activityId = feedTrackerData.postId
         val isFollowed = feedTrackerData.isFollowed
         val mediaType = feedTrackerData.mediaType
-        var map = getCommonMap()
+        var map = getCommonMap(authorType = feedTrackerData.authorType)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -2553,10 +2569,11 @@ class FeedAnalyticTracker
 
     private fun getCommonMap(
         category: String = CATEGORY_FEED_TIMELINE,
-        campaignStatus: String = ""
+        campaignStatus: String = "",
+        authorType: String = ""
     ): Map<String, String> {
         return mapOf(
-            KEY_EVENT to getEvent(campaignStatus.isNotEmpty()),
+            KEY_EVENT to getEvent(campaignStatus.isNotEmpty(), authorType),
             KEY_EVENT_CATEGORY to category,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,

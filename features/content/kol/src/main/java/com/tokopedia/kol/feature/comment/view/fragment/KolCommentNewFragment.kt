@@ -264,8 +264,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 authorId,
                 isVideoPost,
                 isFollowed,
-                postType,
-                ""
+                postType
             )
     }
 

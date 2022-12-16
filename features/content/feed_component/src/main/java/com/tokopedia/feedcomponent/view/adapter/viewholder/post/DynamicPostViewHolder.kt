@@ -150,7 +150,8 @@ open class DynamicPostViewHolder(
             element.id,
             element.footer,
             element.template.cardpost.footer,
-            isPostTagAvailable(element.postTag)
+            isPostTagAvailable(element.postTag),
+            element.header.followCta.authorType
         )
         bindTracking(element.impressHolder, element.tracking)
     }
@@ -304,7 +305,7 @@ open class DynamicPostViewHolder(
                             header.editable,
                             true,
                             header.followCta.authorID,
-                            "",
+                            header.followCta.authorType,
                             "",
                             "",
                             caption,
@@ -495,7 +496,8 @@ open class DynamicPostViewHolder(
         id: String,
         footer: Footer,
         template: TemplateFooter,
-        isPostTagAvailable: Boolean
+        isPostTagAvailable: Boolean,
+        authorType: String
     ) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             itemView.footerBackground.visibility = View.GONE
@@ -521,7 +523,8 @@ open class DynamicPostViewHolder(
                         footer.like.isChecked,
                         "",
                         false,
-                        false, "", ""
+                        false, "", "",
+                        authorType = authorType
                     )
                 }
                 itemView.likeText.setOnClickListener {
@@ -530,7 +533,8 @@ open class DynamicPostViewHolder(
                         id.toLongOrZero(),
                         footer.like.isChecked,
                         "",
-                        isFollowed = false, type = false, "", ""
+                        isFollowed = false, type = false, "", "",
+                        authorType = authorType
                     )
                 }
                 bindLike(footer.like)
