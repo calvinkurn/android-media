@@ -77,9 +77,6 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
