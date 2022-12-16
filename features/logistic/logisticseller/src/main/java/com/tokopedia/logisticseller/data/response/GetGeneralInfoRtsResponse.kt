@@ -30,7 +30,9 @@ data class GetGeneralInfoRtsResponse(
 
     data class Image(
         @SerializedName("image_id")
-        val imageId: String = ""
+        val imageId: String? = null,
+        @SerializedName("copy_writing_disclaimer")
+        val imageDisclaimer: String? = null
     ) {
         var urlImage: String = ""
         var accessToken: String = ""

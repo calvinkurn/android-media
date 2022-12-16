@@ -32,6 +32,7 @@ class GetGeneralInfoRtsUseCase @Inject constructor(
                 invoice
                 image {
                   image_id
+                  copy_writing_disclaimer
                 }
                 article_url
               }

@@ -30,7 +30,12 @@ class ReturnToShipperDialog(private val context: Context) {
             primaryCtaText = context.getString(R.string.btn_rts_request),
             secondaryCtaText = context.getString(R.string.btn_rts_help),
             dialogAction = DialogUnify.HORIZONTAL_ACTION,
-            imageType = DialogUnify.WITH_ILLUSTRATION,
+            imageType = if (data.image.imageId.isNullOrBlank()) {
+                DialogUnify.WITH_ICON
+            } else {
+                DialogUnify.WITH_ILLUSTRATION
+            },
+            imageIcon = R.drawable.ic_logisticseller_recshedulepickup_success,
             onPrimaryCTAClickListener = {
                 onPrimaryCTAClickListener.invoke()
             },
@@ -115,13 +120,18 @@ class ReturnToShipperDialog(private val context: Context) {
                             com.tokopedia.unifycomponents.R.drawable.imagestate_error
                         ),
                         onReadyListener = {
-                            setImageDescription(
-                                description = context.getString(R.string.description_success_load_image_rts)
-                            )
+                            imageDisclaimer?.takeIf { it.isNotBlank() }?.apply {
+                                setImageDescription(
+                                    description = imageDisclaimer
+                                )
+                            }
                         },
                         onFailedListener = {
                             setImageDescription(
-                                description = context.getString(R.string.description_failed_load_image_rts)
+                                description = context.getString(
+                                    R.string.description_failed_load_image_rts,
+                                    imageDisclaimer.orEmpty()
+                                )
                             )
                         }
 
@@ -185,7 +195,10 @@ class ReturnToShipperDialog(private val context: Context) {
                 )
             }
 
-            (dialogChild as LinearLayout).addView(tvImageDescription)
+            (dialogChild as LinearLayout).apply {
+                removeAllViews()
+                addView(tvImageDescription)
+            }
         } catch (e: Exception) {
             // no op
         }

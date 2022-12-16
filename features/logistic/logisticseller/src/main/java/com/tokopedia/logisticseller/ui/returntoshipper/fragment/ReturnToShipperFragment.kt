@@ -127,18 +127,22 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
     }
 
     private fun GetGeneralInfoRtsResponse.GeneralInfoRtsData.setUrlImage(): GetGeneralInfoRtsResponse.GeneralInfoRtsData {
-        return this.apply {
-            image.apply {
-                accessToken = userSession.accessToken
-                urlImage = LogisticImageDeliveryHelper.getDeliveryImage(
-                    imageId = image.imageId,
-                    orderId = orderId.toLongOrZero(),
-                    size = LogisticImageDeliveryHelper.IMAGE_LARGE_SIZE,
-                    userId = userSession.userId,
-                    osType = LogisticImageDeliveryHelper.DEFAULT_OS_TYPE,
-                    deviceId = userSession.deviceId
-                )
+        return if (image.imageId?.isNotBlank() == true) {
+            this.apply {
+                image.apply {
+                    accessToken = userSession.accessToken
+                    urlImage = LogisticImageDeliveryHelper.getDeliveryImage(
+                        imageId = image.imageId.orEmpty(),
+                        orderId = orderId.toLongOrZero(),
+                        size = LogisticImageDeliveryHelper.IMAGE_LARGE_SIZE,
+                        userId = userSession.userId,
+                        osType = LogisticImageDeliveryHelper.DEFAULT_OS_TYPE,
+                        deviceId = userSession.deviceId
+                    )
+                }
             }
+        } else {
+            this
         }
     }
 
