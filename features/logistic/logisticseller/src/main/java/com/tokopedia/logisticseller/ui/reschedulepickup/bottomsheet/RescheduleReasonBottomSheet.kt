@@ -88,4 +88,9 @@ class RescheduleReasonBottomSheet : BottomSheetUnify() {
             super.show(this, "")
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
+    }
 }
