@@ -14,10 +14,8 @@ import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.analytics.EMPTY_STRING
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DiscoveryResponse
+import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
-import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
@@ -627,6 +625,10 @@ fun getPageInfo(pageName: String): PageInfo {
         return it.pageInfo
     }
     return PageInfo()
+}
+
+fun getAdditionalInfo(pageName: String): AdditionalInfo? {
+    return discoveryPageData[pageName]?.additionalInfo
 }
 
 fun getMapWithoutRpc(pageName: String): Map<String, String>? {
