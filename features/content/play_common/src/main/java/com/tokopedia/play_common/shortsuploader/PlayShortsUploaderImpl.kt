@@ -1,6 +1,5 @@
 package com.tokopedia.play_common.shortsuploader
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.work.ExistingWorkPolicy
@@ -34,8 +33,6 @@ class PlayShortsUploaderImpl @Inject constructor(
             .observe(owner, Observer {
                 it.firstOrNull()?.let { workInfo ->
                     if(workInfo.state == WorkInfo.State.RUNNING) {
-                        Log.d("<LOG>", it.toString())
-
                         val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
                         val uploadData = PlayShortsUploadModel.parse(workInfo.progress.getString(PlayShortsUploadConst.UPLOAD_DATA).orEmpty())
 
