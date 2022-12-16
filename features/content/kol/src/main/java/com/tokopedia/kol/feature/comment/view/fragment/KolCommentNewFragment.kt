@@ -202,7 +202,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                             isVideoPost,
                             isFollowed,
                             postType,
-                            ""
+                            authorId
                         )
                     adapter?.clearList()
                     presenter.getCommentFirstTime(arguments?.getLong(ARGS_ID) ?: 0)

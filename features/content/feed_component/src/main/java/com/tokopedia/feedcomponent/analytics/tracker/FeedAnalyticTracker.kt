@@ -101,7 +101,7 @@ class FeedAnalyticTracker
 
     private object Event {
         const val CLICK_FEED = "clickFeed"
-        const val CLICK_CONTENT = "clickContentÏ"
+        const val CLICK_CONTENT = "clickContent"
         const val CLICK_SOCIAL_COMMERCE = "clickSocialCommerce"
         const val OPEN_SCREEN = "openScreen"
         const val ADD_TO_CART = "addToCart"
