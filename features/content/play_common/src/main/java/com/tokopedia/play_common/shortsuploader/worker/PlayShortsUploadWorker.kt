@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.work.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.encryption.utils.Utils.decodeDecimalToText
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.play_common.const.PlayUploadSourceIdConst
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.BroadcasterAddMediasUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
@@ -272,7 +274,7 @@ class PlayShortsUploadWorker(
 
     private fun getSourceId(uploadType: UploadType): String {
         return when (uploadType) {
-            UploadType.Image -> UPLOAD_IMAGE_SOURCE_ID
+            UploadType.Image -> PlayUploadSourceIdConst.uploadImageSourceId
             UploadType.Video -> uploadData.shortsVideoSourceId
         }
     }
@@ -288,8 +290,6 @@ class PlayShortsUploadWorker(
     companion object {
         private const val UPLOAD_TYPE_IMAGE = "UPLOAD_TYPE_IMAGE"
         private const val UPLOAD_TYPE_VIDEO = "UPLOAD_TYPE_VIDEO"
-
-        private const val UPLOAD_IMAGE_SOURCE_ID = "jJtrdn"
 
         private const val PROGRESS_MAX = 100
         private const val STEP_WITHOUT_COVER = 5
