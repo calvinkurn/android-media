@@ -35,6 +35,7 @@ class NewDriverAvailabilityUseCase @Inject constructor(
                     order_tx_id
                     available_time
                     invoice
+                    availability_retry
 	            }
             }
         """

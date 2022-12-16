@@ -55,10 +55,7 @@ class FindingNewDriverViewModelTest {
             spyk(NewDriverAvailabilityResponse.NewDriverAvailabilityData())
         val mockResponse = spyk(
             NewDriverAvailabilityResponse(
-                mLogisticNewDriverAvailability =
-                NewDriverAvailabilityResponse.LogisticNewDriverAvailability(
-                    data = newDriverAvailabilityData
-                )
+                data = newDriverAvailabilityData
             )
         )
 
@@ -83,14 +80,7 @@ class FindingNewDriverViewModelTest {
         val orderId = "12345"
         val errorMessage = "error"
         val graphqlError = mockk<GraphqlError>()
-        val mockResponse = spyk(
-            NewDriverAvailabilityResponse(
-                mLogisticNewDriverAvailability =
-                NewDriverAvailabilityResponse.LogisticNewDriverAvailability(
-                    errors = arrayListOf(graphqlError)
-                )
-            )
-        )
+        val mockResponse = spyk(NewDriverAvailabilityResponse())
 
         coEvery { graphqlError.message } returns errorMessage
         coEvery {
@@ -101,9 +91,7 @@ class FindingNewDriverViewModelTest {
 
         verify {
             newDriverAvailabilityObserver.onChanged(
-                NewDriverAvailabilityState.Fail(
-                    errorMessage
-                )
+                NewDriverAvailabilityState.Fail
             )
         }
     }
@@ -121,9 +109,7 @@ class FindingNewDriverViewModelTest {
 
         verify {
             newDriverAvailabilityObserver.onChanged(
-                NewDriverAvailabilityState.Fail(
-                    errorMessage
-                )
+                NewDriverAvailabilityState.Fail
             )
         }
     }
@@ -140,9 +126,7 @@ class FindingNewDriverViewModelTest {
 
         verify {
             newDriverAvailabilityObserver.onChanged(
-                NewDriverAvailabilityState.Fail(
-                    ""
-                )
+                NewDriverAvailabilityState.Fail
             )
         }
     }
@@ -155,9 +139,7 @@ class FindingNewDriverViewModelTest {
             spyk(NewDriverBookingResponse.NewDriverBookingData(message = message))
         val mockResponse = spyk(
             NewDriverBookingResponse(
-                NewDriverBookingResponse.MpLogisticNewDriverBooking(
-                    data = newDriverAvailabilityData
-                )
+                data = newDriverAvailabilityData
             )
         )
 
@@ -181,14 +163,7 @@ class FindingNewDriverViewModelTest {
         val orderId = "12345"
         val errorMessage = "error"
         val graphqlError = mockk<GraphqlError>()
-        val mockResponse = spyk(
-            NewDriverBookingResponse(
-                mpLogisticNewDriverBooking =
-                NewDriverBookingResponse.MpLogisticNewDriverBooking(
-                    errors = arrayListOf(graphqlError)
-                )
-            )
-        )
+        val mockResponse = spyk(NewDriverBookingResponse())
 
         coEvery { graphqlError.message } returns errorMessage
         coEvery {

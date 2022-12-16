@@ -4,6 +4,6 @@ import com.tokopedia.logisticseller.data.model.FindingNewDriverModel
 
 sealed class NewDriverAvailabilityState {
     data class Success(val data: FindingNewDriverModel) : NewDriverAvailabilityState()
-    data class Fail(val errorMessage: String) : NewDriverAvailabilityState()
+    object Fail : NewDriverAvailabilityState()
     object Loading : NewDriverAvailabilityState()
 }

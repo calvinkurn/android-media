@@ -169,7 +169,7 @@ class FindingNewDriverFragment :
         findingNewDriverBottomSheet?.dismiss()
     }
 
-    override fun onFailedGetNewDriverAvailability(errorMessage: String) {
+    override fun onFailedGetNewDriverAvailability() {
         isRequestNewDriver = true
         findingNewDriverBottomSheet?.dismiss()
         showFailedDialog()

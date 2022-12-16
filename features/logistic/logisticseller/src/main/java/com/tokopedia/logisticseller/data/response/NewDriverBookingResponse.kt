@@ -1,19 +1,11 @@
 package com.tokopedia.logisticseller.data.response
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.graphql.data.model.GraphqlError
 
 data class NewDriverBookingResponse(
     @SerializedName("MpLogisticNewDriverBooking")
-    val mpLogisticNewDriverBooking: MpLogisticNewDriverBooking? = null,
+    val data: NewDriverBookingData? = null,
 ) {
-    data class MpLogisticNewDriverBooking(
-        @SerializedName("data")
-        val data: NewDriverBookingData? = null,
-        @SerializedName("errors")
-        val errors: List<GraphqlError>? = null,
-    )
-
     data class NewDriverBookingData(
         @SerializedName("message")
         val message: String = "",
@@ -30,10 +22,4 @@ data class NewDriverBookingResponse(
         @SerializedName("shipper_product_id")
         val shipperProductId: String = "",
     )
-
-    val data: NewDriverBookingData?
-        get() = mpLogisticNewDriverBooking?.data
-
-    val errorMessage: String
-        get() = mpLogisticNewDriverBooking?.errors?.firstOrNull()?.message.orEmpty()
 }

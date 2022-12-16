@@ -15,17 +15,11 @@ class FindingNewDriverMapper @Inject constructor() {
             message = newDriverAvailabilityData.message,
             availableTime = newDriverAvailabilityData.availableTime
         ).apply {
-            TimeZone.setDefault(DateUtil.DEFAULT_TIMEZONE)
-            isEnable = availableTime.isEnable()
+            isEnable = newDriverAvailabilityData.availabilityRetry
             if (isEnable.not()) {
                 calendar = availableTime.convertToCalendar()
             }
         }
-    }
-
-    private fun String.isEnable(): Boolean {
-        val availableTime = toDate("yyyy-MM-dd'T'HH:mm:ssZ")
-        return availableTime.before(DateUtil.getCurrentDate())
     }
 
     private fun String.convertToCalendar(): Calendar {

@@ -45,12 +45,11 @@ class FindingNewDriverViewModel @Inject constructor(
                         _newDriverAvailability.value = NewDriverAvailabilityState.Success(this)
                     }
                 } ?: run {
-                    _newDriverAvailability.value =
-                        NewDriverAvailabilityState.Fail(response.errorMessage)
+                    _newDriverAvailability.value = NewDriverAvailabilityState.Fail
                 }
             },
             onError = {
-                _newDriverAvailability.value = NewDriverAvailabilityState.Fail(it.message.orEmpty())
+                _newDriverAvailability.value = NewDriverAvailabilityState.Fail
             }
         )
     }
