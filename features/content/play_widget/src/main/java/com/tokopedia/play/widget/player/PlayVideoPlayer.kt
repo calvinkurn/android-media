@@ -71,10 +71,6 @@ open class PlayVideoPlayer(val context: Context) {
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl), shouldCache)
 
         exoPlayer.playWhenReady = true
-        trackSelector.apply {
-            parameters = DefaultTrackSelector.ParametersBuilder(context)
-                .setForceLowestBitrate(shouldForceLowest).build()
-        }
         exoPlayer.prepare(mediaSource,true, false)
     }
 
