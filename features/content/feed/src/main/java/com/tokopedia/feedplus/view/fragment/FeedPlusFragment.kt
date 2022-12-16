@@ -486,7 +486,7 @@ class FeedPlusFragment :
                                     data.errorMessage =
                                         getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_fail_toast)
                                 }
-                                }onErrorFollowUnfollowKol(data)
+                                onErrorFollowUnfollowKol(data)
                             }
                         }
                         is Fail -> {
