@@ -472,10 +472,10 @@ class FeedPlusFragment :
                                             feedFollowersOnlyBottomSheet?.dismiss()
                                         }
                                     }
-                                } else {
-                                    val messageRes =
-                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
-                                    showToast(getString(messageRes), Toaster.TYPE_NORMAL)
+                                } else {val messageRes =
+                                    if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
+                                           showToast(getString(messageRes), Toaster.TYPE_NORMAL
+                                        )
                                 }
                                 onSuccessFollowUnfollowKol(data.rowNumber)
                             } else {
@@ -901,19 +901,13 @@ class FeedPlusFragment :
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed()) {
-                        when (newState) {
-                            RecyclerView.SCROLL_STATE_IDLE -> {
-                                var position = getCurrentPosition()
-                                FeedScrollListenerNew.onFeedScrolled(
-                                    recyclerView,
-                                    adapter.getList()
-                                )
-                            }
-                        }
+                    if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        FeedScrollListenerNew.onFeedScrolled(
+                            recyclerView,
+                            adapter.getList()
+                        )
                     }
-                } catch (e: IndexOutOfBoundsException) {
-                }
+                } catch (e: Exception) { }
             }
         })
 
@@ -957,8 +951,8 @@ class FeedPlusFragment :
 
         TopAdsHeadlineActivityCounter.page = 1
         Toaster.onCTAClick = View.OnClickListener { }
-        recyclerView.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
         feedFloatingButtonManager.cancel()
+        recyclerView.clearOnScrollListeners()
     }
 
     override fun onInfoClicked() {
@@ -1930,7 +1924,7 @@ class FeedPlusFragment :
                 contentSlotValue = getContentScoreFromPosition(positionInFeed)
             ),
             doubleTap = type,
-            isLiked = isLiked
+            isLiked = !isLiked
 
         )
         if (isLiked) {
