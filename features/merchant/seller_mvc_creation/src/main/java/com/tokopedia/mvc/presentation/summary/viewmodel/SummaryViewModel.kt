@@ -7,19 +7,21 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
+import com.tokopedia.mvc.domain.usecase.CreateCouponFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class SummaryViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase,
-    private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase
+    private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase,
+    private val createCouponFacadeUseCase: CreateCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _error = MutableLiveData<Throwable>()
@@ -87,6 +89,23 @@ class SummaryViewModel @Inject constructor(
                         imageRatio
                     )
                 _couponImage.postValue(result)
+            },
+            onError = {
+                _error.postValue(it)
+            }
+        )
+    }
+
+    fun addCoupon() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = createCouponFacadeUseCase.execute(
+                    configuration.value ?: return@launchCatchError,
+                    products.value ?: return@launchCatchError,
+                    ""
+                )
+                _error.postValue(MessageErrorException("Sukses"))
             },
             onError = {
                 _error.postValue(it)

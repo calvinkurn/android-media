@@ -232,6 +232,9 @@ class SummaryFragment :
         tfTnc.setOnClickListener {
             routeToUrl(TNC_LINK)
         }
+        btnSubmit.setOnClickListener {
+            viewModel.addCoupon()
+        }
     }
 
     private fun SmvcVoucherDetailVoucherSettingSectionBinding.updatePageData(

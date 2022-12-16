@@ -4,15 +4,20 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.INTEGER_MILLION
 import com.tokopedia.kotlin.extensions.view.INTEGER_THOUSAND
 import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.source.ImageGeneratorRemoteDataSource
+import com.tokopedia.mvc.domain.entity.CreateCouponProductParams
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.usecase.CreateCouponProductUseCase
 import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
+import com.tokopedia.utils.date.DateUtil.HH_MM
+import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD
 import javax.inject.Inject
 
 class GetCouponImagePreviewFacadeMapper @Inject constructor() {
@@ -24,11 +29,62 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
         private const val FORMATTED_RATIO_SQUARE = "square"
         private const val FORMATTED_RATIO_VERTICAL = "vertical"
         private const val FORMATTED_RATIO_HORIZONTAL = "horizontal"
+        private const val CREATION_SOURCE = "android-sellerapp"
+        private const val SERVER_VALUE_TRUE = 1
+        private const val SERVER_VALUE_FALSE = 0
+        private const val DEFAULT_DELIMITER = ","
+        private const val BENEFIT_TYPE_IDR = "idr"
+        private const val BENEFIT_TYPE_PERCENT = "percent"
     }
 
     fun mapToPreviewImageParam(
         param: GetCouponImagePreviewFacadeUseCase.GenerateCouponImageParam
     ) = param.toPreviewImageParam()
+
+    fun mapToCreateCouponProductParam(useCaseParam: CreateCouponProductUseCase.CreateCouponUseCaseParam): CreateCouponProductParams {
+        with (useCaseParam) {
+            val isPublic = if (voucherConfiguration.isVoucherPublic) SERVER_VALUE_TRUE else SERVER_VALUE_FALSE
+            val isVoucherProduct = if (voucherConfiguration.isVoucherProduct) SERVER_VALUE_TRUE else SERVER_VALUE_FALSE
+            val startDate = voucherConfiguration.startPeriod.formatTo(YYYY_MM_DD)
+            val startHour = voucherConfiguration.startPeriod.formatTo(HH_MM)
+            val endDate = voucherConfiguration.endPeriod.formatTo(YYYY_MM_DD)
+            val endHour = voucherConfiguration.endPeriod.formatTo(HH_MM)
+            val benefitType = when {
+                voucherConfiguration.promoType == PromoType.FREE_SHIPPING -> BENEFIT_TYPE_IDR
+                voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.NOMINAL -> BENEFIT_TYPE_IDR
+                voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
+                else -> BENEFIT_TYPE_IDR
+            }
+
+            val couponType = voucherConfiguration.getBenefitType()
+
+            return CreateCouponProductParams(
+                benefitIdr = voucherConfiguration.benefitIdr,
+                benefitMax = voucherConfiguration.benefitMax,
+                benefitPercent = voucherConfiguration.benefitPercent,
+                benefitType = benefitType,
+                code = voucherConfiguration.voucherCode,
+                couponName = voucherConfiguration.voucherName,
+                couponType = couponType,
+                dateStart = startDate,
+                dateEnd = endDate,
+                hourStart = startHour,
+                hourEnd = endHour,
+                image = imageUrl,
+                imageSquare = imageSquare,
+                imagePortrait = imagePortrait,
+                isPublic = isPublic,
+                minPurchase = voucherConfiguration.minPurchase,
+                quota = voucherConfiguration.quota,
+                token = token,
+                source = CREATION_SOURCE,
+                targetBuyer = voucherConfiguration.targetBuyer.id,
+                isLockToProduct = isVoucherProduct,
+                productIds = couponProducts.joinToString(DEFAULT_DELIMITER) { it.parentProductId.toString() },
+                warehouseId = warehouseId.toLongOrZero()
+            )
+        }
+    }
 
     fun GetCouponImagePreviewFacadeUseCase.GenerateCouponImageParam.toPreviewImageParam(): ImageGeneratorRemoteDataSource.PreviewImageParam {
         val startTime = voucherConfiguration.startPeriod.formatTo(DEFAULT_VIEW_FORMAT)
