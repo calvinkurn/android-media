@@ -5,14 +5,10 @@ import com.tokopedia.mvc.presentation.intro.adapter.factory.MvcIntroAdapterFacto
 
 data class VoucherTypeUiModel(
     val title: String,
-    val list: List<VoucherTypeCardData> = emptyList()
+    val list: List<VoucherIntroTypeData> = emptyList()
 ) : Visitable<MvcIntroAdapterFactory> {
     override fun type(typeFactory: MvcIntroAdapterFactory): Int {
         return typeFactory.type(this)
     }
-    data class VoucherTypeCardData(
-        val benefitTitle: String = "",
-        val benefitSubtitle: String = "",
-        val benefitImageUrl: String = ""
-    )
+
 }

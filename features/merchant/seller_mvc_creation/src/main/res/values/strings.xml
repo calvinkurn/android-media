@@ -372,5 +372,10 @@
     <string name="smvc_intro_coupon_type_card_1_subtitle">Kupon dapat dipasang ke semua produk yang ada di tokomu.</string>
     <string name="smvc_intro_coupon_type_card_2_title">Kupon Produk</string>
     <string name="smvc_intro_coupon_type_card_2_subtitle">Kupon dapat dipasang ke produk-produk tertentu yang kamu pilih.</string>
+    <string name="smvc_intro_coupon_type_choice_of_target">Pilihan target pembeli yang bisa menggunakan kuponmu</string>
+    <string name="smvc_intro_coupon_type_choice_of_target_card_1_title">Semua Pembeli</string>
+    <string name="smvc_intro_coupon_type_choice_of_target_card_1_subtitle">Kupon yang kamu buat bisa digunakan oleh semua pembeli untuk belanja di tokomu.</string>
+    <string name="smvc_intro_coupon_type_choice_of_target_card_2_title">Follower Baru</string>
+    <string name="smvc_intro_coupon_type_choice_of_target_card_2_subtitle">Kupon yang kamu buat hanya bisa digunakan oleh follower baru untuk belanja di tokomu.</string>
 
 </resources>
