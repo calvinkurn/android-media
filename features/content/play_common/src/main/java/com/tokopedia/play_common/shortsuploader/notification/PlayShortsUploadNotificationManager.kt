@@ -185,9 +185,9 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             append(TokopediaUrl.getInstance().WEB)
             append(PLAY_ROOM_PATH)
             append(uploadData?.shortsId.orEmpty())
-            append("?")
+            append(PATH_DIVIDER)
             append("$SOURCE_TYPE=${getSourceType()}")
-            append("&")
+            append(QUERY_DIVIDER)
             append("$SOURCE_ID=${uploadData?.authorId.orEmpty()}")
         }
     }
@@ -210,7 +210,6 @@ class PlayShortsUploadNotificationManager @Inject constructor(
 
         const val NOTIFICATION_SUCCESS_TITLE = "Yay, videomu berhasil di-upload!"
         const val NOTIFICATION_SUCCESS_DESCRIPTION = "Lihat videomu di sini, yuk!"
-        const val NOTIFICATION_SUCCESS_ACTION_TEXT = "Lihat"
 
         const val NOTIFICATION_FAIL_TITLE = "Oops, gagal upload video"
         const val NOTIFICATION_FAIL_DESCRIPTION = "Tenang, kamu masih bisa coba upload videonya lagi."
@@ -222,6 +221,9 @@ class PlayShortsUploadNotificationManager @Inject constructor(
 
 
         /** Web Link Const */
+        const val PATH_DIVIDER = "?"
+        const val QUERY_DIVIDER = "&"
+
         const val PLAY_ROOM_PATH = "play/channel/"
         const val CONTENT_USER = "content-user"
         const val CONTENT_SHOP = "content-shop"
