@@ -43,6 +43,7 @@ allprojects {
         }
         flatDir {
             dirs rootProject.file('aars')
+            dirs rootProject.file('libraries/liveness_lib/libs')
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }

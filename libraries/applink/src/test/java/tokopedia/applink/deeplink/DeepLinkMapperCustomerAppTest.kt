@@ -2344,6 +2344,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check KYC_FORM_ONLY_WITH_PARAM`() {
+        val dl = UriUtil.buildUri(ApplinkConst.KYC_FORM_ONLY, "1", "true", "true", "1")
+        assertEqualsDeepLinkMapper(dl, "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-only?projectId=1&showIntro=true&redirectUrl=true&type=1")
+    }
+
+    @Test
     fun `check NOTIFICATION customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/inbox?page=notification&show_bottom_nav=false"
