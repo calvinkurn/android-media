@@ -68,6 +68,7 @@ const val EPHARMACY_TICKER_BACKGROUND = "https://images.tokopedia.net/img/androi
 
 enum class EPharmacyConsultationStatus(val status: Int) {
     EXPIRED(0),
+    ACTIVE(1),
     APPROVED(2),
     REJECTED(4),
     DOCTOR_NOT_AVAILABLE(5)

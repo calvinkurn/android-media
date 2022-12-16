@@ -358,28 +358,29 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         if (hasAnyError()) {
             showToast(TYPE_ERROR, context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_local_prescription_not_uploaded_error) ?: "")
             updateUi()
+            return
+        }
+
+        EPharmacyMiniConsultationAnalytics.clickCTAButton("${ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.toaster?.message}", ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString())
+        if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
+            activity?.setResult(
+                EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
+                Intent().apply {
+                    putParcelableArrayListExtra(
+                        EPHARMACY_CONSULTATION_RESULT_EXTRA,
+                        ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
+                    )
+                }
+            )
+            activity?.finish()
+        } else if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CART_APPLINK)) {
+            activity?.setResult(
+                EPHARMACY_REDIRECT_CART_RESULT_CODE,
+                Intent()
+            )
+            activity?.finish()
         } else {
-            EPharmacyMiniConsultationAnalytics.clickCTAButton("${ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.toaster?.message}", ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString())
-            if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
-                activity?.setResult(
-                    EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
-                    Intent().apply {
-                        putParcelableArrayListExtra(
-                            EPHARMACY_CONSULTATION_RESULT_EXTRA,
-                            ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
-                        )
-                    }
-                )
-                activity?.finish()
-            } else if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CART_APPLINK)) {
-                activity?.setResult(
-                    EPHARMACY_REDIRECT_CART_RESULT_CODE,
-                    Intent()
-                )
-                activity?.finish()
-            } else {
-                RouteManager.route(activity, appLink)
-            }
+            RouteManager.route(activity, appLink)
         }
     }
 
@@ -387,7 +388,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         var isError = false
         ePharmacyAttachmentUiUpdater.mapOfData.forEach { entry ->
             (entry.value as? EPharmacyAttachmentDataModel)?.let { ePharmacyAttachmentDataModel ->
-                if (EPharmacyUtils.checkIsError(ePharmacyAttachmentDataModel)) {
+                if (ePharmacyAttachmentDataModel.showUploadWidget && EPharmacyUtils.checkIsError(ePharmacyAttachmentDataModel)) {
                     val updated = (entry.value as EPharmacyAttachmentDataModel).copy()
                     updated.isError = true
                     if (!isError) {
@@ -437,11 +438,17 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     override fun onError(adapterPosition: Int, modelKey: String?) {
         super.onError(adapterPosition, modelKey)
         val updated = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).copy()
-        updated.isError = false
         if (updated.isFirstError) {
             ePharmacyRecyclerView?.smoothScrollToPosition(adapterPosition)
         }
+    }
+
+    override fun onEndAnimation(adapterPosition: Int, modelKey: String?) {
+        super.onEndAnimation(adapterPosition, modelKey)
+        val updated = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).copy()
+        updated.isFirstError = false
         ePharmacyAttachmentUiUpdater.updateModel(updated)
+        updateUi()
     }
 
     override fun onToast(toasterType: Int, message: String) {

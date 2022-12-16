@@ -15,6 +15,7 @@ import com.tokopedia.epharmacy.adapters.EPharmacyAttachmentProductAccordionAdapt
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
@@ -75,7 +76,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderError() {
-        if (dataModel?.isError == true) {
+        if (dataModel?.isError == true && dataModel?.showUploadWidget == true && EPharmacyUtils.checkIsError(dataModel)) {
             containerUploadPrescription.setBackgroundResource(com.tokopedia.epharmacy.R.drawable.epharmacy_bg_rounded_red)
             if (dataModel?.isFirstError == true) {
                 chatDokterUploadLayout.animate()
@@ -85,7 +86,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationStart(animator: Animator) {}
                         override fun onAnimationEnd(animator: Animator) {
-                            dataModel?.isError = false
+                            ePharmacyListener?.onEndAnimation(bindingAdapterPosition, dataModel?.name)
                         }
 
                         override fun onAnimationCancel(animator: Animator) {}

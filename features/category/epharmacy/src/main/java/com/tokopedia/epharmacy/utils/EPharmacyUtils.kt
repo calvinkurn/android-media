@@ -18,26 +18,24 @@ object EPharmacyUtils {
         }
     }
 
-    fun checkIsError(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
+    fun checkIsError(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel?): Boolean {
         return (
-            (
-                checkIsErrorForConsultationData(ePharmacyAttachmentDataModel) ||
+            (   ePharmacyAttachmentDataModel != null &&
+                checkIsErrorForConsultationData(ePharmacyAttachmentDataModel) &&
                     checkIsErrorForPrescriptionImages(ePharmacyAttachmentDataModel)
-                ) &&
-                ePharmacyAttachmentDataModel.showUploadWidget
+                )
             )
     }
 
     private fun checkIsErrorForConsultationData(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
-        return ePharmacyAttachmentDataModel.consultationData != null &&
-            (
-                ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.APPROVED.status &&
-                    ePharmacyAttachmentDataModel.consultationStatus != EPharmacyConsultationStatus.EXPIRED.status
-                )
+        return (ePharmacyAttachmentDataModel.consultationData == null ||
+                !arrayListOf(EPharmacyConsultationStatus.APPROVED.status,
+                    EPharmacyConsultationStatus.REJECTED.status)
+                    .contains(ePharmacyAttachmentDataModel.consultationStatus))
     }
 
     private fun checkIsErrorForPrescriptionImages(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
-        return ePharmacyAttachmentDataModel.consultationData == null && ePharmacyAttachmentDataModel.prescriptionImages?.isEmpty() == true
+        return ePharmacyAttachmentDataModel.prescriptionImages?.isEmpty() == true
     }
 
     fun formatDateToLocal(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): Date? {

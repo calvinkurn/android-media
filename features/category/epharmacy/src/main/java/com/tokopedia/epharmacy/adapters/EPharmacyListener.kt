@@ -26,5 +26,7 @@ interface EPharmacyListener {
 
     fun onError(adapterPosition: Int, modelKey: String?) {}
 
+    fun onEndAnimation(adapterPosition: Int, modelKey: String?) {}
+
     fun onToast(toasterType: Int, message: String) {}
 }
