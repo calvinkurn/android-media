@@ -4,11 +4,15 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.tokofood.common.constants.LottieUrl
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
+import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderStatusResponse
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StepperStatusUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TickerInfoData
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -43,6 +47,35 @@ abstract class OrderDetailSectionCommon {
             goFoodOrderNumber = invoice.gofoodOrderNumber.orEmpty(),
             paymentDate = paymentDate
         )
+    }
+
+    fun mapToDriverSectionUiModel(
+        driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails?,
+        orderStatus: TokoFoodOrderDetailResponse.TokofoodOrderDetail.OrderStatus,
+        invoice: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Invoice
+    ): DriverSectionUiModel? {
+        return if (driverDetails != null) {
+            val isCallable = orderStatus.status !in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
+            return DriverSectionUiModel(
+                driverInformationList = mapToDriverInformationList(driverDetails.karma),
+                name = driverDetails.name,
+                photoUrl = driverDetails.photoUrl,
+                licensePlateNumber = driverDetails.licensePlateNumber,
+                isCallable = isCallable,
+                isEnableChat = orderStatus.isEnableChatButton,
+                goFoodOrderNumber = invoice.gofoodOrderNumber.orEmpty(),
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun mapToDriverInformationList(
+        karma: List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails.Karma>?
+    ): List<DriverInformationUiModel> {
+        return karma?.map {
+            DriverInformationUiModel(iconInformationUrl = it.icon, informationName = it.message)
+        }.orEmpty()
     }
 
     private fun getOrderStatusLottieUrl(orderStatus: String): String {

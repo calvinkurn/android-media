@@ -29,7 +29,7 @@ internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>
 private fun createSmallProductCard(): ProductCardModel {
     return ProductCardModel(
             productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
     )
 }
@@ -38,7 +38,7 @@ private fun createCarouselProductCardGridBO(): List<ProductCardModel> {
     return mutableListOf<ProductCardModel>().also {
         it.add(ProductCardModel(
                 productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-                productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                 formattedPrice = "Rp7.999.000",
                 countSoldRating = "5.0",
                 labelGroupList = listOf(
@@ -58,7 +58,7 @@ private fun createCarouselProductCardGridCountSoldRating(): List<ProductCardMode
     return mutableListOf<ProductCardModel>().also {
         it.add(ProductCardModel(
                 productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-                productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                 formattedPrice = "Rp7.999.000",
                 countSoldRating = "5.0",
                 hasThreeDots = true,
@@ -75,7 +75,7 @@ private fun createCarouselProductCardGridLabelIntegrity(): List<ProductCardModel
     return mutableListOf<ProductCardModel>().also {
         it.add(ProductCardModel(
                 productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-                productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                 formattedPrice = "Rp7.999.000",
                 labelGroupList = listOf(
                         LabelGroup(position = "integrity", title = "Terjual 122", type = "#ae31353b"),
@@ -94,7 +94,7 @@ private fun createCarouselProductCardGridCountSoldRatingAndIntegrity(): List<Pro
     return mutableListOf<ProductCardModel>().also {
         it.add(ProductCardModel(
                 productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-                productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                 formattedPrice = "Rp7.999.000",
                 labelGroupList = listOf(
                         LabelGroup(position = "integrity", title = "Terjual 122", type = "#ae31353b"),
@@ -114,7 +114,7 @@ private fun createCarouselProductCardGridRatingAndIntegrity(): List<ProductCardM
     return mutableListOf<ProductCardModel>().also {
         it.add(ProductCardModel(
                 productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-                productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                 formattedPrice = "Rp7.999.000",
                 labelGroupList = listOf(
                         LabelGroup(position = "integrity", title = "Terjual 122", type = "#ae31353b"),
@@ -135,10 +135,10 @@ private fun createCarouselProductCardGridShopLocation(): List<ProductCardModel> 
     return mutableListOf<ProductCardModel>().also {
         it.add(ProductCardModel(
                 productName = "Shop Location test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
-                productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                 formattedPrice = "Rp7.999.000",
                 shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                    badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                    badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
                 },
                 shopLocation = "DKI Jakarta",
                 countSoldRating = "4.8",
@@ -169,22 +169,22 @@ private fun createCarouselProductCardGrid(): List<ProductCardModel> {
 private fun createProductCardMaxInfoAndLabel(): ProductCardModel {
     productCardNameSuffix += 1
 
-    val labelCampaign = LabelGroup(position = "campaign", title = "WIB", imageUrl = "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png")
+    val labelCampaign = LabelGroup(position = "campaign", title = "WIB", imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png")
     val labelProductStatus = LabelGroup(position = "status", title = "Preorder", type = "darkGrey")
     val labelPrice = LabelGroup(position = "price", title = "Grosir", type = "lightGreen")
     val labelGimmick = LabelGroup(position = "gimmick", title = "Best Seller", type = "#FF8B00")
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             ratingCount = 4,
             reviewCount = 60,
-            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
             isTopAds = true,
             hasThreeDots = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
@@ -201,15 +201,15 @@ private fun createProductCardTwoLinesProductName(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             ratingCount = 4,
             reviewCount = 60,
-            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
             hasThreeDots = true
     )
 }
@@ -219,10 +219,10 @@ private fun createProductCardWithSlashPrice(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Slash price",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             ratingCount = 4,
@@ -236,10 +236,10 @@ private fun createProductCardOneLineProductName(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Product name",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             hasThreeDots = true
@@ -289,15 +289,15 @@ private fun createProductCardMaxInfoAndLabelATC(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             ratingCount = 4,
             reviewCount = 60,
-            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
             isTopAds = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
@@ -313,15 +313,15 @@ private fun createProductCardTwoLinesProductNameATC(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             ratingCount = 4,
             reviewCount = 60,
-            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
             hasAddToCartButton = true
     )
 }
@@ -331,10 +331,10 @@ private fun createProductCardWithSlashPriceATC(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Slash price",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             ratingCount = 4,
@@ -348,10 +348,10 @@ private fun createProductCardOneLineProductNameATC(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Product name",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             hasAddToCartButton = true
@@ -366,10 +366,10 @@ private fun createProductCardBestSellerLabel(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Best seller label test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             countSoldRating = "4.8",
@@ -382,14 +382,14 @@ private fun createProductCardLabelETA(): ProductCardModel {
 
     return ProductCardModel(
             productName = "$productCardNameSuffix Label ETA Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
-                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
             countSoldRating = "4.5",
-            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
             labelGroupList = listOf(
                     LabelGroup(position = "eta", title = "Tiba 28 Feb - 1 Mar", type = "textDarkGrey")
             ),
@@ -400,7 +400,7 @@ private fun createCarouselProductCardGridLabelCategory(): List<ProductCardModel>
     return listOf(
         ProductCardModel(
                 productName = "Label Category test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
-                productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                 formattedPrice = "Rp7.999.000",
                 labelGroupList = listOf(
                         LabelGroup(position = "category", title = "Halal", type = "textGreen"),
@@ -418,7 +418,7 @@ private fun createCarouselProductCardGridLabelCostPerUnit(): List<ProductCardMod
     return listOf(
             ProductCardModel(
                     productName = "Label Cost per Unit test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
-                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                     formattedPrice = "Rp7.999.000",
                     labelGroupList = listOf(
                             LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
@@ -436,7 +436,7 @@ private fun createCarouselProductCardGridLabelCategoryAndCostPerUnit(): List<Pro
     return listOf(
             ProductCardModel(
                     productName = "Label Category & Cost per Unit test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
-                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                     formattedPrice = "Rp7.999.000",
                     labelGroupList = listOf(
                             LabelGroup(position = "category", title = "Halal", type = "textGreen"),
@@ -455,7 +455,7 @@ private fun createCarouselProductCardGridATCNonVariant(): List<ProductCardModel>
     return listOf(
             ProductCardModel(
                     productName = "Add To Cart Non Variant with button",
-                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                     formattedPrice = "Rp7.999.000",
                     labelGroupList = listOf(
                             LabelGroup(position = "category", title = "Halal", type = "textGreen"),
@@ -469,7 +469,7 @@ private fun createCarouselProductCardGridATCNonVariant(): List<ProductCardModel>
             ),
             ProductCardModel(
                     productName = "Add To Cart Non Variant with Qty editor",
-                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                     formattedPrice = "Rp7.999.000",
                     labelGroupList = listOf(
                             LabelGroup(position = "category", title = "Halal", type = "textGreen"),
@@ -493,7 +493,7 @@ private fun createCarouselProductCardGridAddVariant(): List<ProductCardModel> {
     return listOf(
             ProductCardModel(
                     productName = "Add To Cart Variant with button",
-                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                     formattedPrice = "Rp7.999.000",
                     labelGroupList = listOf(
                             LabelGroup(position = "category", title = "Halal", type = "textGreen"),
@@ -503,7 +503,7 @@ private fun createCarouselProductCardGridAddVariant(): List<ProductCardModel> {
             ),
             ProductCardModel(
                     productName = "Add To Cart Non with quantity",
-                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
                     formattedPrice = "Rp7.999.000",
                     labelGroupList = listOf(
                             LabelGroup(position = "category", title = "Halal", type = "textGreen"),
@@ -523,7 +523,7 @@ private fun createCarouselProductCardStockBarAndAddToCartNonVariant(): List<Prod
     return listOf(
         ProductCardModel(
             productName = "Product Card with Stock bar and non variant ATC",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             labelGroupList = listOf(
                 LabelGroup(position = "category", title = "Halal", type = "textGreen"),
@@ -531,7 +531,7 @@ private fun createCarouselProductCardStockBarAndAddToCartNonVariant(): List<Prod
                 LabelGroup(position = "integrity", title = "Terjual 511", type = "textDarkGrey"),
             ),
             countSoldRating = "4.5",
-            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
             nonVariant = ProductCardModel.NonVariant(quantity = 0, minQuantity = 1, maxQuantity = 3),
             stockBarLabel = "Segera Habis",
             stockBarPercentage = 80,
@@ -539,7 +539,7 @@ private fun createCarouselProductCardStockBarAndAddToCartNonVariant(): List<Prod
         ),
         ProductCardModel(
             productName = "Product Card with Stock bar and non variant ATC",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             nonVariant = ProductCardModel.NonVariant(quantity = 2, minQuantity = 1, maxQuantity = 3),
             stockBarLabel = "Tersedia",
@@ -548,7 +548,7 @@ private fun createCarouselProductCardStockBarAndAddToCartNonVariant(): List<Prod
         ),
         ProductCardModel(
             productName = "Product Card with Stock bar and non variant ATC",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             nonVariant = ProductCardModel.NonVariant(quantity = 2, minQuantity = 1, maxQuantity = 3),
             stockBarLabel = "Tersedia",
@@ -565,7 +565,7 @@ private fun createCarouselProductCardStockBarAndAddToCartVariant(): List<Product
     return listOf(
         ProductCardModel(
             productName = "Product Card with Stock bar and variant ATC",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             labelGroupList = listOf(
                 LabelGroup(position = "category", title = "Halal", type = "textGreen"),
@@ -573,7 +573,7 @@ private fun createCarouselProductCardStockBarAndAddToCartVariant(): List<Product
                 LabelGroup(position = "integrity", title = "Terjual 511", type = "textDarkGrey"),
             ),
             countSoldRating = "4.5",
-            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
             variant = ProductCardModel.Variant(quantity = 0),
             stockBarLabel = "Segera Habis",
             stockBarPercentage = 80,
@@ -581,7 +581,7 @@ private fun createCarouselProductCardStockBarAndAddToCartVariant(): List<Product
         ),
         ProductCardModel(
             productName = "Product Card with Stock bar and variant ATC",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             variant = ProductCardModel.Variant(quantity = 2),
             stockBarLabel = "Tersedia",
@@ -590,7 +590,7 @@ private fun createCarouselProductCardStockBarAndAddToCartVariant(): List<Product
         ),
         ProductCardModel(
             productName = "Product Card with Stock bar and variant ATC",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             variant = ProductCardModel.Variant(quantity = 100),
             stockBarLabel = "Tersedia",
@@ -607,7 +607,7 @@ private fun createCarouselShortProductCardWithStockBar(): List<ProductCardModel>
     return listOf(
         ProductCardModel(
             productName = "Short name 1",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             variant = ProductCardModel.Variant(quantity = 0),
             stockBarLabel = "Segera Habis",
@@ -616,7 +616,7 @@ private fun createCarouselShortProductCardWithStockBar(): List<ProductCardModel>
         ),
         ProductCardModel(
             productName = "Short name 2",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             variant = ProductCardModel.Variant(quantity = 2),
             stockBarLabel = "Tersedia",
@@ -625,7 +625,7 @@ private fun createCarouselShortProductCardWithStockBar(): List<ProductCardModel>
         ),
         ProductCardModel(
             productName = "Short name 3",
-            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             variant = ProductCardModel.Variant(quantity = 100),
             stockBarLabel = "Tersedia",

@@ -24,7 +24,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.videoplayer.utils.showToast
+import com.tokopedia.kotlin.extensions.view.showToast
 
 /**
  * @author by yfsx on 17/05/19.

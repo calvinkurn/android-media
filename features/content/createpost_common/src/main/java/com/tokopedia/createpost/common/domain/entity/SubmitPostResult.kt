@@ -1,7 +1,5 @@
 package com.tokopedia.createpost.common.domain.entity
 
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
-
 /**
  * Created By : Jonathan Darwin on October 13, 2022
  */

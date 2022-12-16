@@ -39,6 +39,7 @@
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:toolbarInitialTheme = "light"
+            app:toolbarInitialFillColor="transparent"
             app:toolbarDefaultHint = "@string/discovery_default_search_title"
             app:toolbarContentType="typeSearchbar"
             app:toolbarBackButton="back"

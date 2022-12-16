@@ -57,7 +57,7 @@ class ProductGeneralInfoViewHolder(
     }
 
     private fun shouldRenderView(element: ProductGeneralInfoDataModel): Boolean {
-        return element.subtitle.isNotEmpty() || element.title.isNotEmpty()
+        return !element.isPlaceholder && (element.subtitle.isNotEmpty() || element.title.isNotEmpty())
     }
 
     /**
@@ -69,6 +69,7 @@ class ProductGeneralInfoViewHolder(
         }
 
         view.setOnClickListener {
+            if (!element.isApplink) return@setOnClickListener
             listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
         }
     }
@@ -85,9 +86,8 @@ class ProductGeneralInfoViewHolder(
      * render content each widget
      */
     private fun renderContent(
-        element: ProductGeneralInfoDataModel,
+        element: ProductGeneralInfoDataModel
     ) = with(binding) {
-
         pdpSee.showWithCondition(element.isApplink)
 
         val icon = element.getIconUrl(isDarkModel = binding.root.context.isDarkMode())
@@ -128,7 +128,7 @@ class ProductGeneralInfoViewHolder(
                     right = Int.ZERO,
                     bottom = Int.ZERO
                 )
-            } else if(element.applink.isNotBlank()) { // when appLink is available & partner logo is NOT available
+            } else if (element.applink.isNotBlank()) { // when appLink is available & partner logo is NOT available
                 // set description margin right to parent with 0dp value
                 binding.pdpInfoDesc.setMargin(
                     left = Int.ZERO,

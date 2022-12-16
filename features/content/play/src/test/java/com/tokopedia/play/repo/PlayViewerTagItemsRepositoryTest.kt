@@ -1,7 +1,7 @@
 package com.tokopedia.play.repo
 
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.model.response.*
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.CheckUpcomingCampaign
@@ -14,26 +14,19 @@ import com.tokopedia.play.domain.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.ModelBuilder
-import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.util.*
-import com.tokopedia.play.view.type.MerchantVoucherType
-import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.test.runBlockingTest
-import net.bytebuddy.matcher.ElementMatchers.any
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -52,16 +45,14 @@ class PlayViewerTagItemsRepositoryTest {
 
     private val testDispatcher = coroutineTestRule.dispatchers
 
-//    private val mockMapper: PlayUiModelMapper = mockk(relaxed = true)
-
     private val mockGetProductTagUseCase: GetProductTagItemSectionUseCase = mockk(relaxed = true)
     private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val mockAddToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val mockCheckUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase = mockk(relaxed = true)
     private val mockPostUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
+    private val mockAtcOcc: AddToCartOccMultiUseCase = mockk(relaxed = true)
 
     private val modelBuilder = ModelBuilder()
-    private val uiBuilder = UiModelBuilder.get()
 
     private val campaignId: String = 105L.toString()
 
@@ -72,14 +63,15 @@ class PlayViewerTagItemsRepositoryTest {
     @Before
     fun setUp(){
         tagItemRepo = PlayViewerTagItemRepositoryImpl(
-            mockGetProductTagUseCase,
-            mockGetProductVariantUseCase,
-            mockAddToCartUseCase,
-            mockCheckUpcomingCampaignReminderUseCase,
-            mockPostUpcomingCampaignReminderUseCase,
-            mockMapper,
-            mockUserSession,
-            testDispatcher
+            getProductTagItemsUseCase = mockGetProductTagUseCase,
+            getProductVariantUseCase = mockGetProductVariantUseCase,
+            addToCartUseCase = mockAddToCartUseCase,
+            checkUpcomingCampaignReminderUseCase = mockCheckUpcomingCampaignReminderUseCase,
+            postUpcomingCampaignReminderUseCase = mockPostUpcomingCampaignReminderUseCase,
+            atcOccUseCase = mockAtcOcc,
+            mapper = mockMapper,
+            userSession = mockUserSession,
+            dispatchers = testDispatcher
         )
     }
 
@@ -246,7 +238,6 @@ class PlayViewerTagItemsRepositoryTest {
             response.voucher.voucherList.first().assertType<PlayVoucherUiModel.InfoHeader> {
                 it.shopName.assertEqualTo(partnerName)
             }
-            response.voucher.voucherList.size.assertEqualTo(mockResponse.playGetTagsItem.voucherList.size + 1)
         }
     }
 
@@ -268,6 +259,53 @@ class PlayViewerTagItemsRepositoryTest {
             response.voucher.voucherList.first().assertInstanceOf<PlayVoucherUiModel.Merchant>()
             response.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.InfoHeader>().assertEmpty()
             response.voucher.voucherList.size.assertEqualTo(mockResponse.playGetTagsItem.voucherList.size)
+        }
+    }
+
+    @Test
+    fun  `when ATC to OCC success return success response`(){
+        testDispatcher.coroutineDispatcher.runBlockingTest {
+            val mockResponse = AddToCartOccMultiDataModel(
+                errorMessage = arrayListOf(),
+                status = AddToCartOccMultiDataModel.STATUS_OK, //if OK -> success
+            )
+            coEvery { mockAtcOcc.executeOnBackground() } returns mockResponse
+
+            try {
+                val response = tagItemRepo.addProductToCartOcc(
+                    "1",
+                    "Product Test",
+                    "1",
+                    1,
+                    12000.0
+                )
+                response.assertEqualTo(mockResponse)
+            } catch (e: Exception) { } finally {
+                coVerify { mockAtcOcc.executeOnBackground() }
+            }
+        }
+    }
+
+    @Test
+    fun  `when ATC occ error return failed response = exception`(){
+        testDispatcher.coroutineDispatcher.runBlockingTest {
+            val mockResponse = AddToCartOccMultiDataModel(
+                status = AddToCartOccMultiDataModel.STATUS_ERROR, //if OK -> success
+            )
+            coEvery { mockAtcOcc.executeOnBackground() } returns mockResponse
+
+            try {
+                val response = tagItemRepo.addProductToCartOcc(
+                    "1",
+                    "Product Test",
+                    "1",
+                    1,
+                    12000.0
+                )
+                coVerify { mockAtcOcc.executeOnBackground() }
+            } catch (e: Exception){
+                (e is MessageErrorException).assertTrue()
+            }
         }
     }
 }

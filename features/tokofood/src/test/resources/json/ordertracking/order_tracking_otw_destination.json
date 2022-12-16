@@ -16,6 +16,12 @@
         "appText": "This will be text for cancelation reason <a href='tokopedia://order/123'>This will be link/action</a>"
       }
     ],
+    "driverDetails": {
+      "name": "Pria Kusumawardana",
+      "photoUrl": "https://images.tokopedia.net/img/product-1/2020/2/10/5511683/5511683_98da12b1-2985-459d-946e-275c2e592865_1000_1000?ect=4g",
+      "licensePlateNumber": "B 1234 ABC",
+      "karma": null
+    },
     "invoice": {
       "invoiceNumber": "INV/20181011/XVI/X/55069657",
       "gofoodOrderNumber": "F-1468046953"

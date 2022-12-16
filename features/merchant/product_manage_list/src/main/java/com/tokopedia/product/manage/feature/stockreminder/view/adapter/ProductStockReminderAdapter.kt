@@ -56,7 +56,6 @@ class ProductStockReminderAdapter(
     inner class ProductStockReminderViewHolder(private val binding: ItemProductStockReminderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-
         private var textChangeListener: TextWatcher? = null
 
         private var firstStateChecked = false
@@ -68,7 +67,6 @@ class ProductStockReminderAdapter(
             setAddButtonClickListener()
             setSubtractButtonClickListener()
             firstStateChecked = true
-
         }
 
         private fun setupStatusSwitch(product: ProductStockReminderUiModel) {
@@ -89,8 +87,6 @@ class ProductStockReminderAdapter(
                 addTextChangedListener(textChangeListener)
             }
 
-            binding.qeStock.setValue(product.stockAlertCount)
-
             binding.qeStock.run {
                 maxValue = product.maxStock ?: MAXIMUM_STOCK_REMINDER
                 editText.setOnEditorActionListener { _, actionId, _ ->
@@ -101,6 +97,7 @@ class ProductStockReminderAdapter(
                     true
                 }
             }
+            binding.qeStock.setValue(product.stockAlertCount)
         }
 
         private fun createTextChangeListener(product: ProductStockReminderUiModel): TextWatcher {
@@ -212,13 +209,14 @@ class ProductStockReminderAdapter(
                 val isActive = binding.swStockReminder.isChecked.orFalse()
                 if (isActive) {
                     listener.onChangeStockReminder(
-                        productId, stock,
+                        productId,
+                        stock,
                         REMINDER_ACTIVE
                     )
-
                 } else {
                     listener.onChangeStockReminder(
-                        productId, stock,
+                        productId,
+                        stock,
                         REMINDER_INACTIVE
                     )
                 }

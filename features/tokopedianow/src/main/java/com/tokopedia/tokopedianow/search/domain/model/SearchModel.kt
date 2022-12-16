@@ -6,6 +6,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
+import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 
 data class SearchModel(
         @SerializedName("ace_search_product_v4")
@@ -27,6 +28,10 @@ data class SearchModel(
         @SerializedName("searchJumper")
         @Expose
         val searchCategoryJumper: SearchCategoryJumperData = SearchCategoryJumperData(),
+
+        @SerializedName("feedbackFieldToggle")
+        @Expose
+        var feedbackFieldToggle:GetFeedbackFieldModel = GetFeedbackFieldModel()
 ) {
         fun getResponseCode() = searchProduct.header.responseCode
 

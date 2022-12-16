@@ -22,10 +22,10 @@
           "duration": "",
           "url": "https://booking.tokopedia.com/v1/api/p/devano-danendra-intimate-virtual-concert-40281?cities=",
           "seo_url": "devano-danendra-intimate-virtual-concert-40281",
-          "image_web": "https://ecs7.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
-          "thumbnail_web": "https://ecs7.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
-          "image_app": "https://ecs7.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
-          "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
+          "image_web": "https://images.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
+          "thumbnail_web": "https://images.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
+          "image_app": "https://images.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
+          "thumbnail_app": "https://images.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
           "seatmap_image": "",
           "location": "",
           "app_url": "tokopedia://events/devano-danendra-intimate-virtual-concert-40281",
@@ -191,7 +191,7 @@
             {
               "id": "6",
               "title": "Events",
-              "media_url": "https://ecs7.tokopedia.net/img/banner/2020/2/14/57551775/57551775_56f5eba8-4a8e-4835-957d-909a4083f8b1.png",
+              "media_url": "https://images.tokopedia.net/img/banner/2020/2/14/57551775/57551775_56f5eba8-4a8e-4835-957d-909a4083f8b1.png",
               "url": "acara"
             }
           ],

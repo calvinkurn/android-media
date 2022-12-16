@@ -93,7 +93,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var topAdsFlashSaleTimer:TimerUnifySingle? = null
     private var linearLayoutMerchantVoucher:LinearLayout? = null
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
-        TopAdsUrlHitter(context)
+        TopAdsUrlHitter(context.applicationContext)
     }
 
     override fun onAttachedToWindow() {
@@ -106,7 +106,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             }
         } else {
             topAdsFlashSaleTimer?.hide()
-            topAdsFlashSaleTimerPrefixText.hide()
         }
     }
 
@@ -306,16 +305,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun hideFlashSaleToko() {
-        val topAdsFlashSaleTimerPrefixText:Typography = findViewById(R.id.topAdsFlashSaleTimerPrefixText)
         linearLayoutMerchantVoucher?.hide()
         topAdsFlashSaleTimer?.hide()
-        topAdsFlashSaleTimerPrefixText.hide()
     }
 
     private fun showFlashSaleToko() {
-        val topAdsFlashSaleTimerPrefixText:Typography = findViewById(R.id.topAdsFlashSaleTimerPrefixText)
         linearLayoutMerchantVoucher?.show()
-        topAdsFlashSaleTimerPrefixText.show()
         topAdsFlashSaleTimer?.show()
     }
 
@@ -344,29 +339,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             }
         }
     }
-//    fun isTimerValid(saleStartDate: String, saleEndDate: String, timerFormat: String = "yyyy-MM-dd HH:mm:ss"): Boolean {
-//        if (saleStartDate.isEmpty()) return false
-//        val currentSystemTime = Calendar.getInstance().time
-//        val startDate = parseData(saleStartDate,timerFormat)
-//        val endDate = parseData(saleEndDate,timerFormat)
-//        flashSaleTimerData = endDate
-//        return if (startDate != null && endDate != null) {
-//            currentSystemTime.time > startDate.time && currentSystemTime.time< endDate.time
-//        } else {
-//            false
-//        }
-//    }
-
-//    fun parseData(date: String?, timerFormat: String = "yyyy-MM-dd HH:mm:ss"): Date? {
-//        return date?.let {
-//            try {
-//                SimpleDateFormat(timerFormat, Locale.getDefault())
-//                    .parse(date)
-//            } catch (parseException: ParseException) {
-//                null
-//            }
-//        }
-//    }
 
     private fun setWidget(
         cpmData: CpmData,
@@ -686,6 +658,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderLabelMerchantVouchers(cpmData: CpmData?) {
         val context = context ?: return
+        linearLayoutMerchantVoucher?.hide()
         val merchantVouchers = mutableListOf<String>()
         val campaignType = cpmData?.cpm?.flashSaleCampaignDetail?.campaignType
         val merchantVoucherList = cpmData?.cpm?.cpmShop?.merchantVouchers

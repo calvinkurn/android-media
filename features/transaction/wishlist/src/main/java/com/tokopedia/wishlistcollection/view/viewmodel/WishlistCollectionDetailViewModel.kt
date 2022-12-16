@@ -31,14 +31,14 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_SOURCE
 import com.tokopedia.wishlist.util.WishlistV2Utils.convertCollectionItemsIntoWishlistUiModel
 import com.tokopedia.wishlist.util.WishlistV2Utils.convertRecommendationIntoProductDataModel
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
-import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
-import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
-import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionSharingDataParams
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.params.*
 import com.tokopedia.wishlistcollection.data.response.*
 import com.tokopedia.wishlistcollection.domain.*
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -55,7 +55,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val atcUseCase: AddToCartUseCase,
     private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase,
     private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase,
-    private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase
+    private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase,
+    private val getWishlistCollectionTypeUseCase: GetWishlistCollectionTypeUseCase,
+    private val addWishlistBulkUseCase: AddWishlistBulkUseCase,
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
 
@@ -108,6 +111,16 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     val getWishlistCollectionSharingDataResult: LiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>
         get() = _getWishlistCollectionSharingDataResult
 
+    private val _collectionType =
+        MutableLiveData<Result<GetWishlistCollectionTypeResponse.GetWishlistCollectionItems>>()
+    val collectionType: LiveData<Result<GetWishlistCollectionTypeResponse.GetWishlistCollectionItems>>
+        get() = _collectionType
+
+    private val _addWishlistBulkResult =
+        MutableLiveData<Result<AddWishlistBulkResponse.AddWishlistBulk>>()
+    val addWishlistBulkResult: LiveData<Result<AddWishlistBulkResponse.AddWishlistBulk>>
+        get() = _addWishlistBulkResult
+
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
         typeLayout: String?,
@@ -124,15 +137,19 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     typeLayout,
                     isAutomaticDelete,
                     getRecommendationWishlistV2(
-                        1, listOf(), recommSrc),
-                    getTopAdsData(), true
+                        1,
+                        listOf(),
+                        recommSrc
+                    ),
+                    getTopAdsData(),
+                    true
                 )
             )
             WishlistIdlingResource.decrement()
         }, onError = {
-            _collectionItems.value = Fail(it)
-            WishlistIdlingResource.decrement()
-        })
+                _collectionItems.value = Fail(it)
+                WishlistIdlingResource.decrement()
+            })
     }
 
     fun loadRecommendation(page: Int) {
@@ -141,7 +158,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         launch {
             try {
                 val recommItems = getRecommendationWishlistV2(
-                    page, listOf(), recommSrc)
+                    page,
+                    listOf(),
+                    recommSrc
+                )
                 recommItems.recommendationProductCardModelData.forEach { item ->
                     listData.add(
                         WishlistV2TypeLayoutData(
@@ -173,7 +193,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         )
         return WishlistV2RecommendationDataModel(
             convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
-            recommendation.recommendationItemList, recommendation.title
+            recommendation.recommendationItemList,
+            recommendation.title
         )
     }
 
@@ -223,8 +244,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _deleteCollectionItemsResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionItemsResult.value = Fail(it)
-        })
+                _deleteCollectionItemsResult.value = Fail(it)
+            })
     }
 
     fun deleteWishlistCollection(collectionId: String) {
@@ -236,8 +257,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _deleteCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionResult.value = Fail(it)
-        })
+                _deleteCollectionResult.value = Fail(it)
+            })
     }
 
     fun getDeleteWishlistProgress() {
@@ -249,8 +270,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _deleteWishlistProgressResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteWishlistProgressResult.value = Fail(it)
-        })
+                _deleteWishlistProgressResult.value = Fail(it)
+            })
     }
 
     fun doAtc(atcParams: AddToCartRequestParams) {
@@ -275,8 +296,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _addWishlistCollectionItem.value = Fail(Throwable())
             }
         }, onError = {
-            _addWishlistCollectionItem.value = Fail(it)
-        })
+                _addWishlistCollectionItem.value = Fail(it)
+            })
     }
 
     fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
@@ -288,8 +309,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _updateWishlistCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _updateWishlistCollectionResult.value = Fail(it)
-        })
+                _updateWishlistCollectionResult.value = Fail(it)
+            })
     }
 
     fun getWishlistCollectionSharingData(collectionId: Long) {
@@ -301,8 +322,39 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _getWishlistCollectionSharingDataResult.value = Fail(Throwable())
             }
         }, onError = {
-            _getWishlistCollectionSharingDataResult.value = Fail(it)
-        })
+                _getWishlistCollectionSharingDataResult.value = Fail(it)
+            })
+    }
+
+    fun getWishlistCollectionType(collectionId: String) {
+        launchCatchError(block = {
+            val result = getWishlistCollectionTypeUseCase(collectionId)
+            _collectionType.value = Success(result.getWishlistCollectionItems)
+        }, onError = {
+                _collectionType.value = Fail(it)
+            })
+    }
+
+    fun addWishlistBulk(params: AddWishlistBulkParams) {
+        launchCatchError(block = {
+            val result = addWishlistBulkUseCase(params)
+            _addWishlistBulkResult.value = Success(result.addWishlistBulk)
+        }, onError = {
+                _addWishlistBulkResult.value = Fail(it)
+            })
+    }
+
+    fun addWishListV2(productId: String, userId: String, listener: WishlistV2ActionListener, sourceCollectionId: String) {
+        launch(dispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userId, sourceCollectionId)
+            val result =
+                withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                listener.onSuccessAddWishlist(result.data, productId)
+            } else {
+                listener.onErrorAddWishList((result as Fail).throwable, productId)
+            }
+        }
     }
 
     companion object {

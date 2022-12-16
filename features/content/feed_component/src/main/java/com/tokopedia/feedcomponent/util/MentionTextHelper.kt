@@ -4,7 +4,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import androidx.annotation.ColorInt
 import com.tokopedia.feedcomponent.view.span.MentionSpan
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -174,7 +174,7 @@ object MentionTextHelper {
         return spannableStringBuilder
     }
 
-    private fun getMentionableUserViewModelFromTokenizerText(text: String, isFromEdit: Boolean): MentionableUserViewModel? {
+    private fun getMentionableUserViewModelFromTokenizerText(text: String, isFromEdit: Boolean): MentionableUserModel? {
         val contentMatcher: Matcher = if (isFromEdit) tokenizerContentOnlyPattern.matcher(text) else readContentOnlyPattern.matcher(text)
         return if (contentMatcher.find()) {
             val content = contentMatcher.group()
@@ -182,7 +182,7 @@ object MentionTextHelper {
             val userId: String = splittedContent.first().replace(MENTION_CHAR, "")
             val fullName: String = splittedContent.last().replace(MENTION_CHAR, "")
 
-            MentionableUserViewModel(
+            MentionableUserModel(
                     id = userId,
                     userName = "",
                     fullName = fullName,

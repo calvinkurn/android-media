@@ -272,9 +272,14 @@ class PlayActivity : BaseActivity(),
                     ivLoading.hide()
                     fragmentUpcomingView.safeInit((it.state as PageResultState.Upcoming).channelId)
                 }
+                is PageResultState.Archived -> {
+                    pageMonitoring.invalidate()
+                    ivLoading.hide()
+                    fragmentErrorViewOnStateChanged(shouldShow = true)
+                }
             }
 
-            if(it.state !is PageResultState.Upcoming) {
+            if(it.state is PageResultState.Success) {
                 fragmentUpcomingView.safeRelease()
                 swipeContainerView.setChannelIds(it.currentValue)
             }

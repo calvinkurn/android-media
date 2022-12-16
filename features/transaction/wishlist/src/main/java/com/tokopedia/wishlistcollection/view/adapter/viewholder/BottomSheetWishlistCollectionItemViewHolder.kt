@@ -53,8 +53,12 @@ class BottomSheetWishlistCollectionItemViewHolder(
                 }
 
                 mainCollectionItemName.text = item.dataObject.name
-                mainCollectionTotalItem.text =
-                    "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+
+                var totalItemText = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+                if (item.dataObject.indicator.title.isNotEmpty()) {
+                    totalItemText += " \u2022 ${item.dataObject.indicator.title}"
+                }
+                mainCollectionTotalItem.text = totalItemText
 
                 if (item.dataObject.isContainProduct && source != SRC_WISHLIST_COLLECTION_BULK_ADD) {
                     icCheck.visible()

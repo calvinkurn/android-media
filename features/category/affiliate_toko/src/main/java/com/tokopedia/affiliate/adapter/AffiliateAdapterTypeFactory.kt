@@ -1,11 +1,24 @@
 package com.tokopedia.affiliate.adapter
 
-
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationLearnUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -38,7 +51,7 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliatePromotionShopModel): Int
     fun type(viewModel: AffiliatePromotionErrorCardModel): Int
     fun type(viewModel: AffiliatePortfolioUrlModel): Int
-    fun type(viewModel:AffiliateHeaderModel): Int
+    fun type(viewModel: AffiliateHeaderModel): Int
     fun type(viewModel: AffiliatePortfolioButtonModel): Int
     fun type(viewModel: AffiliateTermsAndConditionModel): Int
     fun type(viewModel: AffiliateStaggeredShimmerModel): Int
@@ -57,4 +70,18 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateProductCardMetricsModel): Int
     fun type(viewModel: AffiliatePerformanceChipRVModel): Int
     fun type(viewModel: AffiliatePerformanceChipModel): Int
+    fun type(viewModel: AffiliateEducationBannerUiModel): Int
+    fun type(viewModel: AffiliateEducationArticleTopicRVUiModel): Int
+    fun type(viewModel: AffiliateEducationArticleTopicUiModel): Int
+    fun type(viewModel: AffiliateEducationEventRVUiModel): Int
+    fun type(viewModel: AffiliateEducationEventUiModel): Int
+    fun type(viewModel: AffiliateEducationArticleRVUiModel): Int
+    fun type(viewModel: AffiliateEducationArticleUiModel): Int
+    fun type(viewModel: AffiliateEducationTutorialRVUiModel): Int
+    fun type(viewModel: AffiliateEducationTutorialUiModel): Int
+    fun type(viewModel: AffiliateEducationSocialRVUiModel): Int
+    fun type(viewModel: AffiliateEducationSocialUiModel): Int
+    fun type(viewModel: AffiliateEducationLearnUiModel): Int
+    fun type(viewModel: AffiliateEducationSeeAllUiModel): Int
+    fun type(viewModel: AffiliateEduCategoryChipModel): Int
 }

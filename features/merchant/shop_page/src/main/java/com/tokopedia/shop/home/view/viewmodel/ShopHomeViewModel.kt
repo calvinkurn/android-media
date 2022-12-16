@@ -1217,4 +1217,8 @@ class ShopHomeViewModel @Inject constructor(
         )
         _shopPageAtcTracker.postValue(shopPageAtcTracker)
     }
+
+    fun isWidgetBundle(data: ShopPageWidgetLayoutUiModel): Boolean {
+        return data.widgetType == WidgetType.BUNDLE
+    }
 }
