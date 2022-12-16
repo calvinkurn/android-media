@@ -72,7 +72,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".gotoKyc.transparent.GotoKycTransparentActivity"
+            android:name=".ui.gotoKyc.transparent.GotoKycTransparentActivity"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent"
             android:screenOrientation="portrait"
             android:exported="false">
