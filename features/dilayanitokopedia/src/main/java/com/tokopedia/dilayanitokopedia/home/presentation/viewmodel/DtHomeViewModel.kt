@@ -1,6 +1,5 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.viewmodel
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -14,7 +13,6 @@ import com.tokopedia.dilayanitokopedia.home.domain.mapper.AnchorTabMapper.mapMen
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUseCase
-import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeLoadingMoreModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
@@ -31,30 +29,25 @@ import javax.inject.Inject
 class DtHomeViewModel @Inject constructor(
     private val getHomeLayoutDataUseCase: DtGetHomeLayoutDataUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
-    dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
-
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
         get() = _homeLayoutList
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
 
-
     val menuList: LiveData<List<AnchorTabUiModel>>
         get() = _menuList
     private val _menuList = MutableLiveData<List<AnchorTabUiModel>>()
-
 
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
 
-
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         launchCatchError(block = {
-
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = DtLayoutState.HIDE
@@ -70,7 +63,6 @@ class DtHomeViewModel @Inject constructor(
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
-
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
@@ -89,23 +81,16 @@ class DtHomeViewModel @Inject constructor(
             _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList()))
 
             getRecommendationForYouNew()
-
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
     }
-    
-    private fun getRecommendationForYouNew() {
 
+    private fun getRecommendationForYouNew() {
         val newVisitable = getHomeVisitableList().toMutableList()
         newVisitable.add(HomeRecommendationFeedDataModel())
 
-
-        val data = HomeLayoutListUiModel(
-            items = newVisitable,
-            state = DtLayoutState.SHOW
-        )
-
+        val data = HomeLayoutListUiModel(items = newVisitable, state = DtLayoutState.SHOW)
 
         homeLayoutItemList.add(HomeLayoutItemUiModel(HomeRecommendationFeedDataModel(), state = HomeLayoutItemState.LOADING))
         _homeLayoutList.postValue(Success(data))
@@ -117,7 +102,6 @@ class DtHomeViewModel @Inject constructor(
     private fun dataMenuList(): MutableList<AnchorTabUiModel> {
         return AnchorTabData.getListAnchorTab()
     }
-
 
     fun switchServiceOrLoadLayout() {
         getLoadingState()
@@ -141,7 +125,6 @@ class DtHomeViewModel @Inject constructor(
         }, source)
     }
 
-
     fun getPositionWidget(listComponent: MutableList<AnchorTabUiModel>?, pinnedComponentId: AnchorTabUiModel): Int {
         listComponent?.forEachIndexed { index, componentsItem ->
             if (componentsItem == pinnedComponentId) {
@@ -150,5 +133,4 @@ class DtHomeViewModel @Inject constructor(
         }
         return -1
     }
-
 }

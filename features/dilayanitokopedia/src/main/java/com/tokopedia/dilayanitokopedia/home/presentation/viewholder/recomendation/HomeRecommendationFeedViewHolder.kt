@@ -5,7 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.databinding.DtHomeRecommendationViewholderBinding
@@ -15,7 +15,6 @@ import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeRecommen
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtHomeCategoryListener
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.utils.view.binding.viewBinding
-
 
 class HomeRecommendationFeedViewHolder(
     itemView: View,
@@ -28,7 +27,6 @@ class HomeRecommendationFeedViewHolder(
     override fun bind(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel) {
         initSinglePageForYou()
     }
-
 
     /**
      * its p0 Dev
@@ -61,13 +59,16 @@ class HomeRecommendationFeedViewHolder(
         adapter.notifyDataSetChanged()
     }
 
-    private class ViewPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+    private class ViewPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
         override fun getItem(position: Int): Fragment {
-            return DtHomeRecommendationForYouFragment()
+            return DtHomeRecommendationForYouFragment.newInstance()
         }
 
         override fun getCount() = 1
 
+        override fun getItemPosition(`object`: Any): Int {
+            return POSITION_NONE
+        }
     }
 
     companion object {
@@ -75,5 +76,4 @@ class HomeRecommendationFeedViewHolder(
         val LAYOUT = R.layout.dt_home_recommendation_viewholder
         private val TAG = HomeRecommendationFeedViewHolder::class.java.simpleName
     }
-
 }

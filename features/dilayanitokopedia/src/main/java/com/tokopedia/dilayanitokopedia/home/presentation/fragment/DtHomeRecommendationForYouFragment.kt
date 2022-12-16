@@ -17,10 +17,11 @@ import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.HomeFeedEndlessScrollListener
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.HomeFeedItemDecoration
-import com.tokopedia.dilayanitokopedia.home.presentation.adapter.HomeRecommendationAdapter
+import com.tokopedia.dilayanitokopedia.home.presentation.adapter.HomeRecommendationForYouAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.HomeRecommendationListener
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.BannerRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationBannerTopAdsDataModel
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.recomendation.HomeRecommendationFeedViewHolder
@@ -35,12 +36,15 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import javax.inject.Inject
 
-
 class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener {
 
     companion object {
         private const val REQUEST_FROM_PDP = 349
         private const val MAX_RECYCLED_VIEWS = 20
+
+        fun newInstance(): DtHomeRecommendationForYouFragment {
+            return DtHomeRecommendationForYouFragment()
+        }
     }
 
     @Inject
@@ -60,13 +64,15 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
 
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this) }
     private val adapter by lazy {
-        HomeRecommendationAdapter(appExecutors, adapterFactory, provideListener())
+        HomeRecommendationForYouAdapter(appExecutors, adapterFactory, provideListener())
     }
+
+    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
     private fun provideListener(): HomeRecommendationListener {
         return object : HomeRecommendationListener {
             override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
-                //no-op
+                // no-op
             }
 
             override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
@@ -84,21 +90,21 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             }
 
             override fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel) {
-                //no-op
+                // no-op
             }
 
             override fun onBannerTopAdsClick(
                 homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
                 position: Int
             ) {
-                //no-op
+                // no-op
             }
 
             override fun onBannerTopAdsImpress(
                 homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
                 position: Int
             ) {
-                //no-op
+                // no-op
             }
 
             override fun onRetryGetProductRecommendationData() {
@@ -106,8 +112,6 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             }
         }
     }
-
-    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
     private val staggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(
@@ -138,12 +142,11 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             .inject(this)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-
+        loadLoading()
         /**
          * Temporary
          */
@@ -154,28 +157,18 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         observeLiveData()
     }
 
+    private fun loadLoading() {
+        viewModel.loadLoading()
+    }
 
-    //
     private fun observeLiveData() {
         viewModel.homeRecommendationLiveData.observe(viewLifecycleOwner) { data ->
-            adapter.submitList(data.homeRecommendations)
-        }
-
-        viewModel.homeRecommendationNetworkLiveData.observe(viewLifecycleOwner) { result ->
-            if (result.isFailure) {
-
-            } else {
-                updateScrollEndlessListener(result.getOrNull()?.isHasNextPage ?: false)
-            }
+            updateAdapter(data)
         }
     }
 
-
-    private fun updateScrollEndlessListener(hasNextPage: Boolean) {
-        // load next page data if adapter data less than minimum scrollable data
-        // when the list has next page and auto load next page is enabled
-        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
+    private fun updateAdapter(data: HomeRecommendationDataModel) {
+        adapter.submitList(data.homeRecommendations)
     }
 
     private fun setupRecyclerView() {
@@ -197,11 +190,9 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 totalScrollY += dy
-
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
             }
         })
     }
@@ -224,14 +215,11 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
     }
 
     private fun loadFirstPageData() {
-        if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
-            hasLoadData = true
-            viewModel.loadInitialPage()
-        }
+        viewModel.loadInitialPage()
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-        //no-op
+        // no-op
     }
 
     private fun createProductCardOptionsModel(

@@ -14,9 +14,9 @@ import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.smart_recycler_helper.SmartRecyclerAdapter
 import com.tokopedia.smart_recycler_helper.SmartVisitable
+import timber.log.Timber
 
-
-class HomeRecommendationAdapter(
+class HomeRecommendationForYouAdapter(
     smartExecutors: SmartExecutors,
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl,
     private val listener: HomeRecommendationListener
@@ -26,15 +26,25 @@ class HomeRecommendationAdapter(
     diffCallback = object : DiffUtil.ItemCallback<HomeRecommendationVisitable>() {
 
         override fun getChangePayload(oldItem: HomeRecommendationVisitable, newItem: HomeRecommendationVisitable): Any? {
+            Timber.d("HomeRecommendationAdapter getChangePayload called")
+
             return oldItem.getChangePayloadFrom(newItem)
+//            return true
         }
 
         override fun areItemsTheSame(oldItem: HomeRecommendationVisitable, newItem: HomeRecommendationVisitable): Boolean {
+            Timber.d("HomeRecommendationAdapter areItemsTheSame called ${oldItem.getUniqueIdentity() == newItem.getUniqueIdentity()}")
+
             return oldItem.getUniqueIdentity() == newItem.getUniqueIdentity()
+
+//            return false
         }
 
         override fun areContentsTheSame(oldItem: HomeRecommendationVisitable, newItem: HomeRecommendationVisitable): Boolean {
+            Timber.d("HomeRecommendationAdapter areContentsTheSame called")
+
             return oldItem.equalsDataModel(newItem)
+//            return false
         }
     }
 ) {
@@ -46,7 +56,6 @@ class HomeRecommendationAdapter(
      * @param item item visitable
      */
     override fun bind(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: HomeRecommendationVisitable) {
-
         adjustWithWidgets(holder, item)
         holder.bind(item, listener)
     }
@@ -55,6 +64,8 @@ class HomeRecommendationAdapter(
     provide full width for necessary widget
      */
     private fun adjustWithWidgets(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: HomeRecommendationVisitable) {
+        Timber.d("HomeRecommendationAdapte bind1")
+
         val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
 
         when (item) {
@@ -67,6 +78,7 @@ class HomeRecommendationAdapter(
         item: HomeRecommendationVisitable,
         payloads: MutableList<Any>
     ) {
+        Timber.d("HomeRecommendationAdapte bind2")
 
         if (payloads.isNotEmpty()) {
             holder.bind(item, listener, payloads)

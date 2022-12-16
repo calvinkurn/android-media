@@ -14,12 +14,12 @@ object AnchorTabMapper {
      */
     fun MutableList<AnchorTabUiModel>.mapMenuList(
         homeLayoutResponse: List<HomeLayoutResponse>,
-        homeLayoutList: List<Visitable<*>>,
+        homeLayoutList: List<Visitable<*>>
     ): List<AnchorTabUiModel> {
         var listMenu = mutableListOf<AnchorTabUiModel>()
 
         /**
-         * Logic
+         *
          * looping list layout
          * each layout will looping anchor tab hard code data
          * if group id from hard code data same with groupId with visitable then add to list
@@ -32,7 +32,7 @@ object AnchorTabMapper {
                 if (anchorTab.groupId == homeLayoutResponse[index].groupId) {
                     anchorTab.apply {
                         this.visitable = homeLayoutList[index]
-                        //remove later
+                        // remove later
                         this.title = homeLayoutResponse[index].header.name
                     }
                     listMenu.add(anchorTab)
@@ -40,8 +40,6 @@ object AnchorTabMapper {
                     return@anchorTabForEach
                 }
             }
-//            }
-
         }
         return listMenu.toList()
     }

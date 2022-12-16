@@ -27,14 +27,14 @@ object HomeLayoutMapper {
         MIX_LEFT_CAROUSEL,
         FEATURED_SHOP,
 
-        //Additional Loading
+        // Additional Loading
         LOADING_RECOMMEDATION_FEED
     )
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
-        response: List<HomeLayoutResponse>,
+        response: List<HomeLayoutResponse>
     ) {
-
+        clear()
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             mapToHomeUiModel(layoutResponse)?.let { item ->
                 add(item)
@@ -55,12 +55,10 @@ object HomeLayoutMapper {
     private fun mapToHomeUiModel(
         response: HomeLayoutResponse
     ): HomeLayoutItemUiModel? {
-
         val loadedState = HomeLayoutItemState.LOADED
         val notLoadedState = HomeLayoutItemState.NOT_LOADED
 
         return when (response.layout) {
-
             // Layout content data already returned from dynamic channel query, set state to loaded.
             LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
