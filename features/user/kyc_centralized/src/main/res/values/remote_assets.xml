@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--GoTo KYC-->
+    <string name="img_url_goto_kyc_benefit_item_1">https://images.tokopedia.net/img/android/user/kyc_centralized/kyc_benefit_cart.png</string>
+    <string name="img_url_goto_kyc_benefit_item_2">https://images.tokopedia.net/img/android/user/kyc_benefit_power_merchant.png</string>
+    <string name="img_url_goto_kyc_benefit_item_3">https://images.tokopedia.net/img/android/user/kyc_benefit_shield_star.png</string>
+</resources>

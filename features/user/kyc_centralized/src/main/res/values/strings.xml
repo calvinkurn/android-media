@@ -199,4 +199,28 @@
         <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP berada dalam bingkai.<br>
         <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP terlihat terang dan jelas.]]>"</string>
     <string name="user_identification_common_retake_photo">Foto Ulang</string>
+
+    <!--GOTO KYC-->
+    <string name="goto_kyc_benefit_title">Nikmatin keuntungannya setelah verifikasi</string>
+    <string name="goto_kyc_benefit_item_title_1">Nikmatin fitur lengkap buat belanja</string>
+    <string name="goto_kyc_benefit_item_subtitle_1">Belanja jadi makin untung dan nyaman.</string>
+    <string name="goto_kyc_benefit_item_title_2">Akses fitur penjualan eksklusif</string>
+    <string name="goto_kyc_benefit_item_subtitle_2">Tokomu upgrade dan bisa naikin performa.</string>
+    <string name="goto_kyc_benefit_item_title_3">GoPay Plus kamu langsung aktif</string>
+    <string name="goto_kyc_benefit_item_subtitle_3">Transaksi jadi makin praktis dan cepat!</string>
+    <string name="goto_kyc_status_pending_title">Makasih ya udah kirim dokumenmu!</string>
+    <string name="goto_kyc_status_pending_subtitle_24_hours">Sebentar ya, datamu diproses dalam <b>24 jam</b>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
+    <string name="goto_kyc_status_pending_button">Balik ke %s</string>
+    <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
+    <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
+    <string name="goto_kyc_status_verified_button">Ke %s</string>
+    <string name="goto_kyc_status_verified_timer">Meluncur otomatis dalam %s detik.</string>
+    <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
+    <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
+    <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>
+    <string name="goto_kyc_status_rejected_title">Yaah, verifikasinya belum berhasil</string>
+    <string name="goto_kyc_status_rejected_subtitle">Tenang aja, kamu masih bisa verifikasi lagi. Verifikasimu belum berhasil karena:</string>
+    <string name="goto_kyc_status_rejected_button_primary">Verifikasi Ulang</string>
+    <string name="goto_kyc_status_rejected_button_secondary">Hubungi Tokopedia Care</string>
+
 </resources>
