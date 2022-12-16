@@ -32,7 +32,7 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
 
     var maxDurationCellularInSeconds: Int? = null
 
-    private val shouldForceLowest = cardType == PlayWidgetType.Jumbo
+    private val shouldForceLowest = cardType != PlayWidgetType.Jumbo
 
     private val trackSelector = DefaultTrackSelector(context).apply {
         parameters = DefaultTrackSelector.ParametersBuilder(context)
