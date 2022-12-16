@@ -391,7 +391,8 @@ ext {
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",
             leakPublisher : "com.gojek.android.local:library-leak-publisher:866fb8ad",
-            chuckMqtt       : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion"
+            chuckMqtt       : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion",
+            chuckMqttNoop   : "com.gojek.courier:chuck-mqtt-no-ops:$gojekCourierVersion"
     ]
 
     tkpdLibDependencies = [

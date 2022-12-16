@@ -42,7 +42,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
 
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.debugToolsDependencies.chuckMqtt
+    releaseImplementation rootProject.ext.debugToolsDependencies.chuckMqttNoop
+    debugImplementation rootProject.ext.debugToolsDependencies.chuckMqtt
 }
 
 project.ext {
