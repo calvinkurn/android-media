@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailLogisticSectionInfoID
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class GetBuyerOrderDetailResponse(
     @Expose
@@ -82,13 +83,43 @@ data class GetBuyerOrderDetailResponse(
             val hasResoStatus: Boolean? = false,
             @SerializedName("has_ppp")
             @Expose
-            val hasInsurance: Boolean? = false
+            val hasInsurance: Boolean? = false,
+            @SerializedName("additional_data")
+            @Expose
+            val additionalData: BomAdditionalData = BomAdditionalData()
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
             }
             fun getPodInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.POD_INFO }
+            }
+
+            data class BomAdditionalData(
+                @SerializedName("epharmacy_data")
+                @Expose
+                val epharmacyData: EpharmacyData = EpharmacyData()
+            ) {
+                data class EpharmacyData(
+                    @SerializedName("consultation_date")
+                    @Expose
+                    val consultationDate: String = String.EMPTY,
+                    @SerializedName("consultation_doctor_name")
+                    @Expose
+                    val consultationDoctorName: String = String.EMPTY,
+                    @SerializedName("consultation_expiry_date")
+                    @Expose
+                    val consultationExpiryDate: String = String.EMPTY,
+                    @SerializedName("consultation_name")
+                    @Expose
+                    val consultationName: String = String.EMPTY,
+                    @SerializedName("consultation_patient_name")
+                    @Expose
+                    val consultationPatientName: String = String.EMPTY,
+                    @SerializedName("consultation_prescription_number")
+                    @Expose
+                    val consultationPrescriptionNumber: String = String.EMPTY,
+                )
             }
 
             data class Button(
