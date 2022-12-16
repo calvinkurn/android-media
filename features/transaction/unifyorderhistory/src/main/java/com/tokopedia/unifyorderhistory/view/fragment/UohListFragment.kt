@@ -266,7 +266,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
     private var _listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
     private var _atcVerticalCategory = ""
-    private var trackingQueue: TrackingQueue? = null
+    private lateinit var trackingQueue: TrackingQueue
     private var _buttonAction = ""
     private var _atcOccParams: AddToCartOccMultiRequestParams? = null
 
@@ -280,12 +280,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private val uohListViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[UohListViewModel::class.java]
-    }
-
-    init {
-        activity?.let {
-            trackingQueue = TrackingQueue(it)
-        }
     }
 
     companion object {
@@ -366,6 +360,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()
         }
         checkLogin()
+        initTrackingQueue()
+    }
+
+    private fun initTrackingQueue() {
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -834,7 +835,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 )
                             }
 
-                            if (_buttonAction == GQL_MP_ATC) {
+                            if (_buttonAction == GQL_MP_ATC || _buttonAction.isEmpty()) {
                                 UohAnalytics.clickBeliLagiOnOrderCardMP(
                                     "",
                                     userSession.userId,

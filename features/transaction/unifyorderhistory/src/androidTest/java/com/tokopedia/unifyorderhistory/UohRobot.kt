@@ -58,7 +58,7 @@ class UohRobot {
         onView(withId(R.id.rv_kebab))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    1,
+                    0,
                     clickOnViewChild(R.id.rl_kebab_item)
                 )
             )
