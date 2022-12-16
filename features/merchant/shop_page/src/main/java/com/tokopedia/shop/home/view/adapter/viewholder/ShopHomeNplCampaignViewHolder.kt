@@ -111,7 +111,8 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setVoucherPromoOffer(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val promoVoucherText = model.data?.firstOrNull()?.voucherWording.orEmpty()
-        if (promoVoucherText.isNotEmpty()) {
+        val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
+        if (!isStatusCampaignFinished(statusCampaign) && promoVoucherText.isNotEmpty()) {
             nplPromoOfferContainer?.show()
             textVoucherWording?.text = MethodChecker.fromHtml(promoVoucherText)
         } else {
