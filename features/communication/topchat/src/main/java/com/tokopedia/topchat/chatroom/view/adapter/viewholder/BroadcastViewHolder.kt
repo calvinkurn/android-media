@@ -382,15 +382,13 @@ class BroadcastViewHolder constructor(
             if (doesHaveBroadcastCtaText(banner)) {
                 text = banner.broadcastCtaText
 
-                // Change text into disabled when label show & the user is seller
-                if (shouldShowBroadcastCtaLabel(banner)) {
-                    it.setTextColor(
-                        MethodChecker.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN400
-                        )
-                    )
+                // Change text into disabled color when label show & the user is seller
+                val color = if (shouldShowBroadcastCtaLabel(banner)) {
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                } else {
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 }
+                it.setTextColor(MethodChecker.getColor(itemView.context, color))
             }
             it.text = text
         }
