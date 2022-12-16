@@ -5,8 +5,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
-import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselAtcMapper.mapLeftAtcRealTimeRecomState
-import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselAtcMapper.mapLoadingLeftAtcRTR
+import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapLeftAtcRealTimeRecomState
+import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapLoadingLeftAtcRTR
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapLoadingRealTimeRecomData
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapRealTimeRecomWidgetState
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
@@ -38,7 +38,7 @@ object RealTimeRecomMapper {
     ) {
         val realTimeRecom = getRealTimeRecom(channelId)
         val productId = realTimeRecom?.parentProductId.orEmpty()
-        val rtrWidget = realTimeRecom?.widget
+        val rtrWidget = realTimeRecom?.productList
 
         if (rtrWidget != null) {
             mapRealTimeRecomState(channelId, productId, RealTimeRecomWidgetState.READY, type)
@@ -108,14 +108,22 @@ object RealTimeRecomMapper {
     }
 
     private fun HomeProductRecomUiModel.getProductRecomRtr(productId: String?): HomeRealTimeRecomProductUiModel? {
-        return realTimeRecom.widget?.recommendationItemList?.firstOrNull { it.productId.toString() == productId }?.let {
-            HomeRealTimeRecomProductUiModel(it.productId.toString(), it.imageUrl, it.categoryBreadcrumbs)
+        return realTimeRecom.productList.firstOrNull { it.productCardModel.productId == productId }?.let {
+            HomeRealTimeRecomProductUiModel(
+                it.productCardModel.productId,
+                it.productCardModel.imageUrl,
+                it.categoryBreadcrumbs
+            )
         }
     }
 
     private fun HomeProductRecomUiModel.getProductRecom(productId: String?): HomeRealTimeRecomProductUiModel? {
-        return recomWidget.recommendationItemList.firstOrNull { it.productId.toString() == productId }?.let {
-            HomeRealTimeRecomProductUiModel(it.productId.toString(), it.imageUrl, it.categoryBreadcrumbs)
+        return productList.firstOrNull { it.productCardModel.productId == productId }?.let {
+            HomeRealTimeRecomProductUiModel(
+                it.productCardModel.productId,
+                it.productCardModel.imageUrl,
+                it.categoryBreadcrumbs
+            )
         }
     }
 
@@ -126,15 +134,19 @@ object RealTimeRecomMapper {
     private fun HomeLeftCarouselAtcUiModel.mapLeftAtcToRtrProduct(productId: String?): HomeRealTimeRecomProductUiModel? {
         val productList = productList.filterIsInstance<HomeLeftCarouselAtcProductCardUiModel>()
         return productList.firstOrNull { it.id.toString() == productId }?.let {
-            val imageUrl = it.productCardModel.productImageUrl
+            val imageUrl = it.productCardModel.imageUrl
             HomeRealTimeRecomProductUiModel(it.id.toString(), imageUrl, it.categoryBreadcrumbs)
         }
     }
 
     private fun HomeLeftCarouselAtcUiModel.mapProductRecomToRtrProduct(productId: String?): HomeRealTimeRecomProductUiModel? {
-        val recommendationItemList = realTimeRecom.widget?.recommendationItemList
-        return recommendationItemList?.firstOrNull { it.productId.toString() == productId }?.let {
-            HomeRealTimeRecomProductUiModel(it.productId.toString(), it.imageUrl, it.categoryBreadcrumbs)
+        val productList = realTimeRecom.productList
+        return productList.firstOrNull { it.productCardModel.productId == productId }?.let {
+            HomeRealTimeRecomProductUiModel(
+                it.productCardModel.productId,
+                it.productCardModel.imageUrl,
+                it.categoryBreadcrumbs
+            )
         }
     }
 
@@ -227,7 +239,7 @@ object RealTimeRecomMapper {
 
         item?.getLeftAtcRecomItem(productId)?.let {
             updateItemById(channelId) {
-                LeftCarouselAtcMapper.mapLeftAtcRTR(item, recomWidget, it, miniCartData)
+                LeftCarouselMapper.mapLeftAtcRTR(item, recomWidget, it, miniCartData)
             }
         }
     }
@@ -235,7 +247,7 @@ object RealTimeRecomMapper {
     private fun MutableList<HomeLayoutItemUiModel>.removeMixLeftAtcRTR(channelId: String) {
         getLeftAtcItem(channelId)?.let {
             updateItemById(it.id) {
-                LeftCarouselAtcMapper.removeLeftAtcRTR(it)
+                LeftCarouselMapper.removeLeftAtcRTR(it)
             }
         }
     }

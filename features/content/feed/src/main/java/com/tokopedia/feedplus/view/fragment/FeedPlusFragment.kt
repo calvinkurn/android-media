@@ -472,18 +472,10 @@ class FeedPlusFragment :
                                             feedFollowersOnlyBottomSheet?.dismiss()
                                         }
                                     }
-                                } else {
-                                    if (data.isFollow) {
-                                        showToast(
-                                            getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
-                                            Toaster.TYPE_NORMAL
+                                } else {val messageRes =
+                                    if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
+                                           showToast(getString(messageRes), Toaster.TYPE_NORMAL
                                         )
-                                    } else {
-                                        showToast(
-                                            getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
-                                            Toaster.TYPE_NORMAL
-                                        )
-                                    }
                                 }
                                 onSuccessFollowUnfollowKol(data.rowNumber)
                             } else {
@@ -494,7 +486,7 @@ class FeedPlusFragment :
                                     data.errorMessage =
                                         getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_fail_toast)
                                 }
-                                onErrorFollowUnfollowKol(data)
+                                }onErrorFollowUnfollowKol(data)
                             }
                         }
                         is Fail -> {
@@ -1009,8 +1001,7 @@ class FeedPlusFragment :
                         } else if (authorType == FollowCta.AUTHOR_SHOP) {
                             onSuccessToggleFavoriteShop(
                                 FavoriteShopModel(
-                                    rowNumber = rowNumber,
-                                    isUnfollowFromShopsMenu = false
+                                    rowNumber = rowNumber
                                 )
                             )
                         }
@@ -1681,7 +1672,6 @@ class FeedPlusFragment :
                     0,
                     id,
                     isFollow,
-                    isBottomSheetMenuOnFeed,
                     isFollowedFromFollowRestrictionBottomSheet
                 )
             }
@@ -3072,7 +3062,7 @@ class FeedPlusFragment :
                 getString(R.string.feed_post_deleted),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
+                getString(com.tokopedia.kolcommon.R.string.content_action_ok)
             ).show()
         }
         if (adapter.getlist().isEmpty()) {
@@ -3110,7 +3100,7 @@ class FeedPlusFragment :
                 val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
                 val feedXCardData = item.feedXCard
                 feedXCardData.followers.isFollowed = !feedXCardData.followers.isFollowed
-                if (!feedXCardData.followers.isFollowed && data.isUnfollowFromShopsMenu) {
+                if (!feedXCardData.followers.isFollowed) {
                     showToast(
                         getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
                         Toaster.TYPE_NORMAL
@@ -3169,14 +3159,27 @@ class FeedPlusFragment :
 
             if (adapter.getlist()[rowNumber] is TopadsHeadLineV2Model) {
                 val item = (adapter.getlist()[rowNumber] as TopadsHeadLineV2Model)
-                item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
+                val card = item.feedXCard
+                card.followers.isFollowed = !card.followers.isFollowed
+                val isFollowed = card.followers.isFollowed
 
                 feedAnalytics.eventClickFollowitem(
-                    getFeedTrackerDataModel(item.feedXCard)
+                    getFeedTrackerDataModel(card)
                 )
 
-                if (item.feedXCard.followers.isFollowed) {
-                    item.feedXCard.followers.transitionFollow = true
+                if (isFollowed) {
+                    card.followers.transitionFollow = true
+                }
+                if (!isFollowed) {
+                    showToast(
+                        getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
+                        Toaster.TYPE_NORMAL
+                    )
+                } else {
+                    showToast(
+                        getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
+                        Toaster.TYPE_NORMAL
+                    )
                 }
 
                 adapter.notifyItemChanged(
