@@ -219,7 +219,6 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
                 player.shouldCache = !mModel.video.isLive
-                player.shouldForceLowest = false
                 player.start()
             }
             player.listener = playerListener
