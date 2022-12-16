@@ -87,7 +87,7 @@ class BannerComponentViewHolder(
     }
 
     init {
-        itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
             override fun onViewDetachedFromWindow(p0: View) {
                 pauseAutoScroll()
             }
