@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
@@ -36,6 +37,20 @@ class GotoKycTransparentFragment: BaseDaggerFragment() {
         } else {
             //put valid project id
         }
+    }
+
+    private fun directTocKyc() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.KYC_INFO_BASE)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "GET_PROJECT_ID_FROM_VIEW_MODEL")
+        startActivity(intent)
+        activity?.finish()
+    }
+
+    private fun directToGotoKyc() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.GOTO_KYC)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "GET_PROJECT_ID_FROM_VIEW_MODEL")
+        startActivity(intent)
+        activity?.finish()
     }
 
     override fun getScreenName(): String = SCREEN_NAME
