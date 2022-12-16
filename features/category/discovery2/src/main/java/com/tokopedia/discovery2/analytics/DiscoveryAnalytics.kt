@@ -2465,7 +2465,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         banner.let {
             list.add(mapOf(
                 KEY_ID to "${it?.product?.productId}_0",
-                KEY_NAME to "//discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.position.plus(1) ?: 0} - ${componentName}",
+                KEY_NAME to it?.gtmItemName?.replace("#POSITION",(componentsItems.parentComponentPosition + 1).toString()).toString(),
                 KEY_CREATIVE to it?.creativeName.toString(),
                 KEY_POSITION to componentsItems.position + 1
             ))
@@ -2508,9 +2508,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 banner.let {
                     val bannerID = "${it.product?.productId}"
                     hashMap[KEY_ID] = "${bannerID}_0"
-                    hashMap[KEY_NAME] = "//discovery/${removedDashPageIdentifier} - ${pageType} - ${
-                        componentsItems.position.plus(1)
-                    } - ${componentsItems.name}"
+                    hashMap[KEY_NAME] = it.gtmItemName?.replace("#POSITION",(componentsItems.parentComponentPosition + 1).toString()).toString()
                     hashMap[KEY_CREATIVE] = it.creativeName ?: EMPTY_STRING
                     hashMap[KEY_POSITION] = componentsItems.position + 1
                     list.add(hashMap)
