@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.product.inspirationwidget.size
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetFilter
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetOption
@@ -39,7 +40,7 @@ class InspirationSizeDataView(
                     keyword,
                     dimension90,
                     data.title,
-                    data.trackingOption
+                    data.trackingOption.toIntOrZero(),
                 ),
             )
         }
