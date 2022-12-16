@@ -27,7 +27,7 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:text="AAABABAB"/>
 
-    <com.tokopedia.mvc.presentation.intro.customviews.IntroCouponCardView
+    <com.tokopedia.mvc.presentation.intro.customviews.IntroVoucherCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -36,7 +36,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <com.tokopedia.mvc.presentation.intro.customviews.IntroCouponCardView
+    <com.tokopedia.mvc.presentation.intro.customviews.IntroVoucherCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/view_selection_coupons"
@@ -44,7 +44,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <com.tokopedia.mvc.presentation.intro.customviews.IntroCouponCardView
+    <com.tokopedia.mvc.presentation.intro.customviews.IntroVoucherCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/view_set_target"

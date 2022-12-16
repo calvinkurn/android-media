@@ -12,7 +12,8 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroFragmentBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.presentation.intro.adapter.MvcIntroAdapter
-import com.tokopedia.mvc.presentation.intro.uimodel.IntroCouponUiModel
+import com.tokopedia.mvc.presentation.intro.uimodel.IntroVoucherUiModel
+import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MvcIntroFragment : BaseDaggerFragment() {
@@ -47,26 +48,39 @@ class MvcIntroFragment : BaseDaggerFragment() {
     private fun getContentList(): List<Visitable<*>> {
         return context?.resources?.let {
             listOf(
-                IntroCouponUiModel(
+                IntroVoucherUiModel(
                     it.getString(R.string.smvc_intro_make_coupons_faster),
                     it.getString(R.string.smvc_intro_coupon_subtitle),
                     list = listOf(
-                        IntroCouponUiModel.IntroCouponCardData(
+                        IntroVoucherUiModel.IntroCouponCardData(
                             it.getString(R.string.smvc_intro_coupon_card_1_title),
                             it.getString(R.string.smvc_intro_coupon_card_1_subtitle),
                             ""
                         ),
-                        IntroCouponUiModel.IntroCouponCardData(
+                        IntroVoucherUiModel.IntroCouponCardData(
                             it.getString(R.string.smvc_intro_coupon_card_2_title),
                             it.getString(R.string.smvc_intro_coupon_card_2_subtitle),
                             ""
                         ),
-                        IntroCouponUiModel.IntroCouponCardData(
+                        IntroVoucherUiModel.IntroCouponCardData(
                             it.getString(R.string.smvc_intro_coupon_card_3_title),
                             it.getString(R.string.smvc_intro_coupon_card_3_subtitle),
                             ""
                         )
 
+                    )
+                ),
+                VoucherTypeUiModel(
+                    title = it.getString(R.string.smvc_intro_coupon_type_card_title),
+                    list = listOf(
+                        VoucherTypeUiModel.VoucherTypeCardData(
+                            it.getString(R.string.smvc_intro_coupon_type_card_1_title),
+                            it.getString(R.string.smvc_intro_coupon_type_card_1_subtitle),
+                        ),
+                        VoucherTypeUiModel.VoucherTypeCardData(
+                            it.getString(R.string.smvc_intro_coupon_type_card_2_title),
+                            it.getString(R.string.smvc_intro_coupon_type_card_2_subtitle),
+                        )
                     )
                 )
             )

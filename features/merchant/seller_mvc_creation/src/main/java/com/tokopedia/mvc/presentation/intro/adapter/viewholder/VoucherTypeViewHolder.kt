@@ -1,0 +1,32 @@
+package com.tokopedia.mvc.presentation.intro.adapter.viewholder
+
+import android.view.View
+import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.mvc.R
+import com.tokopedia.mvc.databinding.SmvcIntroVoucherTypeViewholderBinding
+import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
+import com.tokopedia.utils.view.binding.viewBinding
+
+class VoucherTypeViewHolder(itemView: View?) : AbstractViewHolder<VoucherTypeUiModel>(itemView) {
+
+    companion object {
+        @LayoutRes
+        val RES_LAYOUT = R.layout.smvc_intro_voucher_type_viewholder
+    }
+
+    private var binding: SmvcIntroVoucherTypeViewholderBinding? by viewBinding()
+
+    override fun bind(element: VoucherTypeUiModel?) {
+        binding?.apply {
+            title.text = element?.title.toBlankOrString()
+            element?.list?.getOrNull(0)?.let {
+                viewVoucherShop.setText(it.benefitTitle, it.benefitSubtitle)
+            }
+            element?.list?.getOrNull(1)?.let {
+                viewVoucherProduct.setText(it.benefitTitle, it.benefitSubtitle)
+            }
+        }
+    }
+}

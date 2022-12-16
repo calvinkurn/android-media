@@ -6,31 +6,29 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVoucherViewholderBinding
-import com.tokopedia.mvc.presentation.intro.uimodel.IntroCouponUiModel
-import com.tokopedia.mvc.util.extension.getIndexAtOrEmpty
+import com.tokopedia.mvc.presentation.intro.uimodel.IntroVoucherUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class IntroCouponViewHolder(itemView: View?) : AbstractViewHolder<IntroCouponUiModel>(itemView) {
+class IntroVoucherViewHolder(itemView: View?) : AbstractViewHolder<IntroVoucherUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.smvc_intro_voucher_viewholder
     }
 
-    //Todo Rename it to something else
     private var binding: SmvcIntroVoucherViewholderBinding? by viewBinding()
 
-    override fun bind(element: IntroCouponUiModel?) {
+    override fun bind(element: IntroVoucherUiModel?) {
         binding?.apply {
             title.text = element?.title.toBlankOrString()
             subtitle.text = element?.subtitle.toBlankOrString()
-            element?.list?.getIndexAtOrEmpty(0)?.let {
+            element?.list?.getOrNull(0)?.let {
                 viewFlexibleForCoupons.setText(it.benefitTitle, it.benefitSubtitle)
             }
-            element?.list?.getIndexAtOrEmpty(1)?.let {
+            element?.list?.getOrNull(1)?.let {
                 viewSelectionCoupons.setText(it.benefitTitle, it.benefitSubtitle)
             }
-            element?.list?.getIndexAtOrEmpty(2)?.let {
+            element?.list?.getOrNull(2)?.let {
                 viewSetTarget.setText(it.benefitTitle, it.benefitSubtitle)
             }
         }

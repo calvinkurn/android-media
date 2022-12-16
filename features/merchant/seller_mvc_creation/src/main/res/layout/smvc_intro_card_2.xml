@@ -14,7 +14,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/card"
         app:unify_image_type="circle"
-        tools:src="@tools:sample/avatars" />
+        android:src="@drawable/background_countdown" />
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/card"
