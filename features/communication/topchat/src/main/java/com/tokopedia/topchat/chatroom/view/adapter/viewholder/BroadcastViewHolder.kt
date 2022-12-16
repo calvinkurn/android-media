@@ -375,7 +375,7 @@ class BroadcastViewHolder constructor(
         val banner = element.banner ?: return
         ctaText?.let {
             var text: String? = banner.broadcastCtaText
-            if (text.isNullOrBlank()) {
+            if (text == null) {
                 text = getString(R.string.title_topchat_see_detail)
             }
             it.text = text

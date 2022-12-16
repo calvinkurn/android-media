@@ -174,14 +174,21 @@ internal open class ProductListPresenterTestFixtures {
             pagination,
             suggestionPresenter,
         )
+        val inspirationCarouselPresenterDelegate = InspirationCarouselPresenterDelegate(
+            inspirationCarouselView,
+            inspirationListAtcPresenterDelegate,
+            topAdsUrlHitter,
+            classNameProvider,
+            requestParamsGenerator,
+            { getInspirationCarouselChipsProductsUseCase },
+            chooseAddressPresenterDelegate,
+            viewUpdater,
+        )
         val visitableFactory = VisitableFactory(
             suggestionPresenter = suggestionPresenter,
             performanceMonitoringProvider = { performanceMonitoring },
             topAdsHeadlineHelper = topAdsHeadlineHelper,
-            inspirationCarouselPresenter = InspirationCarouselPresenterDelegate(
-                inspirationCarouselView,
-                inspirationListAtcPresenterDelegate,
-            ),
+            inspirationCarouselPresenter = inspirationCarouselPresenterDelegate,
             inspirationWidgetPresenter = InspirationWidgetPresenterDelegate(),
             bannerDelegate = bannerPresenterDelegate,
             broadMatchDelegate = broadMatchPresenterDelegate,
@@ -224,6 +231,7 @@ internal open class ProductListPresenterTestFixtures {
             dynamicFilterModel,
             bottomSheetFilterPresenter,
             visitableFactory,
+            inspirationCarouselPresenterDelegate,
         )
         productListPresenter.attachView(productListView)
     }
