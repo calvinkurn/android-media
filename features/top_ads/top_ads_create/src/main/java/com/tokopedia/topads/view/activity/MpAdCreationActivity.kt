@@ -69,6 +69,9 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
 //        if(productType!=null && productType.isUsed){
 //
 //        }
+//        addFragment(ProductManageSellerFragment.newInstance(
+//            arrayListOf(),"",""
+//        ))
         addFragment(MpAdGroupFragment.newInstance())
     }
 

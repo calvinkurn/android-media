@@ -239,7 +239,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     // Error Logic
 
     override fun onErrorActionClicked() {
-
+       resetAdGroupList()
     }
 
     // Reload Logic

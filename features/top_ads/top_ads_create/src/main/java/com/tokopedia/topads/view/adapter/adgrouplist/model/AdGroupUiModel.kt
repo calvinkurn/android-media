@@ -5,12 +5,12 @@ import com.tokopedia.topads.data.AdGroupSettingData
 import com.tokopedia.topads.data.AdGroupStatsData
 import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFactory
 
-class AdGroupUiModel(
+data class AdGroupUiModel(
     val groupId:String = "",
     val groupName:String = "",
-    var adGroupSetting: AdGroupSettingData = AdGroupSettingData(),
-    var adGroupStats:AdGroupStatsData = AdGroupStatsData(),
-    var selected:Boolean = false
+    val adGroupSetting: AdGroupSettingData = AdGroupSettingData(),
+    val adGroupStats:AdGroupStatsData = AdGroupStatsData(),
+    val selected:Boolean = false
 ) : Visitable<AdGroupTypeFactory> {
     override fun type(typeFactory: AdGroupTypeFactory) = typeFactory.type(this)
 }

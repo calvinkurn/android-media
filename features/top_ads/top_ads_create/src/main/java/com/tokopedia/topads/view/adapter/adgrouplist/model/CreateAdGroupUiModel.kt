@@ -5,4 +5,8 @@ import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFact
 
 class CreateAdGroupUiModel : Visitable<AdGroupTypeFactory> {
     override fun type(typeFactory: AdGroupTypeFactory) = typeFactory.type(this)
+
+    override fun toString(): String {
+        return "{}"
+    }
 }

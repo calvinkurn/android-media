@@ -268,13 +268,13 @@ class MpAdsGroupsViewModel @Inject constructor(
 
     private fun selectGroup(index:Int){
         if(index < visitableList.size && visitableList[index] is AdGroupUiModel){
-            (visitableList[index] as AdGroupUiModel).selected = true
+            visitableList[index] = (visitableList[index] as AdGroupUiModel).copy(selected = true)
         }
     }
 
     private fun unselectGroup(index:Int){
         if(index < visitableList.size && visitableList[index] is AdGroupUiModel){
-            (visitableList[index] as AdGroupUiModel).selected = false
+            visitableList[index] = (visitableList[index] as AdGroupUiModel).copy(selected = false)
         }
     }
 }

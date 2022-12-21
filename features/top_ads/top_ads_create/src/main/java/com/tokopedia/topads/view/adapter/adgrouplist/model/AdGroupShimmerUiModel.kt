@@ -5,4 +5,8 @@ import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFact
 
 class AdGroupShimmerUiModel : Visitable<AdGroupTypeFactory> {
     override fun type(typeFactory: AdGroupTypeFactory) = typeFactory.type(this)
+
+    override fun toString(): String {
+        return "{}"
+    }
 }
