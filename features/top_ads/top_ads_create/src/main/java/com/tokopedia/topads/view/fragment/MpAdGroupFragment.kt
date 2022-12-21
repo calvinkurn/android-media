@@ -1,6 +1,10 @@
 package com.tokopedia.topads.view.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +46,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         private const val IMPRESSION_VALUE = "impression"
         private const val CLICK_VALUE = "click"
         private const val CONVERSION_VALUE = "conversion"
+        private const val SEARCH_DELAY_TIME = 500L
     }
 
     private var binding:MpAdGroupFragmentBinding?=null
@@ -62,6 +67,8 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     private val adGroupViewModel:MpAdsGroupsViewModel by lazy {
         ViewModelProvider(this,viewModelFactory).get(MpAdsGroupsViewModel::class.java)
     }
+
+    private val mHandler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +93,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         setupHeader()
         setupRecyclerView()
         attachFilterClickListener()
+        attachSearchQueryListener()
         observeViewModel()
         adGroupViewModel.loadFirstPage(shopId)
     }
@@ -114,6 +122,18 @@ class MpAdGroupFragment : BaseDaggerFragment(),
                 adGroupViewModel.loadMorePages(shopId)
             }
         }
+    }
+
+    private fun attachSearchQueryListener(){
+        binding?.adGroupSearch?.searchBarTextField?.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(query: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                loadPageWithKeyword(query?.toString())
+            }
+
+            override fun afterTextChanged(p0: Editable?) {}
+        })
     }
 
     private fun observeViewModel(){
@@ -245,5 +265,14 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     // Reload Logic
     override fun onReload() {
         adGroupViewModel.loadMorePages(shopId)
+    }
+
+    //Search Logic
+    private fun loadPageWithKeyword(query:String?){
+        adGroupViewModel.searchKeyword = query.orEmpty()
+        mHandler.removeCallbacksAndMessages(null)
+        mHandler.postDelayed({
+            adGroupViewModel.loadFirstPage(shopId)
+        }, SEARCH_DELAY_TIME)
     }
 }

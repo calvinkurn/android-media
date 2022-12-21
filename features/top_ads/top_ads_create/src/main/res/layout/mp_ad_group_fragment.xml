@@ -13,12 +13,13 @@
       app:unify_header_title="@string/mp_ad_creation_group_list_header_text"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
+      app:unify_header_is_show_shadow="false"
       />
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/ad_group_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:search_bar_placeholder="Cari grup iklan di sini"
+        app:search_bar_placeholder="@string/mp_ad_group_list_search_hint"
         app:search_bar_show_icon="false"
         android:layout_weight="0.8"
         app:layout_constraintTop_toBottomOf="@id/ad_group_header"
