@@ -640,6 +640,8 @@ class WishlistCollectionDetailFragment :
 
                         if (currPage == 1 && collectionDetail.sortFilters.isNotEmpty()) {
                             renderChipsFilter(mapToSortFilterItem(collectionDetail.sortFilters))
+                            setupGearIcon()
+                            setupLayoutTypeIcon()
                         }
                         if (collectionDetail.hasNextPage) {
                             currPage += 1
@@ -674,9 +676,6 @@ class WishlistCollectionDetailFragment :
                                 SRC_WISHLIST_COLLECTION_SHARING
                             )
                         }
-
-                        setupLayoutTypeIcon()
-                        setupGearIcon()
                     }
                 }
                 is Fail -> {
