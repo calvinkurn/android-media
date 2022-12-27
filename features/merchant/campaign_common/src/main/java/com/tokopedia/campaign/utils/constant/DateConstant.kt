@@ -12,6 +12,7 @@ object DateConstant {
     //region Date
     const val DATE_WITH_SECOND_PRECISION_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val DATE_YEAR_WITH_TIME = "dd MMM yyyy, HH:mm"
+    const val DATE_LONGMONTH_YEAR_WITH_TIME = "d MMMM yyyy, HH:mm"
     const val DATE_YEAR_PRECISION = "dd MMM yyyy"
     const val DATE_MONTH_ONLY = "dd MMM"
     const val DATE_ONLY = "dd"

@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.data.exception.VoucherCancellationException
 import com.tokopedia.mvc.data.response.CancelVoucherResponse
+import com.tokopedia.mvc.util.constant.CommonConstant.SELLER_APP_PAGE_SOURCE
 import javax.inject.Inject
 
 class CancelVoucherUseCase @Inject constructor(
@@ -25,7 +26,6 @@ class CancelVoucherUseCase @Inject constructor(
         private const val TOKEN_KEY = "token"
         private const val STATUS_KEY = "status"
         private const val SOURCE_KEY = "source"
-        private const val SELLERAPP = "android-sellerapp"
 
         enum class UpdateVoucherAction(val state : String) {
             STOP("stop"),
@@ -63,7 +63,7 @@ class CancelVoucherUseCase @Inject constructor(
             VOUCHER_ID_KEY to voucherId,
             STATUS_KEY to cancelStatus.state,
             TOKEN_KEY to token,
-            SOURCE_KEY to SELLERAPP,
+            SOURCE_KEY to SELLER_APP_PAGE_SOURCE,
         )
         return GraphqlRequest(
             mutation,
