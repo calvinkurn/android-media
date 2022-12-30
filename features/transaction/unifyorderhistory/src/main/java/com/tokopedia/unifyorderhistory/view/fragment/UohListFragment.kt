@@ -221,7 +221,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
     private var refreshHandler: RefreshHandler? = null
     private var paramUohOrder = UohListParam()
-    private var orderList: UohListOrder.Data.UohOrders = UohListOrder.Data.UohOrders()
+    private var orderList: UohListOrder.UohOrders = UohListOrder.UohOrders()
     private var recommendationList: List<RecommendationWidget> = listOf()
     private var tdnBanner: TopAdsImageViewModel = TopAdsImageViewModel()
     private var responseFinishOrder: UohFinishOrder.Data.FinishOrderBuyer = UohFinishOrder.Data.FinishOrderBuyer()
@@ -469,7 +469,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 val item = uohItemAdapter.listTypeData.getOrNull(currIndexNeedUpdate)
                 if (item != null &&
                     item.typeLayout == UohConsts.TYPE_ORDER_LIST &&
-                    item.dataObject is UohListOrder.Data.UohOrders.Order &&
+                    item.dataObject is UohListOrder.UohOrders.Order &&
                     item.dataObject.orderUUID == orderIdNeedUpdated
                 ) {
                     uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
@@ -1898,7 +1898,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
+    override fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order, orderIndex: Int) {
         val kebabMenuBottomSheet = UohKebabMenuBottomSheet.newInstance()
         if (kebabMenuBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
@@ -1908,7 +1908,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
         kebabMenuBottomSheet.setAdapter(kebabMenuAdapter)
         kebabMenuBottomSheet.setListener(object : UohKebabMenuBottomSheet.UohKebabMenuBottomSheetListener {
-            override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
+            override fun onKebabItemClick(index: Int, orderData: UohListOrder.UohOrders.Order, orderIndex: Int) {
                 kebabMenuBottomSheet.dismiss()
                 try {
                     val dotMenu = orderData.metadata.dotMenus[index]
@@ -2062,7 +2062,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         finishOrderBottomSheet.show(childFragmentManager)
     }
 
-    override fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+    override fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int) {
         try {
             val detailUrl = order.metadata.detailURL
             var intent = Intent()
@@ -2114,7 +2114,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     override fun onActionButtonClicked(
-        order: UohListOrder.Data.UohOrders.Order,
+        order: UohListOrder.UohOrders.Order,
         index: Int,
         buttonIndex: Int
     ) {
@@ -2203,7 +2203,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+    override fun trackViewOrderCard(order: UohListOrder.UohOrders.Order, index: Int) {
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
             jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
@@ -2321,7 +2321,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun doChatSeller(appUrl: String, order: UohListOrder.Data.UohOrders.Order) {
+    private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
         var invoiceCode = ""
         var invoiceUrl = ""
         var status = order.verticalStatus
@@ -2353,7 +2353,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         startActivity(intent)
     }
 
-    private fun atc(orderData: UohListOrder.Data.UohOrders.Order) {
+    private fun atc(orderData: UohListOrder.UohOrders.Order) {
         _listParamAtcMulti.clear()
         if (orderData.metadata.listProducts.isNotEmpty()) {
             _atcVerticalCategory = orderData.verticalCategory
@@ -2386,7 +2386,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun atcOcc(orderData: UohListOrder.Data.UohOrders.Order) {
+    private fun atcOcc(orderData: UohListOrder.UohOrders.Order) {
         _atcVerticalCategory = orderData.verticalCategory
         if (orderData.metadata.listProducts.isNotEmpty()) {
             _atcOccParams = OrderDataMapper.mapOrderDataToOccParams(orderData)
@@ -2419,7 +2419,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke)).show() }
     }
 
-    private fun goToOrderExtension(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+    private fun goToOrderExtension(order: UohListOrder.UohOrders.Order, index: Int) {
         val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
         val appLink = UriUtil.buildUriAppendParams(
             ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION,

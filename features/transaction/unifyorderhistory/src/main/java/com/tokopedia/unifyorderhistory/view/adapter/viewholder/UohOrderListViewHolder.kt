@@ -29,7 +29,7 @@ class UohOrderListViewHolder(
     private val actionListener: UohItemAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: UohTypeData, position: Int) {
-        if (item.dataObject is UohListOrder.Data.UohOrders.Order) {
+        if (item.dataObject is UohListOrder.UohOrders.Order) {
             binding.clDataProduct.visible()
             ImageHandler.loadImage(
                 itemView.context,

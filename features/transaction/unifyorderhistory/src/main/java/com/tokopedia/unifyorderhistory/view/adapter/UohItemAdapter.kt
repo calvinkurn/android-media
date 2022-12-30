@@ -4,23 +4,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_EMPTY
-import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER
-import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ORDER_LIST
-import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_TITLE
-import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_ITEM
-import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_TICKER
-import com.tokopedia.unifyorderhistory.data.model.UohListOrder
-import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifyorderhistory.data.model.PmsNotification
 import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
+import com.tokopedia.unifyorderhistory.data.model.UohListOrder
+import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.*
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_BANNER
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_EMPTY
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER_PMS_BUTTON
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ORDER_LIST
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_PMS_BUTTON
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_ITEM
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_TITLE
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_TICKER
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
@@ -44,12 +44,12 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     interface ActionListener {
-        fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int)
-        fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
-        fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int, buttonIndex: Int)
+        fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order, orderIndex: Int)
+        fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int)
+        fun onActionButtonClicked(order: UohListOrder.UohOrders.Order, index: Int, buttonIndex: Int)
         fun onTickerDetailInfoClicked(url: String)
         fun onEmptyResultResetBtnClicked()
-        fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int)
+        fun trackViewOrderCard(order: UohListOrder.UohOrders.Order, index: Int)
         fun onMulaiBelanjaBtnClicked()
         fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int)
@@ -119,7 +119,6 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val element = listTypeData[position]
         when (holder) {
@@ -171,7 +170,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
+    fun updateDataAtIndex(index: Int, order: UohListOrder.UohOrders.Order) {
         try {
             listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
             notifyItemChanged(index)
@@ -207,7 +206,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 targetData = data
                 targetIndex = index
                 break@loop
-            } else if (data.dataObject is UohListOrder.Data.UohOrders.Order || data.dataObject is UohEmptyState) {
+            } else if (data.dataObject is UohListOrder.UohOrders.Order || data.dataObject is UohEmptyState) {
                 targetIndex = index
                 break@loop
             }
@@ -234,7 +233,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             if (data.dataObject is PmsNotification) {
                 targetIndex = index
                 break@loop
-            } else if (data.dataObject is UohListOrder.Data.UohOrders.Order || data.dataObject is UohEmptyState) {
+            } else if (data.dataObject is UohListOrder.UohOrders.Order || data.dataObject is UohEmptyState) {
                 break@loop
             }
         }

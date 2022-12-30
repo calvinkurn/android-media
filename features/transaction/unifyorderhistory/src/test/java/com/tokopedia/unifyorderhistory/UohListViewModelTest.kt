@@ -42,7 +42,7 @@ class UohListViewModelTest {
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var uohListViewModel: UohListViewModel
-    private var listOrderHistory = listOf<UohListOrder.Data.UohOrders.Order>()
+    private var listOrderHistory = listOf<UohListOrder.UohOrders.Order>()
     private var listRecommendation = listOf<RecommendationWidget>()
     private var finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer()
     private var listMsg = arrayListOf<String>()
@@ -101,24 +101,24 @@ class UohListViewModelTest {
             rechargeSetFailUseCase, topAdsImageViewUseCase, atcUseCase, getUohPmsCounterUseCase
         )
 
-        val order1 = UohListOrder.Data.UohOrders.Order(
+        val order1 = UohListOrder.UohOrders.Order(
             orderUUID = "abc", verticalID = "",
             verticalCategory = "", userID = "", status = "", verticalStatus = "", searchableText = "",
-            metadata = UohListOrder.Data.UohOrders.Order.Metadata(), createTime = "", createBy = "",
+            metadata = UohListOrder.UohOrders.Order.Metadata(), createTime = "", createBy = "",
             updateTime = "", updateBy = ""
         )
 
-        val order2 = UohListOrder.Data.UohOrders.Order(
+        val order2 = UohListOrder.UohOrders.Order(
             orderUUID = "def", verticalID = "",
             verticalCategory = "", userID = "", status = "", verticalStatus = "", searchableText = "",
-            metadata = UohListOrder.Data.UohOrders.Order.Metadata(), createTime = "", createBy = "",
+            metadata = UohListOrder.UohOrders.Order.Metadata(), createTime = "", createBy = "",
             updateTime = "", updateBy = ""
         )
 
-        val order3 = UohListOrder.Data.UohOrders.Order(
+        val order3 = UohListOrder.UohOrders.Order(
             orderUUID = "ghi", verticalID = "",
             verticalCategory = "", userID = "", status = "", verticalStatus = "", searchableText = "",
-            metadata = UohListOrder.Data.UohOrders.Order.Metadata(), createTime = "", createBy = "",
+            metadata = UohListOrder.UohOrders.Order.Metadata(), createTime = "", createBy = "",
             updateTime = "", updateBy = ""
         )
 
@@ -195,23 +195,23 @@ class UohListViewModelTest {
     fun getOrderHistoryData_shouldReturnSuccess() {
         // given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            uohListUseCase(any())
+        } returns UohListOrder(uohOrders = UohListOrder.UohOrders(listOrderHistory))
 
         // when
         uohListViewModel.loadOrderList(UohListParam())
 
         // then
         assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders[0].orderUUID.equals("abc", true))
+        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.UohOrders>).data.orders[0].orderUUID.equals("abc", true))
     }
 
     @Test
     fun getOrderHistoryData_shouldReturnFail() {
         // given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Fail(Throwable())
+            uohListUseCase(any())
+        } throws Exception()
 
         // when
         uohListViewModel.loadOrderList(UohListParam())
@@ -224,15 +224,15 @@ class UohListViewModelTest {
     fun getOrderHistoryData_shouldNotReturnEmpty() {
         // given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            uohListUseCase(any())
+        } returns UohListOrder(uohOrders = UohListOrder.UohOrders(listOrderHistory))
 
         // when
         uohListViewModel.loadOrderList(UohListParam())
 
         // then
         assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders.isNotEmpty())
+        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.UohOrders>).data.orders.isNotEmpty())
     }
 
     // recommendation
@@ -381,7 +381,7 @@ class UohListViewModelTest {
         uohListViewModel.doAtcOccMulti(AddToCartOccMultiRequestParams(carts = emptyList()))
 
         // then
-        coVerify() {
+        coVerify {
             atcOccMultiUseCase.setParams(any()).executeOnBackground()
         }
         assert(uohListViewModel.atcOccMultiResult.value is Success)
@@ -399,7 +399,7 @@ class UohListViewModelTest {
         uohListViewModel.doAtcOccMulti(AddToCartOccMultiRequestParams(carts = emptyList()))
 
         // then
-        coVerify() {
+        coVerify {
             atcOccMultiUseCase.setParams(any()).executeOnBackground()
         }
         assert(uohListViewModel.atcOccMultiResult.value is Fail)
@@ -416,7 +416,7 @@ class UohListViewModelTest {
         uohListViewModel.doAtcOccMulti(AddToCartOccMultiRequestParams(carts = emptyList()))
 
         // then
-        coVerify() {
+        coVerify {
             atcOccMultiUseCase.setParams(any()).executeOnBackground()
         }
         assert(uohListViewModel.atcOccMultiResult.value is Fail)

@@ -59,8 +59,8 @@ class UohListViewModel @Inject constructor(
     val filterCategoryResult: LiveData<Result<UohFilterCategory.Data>>
         get() = _filterCategoryResult
 
-    private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
-    val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
+    private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.UohOrders>>()
+    val orderHistoryListResult: LiveData<Result<UohListOrder.UohOrders>>
         get() = _orderHistoryListResult
 
     private val _recommendationListResult = MutableLiveData<Result<List<RecommendationWidget>>>()
@@ -115,10 +115,14 @@ class UohListViewModel @Inject constructor(
 
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
-        launch {
-            _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
+        launchCatchError(block = {
+            val result = uohListUseCase(paramOrder)
+            _orderHistoryListResult.value = Success(result.uohOrders)
             UohIdlingResource.decrement()
-        }
+        }, onError = {
+                _orderHistoryListResult.value = Fail(it)
+                UohIdlingResource.decrement()
+            })
     }
 
     fun loadPmsCounter(shopId: String) {
