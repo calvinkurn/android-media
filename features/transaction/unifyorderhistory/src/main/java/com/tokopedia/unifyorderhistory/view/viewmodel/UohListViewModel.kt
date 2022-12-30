@@ -67,8 +67,8 @@ class UohListViewModel @Inject constructor(
     val recommendationListResult: LiveData<Result<List<RecommendationWidget>>>
         get() = _recommendationListResult
 
-    private val _finishOrderResult = MutableLiveData<Result<UohFinishOrder.Data.FinishOrderBuyer>>()
-    val finishOrderResult: LiveData<Result<UohFinishOrder.Data.FinishOrderBuyer>>
+    private val _finishOrderResult = MutableLiveData<Result<UohFinishOrder.FinishOrderBuyer>>()
+    val finishOrderResult: LiveData<Result<UohFinishOrder.FinishOrderBuyer>>
         get() = _finishOrderResult
 
     private val _atcMultiResult = MutableLiveData<Result<AtcMultiData>>()
@@ -125,6 +125,18 @@ class UohListViewModel @Inject constructor(
             })
     }
 
+    fun doFinishOrder(paramFinishOrder: UohFinishOrderParam) {
+        UohIdlingResource.increment()
+        launchCatchError(block = {
+            val result = uohFinishOrderUseCase(paramFinishOrder)
+            _finishOrderResult.value = Success(result.finishOrderBuyer)
+            UohIdlingResource.decrement()
+        }, onError = {
+                _finishOrderResult.value = Fail(it)
+                UohIdlingResource.decrement()
+            })
+    }
+
     fun loadPmsCounter(shopId: String) {
         launch {
             _getUohPmsCounterResult.value = getUohPmsCounterUseCase.executeSuspend(shopId)
@@ -146,14 +158,6 @@ class UohListViewModel @Inject constructor(
                 Timber.d(e)
                 _recommendationListResult.value = Fail(e.fillInStackTrace())
             }
-            UohIdlingResource.decrement()
-        }
-    }
-
-    fun doFinishOrder(paramFinishOrder: UohFinishOrderParam) {
-        UohIdlingResource.increment()
-        launch {
-            _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
             UohIdlingResource.decrement()
         }
     }

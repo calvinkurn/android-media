@@ -44,7 +44,7 @@ class UohListViewModelTest {
     private lateinit var uohListViewModel: UohListViewModel
     private var listOrderHistory = listOf<UohListOrder.UohOrders.Order>()
     private var listRecommendation = listOf<RecommendationWidget>()
-    private var finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer()
+    private var finishOrderResult = UohFinishOrder.FinishOrderBuyer()
     private var listMsg = arrayListOf<String>()
     private var atcOccResponseSuccess = AddToCartDataModel()
     private var atcOccResponseFailed = AddToCartDataModel()
@@ -129,7 +129,7 @@ class UohListViewModelTest {
         val recomm3 = RecommendationWidget(tid = "789")
         listRecommendation = arrayListOf(recomm1, recomm2, recomm3)
 
-        finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer(1)
+        finishOrderResult = UohFinishOrder.FinishOrderBuyer(1)
 
         listMsg.add("Test")
 
@@ -284,23 +284,23 @@ class UohListViewModelTest {
     fun finishOrderResult_shouldReturnSuccess() {
         // given
         coEvery {
-            uohFinishOrderUseCase.executeSuspend(any())
-        } returns Success(UohFinishOrder.Data.FinishOrderBuyer(1))
+            uohFinishOrderUseCase(any())
+        } returns UohFinishOrder(UohFinishOrder.FinishOrderBuyer(1))
 
         // when
         uohListViewModel.doFinishOrder(UohFinishOrderParam())
 
         // then
         assert(uohListViewModel.finishOrderResult.value is Success)
-        assert((uohListViewModel.finishOrderResult.value as Success<UohFinishOrder.Data.FinishOrderBuyer>).data.success == 1)
+        assert((uohListViewModel.finishOrderResult.value as Success<UohFinishOrder.FinishOrderBuyer>).data.success == 1)
     }
 
     @Test
     fun finishOrderResult_shouldReturnFail() {
         // given
         coEvery {
-            uohFinishOrderUseCase.executeSuspend(any())
-        } returns Fail(Throwable())
+            uohFinishOrderUseCase(any())
+        } throws Exception()
 
         // when
         uohListViewModel.doFinishOrder(UohFinishOrderParam())
@@ -313,15 +313,15 @@ class UohListViewModelTest {
     fun finishOrderResult_shouldNotReturnEmptyMessage() {
         // given
         coEvery {
-            uohFinishOrderUseCase.executeSuspend(any())
-        } returns Success(UohFinishOrder.Data.FinishOrderBuyer(message = listMsg))
+            uohFinishOrderUseCase(any())
+        } returns UohFinishOrder(UohFinishOrder.FinishOrderBuyer(message = listMsg))
 
         // when
         uohListViewModel.doFinishOrder(UohFinishOrderParam())
 
         // then
         assert(uohListViewModel.finishOrderResult.value is Success)
-        assert((uohListViewModel.finishOrderResult.value as Success<UohFinishOrder.Data.FinishOrderBuyer>).data.message.isNotEmpty())
+        assert((uohListViewModel.finishOrderResult.value as Success<UohFinishOrder.FinishOrderBuyer>).data.message.isNotEmpty())
     }
 
     // atc multi

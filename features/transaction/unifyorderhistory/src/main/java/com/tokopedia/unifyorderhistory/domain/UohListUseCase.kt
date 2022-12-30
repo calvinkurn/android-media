@@ -11,10 +11,6 @@ import com.tokopedia.unifyorderhistory.data.model.UohListParam
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INPUT
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 03/07/20.
- */
-
 @GqlQuery("GetOrderHistoryQuery", UohListUseCase.query)
 class UohListUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
