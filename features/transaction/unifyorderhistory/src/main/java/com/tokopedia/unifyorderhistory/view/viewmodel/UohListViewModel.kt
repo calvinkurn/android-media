@@ -84,8 +84,8 @@ class UohListViewModel @Inject constructor(
     val flightResendEmailResult: LiveData<Result<FlightResendEmail.Data>>
         get() = _flightResendEmailResult
 
-    private val _trainResendEmailResult = MutableLiveData<Result<TrainResendEmail.Data>>()
-    val trainResendEmailResult: LiveData<Result<TrainResendEmail.Data>>
+    private val _trainResendEmailResult = MutableLiveData<Result<TrainResendEmail>>()
+    val trainResendEmailResult: LiveData<Result<TrainResendEmail>>
         get() = _trainResendEmailResult
 
     private val _rechargeSetFailResult = MutableLiveData<Result<RechargeSetFailData.Data>>()
@@ -134,6 +134,18 @@ class UohListViewModel @Inject constructor(
             _filterCategoryResult.value = Success(result)
         }, onError = {
                 _filterCategoryResult.value = Fail(it)
+            })
+    }
+
+    fun doTrainResendEmail(param: TrainResendEmailParam) {
+        UohIdlingResource.increment()
+        launchCatchError(block = {
+            val result = trainResendEmailUseCase(param)
+            _trainResendEmailResult.value = Success(result)
+            UohIdlingResource.decrement()
+        }, onError = {
+                _trainResendEmailResult.value = Fail(it)
+                UohIdlingResource.decrement()
             })
     }
 
@@ -201,14 +213,6 @@ class UohListViewModel @Inject constructor(
         UohIdlingResource.increment()
         launch {
             _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
-            UohIdlingResource.decrement()
-        }
-    }
-
-    fun doTrainResendEmail(param: TrainResendEmailParam) {
-        UohIdlingResource.increment()
-        launch {
-            _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
             UohIdlingResource.decrement()
         }
     }
