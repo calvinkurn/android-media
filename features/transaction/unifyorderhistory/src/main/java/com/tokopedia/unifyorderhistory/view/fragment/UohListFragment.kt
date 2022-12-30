@@ -1053,8 +1053,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun renderChipsFilter(
-        filterDataList: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2>,
-        categoryDataList: List<UohFilterCategory.Data.UohFilterCategoryData.Category>
+        filterDataList: List<UohFilterCategory.UohFilterCategoryData.FilterV2>,
+        categoryDataList: List<UohFilterCategory.UohFilterCategoryData.Category>
     ) {
         if (filterStatus.isNotEmpty()) {
             var status = ""
@@ -1188,7 +1188,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         chipCategoryProduct?.refChipUnify?.setChevronClickListener { onClickFilterCategoryProduct() }
     }
 
-    private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>, filterDataList: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2>) {
+    private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>, filterDataList: List<UohFilterCategory.UohFilterCategoryData.FilterV2>) {
         _arrayListStatusFilterBundle.clear()
         filterDataList.forEach { v2Filter ->
             val type = if (v2Filter.isPrimary) 0 else 1
@@ -1225,7 +1225,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>, categoryDataList: List<UohFilterCategory.Data.UohFilterCategoryData.Category>) {
+    private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>, categoryDataList: List<UohFilterCategory.UohFilterCategoryData.Category>) {
         _arrayListCategoryProductFilterBundle.clear()
         _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
         // below is applinks which available on uoh

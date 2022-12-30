@@ -30,10 +30,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-/**
- * Created by fwidjaja on 2020-05-07.
- */
-
 @RunWith(JUnit4::class)
 class UohListViewModelTest {
 
@@ -143,8 +139,8 @@ class UohListViewModelTest {
     fun getFilterCategoryData_shouldReturnSuccess() {
         // given
         coEvery {
-            getUohFilterCategoryUseCase.executeSuspend()
-        } returns Success(UohFilterCategory.Data())
+            getUohFilterCategoryUseCase(Unit)
+        } returns UohFilterCategory()
 
         // when
         uohListViewModel.loadFilterCategory()
@@ -157,8 +153,8 @@ class UohListViewModelTest {
     fun getFilterCategoryData_shouldReturnFail() {
         // given
         coEvery {
-            getUohFilterCategoryUseCase.executeSuspend()
-        } returns Fail(Throwable())
+            getUohFilterCategoryUseCase(Unit)
+        } throws Exception()
 
         // when
         uohListViewModel.loadFilterCategory()
@@ -171,13 +167,11 @@ class UohListViewModelTest {
     fun getFilterCategoryData_shouldNotReturnEmpty() {
         // given
         coEvery {
-            getUohFilterCategoryUseCase.executeSuspend()
-        } returns Success(
-            UohFilterCategory.Data(
-                uohFilterCategoryData = UohFilterCategory.Data.UohFilterCategoryData(
-                    v2Filters = listOf(UohFilterCategory.Data.UohFilterCategoryData.FilterV2()),
-                    categories = listOf(UohFilterCategory.Data.UohFilterCategoryData.Category())
-                )
+            getUohFilterCategoryUseCase(Unit)
+        } returns UohFilterCategory(
+            uohFilterCategoryData = UohFilterCategory.UohFilterCategoryData(
+                v2Filters = listOf(UohFilterCategory.UohFilterCategoryData.FilterV2()),
+                categories = listOf(UohFilterCategory.UohFilterCategoryData.Category())
             )
         )
 
@@ -186,8 +180,8 @@ class UohListViewModelTest {
 
         // then
         assert(uohListViewModel.filterCategoryResult.value is Success)
-        assert((uohListViewModel.filterCategoryResult.value as Success<UohFilterCategory.Data>).data.uohFilterCategoryData.v2Filters.isNotEmpty())
-        assert((uohListViewModel.filterCategoryResult.value as Success<UohFilterCategory.Data>).data.uohFilterCategoryData.categories.isNotEmpty())
+        assert((uohListViewModel.filterCategoryResult.value as Success<UohFilterCategory>).data.uohFilterCategoryData.v2Filters.isNotEmpty())
+        assert((uohListViewModel.filterCategoryResult.value as Success<UohFilterCategory>).data.uohFilterCategoryData.categories.isNotEmpty())
     }
 
     // order_history_list

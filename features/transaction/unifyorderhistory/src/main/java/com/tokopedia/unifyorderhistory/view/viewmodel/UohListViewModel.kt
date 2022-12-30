@@ -35,9 +35,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 03/07/20.
- */
 class UohListViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
@@ -55,8 +52,8 @@ class UohListViewModel @Inject constructor(
     private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory.Data>>()
-    val filterCategoryResult: LiveData<Result<UohFilterCategory.Data>>
+    private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory>>()
+    val filterCategoryResult: LiveData<Result<UohFilterCategory>>
         get() = _filterCategoryResult
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.UohOrders>>()
@@ -107,12 +104,6 @@ class UohListViewModel @Inject constructor(
     val getUohPmsCounterResult: LiveData<Result<PmsNotification>>
         get() = _getUohPmsCounterResult
 
-    fun loadFilterCategory() {
-        launch {
-            _filterCategoryResult.value = getUohFilterCategoryUseCase.executeSuspend()
-        }
-    }
-
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launchCatchError(block = {
@@ -134,6 +125,15 @@ class UohListViewModel @Inject constructor(
         }, onError = {
                 _finishOrderResult.value = Fail(it)
                 UohIdlingResource.decrement()
+            })
+    }
+
+    fun loadFilterCategory() {
+        launchCatchError(block = {
+            val result = getUohFilterCategoryUseCase(Unit)
+            _filterCategoryResult.value = Success(result)
+        }, onError = {
+                _filterCategoryResult.value = Fail(it)
             })
     }
 
