@@ -378,6 +378,51 @@ class UohListViewModelTest {
         assert(uohListViewModel.rechargeSetFailResult.value is Fail)
     }
 
+    // lsprint
+    @Test
+    fun lsprintFinishOrder_shouldReturnSuccess() {
+        // given
+        coEvery {
+            lsPrintFinishOrderUseCase(any())
+        } returns LsPrintData(LsPrintData.Oiaction("", 1, LsPrintData.Oiaction.Data()))
+
+        // when
+        uohListViewModel.doLsPrintFinishOrder("")
+
+        // then
+        assert(uohListViewModel.lsPrintFinishOrderResult.value is Success)
+        assert((uohListViewModel.lsPrintFinishOrderResult.value as Success<LsPrintData>).data.oiaction.status == 1)
+    }
+
+    @Test
+    fun lsprintFinishOrder_shouldReturnFail() {
+        // given
+        coEvery {
+            lsPrintFinishOrderUseCase(any())
+        } throws Exception()
+
+        // when
+        uohListViewModel.doLsPrintFinishOrder("")
+
+        // then
+        assert(uohListViewModel.lsPrintFinishOrderResult.value is Fail)
+    }
+
+    @Test
+    fun lsprintFinishOrder_shouldNotReturnEmptyMessage() {
+        // given
+        coEvery {
+            lsPrintFinishOrderUseCase(any())
+        } returns LsPrintData(LsPrintData.Oiaction("", 1, LsPrintData.Oiaction.Data(message = "Test")))
+
+        // when
+        uohListViewModel.doLsPrintFinishOrder("")
+
+        // then
+        assert(uohListViewModel.lsPrintFinishOrderResult.value is Success)
+        assert((uohListViewModel.lsPrintFinishOrderResult.value as Success<LsPrintData>).data.oiaction.data.message.isNotEmpty())
+    }
+
     // atc multi
     @Test
     fun atcMulti_shouldReturnSuccess() {
@@ -474,51 +519,6 @@ class UohListViewModelTest {
             atcOccMultiUseCase.setParams(any()).executeOnBackground()
         }
         assert(uohListViewModel.atcOccMultiResult.value is Fail)
-    }
-
-    // lsprint
-    @Test
-    fun lsprintFinishOrder_shouldReturnSuccess() {
-        // given
-        coEvery {
-            lsPrintFinishOrderUseCase.executeSuspend(any())
-        } returns Success(LsPrintData.Data(LsPrintData.Data.Oiaction("", 1, LsPrintData.Data.Oiaction.Data())))
-
-        // when
-        uohListViewModel.doLsPrintFinishOrder("")
-
-        // then
-        assert(uohListViewModel.lsPrintFinishOrderResult.value is Success)
-        assert((uohListViewModel.lsPrintFinishOrderResult.value as Success<LsPrintData.Data>).data.oiaction.status == 1)
-    }
-
-    @Test
-    fun lsprintFinishOrder_shouldReturnFail() {
-        // given
-        coEvery {
-            lsPrintFinishOrderUseCase.executeSuspend(any())
-        } returns Fail(Throwable())
-
-        // when
-        uohListViewModel.doLsPrintFinishOrder("")
-
-        // then
-        assert(uohListViewModel.lsPrintFinishOrderResult.value is Fail)
-    }
-
-    @Test
-    fun lsprintFinishOrder_shouldNotReturnEmptyMessage() {
-        // given
-        coEvery {
-            lsPrintFinishOrderUseCase.executeSuspend(any())
-        } returns Success(LsPrintData.Data(LsPrintData.Data.Oiaction("", 1, LsPrintData.Data.Oiaction.Data(message = "Test"))))
-
-        // when
-        uohListViewModel.doLsPrintFinishOrder("")
-
-        // then
-        assert(uohListViewModel.lsPrintFinishOrderResult.value is Success)
-        assert((uohListViewModel.lsPrintFinishOrderResult.value as Success<LsPrintData.Data>).data.oiaction.data.message.isNotEmpty())
     }
 
     // flight

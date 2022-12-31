@@ -225,7 +225,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var recommendationList: List<RecommendationWidget> = listOf()
     private var tdnBanner: TopAdsImageViewModel = TopAdsImageViewModel()
     private var responseFinishOrder: UohFinishOrder.FinishOrderBuyer = UohFinishOrder.FinishOrderBuyer()
-    private var responseLsPrintFinishOrder: LsPrintData.Data.Oiaction = LsPrintData.Data.Oiaction()
+    private var responseLsPrintFinishOrder: LsPrintData.Oiaction = LsPrintData.Oiaction()
     private var currFilterDateKey: String = ""
     private var currFilterStatusKey: String = ""
     private var currFilterCategoryKey: String = ""

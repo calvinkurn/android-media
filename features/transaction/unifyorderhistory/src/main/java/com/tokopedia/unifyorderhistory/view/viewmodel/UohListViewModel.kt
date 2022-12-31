@@ -76,8 +76,8 @@ class UohListViewModel @Inject constructor(
     val atcOccMultiResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcOccMultiResult
 
-    private val _lsPrintFinishOrderResult = MutableLiveData<Result<LsPrintData.Data>>()
-    val lsPrintFinishOrderResult: LiveData<Result<LsPrintData.Data>>
+    private val _lsPrintFinishOrderResult = MutableLiveData<Result<LsPrintData>>()
+    val lsPrintFinishOrderResult: LiveData<Result<LsPrintData>>
         get() = _lsPrintFinishOrderResult
 
     private val _flightResendEmailResult = MutableLiveData<Result<FlightResendEmail.Data>>()
@@ -161,6 +161,18 @@ class UohListViewModel @Inject constructor(
             })
     }
 
+    fun doLsPrintFinishOrder(verticalId: String) {
+        UohIdlingResource.increment()
+        launchCatchError(block = {
+            val result = lsPrintFinishOrderUseCase(verticalId)
+            _lsPrintFinishOrderResult.value = Success(result)
+            UohIdlingResource.decrement()
+        }, onError = {
+                _lsPrintFinishOrderResult.value = Fail(it)
+                UohIdlingResource.decrement()
+            })
+    }
+
     fun loadPmsCounter(shopId: String) {
         launch {
             _getUohPmsCounterResult.value = getUohPmsCounterUseCase.executeSuspend(shopId)
@@ -211,14 +223,6 @@ class UohListViewModel @Inject constructor(
                 _atcOccMultiResult.value = Fail(it)
                 UohIdlingResource.decrement()
             })
-    }
-
-    fun doLsPrintFinishOrder(verticalId: String) {
-        UohIdlingResource.increment()
-        launch {
-            _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
-            UohIdlingResource.decrement()
-        }
     }
 
     fun doFlightResendEmail(invoiceId: String, email: String) {
