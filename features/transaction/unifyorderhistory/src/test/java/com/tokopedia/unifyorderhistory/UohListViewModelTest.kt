@@ -318,6 +318,66 @@ class UohListViewModelTest {
         assert((uohListViewModel.finishOrderResult.value as Success<UohFinishOrder.FinishOrderBuyer>).data.message.isNotEmpty())
     }
 
+    // train
+    @Test
+    fun trainResendEmail_shouldReturnSuccess() {
+        // given
+        coEvery {
+            trainResendEmailUseCase(any())
+        } returns TrainResendEmail(TrainResendEmail.TrainResendBookingEmail(success = true))
+
+        // when
+        uohListViewModel.doTrainResendEmail(TrainResendEmailParam())
+
+        // then
+        assert(uohListViewModel.trainResendEmailResult.value is Success)
+        assert((uohListViewModel.trainResendEmailResult.value as Success<TrainResendEmail>).data.trainResendBookingEmail?.success == true)
+    }
+
+    @Test
+    fun trainResendEmail_shouldReturnFail() {
+        // given
+        coEvery {
+            trainResendEmailUseCase(any())
+        } throws Exception()
+
+        // when
+        uohListViewModel.doTrainResendEmail(TrainResendEmailParam())
+
+        // then
+        assert(uohListViewModel.trainResendEmailResult.value is Fail)
+    }
+
+    // recharge
+    @Test
+    fun rechargeSetFail_shouldReturnSuccess() {
+        // given
+        coEvery {
+            rechargeSetFailUseCase(any())
+        } returns RechargeSetFailData(RechargeSetFailData.RechargeSetOrderToFail(RechargeSetFailData.RechargeSetOrderToFail.Attributes(-1, -1, true, "")))
+
+        // when
+        uohListViewModel.doRechargeSetFail(-1)
+
+        // then
+        assert(uohListViewModel.rechargeSetFailResult.value is Success)
+        assert((uohListViewModel.rechargeSetFailResult.value as Success<RechargeSetFailData>).data.rechargeSetOrderToFail.attributes.isSuccess)
+    }
+
+    @Test
+    fun rechargeSetFail_shouldReturnFail() {
+        // given
+        coEvery {
+            rechargeSetFailUseCase(any())
+        } throws Exception()
+
+        // when
+        uohListViewModel.doRechargeSetFail(-1)
+
+        // then
+        assert(uohListViewModel.rechargeSetFailResult.value is Fail)
+    }
+
     // atc multi
     @Test
     fun atcMulti_shouldReturnSuccess() {
@@ -504,66 +564,6 @@ class UohListViewModelTest {
         // then
         assert(uohListViewModel.flightResendEmailResult.value is Success)
         (uohListViewModel.flightResendEmailResult.value as Success<FlightResendEmail.Data>).data.flightResendEmailV2?.meta?.status?.isNotEmpty()?.let { assert(it) }
-    }
-
-    // train
-    @Test
-    fun trainResendEmail_shouldReturnSuccess() {
-        // given
-        coEvery {
-            trainResendEmailUseCase.executeSuspend(any())
-        } returns Success(TrainResendEmail.Data(TrainResendEmail.Data.TrainResendBookingEmail(success = true)))
-
-        // when
-        uohListViewModel.doTrainResendEmail(TrainResendEmailParam())
-
-        // then
-        assert(uohListViewModel.trainResendEmailResult.value is Success)
-        assert((uohListViewModel.trainResendEmailResult.value as Success<TrainResendEmail.Data>).data.trainResendBookingEmail?.success == true)
-    }
-
-    @Test
-    fun trainResendEmail_shouldReturnFail() {
-        // given
-        coEvery {
-            trainResendEmailUseCase.executeSuspend(any())
-        } returns Fail(Throwable())
-
-        // when
-        uohListViewModel.doTrainResendEmail(TrainResendEmailParam())
-
-        // then
-        assert(uohListViewModel.trainResendEmailResult.value is Fail)
-    }
-
-    // recharge
-    @Test
-    fun rechargeSetFail_shouldReturnSuccess() {
-        // given
-        coEvery {
-            rechargeSetFailUseCase.executeSuspend(any())
-        } returns Success(RechargeSetFailData.Data(RechargeSetFailData.Data.RechargeSetOrderToFail(RechargeSetFailData.Data.RechargeSetOrderToFail.Attributes(-1, -1, true, ""))))
-
-        // when
-        uohListViewModel.doRechargeSetFail(-1)
-
-        // then
-        assert(uohListViewModel.rechargeSetFailResult.value is Success)
-        assert((uohListViewModel.rechargeSetFailResult.value as Success<RechargeSetFailData.Data>).data.rechargeSetOrderToFail.attributes.isSuccess)
-    }
-
-    @Test
-    fun rechargeSetFail_shouldReturnFail() {
-        // given
-        coEvery {
-            rechargeSetFailUseCase.executeSuspend(any())
-        } returns Fail(Throwable())
-
-        // when
-        uohListViewModel.doRechargeSetFail(-1)
-
-        // then
-        assert(uohListViewModel.rechargeSetFailResult.value is Fail)
     }
 
     // atc
