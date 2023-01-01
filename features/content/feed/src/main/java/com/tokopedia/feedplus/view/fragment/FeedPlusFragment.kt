@@ -2565,8 +2565,8 @@ class FeedPlusFragment :
                     hasVoucher = card.hasVoucher,
                     authorType = card.author.type.toString()
                 ),
-                 viewModelFactory,
-                customMvcTracker = customMvcTracker
+                    viewModelFactory,
+ customMvcTracker = customMvcTracker
             )
             productTagBS.closeClicked = {
                 val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {

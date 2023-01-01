@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
+import android.annotation.SuppressLint
 import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
@@ -658,6 +659,7 @@ open class DynamicPostUIViewHolder(
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun bindPostTag(feedXCard: FeedXCard) {
         if (feedXCard.tags.isNotEmpty()) {
             itemView.rvPosttag.show()

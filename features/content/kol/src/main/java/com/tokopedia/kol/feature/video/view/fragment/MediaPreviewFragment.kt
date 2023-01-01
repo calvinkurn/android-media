@@ -58,6 +58,7 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.android.synthetic.main.fragment_media_preview.*
+import java.util.*
 import javax.inject.Inject
 
 class MediaPreviewFragment : BaseDaggerFragment() {
@@ -349,7 +350,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
             } else {
                 RouteManager.route(
                     activity,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                    String.format(Locale.US, "%s?url=%s", ApplinkConst.WEBVIEW, link)
                 )
             }
         }
@@ -487,13 +488,23 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
         icon_share.setOnClickListener {
             doShare(
-                String.format("%s %s", footer.shareData.description, footer.shareData.url),
+                String.format(
+                    Locale.US,
+                    "%s %s",
+                    footer.shareData.description,
+                    footer.shareData.url
+                ),
                 footer.shareData.title
             )
         }
         label_share.setOnClickListener {
             doShare(
-                String.format("%s %s", footer.shareData.description, footer.shareData.url),
+                String.format(
+                    Locale.US,
+                    "%s %s",
+                    footer.shareData.description,
+                    footer.shareData.url
+                ),
                 footer.shareData.title
             )
         }
