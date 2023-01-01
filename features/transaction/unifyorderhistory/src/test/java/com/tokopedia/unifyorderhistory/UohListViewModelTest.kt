@@ -1,6 +1,7 @@
 package com.tokopedia.unifyorderhistory
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
@@ -518,6 +519,23 @@ class UohListViewModelTest {
         coVerify {
             atcOccMultiUseCase.setParams(any()).executeOnBackground()
         }
+        assert(uohListViewModel.atcOccMultiResult.value is Fail)
+    }
+
+    @Test
+    fun atcOccMulti_shouldReturnFail() {
+        // given
+        val errorMessage = "Error Message"
+        val throwable = ResponseErrorException(errorMessage)
+        coEvery { atcOccMultiUseCase.setParams(any()) } answers { atcOccMultiUseCase }
+        coEvery { atcOccMultiUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // when
+        uohListViewModel.doAtcOccMulti(AddToCartOccMultiRequestParams(carts = emptyList()))
+
+        // then
         assert(uohListViewModel.atcOccMultiResult.value is Fail)
     }
 
