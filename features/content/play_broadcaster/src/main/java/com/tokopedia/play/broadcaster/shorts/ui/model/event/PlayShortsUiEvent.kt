@@ -25,4 +25,10 @@ sealed interface PlayShortsUiEvent {
     object SellerNotEligible : PlayShortsUiEvent
 
     object SwitchAccount : PlayShortsUiEvent
+
+    object GoToSummary : PlayShortsUiEvent
+
+    data class ErrorUploadMedia(
+        val throwable: Throwable
+    ) : PlayShortsUiEvent
 }

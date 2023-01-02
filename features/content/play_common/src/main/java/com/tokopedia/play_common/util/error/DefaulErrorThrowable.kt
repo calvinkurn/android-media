@@ -1,11 +1,10 @@
-package com.tokopedia.play.broadcaster.util.error
-
+package com.tokopedia.play_common.util.error
 
 /**
  * Created by mzennis on 29/06/20.
  */
 class DefaultErrorThrowable(
-        private val errorMessage: String = DEFAULT_MESSAGE
+    private val errorMessage: String = DEFAULT_MESSAGE
 ): Throwable() {
 
     override val message: String

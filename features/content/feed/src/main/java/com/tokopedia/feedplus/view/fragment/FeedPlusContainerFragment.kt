@@ -7,6 +7,8 @@ import android.content.IntentFilter
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -34,7 +38,6 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
@@ -47,6 +50,7 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
+import com.tokopedia.feedplus.view.customview.PostProgressUpdateView
 import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -59,6 +63,10 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
+import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -138,6 +146,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
+
+    @Inject
+    lateinit var playShortsUploader: PlayShortsUploader
 
     @JvmField @Inject
     var coachMarkManager: ContentCoachMarkManager? = null
@@ -522,6 +533,33 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
             }
         )
+
+        playShortsUploader.observe(viewLifecycleOwner) { progress, uploadData ->
+            when(progress) {
+                PlayShortsUploadConst.PROGRESS_COMPLETED -> {
+                    postProgressUpdateView?.hide()
+                    Toaster.build(
+                        view = requireView(),
+                        text = getString(R.string.feed_upload_shorts_success),
+                        duration = Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_NORMAL,
+                        actionText = getString(R.string.feed_upload_shorts_see_video),
+                        clickListener = View.OnClickListener {
+                            RouteManager.route(requireContext(), ApplinkConst.PLAY_DETAIL, uploadData.shortsId)
+                        }
+                    ).show()
+                }
+                PlayShortsUploadConst.PROGRESS_FAILED -> {
+                    postProgressUpdateView?.show()
+                    postProgressUpdateView?.handleShortsUploadFailed(uploadData, playShortsUploader)
+                }
+                else -> {
+                    postProgressUpdateView?.show()
+                    postProgressUpdateView?.setIcon(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
+                    postProgressUpdateView?.setProgress(progress)
+                }
+            }
+        }
     }
 
     private fun initFab() {

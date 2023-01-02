@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.common.view.customview
+package com.tokopedia.feedplus.view.customview
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,9 +9,11 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
+import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,8 +21,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
-import com.tokopedia.createpost.common.R
-import com.tokopedia.createpost.common.view.service.SubmitPostService
+import com.tokopedia.feedplus.R
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 
 class PostProgressUpdateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -34,7 +37,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     private var mPostUpdateSwipe: PostUpdateSwipe? = null
 
     init {
-        View.inflate(this.context, R.layout.cp_common_upload_post_progress_view, this)
+        View.inflate(this.context, R.layout.view_post_progress_update, this)
         postIcon = findViewById(R.id.product_img)
         processingText = findViewById(R.id.progress_bar_title)
         retryText = findViewById(R.id.retry_text)
@@ -49,9 +52,26 @@ class PostProgressUpdateView @JvmOverloads constructor(
         if (productImage != null)
             postIcon?.setImageUrl(productImage)
     }
+
     fun setIconVisibility(isEditPost: Boolean) {
         if (isEditPost)
             postIcon?.setImageDrawable(context.getDrawable((R.drawable.cp_common_rect_white_round)))
+    }
+
+    fun setIcon(iconUrl: String) {
+        postIcon?.setImageUrl(iconUrl)
+    }
+
+    fun setProgress(progress: Int) {
+        processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
+        processingText?.setTextColor(
+            MethodChecker.getColor(context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            )
+        progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
+        retryText?.gone()
+
+        setProgressUpdate(progress, MAX_PROGRESS_VALUE)
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
@@ -63,6 +83,21 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     fun setPostUpdateListener(postUpdateSwipe: PostUpdateSwipe) {
         mPostUpdateSwipe = postUpdateSwipe
+    }
+
+    fun handleShortsUploadFailed(
+        uploadData: PlayShortsUploadModel,
+        uploader: PlayShortsUploader
+    ) {
+        mPostUpdateSwipe?.updateVisibility(true)
+        progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
+        retryText?.show()
+        processingText?.text = context.getString(R.string.cp_common_progress_bar_failed_text)
+        processingText?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+        retryText?.setOnClickListener {
+            retryPostShorts(uploadData, uploader)
+            /** TODO: attach tracker */
+        }
     }
 
     fun handleFailedState(draftId: String) {
@@ -79,8 +114,12 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     private fun retryPostingOnFeed(draftId: String){
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
-        processingText?.setTextColor(ContextCompat.getColor(context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        processingText?.setTextColor(
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+        )
 
         val cacheManager = SaveInstanceCacheManager(this.context, draftId)
         val viewModel: CreatePostViewModel = cacheManager.get(
@@ -95,6 +134,25 @@ class PostProgressUpdateView @JvmOverloads constructor(
         cacheManager.id?.let { draftId -> SubmitPostService.startService(this.context, draftId) }
         retryText?.gone()
 
+    }
+
+    private fun retryPostShorts(
+        uploadData: PlayShortsUploadModel,
+        uploader: PlayShortsUploader
+    ){
+        processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
+        processingText?.setTextColor(
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+        )
+        progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
+        retryText?.gone()
+
+        setProgressUpdate(0, 0)
+
+        uploader.upload(uploadData)
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {
@@ -145,8 +203,12 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun resetProgressBarState(isEditPost: Boolean) {
         processingText?.text =
             context.getString(R.string.cp_common_progress_bar_text)
-        processingText?.setTextColor(ContextCompat.getColor(context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        processingText?.setTextColor(
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+        )
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
         setIconVisibility(isEditPost)
@@ -200,3 +262,4 @@ class PostProgressUpdateView @JvmOverloads constructor(
         private const val MAX_PROGRESS_VALUE = 100
     }
 }
+

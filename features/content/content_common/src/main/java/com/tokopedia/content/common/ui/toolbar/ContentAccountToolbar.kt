@@ -135,6 +135,28 @@ class ContentAccountToolbar @JvmOverloads constructor(
 
         showHideExpandIcon(mOnClickListener != null)
     }
+
+    fun showCoachMarkSwitchAccount() {
+        if (coachMark != null && coachMark?.isShowing == true) return
+        getToolbarParentView().addOneTimeGlobalLayoutListener {
+            coachMark = CoachMark2(context)
+            coachMark?.showCoachMark(
+                arrayListOf(
+                    CoachMark2Item(
+                        mBinding.textComToolbarSubtitle,
+                        context.getString(contentCommonR.string.sa_coach_mark_title),
+                        context.getString(contentCommonR.string.sa_coach_mark_subtitle),
+                        CoachMark2.POSITION_BOTTOM
+                    )
+                )
+            )
+        }
+    }
+
+    fun hideCoachMarkSwitchAccount() {
+        if (coachMark != null && coachMark?.isShowing == true) coachMark?.dismissCoachMark()
+    }
+
 }
 
 typealias AccountClickListener = () -> Unit

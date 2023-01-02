@@ -2,14 +2,11 @@ package com.tokopedia.play.broadcaster.shorts.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -17,12 +14,22 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
+import com.tokopedia.play_common.util.error.DefaultErrorThrowable
+import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -33,7 +40,8 @@ import kotlin.coroutines.CoroutineContext
 class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
     private val sharedPref: HydraSharedPreferences,
-    private val accountManager: PlayShortsAccountManager
+    private val accountManager: PlayShortsAccountManager,
+    private val playShortsUploader: PlayShortsUploader
 ) : ViewModel() {
 
     /** Public Getter */
@@ -53,10 +61,7 @@ class PlayShortsViewModel @Inject constructor(
         get() = _config.value.maxTaggedProduct
 
     val isAllMandatoryMenuChecked: Boolean
-        get() = _titleForm.value.title.isNotEmpty()
-
-    /** TODO: uncomment this later */
-//            && _productSectionList.value.any { it.products.isNotEmpty() }
+        get() = _titleForm.value.title.isNotEmpty() && _productSectionList.value.any { it.products.isNotEmpty() }
 
     val isAllowChangeAccount: Boolean
         get() = accountManager.isAllowChangeAccount(_accountList.value)
@@ -82,11 +87,13 @@ class PlayShortsViewModel @Inject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
+    private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
+    private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
 
-    private val _menuListUiState = kotlinx.coroutines.flow.combine(
+    private val _menuListUiState = combine(
         _menuList,
         _titleForm,
         _coverForm,
@@ -121,17 +128,21 @@ class PlayShortsViewModel @Inject constructor(
         _selectedAccount,
         _menuListUiState,
         _titleForm,
-        _coverForm
-    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm ->
+        _coverForm,
+        _tags,
+        _uploadState
+    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags, uploadState ->
         PlayShortsUiState(
-            globalLoader,
+            globalLoader = globalLoader,
             config = config,
             media = media,
             accountList = accountList,
             selectedAccount = selectedAccount,
             menuList = menuListUiState,
             titleForm = titleForm,
-            coverForm = coverForm
+            coverForm = coverForm,
+            tags = tags,
+            uploadState = uploadState
         )
     }
 
@@ -168,6 +179,11 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SetProduct -> handleSetProduct(action.productSectionList)
 
             is PlayShortsAction.ClickNext -> handleClickNext()
+
+            /** Summary */
+            is PlayShortsAction.LoadTag -> handleLoadTag()
+            is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
+            is PlayShortsAction.ClickUploadVideo -> handleClickUploadVideo()
         }
     }
 
@@ -201,7 +217,6 @@ class PlayShortsViewModel @Inject constructor(
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)
-
         }) { throwable ->
             _uiEvent.emit(PlayShortsUiEvent.ErrorSwitchAccount(throwable))
         }
@@ -237,9 +252,11 @@ class PlayShortsViewModel @Inject constructor(
                 )
             }
 
-            _uiEvent.emit(PlayShortsUiEvent.ErrorUploadTitle(throwable) {
-                submitAction(PlayShortsAction.UploadTitle(title = title))
-            })
+            _uiEvent.emit(
+                PlayShortsUiEvent.ErrorUploadTitle(throwable) {
+                    submitAction(PlayShortsAction.UploadTitle(title = title))
+                }
+            )
         }
     }
 
@@ -272,7 +289,59 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleClickNext() {
-        /** TODO: handle this */
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.GoToSummary)
+        }
+    }
+
+    private fun handleLoadTag() {
+        viewModelScope.launchCatchError(block = {
+            if (_tags.value is NetworkResult.Loading || _tags.value is NetworkResult.Success) return@launchCatchError
+
+            _tags.update { NetworkResult.Loading }
+
+            val tags = repo.getTagRecommendation(shortsId)
+
+            _tags.update { NetworkResult.Success(tags) }
+        }) { throwable ->
+            _tags.update { NetworkResult.Fail(throwable) }
+        }
+    }
+
+    private fun handleSelectTag(tag: PlayTagUiModel) {
+        val tagState = _tags.value
+        when (tagState is NetworkResult.Success) {
+            true -> {
+                _tags.update {
+                    NetworkResult.Success(
+                        data = tagState.data.map {
+                            if (it.tag == tag.tag) {
+                                it.copy(isChosen = !it.isChosen)
+                            } else {
+                                it
+                            }
+                        }.toSet()
+                    )
+                }
+            }
+            else -> {}
+        }
+    }
+
+    private fun handleClickUploadVideo() {
+        viewModelScope.launchCatchError(block = {
+            if (_uploadState.value is PlayShortsUploadUiState.Loading) return@launchCatchError
+
+            _uploadState.update { PlayShortsUploadUiState.Loading }
+
+            saveTag()
+            uploadMedia()
+
+            _uploadState.update { PlayShortsUploadUiState.Success }
+        }) { throwable ->
+            _uploadState.update { PlayShortsUploadUiState.Error(throwable) }
+            _uiEvent.emit(PlayShortsUiEvent.ErrorUploadMedia(throwable))
+        }
     }
 
     private fun setSelectedAccount(account: ContentAccountUiModel) {
@@ -293,7 +362,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private suspend fun setupConfigurationIfEligible(account: ContentAccountUiModel) {
-        if(account.isUnknown) {
+        if (account.isUnknown) {
             emitEventAccountNotEligible()
             return
         }
@@ -301,18 +370,17 @@ class PlayShortsViewModel @Inject constructor(
         val config = repo.getShortsConfiguration(account.id, account.type)
         _config.update { it.copy(tncList = config.tncList) }
 
-        if(account.isShop && (!account.enable || !config.shortsAllowed)) {
+        if (account.isShop && (!account.enable || !config.shortsAllowed)) {
             emitEventSellerNotEligible()
         } else if (account.isUser && !config.shortsAllowed) {
             emitEventAccountNotEligible()
         } else if (account.isUser && !account.enable) {
             emitEventUGCOnboarding(account.hasUsername)
         } else {
-            val finalConfig = if(config.shortsId.isEmpty()) {
+            val finalConfig = if (config.shortsId.isEmpty()) {
                 val shortsId = repo.createShorts(account.id, account.type)
                 config.copy(shortsId = shortsId)
-            }
-            else {
+            } else {
                 config
             }
 
@@ -350,5 +418,32 @@ class PlayShortsViewModel @Inject constructor(
     }) {
         _globalLoader.update { false }
         onError(it)
+    }
+
+    private suspend fun saveTag() {
+        val tagState = _tags.value
+        if (tagState is NetworkResult.Success) {
+            val selectedTag = tagState.data.filter { it.isChosen }.map { it.tag }.toSet()
+
+            if (selectedTag.isNotEmpty()) {
+                val result = repo.saveTag(shortsId, selectedTag)
+
+                if (!result) {
+                    throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
+                }
+            }
+        }
+    }
+
+    private fun uploadMedia() {
+        val uploadData = PlayShortsUploadModel(
+            shortsId = shortsId,
+            authorId = selectedAccount.id,
+            authorType = selectedAccount.type,
+            mediaUri = _media.value.mediaUri,
+            coverUri = _coverForm.value.coverUri,
+            shortsVideoSourceId = _config.value.shortsVideoSourceId
+        )
+        playShortsUploader.upload(uploadData)
     }
 }

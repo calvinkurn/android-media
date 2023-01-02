@@ -296,4 +296,6 @@
     <string name="play_shorts_account_not_eligible_title">Yaah, belum bisa bikin video</string>
     <string name="play_shorts_account_not_eligible_description">Fitur video dengan pengalaman terbaik sedang disiapkan untukmu. Kami akan kabari jika kamu sudah bisa bikin video, ya!</string>
 
+    <string name="play_shorts_summary_title">Upload Video</string>
+    <string name="play_shorts_summary_upload_action">Upload Video</string>
 </resources>

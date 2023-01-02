@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.shorts.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.play_common.shortsuploader.di.PlayShortsUploaderModule
 import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import dagger.Component
 
@@ -17,6 +18,7 @@ import dagger.Component
         PlayShortsFragmentModule::class,
         ContentCreationProductTagBindModule::class,
         UGCOnboardingModule::class,
+        PlayShortsUploaderModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChoo
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
+import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsSummaryFragment
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import dagger.Binds
 import dagger.Module
@@ -28,6 +29,11 @@ abstract class PlayShortsFragmentModule {
     @IntoMap
     @FragmentKey(PlayShortsPreparationFragment::class)
     abstract fun bindPlayShortsPreparationFragment(fragment: PlayShortsPreparationFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayShortsSummaryFragment::class)
+    abstract fun bindPlayShortsSummaryFragment(fragment: PlayShortsSummaryFragment): Fragment
 
     /** Product Picker */
     @Binds

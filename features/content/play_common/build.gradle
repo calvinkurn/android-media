@@ -30,11 +30,16 @@ buildscript {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.mediauploader)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.sse)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     if(rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
@@ -73,6 +78,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dynamicAnimation
+    implementation rootProject.ext.miscDependencies.workManager
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 
 project.ext {

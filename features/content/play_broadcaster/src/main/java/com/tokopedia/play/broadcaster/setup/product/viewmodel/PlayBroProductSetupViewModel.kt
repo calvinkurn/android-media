@@ -51,8 +51,8 @@ import kotlin.math.min
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
-    @Assisted private val creationId: String,
     /** Can be channelId / shortId */
+    @Assisted private val creationId: String,
     @Assisted val maxProduct: Int,
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,

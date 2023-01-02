@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +11,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
@@ -320,6 +322,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
+            activity?.finish()
+        }
+    }
+
     private fun closeBottomSheet() {
         if (!viewModel.isFromSwitchAccount) activity?.finish()
         viewModel.setFromSwitchAccount(false)
@@ -415,7 +424,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
             bannerShorts.setOnClickListener {
                 coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
+
+                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
+                startActivityForResult(intent, REQ_PLAY_SHORTS)
             }
         }
     }
@@ -1076,6 +1087,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
+
+        private const val REQ_PLAY_SHORTS = 12323
     }
 
     sealed interface Event {

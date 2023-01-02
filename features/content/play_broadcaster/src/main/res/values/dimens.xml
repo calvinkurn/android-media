@@ -103,4 +103,5 @@
     <!-- Shorts -->
     <dimen name="play_shorts_no_eligible_account_width">281dp</dimen>
     <dimen name="play_shorts_no_eligible_account_height">210dp</dimen>
+    <dimen name="play_shorts_summary_divider_height">1dp</dimen>
 </resources>
