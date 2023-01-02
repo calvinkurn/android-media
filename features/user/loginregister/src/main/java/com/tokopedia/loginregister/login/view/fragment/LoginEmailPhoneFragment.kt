@@ -840,7 +840,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         )
                     }
                 },
-                sourceString.indexOf("Daftar"), sourceString.length, 0
+                sourceString.indexOf("Daftar"),
+                sourceString.length,
+                0
             )
 
             viewBinding?.registerButton?.setText(spannable, TextView.BufferType.SPANNABLE)
@@ -1154,7 +1156,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
             clearTopAdsHeader()
-            TokoChatConnection.init(it)
+            TokoChatConnection.init(it, true)
         }
 
         refreshRolloutVariant()

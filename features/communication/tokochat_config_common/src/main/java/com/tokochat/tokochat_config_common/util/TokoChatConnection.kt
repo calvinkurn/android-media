@@ -9,14 +9,17 @@ import com.tokochat.tokochat_config_common.di.component.DaggerTokoChatConfigComp
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.lang.Exception
 
 object TokoChatConnection {
 
@@ -26,12 +29,21 @@ object TokoChatConnection {
     @Volatile
     private var hasBeenInitialized: Boolean = false
 
-    fun init(context: Context) {
+    fun init(context: Context, isFromLoginFlow: Boolean = false) {
         // Initialize AndroidThreeTen for Conversation SDK
         AndroidThreeTen.init(context.applicationContext)
 
         injectTokoChatConfigComponent(context)
 
+        // If from login, fetch the AB test first
+        if (isFromLoginFlow) {
+            fetchABTest(context)
+        } else {
+            initializeCourierConnection(context)
+        }
+    }
+
+    private fun initializeCourierConnection(context: Context) {
         // If user does not login or
         // If rollence turned off or seller app or
         // has been initialized, return
@@ -53,8 +65,23 @@ object TokoChatConnection {
             tokoChatConfigComponent = DaggerTokoChatConfigComponent.builder()
                 .tokoChatConfigContextModule(TokoChatConfigContextModule(context.applicationContext))
                 .build()
-            tokoChatConfigComponent?.inject(this)
         }
+    }
+
+    private fun fetchABTest(context: Context) {
+        AbTestPlatform(context).fetch(object : RemoteConfig.Listener {
+            override fun onComplete(remoteConfig: RemoteConfig?) {
+                GlobalScope.launch {
+                    withContext(Dispatchers.Main) {
+                        initializeCourierConnection(context)
+                    }
+                }
+            }
+
+            override fun onError(e: Exception?) {
+                // do nothing, tokochat will be inactive without rollence
+            }
+        })
     }
 
     fun disconnect() {
@@ -69,6 +96,7 @@ object TokoChatConnection {
                     ConversationsRepository.destroy()
                 }
             }
+            hasBeenInitialized = false
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
