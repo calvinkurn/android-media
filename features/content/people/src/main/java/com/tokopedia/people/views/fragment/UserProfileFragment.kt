@@ -250,6 +250,10 @@ class UserProfileFragment @Inject constructor(
                             )
                         }
 
+                        override fun clickUsernameFieldOnCompleteOnboarding() {}
+
+                        override fun clickCheckBoxOnCompleteOnboarding() {}
+
                         override fun clickNextOnCompleteOnboarding() {
                             userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
                                 viewModel.profileUserID,

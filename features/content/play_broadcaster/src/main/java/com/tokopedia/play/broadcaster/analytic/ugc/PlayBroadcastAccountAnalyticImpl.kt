@@ -91,4 +91,94 @@ class PlayBroadcastAccountAnalyticImpl @Inject constructor(
             .send()
     }
 
+    override fun onClickCloseOnboardingUGC() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEventAction("click - x username")
+            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setEventLabel("${hydraConfig.getAuthorId()} - ${hydraConfig.getAuthorTypeName()}")
+            .setCustomProperty(KEY_TRACKER_ID, "40052")
+            .setBusinessUnit("content")
+            .setCurrentSite(currentSite)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    override fun onClickUsernameFieldCompleteOnboardingUGC() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEventAction("click - username field")
+            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setEventLabel("${hydraConfig.getAuthorId()} - ${hydraConfig.getAuthorTypeName()}")
+            .setCustomProperty(KEY_TRACKER_ID, "40053")
+            .setBusinessUnit("content")
+            .setCurrentSite(currentSite)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    override fun onClickCheckBoxCompleteOnboardingUGC() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEventAction("click - tnc box")
+            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setEventLabel("${hydraConfig.getAuthorId()} - ${hydraConfig.getAuthorTypeName()}")
+            .setCustomProperty(KEY_TRACKER_ID, "40054")
+            .setBusinessUnit("content")
+            .setCurrentSite(currentSite)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    override fun onClickNextOnboardingUGC() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEventAction("click - lanjut")
+            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setEventLabel("${hydraConfig.getAuthorId()} - ${hydraConfig.getAuthorTypeName()}")
+            .setCustomProperty(KEY_TRACKER_ID, "40055")
+            .setBusinessUnit("content")
+            .setCurrentSite(currentSite)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    override fun onClickCloseTNCSGC() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEventAction("click - x ineligible")
+            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setEventLabel("${hydraConfig.getAuthorId()} - ${hydraConfig.getAuthorTypeName()}")
+            .setCustomProperty(KEY_TRACKER_ID, "40057")
+            .setBusinessUnit("content")
+            .setCurrentSite(currentSite)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    override fun onClickOkButtonTNCSGC() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEventAction("click - oke mengerti")
+            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setEventLabel("${hydraConfig.getAuthorId()} - ${hydraConfig.getAuthorTypeName()}")
+            .setCustomProperty(KEY_TRACKER_ID, "40058")
+            .setBusinessUnit("content")
+            .setCurrentSite(currentSite)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
 }
