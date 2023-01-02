@@ -176,6 +176,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                     }
                     return height
                 }
+            override val homeMainAnchorTabHeight: Int
+                get() {
+                    return binding?.headerCompHolder?.height?:0
+                }
         }
     }
 

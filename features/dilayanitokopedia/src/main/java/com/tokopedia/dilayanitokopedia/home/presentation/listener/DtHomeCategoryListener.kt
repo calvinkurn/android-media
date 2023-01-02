@@ -7,4 +7,5 @@ interface DtHomeCategoryListener {
 
     val homeMainToolbarHeight: Int
 
+    val homeMainAnchorTabHeight : Int
 }

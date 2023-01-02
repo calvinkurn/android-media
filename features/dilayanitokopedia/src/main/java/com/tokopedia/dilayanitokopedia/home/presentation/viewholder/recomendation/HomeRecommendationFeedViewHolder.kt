@@ -50,7 +50,9 @@ class HomeRecommendationFeedViewHolder(
         layoutParams?.height = listener.windowHeight +
             8f.toDpInt() +
             1f.toDpInt() +
-            8f.toDpInt()
+            8f.toDpInt() -
+            listener.homeMainToolbarHeight -
+            listener.homeMainAnchorTabHeight
         container?.layoutParams = layoutParams
 
         val adapter = ViewPagerAdapter((context as DtHomeActivity)?.supportFragmentManager)
