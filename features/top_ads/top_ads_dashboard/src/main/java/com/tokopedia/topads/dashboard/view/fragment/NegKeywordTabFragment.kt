@@ -16,8 +16,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
@@ -35,9 +35,9 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,7 +52,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NegKeywordAdapter
     private val groupId by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getInt(TopAdsDashboardConstant.GROUP_ID, 0).toString()
+        arguments?.getString(TopAdsDashboardConstant.GROUP_ID)
     }
 
     companion object {
@@ -168,8 +168,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         val resources = context?.resources ?: return
         viewModel.getGroupKeywordData(resources,
             0,
-            arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0,
+            arguments?.getString(TopAdsDashboardConstant.GROUP_ID).toIntOrZero(),
             searchBar?.searchBarTextField?.text.toString(), null, null,
             currentPage, ::onSuccessKeyword, ::onEmpty)
     }
@@ -191,7 +190,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
-            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
+            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getString(TopAdsDashboardConstant.GROUP_ID))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(
@@ -226,7 +225,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel) {
-                        viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
+                        viewModel.setKeywordActionForGroup(groupId ?: "0", actionActivate, getAdIds(), resources, ::onSuccessAction)
                         activity?.setResult(Activity.RESULT_OK)
                     }
                     deleteCancel = false
@@ -234,7 +233,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-            viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
+            viewModel.setKeywordActionForGroup(groupId ?: "0", actionActivate, getAdIds(), resources, ::onSuccessAction)
         }
     }
 
@@ -245,7 +244,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         val resources = context?.resources ?: return
         viewModel.getGroupKeywordData(resources, 0,
-            arguments?.getInt(TopAdsDashboardConstant.GROUP_ID) ?: 0,
+            arguments?.getString(TopAdsDashboardConstant.GROUP_ID).toIntOrZero(),
             searchBar?.searchBarTextField?.text.toString(), null, null,
             currentPageNum, ::onSuccessKeyword, ::onEmpty)
     }

@@ -5,6 +5,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Insur
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import kotlin.math.roundToInt
 
 data class OrderShipment(
     val isLoading: Boolean = false,
@@ -87,7 +88,7 @@ data class OrderShipment(
 
     fun getRealInsurancePrice(): Int {
         return if (insurance.isCheckInsurance && insurance.insuranceData != null) {
-            insurance.insuranceData.insurancePrice
+            insurance.insuranceData.insurancePrice.roundToInt()
         } else {
             0
         }

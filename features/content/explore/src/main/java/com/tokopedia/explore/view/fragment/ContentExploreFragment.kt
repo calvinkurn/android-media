@@ -58,7 +58,7 @@ class ContentExploreFragment :
         const val PARAM_CATEGORY_ID = "category_id"
         private const val DEFAULT_CATEGORY: Long = 0
         private const val DEFAULT_CATEGORY_STRING = "0"
-        private const val SOURCE = "source"
+        private const val ENTRY_POINT = "entry_point"
         private const val PEFORMANCE_EXPLORE = "mp_explore"
         private const val CATEGORY_POSITION_NONE = -1
 
@@ -350,7 +350,7 @@ class ContentExploreFragment :
         val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId)
         val finaAppLink = Uri.parse(contentAppLink)
                 .buildUpon()
-                .appendQueryParameter(SOURCE, EXPLORE_TAB)
+                .appendQueryParameter(ENTRY_POINT, EXPLORE_TAB)
                 .build().toString()
 
         RouteManager.route(requireContext(), finaAppLink)

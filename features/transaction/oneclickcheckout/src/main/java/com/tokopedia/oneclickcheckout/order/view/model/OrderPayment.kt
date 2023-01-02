@@ -115,7 +115,7 @@ data class OrderPaymentCreditCardsNumber(
 
 @Parcelize
 data class OrderPaymentCreditCardAdditionalData(
-        val id: Long = 0,
+        val id: String = "",
         val name: String = "",
         val email: String = "",
         val msisdn: String = "",

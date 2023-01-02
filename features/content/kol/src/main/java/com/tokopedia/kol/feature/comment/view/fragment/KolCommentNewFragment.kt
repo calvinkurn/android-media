@@ -46,15 +46,15 @@ import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_ID
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_POST_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -201,7 +201,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                             authorId,
                             isVideoPost,
                             isFollowed,
-                            postType
+                            postType,
+                            authorId
                         )
                     adapter?.clearList()
                     presenter.getCommentFirstTime(arguments?.getLong(ARGS_ID) ?: 0)
@@ -242,7 +243,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     private fun isInfluencer(): Boolean {
         return (header != null && userSession != null && !TextUtils.isEmpty(header?.userId)
-                && userSession?.userId == header?.userId)
+            && userSession?.userId == header?.userId)
     }
 
     @SuppressLint("Method Call Prohibited")
@@ -258,17 +259,24 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         if (isFromContentDetailPage)
             analyticsTracker.sendClickReportOnComment(getContentDetailAnalyticsData())
         else
-        feedAnalytics.clickReportCommentPage(id, authorId, isVideoPost, isFollowed, postType)
+            feedAnalytics.clickReportCommentPage(
+                id,
+                authorId,
+                isVideoPost,
+                isFollowed,
+                postType
+            )
     }
 
     @SuppressLint("Method Call Prohibited")
     override fun onMenuClicked(
         id: String,
         canDeleteComment: Boolean,
+        canReportComment: Boolean,
         adapterPosition: Int
     ) {
         val sheet = MenuOptionsBottomSheet.newInstance(
-            isReportable = !canDeleteComment,
+            isReportable = canReportComment,
             canUnfollow = false,
             isDeletable = canDeleteComment
         )
@@ -318,7 +326,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         } else {
             val mentionFormatBuilder = StringBuilder()
             val isCommentNotEmpty = kolComment?.text?.isNotEmpty() == true
-            val isLastCharNotBlank = if (isCommentNotEmpty) kolComment?.text?.last() != ' ' else false
+            val isLastCharNotBlank =
+                if (isCommentNotEmpty) kolComment?.text?.last() != ' ' else false
             if (isLastCharNotBlank) mentionFormatBuilder.append(" ")
 
             mentionFormatBuilder
@@ -350,6 +359,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 true
             )
     }
+
     private fun getContentDetailAnalyticsData(
         hashTag: String = "",
     ) = ContentDetailPageAnalyticsDataModel(
@@ -366,14 +376,15 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         if (isFromContentDetailPage)
             analyticsTracker.sendClickCommentCreator(getContentDetailAnalyticsData())
         else
-        feedAnalytics.clickCreatorPageCommentPage(
-            postId,
-            authorId,
-            isVideoPost,
-            isFollowed,
-            postType,
-            userId
-        )
+            feedAnalytics.clickCreatorPageCommentPage(
+                postId,
+                authorId,
+                isVideoPost,
+                isFollowed,
+                postType,
+                userId,
+                ""
+            )
         routeUrl(url)
     }
 
@@ -401,7 +412,14 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         if (isFromContentDetailPage)
             analyticsTracker.sendClickShopOnConmmentPage(getContentDetailAnalyticsData())
         else
-        feedAnalytics.clickShopCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
+            feedAnalytics.clickShopCommentPage(
+                postId,
+                authorId,
+                isVideoPost,
+                isFollowed,
+                postType,
+                ""
+            )
         routeUrl(url)
     }
 
@@ -427,6 +445,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 sendKolCommentDomain?.domainUser?.isKol ?: false,
                 sendKolCommentDomain?.canDeleteComment() ?: false,
                 "",
+                false,
                 false
             )
         )
@@ -455,7 +474,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     /***
-      totalNewComment is number of comment item in adapter excluding first caption item
+    totalNewComment is number of comment item in adapter excluding first caption item
      ***/
     override fun onSuccessDeleteComment(adapterPosition: Int) {
         if (adapterPosition <= adapter?.itemCount ?: 0) {
@@ -475,7 +494,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 authorId,
                 isVideoPost,
                 isFollowed,
-                postType
+                postType,
+                ""
             )
         adapter?.deleteItem(adapterPosition)
     }
@@ -552,15 +572,15 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         header?.isLoading = true
         adapter?.notifyItemChanged(0)
 
-        arguments?.getLong(KolCommentNewActivity.ARGS_ID)?.let { presenter.loadMoreComments(it)}
+        arguments?.getLong(KolCommentNewActivity.ARGS_ID)?.let { presenter.loadMoreComments(it) }
 
     }
 
     override fun onErrorLoadMoreComment(errorMessage: String?) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
-            header?.isLoading = false
-            header?.isCanLoadMore = true
-            adapter?.notifyItemChanged(0)
+        header?.isLoading = false
+        header?.isCanLoadMore = true
+        adapter?.notifyItemChanged(0)
 
     }
 
@@ -629,7 +649,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                     authorId,
                     isVideoPost,
                     isFollowed,
-                    postType
+                    postType,
+                    ""
                 )
             if (userSession != null && userSession?.isLoggedIn != false) {
                 presenter.sendComment(
@@ -668,7 +689,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         super.onDestroyView()
 
         try {
-            Toaster.onCTAClick = View.OnClickListener {  }
-        } catch (ignored: UninitializedPropertyAccessException) {}
+            Toaster.onCTAClick = View.OnClickListener { }
+        } catch (ignored: UninitializedPropertyAccessException) {
+        }
     }
 }
