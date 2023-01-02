@@ -8,7 +8,7 @@
     android:layout_marginRight="24dp"
     android:padding="8dp">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/image_view"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -17,8 +17,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/card"
         app:unify_image_type="circle"
+        app:completeUrl="https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/fleksibel_buat_kupon.png"
         android:elevation="20dp"
-        android:src="@drawable/background_countdown" />
+        />
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/card"

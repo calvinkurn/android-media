@@ -25,5 +25,8 @@ class VoucherTypeCardView @JvmOverloads constructor(
     fun setData(mainTitle: String, subtitle: String, imageUrl: String) {
         binding?.title?.text = mainTitle
         binding?.subtitle?.text = subtitle
+        if (imageUrl.isNotEmpty()) {
+            binding?.imageView?.loadRemoteImageDrawable(imageUrl, imageUrl)
+        }
     }
 }
