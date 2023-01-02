@@ -9,7 +9,6 @@ import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiMode
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify
 
-
 /**
  * Created by irpan on 8/11/22.
  */
@@ -40,6 +39,7 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
     }
 
     fun updateList(data: List<AnchorTabUiModel>) {
+        listMenu.clear()
         listMenu.addAll(data)
         notifyDataSetChanged()
     }
@@ -57,7 +57,6 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
     fun setMinimizeIcons() {
         maximizeIcons = false
         notifyDataSetChanged()
-
     }
 
     inner class DtAnchorTabViewHolder(
@@ -66,7 +65,6 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(data: AnchorTabUiModel, isMaximize: Boolean = false, isSelected: Boolean = false) {
-
             binding.anchorIcon.loadImage(data.imageUrl)
             binding.anchorText.text = data.title
 
