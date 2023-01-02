@@ -17,8 +17,8 @@ class FlightAirportModule {
 
     @Provides
     @Named(FlightAirportMapper.NAMED_POPULAR_AIRPORT)
-    fun providePopularAirportName(@ApplicationContext context: Context): String {
-        return context.getString(flightString.flight_popular_airport_label)
+    fun providePopularAirportName(@ApplicationContext context: Context?): String {
+        return context?.getString(flightString.flight_popular_airport_label) ?: ""
     }
 
 }
