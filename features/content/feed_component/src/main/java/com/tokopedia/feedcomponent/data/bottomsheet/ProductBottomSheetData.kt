@@ -14,7 +14,8 @@ data class ProductBottomSheetData(
     val shopName:String,
     val mediaType: String,
     val saleType: String,
-    val saleStatus: String
+    val saleStatus: String,
+    val authorType: String
 ) {
     val isFlashSaleToko: Boolean
         get() = saleType == ASGC_FLASH_SALE_TOKO

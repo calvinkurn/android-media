@@ -14,7 +14,7 @@
     "replyIDsAttachment": "439369778,439369779,439369780",
     "contacts": [
       {
-        "role": "User",
+        "role": "Shop Owner",
         "userId": 7977933,
         "shopId": 5665147,
         "interlocutor": true,
@@ -32,7 +32,7 @@
         }
       },
       {
-        "role": "Shop Owner",
+        "role": "User",
         "userId": 29240564,
         "shopId": 5665147,
         "interlocutor": false,
