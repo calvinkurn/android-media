@@ -14,6 +14,7 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.presentation.intro.adapter.MvcIntroAdapter
 import com.tokopedia.mvc.presentation.intro.uimodel.ChoiceOfVoucherUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.IntroVoucherUiModel
+import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -83,6 +84,24 @@ class MvcIntroFragment : BaseDaggerFragment() {
                             it.getString(R.string.smvc_intro_coupon_type_card_2_title),
                             it.getString(R.string.smvc_intro_coupon_type_card_2_subtitle),
                         )
+                    )
+                ),
+                VoucherIntroCarouselUiModel(
+                    headerTitle = it.getString(R.string.smvc_intro_coupon_view_pager_header),
+                    description = it.getString(R.string.smvc_intro_coupon_view_pager_tab_description),
+                    tabsList = listOf(
+                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                            it.getString(R.string.smvc_intro_coupon_view_pager_tab_1_title),
+                            listOf()
+                        ),
+                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                            it.getString(R.string.smvc_intro_coupon_view_pager_tab_2_title),
+                            listOf()
+                        ),
+                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                            it.getString(R.string.smvc_intro_coupon_view_pager_tab_3_title),
+                            listOf()
+                        ),
                     )
                 ),
                 ChoiceOfVoucherUiModel(

@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import com.tokopedia.mvc.databinding.SmvcIntroCard1Binding
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class IntroVoucherCardView  @JvmOverloads constructor(
-    context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
-): BaseCustomView(context, attrs, defStyleAttr) {
+class IntroVoucherCardView @JvmOverloads constructor(
+    context: Context,
+    private val attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : BaseCustomView(context, attrs, defStyleAttr) {
 
     var binding: SmvcIntroCard1Binding? = null
 

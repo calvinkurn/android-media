@@ -377,5 +377,11 @@
     <string name="smvc_intro_coupon_type_choice_of_target_card_1_subtitle">Kupon yang kamu buat bisa digunakan oleh semua pembeli untuk belanja di tokomu.</string>
     <string name="smvc_intro_coupon_type_choice_of_target_card_2_title">Follower Baru</string>
     <string name="smvc_intro_coupon_type_choice_of_target_card_2_subtitle">Kupon yang kamu buat hanya bisa digunakan oleh follower baru untuk belanja di tokomu.</string>
+    <string name="smvc_intro_create_coupon">Buat Kupon</string>
+    <string name="smvc_intro_coupon_view_pager_header">Tipe kupon sesuai kebutuhan</string>
+    <string name="smvc_intro_coupon_view_pager_tab_1_title">Cashback</string>
+    <string name="smvc_intro_coupon_view_pager_tab_2_title">Gratis Ongkir</string>
+    <string name="smvc_intro_coupon_view_pager_tab_3_title">Diskon</string>
+    <string name="smvc_intro_coupon_view_pager_tab_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
 
 </resources>
