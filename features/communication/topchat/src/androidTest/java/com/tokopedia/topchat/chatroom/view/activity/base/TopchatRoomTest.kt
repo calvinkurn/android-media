@@ -1023,7 +1023,11 @@ fun GetExistingChatPojo.hideBanner(hide: Boolean): GetExistingChatPojo {
     return this
 }
 
-fun GetExistingChatPojo.changeCtaBroadcast(url: String?, text: String?): GetExistingChatPojo {
+fun GetExistingChatPojo.changeCtaBroadcast(
+    url: String?,
+    text: String?,
+    label: String?
+): GetExistingChatPojo {
     val banner: Reply? = chatReplies.list[0].chats[0].replies.find { reply ->
         reply.attachment.type.toString() == TYPE_IMAGE_ANNOUNCEMENT
     }
@@ -1033,6 +1037,7 @@ fun GetExistingChatPojo.changeCtaBroadcast(url: String?, text: String?): GetExis
     ).apply {
         this.broadcastCtaUrl = url
         this.broadcastCtaText = text
+        this.broadcastCtaLabel = label
     }
     banner?.attachment?.attributes = CommonUtil.toJson(attribute)
     return this
