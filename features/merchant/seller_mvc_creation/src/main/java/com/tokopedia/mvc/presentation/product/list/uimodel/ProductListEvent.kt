@@ -11,7 +11,8 @@ sealed class ProductListEvent {
         val voucherConfiguration: VoucherConfiguration,
         val selectedProducts: List<SelectedProduct>,
         val showCtaUpdateProductOnToolbar: Boolean,
-        val isEntryPointFromVoucherSummaryPage: Boolean
+        val isEntryPointFromVoucherSummaryPage: Boolean,
+        val selectedWarehouseId: Long
     ) : ProductListEvent()
     object EnableSelectAllCheckbox : ProductListEvent()
     object DisableSelectAllCheckbox : ProductListEvent()

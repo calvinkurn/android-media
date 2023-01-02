@@ -50,7 +50,8 @@ class ProductListViewModel @Inject constructor(
                     event.voucherConfiguration,
                     event.selectedProducts,
                     event.showCtaUpdateProductOnToolbar,
-                    event.isEntryPointFromVoucherSummaryPage
+                    event.isEntryPointFromVoucherSummaryPage,
+                    event.selectedWarehouseId
                 )
             }
             is ProductListEvent.MarkProductForDeletion -> handleMarkProductForDeletion(event.productId)
@@ -78,7 +79,8 @@ class ProductListViewModel @Inject constructor(
         voucherConfiguration: VoucherConfiguration,
         selectedProducts: List<SelectedProduct>,
         showCtaUpdateProductOnToolbar: Boolean,
-        isEntryPointFromVoucherSummaryPage: Boolean
+        isEntryPointFromVoucherSummaryPage: Boolean,
+        selectedWarehouseId: Long
     ) {
         launchCatchError(
             dispatchers.io,
@@ -125,7 +127,8 @@ class ProductListViewModel @Inject constructor(
                         maxProductSelection = metadata.maxProduct,
                         voucherConfiguration = voucherConfiguration,
                         showCtaChangeProductOnToolbar = showCtaUpdateProductOnToolbar,
-                        isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage
+                        isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage,
+                        selectedWarehouseId = selectedWarehouseId
                     )
                 }
 
@@ -316,7 +319,8 @@ class ProductListViewModel @Inject constructor(
                 ProductListEffect.ProceedToVoucherPreviewPage(
                     currentState.voucherConfiguration,
                     selectedProducts,
-                    topSellingProductImageUrls
+                    topSellingProductImageUrls,
+                    currentState.selectedWarehouseId
                 )
             )
 

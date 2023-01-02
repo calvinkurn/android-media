@@ -15,7 +15,8 @@ sealed class ProductListEffect {
     data class ProceedToVoucherPreviewPage(
         val voucherConfiguration: VoucherConfiguration,
         val selectedProducts: List<SelectedProduct>,
-        val selectedParentProductImageUrls: List<String>
+        val selectedParentProductImageUrls: List<String>,
+        val selectedWarehouseId: Long
     ) : ProductListEffect()
 
     data class RedirectToAddProductPage(val voucherConfiguration: VoucherConfiguration) : ProductListEffect()

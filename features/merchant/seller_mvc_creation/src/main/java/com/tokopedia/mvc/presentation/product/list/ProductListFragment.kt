@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentProductListBinding
@@ -60,7 +61,8 @@ class ProductListFragment : BaseDaggerFragment() {
             voucherConfiguration: VoucherConfiguration,
             selectedProducts: List<SelectedProduct>,
             showCtaChangeProductOnToolbar: Boolean,
-            isEntryPointFromVoucherSummaryPage: Boolean
+            isEntryPointFromVoucherSummaryPage: Boolean,
+            selectedWarehouseId: Long
         ): ProductListFragment {
             return ProductListFragment().apply {
                 arguments = Bundle().apply {
@@ -81,6 +83,10 @@ class ProductListFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE,
                         isEntryPointFromVoucherSummaryPage
                     )
+                    putLong(
+                        BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID,
+                        selectedWarehouseId
+                    )
                 }
             }
         }
@@ -91,6 +97,7 @@ class ProductListFragment : BaseDaggerFragment() {
     private val voucherConfiguration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private val showCtaChangeProductOnToolbar by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR).orFalse() }
     private val isEntryPointFromVoucherSummaryPage by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE).orFalse() }
+    private val selectedWarehouseId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID).orZero() }
 
     private var binding by autoClearedNullable<SmvcFragmentProductListBinding>()
 
@@ -137,7 +144,8 @@ class ProductListFragment : BaseDaggerFragment() {
                 voucherConfiguration ?: return,
                 selectedParentProducts?.toList().orEmpty(),
                 showCtaChangeProductOnToolbar,
-                isEntryPointFromVoucherSummaryPage
+                isEntryPointFromVoucherSummaryPage,
+                selectedWarehouseId
             )
         )
     }
@@ -221,7 +229,7 @@ class ProductListFragment : BaseDaggerFragment() {
                         effect.deletedProductCount
                     ), ctaText = getString(R.string.smvc_ok))
             ProductListEffect.ProductDeleted -> binding?.cardUnify2.showToaster(message = getString(R.string.smvc_product_deleted), ctaText = getString(R.string.smvc_ok))
-            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls)
+            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls, effect.selectedWarehouseId)
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
             is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
@@ -446,7 +454,8 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun navigateToVoucherPreviewPage(
         voucherConfiguration: VoucherConfiguration,
         selectedProducts: List<SelectedProduct>,
-        selectedParentProductImageUrls: List<String>
+        selectedParentProductImageUrls: List<String>,
+        selectedWarehouseId: Long
     ) {
         SummaryActivity.start(context, voucherConfiguration)
     }

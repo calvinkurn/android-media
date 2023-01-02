@@ -39,7 +39,8 @@ sealed class AddProductEffect {
     data class ProductConfirmed(
         val selectedProducts: List<SelectedProduct>,
         val selectedParentProductImageUrls: List<String>,
-        val voucherConfiguration: VoucherConfiguration
+        val voucherConfiguration: VoucherConfiguration,
+        val selectedWarehouseId: Long
     ) : AddProductEffect()
 
     data class AddNewProducts(
