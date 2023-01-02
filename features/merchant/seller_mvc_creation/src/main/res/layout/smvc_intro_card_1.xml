@@ -17,24 +17,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!--        <com.tkpd.remoteresourcerequest.view.DeferredImageView-->
-        <!--            android:layout_width="70dp"-->
-        <!--            android:layout_height="70dp"-->
-        <!--            android:id="@+id/image_view"-->
-        <!--            tools:src="@tools:sample/avatars"-->
-        <!--            app:unify_image_corner_radius="8"-->
-        <!--            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/contact_us_migration.png"-->
-        <!--            app:unify_image_type="rect"/>-->
-
-        <ImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/image_view"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_calendar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="8"
+            app:unify_image_type="rect"
+            tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"

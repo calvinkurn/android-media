@@ -28,8 +28,11 @@ class IntroVoucherCardView @JvmOverloads constructor(
         binding?.subtitle?.text = subtitle
     }
 
-    fun setText(mainTitle: String, subtitle: String) {
+    fun setData(mainTitle: String, subtitle: String, imageUrl: String = "") {
         binding?.title?.text = mainTitle
         binding?.subtitle?.text = subtitle
+        if (imageUrl.isNotEmpty()) {
+            binding?.imageView?.loadRemoteImageDrawable(imageUrl, imageUrl)
+        }
     }
 }

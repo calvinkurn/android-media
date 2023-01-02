@@ -385,5 +385,11 @@
     <string name="smvc_intro_voucher_view_pager_tab_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
     <string name="smvc_intro_voucher_view_more">Lihat Selengkapnya</string>
     <string name="smvc_intro_voucher_toolbar_text">Keuntungan Kupon Toko Saya</string>
-
+    <string name="smvc_intro_voucher_icon_semua_pembeli">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/semua_pembeli.png</string>
+    <string name="smvc_intro_voucher_icon_kupon_toko">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/kupon_toko.png</string>
+    <string name="smvc_intro_voucher_icon_kupon_produk">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/kupon_produk.png</string>
+    <string name="smvc_intro_voucher_icon_follower_baru">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/follower_baru.png</string>
+    <string name="smvc_intro_voucher_icon_fleksibel_buat_kupon">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/fleksibel_buat_kupon.png</string>
+    <string name="smvc_intro_voucher_icon_beragam_pilihan_promo">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/beragam_pilihan_promo.png</string>
+    <string name="smvc_intro_voucher_icon_bebas_tentukan_target">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/bebas_tentukan_target.png</string>
 </resources>

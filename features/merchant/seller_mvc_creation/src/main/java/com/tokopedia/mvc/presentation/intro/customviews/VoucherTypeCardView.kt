@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import com.tokopedia.mvc.databinding.SmvcIntroCard2Binding
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class VoucherTypeCardView  @JvmOverloads constructor(
-    context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
-): BaseCustomView(context, attrs, defStyleAttr) {
+class VoucherTypeCardView @JvmOverloads constructor(
+    context: Context,
+    private val attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : BaseCustomView(context, attrs, defStyleAttr) {
 
     var binding: SmvcIntroCard2Binding? = null
 
@@ -20,7 +22,7 @@ class VoucherTypeCardView  @JvmOverloads constructor(
         binding = SmvcIntroCard2Binding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    fun setText(mainTitle: String, subtitle: String) {
+    fun setData(mainTitle: String, subtitle: String, imageUrl: String) {
         binding?.title?.text = mainTitle
         binding?.subtitle?.text = subtitle
     }

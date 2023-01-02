@@ -24,10 +24,18 @@ class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVo
         binding?.apply {
             title.text = element?.title.toBlankOrString()
             element?.list?.getOrNull(0)?.let {
-                viewFlexibleForCoupons.setText(it.benefitTitle, it.benefitSubtitle)
+                viewFlexibleForCoupons.setData(
+                    it.benefitTitle,
+                    it.benefitSubtitle,
+                    it.benefitImageUrl
+                )
             }
             element?.list?.getOrNull(1)?.let {
-                viewSelectionCoupons.setText(it.benefitTitle, it.benefitSubtitle)
+                viewSelectionCoupons.setData(
+                    it.benefitTitle,
+                    it.benefitSubtitle,
+                    it.benefitImageUrl
+                )
             }
         }
     }

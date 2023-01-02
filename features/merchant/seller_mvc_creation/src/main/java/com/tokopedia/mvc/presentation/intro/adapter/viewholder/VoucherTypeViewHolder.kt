@@ -22,10 +22,10 @@ class VoucherTypeViewHolder(itemView: View?) : AbstractViewHolder<VoucherTypeUiM
         binding?.apply {
             title.text = element?.title.toBlankOrString()
             element?.list?.getOrNull(0)?.let {
-                viewVoucherShop.setText(it.benefitTitle, it.benefitSubtitle)
+                viewVoucherShop.setData(it.benefitTitle, it.benefitSubtitle, it.benefitImageUrl)
             }
             element?.list?.getOrNull(1)?.let {
-                viewVoucherProduct.setText(it.benefitTitle, it.benefitSubtitle)
+                viewVoucherProduct.setData(it.benefitTitle, it.benefitSubtitle, it.benefitImageUrl)
             }
         }
     }

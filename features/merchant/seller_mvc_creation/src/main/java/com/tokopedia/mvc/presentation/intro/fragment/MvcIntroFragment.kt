@@ -75,17 +75,17 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
                         VoucherIntroTypeData(
                             it.getString(R.string.smvc_intro_voucher_card_1_title),
                             it.getString(R.string.smvc_intro_voucher_card_1_subtitle),
-                            ""
+                            it.getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon)
                         ),
                         VoucherIntroTypeData(
                             it.getString(R.string.smvc_intro_voucher_card_2_title),
                             it.getString(R.string.smvc_intro_voucher_card_2_subtitle),
-                            ""
+                            it.getString(R.string.smvc_intro_voucher_icon_beragam_pilihan_promo)
                         ),
                         VoucherIntroTypeData(
                             it.getString(R.string.smvc_intro_voucher_card_3_title),
                             it.getString(R.string.smvc_intro_voucher_card_3_subtitle),
-                            ""
+                            it.getString(R.string.smvc_intro_voucher_icon_bebas_tentukan_target)
                         )
 
                     )
@@ -95,11 +95,13 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
                     list = listOf(
                         VoucherIntroTypeData(
                             it.getString(R.string.smvc_intro_voucher_type_card_1_title),
-                            it.getString(R.string.smvc_intro_voucher_type_card_1_subtitle)
+                            it.getString(R.string.smvc_intro_voucher_type_card_1_subtitle),
+                            it.getString(R.string.smvc_intro_voucher_icon_kupon_toko)
                         ),
                         VoucherIntroTypeData(
                             it.getString(R.string.smvc_intro_voucher_type_card_2_title),
-                            it.getString(R.string.smvc_intro_voucher_type_card_2_subtitle)
+                            it.getString(R.string.smvc_intro_voucher_type_card_2_subtitle),
+                            it.getString(R.string.smvc_intro_voucher_icon_kupon_produk)
                         )
                     )
                 ),
@@ -133,7 +135,7 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
                             it.getString(
                                 R.string.smvc_intro_voucher_type_choice_of_target_card_1_subtitle
                             ),
-                            ""
+                            it.getString(R.string.smvc_intro_voucher_icon_semua_pembeli)
                         ),
                         VoucherIntroTypeData(
                             it.getString(
@@ -142,7 +144,7 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
                             it.getString(
                                 R.string.smvc_intro_voucher_type_choice_of_target_card_2_subtitle
                             ),
-                            ""
+                            it.getString(R.string.smvc_intro_voucher_icon_follower_baru)
                         )
                     )
                 )
