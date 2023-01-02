@@ -42,15 +42,9 @@ class HomeRecommendationFeedViewHolder(
          * sticky Effect
          * specify height for viewpager, so it can't scroll up anymore and create sticky Effect
          *
-         * 1st dp comes from N0 divider in home recommendation feed viewholder
-         * 2nd dp comes from N50 divider in home recommendation feed viewholder
-         * 3rd dp comes from N0 divider in home recommendation feed viewholder
          */
 
-        layoutParams?.height = listener.windowHeight +
-            8f.toDpInt() +
-            1f.toDpInt() +
-            8f.toDpInt() -
+        layoutParams?.height = listener.windowHeight -
             listener.homeMainToolbarHeight -
             listener.homeMainAnchorTabHeight
         container?.layoutParams = layoutParams
