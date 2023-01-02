@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
@@ -64,7 +65,8 @@ data class ProductInfoP2UiData(
     var isToolbarTransparent: Boolean = false,
     var shopAdditional: ProductShopAdditional = ProductShopAdditional(),
     var arInfo: ProductArInfo = ProductArInfo(),
-    var obatKeras: ObatKeras = ObatKeras()
+    var obatKeras: ObatKeras = ObatKeras(),
+    var customInfoTitle: List<CustomInfoTitle> = emptyList()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {

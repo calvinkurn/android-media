@@ -8,5 +8,5 @@ data class WholesalePrice(
         @SerializedName("qty_max")
         val qtyMax: Int = 0,
         @SerializedName("prd_prc")
-        val prdPrc: Long = 0
+        val prdPrc: Double = 0.0
 )

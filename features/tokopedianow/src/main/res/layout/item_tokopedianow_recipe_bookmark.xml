@@ -31,6 +31,7 @@
             android:id="@+id/iu_recipe_picture"
             android:layout_width="match_parent"
             android:layout_height="88dp"
+            android:scaleType="centerCrop"
             app:unify_image_corner_radius="0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
