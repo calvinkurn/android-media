@@ -659,8 +659,6 @@ class AddEditProductDescriptionFragment:
 
                 if (descriptionViewModel.isEditMode) {
                     ProductEditDescriptionTracking.clickBack(shopId)
-                } else {
-                    ProductAddDescriptionTracking.clickBack(shopId)
                 }
             }
         })

@@ -9,10 +9,6 @@ object ProductAddDescriptionTracking {
         ProductAddEditTracking.getTracker().sendScreenAuthenticated(SCREEN)
     }
 
-    fun clickBack(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click back on product description page")
-    }
-
     fun clickHelpWriteDescription(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click toaster", "clear product description")
     }

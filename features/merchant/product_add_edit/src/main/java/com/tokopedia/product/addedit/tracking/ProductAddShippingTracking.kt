@@ -20,30 +20,12 @@ object ProductAddShippingTracking {
         sendAddProductClick(SCREEN, shopId, "click back on shipping detail page")
     }
 
-    fun clickInsurance(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click shipping insurance button")
-    }
-
     fun clickCancelChangeWeight(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click cancel change weight")
     }
 
-    fun clickWeightDropDown(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click weight dropdown menu")
-    }
-
-    fun clickChooseWeight(shopId: String, isGram: Boolean) {
-        sendAddProductClick(SCREEN, shopId, "click choose weight", if (isGram) {
-            "gram"
-        } else {
-            "kilogram"
-        })
-    }
-
     fun clickFinish(shopId: String, isSuccess: Boolean, errorName: String = "", errorMessage: String = "") {
-        if (isSuccess) {
-            sendAddProductClick(SCREEN, shopId, "click finish success", "")
-        } else {
+        if (!isSuccess) {
             sendAddProductClickWithoutScreen(shopId, "click finish error", "$errorMessage - $errorName")
         }
     }
