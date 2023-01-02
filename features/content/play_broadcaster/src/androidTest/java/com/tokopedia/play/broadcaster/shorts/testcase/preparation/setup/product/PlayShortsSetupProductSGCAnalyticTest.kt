@@ -98,73 +98,56 @@ class PlayShortsSetupProductSGCAnalyticTest {
         launcher.launchActivity()
 
         clickMenuProduct()
-        delay(1000)
+        delay()
     }
 
     @Test
     fun testAnalytic_clickSearchBarOnProductSetup() {
-        delay(1000)
         clickSearchBarProductPickerSGC()
-        delay(1000)
 
         cassavaValidator.verify("click - search product")
     }
 
     @Test
     fun testAnalytic_clickProductSorting() {
-
-        delay(1000)
         clickSortChip()
-        delay(1000)
 
         cassavaValidator.verify("click - product sort")
     }
 
     @Test
     fun testAnalytic_clickCampaignAndEtalaseFilter() {
-        delay(1000)
         clickEtalaseAndCampaignChip()
-        delay(1000)
 
         cassavaValidator.verify("click - filter product etalase")
     }
 
     @Test
     fun testAnalytic_clickCloseOnProductChooser() {
-        delay(1000)
         clickCloseBottomSheet()
-        delay(1000)
 
         cassavaValidator.verify("click - close button on product bottom sheet")
     }
 
     @Test
     fun testAnalytic_clickSelectProductOnProductSetup() {
-        delay(1000)
         selectProduct()
-        delay(1000)
 
         cassavaValidator.verify("click - product card")
     }
 
     @Test
     fun testAnalytic_clickCloseOnProductSortingBottomSheet() {
-        delay(1000)
         clickSortChip()
-        delay(1000)
         clickCloseBottomSheet()
-        delay(1000)
 
         cassavaValidator.verify("click - close sort product")
     }
 
     @Test
     fun testAnalytic_clickProductSortingType() {
-        delay(1000)
         clickSortChip()
-        delay(1000)
         selectSortType()
-        delay(1000)
         clickSaveSort()
 
         cassavaValidator.verify("click - sort type")
@@ -172,18 +155,14 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_viewProductSortingBottomSheet() {
-        delay(1000)
         clickSortChip()
-        delay(1000)
 
         cassavaValidator.verify("view - sorting bottom sheet")
     }
 
     @Test
     fun testAnalytic_clickCloseOnProductFilterBottomSheet() {
-        delay(1000)
         clickEtalaseAndCampaignChip()
-        delay(1000)
         clickCloseBottomSheet()
 
         cassavaValidator.verify("click - close filter bottom sheet")
@@ -194,10 +173,8 @@ class PlayShortsSetupProductSGCAnalyticTest {
         
         /** 0 for header, 1..x for the campaign */
         val firstCampaignIdx = 1
-
-        delay(1000)
+        
         clickEtalaseAndCampaignChip()
-        delay(1000)
         selectEtalaseOrCampaign(firstCampaignIdx)
 
         cassavaValidator.verify("click - campaign card")
@@ -209,21 +186,16 @@ class PlayShortsSetupProductSGCAnalyticTest {
         /** 2 for campaign header + etalase header */
         val totalHeader = 2
         val firstEtalaseIdx = mockCampaignList.size + totalHeader
-
-        delay(1000)
+        
         clickEtalaseAndCampaignChip()
-        delay(1000)
         selectEtalaseOrCampaign(firstEtalaseIdx)
-        delay(1000)
 
         cassavaValidator.verify("click - etalase card")
     }
 
     @Test
     fun testAnalytic_viewProductFilterBottomSheet() {
-        delay(1000)
         clickEtalaseAndCampaignChip()
-        delay(1000)
 
         cassavaValidator.verify("view - filter bottom sheet")
     }
@@ -231,17 +203,13 @@ class PlayShortsSetupProductSGCAnalyticTest {
     @Test
     fun testAnalytic_viewProductChooser() {
         
-        delay(1000)
-
         cassavaValidator.verify("view - product selection bottom sheet")
     }
 
     @Test
     fun testAnalytic_clickSaveButtonOnProductSetup() {
-
-        delay(1000)
+        
         selectProduct()
-        delay(1000)
         clickSubmitProductTag()
 
         cassavaValidator.verify("click - save product card")
@@ -249,12 +217,9 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickAddMoreProductOnProductSetup() {
-
-        delay(1000)
+        
         selectProduct()
-        delay(1000)
         clickSubmitProductTag()
-        delay(1000)
         clickAddMoreProduct()
 
         cassavaValidator.verify("click - add product card")
@@ -262,12 +227,9 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickCloseOnProductSummary() {
-
-        delay(1000)
+        
         selectProduct()
-        delay(1000)
         clickSubmitProductTag()
-        delay(1000)
         clickCloseBottomSheet()
 
         cassavaValidator.verify("click - back product selection page")
@@ -275,25 +237,18 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickDeleteProductOnProductSetup() {
-
-        delay(1000)
+        
         selectProduct()
-        delay(1000)
         clickSubmitProductTag()
-        delay(1000)
         clickDeleteOnFirstProduct()
-        delay(1000)
 
         cassavaValidator.verify("click - delete a product tagged")
     }
 
     @Test
     fun testAnalytic_clickDoneOnProductSetup() {
-        delay(1000)
         selectProduct()
-        delay(1000)
         clickSubmitProductTag()
-        delay(1000)
         clickNextOnProductPickerSummary()
 
         cassavaValidator.verify("click - save product tag")
@@ -301,11 +256,8 @@ class PlayShortsSetupProductSGCAnalyticTest {
 
     @Test
     fun testAnalytic_viewProductSummary() {
-        delay(1000)
         selectProduct()
-        delay(1000)
         clickSubmitProductTag()
-        delay(1000)
 
         cassavaValidator.verify("view - product selection summary")
     }
