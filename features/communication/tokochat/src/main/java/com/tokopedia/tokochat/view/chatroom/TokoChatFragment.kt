@@ -16,7 +16,6 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.google.android.material.snackbar.Snackbar
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
