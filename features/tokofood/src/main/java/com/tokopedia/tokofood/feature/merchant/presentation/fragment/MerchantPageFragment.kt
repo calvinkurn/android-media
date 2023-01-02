@@ -1073,12 +1073,12 @@ class MerchantPageFragment : BaseMultiFragment(),
                                         productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
                                     )
                                 )
-                            }
-                            val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
-                            val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
-                            val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
-                            if (isSameCustomProductExist || isMultipleCustomProductMade) {
-                                showCustomOrderDetailBottomSheet(productUiModel, this)
+                                val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                                val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
+                                val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
+                                if (isSameCustomProductExist || isMultipleCustomProductMade) {
+                                    showCustomOrderDetailBottomSheet(productUiModel, this)
+                                }
                             }
                         }
                     }
@@ -1690,7 +1690,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun getIsImplementDebounce(): Boolean {
-        return false
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
