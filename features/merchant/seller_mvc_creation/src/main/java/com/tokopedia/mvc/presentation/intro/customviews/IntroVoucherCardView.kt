@@ -1,6 +1,7 @@
 package com.tokopedia.mvc.presentation.intro.customviews
 
 import android.content.Context
+import android.text.Spanned
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.mvc.databinding.SmvcIntroCard1Binding
@@ -20,6 +21,11 @@ class IntroVoucherCardView @JvmOverloads constructor(
 
     private fun init() {
         binding = SmvcIntroCard1Binding.inflate(LayoutInflater.from(context), this, true)
+    }
+
+    fun setTextForHtml(mainTitle: String, subtitle: Spanned) {
+        binding?.title?.text = mainTitle
+        binding?.subtitle?.text = subtitle
     }
 
     fun setText(mainTitle: String, subtitle: String) {

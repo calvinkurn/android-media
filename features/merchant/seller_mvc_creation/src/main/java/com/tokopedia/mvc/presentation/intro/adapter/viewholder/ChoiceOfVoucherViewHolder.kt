@@ -9,7 +9,9 @@ import com.tokopedia.mvc.databinding.SmvcIntroVoucherChoiceOfTargetViewholderBin
 import com.tokopedia.mvc.presentation.intro.uimodel.ChoiceOfVoucherUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVoucherUiModel>(itemView) {
+class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVoucherUiModel>(
+    itemView
+) {
 
     companion object {
         @LayoutRes

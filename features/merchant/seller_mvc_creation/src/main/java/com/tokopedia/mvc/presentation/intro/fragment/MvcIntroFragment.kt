@@ -13,6 +13,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentIntroBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.presentation.intro.adapter.MvcIntroAdapter
+import com.tokopedia.mvc.presentation.intro.customviews.VoucherIntroViewMoreCustomView
 import com.tokopedia.mvc.presentation.intro.uimodel.ChoiceOfVoucherUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.IntroVoucherUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
@@ -20,11 +21,12 @@ import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class MvcIntroFragment : BaseDaggerFragment() {
+class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.ViewMoreListener {
 
     private var binding by autoClearedNullable<SmvcFragmentIntroBinding>()
-    private var adapter: MvcIntroAdapter? = null
+    private var mvcAdapter: MvcIntroAdapter? = null
     private var contentList: List<Visitable<*>> = emptyList()
+    private var mvcLayoutManager: LinearLayoutManager? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,16 +40,22 @@ class MvcIntroFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.header?.setupHeader()
-        binding?.recyclerView?.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding?.apply {
+            header.setupHeader()
+            btnViewMore.setUpListener(this@MvcIntroFragment)
+        }
         this.contentList = getContentList()
-        adapter = MvcIntroAdapter()
+        mvcAdapter = MvcIntroAdapter()
 
-        adapter?.clearAllElements()
-        adapter?.addElement(contentList)
+        mvcLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding?.recyclerView?.layoutManager = mvcLayoutManager
 
-        binding?.recyclerView?.adapter = adapter
+        mvcAdapter?.clearAllElements()
+        mvcAdapter?.addElement(contentList)
+
+        binding?.recyclerView?.apply {
+            adapter = mvcAdapter
+        }
     }
 
     private fun HeaderUnify.setupHeader() {
@@ -56,7 +64,6 @@ class MvcIntroFragment : BaseDaggerFragment() {
             activity?.finish()
         }
     }
-
 
     private fun getContentList(): List<Visitable<*>> {
         return context?.resources?.let {
@@ -88,17 +95,19 @@ class MvcIntroFragment : BaseDaggerFragment() {
                     list = listOf(
                         VoucherIntroTypeData(
                             it.getString(R.string.smvc_intro_voucher_type_card_1_title),
-                            it.getString(R.string.smvc_intro_voucher_type_card_1_subtitle),
+                            it.getString(R.string.smvc_intro_voucher_type_card_1_subtitle)
                         ),
                         VoucherIntroTypeData(
                             it.getString(R.string.smvc_intro_voucher_type_card_2_title),
-                            it.getString(R.string.smvc_intro_voucher_type_card_2_subtitle),
+                            it.getString(R.string.smvc_intro_voucher_type_card_2_subtitle)
                         )
                     )
                 ),
                 VoucherIntroCarouselUiModel(
                     headerTitle = it.getString(R.string.smvc_intro_voucher_view_pager_header),
-                    description = it.getString(R.string.smvc_intro_voucher_view_pager_tab_description),
+                    description = it.getString(
+                        R.string.smvc_intro_voucher_view_pager_tab_description
+                    ),
                     tabsList = listOf(
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
@@ -111,24 +120,32 @@ class MvcIntroFragment : BaseDaggerFragment() {
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
                             listOf()
-                        ),
+                        )
                     )
                 ),
                 ChoiceOfVoucherUiModel(
                     it.getString(R.string.smvc_intro_voucher_type_choice_of_target),
                     list = listOf(
                         VoucherIntroTypeData(
-                            it.getString(R.string.smvc_intro_voucher_type_choice_of_target_card_1_title),
-                            it.getString(R.string.smvc_intro_voucher_type_choice_of_target_card_1_subtitle),
+                            it.getString(
+                                R.string.smvc_intro_voucher_type_choice_of_target_card_1_title
+                            ),
+                            it.getString(
+                                R.string.smvc_intro_voucher_type_choice_of_target_card_1_subtitle
+                            ),
                             ""
                         ),
                         VoucherIntroTypeData(
-                            it.getString(R.string.smvc_intro_voucher_type_choice_of_target_card_2_title),
-                            it.getString(R.string.smvc_intro_voucher_type_choice_of_target_card_2_subtitle),
+                            it.getString(
+                                R.string.smvc_intro_voucher_type_choice_of_target_card_2_title
+                            ),
+                            it.getString(
+                                R.string.smvc_intro_voucher_type_choice_of_target_card_2_subtitle
+                            ),
                             ""
-                        ),
+                        )
                     )
-                ),
+                )
 
             )
         } ?: emptyList()
@@ -145,5 +162,9 @@ class MvcIntroFragment : BaseDaggerFragment() {
             )
             .build()
             .inject(this)
+    }
+
+    override fun enableRVScroll() {
+       // scrollListener?.enableRecyclerViewScroll(binding?.recyclerView)
     }
 }

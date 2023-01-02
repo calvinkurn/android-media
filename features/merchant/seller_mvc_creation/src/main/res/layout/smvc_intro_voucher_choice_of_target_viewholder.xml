@@ -11,18 +11,10 @@
         android:id="@+id/title"
         android:gravity="center"
         app:typographyType="heading_3"
+        android:layout_marginTop="22dp"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:text="AAABABAB"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/subtitle"
-        android:gravity="center"
-        app:typographyType="display_3"
-        app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:text="AAABABAB"/>
@@ -30,9 +22,11 @@
     <com.tokopedia.mvc.presentation.intro.customviews.IntroVoucherCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="40dp"
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp"
         android:id="@+id/view_flexible_for_coupons"
-        app:layout_constraintTop_toBottomOf="@id/subtitle"
+        app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
@@ -40,6 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/view_selection_coupons"
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp"
         app:layout_constraintTop_toBottomOf="@id/view_flexible_for_coupons"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
