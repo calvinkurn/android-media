@@ -14,7 +14,6 @@ import timber.log.Timber
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-
 object FcmTokenUtils {
 
     private const val STATE_LOGGED_OUT = "LOGGED_OUT"
@@ -26,6 +25,7 @@ object FcmTokenUtils {
     const val SELLER_APP_NAME = "seller"
     private const val MITRA_APP_PAKAGE = "com.tokopedia.kelontongapp"
     private const val MITRA_APP_NAME = "mitra"
+    private const val CACHE_CM_NOTIFICATIONS = "cache_fcmnotifications"
 
     val currentLocalTimeStamp: Long
         get() = System.currentTimeMillis()
@@ -37,7 +37,6 @@ object FcmTokenUtils {
         val oldToken = cacheHandler.getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
         if (TextUtils.isEmpty(oldToken)) {
             return true
-
         } else if (oldToken == newToken) {
             return false
         }
@@ -46,13 +45,13 @@ object FcmTokenUtils {
 
     fun isTokenExpired(cacheHandler: FcmCacheHandler, newToken: String, userId: String, gAdId: String, appVersionName: String): Boolean {
         return tokenUpdateRequired(newToken, cacheHandler) ||
-                mapTokenWithUserRequired(userId, cacheHandler) ||
-                mapTokenWithGAdsIdRequired(gAdId, cacheHandler) ||
-                mapTokenWithAppVersionRequired(appVersionName, cacheHandler)
+            mapTokenWithUserRequired(userId, cacheHandler) ||
+            mapTokenWithGAdsIdRequired(gAdId, cacheHandler) ||
+            mapTokenWithAppVersionRequired(appVersionName, cacheHandler)
     }
 
     fun getUserIdAndStatus(context: Context, userId: String): Pair<String, Int> {
-        val cacheHandler = FcmCacheHandler(context)
+        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
         val oldUserId = cacheHandler.getStringValue(FcmConstant.USERID_CACHE_KEY)
         return if (TextUtils.isEmpty(userId)) {
             if (TextUtils.isEmpty(oldUserId)) {
@@ -64,7 +63,6 @@ object FcmTokenUtils {
             Pair(STATE_LOGGED_IN, getUserIdAsInt(userId))
         }
     }
-
 
     private fun getUserIdAsInt(userId: String): Int {
         var userIdInt = 0
@@ -93,7 +91,6 @@ object FcmTokenUtils {
         val oldGAdsId = cacheHandler.getStringValue(FcmConstant.GADSID_CACHE_KEY)
         if (TextUtils.isEmpty(gAdsId)) {
             return false
-
         } else if (gAdsId == oldGAdsId) {
             return false
         }
@@ -105,7 +102,7 @@ object FcmTokenUtils {
             cacheHandler.getStringValue(FcmConstant.APP_VERSION_CACHE_KEY)
         } catch (e: ClassCastException) {
             try {
-                cacheHandler.remove(FcmConstant.APP_VERSION_CACHE_KEY)
+                cacheHandler.removeString(FcmConstant.APP_VERSION_CACHE_KEY)
                 ""
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -117,7 +114,7 @@ object FcmTokenUtils {
     }
 
     fun getUniqueAppId(context: Context): String {
-        val cacheHandler = FcmCacheHandler(context)
+        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
         var appId = cacheHandler.getStringValue(FcmConstant.UNIQUE_APP_ID_CACHE_KEY)
         if (TextUtils.isEmpty(appId)) {
             appId = UUID.randomUUID().toString()
@@ -127,27 +124,26 @@ object FcmTokenUtils {
     }
 
     fun saveToken(context: Context, token: String) {
-        val cacheHandler = FcmCacheHandler(context)
+        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
         cacheHandler.saveStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY, token)
     }
 
-    fun getToken(context: Context): String? = FcmCacheHandler(context).getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
-
+    fun getToken(context: Context): String? = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS).getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
 
     fun saveUserId(context: Context, userId: String) {
-        val cacheHandler = FcmCacheHandler(context)
+        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
         cacheHandler.saveStringValue(FcmConstant.USERID_CACHE_KEY, userId)
     }
 
-    fun getUserId(context: Context): String? = FcmCacheHandler(context).getStringValue(FcmConstant.USERID_CACHE_KEY)
+    fun getUserId(context: Context): String? = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS).getStringValue(FcmConstant.USERID_CACHE_KEY)
 
     fun saveGAdsIdId(context: Context, gAdsId: String) {
-        val cacheHandler = FcmCacheHandler(context)
+        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
         cacheHandler.saveStringValue(FcmConstant.GADSID_CACHE_KEY, gAdsId)
     }
 
     fun saveAppVersion(context: Context, versionName: String) {
-        val cacheHandler = FcmCacheHandler(context)
+        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
         cacheHandler.saveStringValue(FcmConstant.APP_VERSION_CACHE_KEY, versionName)
     }
 
@@ -183,11 +179,10 @@ object FcmTokenUtils {
         return token.length <= 36
     }
 
-
     fun getWifiMacAddress(context: Context): String {
-        val cacheHandler = FcmCacheHandler(context)
+        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
         var macAddress = cacheHandler.getStringValue(FcmConstant.KEY_WIFI_MAC_ADDRESS)
-        if(macAddress.isNullOrBlank() || macAddress == FcmDeviceConfig.UNKNOWN){
+        if (macAddress.isNullOrBlank() || macAddress == FcmDeviceConfig.UNKNOWN) {
             macAddress = FcmDeviceConfig.getFcmDeviceConfig().getWifiMAC()
             cacheHandler.saveStringValue(FcmConstant.KEY_WIFI_MAC_ADDRESS, macAddress)
         }
@@ -195,13 +190,15 @@ object FcmTokenUtils {
     }
 }
 
-fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,
-                                    block: suspend (() -> Unit),
-                                    onError: (Throwable) -> Unit) =
-        launch(context) {
-            try {
-                block.invoke()
-            } catch (t: Throwable) {
-                onError(t)
-            }
+fun CoroutineScope.launchCatchError(
+    context: CoroutineContext = coroutineContext,
+    block: suspend (() -> Unit),
+    onError: (Throwable) -> Unit
+) =
+    launch(context) {
+        try {
+            block.invoke()
+        } catch (t: Throwable) {
+            onError(t)
         }
+    }

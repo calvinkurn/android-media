@@ -1,31 +1,24 @@
 package com.tokopedia.fcmcommon.common
 
 import android.content.Context
-
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 
-
-class FcmCacheHandler(context: Context) {
-
-    private val CACHE_CMNOTIFICATIONS = "cache_fcmnotifications"
-    private val localCacheHandler: LocalCacheHandler
-
-    init {
-        localCacheHandler = LocalCacheHandler(context, CACHE_CMNOTIFICATIONS)
-    }
+class FcmCacheHandler(
+    context: Context,
+    cacheCMNotifications: String
+) : LocalCacheHandler(context, cacheCMNotifications) {
 
     fun getStringValue(Key: String): String? {
-        return localCacheHandler.getString(Key)
+        return getString(Key)
     }
 
     fun saveStringValue(key: String, value: String) {
-        localCacheHandler.putString(key, value)
-        localCacheHandler.applyEditor()
+        putString(key, value)
+        applyEditor()
     }
 
-    fun remove(key: String) {
-        localCacheHandler.remove(key)
-        localCacheHandler.applyEditor()
+    fun removeString(key: String) {
+        remove(key)
+        applyEditor()
     }
-
 }
