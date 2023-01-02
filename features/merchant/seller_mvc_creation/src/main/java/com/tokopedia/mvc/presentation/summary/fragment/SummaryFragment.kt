@@ -319,11 +319,22 @@ class SummaryFragment :
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToAddProductPage(activity ?: return, configuration)
+        //TODO: Replace with real warehouseId
+        redirectionHelper.redirectToAddProductPage(
+            activity = activity ?: return,
+            configuration = configuration,
+            selectedWarehouseId = 0
+        )
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToViewProductPage(activity ?: return, configuration, listOf())
+        //TODO: Replace with real warehouseId
+        redirectionHelper.redirectToViewProductPage(
+            activity = activity ?: return,
+            configuration = configuration,
+            selectedProducts = listOf(),
+            selectedWarehouseId = 0
+        )
     }
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {

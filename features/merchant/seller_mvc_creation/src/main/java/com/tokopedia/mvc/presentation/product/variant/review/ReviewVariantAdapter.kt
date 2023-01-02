@@ -1,10 +1,9 @@
 package com.tokopedia.mvc.presentation.product.variant.review
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
@@ -23,17 +22,7 @@ class ReviewVariantAdapter : RecyclerView.Adapter<ReviewVariantAdapter.ViewHolde
     private var onVariantClick: (Int, Boolean) -> Unit = { _, _ -> }
     private var onDeleteVariantClick: (Int) -> Unit = {}
 
-    private val differCallback = object : DiffUtil.ItemCallback<Variant>() {
-        override fun areItemsTheSame(oldItem: Variant, newItem: Variant): Boolean {
-            return oldItem.variantId == newItem.variantId
-        }
-
-        override fun areContentsTheSame(oldItem: Variant, newItem: Variant): Boolean {
-            return oldItem == newItem
-        }
-    }
-
-    private val differ = AsyncListDiffer(this, differCallback)
+    private var variants : List<Variant> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -41,12 +30,10 @@ class ReviewVariantAdapter : RecyclerView.Adapter<ReviewVariantAdapter.ViewHolde
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return differ.currentList.size
-    }
+    override fun getItemCount() = variants.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(differ.currentList[position])
+        holder.bind(variants[position])
     }
 
     fun setOnVariantClick(onVariantClick: (Int, Boolean) -> Unit) {
@@ -76,7 +63,7 @@ class ReviewVariantAdapter : RecyclerView.Adapter<ReviewVariantAdapter.ViewHolde
                 tpgVariantName.text = item.variantName
                 tpgVariantName.isEnabled = item.isEligible
 
-                tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stockCount.splitByThousand())
+                tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_stock, item.stockCount.splitByThousand())
                 tpgStock.isEnabled = item.isEligible
 
                 tpgPrice.setPrice(item)
@@ -114,11 +101,13 @@ class ReviewVariantAdapter : RecyclerView.Adapter<ReviewVariantAdapter.ViewHolde
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submit(newVariants: List<Variant>) {
-        differ.submitList(newVariants)
+        this.variants = newVariants
+        notifyDataSetChanged()
     }
 
     fun snapshot(): List<Variant> {
-        return differ.currentList
+        return variants
     }
 }

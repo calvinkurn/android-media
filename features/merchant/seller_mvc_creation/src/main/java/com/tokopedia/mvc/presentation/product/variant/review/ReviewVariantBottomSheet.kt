@@ -14,6 +14,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -42,6 +43,9 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         private const val BUNDLE_ORIGINAL_VARIANT_IDS = "original_variant_ids"
         private const val BUNDLE_KEY_IS_VARIANT_CHECKABLE = "is_variant_checkable"
         private const val BUNDLE_KEY_IS_VARIANT_DELETABLE = "is_variant_deletable"
+        private const val BUNDLE_KEY_ENABLE_BULK_DELETE_PRODUCT = "enable_bulk_delete_product"
+        private const val BUNDLE_KEY_BOTTOM_SHEET_TITLE = "bottom_sheet_title"
+        private const val BUNDLE_KEY_SHOW_PRIMARY_BUTTON = "show_primary_button"
         private const val DIVIDER_MARGIN_LEFT = 16
         private const val ONE_VARIANT = 1
 
@@ -51,7 +55,10 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
             selectedProduct: SelectedProduct,
             originalVariantIds: List<Long>,
             isVariantCheckable: Boolean,
-            isVariantDeletable: Boolean
+            isVariantDeletable: Boolean,
+            enableBulkDeleteProduct: Boolean,
+            bottomSheetTitle: String,
+            showPrimaryButton: Boolean
         ): ReviewVariantBottomSheet {
             return ReviewVariantBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -60,6 +67,9 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                     putLongArray(BUNDLE_ORIGINAL_VARIANT_IDS, originalVariantIds.toLongArray())
                     putBoolean(BUNDLE_KEY_IS_VARIANT_CHECKABLE, isVariantCheckable)
                     putBoolean(BUNDLE_KEY_IS_VARIANT_DELETABLE, isVariantDeletable)
+                    putBoolean(BUNDLE_KEY_ENABLE_BULK_DELETE_PRODUCT, enableBulkDeleteProduct)
+                    putString(BUNDLE_KEY_BOTTOM_SHEET_TITLE, bottomSheetTitle)
+                    putBoolean(BUNDLE_KEY_SHOW_PRIMARY_BUTTON, showPrimaryButton)
                 }
             }
         }
@@ -71,6 +81,9 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     private val originalVariantIds by lazy { arguments?.getLongArray(BUNDLE_ORIGINAL_VARIANT_IDS) }
     private val isVariantCheckable by lazy { arguments?.getBoolean(BUNDLE_KEY_IS_VARIANT_CHECKABLE) }
     private val isVariantDeletable by lazy { arguments?.getBoolean(BUNDLE_KEY_IS_VARIANT_DELETABLE) }
+    private val enableBulkDeleteProduct by lazy { arguments?.getBoolean(BUNDLE_KEY_ENABLE_BULK_DELETE_PRODUCT).orTrue() }
+    private val bottomSheetHeaderTitle by lazy { arguments?.getString(BUNDLE_KEY_BOTTOM_SHEET_TITLE).orEmpty() }
+    private val showPrimaryButton by lazy { arguments?.getBoolean(BUNDLE_KEY_SHOW_PRIMARY_BUTTON).orTrue() }
     private var onSaveButtonClick: (Set<Long>) -> Unit = {}
 
     @Inject
@@ -103,7 +116,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = SmvcBottomsheetReviewVariantBinding.inflate(inflater, container, false)
         setChild(binding?.root)
-        setTitle(getString(R.string.smvc_select_variant))
+        setTitle(bottomSheetHeaderTitle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -133,7 +146,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
 
     private fun setupView() {
         setupClickListener()
-        setupCheckbox()
+        setupBottomSheetWidgetAppearance()
         setupList()
     }
 
@@ -169,7 +182,13 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun setupCheckbox() {
+    private fun setupBottomSheetWidgetAppearance() {
+        binding?.dividerList?.isVisible = enableBulkDeleteProduct
+        binding?.tpgSelectAll?.isVisible = enableBulkDeleteProduct
+        binding?.iconBulkDelete?.isVisible = enableBulkDeleteProduct
+        binding?.btnSave?.isVisible = showPrimaryButton
+
+        binding?.checkbox?.isVisible = enableBulkDeleteProduct
         binding?.checkbox?.setOnCheckedChangeListener { view, isChecked ->
             if (view.isClickTriggeredByUserInteraction()) {
                 if (isChecked) {
@@ -285,6 +304,8 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                 binding?.checkbox?.setIndeterminate(false)
             }
         }
+
+        binding?.checkbox?.skipAnimation()
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
