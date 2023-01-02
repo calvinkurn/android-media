@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -113,8 +115,7 @@ import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoFoodHomeFragment :
-    BaseDaggerFragment(),
-    IBaseMultiFragment,
+    BaseMultiFragment(),
     TokoFoodView,
     TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
     TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
@@ -237,6 +238,10 @@ class TokoFoodHomeFragment :
     }
 
     override fun getFragmentToolbar(): Toolbar? = null
+
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.STANDARD
+    }
 
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)

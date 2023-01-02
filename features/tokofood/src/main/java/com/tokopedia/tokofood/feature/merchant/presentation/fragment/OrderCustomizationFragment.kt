@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -129,17 +130,16 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         return productUiModel?.name
     }
 
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TASK
+    }
+
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
         parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initInjector()
-    }
-
-    private fun initInjector() {
+    override fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
                 .builder()

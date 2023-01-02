@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -71,8 +73,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class TokoFoodCategoryFragment: BaseDaggerFragment(),
-    IBaseMultiFragment,
+class TokoFoodCategoryFragment: BaseMultiFragment(),
     TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
     TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
     TokofoodScrollChangedListener {
@@ -204,6 +205,10 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun getScreenName(): String {
         return ""
+    }
+
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TASK
     }
 
     override fun initInjector() {

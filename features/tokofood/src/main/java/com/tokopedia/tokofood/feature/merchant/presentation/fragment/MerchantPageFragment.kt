@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -213,7 +214,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID) ?: ""
         productId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_PRODUCT_ID) ?: ""
         setHasOptionsMenu(true)
-        initInjector()
         // handle negative case #1 non-login
         if (!userSession.isLoggedIn) {
             goToLoginPage()
@@ -221,7 +221,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     }
 
-    private fun initInjector() {
+    override fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
                 .builder()
@@ -229,6 +229,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                 .build()
                 .inject(this)
         }
+    }
+
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TASK
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

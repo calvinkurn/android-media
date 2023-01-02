@@ -96,8 +96,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             popExistedFragment(fragmentName)
             // It means that we are trying to add new fragment but currently the same instance of that fragment resides as initial fragment in this activity
             // Later, this should not add the fragment transaction into backstack, because there will be double fragments in the stack
-            val isNavigatingToInitialWithNewFragment =
-                isSingleTask && supportFragmentManager.backStackEntryCount < NAVIGATE_TO_INITIAL_FRAGMENT_COUNT
+            val isNavigatingToInitialWithNewFragment = supportFragmentManager.backStackEntryCount < NAVIGATE_TO_INITIAL_FRAGMENT_COUNT
             addNewFragment(fragment, true, isNavigatingToInitialWithNewFragment, isFinishCurrent)
         } else {
             navigateToNewFragment(fragment, isFinishCurrent)
