@@ -1011,7 +1011,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private suspend fun adjustCCAdminFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
-        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee()
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
         val newOrderPayment = orderPayment.value
         orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         if (dynamicPaymentFee == null) {
@@ -1043,7 +1043,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees
                 && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount
                 && orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount) {
-            val dynamicPaymentFee = paymentProcessor.get().getPaymentFee()
+            val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
             val newOrderPayment = orderPayment.value
             orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
             if (dynamicPaymentFee == null) {
@@ -1068,7 +1068,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private suspend fun adjustPaymentFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
             validateUsePromoRevampUiModel, orderPayment.value)
-        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee()
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
         val newOrderPayment = orderPayment.value
         orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,

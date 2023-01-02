@@ -7,6 +7,7 @@ import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentFeeRequest
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
@@ -156,11 +157,17 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         return selectedTerm
     }
 
-    suspend fun getPaymentFee(): List<OrderPaymentFee>? {
+    suspend fun getPaymentFee(orderPayment: OrderPayment, orderCost: OrderCost): List<OrderPaymentFee>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                return@withContext dynamicPaymentFeeUseCase(Unit)
+                return@withContext dynamicPaymentFeeUseCase(
+                    PaymentFeeRequest(
+                        orderPayment.creditCard.additionalData.profileCode,
+                        orderPayment.gatewayCode,
+                        orderCost.totalPriceWithoutPaymentFees
+                    )
+                )
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
