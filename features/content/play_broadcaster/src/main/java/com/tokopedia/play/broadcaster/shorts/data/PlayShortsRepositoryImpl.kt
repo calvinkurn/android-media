@@ -2,14 +2,11 @@ package com.tokopedia.play.broadcaster.shorts.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import kotlinx.coroutines.delay
-import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import kotlinx.coroutines.withContext
@@ -30,30 +27,6 @@ class PlayShortsRepositoryImpl @Inject constructor(
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
-//        delay(500)
-//
-//        listOf(
-//            ContentAccountUiModel(
-//                id = "123",
-//                name = "Shop",
-//                iconUrl = "",
-//                badge = "",
-//                type = "content-shop",
-//                hasUsername = true,
-//                enable = true,
-//            ),
-//            ContentAccountUiModel(
-//                id = "456",
-//                name = "UGC",
-//                iconUrl = "",
-//                badge = "",
-//                type = "content-user",
-//                hasUsername = true,
-//                enable = false,
-//            )
-//        )
-
-        /** TODO: will uncomment this later */
         val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
 
         return@withContext mapper.mapAuthorList(response)
@@ -63,29 +36,12 @@ class PlayShortsRepositoryImpl @Inject constructor(
         authorId: String,
         authorType: String
     ): PlayShortsConfigUiModel = withContext(dispatchers.io) {
-//        delay(500)
-//
-//        PlayShortsConfigUiModel(
-//            shortsId = "123",
-//            shortsAllowed = true,
-//            tncList = List(3) {
-//                TermsAndConditionUiModel("Desc $it")
-//            },
-//            maxTitleCharacter = 24,
-//            maxTaggedProduct = 30,
-//        )
-
-        /** TODO: will uncomment this later */
         val response = getConfigurationUseCase.execute(authorId, authorType)
 
         mapper.mapShortsConfig(response)
     }
 
     override suspend fun createShorts(authorId: String, authorType: String): String = withContext(dispatchers.io) {
-//        delay(1000)
-//        return@withContext "123"
-
-        /** TODO: will uncomment this later */
         val response = createChannelUseCase.apply {
             params = CreateChannelUseCase.createParams(
                 authorId = authorId,
@@ -98,9 +54,6 @@ class PlayShortsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun uploadTitle(title: String, shortsId: String, authorId: String) {
-//        delay(1000)
-
-        /** TODO: will uncomment this later */
         withContext(dispatchers.io) {
             updateChannelUseCase.apply {
                 setQueryParams(
@@ -128,9 +81,6 @@ class PlayShortsRepositoryImpl @Inject constructor(
         shortsId: String,
         tags: Set<String>
     ): Boolean = withContext(dispatchers.io) {
-//        true
-
-        /** TODO: will uncomment this later */
         setChannelTagsUseCase.apply {
             setParams(shortsId, tags)
         }.executeOnBackground().recommendedTags.success

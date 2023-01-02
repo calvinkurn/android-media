@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
@@ -65,8 +66,9 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun setProgress(progress: Int) {
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
-            ContextCompat.getColor(context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            MethodChecker.getColor(context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            )
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
 
@@ -93,7 +95,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
         retryText?.show()
         processingText?.text = context.getString(R.string.cp_common_progress_bar_failed_text)
-        processingText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+        processingText?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
             analytic.clickRetryUploadShorts(uploadData.authorId, uploadData.authorType)
             retryPostShorts(uploadData, uploader)
@@ -115,8 +117,11 @@ class PostProgressUpdateView @JvmOverloads constructor(
     private fun retryPostingOnFeed(draftId: String){
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
-            ContextCompat.getColor(context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+        )
 
         val cacheManager = SaveInstanceCacheManager(this.context, draftId)
         val viewModel: CreatePostViewModel = cacheManager.get(
@@ -139,8 +144,11 @@ class PostProgressUpdateView @JvmOverloads constructor(
     ){
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
-            ContextCompat.getColor(context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+        )
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
 
@@ -198,8 +206,11 @@ class PostProgressUpdateView @JvmOverloads constructor(
         processingText?.text =
             context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
-            ContextCompat.getColor(context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+        )
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
         setIconVisibility(isEditPost)

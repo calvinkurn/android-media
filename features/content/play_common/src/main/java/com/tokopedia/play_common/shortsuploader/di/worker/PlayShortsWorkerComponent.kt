@@ -1,4 +1,4 @@
-package com.tokopedia.play_common.shortsuploader.di
+package com.tokopedia.play_common.shortsuploader.di.worker
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule

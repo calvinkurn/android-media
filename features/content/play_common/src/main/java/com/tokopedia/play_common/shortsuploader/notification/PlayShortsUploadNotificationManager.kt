@@ -7,12 +7,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.work.ForegroundInfo
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.model.orEmpty
@@ -34,7 +33,6 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
         setDefaults(Notification.DEFAULT_SOUND)
         setOnlyAlertOnce(true)
-        /** TODO: adjust smallIcon here */
         setSmallIcon(com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp)
         setGroup(NOTIFICATION_GROUP)
         priority = NotificationCompat.PRIORITY_HIGH
@@ -43,7 +41,10 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     private var uploadData: PlayShortsUploadModel? = null
 
     private val notificationId: Int
-        get() = uploadData?.shortsId.toIntOrZero()
+        get() = uploadData?.notificationId.orZero()
+
+    private val notificationIdAfterUpload: Int
+        get() = uploadData?.notificationIdAfterUpload.orZero()
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -76,44 +77,52 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         }
     }
 
-    fun onStart() {
-        val builder = notificationBuilder
+    fun onStart(): ForegroundInfo {
+        val notification = notificationBuilder
             .setProgress(0, 0, true)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(NOTIFICATION_PROGRESS_TITLE)
             .setContentText(NOTIFICATION_PROGRESS_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_PROGRESS_DESCRIPTION))
             .setOngoing(true)
             .setShowWhen(true)
             .build()
 
-        notificationManager.notify(notificationId, builder)
+        notificationManager.notify(notificationId, notification)
+
+        return ForegroundInfo(notificationId, notification)
     }
 
-    fun onProgress(progress: Int) {
-        val builder = notificationBuilder
+    fun onProgress(progress: Int): ForegroundInfo {
+        val notification = notificationBuilder
             .setProgress(PROGRESS_MAX, progress, false)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(NOTIFICATION_PROGRESS_TITLE)
             .setContentText(NOTIFICATION_PROGRESS_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_PROGRESS_DESCRIPTION))
             .setOngoing(true)
             .setShowWhen(true)
             .build()
 
-        notificationManager.notify(notificationId, builder)
+        notificationManager.notify(notificationId, notification)
+
+        return ForegroundInfo(notificationId, notification)
     }
 
-    fun onSuccess() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, uploadData?.shortsId.orEmpty())
+    fun onSuccess(): ForegroundInfo {
+        val intent = PlayShortsUploadReceiver.getIntent(
+            context,
+            uploadData.orEmpty(),
+            PlayShortsUploadReceiver.Companion.Action.OpenPlayRoom
+        )
 
         val openPlayRoomPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getActivity(
+            PendingIntent.getBroadcast(
                 context,
                 0,
                 intent,
                 PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         } else {
-            PendingIntent.getActivity(
+            PendingIntent.getBroadcast(
                 context,
                 0,
                 intent,
@@ -121,9 +130,9 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             )
         }
 
-        val builder = notificationBuilder
+        val notification = notificationBuilder
             .setProgress(0, 0, false)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(NOTIFICATION_SUCCESS_TITLE)
             .setContentText(NOTIFICATION_SUCCESS_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_SUCCESS_DESCRIPTION))
             .setContentIntent(openPlayRoomPendingIntent)
@@ -132,11 +141,17 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(notificationId, builder)
+        notificationManager.notify(notificationIdAfterUpload, notification)
+
+        return ForegroundInfo(notificationIdAfterUpload, notification)
     }
 
-    fun onError() {
-        val intent = PlayShortsUploadReceiver.getIntent(context, uploadData.orEmpty())
+    fun onError(): ForegroundInfo {
+        val intent = PlayShortsUploadReceiver.getIntent(
+            context,
+            uploadData.orEmpty(),
+            PlayShortsUploadReceiver.Companion.Action.Retry
+        )
 
         val retryPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getBroadcast(
@@ -156,34 +171,39 @@ class PlayShortsUploadNotificationManager @Inject constructor(
 
         notificationBuilder.addAction(0, NOTIFICATION_FAIL_RETRY_ACTION, retryPendingIntent)
 
-        val builder = notificationBuilder
+        val notification = notificationBuilder
             .setProgress(0, 0, false)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(NOTIFICATION_FAIL_TITLE)
             .setContentText(NOTIFICATION_FAIL_DESCRIPTION)
             .setStyle(NotificationCompat.BigTextStyle().bigText(NOTIFICATION_FAIL_DESCRIPTION))
             .setOngoing(false)
             .setShowWhen(true)
+            .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(notificationId, builder)
-    }
+        notificationManager.notify(notificationIdAfterUpload, notification)
 
+        return ForegroundInfo(notificationIdAfterUpload, notification)
+    }
 
     private companion object {
         const val PROGRESS_MAX = 100
 
         const val NOTIFICATION_GROUP = "com.tokopedia"
-        /** TODO: change title & description */
-        const val NOTIFICATION_TITLE = "Tokopedia"
-        const val NOTIFICATION_PROGRESS_DESCRIPTION = "Memproses..."
-        const val NOTIFICATION_SUCCESS_DESCRIPTION = "Berhasil di-upload"
-        const val NOTIFICATION_FAIL_DESCRIPTION = "Gagal upload"
+
+        const val NOTIFICATION_PROGRESS_TITLE = "Tunggu ya, videomu lagi di-upload"
+        const val NOTIFICATION_PROGRESS_DESCRIPTION = "Selagi menunggu video di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia."
+
+        const val NOTIFICATION_SUCCESS_TITLE = "Yay, videomu berhasil di-upload!"
+        const val NOTIFICATION_SUCCESS_DESCRIPTION = "Lihat videomu di sini, yuk!"
+
+        const val NOTIFICATION_FAIL_TITLE = "Oops, gagal upload video"
+        const val NOTIFICATION_FAIL_DESCRIPTION = "Tenang, kamu masih bisa coba upload videonya lagi."
         const val NOTIFICATION_FAIL_RETRY_ACTION = "Coba lagi"
 
         const val CHANNEL_NAME = "Tokopedia Play Shorts"
         const val CHANNEL_DESCRIPTION = "Tokopedia Play Shorts"
         const val CHANNEL_ID = "ANDROID_GENERAL_CHANNEL"
-
 
         const val COVER_PREVIEW_SIZE = 100
     }

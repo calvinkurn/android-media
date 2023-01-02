@@ -296,7 +296,12 @@
       "isLoggedInStatus": "(true|false)",
       "screenName": "/play broadcast short - title page - .* - (seller|user)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "theme": ".*"
     },
     {
       "event": "clickContent",
@@ -482,7 +487,12 @@
       "isLoggedInStatus": "(true|false)",
       "screenName": "/play broadcast short - cover page - .* - (seller|user)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "theme": ".*"
     },
     {
       "event": "clickContent",
@@ -569,7 +579,12 @@
       "isLoggedInStatus": "(true|false)",
       "screenName": "/play broadcast short - summary page - .* - (seller|user)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "theme": ".*"
     },
     {
       "event": "clickContent",
