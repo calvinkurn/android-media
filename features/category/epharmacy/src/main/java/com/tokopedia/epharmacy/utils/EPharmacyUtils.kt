@@ -20,18 +20,23 @@ object EPharmacyUtils {
 
     fun checkIsError(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel?): Boolean {
         return (
-            (   ePharmacyAttachmentDataModel != null &&
-                checkIsErrorForConsultationData(ePharmacyAttachmentDataModel) &&
+            (
+                ePharmacyAttachmentDataModel != null &&
+                    checkIsErrorForConsultationData(ePharmacyAttachmentDataModel) &&
                     checkIsErrorForPrescriptionImages(ePharmacyAttachmentDataModel)
                 )
             )
     }
 
     private fun checkIsErrorForConsultationData(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
-        return (ePharmacyAttachmentDataModel.consultationData == null ||
-                !arrayListOf(EPharmacyConsultationStatus.APPROVED.status,
-                    EPharmacyConsultationStatus.REJECTED.status)
-                    .contains(ePharmacyAttachmentDataModel.consultationStatus))
+        return (
+            ePharmacyAttachmentDataModel.consultationData == null ||
+                !arrayListOf(
+                    EPharmacyConsultationStatus.APPROVED.status,
+                    EPharmacyConsultationStatus.REJECTED.status
+                )
+                    .contains(ePharmacyAttachmentDataModel.consultationStatus)
+            )
     }
 
     private fun checkIsErrorForPrescriptionImages(ePharmacyAttachmentDataModel: EPharmacyAttachmentDataModel): Boolean {
@@ -67,7 +72,7 @@ object EPharmacyUtils {
 enum class PrescriptionActionType(val type: String) {
     REDIRECT_PWA("REDIRECT_CONSULTATION_PWA"),
     REDIRECT_OPTION("SHOW_PRESCRIPTION_ATTACHMENT_OPTION"),
-    REDIRECT_UPLOAD("REDIRECT_PRESCRIPTION_UPLOAD_PAGE"),
+    REDIRECT_UPLOAD("REDIRECT_UPLOAD_PRESC_PAGE"),
     REDIRECT_PRESCRIPTION("REDIRECT_CONSULTATION_PRESCRIPTION"),
     REDIRECT_CHECK_PRESCRIPTION("REDIRECT_CEK_PRESCRIPTION_PAGE")
 }
