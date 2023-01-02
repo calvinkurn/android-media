@@ -301,8 +301,8 @@
         app:typographyType="body_2"
         tools:text="Disukai oleh iggregory, baseus, dan 1.710 lainnya" />
 
-    <RelativeLayout
-        android:id="@+id/caption_container"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/caption_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -312,29 +312,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/liked_text"
-        >
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/caption_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN950"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            tools:text="Fellow Official Fellow"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/caption_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/caption_author"
-            android:textColor="@color/Unify_NN950"
-            app:typographyType="body_2"
-            tools:text=" - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya"
-            />
-
-    </RelativeLayout>
+        app:typographyType="body_2"
+        tools:text="Fellow Official Fellow - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/timestamp_text"
@@ -342,8 +321,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@id/caption_container"
-        app:layout_constraintTop_toBottomOf="@id/caption_container"
+        app:layout_constraintStart_toStartOf="@id/caption_text"
+        app:layout_constraintTop_toBottomOf="@id/caption_text"
         app:typographyType="body_3"
         tools:text="17 Oktober 2020" />
 

@@ -16,7 +16,7 @@ inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit):
     return SpannedString(builder)
 }
 
-public inline fun SpannableStringBuilder.inSpans(
+inline fun SpannableStringBuilder.inSpans(
     span: Any,
     builderAction: SpannableStringBuilder.() -> Unit
 ): SpannableStringBuilder {
@@ -33,5 +33,7 @@ inline fun SpannableStringBuilder.bold(
 fun SpannableString.safeSetSpan(what: Any, start: Int, end: Int, flags: Int) {
     try {
         setSpan(what, start, end, flags)
-    } catch (throwable: Throwable) { }
+    } catch (throwable: Throwable) {
+        // ignore styling
+    }
 }

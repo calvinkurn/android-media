@@ -7,23 +7,12 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_caption_author"
+        android:id="@+id/tv_caption_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
         app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="Fellow Official Fellow"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_caption_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/tv_caption_author"
-        android:textColor="@color/Unify_NN950"
-        app:typographyType="body_2"
-        tools:text=" - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya"
+        tools:text="Fellow Official Fellow - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya"
         />
 
 </RelativeLayout>
