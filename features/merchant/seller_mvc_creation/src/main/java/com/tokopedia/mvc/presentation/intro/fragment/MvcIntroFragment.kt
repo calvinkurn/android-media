@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentIntroBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -37,6 +38,7 @@ class MvcIntroFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding?.header?.setupHeader()
         binding?.recyclerView?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         this.contentList = getContentList()
@@ -47,6 +49,14 @@ class MvcIntroFragment : BaseDaggerFragment() {
 
         binding?.recyclerView?.adapter = adapter
     }
+
+    private fun HeaderUnify.setupHeader() {
+        title = context.getString(R.string.smvc_intro_voucher_toolbar_text)
+        setNavigationOnClickListener {
+            activity?.finish()
+        }
+    }
+
 
     private fun getContentList(): List<Visitable<*>> {
         return context?.resources?.let {

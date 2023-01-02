@@ -384,5 +384,6 @@
     <string name="smvc_intro_voucher_view_pager_tab_3_title">Diskon</string>
     <string name="smvc_intro_voucher_view_pager_tab_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
     <string name="smvc_intro_voucher_view_more">Lihat Selengkapnya</string>
+    <string name="smvc_intro_voucher_toolbar_text">Keuntungan Kupon Toko Saya</string>
 
 </resources>
