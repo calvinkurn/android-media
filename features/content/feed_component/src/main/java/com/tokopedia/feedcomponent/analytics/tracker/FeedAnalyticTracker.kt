@@ -95,7 +95,6 @@ class FeedAnalyticTracker
         private const val TYPE_FEED_X_CARD_POST = "FeedXCardPost"
         private const val TYPE_FEED_X_CARD_PRODUCT_TOPADS = "topads_headline_new"
         private const val UGC_AUTHOR_TYPE = "3"
-
     }
 
     private object Event {
@@ -105,9 +104,6 @@ class FeedAnalyticTracker
         const val OPEN_SCREEN = "openScreen"
         const val ADD_TO_CART = "addToCart"
         const val CONTENT = "content"
-
-        const val SELECT_CONTENT = "select_content"
-
         const val PROMO_CLICK = "promoClick"
         const val CLICK_PG = "clickPG"
         const val PROMO_VIEW = "promoView"
@@ -236,13 +232,13 @@ class FeedAnalyticTracker
             ASGC_RECOM
         } else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed) {
             ASGC
-        } else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed && (authorType == UGC_AUTHOR_TYPE || authorType == FollowCta.AUTHOR_UGC))
+        } else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed && (authorType == UGC_AUTHOR_TYPE || authorType == FollowCta.AUTHOR_UGC)) {
             UGC_VOD_PLAY_RECOM
-        else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed && authorType == UGC_AUTHOR_TYPE)
+        } else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed && authorType == UGC_AUTHOR_TYPE) {
             UGC_VOD_PLAY
-        else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed)
+        } else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed) {
             SGC_VOD_PLAY_RECOM
-        else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed) {
+        } else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed) {
             SGC_VOD_PLAY
         } else if (type == TYPE_FEED_X_CARD_PRODUCT_TOPADS) {
             TOPADS
@@ -261,17 +257,6 @@ class FeedAnalyticTracker
 
     private fun isVideo(mediaType: String): Boolean = mediaType == SGC_VIDEO || mediaType == VIDEO
     private fun isLongVideo(mediaType: String): Boolean = mediaType == TYPE_LONG_VIDEO
-
-    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
-    //    screenshot 21
-    fun eventClickFeedProfileRecommendation(targetId: String, targetType: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            CLICK_FEED,
-            CATEGORY_FEED_TIMELINE,
-            Action.CLICK,
-            String.format(Action.ACTION_FEED_RECOM_USER, targetType, targetId)
-        )
-    }
 
     //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
     //    screenshot 19
@@ -736,11 +721,11 @@ class FeedAnalyticTracker
                 mapOf(
                     "actionField" to mapOf(
                         "list" to "/feed - ${
-                            getPostType(
-                                type = TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
-                                isFollowed,
-                                authorType = feedTrackerData.authorType
-                            )
+                        getPostType(
+                            type = TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
+                            isFollowed,
+                            authorType = feedTrackerData.authorType
+                        )
                         }"
                     ),
                     "products" to getSingleProductListASGC(
@@ -792,12 +777,12 @@ class FeedAnalyticTracker
                     getActionFieldData(
                         getListData(
                             "/feed - ${
-                                getPostType(
-                                    type,
-                                    isFollowed,
-                                    mediaType,
-                                    authorType
-                                )
+                            getPostType(
+                                type,
+                                isFollowed,
+                                mediaType,
+                                authorType
+                            )
                             }"
                         )
                     ) +
@@ -1111,6 +1096,7 @@ class FeedAnalyticTracker
                     feedTrackerData.contentSlotValue,
                     feedTrackerData.hasVoucher
                 )
+            }
         var map = getCommonMap(
             campaignStatus = feedTrackerData.campaignStatus,
             authorType = feedTrackerData.authorType
@@ -1162,12 +1148,12 @@ class FeedAnalyticTracker
         activityId,
         Promotion.NAME,
         "/feed - ${
-            getPostType(
-                type,
-                isFollowed,
-                mediaType,
-                authorType
-            )
+        getPostType(
+            type,
+            isFollowed,
+            mediaType,
+            authorType
+        )
         } - ${if (mediaType == TYPE_LONG_VIDEO || mediaType == TYPE_VIDEO) TYPE_VIDEO else TYPE_IMAGE}",
         Promotion.POSITION,
         position + 1
@@ -1182,10 +1168,14 @@ class FeedAnalyticTracker
         mediaType: String,
         authorType: String
     ): Map<String, Any> = DataLayer.mapOf(
-        Promotion.CREATIVE, imageUrl,
-        Promotion.ID, activityId,
-        Promotion.NAME, "/feed - ${getPostType(type, isFollowed, mediaType, authorType)} - post",
-        Promotion.POSITION, position + 1,
+        Promotion.CREATIVE,
+        imageUrl,
+        Promotion.ID,
+        activityId,
+        Promotion.NAME,
+        "/feed - ${getPostType(type, isFollowed, mediaType, authorType)} - post",
+        Promotion.POSITION,
+        position + 1
     )
 
     fun eventImpressionProduct(
@@ -1460,6 +1450,7 @@ class FeedAnalyticTracker
                     feedTrackerData.contentSlotValue,
                     feedTrackerData.hasVoucher
                 )
+            }
         var map = getCommonMap(
             campaignStatus = feedTrackerData.campaignStatus,
             authorType = feedTrackerData.authorType
@@ -1685,8 +1676,10 @@ class FeedAnalyticTracker
                 )
             },
             DataLayer.mapOf(
-                Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
-                "impressions", getProductItemSGC(products, type, isFollowed, mediaType, authorType)
+                Product.CURRENCY_CODE,
+                Product.CURRENCY_CODE_IDR,
+                "impressions",
+                getProductItemSGC(products, type, isFollowed, mediaType, authorType)
             ),
             trackerId = trackerId
         )
@@ -1740,11 +1733,11 @@ class FeedAnalyticTracker
                 mapOf(
                     "actionField" to mapOf(
                         "list" to "/feed - ${
-                            getPostType(
-                                type,
-                                isFollowed,
-                                authorType = feedTrackerData.authorType
-                            )
+                        getPostType(
+                            type,
+                            isFollowed,
+                            authorType = feedTrackerData.authorType
+                        )
                         }"
                     ),
                     "products" to getSingleProductListASGC(
@@ -1792,6 +1785,7 @@ class FeedAnalyticTracker
                     product.id,
                     feedTrackerData.hasVoucher
                 )
+            }
         val postType = getPostType(type, isFollowed, mediaType, feedTrackerData.authorType)
 
         trackEnhancedEcommerceEventNew(
@@ -1988,19 +1982,22 @@ class FeedAnalyticTracker
         authorType: String
     ): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
-        val map = if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT)
+        val map = if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
             createItemMapASGC(
                 feedXProduct,
                 index.toString(),
                 type
-            ) else createItemMapSGC(
-            feedXProduct,
-            index.toString(),
-            type,
-            isFollowed,
-            mediaType,
-            authorType = authorType
-        )
+            )
+        } else {
+            createItemMapSGC(
+                feedXProduct,
+                index.toString(),
+                type,
+                isFollowed,
+                mediaType,
+                authorType = authorType
+            )
+        }
         list.add(map)
         return list
     }
