@@ -229,7 +229,7 @@ class ProductListFragment : BaseDaggerFragment() {
                         effect.deletedProductCount
                     ), ctaText = getString(R.string.smvc_ok))
             ProductListEffect.ProductDeleted -> binding?.cardUnify2.showToaster(message = getString(R.string.smvc_product_deleted), ctaText = getString(R.string.smvc_ok))
-            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls, effect.selectedWarehouseId)
+            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls)
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
             is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
@@ -454,8 +454,7 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun navigateToVoucherPreviewPage(
         voucherConfiguration: VoucherConfiguration,
         selectedProducts: List<SelectedProduct>,
-        selectedParentProductImageUrls: List<String>,
-        selectedWarehouseId: Long
+        selectedParentProductImageUrls: List<String>
     ) {
         SummaryActivity.start(context, voucherConfiguration)
     }

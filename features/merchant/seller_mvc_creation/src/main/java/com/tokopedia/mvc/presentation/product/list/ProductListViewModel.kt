@@ -315,12 +315,13 @@ class ProductListViewModel @Inject constructor(
                 .map { it.picture }
 
 
+            val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(warehouseId = currentState.selectedWarehouseId)
+
             _uiEffect.tryEmit(
                 ProductListEffect.ProceedToVoucherPreviewPage(
-                    currentState.voucherConfiguration,
+                    modifiedVoucherConfiguration,
                     selectedProducts,
-                    topSellingProductImageUrls,
-                    currentState.selectedWarehouseId
+                    topSellingProductImageUrls
                 )
             )
 
