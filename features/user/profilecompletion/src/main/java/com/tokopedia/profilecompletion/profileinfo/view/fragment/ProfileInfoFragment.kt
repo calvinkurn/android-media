@@ -374,7 +374,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             },
             ProfileInfoItemUiModel(
                 ProfileInfoConstants.PHONE,
-                title = getString(R.string.title_phone),
+                title = getString(R.string.add_phone_title_phone),
                 itemValue = data.profileInfoData.msisdn,
                 showVerifiedTag = showVerifiedTag(data),
                 placeholder = getString(R.string.profile_info_placeholder_phone)

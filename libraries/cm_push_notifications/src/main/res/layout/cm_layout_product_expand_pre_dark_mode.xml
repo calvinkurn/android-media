@@ -49,7 +49,7 @@
                     android:id="@+id/tv_stock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/cm_sisa_ongkir"
+                    android:textColor="@color/light_R500"
                     android:layout_alignParentTop="true"
                     android:visibility="gone"
                     tools:visibility="visible"
@@ -64,7 +64,7 @@
                     android:layout_below="@+id/tv_stock"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/black_39"
+                    android:textColor="@color/dms_cm_black_39"
                     android:textSize="14sp"
                     tools:text="Lorem ipsum dolor sit amet" />
 
@@ -85,7 +85,7 @@
                         android:paddingTop="2dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:textColor="@color/red_500"
+                        android:textColor="@color/dms_cm_red_500"
                         android:textSize="12sp"
                         tools:text="20%" />
 
@@ -94,7 +94,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:textColor="@color/black_40"
+                        android:textColor="@color/dms_black_40"
                         android:textSize="12sp"
                         tools:text="Rp1500000" />
 
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ll_oldPriceAndDiscount"
                     android:layout_marginTop="5dp"
-                    android:textColor="@color/black_39"
+                    android:textColor="@color/dms_cm_black_39"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
@@ -133,7 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:textColor="@color/cm_review"
+                        android:textColor="@color/dms_cm_review"
                         android:textSize="12sp"
                         android:layout_marginStart="4dp"
                         tools:text="4.5" />
@@ -143,7 +143,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:textColor="@color/cm_count_review"
+                        android:textColor="@color/dms_cm_count_review"
                         android:layout_marginStart="4dp"
                         tools:text="(60)" />
 
@@ -183,7 +183,7 @@
                         android:background="@drawable/cm_background_buy"
                         android:gravity="center"
                         android:layout_toEndOf="@+id/btn_icon"
-                        android:textColor="@color/white"
+                        android:textColor="@color/Unify_Static_White"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         tools:text="Beli Sekarang" />

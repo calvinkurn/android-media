@@ -12,6 +12,7 @@ import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_DIAGONAL
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -88,9 +89,11 @@ fun getToolEditorText(editorToolType: Int): Int {
 
 fun cropCenterImage(
     sourceBitmap: Bitmap?,
-    autoCropRatio: Float
+    cropRaw: ImageRatioType
 ): Pair<Bitmap, EditorCropRotateUiModel>? {
     sourceBitmap?.let { bitmap ->
+        val autoCropRatio = cropRaw.getRatioY().toFloat() / cropRaw.getRatioX()
+
         val bitmapWidth = bitmap.width
         val bitmapHeight = bitmap.height
 
@@ -131,6 +134,7 @@ fun cropCenterImage(
             isCrop = true
             this.isAutoCrop = true
             croppedSourceWidth = bitmap.width
+            cropRatio = cropRaw.ratio
         }
 
         return Pair(bitmapResult, cropDetail)

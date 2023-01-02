@@ -33,6 +33,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.util.extension.getBitmapFromUrl
 import com.tokopedia.play_common.view.loadImage
@@ -205,6 +206,15 @@ class ProductSheetViewComponent(
         }
 
         show()
+
+        /**
+         * Everytime user clicks [View All Icon] hit tracker
+         */
+        scope.launch {
+            rootView.awaitLayout()
+            impressionSet.clear()
+            sendImpression()
+        }
     }
 
     fun setProductSheet(
@@ -230,8 +240,9 @@ class ProductSheetViewComponent(
         }
         val merchantVoucher = voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
         voucherInfo.showWithCondition(merchantVoucher.isNotEmpty())
-        if (merchantVoucher.isEmpty()) return
-        voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
+        if (merchantVoucher.isNotEmpty()) {
+            voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
+        }
 
         impressionSet.clear()
         sendImpression()
@@ -397,6 +408,7 @@ class ProductSheetViewComponent(
         rvProductList.removeItemDecoration(itemDecoration)
         rvProductList.removeOnScrollListener(scrollListener)
         itemDecoration.release()
+        voucherInfo.setupListener(null)
     }
 
     companion object {
