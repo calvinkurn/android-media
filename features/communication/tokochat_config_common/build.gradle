@@ -42,8 +42,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
 
     implementation rootProject.ext.debugToolsDependencies.chuck
-    releaseImplementation rootProject.ext.debugToolsDependencies.chuckMqttNoop
-    debugImplementation rootProject.ext.debugToolsDependencies.chuckMqtt
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.debugToolsDependencies.chuckMqtt
+    } else {
+        implementation rootProject.ext.debugToolsDependencies.chuckMqttNoop
+    }
 }
 
 project.ext {
