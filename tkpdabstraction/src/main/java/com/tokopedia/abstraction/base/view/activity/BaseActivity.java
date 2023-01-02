@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -91,6 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 Log.d("force_logout_v2", intent.getStringExtra("title"));
             }
         };
+        removeMqttChuckNotification(this);
     }
 
     @Override
@@ -348,5 +350,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 tokoChatConnection.disconnect();
             }
         }
+    }
+
+    private void removeMqttChuckNotification(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(1990);
     }
 }
