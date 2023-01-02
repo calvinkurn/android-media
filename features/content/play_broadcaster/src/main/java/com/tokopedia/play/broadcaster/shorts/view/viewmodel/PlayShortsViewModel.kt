@@ -2,16 +2,11 @@ package com.tokopedia.play.broadcaster.shorts.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.play_common.util.extension.combine
-import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -26,12 +21,15 @@ import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
+import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -43,7 +41,7 @@ class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
     private val sharedPref: HydraSharedPreferences,
     private val accountManager: PlayShortsAccountManager,
-    private val playShortsUploader: PlayShortsUploader,
+    private val playShortsUploader: PlayShortsUploader
 ) : ViewModel() {
 
     /** Public Getter */
@@ -132,7 +130,7 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm,
         _coverForm,
         _tags,
-        _uploadState,
+        _uploadState
     ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags, uploadState ->
         PlayShortsUiState(
             globalLoader = globalLoader,
@@ -144,7 +142,7 @@ class PlayShortsViewModel @Inject constructor(
             titleForm = titleForm,
             coverForm = coverForm,
             tags = tags,
-            uploadState = uploadState,
+            uploadState = uploadState
         )
     }
 
@@ -219,7 +217,6 @@ class PlayShortsViewModel @Inject constructor(
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)
-
         }) { throwable ->
             _uiEvent.emit(PlayShortsUiEvent.ErrorSwitchAccount(throwable))
         }
@@ -255,9 +252,11 @@ class PlayShortsViewModel @Inject constructor(
                 )
             }
 
-            _uiEvent.emit(PlayShortsUiEvent.ErrorUploadTitle(throwable) {
-                submitAction(PlayShortsAction.UploadTitle(title = title))
-            })
+            _uiEvent.emit(
+                PlayShortsUiEvent.ErrorUploadTitle(throwable) {
+                    submitAction(PlayShortsAction.UploadTitle(title = title))
+                }
+            )
         }
     }
 
@@ -331,7 +330,7 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleClickUploadVideo() {
         viewModelScope.launchCatchError(block = {
-            if(_uploadState.value is PlayShortsUploadUiState.Loading) return@launchCatchError
+            if (_uploadState.value is PlayShortsUploadUiState.Loading) return@launchCatchError
 
             _uploadState.update { PlayShortsUploadUiState.Loading }
 
@@ -363,7 +362,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private suspend fun setupConfigurationIfEligible(account: ContentAccountUiModel) {
-        if(account.isUnknown) {
+        if (account.isUnknown) {
             emitEventAccountNotEligible()
             return
         }
@@ -371,18 +370,17 @@ class PlayShortsViewModel @Inject constructor(
         val config = repo.getShortsConfiguration(account.id, account.type)
         _config.update { it.copy(tncList = config.tncList) }
 
-        if(account.isShop && (!account.enable || !config.shortsAllowed)) {
+        if (account.isShop && (!account.enable || !config.shortsAllowed)) {
             emitEventSellerNotEligible()
         } else if (account.isUser && !config.shortsAllowed) {
             emitEventAccountNotEligible()
         } else if (account.isUser && !account.enable) {
             emitEventUGCOnboarding(account.hasUsername)
         } else {
-            val finalConfig = if(config.shortsId.isEmpty()) {
+            val finalConfig = if (config.shortsId.isEmpty()) {
                 val shortsId = repo.createShorts(account.id, account.type)
                 config.copy(shortsId = shortsId)
-            }
-            else {
+            } else {
                 config
             }
 
@@ -424,13 +422,13 @@ class PlayShortsViewModel @Inject constructor(
 
     private suspend fun saveTag() {
         val tagState = _tags.value
-        if(tagState is NetworkResult.Success) {
+        if (tagState is NetworkResult.Success) {
             val selectedTag = tagState.data.filter { it.isChosen }.map { it.tag }.toSet()
 
-            if(selectedTag.isNotEmpty()) {
+            if (selectedTag.isNotEmpty()) {
                 val result = repo.saveTag(shortsId, selectedTag)
 
-                if(!result) {
+                if (!result) {
                     throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
                 }
             }
@@ -444,6 +442,7 @@ class PlayShortsViewModel @Inject constructor(
             authorType = selectedAccount.type,
             mediaUri = _media.value.mediaUri,
             coverUri = _coverForm.value.coverUri,
+            shortsVideoSourceId = _config.value.shortsVideoSourceId
         )
         playShortsUploader.upload(uploadData)
     }

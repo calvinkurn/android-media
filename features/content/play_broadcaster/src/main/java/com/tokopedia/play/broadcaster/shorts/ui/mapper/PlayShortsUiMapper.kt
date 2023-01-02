@@ -6,9 +6,9 @@ import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterAuthorConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
 import com.tokopedia.play.broadcaster.shorts.domain.model.PlayShortsConfig
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 08, 2022
  */
 class PlayShortsUiMapper @Inject constructor(
-    private val gson: Gson,
+    private val gson: Gson
 ) : PlayShortsMapper {
 
     override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
@@ -28,7 +28,7 @@ class PlayShortsUiMapper @Inject constructor(
                 badge = it.badge,
                 type = it.type,
                 hasUsername = it.shortVideo.hasUsername,
-                enable = it.shortVideo.enable,
+                enable = it.shortVideo.enable
             )
         }
     }
@@ -40,13 +40,14 @@ class PlayShortsUiMapper @Inject constructor(
         )
 
         return PlayShortsConfigUiModel(
-            shortsId = if(config.draftShortsId == 0) "" else config.draftShortsId.toString(),
+            shortsId = if (config.draftShortsId == 0) "" else config.draftShortsId.toString(),
             shortsAllowed = response.authorConfig.shortVideoAllowed,
             tncList = response.authorConfig.tnc.map {
                 TermsAndConditionUiModel(desc = it.description)
             },
             maxTitleCharacter = config.maxTitleCharacter,
-            maxTaggedProduct = config.maxTaggedProduct
+            maxTaggedProduct = config.maxTaggedProduct,
+            shortsVideoSourceId = config.shortVideoSourceId
         )
     }
 
@@ -54,7 +55,7 @@ class PlayShortsUiMapper @Inject constructor(
         return response.recommendedTags.tags.map {
             PlayTagUiModel(
                 tag = it,
-                isChosen = false,
+                isChosen = false
             )
         }.toSet()
     }
