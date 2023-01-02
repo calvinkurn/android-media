@@ -25,12 +25,14 @@ class ShortsUiModelBuilder {
         tncList: List<TermsAndConditionUiModel> = listOf(),
         maxTaggedProduct: Int = 30,
         maxTitleCharacter: Int = 24,
+        shortsVideoSourceId: String = "asdf"
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
         tncList = tncList,
         maxTaggedProduct = maxTaggedProduct,
         maxTitleCharacter = maxTitleCharacter,
+        shortsVideoSourceId = shortsVideoSourceId,
     )
 
     fun buildAccountListModel(

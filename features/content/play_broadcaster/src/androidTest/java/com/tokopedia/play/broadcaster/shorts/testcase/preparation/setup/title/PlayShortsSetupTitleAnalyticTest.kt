@@ -117,8 +117,6 @@ class PlayShortsSetupTitleAnalyticTest {
     @Test
     fun testAnalytic_openScreenTitleForm() {
 
-        /** TODO: still error in verifying openScreen */
-
         cassavaValidator.verifyOpenScreen("/play broadcast short - title page - ${mockAccountShop.id} - seller")
     }
 }
