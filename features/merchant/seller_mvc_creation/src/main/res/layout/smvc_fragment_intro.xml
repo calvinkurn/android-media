@@ -7,22 +7,41 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/recycler_view"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_layout"
         tools:listitem="@layout/smvc_item_period_list"
         tools:itemCount="7">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <com.tokopedia.unifycomponents.UnifyButton
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_create_voucher"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:id="@+id/bottom_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="@string/smvc_intro_create_coupon"/>
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.tokopedia.mvc.presentation.intro.customviews.VoucherIntroViewMoreCustomView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_view_more"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_create_voucher"
+            android:text="@string/smvc_intro_create_voucher"/>
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -361,27 +361,28 @@
     <!--Intro page-->
     <string name="smvc_intro_make_coupons_faster">Buat kupon jadi lebih cepat</string>
     <string name="smvc_intro_coupon_subtitle">dengan klik di satu tempat.</string>
-    <string name="smvc_intro_coupon_card_1_title">Fleksibel buat kupon</string>
-    <string name="smvc_intro_coupon_card_1_subtitle">Buat kupon untuk semua produk atau produk-produk  pilihanmu saja </string>
-    <string name="smvc_intro_coupon_card_2_title">Beragam pilihan promo untuk kuponmu</string>
-    <string name="smvc_intro_coupon_card_2_subtitle">Kelola tipe promo, potongan harga, dan minimum pembelian sesuai kebutuhan penjualanmu. </string>
-    <string name="smvc_intro_coupon_card_3_title">Bebas tentukan target pembeli</string>
-    <string name="smvc_intro_coupon_card_3_subtitle">Strategi penjualan lebih efektif dengan penggunaan kupon sesuai target pembeli.</string>
-    <string name="smvc_intro_coupon_type_card_title">Jenis Kupon apa sajayang bisa dibuat?</string>
-    <string name="smvc_intro_coupon_type_card_1_title">Kupon Toko</string>
-    <string name="smvc_intro_coupon_type_card_1_subtitle">Kupon dapat dipasang ke semua produk yang ada di tokomu.</string>
-    <string name="smvc_intro_coupon_type_card_2_title">Kupon Produk</string>
-    <string name="smvc_intro_coupon_type_card_2_subtitle">Kupon dapat dipasang ke produk-produk tertentu yang kamu pilih.</string>
-    <string name="smvc_intro_coupon_type_choice_of_target">Pilihan target pembeli yang bisa menggunakan kuponmu</string>
-    <string name="smvc_intro_coupon_type_choice_of_target_card_1_title">Semua Pembeli</string>
-    <string name="smvc_intro_coupon_type_choice_of_target_card_1_subtitle">Kupon yang kamu buat bisa digunakan oleh semua pembeli untuk belanja di tokomu.</string>
-    <string name="smvc_intro_coupon_type_choice_of_target_card_2_title">Follower Baru</string>
-    <string name="smvc_intro_coupon_type_choice_of_target_card_2_subtitle">Kupon yang kamu buat hanya bisa digunakan oleh follower baru untuk belanja di tokomu.</string>
-    <string name="smvc_intro_create_coupon">Buat Kupon</string>
-    <string name="smvc_intro_coupon_view_pager_header">Tipe kupon sesuai kebutuhan</string>
-    <string name="smvc_intro_coupon_view_pager_tab_1_title">Cashback</string>
-    <string name="smvc_intro_coupon_view_pager_tab_2_title">Gratis Ongkir</string>
-    <string name="smvc_intro_coupon_view_pager_tab_3_title">Diskon</string>
-    <string name="smvc_intro_coupon_view_pager_tab_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
+    <string name="smvc_intro_voucher_card_1_title">Fleksibel buat kupon</string>
+    <string name="smvc_intro_voucher_card_1_subtitle">Buat kupon untuk semua produk atau produk-produk  pilihanmu saja </string>
+    <string name="smvc_intro_voucher_card_2_title">Beragam pilihan promo untuk kuponmu</string>
+    <string name="smvc_intro_voucher_card_2_subtitle">Kelola tipe promo, potongan harga, dan minimum pembelian sesuai kebutuhan penjualanmu. </string>
+    <string name="smvc_intro_voucher_card_3_title">Bebas tentukan target pembeli</string>
+    <string name="smvc_intro_voucher_card_3_subtitle">Strategi penjualan lebih efektif dengan penggunaan kupon sesuai target pembeli.</string>
+    <string name="smvc_intro_voucher_type_card_title">Jenis Kupon apa sajayang bisa dibuat?</string>
+    <string name="smvc_intro_voucher_type_card_1_title">Kupon Toko</string>
+    <string name="smvc_intro_voucher_type_card_1_subtitle">Kupon dapat dipasang ke semua produk yang ada di tokomu.</string>
+    <string name="smvc_intro_voucher_type_card_2_title">Kupon Produk</string>
+    <string name="smvc_intro_voucher_type_card_2_subtitle">Kupon dapat dipasang ke produk-produk tertentu yang kamu pilih.</string>
+    <string name="smvc_intro_voucher_type_choice_of_target">Pilihan target pembeli yang bisa menggunakan kuponmu</string>
+    <string name="smvc_intro_voucher_type_choice_of_target_card_1_title">Semua Pembeli</string>
+    <string name="smvc_intro_voucher_type_choice_of_target_card_1_subtitle">Kupon yang kamu buat bisa digunakan oleh semua pembeli untuk belanja di tokomu.</string>
+    <string name="smvc_intro_voucher_type_choice_of_target_card_2_title">Follower Baru</string>
+    <string name="smvc_intro_voucher_type_choice_of_target_card_2_subtitle">Kupon yang kamu buat hanya bisa digunakan oleh follower baru untuk belanja di tokomu.</string>
+    <string name="smvc_intro_create_voucher">Buat Kupon</string>
+    <string name="smvc_intro_voucher_view_pager_header">Tipe kupon sesuai kebutuhan</string>
+    <string name="smvc_intro_voucher_view_pager_tab_1_title">Cashback</string>
+    <string name="smvc_intro_voucher_view_pager_tab_2_title">Gratis Ongkir</string>
+    <string name="smvc_intro_voucher_view_pager_tab_3_title">Diskon</string>
+    <string name="smvc_intro_voucher_view_pager_tab_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
+    <string name="smvc_intro_voucher_view_more">Lihat Selengkapnya</string>
 
 </resources>

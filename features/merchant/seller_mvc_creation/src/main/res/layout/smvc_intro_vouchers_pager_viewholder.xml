@@ -13,7 +13,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/smvc_intro_coupon_view_pager_header" />
+        tools:text="@string/smvc_intro_voucher_view_pager_header" />
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
@@ -28,17 +28,17 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/smvc_intro_coupon_view_pager_tab_1_title"/>
+            android:text="@string/smvc_intro_voucher_view_pager_tab_1_title"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/smvc_intro_coupon_view_pager_tab_2_title"/>
+            android:text="@string/smvc_intro_voucher_view_pager_tab_2_title"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/smvc_intro_coupon_view_pager_tab_3_title"/>
+            android:text="@string/smvc_intro_voucher_view_pager_tab_3_title"/>
     </com.google.android.material.tabs.TabLayout>
 
     <com.tokopedia.carousel.CarouselUnify
@@ -58,7 +58,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_carousel"
-        tools:text="@string/smvc_intro_coupon_view_pager_tab_1_title" />
+        tools:text="@string/smvc_intro_voucher_view_pager_tab_1_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/view_pager_description"
@@ -67,6 +67,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_pager_title"
-        tools:text="@string/smvc_intro_coupon_view_pager_tab_description" />
+        tools:text="@string/smvc_intro_voucher_view_pager_tab_description" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
