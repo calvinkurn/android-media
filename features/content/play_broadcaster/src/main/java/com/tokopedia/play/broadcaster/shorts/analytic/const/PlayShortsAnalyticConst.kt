@@ -9,6 +9,8 @@ object Label {
     const val SESSION_IRIS_LABEL = "sessionIris"
     const val SCREEN_NAME_LABEL = "screenName"
     const val IS_LOGGED_IN_STATUS_LABEL = "isLoggedInStatus"
+    const val BUSINESS_UNIT_LABEL = "businessUnit"
+    const val CURRENT_SITE_LABEL = "currentSite"
 }
 
 object Value {

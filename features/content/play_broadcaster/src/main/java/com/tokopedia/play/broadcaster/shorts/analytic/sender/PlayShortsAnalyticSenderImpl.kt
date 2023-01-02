@@ -2,15 +2,15 @@ package com.tokopedia.play.broadcaster.shorts.analytic.sender
 
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.IS_LOGGED_IN_STATUS_LABEL
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.SCREEN_NAME_LABEL
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.BUSINESS_UNIT_LABEL
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.CURRENT_SITE_LABEL
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.SESSION_IRIS_LABEL
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.TRACKER_ID_LABEL
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Value
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CURRENT_SITE_SELLER
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CURRENT_SITE_MAIN
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CLICK_CONTENT
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_EVENT_CATEGORY
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_OPEN_SCREEN
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_VIEW_CONTENT
 import com.tokopedia.play.broadcaster.shorts.analytic.helper.PlayShortsAnalyticHelper
 import com.tokopedia.track.TrackApp
@@ -27,9 +27,9 @@ class PlayShortsAnalyticSenderImpl @Inject constructor(
 
     private val currentSite: String
         get() = if (GlobalConfig.isSellerApp()) {
-            Value.SHORTS_CURRENT_SITE_SELLER
+            SHORTS_CURRENT_SITE_SELLER
         } else {
-            Value.SHORTS_CURRENT_SITE_MAIN
+            SHORTS_CURRENT_SITE_MAIN
         }
 
     private val sessionIris: String
@@ -39,12 +39,14 @@ class PlayShortsAnalyticSenderImpl @Inject constructor(
         screenName: String,
         trackerId: String,
     ) {
-        sendGeneralEvent(
-            Tracker.Builder()
-                .setEvent(SHORTS_OPEN_SCREEN)
-                .setCustomProperty(IS_LOGGED_IN_STATUS_LABEL, userSession.isLoggedIn)
-                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
-                .setCustomProperty(SCREEN_NAME_LABEL, screenName)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            screenName,
+            mapOf(
+                TRACKER_ID_LABEL to trackerId,
+                BUSINESS_UNIT_LABEL to SHORTS_BUSINESS_UNIT,
+                CURRENT_SITE_LABEL to currentSite,
+                SESSION_IRIS_LABEL to sessionIris,
+            )
         )
     }
 
