@@ -207,6 +207,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         initRecyclerView()
         initAnchorTabMenu()
         initRecyclerScrollListener()
+        initRefreshLayout()
+
         context?.let {
             screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
                 context = it,
@@ -288,14 +290,14 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             navToolbar = binding?.dtHomeNavToolbar
             statusBarBackground = binding?.dtHomeStatusBarBackground
             rvHome = binding?.rvHome
-//            rvHome?.setHasFixedSize(true)
 
             refreshLayout = binding?.homeSwipeRefreshLayout
-
-//            swipeLayout = binding?.swipeRefreshLayout
-
             root = binding?.root
         }
+    }
+
+    private fun initRefreshLayout(){
+        refreshLayout?.isEnabled = false
     }
 
     private fun initNavToolbar() {
