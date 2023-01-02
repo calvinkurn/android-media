@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemDynamicPreparationMenuBinding
 import com.tokopedia.play.broadcaster.shorts.util.animateGone
 import com.tokopedia.play.broadcaster.shorts.util.animateShow
 import com.tokopedia.unifycomponents.R as unifyR
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Jonathan Darwin on November 09, 2022
@@ -36,7 +36,7 @@ internal class DynamicPreparationMenuViewHolder(
                 if (data.isEnabled) {
                     unifyR.color.Unify_Static_White
                 } else {
-                    R.color.content_dms_white_disable
+                    contentCommonR.color.content_dms_white_disable
                 }
             )
 
