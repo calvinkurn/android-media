@@ -12,16 +12,16 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
-import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
@@ -107,9 +107,9 @@ class OrderSummaryPageViewModelTestHelper {
         listLogisticPromo = listOf(this@OrderSummaryPageViewModelTestHelper.logisticPromo, this@OrderSummaryPageViewModelTestHelper.logisticPromoEko)
     }
 
-    val address = OrderProfileAddress(addressId = 1, latitude = "0", longitude = "0")
+    val address = OrderProfileAddress(addressId = "1", latitude = "0", longitude = "0")
 
-    val shipment = OrderProfileShipment(serviceId = 1)
+    val shipment = OrderProfileShipment(serviceId = "1")
 
     val payment = OrderProfilePayment(gatewayCode = "payment")
 
@@ -124,9 +124,9 @@ class OrderSummaryPageViewModelTestHelper {
             logisticPromoViewModel = logisticPromo,
             logisticPromoTickerMessage = "Tersedia bbo")
 
-    val product = OrderProduct(productId = Long.MAX_VALUE, orderQuantity = 1)
+    val product = OrderProduct(productId = Long.MAX_VALUE.toString(), orderQuantity = 1)
 
-    val orderData = OrderData(cart = OrderCart(shop = OrderShop(shopId = Long.MAX_VALUE), products = mutableListOf(product)), preference = preference)
+    val orderData = OrderData(cart = OrderCart(shop = OrderShop(shopId = Long.MAX_VALUE.toString()), products = mutableListOf(product)), preference = preference)
 
     val saveAddOnStateShopLevelResult = SaveAddOnStateResult(
             addOns = listOf(AddOnResult(
