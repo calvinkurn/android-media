@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.smart_recycler_helper.*
+import timber.log.Timber
 
 class HomeRecommendationAdapter(
         smartExecutors: SmartExecutors,
@@ -17,6 +18,7 @@ class HomeRecommendationAdapter(
         adapterTypeFactory = adapterTypeFactory,
         diffCallback = object : DiffUtil.ItemCallback<HomeRecommendationVisitable>(){
             override fun getChangePayload(oldItem: HomeRecommendationVisitable, newItem: HomeRecommendationVisitable): Any? {
+
                 return oldItem.getChangePayloadFrom(newItem)
             }
 
