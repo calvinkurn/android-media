@@ -57,6 +57,7 @@ class GetRepurchaseProductListUseCase @Inject constructor(
                     stock
                     category
                     categoryID
+                    wishlist
                     labelGroup {
                       position
                       title

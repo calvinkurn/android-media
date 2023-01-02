@@ -1,102 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/general_info_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:ignore="RtlSymmetry">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/info_separator"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_general_info_desc" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ViewStub
+        android:id="@+id/vs_general_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp">
+        android:layout="@layout/item_dynamic_info_content" />
 
-        <ImageView
-            android:id="@+id/pdp_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="pdp_icon"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="HardcodedText"
-            tools:src="@drawable/ic_product_fintech_qr_normal_24"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/pdp_info_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="@id/guideline_pdp_see"
-            app:layout_constraintEnd_toStartOf="@+id/pdp_see"
-            app:layout_constraintStart_toEndOf="@+id/pdp_icon"
-            app:layout_constraintTop_toTopOf="@id/guideline_pdp_see"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="paragraph_1"
-            app:typographyWeight="bold"
-            tools:text="Varian Produk" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier_title_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierAllowsGoneWidgets="false"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="pdp_icon, pdp_info_title" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/pdp_info_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:ellipsize="end"
-            android:lineSpacingExtra="@dimen/pdp_dp_3"
-            android:maxLines="2"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barrier_title_bottom"
-            app:typographyType="display_2"
-            tools:text="@string/ktp_protection" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_pdp_see"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="28dp" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/pdp_see"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="bottom|end"
-            android:paddingStart="8dp"
-            android:text="@string/pdp_general_info_see"
-            android:textColor="@color/Unify_GN500"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/guideline_pdp_see"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideline_pdp_see"
-            app:typographyType="display_3"
-            app:typographyWeight="bold"
-            tools:visibility="visible" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</LinearLayout>
+</FrameLayout>
