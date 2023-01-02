@@ -3,8 +3,8 @@ package com.tokopedia.mvc.util
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import com.tokopedia.mvc.common.broadcastchat.BroadCastChatWebViewActivity
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.broadcastchat.BroadCastChatWebViewActivity
 
 object SharingUtil {
     fun copyTextToClipboard(context: Context, label: String, text: String) {
@@ -14,6 +14,7 @@ object SharingUtil {
         }
     }
 
+    //TODO change this to Long
     fun shareToBroadCastChat(context: Context, voucherId: Long) {
         val broadCastChatUrl = "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id=$voucherId"
         val broadCastChatIntent = BroadCastChatWebViewActivity.createNewIntent(

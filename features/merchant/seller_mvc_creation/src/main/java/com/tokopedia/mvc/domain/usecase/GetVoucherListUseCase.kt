@@ -15,13 +15,13 @@ import javax.inject.Inject
 class GetVoucherListUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetVoucherListMapper
-): GraphqlUseCase<List<Voucher>>(repository) {
+) : GraphqlUseCase<List<Voucher>>(repository) {
 
     companion object {
         private const val FILTER_KEY = "filter"
     }
 
-    private val query = object: GqlQueryInterface {
+    private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "MerchantPromotionGetMVList"
         private val QUERY = """
             query MerchantPromotionGetMVList(${'$'}filter: MVFilter!) {
@@ -62,6 +62,10 @@ class GetVoucherListUseCase @Inject constructor(
                         is_lock_to_product
                         total_child
                         target_buyer
+                        product_ids {
+                          parent_product_id
+                          child_product_id
+                        }
                       }
                     }
                 }

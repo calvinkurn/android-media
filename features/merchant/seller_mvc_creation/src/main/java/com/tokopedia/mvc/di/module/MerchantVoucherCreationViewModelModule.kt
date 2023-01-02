@@ -5,7 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
+import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.DisplayVoucherViewModel
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
+import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.MoreMenuViewModel
+import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodViewModel
 import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeViewModel
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationViewModel
 import com.tokopedia.mvc.presentation.detail.VoucherDetailViewModel
@@ -49,23 +52,37 @@ abstract class MerchantVoucherCreationViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(ProductListViewModel::class)
-    internal abstract fun provideProductListViewModel(viewModel: ProductListViewModel) : ViewModel
+    internal abstract fun provideProductListViewModel(viewModel: ProductListViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(ReviewVariantViewModel::class)
-    internal abstract fun provideReviewVariantViewModel(viewModel: ReviewVariantViewModel) : ViewModel
+    internal abstract fun provideReviewVariantViewModel(viewModel: ReviewVariantViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(VoucherDetailViewModel::class)
     internal abstract fun provideVoucherDetailViewModel(viewModel: VoucherDetailViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(VoucherEditPeriodViewModel::class)
+    internal abstract fun provideVoucherEditPeriodViewModel(viewModel: VoucherEditPeriodViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DisplayVoucherViewModel::class)
+    internal abstract fun provideDisplayVoucherViewModel(viewModel: DisplayVoucherViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(DownloadVoucherImageViewModel::class)
     internal abstract fun provideDownloadVoucherViewModel(viewModel: DownloadVoucherImageViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MoreMenuViewModel::class)
+    internal abstract fun provideMoreMenuViewModel(viewModel: MoreMenuViewModel): ViewModel
 
     @Binds
     @IntoMap
