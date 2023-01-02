@@ -127,6 +127,9 @@ open class HomeRevampViewModel @Inject constructor(
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
+    val hideShowLoading: LiveData<Event<Boolean>> get() = _hideShowLoadingLiveData
+    private val _hideShowLoadingLiveData = MutableLiveData<Event<Boolean>>()
+
     val errorEventLiveData: LiveData<Event<Throwable>>
         get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<Throwable>>()
@@ -156,7 +159,7 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     private val homeFlowDynamicChannel: Flow<HomeDynamicChannelModel?> = homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
 
-    private var getHomeDataJob: Job? = null
+    var getHomeDataJob: Job? = null
 
     init {
         _isRequestNetworkLiveData.value = Event(true)
@@ -228,21 +231,41 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
-                    this?.status = HomeBalanceModel.STATUS_LOADING
-                } ?: HomeBalanceModel()
-                val headerDataModel = headerModel.headerDataModel?.copy(
-                    homeBalanceModel = homeBalanceModel
-                )
-                val initialHeaderModel = headerModel.copy(
-                    headerDataModel = headerDataModel
-                )
-                updateHeaderData(initialHeaderModel, index)
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData()
-                val visitable = updateHeaderData(currentHeaderDataModel, index)
-                visitable?.let {
-                    homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
-                        updateHomeData(homeDataModel)
+                if (headerModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) {
+                    val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
+                        this?.status = HomeBalanceModel.STATUS_LOADING
+                    } ?: HomeBalanceModel()
+                    val headerDataModel = headerModel.headerDataModel?.copy(
+                        homeBalanceModel = homeBalanceModel
+                    )
+                    val initialHeaderModel = headerModel.copy(
+                        headerDataModel = headerDataModel
+                    )
+                    updateHeaderData(initialHeaderModel, index)
+                    val currentHeaderDataModel =
+                        homeBalanceWidgetUseCase.get().onGetBalanceWidgetData()
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let {
+                        homeDataModel.updateWidgetModel(
+                            visitableToChange = visitable,
+                            visitable = currentHeaderDataModel,
+                            position = index
+                        ) {
+                            updateHomeData(homeDataModel)
+                        }
+                    }
+                } else {
+                    val currentHeaderDataModel =
+                        homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(headerModel)
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let {
+                        homeDataModel.updateWidgetModel(
+                            visitableToChange = visitable,
+                            visitable = currentHeaderDataModel,
+                            position = index
+                        ) {
+                            updateHomeData(homeDataModel)
+                        }
                     }
                 }
             }
@@ -286,8 +309,14 @@ open class HomeRevampViewModel @Inject constructor(
 
     @FlowPreview
     fun refreshHomeData() {
-        if (getHomeDataJob?.isActive == true) return
-        if (homeDataModel.flowCompleted == false) return
+        if (getHomeDataJob?.isActive == true) {
+            _hideShowLoadingLiveData.postValue(Event(true))
+            return
+        }
+        if (!homeDataModel.flowCompleted) {
+            _hideShowLoadingLiveData.postValue(Event(true))
+            return
+        }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
         getBalanceWidgetLoadingState()

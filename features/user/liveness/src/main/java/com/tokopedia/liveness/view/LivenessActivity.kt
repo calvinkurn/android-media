@@ -4,7 +4,6 @@ import ai.advance.common.utils.ScreenUtil
 import ai.advance.core.PermissionActivity
 import ai.advance.enums.DeviceType
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.GuardianLivenessDetectionSDK as livenessSdk
 import android.Manifest
 import android.content.Context
 import android.os.Build
@@ -16,8 +15,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
@@ -26,6 +23,7 @@ import com.tokopedia.liveness.utils.LivenessConstants
 import com.tokopedia.liveness.utils.LivenessConstants.REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION
 import com.tokopedia.remoteconfig.RemoteConfig
 import javax.inject.Inject
+import ai.advance.liveness.lib.GuardianLivenessDetectionSDK as livenessSdk
 
 open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
 
@@ -56,14 +54,6 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
             Detector.DetectionType.BLINK,
             Detector.DetectionType.POS_YAW
         )
-
-        intent?.data?.let {
-            val projectId = it.getQueryParameter(PARAM_PROJECT_ID)?.toIntOrNull()
-
-            intent?.extras?.apply {
-                projectId?.let { it1 -> putInt(PARAM_PROJECT_ID, it1) }
-            }
-        }
 
         setContentView(com.tokopedia.liveness.R.layout.activity_revamp_liveness)
         ScreenUtil.init(this)

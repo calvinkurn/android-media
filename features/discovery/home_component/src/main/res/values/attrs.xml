@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LayoutIconPullRefreshView">
+        <attr name="color_type" format="enum">
+            <enum name="white" value="0" />
+            <enum name="green" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

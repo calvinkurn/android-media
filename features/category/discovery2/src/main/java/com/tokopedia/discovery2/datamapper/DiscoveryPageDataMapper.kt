@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.datamapper
 
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
@@ -15,6 +16,7 @@ import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.analytics.EMPTY_STRING
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -25,12 +27,11 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartItemType
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import java.util.LinkedList
+import com.tokopedia.minicart.common.domain.data.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -159,11 +160,7 @@ class DiscoveryPageDataMapper(
 
             ComponentNames.QuickFilter.componentName -> {
                 listComponents.add(component)
-                component.properties?.targetId?.let {
-                    getComponent(it,component.pageEndPoint).apply {
-                        this?.parentFilterComponentId = component.id
-                    }
-                }
+                handleQuickFilter(component)
             }
             ComponentNames.CalendarWidgetGrid.componentName,
             ComponentNames.CalendarWidgetCarousel.componentName -> {
@@ -221,6 +218,14 @@ class DiscoveryPageDataMapper(
             else -> listComponents.add(component)
         }
         return listComponents
+    }
+
+    private fun getFiltersFromQuery(searchParameter: SearchParameter) {
+        for ((key, v) in queryParameterMapWithRpc) {
+            v?.let { value ->
+                searchParameter.set(key, value)
+            }
+        }
     }
 
     private fun addRecomQueryProdID(component: ComponentsItem) {
@@ -547,6 +552,27 @@ class DiscoveryPageDataMapper(
         }
         return listComponents
     }
+
+    private fun handleQuickFilter(component: ComponentsItem){
+        if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
+            component.isSelectedFiltersFromQueryApplied = true
+            getFiltersFromQuery(
+                component.searchParameter
+            )
+        }
+        Utils.getTargetComponentOfFilter(component)?.let {
+            if (it.selectedFilters.isNullOrEmpty() &&
+                component.searchParameter.getSearchParameterHashMap().isNotEmpty()
+            ) {
+                it.selectedFilters = component.searchParameter.getSearchParameterHashMap()
+            }
+        }
+        component.properties?.targetId?.let {
+            getComponent(it, component.pageEndPoint).apply {
+                this?.parentFilterComponentId = component.id
+            }
+        }
+    }
 }
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {
@@ -599,6 +625,10 @@ fun getPageInfo(pageName: String): PageInfo {
         return it.pageInfo
     }
     return PageInfo()
+}
+
+fun getAdditionalInfo(pageName: String): AdditionalInfo? {
+    return discoveryPageData[pageName]?.additionalInfo
 }
 
 fun getMapWithoutRpc(pageName: String): Map<String, String>? {
