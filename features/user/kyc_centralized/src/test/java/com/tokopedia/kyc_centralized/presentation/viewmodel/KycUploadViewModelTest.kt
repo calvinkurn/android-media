@@ -1,17 +1,17 @@
 package com.tokopedia.kyc_centralized.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.kyc_centralized.data.model.response.KycData
-import com.tokopedia.kyc_centralized.data.model.response.KycResponse
+import com.tokopedia.kyc_centralized.common.KycServerLogger
+import com.tokopedia.kyc_centralized.data.model.KycData
+import com.tokopedia.kyc_centralized.data.model.KycResponse
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
-import com.tokopedia.logger.ServerLogger
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -41,7 +41,7 @@ class KycUploadViewModelTest {
     private lateinit var cipherProviderImpl: CipherProviderImpl
 
     @RelaxedMockK
-    private lateinit var serverLogger: ServerLogger
+    private lateinit var serverLogger: KycServerLogger
 
     private lateinit var viewModel: KycUploadViewModel
 
@@ -54,13 +54,15 @@ class KycUploadViewModelTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = spyk(KycUploadViewModel(
+        viewModel = spyk(
+            KycUploadViewModel(
             useCase,
             CoroutineTestDispatchersProvider,
             sharedPreference,
             cipherProviderImpl,
             serverLogger
-        ))
+        )
+        )
     }
 
     private fun provideEveryUseCase(kycResponse: KycResponse) {
