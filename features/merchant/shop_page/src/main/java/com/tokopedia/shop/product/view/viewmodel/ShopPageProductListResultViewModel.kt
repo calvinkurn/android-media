@@ -1,22 +1,18 @@
 package com.tokopedia.shop.product.view.viewmodel
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
-import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
-import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
-import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -56,24 +52,34 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
 
-class ShopPageProductListResultViewModel @Inject constructor(
-    private val userSession: UserSessionInterface,
-    private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-    private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-    private val getShopProductUseCase: GqlGetShopProductUseCase,
-    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-    private val shopProductSortMapper: ShopProductSortMapper,
-    private val dispatcherProvider: CoroutineDispatchers,
-    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-    private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
-    private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-    private val getFollowStatusUseCase: GetFollowStatusUseCase,
-    private val gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase,
-    private val addToCartUseCase: AddToCartUseCase,
-    private val updateCartUseCase: UpdateCartUseCase,
-    private val deleteCartUseCase: DeleteCartUseCase
+class ShopPageProductListResultViewModel @Inject constructor(private val userSession: UserSessionInterface,
+                                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
+                                                             private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
+                                                             private val getShopProductUseCase: GqlGetShopProductUseCase,
+                                                             private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+                                                             private val shopProductSortMapper: ShopProductSortMapper,
+                                                             private val dispatcherProvider: CoroutineDispatchers,
+                                                             private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+                                                             private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+                                                             private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
+                                                             private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
+                                                             private val getFollowStatusUseCase: GetFollowStatusUseCase,
+                                                             private val gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase,
+                                                             private val addToCartUseCase: AddToCartUseCase,
+                                                             private val updateCartUseCase: UpdateCartUseCase,
+                                                             private val deleteCartUseCase: DeleteCartUseCase,
+                                                             private val sharedPreferences: SharedPreferences
+
 ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -121,6 +127,14 @@ class ShopPageProductListResultViewModel @Inject constructor(
     val shopPageAtcTracker: LiveData<ShopPageAtcTracker>
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
+
+    val createAffiliateCookieAtcProduct: LiveData<AffiliateAtcProductModel>
+        get() = _createAffiliateCookieAtcProduct
+    private val _createAffiliateCookieAtcProduct = MutableLiveData<AffiliateAtcProductModel>()
+
+    val shopAffiliateChannel: LiveData<String>
+        get() = _shopAffiliateChannel
+    private val _shopAffiliateChannel = MutableLiveData<String>()
 
     fun getShop(shopId: String, shopDomain: String = "", isRefresh: Boolean = false) {
         if (shopId.toIntOrZero() == 0 && shopDomain == "") return
@@ -531,10 +545,12 @@ class ShopPageProductListResultViewModel @Inject constructor(
             AddToCartUseCase.getMinimumParams(
                 productId = productId,
                 shopId = shopId,
-                quantity = quantity
+                quantity = quantity,
+                atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
             )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            val atcType = ShopPageAtcTracker.AtcType.ADD
             trackAddToCart(
                 it.data.cartId,
                 it.data.productId.toString(),
@@ -545,10 +561,29 @@ class ShopPageProductListResultViewModel @Inject constructor(
                 ShopPageAtcTracker.AtcType.ADD,
                 componentName
             )
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopProductUiModel)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
         })
+    }
+
+    private fun checkShouldCreateAffiliateCookieAtcProduct(
+        atcType: ShopPageAtcTracker.AtcType,
+        shopProductUiModel: ShopProductUiModel
+    ) {
+        when (atcType) {
+            ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
+                _createAffiliateCookieAtcProduct.postValue(
+                    AffiliateAtcProductModel(
+                        shopProductUiModel.id,
+                        shopProductUiModel.isVariant,
+                        shopProductUiModel.stock.toInt()
+                    )
+                )
+            }
+            else -> {}
+        }
     }
 
     private fun updateItemCart(
@@ -585,6 +620,7 @@ class ShopPageProductListResultViewModel @Inject constructor(
                 atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopProductUiModel)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
@@ -712,5 +748,35 @@ class ShopPageProductListResultViewModel @Inject constructor(
             )
         }) {
         }
+    }
+
+    fun createAffiliateCookieShopAtcProduct(
+        affiliateCookieHelper: AffiliateCookieHelper,
+        affiliateChannel: String,
+        productId: String,
+        isVariant: Boolean,
+        stockQty: Int,
+        shopId: String
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val affiliateSdkDirectAtcSource = AffiliateSdkPageSource.DirectATC(
+                AffiliateAtcSource.SHOP_PAGE,
+                shopId,
+                AffiliateSdkProductInfo("", isVariant, stockQty)
+            )
+            affiliateCookieHelper.initCookie(
+                "",
+                affiliateChannel,
+                AffiliatePageDetail(productId, affiliateSdkDirectAtcSource)
+            )
+        }) {
+        }
+    }
+
+    fun getShopAffiliateChannel() {
+        launchCatchError(dispatcherProvider.io, block = {
+            val shopAffiliateChannel = sharedPreferences.getString(SHARED_PREF_AFFILIATE_CHANNEL, "")
+            _shopAffiliateChannel.postValue(shopAffiliateChannel)
+        }){}
     }
 }

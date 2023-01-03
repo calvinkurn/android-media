@@ -16,9 +16,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.shimmer.ShimmerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
@@ -70,7 +70,7 @@ class FeedPlusTypeFactoryImpl(
         this.shopRecomCallback = context
     }
 
-    override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
+    override fun type(dynamicPostModel: DynamicPostModel): Int {
         return DynamicPostViewHolder.LAYOUT
     }
 
@@ -85,11 +85,11 @@ class FeedPlusTypeFactoryImpl(
         return TopAdsHeadlineV2ViewHolder.LAYOUT
     }
 
-    override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
+    override fun type(topAdsBannerViewmodel: TopAdsBannerModel): Int {
         return TopAdsBannerViewHolder.LAYOUT
     }
 
-    override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+    override fun type(carouselPlayCardModel: CarouselPlayCardModel): Int {
         return CarouselPlayCardViewHolder.LAYOUT
     }
 

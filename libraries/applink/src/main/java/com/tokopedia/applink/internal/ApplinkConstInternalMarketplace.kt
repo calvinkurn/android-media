@@ -47,6 +47,7 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     const val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}&aff_unique_id={affiliate_uuid}"
+    const val PRODUCT_AR = "$INTERNAL_MARKETPLACE/productar/{product_id}/"
 
     const val PRODUCT_DETAIL_EDUCATIONAL = "$INTERNAL_MARKETPLACE/product-edu/{type}/"
 
@@ -204,8 +205,6 @@ object ApplinkConstInternalMarketplace {
 
     // MembershipDetailActivity
     const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
-
-    const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
     //AdminInvitationConfirmationActivity
     @JvmField

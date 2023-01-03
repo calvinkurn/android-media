@@ -200,7 +200,4 @@
     <string name="pdp_general_info_see">Lihat</string>
     <string name="text_info_shop_moderated">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
 
-    <!-- One Liners -->
-    <string name="pdp_oneliners_ims100_coachmark_title">Stok terpantau aman oleh Tokopedia!</string>
-    <string name="pdp_oneliners_ims100_coachmark_description">Nggak perlu chat tokonya lagi untuk nanya stok, deh. Yuk, langsung beli aja.</string>
 </resources>

@@ -377,7 +377,7 @@ object ShopPageTrackingConstant {
     const val SHOP_HEADER_ACTION_TRACKER_TYPE = "action"
     const val SHOP_HEADER_PLAY_TRACKER_TYPE = "play"
     const val LOCAL_SEARCH = "local_search"
-    const val FIRST_LANDING_PAGE = "first landing page - %1s Tab"
+    const val FIRST_LANDING_PAGE = "first landing page - %1s Tab - %2s"
     const val GRID_VIEW_TYPE = "Grid View"
     const val LIST_VIEW_TYPE = "List View"
     const val BIG_GRID_VIEW_TYPE = "Big Grid View"
@@ -394,6 +394,8 @@ object ShopPageTrackingConstant {
     const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
+    const val SHOP_AFFILIATE = "affiliate"
+    const val SHOP_NOT_AFFILIATE = "not affiliate"
 
     // trackerId
     const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
@@ -472,10 +474,12 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET = "35966"
         const val TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM = "35968"
         const val TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM = "35967"
+        const val TRACKER_SHOP_PAGE_OPEN_SCREEN = "21750"
     }
 
     object Key {
         const val CAMPAIGN_ID = "campaign_id"
         const val VARIANT_ID = "variant_id"
+        const val AFFILIATE_CHANNEL_ID = "channelId"
     }
 }

@@ -15,11 +15,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
-import com.tokopedia.play.view.type.ComingSoon
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.UnifyButton
@@ -64,23 +60,42 @@ class ProductCarouselViewHolder private constructor() {
                 binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
+        private fun UnifyButton.configButton(button: ProductButtonUiModel){
+            //Setup Icon if any, for now its only for ATC
+            val isDisabled = button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON
+            val iconType = if(isDisabled) iconCartDisabled else iconCartEnabled
+
+            when (button.type) {
+                ProductButtonType.ATC -> {
+                    text = "+"
+                    setDrawable(iconType, UnifyButton.DrawablePosition.RIGHT)
+                }
+                else -> {
+                    text = button.text
+                }
+            }
+
+            binding.btnFirst.isEnabled = !isDisabled
+            binding.btnSecond.isEnabled = !isDisabled
+        }
+
         fun bind(item: PlayProductUiModel.Product) {
             binding.imgProduct.loadImage(item.imageUrl)
             binding.tvName.text = item.title
             binding.labelOos.showWithCondition(item.stock == OutOfStock)
-
-            binding.btnAtc.setDrawable(
-                if (item.stock is StockAvailable) iconCartEnabled else iconCartDisabled,
-                UnifyButton.DrawablePosition.RIGHT,
-            )
-
             binding.viewOverlayOos.showWithCondition(item.stock == OutOfStock)
 
-            binding.btnAtc.isEnabled = item.stock is StockAvailable
-            binding.btnBuy.isEnabled = item.stock is StockAvailable
+            /**
+             * Buttons
+             * First button must be ATC
+             */
+            val firstButton = item.buttons.firstOrNull { it.type == ProductButtonType.ATC }.orDefault()
+            val lastButton = item.buttons.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
 
-            binding.btnAtc.showWithCondition(item.stock != ComingSoon)
-            binding.btnBuy.showWithCondition(item.stock != ComingSoon)
+            binding.btnFirst.showWithCondition(item.buttons.isNotEmpty())
+            binding.btnSecond.showWithCondition(item.buttons.isNotEmpty())
+            binding.btnFirst.configButton(firstButton)
+            binding.btnSecond.configButton(lastButton)
 
             when (item.price) {
                 is DiscountedPrice -> {
@@ -101,12 +116,14 @@ class ProductCarouselViewHolder private constructor() {
             }
             binding.tvInfo.text = getInfo(item)
 
-            binding.btnAtc.setOnClickListener {
-                listener.onAtcClicked(this, item)
+            binding.btnFirst.setOnClickListener {
+                listener.onTransactionClicked(this, item, firstButton.type.toAction)
             }
-            binding.btnBuy.setOnClickListener {
-                listener.onBuyClicked(this, item)
+
+            binding.btnSecond.setOnClickListener {
+                listener.onTransactionClicked(this, item, lastButton.type.toAction)
             }
+
             binding.root.setOnClickListener {
                 listener.onClicked(this, item)
             }
@@ -147,8 +164,7 @@ class ProductCarouselViewHolder private constructor() {
 
         interface Listener {
             fun onClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
-            fun onAtcClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
-            fun onBuyClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
+            fun onTransactionClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product, action: ProductAction)
         }
     }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
+import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.utils.getFormattedPositionName
@@ -33,6 +33,7 @@ class InspirationCarouselDataView(
     class Option(
         val title: String = "",
         val subtitle: String = "",
+        val iconSubtitle: String = "",
         val url: String = "",
         val applink: String = "",
         val bannerImageUrl: String = "",
@@ -54,6 +55,7 @@ class InspirationCarouselDataView(
         val cardButton: CardButton = CardButton(),
         val bundle: Bundle = Bundle(),
         val keyword: String = "",
+        val externalReference: String = "",
     ): Visitable<InspirationCarouselOptionTypeFactory> {
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -118,6 +120,7 @@ class InspirationCarouselDataView(
             val parentId: String = "",
             val minOrder: String = "",
             val trackingOption: Int = 0,
+            val stockBarDataView: StockBarDataView = StockBarDataView(),
         ): ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory> {
 

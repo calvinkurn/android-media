@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
@@ -9,8 +10,10 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
+import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
@@ -60,7 +63,10 @@ data class ProductInfoP2UiData(
     var navBar: NavBar = NavBar(),
     var shopFinishRate: String = "",
     var isToolbarTransparent: Boolean = false,
-    var shopAdditional: ProductShopAdditional = ProductShopAdditional()
+    var shopAdditional: ProductShopAdditional = ProductShopAdditional(),
+    var arInfo: ProductArInfo = ProductArInfo(),
+    var obatKeras: ObatKeras = ObatKeras(),
+    var customInfoTitle: List<CustomInfoTitle> = emptyList()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {

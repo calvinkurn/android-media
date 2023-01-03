@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -18,6 +21,7 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -81,25 +85,26 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class NewShopPageViewModel @Inject constructor(
-    private val userSessionInterface: UserSessionInterface,
-    @GqlGetShopInfoForHeaderUseCaseQualifier
-    private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
-    private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
-    @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
-    private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
-    private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
-    private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
-    private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
-    private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
-    private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
-    private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
-    private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
-    private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
-    private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-    private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
-    private val dispatcherProvider: CoroutineDispatchers
-) :
-    BaseViewModel(dispatcherProvider.main) {
+        private val userSessionInterface: UserSessionInterface,
+        @GqlGetShopInfoForHeaderUseCaseQualifier
+        private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
+        private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
+        @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
+        private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
+        private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
+        private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
+        private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
+        private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
+        private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
+        private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
+        private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
+        private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
+        private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
+        private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
+        private val sharedPreferences: SharedPreferences,
+        private val dispatcherProvider: CoroutineDispatchers
+)
+    : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
@@ -654,7 +659,7 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    fun initAffiliateCookie(
+    fun shopLandingPageInitAffiliateCookie(
         affiliateCookieHelper: AffiliateCookieHelper,
         affiliateUUId: String,
         affiliateChannel: String,
@@ -668,5 +673,38 @@ class NewShopPageViewModel @Inject constructor(
             )
         }) {
         }
+    }
+
+    fun createAffiliateCookieShopAtcProduct(
+        uuId: String,
+        affiliateCookieHelper: AffiliateCookieHelper,
+        affiliateChannel: String,
+        productId: String,
+        isVariant: Boolean,
+        stockQty: Int,
+        shopId: String
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val affiliateSdkDirectAtcSource = AffiliateSdkPageSource.DirectATC(
+                AffiliateAtcSource.SHOP_PAGE,
+                shopId,
+                AffiliateSdkProductInfo("", isVariant, stockQty)
+            )
+            affiliateCookieHelper.initCookie(
+                uuId,
+                affiliateChannel,
+                AffiliatePageDetail(productId, affiliateSdkDirectAtcSource)
+            )
+        }) {
+        }
+    }
+
+    fun saveAffiliateChannel(affiliateChannel: String) {
+        launchCatchError(dispatcherProvider.io, block = {
+            sharedPreferences.edit().putString(
+                SHARED_PREF_AFFILIATE_CHANNEL,
+                affiliateChannel
+            ).apply()
+        }) {}
     }
 }

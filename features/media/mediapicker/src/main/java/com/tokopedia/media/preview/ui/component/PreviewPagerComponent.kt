@@ -101,13 +101,13 @@ class PreviewPagerComponent(
     }
 
     private fun attachStateListener() = object : View.OnAttachStateChangeListener {
-        override fun onViewAttachedToWindow(v: View?) {
+        override fun onViewAttachedToWindow(v: View) {
             v?.post {
                 adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
             }
         }
 
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.stop()
         }
     }

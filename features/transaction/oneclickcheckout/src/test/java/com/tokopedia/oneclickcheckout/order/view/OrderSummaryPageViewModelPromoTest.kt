@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -148,10 +149,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
                 orders = listOf(OrdersItem(shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                        shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
+                        shopId = helper.orderData.cart.shop.shopId.toLongOrZero(), productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId.toLongOrZero()))))), validateUsePromoRequest)
         assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
                 orders = listOf(Order(isChecked = true, shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                        shopId = helper.orderData.cart.shop.shopId, product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
+                        shopId = helper.orderData.cart.shop.shopId.toLongOrZero(), product_details = listOf(ProductDetail(helper.product.productId.toLongOrZero(), helper.product.orderQuantity))))), promoRequest)
         assertEquals(0, bboCodes.size)
     }
 
@@ -181,11 +182,11 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
                 orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId, freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
                         codes = mutableListOf(helper.logisticPromo.promoCode), shippingPrice = 2000.0,
-                        shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
+                        shopId = helper.orderData.cart.shop.shopId.toLongOrZero(), productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId.toLongOrZero()))))), validateUsePromoRequest)
         assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
                 orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId, freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
                         codes = mutableListOf(helper.logisticPromo.promoCode),
-                        shopId = helper.orderData.cart.shop.shopId, product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
+                        shopId = helper.orderData.cart.shop.shopId.toLongOrZero(), product_details = listOf(ProductDetail(helper.product.productId.toLongOrZero(), helper.product.orderQuantity))))), promoRequest)
         assertEquals(1, bboCodes.size)
     }
 

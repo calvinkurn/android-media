@@ -86,13 +86,13 @@ abstract class BaseReviewCustomView<VB : ViewBinding> @JvmOverloads constructor(
                         onAnimationStart?.invoke()
                     }
 
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         onAnimationEnd?.invoke()
                     }
 
-                    override fun onAnimationCancel(animation: Animator?) {}
+                    override fun onAnimationCancel(animation: Animator) {}
 
-                    override fun onAnimationRepeat(animation: Animator?) {}
+                    override fun onAnimationRepeat(animation: Animator) {}
                 })
             }
             start()

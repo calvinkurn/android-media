@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_campaign"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/campaign_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Campaign Name Very longgg...Campaign Name Very longgg..."
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintLeft_toRightOf="@id/image_campaign"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/image_campaign"
+        app:layout_constraintTop_toTopOf="@id/image_campaign"
+        app:typographyType="display_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

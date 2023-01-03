@@ -45,6 +45,7 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgress
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -1391,5 +1392,54 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         }
 
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when search coachmark has been shown, should not show coachmark again`() {
+        var actualResult: Boolean? = null
+        val hasShown = true
+        onGetHasSearchCoachMarkShown_thenReturn(hasShown)
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowShouldShowSearchCoachMark.collectLatest {
+                    actualResult = it
+                }
+            }
+            viewModel.checkForSearchCoachMark()
+            collectorJob.cancel()
+        }
+
+        val expectedResult = !hasShown
+        Assert.assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when search coachmark has not been shown, should show coachmark again`() {
+        var actualResult: Boolean? = null
+        val hasShown = false
+        onGetHasSearchCoachMarkShown_thenReturn(hasShown)
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowShouldShowSearchCoachMark.collectLatest {
+                    actualResult = it
+                }
+            }
+            viewModel.checkForSearchCoachMark()
+            collectorJob.cancel()
+        }
+
+        val expectedResult = !hasShown
+        Assert.assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when setSearchCoachMarkHasShown should run class method to set true value`() {
+        viewModel.setSearchCoachMarkHasShown()
+
+        verify {
+            tokofoodHomeSharedPref.setHasSearchCoachmarkShown(true)
+        }
     }
 }
