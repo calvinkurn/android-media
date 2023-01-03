@@ -113,6 +113,8 @@ class DetailEditorFragment @Inject constructor(
     private var originalImageWidth = 0
     private var originalImageHeight = 0
 
+    private var isAddLogoTipsShowed = false
+
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
     }
@@ -333,7 +335,7 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onUpload() {
         editorDetailAnalytics.clickAddLogoUpload()
-        if (!addLogoComponent.isUploadAvatarReady()) {
+        if (!addLogoComponent.isUploadAvatarReady() && !isAddLogoTipsShowed) {
             showAddLogoUploadTips()
         } else {
             showAddLogoPicker()
@@ -1041,6 +1043,7 @@ class DetailEditorFragment @Inject constructor(
 
     fun showAddLogoUploadTips(isUpload: Boolean = true) {
         addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, bottomSheetTag)
+        isAddLogoTipsShowed = true
     }
 
     private fun showAddLogoPicker() {
