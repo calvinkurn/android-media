@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
@@ -33,6 +34,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetChannelMediumAdapter
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -45,6 +47,8 @@ import com.tokopedia.play.R as playR
 
 class PlayExploreWidgetFragment @Inject constructor(
     private val router: Router,
+    private val trackingQueue: TrackingQueue,
+    private val analyticFactory: PlayAnalytic2.Factory,
 ) : DialogFragment(),
     ChipsViewHolder.Chips.Listener,
     PlayWidgetMediumViewHolder.Channel.Listener {
@@ -93,6 +97,8 @@ class PlayExploreWidgetFragment @Inject constructor(
             ).get(PlayViewModel::class.java)
         }
     }
+
+    private var analytic: PlayAnalytic2? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -150,6 +156,12 @@ class PlayExploreWidgetFragment @Inject constructor(
                         cachedState.value.exploreWidget.data.state,
                         cachedState.value.exploreWidget.data.widgets.getChannelBlock
                     )
+
+                if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
+                analytic = analyticFactory.create(
+                    trackingQueue = trackingQueue,
+                    channelInfo = it.value.channel.channelInfo,
+                )
             }
         }
     }
