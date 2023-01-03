@@ -10,5 +10,4 @@ data class VoucherTypeUiModel(
     override fun type(typeFactory: MvcIntroAdapterFactory): Int {
         return typeFactory.type(this)
     }
-
 }

@@ -6,7 +6,7 @@ import com.tokopedia.mvc.presentation.intro.adapter.factory.MvcIntroAdapterFacto
 data class VoucherIntroCarouselUiModel(
     val headerTitle: String,
     val description: String,
-    val tabsList: List<VoucherIntroTabsData> = emptyList(),
+    val tabsList: List<VoucherIntroTabsData> = emptyList()
 ) : Visitable<MvcIntroAdapterFactory> {
     override fun type(typeFactory: MvcIntroAdapterFactory): Int {
         return typeFactory.type(this)
@@ -16,5 +16,4 @@ data class VoucherIntroCarouselUiModel(
         val tabHeader: String,
         val listOfImages: List<String> = emptyList()
     )
-
 }

@@ -7,6 +7,8 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVoucherChoiceOfTargetViewholderBinding
 import com.tokopedia.mvc.presentation.intro.uimodel.ChoiceOfVoucherUiModel
+import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
+import com.tokopedia.mvc.presentation.intro.util.ZEROTH_INDEX
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVoucherUiModel>(
@@ -23,14 +25,14 @@ class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVo
     override fun bind(element: ChoiceOfVoucherUiModel?) {
         binding?.apply {
             title.text = element?.title.toBlankOrString()
-            element?.list?.getOrNull(0)?.let {
+            element?.list?.getOrNull(ZEROTH_INDEX)?.let {
                 viewFlexibleForCoupons.setData(
                     it.benefitTitle,
                     it.benefitSubtitle,
                     it.benefitImageUrl
                 )
             }
-            element?.list?.getOrNull(1)?.let {
+            element?.list?.getOrNull(FIRST_INDEX)?.let {
                 viewSelectionCoupons.setData(
                     it.benefitTitle,
                     it.benefitSubtitle,

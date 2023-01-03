@@ -7,6 +7,8 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVoucherTypeViewholderBinding
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
+import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
+import com.tokopedia.mvc.presentation.intro.util.ZEROTH_INDEX
 import com.tokopedia.utils.view.binding.viewBinding
 
 class VoucherTypeViewHolder(itemView: View?) : AbstractViewHolder<VoucherTypeUiModel>(itemView) {
@@ -21,10 +23,10 @@ class VoucherTypeViewHolder(itemView: View?) : AbstractViewHolder<VoucherTypeUiM
     override fun bind(element: VoucherTypeUiModel?) {
         binding?.apply {
             title.text = element?.title.toBlankOrString()
-            element?.list?.getOrNull(0)?.let {
+            element?.list?.getOrNull(ZEROTH_INDEX)?.let {
                 viewVoucherShop.setData(it.benefitTitle, it.benefitSubtitle, it.benefitImageUrl)
             }
-            element?.list?.getOrNull(1)?.let {
+            element?.list?.getOrNull(FIRST_INDEX)?.let {
                 viewVoucherProduct.setData(it.benefitTitle, it.benefitSubtitle, it.benefitImageUrl)
             }
         }

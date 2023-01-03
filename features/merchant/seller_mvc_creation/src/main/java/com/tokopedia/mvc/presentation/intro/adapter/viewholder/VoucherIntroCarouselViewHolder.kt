@@ -8,32 +8,30 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVouchersPagerViewholderBinding
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
+import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
+import com.tokopedia.mvc.presentation.intro.util.SECOND_INDEX
+import com.tokopedia.mvc.presentation.intro.util.ZEROTH_INDEX
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<VoucherIntroCarouselUiModel>(
     itemView
 ) {
-
-    companion object {
-        @LayoutRes
-        val RES_LAYOUT = R.layout.smvc_intro_vouchers_pager_viewholder
-    }
     private var binding: SmvcIntroVouchersPagerViewholderBinding? by viewBinding()
 
     override fun bind(element: VoucherIntroCarouselUiModel?) {
         binding?.apply {
             headerText.text = element?.headerTitle
-            viewPagerTitle.text = element?.tabsList?.get(0)?.tabHeader
+            viewPagerTitle.text = element?.tabsList?.get(ZEROTH_INDEX)?.tabHeader
             viewPagerDescription.text = element?.description
 
-            setUpCarousel(this, 0)
+            setUpCarousel(this, ZEROTH_INDEX, element)
 
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val selectedTab = tabLayout.selectedTabPosition
                     viewPagerTitle.text = element?.tabsList?.get(selectedTab)?.tabHeader
-                    setUpCarousel(this@apply, selectedTab)
+                    setUpCarousel(this@apply, selectedTab, element)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -45,58 +43,51 @@ class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<Vouch
         }
     }
 
-    // Problems with Carousel
-    private fun setUpCarousel(binding: SmvcIntroVouchersPagerViewholderBinding, position: Int) {
+    private fun setUpCarousel(
+        binding: SmvcIntroVouchersPagerViewholderBinding,
+        position: Int,
+        element: VoucherIntroCarouselUiModel?
+    ) {
         val bannerArr: java.util.ArrayList<Any> = java.util.ArrayList()
         when (position) {
-            0 -> {
-//                bannerArr.add("https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_f563497d-22f9-4295-ae71-423a35af5476.jpg")
-//                bannerArr.add("https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_df8a996c-b290-4a29-b780-f285c89dd720.jpg")
-//                bannerArr.add("https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_9ce16553-f0fd-481e-a3e3-45363dbd8c70.jpg")
-                bannerArr.add(
-                    SampleData(
-                    "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_4e29115b-cdf0-48d9-96fc-afe668269d12.jpg"
-                ))
-                bannerArr.add(
-                    SampleData(
-                    "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_4e29115b-cdf0-48d9-96fc-afe668269d12.jpg"
-                ))
+            ZEROTH_INDEX -> {
+                element?.tabsList?.get(ZEROTH_INDEX)?.listOfImages?.let {
+                    bannerArr.addAll(
+                        it
+                    )
+                }
             }
-            1 -> {
-                bannerArr.add(
-                    SampleData(
-                    "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_9ce16553-f0fd-481e-a3e3-45363dbd8c70.jpg"
-                ))
-                bannerArr.add(
-                    SampleData(
-                    "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_4e29115b-cdf0-48d9-96fc-afe668269d12.jpg"
-                ))
+            FIRST_INDEX -> {
+                element?.tabsList?.get(FIRST_INDEX)?.listOfImages?.let {
+                    bannerArr.addAll(
+                        it
+                    )
+                }
             }
-            2 -> {
-                bannerArr.add(
-                    SampleData(
-                    "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_df8a996c-b290-4a29-b780-f285c89dd720.jpg"
-                ))
+            SECOND_INDEX -> {
+                element?.tabsList?.get(SECOND_INDEX)?.listOfImages?.let {
+                    bannerArr.addAll(
+                        it
+                    )
+                }
             }
         }
 
         val itemParam = { view: View, data: Any ->
             val imageCarousel = view.findViewById<ImageUnify>(R.id.image)
-
             binding.containerCarousel.post {
                 imageCarousel.initialWidth = binding.containerCarousel.measuredWidth
             }
-            imageCarousel.setImageUrl((data as SampleData).title, 0.666f)
+            imageCarousel.setImageUrl(data as String)
         }
 
         binding.apply {
             containerCarousel.apply {
                 removePreviousItemViews()
-                slideToShow = 1.2f
+                slideToShow = SLIDE_TO_SHOW
+                resetIndicatorPosition()
                 indicatorPosition = CarouselUnify.INDICATOR_BC
                 infinite = true
-                //       setUpItemViews(context, bannerArr)
-                //         addImages(bannerArr)
                 addItems(R.layout.smvc_item_intro_carousel, bannerArr, itemParam)
             }
         }
@@ -106,29 +97,14 @@ class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<Vouch
         stage.removeAllViews()
     }
 
-    class SampleData(var title: String)
+    private fun CarouselUnify.resetIndicatorPosition() {
+        activeIndex = DEFAULT_INDICATOR_POSITION
+    }
 
-//    private fun CarouselUnify.setUpItemViews(context: Context, items: List<String>) {
-//        items.forEach {
-//            createItemView(context).apply{
-//                bindItem(this,it)
-//            }.run{
-//                addItem(this)
-//            }
-//        }
-//    }
-//
-//    private fun createItemView(context: Context): View {
-//        return View.inflate(context, MvcIntroCarouselImageViewHolder.RES_LAYOUT, null).apply {
-//            layoutParams = LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT
-//            )
-//        }
-//    }
-//
-//    private fun bindItem(view: View, data: String) {
-//        val viewHolder = MvcIntroCarouselImageViewHolder(view)
-//        viewHolder.bind(data)
-//    }
+    companion object {
+        @LayoutRes
+        val RES_LAYOUT = R.layout.smvc_intro_vouchers_pager_viewholder
+        private const val SLIDE_TO_SHOW = 1.2f
+        private const val DEFAULT_INDICATOR_POSITION = 0
+    }
 }

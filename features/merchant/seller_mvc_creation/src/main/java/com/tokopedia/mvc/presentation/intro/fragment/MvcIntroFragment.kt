@@ -105,6 +105,7 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
                         )
                     )
                 ),
+                // TODO FIX THE URLS
                 VoucherIntroCarouselUiModel(
                     headerTitle = it.getString(R.string.smvc_intro_voucher_view_pager_header),
                     description = it.getString(
@@ -113,15 +114,24 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
                     tabsList = listOf(
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
-                            listOf()
+                            listOf(
+                                "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_4e29115b-cdf0-48d9-96fc-afe668269d12.jpg",
+                                "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_9ce16553-f0fd-481e-a3e3-45363dbd8c70.jpg"
+                            )
                         ),
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
-                            listOf()
+                            listOf(
+                                "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_9ce16553-f0fd-481e-a3e3-45363dbd8c70.jpg",
+                                "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_4e29115b-cdf0-48d9-96fc-afe668269d12.jpg"
+                            )
                         ),
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
-                            listOf()
+                            listOf(
+                                "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_df8a996c-b290-4a29-b780-f285c89dd720.jpg",
+                                "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_9ce16553-f0fd-481e-a3e3-45363dbd8c70.jpg"
+                            )
                         )
                     )
                 ),
@@ -167,6 +177,6 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
     }
 
     override fun enableRVScroll() {
-       // scrollListener?.enableRecyclerViewScroll(binding?.recyclerView)
+        // scrollListener?.enableRecyclerViewScroll(binding?.recyclerView)
     }
 }
