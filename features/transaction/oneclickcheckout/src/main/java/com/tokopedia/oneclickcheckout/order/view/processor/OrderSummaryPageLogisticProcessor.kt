@@ -170,7 +170,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 preOrder = it.isPreOrder != 0
                 productPreOrderDuration = it.preOrderDuration
                 categoryList.add(it.categoryId)
-                productList.add(Product(it.productId, it.isFreeOngkir, it.isFreeOngkirExtra))
+                productList.add(Product(it.productId.toLongOrZero(), it.isFreeOngkir, it.isFreeOngkirExtra))
             }
         }
         if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {

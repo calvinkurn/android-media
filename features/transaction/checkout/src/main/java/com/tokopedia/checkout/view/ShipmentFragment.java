@@ -94,7 +94,6 @@ import com.tokopedia.checkout.view.di.CheckoutModule;
 import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
-import com.tokopedia.checkout.view.helper.CartProtectionInfoBottomSheetHelper;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -3737,7 +3736,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.updateCheckoutButtonData(null);
             }
 
-            shipmentAdapter.setSelectedCourier(position, newCourierItemData, true);
+            shipmentAdapter.setSelectedCourier(position, newCourierItemData, true, false);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
 
             SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
