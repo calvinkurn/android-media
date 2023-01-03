@@ -44,4 +44,15 @@ data class Product(
         val isTokoNow: Boolean = false,
         @SerializedName("is_pinned")
         val isPinned: Boolean = false,
-)
+        @SerializedName("available_buttons")
+        val buttons: List<ProductButton> = emptyList(),
+){
+    data class ProductButton(
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("color")
+        val color: String = "",
+        @SerializedName("button_type")
+        val buttonType: String = "",
+    )
+}

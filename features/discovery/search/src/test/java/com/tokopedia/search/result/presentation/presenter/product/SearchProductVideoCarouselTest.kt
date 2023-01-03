@@ -12,6 +12,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
@@ -111,8 +112,8 @@ internal class SearchProductVideoCarouselTest: ProductListPresenterTestFixtures(
                     visitable.shouldBeInstanceOf<InspirationCarouselVideoDataView>(
                         "visitable list at index $index should be InspirationCarouselVideoViewModel"
                     )
-                    assert((visitable as InspirationCarouselVideoDataView).data.layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO) {
-                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO}"
+                    assert((visitable as InspirationCarouselVideoDataView).data.layout == LAYOUT_INSPIRATION_CAROUSEL_VIDEO) {
+                        "Inspiration Carousel layout should be $LAYOUT_INSPIRATION_CAROUSEL_VIDEO"
                     }
                     visitable.data.assertInspirationCarouselDataView(searchProductModel.searchInspirationCarousel.data[0])
                 }

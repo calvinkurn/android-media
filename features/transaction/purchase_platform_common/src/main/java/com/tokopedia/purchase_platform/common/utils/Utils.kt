@@ -1,10 +1,7 @@
 package com.tokopedia.purchase_platform.common.utils
 
 import android.content.Context
-import android.os.Build
-import android.text.Html
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
@@ -77,6 +74,10 @@ fun joinToStringFromListInt(ints: List<Int>, separator: String): String = ints.j
 
 fun String.isNotBlankOrZero(): Boolean {
     return this.isNotBlank() && this.toLongOrZero() != 0L
+}
+
+fun String.isBlankOrZero(): Boolean {
+    return this.isBlank() || this.toLongOrZero() == 0L
 }
 
 const val DEFAULT_DEBOUNCE_IN_MILIS = 250L

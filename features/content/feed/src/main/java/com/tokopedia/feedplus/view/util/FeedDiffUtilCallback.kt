@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.view.util
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
 
 internal class FeedDiffUtilCallback(
         private val oldList: List<Visitable<*>> = listOf(),
@@ -45,11 +45,11 @@ internal class FeedDiffUtilCallback(
         val newItem = newList[newPosition]
 
         return if (oldItem is DynamicPostUiModel && newItem is DynamicPostUiModel) oldItem == newItem
-        else !(oldItem is CarouselPlayCardViewModel && newItem is CarouselPlayCardViewModel)
+        else !(oldItem is CarouselPlayCardModel && newItem is CarouselPlayCardModel)
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        return if (oldList[oldItemPosition] is CarouselPlayCardViewModel && newList[newItemPosition] is CarouselPlayCardViewModel) Unit
+        return if (oldList[oldItemPosition] is CarouselPlayCardModel && newList[newItemPosition] is CarouselPlayCardModel) Unit
         else super.getChangePayload(oldItemPosition, newItemPosition)
     }
 }

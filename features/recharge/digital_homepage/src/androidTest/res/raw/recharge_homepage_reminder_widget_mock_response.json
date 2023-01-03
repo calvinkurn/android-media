@@ -12,7 +12,7 @@
             "tracking": [
               {
                 "action": "impression",
-                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression urgency widget\",\"eventLabel\":\"non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211378\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"Hi, Hengky!\",\"creative_name\":\"https://ecs7.tokopedia.net/img/recharge/category/donasi/widget-active.png\",\"creative_slot\":\"0\"}]}"
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression urgency widget\",\"eventLabel\":\"non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211378\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"Hi, Hengky!\",\"creative_name\":\"https://images.tokopedia.net/img/recharge/category/donasi/widget-active.png\",\"creative_slot\":\"0\"}]}"
               }
             ],
             "items": [
@@ -23,14 +23,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click urgency widget\",\"eventLabel\":\"0 - URGENCY_WIDGET - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"Hi, Hengky!\",\"creative_name\":\"https://ecs7.tokopedia.net/img/recharge/category/donasi/widget-active.png\",\"creative_slot\":\"0\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click urgency widget\",\"eventLabel\":\"0 - URGENCY_WIDGET - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"Hi, Hengky!\",\"creative_name\":\"https://images.tokopedia.net/img/recharge/category/donasi/widget-active.png\",\"creative_slot\":\"0\"}]}"
                   }
                 ],
                 "content": "Tagihan Donasi Online sebesar Rp 150.000 sudah lewat jatuh tempo",
                 "app_link": "tokopedia://digital/form?category_id=12&client_number=141000747324&is_from_widget=true&operator_id=144&product_id=291",
                 "web_link": "https://pulsa-staging.tokopedia.com?action=init_data&client_number=141000747324&instant_checkout=false&operator_id=144&product_id=291",
                 "text_link": "Beli",
-                "media_url": "https://ecs7.tokopedia.net/img/recharge/category/donasi/widget-active.png",
+                "media_url": "https://images.tokopedia.net/img/recharge/category/donasi/widget-active.png",
                 "template": "DANGER",
                 "button_type": "transaction",
                 "label_1": "",

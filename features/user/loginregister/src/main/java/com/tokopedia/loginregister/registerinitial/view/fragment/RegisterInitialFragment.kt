@@ -323,13 +323,17 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         }
     }
 
+    fun getRemoteConfig(): FirebaseRemoteConfigImpl {
+        return FirebaseRemoteConfigImpl(requireContext())
+    }
+
     open fun fetchRemoteConfig() {
         context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
+            val remoteConfig = getRemoteConfig()
             RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-            isShowTicker = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
-            isShowBanner = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
-            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
+            isShowTicker = remoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
+            isShowBanner = remoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
+            isHitRegisterPushNotif = remoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
         }
     }
 
@@ -1436,8 +1440,13 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun submitIntegrityApi() {
-        context?.let {
-            IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_REGISTER)
+        if(getRemoteConfig().getBoolean(IntegrityApiConstant.REGISTER_CONFIG)) {
+            context?.let {
+                IntegrityApiWorker.scheduleWorker(
+                    it.applicationContext,
+                    IntegrityApiConstant.EVENT_REGISTER
+                )
+            }
         }
     }
 

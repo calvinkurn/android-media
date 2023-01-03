@@ -8,6 +8,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.picker.common.PICKER_SAVE_GALLERY
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.file.FileUtil
@@ -89,6 +92,7 @@ object SaveImageProcessor {
 
             return resultFile
         } catch (e: Exception) {
+            ServerLogger.log(Priority.P2, PICKER_SAVE_GALLERY, mapOf("Error" to e.toString()))
             return null
         }
     }

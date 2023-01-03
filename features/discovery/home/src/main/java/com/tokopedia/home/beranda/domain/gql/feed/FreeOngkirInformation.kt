@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by Fikry on 2019-09-30
  */
-class FreeOngkirInformation (
-        @SerializedName("is_active")
-        @Expose
-        val isActive: Boolean = false,
-        @SerializedName("image_url")
-        @Expose
-        val imageUrl: String = ""
+class FreeOngkirInformation(
+    @SerializedName("is_active", alternate = ["isActive"])
+    @Expose
+    val isActive: Boolean = false,
+    @SerializedName("image_url", alternate = ["imageUrl"])
+    @Expose
+    val imageUrl: String = ""
 )

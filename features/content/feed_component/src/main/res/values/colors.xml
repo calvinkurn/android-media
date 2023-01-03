@@ -20,6 +20,7 @@
     <color name="share_ig_story_top_bg">#E1E7E5</color>
     <color name="share_ig_story_bottom_bg">#88D7CF</color>
     <color name="cardview_dms_background_color">@color/Unify_N0</color>
+    <color name="feed_dms_play_button_background">#31353B</color>
     <color name="feed_dms_produk_tag_background">#2E3137</color>
     <color name="feed_dms_produk_tag_white_bg">#FFFFFF</color>
     <color name="feed_dms_produk_tag_white_stroke">#D6DFEB</color>

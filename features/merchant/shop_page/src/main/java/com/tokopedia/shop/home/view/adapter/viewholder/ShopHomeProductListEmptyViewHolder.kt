@@ -12,7 +12,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductListEmptyUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductListEmptyViewHolder(
-        val itemView: View,
+    val itemView: View
 ) : AbstractViewHolder<ShopHomeProductListEmptyUiModel>(itemView) {
 
     companion object {
@@ -20,7 +20,7 @@ class ShopHomeProductListEmptyViewHolder(
         val LAYOUT = R.layout.new_shop_products_empty_state
     }
 
-    private val viewBinding : NewShopProductsEmptyStateBinding? by viewBinding()
+    private val viewBinding: NewShopProductsEmptyStateBinding? by viewBinding()
     private var imageViewEmptyImage: ImageView? = viewBinding?.imageViewEmptyImage
 
     override fun bind(element: ShopHomeProductListEmptyUiModel) {

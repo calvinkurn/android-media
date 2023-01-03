@@ -8,5 +8,4 @@ class EtalaseHighlightAdapter(baseListAdapterTypeFactory: EtalaseHighlightAdapte
     override fun isItemClickableByDefault(): Boolean {
         return false
     }
-
 }

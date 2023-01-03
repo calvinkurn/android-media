@@ -40,6 +40,11 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
           full_url
           full_ecs
         }
+        flash_sale_campaign_detail{
+          start_time
+          end_time
+          campaign_type
+        }
         shop {
           id
           name

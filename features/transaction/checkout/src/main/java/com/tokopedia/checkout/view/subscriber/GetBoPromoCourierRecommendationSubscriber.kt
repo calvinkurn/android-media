@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
+import rx.subjects.PublishSubject
 import timber.log.Timber
 
 class GetBoPromoCourierRecommendationSubscriber(
@@ -22,7 +23,8 @@ class GetBoPromoCourierRecommendationSubscriber(
     private val shippingCourierConverter: ShippingCourierConverter,
     private val shipmentCartItemModel: ShipmentCartItemModel,
     private val isTradeInDropOff: Boolean,
-    private val isForceReloadRates: Boolean
+    private val isForceReloadRates: Boolean,
+    private val logisticPromoDonePublisher: PublishSubject<Boolean>?
 ) : Subscriber<ShippingRecommendationData?>() {
 
     override fun onCompleted() {}
@@ -33,6 +35,7 @@ class GetBoPromoCourierRecommendationSubscriber(
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
         view.logOnErrorLoadCourier(e, itemPosition)
+        logisticPromoDonePublisher?.onCompleted()
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
@@ -69,6 +72,7 @@ class GetBoPromoCourierRecommendationSubscriber(
                                         ),
                                         itemPosition
                                     )
+                                    logisticPromoDonePublisher?.onCompleted()
                                     return
                                 } else {
                                     shippingCourierUiModel.isSelected = true
@@ -99,6 +103,7 @@ class GetBoPromoCourierRecommendationSubscriber(
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
         view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
+        logisticPromoDonePublisher?.onCompleted()
     }
 
     private fun generateCourierItemData(

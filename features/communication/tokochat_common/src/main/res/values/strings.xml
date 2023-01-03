@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">tokochat_common</string>
+
+    <string name="tokochat_is_typing">"lagi ngetik"</string>
+    <string name="tokochat_read_more">Baca Selengkapnya</string>
+
+    <string name="tokochat_content_desc_user_avatar">user_avatar</string>
+    <string name="tokochat_content_desc_source_logo">source logo</string>
+    <string name="tokochat_content_desc_header_menu">header_menu</string>
+    <string name="tokochat_content_desc_badge">badge</string>
+
+    <string name="tokochat_reply_box_title">Tulis Pesan</string>
+    <string name="tokochat_edit_text">Tulis pesan…</string>
+    <string name="tokochat_desc_max_char_exceeded">Coba pendekin %s karakter lagi, ya!</string>
+
+    <string name="tokochat_message_closed_chat">Chat ini udah ditutup. Kamu bisa lihat riwayat chat sampai 24 jam setelah pesanan selesai.</string>
+    <string name="tokochat_message_cancelled_order">Pesaanan dibatalkan. Kamu bisa lihat riwayat chat sampai 24 jam setelah dibatalkan.</string>
+    <string name="tokochat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
+
+    <string name="tokochat_masking_phone_number_title">Nomor HP kamu akan disamarkan</string>
+    <string name="tokochat_masking_phone_number_desc">Demi menjaga privasi, nomor HP-mu nggak bisa dilihat oleh driver. Pulsamu akan terpakai untuk panggilan ini.</string>
+    <string name="tokochat_driver_call_button_text">Oke, Telepon</string>
+
+    <string name="tokochat_localload_transaction_widget_title">Oops, status pesanan gagal ditampilkan</string>
+    <string name="tokochat_localload_transaction_widget_desc">Klik ikon di samping untuk refresh.</string>
+
+</resources>

@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -11,6 +12,7 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
+import com.tokopedia.sellerhome.view.helper.handleSseMessage
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -53,6 +55,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -65,6 +68,7 @@ import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -96,12 +100,14 @@ class SellerHomeViewModel @Inject constructor(
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
+    private val widgetSse: Lazy<SellerHomeWidgetSSE>,
     private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
+        private const val SELLER_HOME_SSE = "home"
         private const val TICKER_PAGE_NAME = "seller"
     }
 
@@ -116,6 +122,8 @@ class SellerHomeViewModel @Inject constructor(
             dateType = DateFilterType.DATE_TYPE_DAY
         )
     }
+    var rawWidgetList: List<BaseWidgetUiModel<*>> = emptyList()
+        private set
 
     private val _homeTicker = MutableLiveData<Result<List<TickerItemUiModel>>>()
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -241,10 +249,14 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getLayoutUseCase.get()
             useCase.params = params
             if (heightDp == null) {
-                getDataFromUseCase(useCase, _widgetLayout)
+                getDataFromUseCase(useCase, _widgetLayout) { widgets ->
+                    saveRawWidgets(widgets)
+                }
             } else {
-                getDataFromUseCase(useCase, _widgetLayout) { result, isFromCache ->
-                    sellerHomeLayoutHelper.get().getInitialWidget(result, heightDp, isFromCache)
+                getDataFromUseCase(useCase, _widgetLayout) { widgets, isFromCache ->
+                    saveRawWidgets(widgets)
+                    return@getDataFromUseCase sellerHomeLayoutHelper.get()
+                        .getInitialWidget(widgets, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
                 }
             }
@@ -465,22 +477,45 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
+    fun startSse(realTimeDataKeys: List<String>) {
+        stopSSE()
+        viewModelScope.launch(dispatcher.io) {
+            if (realTimeDataKeys.isNotEmpty()) {
+                widgetSse.get().connect(SELLER_HOME_SSE, realTimeDataKeys)
+                widgetSse.get().listen().handleSseMessage(_cardWidgetData, _milestoneWidgetData)
+            }
+        }
+    }
+
+    fun stopSSE() {
+        widgetSse.get().closeSse()
+    }
+
+    private fun saveRawWidgets(widgets: List<BaseWidgetUiModel<*>>) {
+        this.rawWidgetList = widgets
+    }
+
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
     }
 
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
-        liveData: MutableLiveData<Result<T>>
+        liveData: MutableLiveData<Result<T>>,
+        onSuccess: (widgets: T) -> Unit = {}
     ) {
         try {
             useCase.setUseCache(false)
-            liveData.value = Success(useCase.executeUseCase())
+            val result = useCase.executeUseCase()
+            liveData.value = Success(result)
+            onSuccess(result)
         } catch (networkException: Exception) {
             if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
                 try {
                     useCase.setUseCache(true)
-                    liveData.value = Success(useCase.executeUseCase())
+                    val result = useCase.executeUseCase()
+                    liveData.value = Success(result)
+                    onSuccess(result)
                 } catch (_: Exception) {
                     throw networkException
                 }
@@ -493,7 +528,7 @@ class SellerHomeViewModel @Inject constructor(
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>,
-        getTransformerFlow: suspend (result: T, isFromCache: Boolean) -> Flow<T>
+        getTransformerFlow: suspend (widgets: T, isFromCache: Boolean) -> Flow<T>
     ) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false

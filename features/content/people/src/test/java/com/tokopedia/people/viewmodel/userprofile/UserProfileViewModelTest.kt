@@ -2,7 +2,7 @@ package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
@@ -54,7 +54,7 @@ class UserProfileViewModelTest {
 
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
     private val mockOtherProfile = profileBuilder.buildProfile(userID = mockOtherUserId)
-    private val mockShopRecom = shopRecomBuilder.buildModelIsShown()
+    private val mockShopRecom = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
 
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
@@ -97,6 +97,7 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+                it.viewModel.profileUserEncryptedID equalTo mockOwnProfile.encryptedUserID
             }
         }
     }
@@ -191,6 +192,7 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+                it.viewModel.profileUserEncryptedID equalTo mockOtherProfile.encryptedUserID
             }
         }
     }

@@ -144,6 +144,7 @@ class PlayViewerIdGenerator {
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
+                    mockk(relaxed = true),
                 )
             },
             PlayUserInteractionFragment::class.java to {
@@ -157,6 +158,7 @@ class PlayViewerIdGenerator {
                     performanceClassConfig = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
                     analyticManager = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {
@@ -164,6 +166,7 @@ class PlayViewerIdGenerator {
                     viewModelFactory = mockViewModelFactory,
                     analytic = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             },
             PlayVideoFragment::class.java to {
@@ -173,6 +176,7 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
                     playLog = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             }
         )

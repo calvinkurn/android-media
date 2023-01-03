@@ -359,6 +359,10 @@ class ShipmentPresenterGetShippingRatesTest {
         val isForceReload = false
         val skipMvc = true
 
+        every { view.renderCourierStateSuccess(any(), any(), any(), any()) } answers {
+            presenter.logisticDonePublisher.onCompleted()
+        }
+
         // When get first shipping
         presenter.processGetCourierRecommendation(
                 shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },

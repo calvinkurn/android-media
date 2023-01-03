@@ -32,7 +32,8 @@ import javax.inject.Inject
 class ShippingDurationPresenter @Inject constructor(
     private val ratesUseCase: GetRatesUseCase,
     private val ratesApiUseCase: GetRatesApiUseCase,
-    private val stateConverter: RatesResponseStateConverter
+    private val stateConverter: RatesResponseStateConverter,
+    private val shippingCourierConverter: ShippingCourierConverter
 ) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
 
     private var view: ShippingDurationContract.View? = null
@@ -116,14 +117,16 @@ class ShippingDurationPresenter @Inject constructor(
         observable
             .map { shippingRecommendationData: ShippingRecommendationData ->
                 stateConverter.fillState(
-                    shippingRecommendationData, shopShipmentList,
-                    selectedSpId, selectedServiceId
+                    shippingRecommendationData,
+                    shopShipmentList,
+                    selectedSpId,
+                    selectedServiceId
                 )
             }
             .subscribe(
                 object : Subscriber<ShippingRecommendationData>() {
                     override fun onCompleted() {
-                        //no-op
+                        // no-op
                     }
 
                     override fun onError(e: Throwable) {
@@ -232,7 +235,10 @@ class ShippingDurationPresenter @Inject constructor(
 
     override fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
         for (shippingCourierUiModel in shippingCourierUiModels) {
-            if (shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden) {
+            if (shippingCourierUiModel.productData.isRecommend &&
+                !shippingCourierUiModel.productData.isUiRatesHidden &&
+                shippingCourierUiModel.productData.error?.errorMessage?.isEmpty() != false
+            ) {
                 return shippingCourierUiModel
             }
         }

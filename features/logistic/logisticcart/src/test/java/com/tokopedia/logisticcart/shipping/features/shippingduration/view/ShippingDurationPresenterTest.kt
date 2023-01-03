@@ -31,10 +31,11 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertNull
+import junit.framework.Assert.assertTrue
+import junit.framework.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -304,6 +305,69 @@ class ShippingDurationPresenterTest {
 
         // Then
         assertNull(actual)
+    }
+
+    @Test
+    fun `When get recommendation courier item data but product is hidden Then null is returned`() {
+        // Given
+        val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
+                ShippingCourierUiModel().apply {
+                    productData = ProductData().apply {
+                        isRecommend = true
+                        isUiRatesHidden = true
+                    }
+                }
+        )
+
+        // When
+        val actual = presenter.getCourierItemData(courierWithNoRecc)
+
+        // Then
+        assertNull(actual)
+    }
+
+    @Test
+    fun `When get recommendation courier item data but product is error Then null is returned`() {
+        // Given
+        val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
+                ShippingCourierUiModel().apply {
+                    productData = ProductData().apply {
+                        isRecommend = true
+                        error = ErrorProductData().apply {
+                            errorId = ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
+                            errorMessage = "error"
+                        }
+                    }
+                }
+        )
+
+        // When
+        val actual = presenter.getCourierItemData(courierWithNoRecc)
+
+        // Then
+        assertNull(actual)
+    }
+
+    @Test
+    fun `When get recommendation courier item data but product error message is empty Then return courier`() {
+        // Given
+        val courierData = ShippingCourierUiModel().apply {
+            productData = ProductData().apply {
+                isRecommend = true
+                error = ErrorProductData().apply {
+                    errorMessage = ""
+                }
+            }
+        }
+        val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
+                courierData
+        )
+
+        // When
+        val actual = presenter.getCourierItemData(courierWithNoRecc)
+
+        // Then
+        assertNotNull(actual)
     }
 
     @Test
@@ -871,7 +935,7 @@ class ShippingDurationPresenterTest {
                 false)
         }
     }
-    
+
     @Test
     fun `When select duration but courier error data not found Then pinpoint error flag is false`() {
         // Given

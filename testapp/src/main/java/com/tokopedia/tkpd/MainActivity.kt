@@ -16,6 +16,7 @@ import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.watch.TokopediaWatchActivity
 import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {
@@ -93,9 +94,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoginStatus() {
-        if(userSession.isLoggedIn) {
-            val identity = if(userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            loginButton?.text = "Logged in as:\n${identity}"
+        if (userSession.isLoggedIn) {
+            val identity = if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
+            loginButton?.text = "Logged in as:\n$identity"
             logoutButton.visibility = View.VISIBLE
         } else {
             loginButton?.text = "Login"
@@ -116,9 +117,11 @@ class MainActivity : AppCompatActivity() {
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
         val appLink = etAppLink.text.toString()
-        if(appLink.isNotBlank())
+        if (appLink.isNotBlank()) {
             RouteManager.route(this, appLink)
-        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getDefaultAppLink(): String {

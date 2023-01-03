@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
+import rx.subjects.PublishSubject
 import timber.log.Timber
 
 class GetCourierRecommendationSubscriber(
@@ -22,10 +23,13 @@ class GetCourierRecommendationSubscriber(
     private val isInitialLoad: Boolean,
     private val isTradeInDropOff: Boolean,
     private val isForceReloadRates: Boolean,
-    private val isBoUnstackEnabled: Boolean
+    private val isBoUnstackEnabled: Boolean,
+    private val logisticDonePublisher: PublishSubject<Boolean>?
 ) : Subscriber<ShippingRecommendationData?>() {
 
-    override fun onCompleted() {}
+    override fun onCompleted() {
+        // no op
+    }
 
     override fun onError(e: Throwable) {
         Timber.d(e)
@@ -35,6 +39,7 @@ class GetCourierRecommendationSubscriber(
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
         view.logOnErrorLoadCourier(e, itemPosition)
+        logisticDonePublisher?.onCompleted()
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
@@ -62,6 +67,7 @@ class GetCourierRecommendationSubscriber(
                                                     shippingCourierUiModel.productData.error?.errorMessage
                                                 ), itemPosition
                                             )
+                                            logisticDonePublisher?.onCompleted()
                                             return
                                         } else {
                                             shippingCourierUiModel.isSelected = true
@@ -112,6 +118,7 @@ class GetCourierRecommendationSubscriber(
                                             ),
                                             itemPosition
                                         )
+                                        logisticDonePublisher?.onCompleted()
                                         return
                                     } else {
                                         val courierItemData = generateCourierItemData(
@@ -127,6 +134,7 @@ class GetCourierRecommendationSubscriber(
                                                 MessageErrorException("rates ui hidden but no promo"),
                                                 itemPosition
                                             )
+                                            logisticDonePublisher?.onCompleted()
                                             return
                                         }
                                         shippingCourierUiModel.isSelected = true
@@ -185,6 +193,7 @@ class GetCourierRecommendationSubscriber(
                                 shipmentCartItemModel,
                                 shippingRecommendationData.preOrderModel
                             )
+                            logisticDonePublisher?.onCompleted()
                             return
                         }
                     }
@@ -192,6 +201,7 @@ class GetCourierRecommendationSubscriber(
             }
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
+        logisticDonePublisher?.onCompleted()
     }
 
     private fun generateCourierItemData(

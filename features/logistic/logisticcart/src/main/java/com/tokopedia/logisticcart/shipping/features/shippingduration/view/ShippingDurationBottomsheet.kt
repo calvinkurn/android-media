@@ -228,7 +228,9 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         shippingDurationAdapter?.setCartPosition(cartPosition)
         shippingDurationAdapter?.setToggleYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
-            activity, LinearLayoutManager.VERTICAL, false
+            activity,
+            LinearLayoutManager.VERTICAL,
+            false
         )
         rvDuration?.layoutManager = linearLayoutManager
         rvDuration?.adapter = shippingDurationAdapter

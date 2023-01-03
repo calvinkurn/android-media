@@ -415,13 +415,14 @@ class FeedAnalytics @Inject constructor(
         type: String,
         isFollowed: Boolean,
         trackerId: String,
-        campaignStatus: String
+        campaignStatus: String,
+        contentScore : String
     ) {
         val eventAction = ACTION_CLICK_PRODUCT + " - " + getPostType(type, isFollowed)
         val eventLabel = if (campaignStatus.isEmpty()) {
-            activityId + " - " + shopId + " - " + product.productId
+            activityId + " - " + shopId + " - " + contentScore + " - " + product.productId
         } else {
-            activityId + " - " + shopId + " - " + product.productId + " - " + campaignStatus
+            activityId + " - " + shopId + " - " + contentScore + " - " + campaignStatus + " - " + product.productId
         }
         val map = DataLayer.mapOf(
             EVENT_NAME,
