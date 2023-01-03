@@ -575,15 +575,15 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        val hasPriceOriginal = data.productOriginalPrice != 0L
-        val hasWholesalePrice = data.wholesalePrice != 0L
+        val hasPriceOriginal = data.productOriginalPrice > 0
+        val hasWholesalePrice = data.wholesalePrice > 0
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
-            data.productInitialPriceBeforeDrop > data.productPrice.toLong()
+            data.productInitialPriceBeforeDrop > data.productPrice
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
             if (data.productSlashPriceLabel.isNotBlank()) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)
-            } else if (data.productInitialPriceBeforeDrop != 0L) {
+            } else if (data.productInitialPriceBeforeDrop > 0) {
                 val wholesalePrice = data.wholesalePrice
                 if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.productPrice) {
                     // Wholesale
@@ -592,7 +592,7 @@ class CartItemViewHolder constructor(
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.wholesalePrice != 0L) {
+            } else if (data.wholesalePrice > 0) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }

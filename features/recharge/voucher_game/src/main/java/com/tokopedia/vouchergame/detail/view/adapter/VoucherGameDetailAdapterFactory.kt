@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.common.topupbills.view.viewholder.TopupBillsEmptyViewHolder
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
@@ -18,7 +17,7 @@ import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProdu
  * @author by resakemal on 12/08/19
  */
 
-class VoucherGameDetailAdapterFactory(val listener: VoucherGameProductViewHolder.OnClickListener): BaseAdapterTypeFactory() {
+class VoucherGameDetailAdapterFactory(val listener: VoucherGameProductViewHolder.OnClickListener) : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {

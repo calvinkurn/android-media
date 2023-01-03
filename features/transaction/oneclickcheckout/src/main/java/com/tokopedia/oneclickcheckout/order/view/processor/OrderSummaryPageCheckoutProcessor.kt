@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -114,7 +115,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                     }
                     checkoutProducts.add(
                         ProductData(
-                            productId = it.productId.toString(),
+                            productId = it.productId,
                             productQuantity = it.orderQuantity,
                             productNotes = it.notes,
                             isPPP = it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED,
@@ -168,12 +169,12 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                 ParamCart(
                     data = listOf(
                         ParamData(
-                            profile.address.addressId,
+                            profile.address.addressId.toLongOrZero(),
                             listOf(
                                 ShopProduct(
-                                    shopId = shop.shopId,
+                                    shopId = shop.shopId.toLongOrZero(),
                                     isPreorder = products.first().isPreOrder,
-                                    warehouseId = shop.warehouseId,
+                                    warehouseId = shop.warehouseId.toLongOrZero(),
                                     finsurance = if (orderShipment.insurance.isCheckInsurance) 1 else 0,
                                     productData = checkoutProducts,
                                     shippingInfo = ShippingInfo(
