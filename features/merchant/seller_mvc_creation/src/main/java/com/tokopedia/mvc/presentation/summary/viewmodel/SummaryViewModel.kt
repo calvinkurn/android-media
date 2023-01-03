@@ -100,6 +100,23 @@ class SummaryViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
+                val result = createCouponFacadeUseCase.execute(
+                    configuration.value ?: return@launchCatchError,
+                    products.value ?: return@launchCatchError,
+                    ""
+                )
+                _error.postValue(MessageErrorException("Sukses"))
+            },
+            onError = {
+                _error.postValue(it)
+            }
+        )
+    }
+
+    fun editCoupon() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
                 val result = createCouponFacadeUseCase.executeUpdate(
                     configuration.value ?: return@launchCatchError,
                     products.value ?: return@launchCatchError

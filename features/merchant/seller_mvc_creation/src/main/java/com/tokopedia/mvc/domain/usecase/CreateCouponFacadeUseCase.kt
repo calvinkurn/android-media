@@ -16,6 +16,12 @@ class CreateCouponFacadeUseCase @Inject constructor(
     private val initiateCouponUseCase: GetInitiateVoucherPageUseCase,
     private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase
 ) {
+    companion object {
+        private const val FIRST_IMAGE_URL_INDEX = 0
+        private const val SECOND_IMAGE_URL_INDEX = 1
+        private const val THIRD_IMAGE_URL_INDEX = 2
+    }
+
     suspend fun execute(
         configuration: VoucherConfiguration,
         allProducts: List<SelectedProduct>,
@@ -63,9 +69,9 @@ class CreateCouponFacadeUseCase @Inject constructor(
             }
 
             val coupon = initiateCouponDeferred.await()
-            val imageUrl = generatedImagesDeferred.getOrNull(0)?.await().orEmpty()
-            val squareImageUrl = generatedImagesDeferred.getOrNull(1)?.await().orEmpty()
-            val portraitImageUrl = generatedImagesDeferred.getOrNull(2)?.await().orEmpty()
+            val imageUrl = generatedImagesDeferred.getOrNull(FIRST_IMAGE_URL_INDEX)?.await().orEmpty()
+            val squareImageUrl = generatedImagesDeferred.getOrNull(SECOND_IMAGE_URL_INDEX)?.await().orEmpty()
+            val portraitImageUrl = generatedImagesDeferred.getOrNull(THIRD_IMAGE_URL_INDEX)?.await().orEmpty()
 
             val createCouponDeferred = async {
                 val useCaseParam = UpdateCouponUseCase.UpdateCouponUseCaseParam(
