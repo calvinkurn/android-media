@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
@@ -198,7 +199,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
-        shippingDurationViewModels.removeIf { it.serviceData.serviceId == helper.shipment.serviceId }
+        shippingDurationViewModels.removeIf { it.serviceData.serviceId == helper.shipment.serviceId.toIntOrZero() }
         helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference
 
@@ -256,7 +257,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         }
         helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
-                shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId, recommendationServiceId = helper.secondDuration.serviceData.serviceId)
+                shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId.toString(), recommendationServiceId = helper.secondDuration.serviceData.serviceId.toString())
         )
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -314,8 +315,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             shipment = helper.shipment.copy(
-                recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId,
-                recommendationServiceId = helper.secondDuration.serviceData.serviceId
+                recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId.toString(),
+                recommendationServiceId = helper.secondDuration.serviceData.serviceId.toString()
             )
         )
 
@@ -358,7 +359,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         }
         helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
-                shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId, recommendationServiceId = helper.secondDuration.serviceData.serviceId)
+                shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId.toString(), recommendationServiceId = helper.secondDuration.serviceData.serviceId.toString())
         )
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -416,7 +417,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         helper.shippingRecommendationData.shippingDurationUiModels[0].shippingCourierViewModelList = firstDurationCouriers
         helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
-            shipment = helper.shipment.copy(recommendationSpId = helper.secondCourierFirstDuration.productData.shipperProductId, recommendationServiceId = helper.firstDuration.serviceData.serviceId)
+            shipment = helper.shipment.copy(recommendationSpId = helper.secondCourierFirstDuration.productData.shipperProductId.toString(), recommendationServiceId = helper.firstDuration.serviceData.serviceId.toString())
         )
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -522,7 +523,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             shipment = helper.shipment.copy(
-                spId = helper.secondCourierFirstDuration.productData.shipperProductId
+                spId = helper.secondCourierFirstDuration.productData.shipperProductId.toString()
             )
         )
 
@@ -565,7 +566,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             shipment = helper.shipment.copy(
-                spId = helper.secondCourierFirstDuration.productData.shipperProductId
+                spId = helper.secondCourierFirstDuration.productData.shipperProductId.toString()
             )
         )
 
