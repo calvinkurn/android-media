@@ -7,7 +7,6 @@ import com.tokopedia.csat_rating.R
 import com.tokopedia.csat_rating.quickfilter.ItemFilterViewHolder
 import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterListener
-import com.tokopedia.abstraction.R as RAbstraction
 
 open class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListener?) : ItemFilterViewHolder(itemView, listener) {
 
@@ -21,13 +20,19 @@ open class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListe
         val drawableInside = layoutInside?.background?.current?.mutate() as GradientDrawable
         val drawableBorder = layoutBorder?.background?.current?.mutate() as GradientDrawable
         if (selected) {
-            layoutInside?.context?.let { drawableBorder.setColor(MethodChecker.getColor(it,  com.tokopedia.unifyprinciples.R.color.Unify_GN500)) }
-            layoutBorder?.context?.let { drawableInside.setColor(MethodChecker.getColor(it,  R.color.csat_dms_reason_bg)) }
-            filterName?.context?.let { filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)) }
+            layoutInside?.context?.let { drawableBorder.setColor(MethodChecker.getColor(it,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN400)) }
+            layoutBorder?.context?.let { drawableInside.setColor(MethodChecker.getColor(it,
+                R.color.csat_dms_reason_bg)) }
+            filterName?.context?.let { filterName?.setTextColor(MethodChecker.getColor(it,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500)) }
         } else {
-            layoutInside?.context?.let { drawableBorder.setColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN300)) }
-            layoutBorder?.context?.let { drawableInside.setColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
-            filterName?.context?.let { filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN600)) }
+            layoutInside?.context?.let { drawableBorder.setColor(MethodChecker.getColor(it,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN300)) }
+            layoutBorder?.context?.let { drawableInside.setColor(MethodChecker.getColor(it,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+            filterName?.context?.let { filterName?.setTextColor(MethodChecker.getColor(it,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950)) }
         }
     }
 

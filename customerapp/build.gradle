@@ -70,7 +70,7 @@ def isEnableMacrobenchmarkUtil() {
 }
 
 project.ext {
-    defaultVersionCode = 418001101;
+    defaultVersionCode = 320400100;
     defaultVersionName = "4.01-test";
 }
 

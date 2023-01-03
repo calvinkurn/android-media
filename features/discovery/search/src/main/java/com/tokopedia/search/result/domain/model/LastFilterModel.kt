@@ -31,7 +31,7 @@ class LastFilterModel(
         val filters: List<SavedOption> = listOf(),
 
         @SerializedName("tracking_option")
-        val trackingOption: Int = 0,
+        val trackingOption: String = "0",
 
         @SerializedName("component_id")
         val componentId: String ="",
