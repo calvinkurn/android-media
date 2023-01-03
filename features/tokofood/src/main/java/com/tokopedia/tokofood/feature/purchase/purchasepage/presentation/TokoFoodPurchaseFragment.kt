@@ -177,16 +177,12 @@ class TokoFoodPurchaseFragment :
         return ""
     }
 
-    override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
-    }
-
     override fun getScreenName(): String {
         return ""
     }
 
     override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
-        return BaseMultiFragmentLaunchMode.STANDARD
+        return BaseMultiFragmentLaunchMode.SINGLE_TOP
     }
 
     override fun initInjector() {

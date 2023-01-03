@@ -69,12 +69,7 @@ object TokofoodRouteManager {
             if (f == null) {
                 RouteManager.route(activity, mappedUriString)
             } else {
-                // If the fragment could take new params, we should replace the existed same class fragment with the new one
-                if (f is MerchantPageFragment || f is OrderCustomizationFragment || f is TokoFoodCategoryFragment || f is SearchContainerFragment) {
-                    (activity as? BaseTokofoodActivity)?.navigateToNewFragment(f, true, isFinishCurrent)
-                } else {
-                    activity.navigateToNewFragment(f)
-                }
+                activity.navigateToNewFragment(f, isFinishCurrent)
             }
         }
     }

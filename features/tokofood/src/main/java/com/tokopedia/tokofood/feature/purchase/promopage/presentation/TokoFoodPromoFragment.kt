@@ -134,7 +134,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
+        navigateToNewFragment(fragment)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -299,7 +299,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                 setLabelTitle(fragmentUiModel.promoTitle)
                 setAmount(fragmentUiModel.promoAmountStr)
                 amountCtaView.setOnClickListener {
-                    (activity as? BaseTokofoodActivity)?.onBackPressed()
+                    onBackPressed()
                 }
             }
         }

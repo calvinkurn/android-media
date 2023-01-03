@@ -1,5 +1,5 @@
 package com.tokopedia.abstraction.base.view.fragment.enums
 
 enum class BaseMultiFragmentLaunchMode {
-    SINGLE_TASK, STANDARD
+    SINGLE_TASK, SINGLE_TOP
 }

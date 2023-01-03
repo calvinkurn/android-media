@@ -116,7 +116,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
-        return BaseMultiFragmentLaunchMode.STANDARD
+        return BaseMultiFragmentLaunchMode.SINGLE_TOP
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

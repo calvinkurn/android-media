@@ -13,7 +13,7 @@ abstract class BaseMultiFragment : BaseDaggerFragment(), IBaseMultiFragment {
     abstract override fun getFragmentToolbar(): Toolbar?
     abstract override fun getFragmentTitle(): String?
 
-    protected abstract fun getLaunchMode(): BaseMultiFragmentLaunchMode
+    abstract fun getLaunchMode(): BaseMultiFragmentLaunchMode
 
     override fun navigateToNewFragment(fragment: Fragment){
         (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)

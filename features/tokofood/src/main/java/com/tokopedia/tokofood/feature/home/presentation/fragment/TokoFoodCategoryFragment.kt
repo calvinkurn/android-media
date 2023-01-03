@@ -9,16 +9,13 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
-import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -44,7 +41,6 @@ import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -219,10 +215,6 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
                 .build()
                 .inject(this)
         }
-    }
-
-    override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
     override fun onClickRetryError() {
@@ -523,7 +515,6 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
     }
 
     private fun setRvPadding(isShowMiniCart: Boolean) {
-
         rvCategory?.let {
             if (isShowMiniCart){
                 it.setPadding(0,0, 0, context?.resources?.

@@ -890,7 +890,7 @@ class SearchResultFragment :
     }
 
     private fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
+        navigateToNewFragment(fragment)
     }
 
     companion object {

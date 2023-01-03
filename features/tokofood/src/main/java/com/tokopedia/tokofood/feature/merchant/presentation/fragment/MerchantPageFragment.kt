@@ -17,7 +17,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,7 +59,6 @@ import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -352,10 +350,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         updateQuantityJob?.cancel()
     }
 
-    override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
-    }
-
     private fun setToolbarBackIconUnify() {
         binding?.toolbarMerchantPage?.setBackIconUnify()
     }
@@ -625,7 +619,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun observeLiveData() {
-        viewModel.getMerchantDataResult.observe(viewLifecycleOwner, { result ->
+        viewModel.getMerchantDataResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     val merchantData = result.data.tokofoodGetMerchantData
@@ -645,7 +639,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                         val name = merchantProfile.name
                         val address = merchantProfile.address
                         val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
+                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(
+                            today,
+                            merchantProfile.opsHourDetail
+                        )
                         setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
                         // render product list
                         val isShopClosed = merchantProfile.opsHourFmt.isWarning
@@ -684,9 +681,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                     )
                 }
             }
-        })
+        }
 
-        viewModel.chooseAddress.observe(viewLifecycleOwner, {
+        viewModel.chooseAddress.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     setupChooseAddress(it.data)
@@ -701,7 +698,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     )
                 }
             }
-        })
+        }
 
         viewModel.mvcLiveData.observe(viewLifecycleOwner) {
             renderMvc(it)

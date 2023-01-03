@@ -265,7 +265,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener,
     }
 
     private fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
+        navigateToNewFragment(fragment)
     }
 
     private fun logExceptionToServerLogger(
