@@ -2218,9 +2218,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
                         ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
                         if (validateUsePromoRequest != null) {
-                            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                                if (ordersItem != null && ordersItem.getCodes().size() > 0) {
-                                    ordersItem.getCodes().remove(promoLogisticCode);
+                            if (shipmentCartItemModel.isFreeShippingPlus()) {
+                                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                                    if (ordersItem != null && ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) &&
+                                            ordersItem.getCodes().size() > 0) {
+                                        ordersItem.getCodes().remove(promoLogisticCode);
+                                    }
+                                }
+                            }
+                            else {
+                                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                                    if (ordersItem != null && ordersItem.getCodes().size() > 0) {
+                                        ordersItem.getCodes().remove(promoLogisticCode);
+                                    }
                                 }
                             }
                         }
