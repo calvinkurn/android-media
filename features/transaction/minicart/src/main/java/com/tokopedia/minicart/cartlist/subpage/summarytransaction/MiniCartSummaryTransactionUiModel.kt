@@ -3,11 +3,11 @@ package com.tokopedia.minicart.cartlist.subpage.summarytransaction
 data class MiniCartSummaryTransactionUiModel(
         var qty: Int = 0,
         var totalWording: String = "",
-        var totalValue: Long = 0,
+        var totalValue: Double = 0.0,
         var discountTotalWording: String = "",
-        var discountValue: Long = 0,
+        var discountValue: Double = 0.0,
         var paymentTotalWording: String = "",
-        var paymentTotal: Long = 0,
+        var paymentTotal: Double = 0.0,
         var sellerCashbackWording: String = "",
-        var sellerCashbackValue: Long = 0
+        var sellerCashbackValue: Double = 0.0
 )
