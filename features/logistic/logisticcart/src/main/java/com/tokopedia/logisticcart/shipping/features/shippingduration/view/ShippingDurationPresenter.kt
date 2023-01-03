@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
-import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
@@ -56,19 +55,29 @@ class ShippingDurationPresenter @Inject constructor(
         shipmentDetailData: ShipmentDetailData,
         selectedServiceId: Int,
         shopShipmentList: List<ShopShipment>,
-        codHistory: Int, isCorner: Boolean,
-        isLeasing: Boolean, pslCode: String,
-        products: List<Product>, cartString: String,
+        codHistory: Int,
+        isCorner: Boolean,
+        isLeasing: Boolean,
+        pslCode: String,
+        products: List<Product>,
+        cartString: String,
         isTradeInDropOff: Boolean,
         recipientAddressModel: RecipientAddressModel?,
-        isFulfillment: Boolean, preOrderTime: Int,
-        mvc: String, cartData: String, isOcc: Boolean, isDisableCourierPromo: Boolean
+        isFulfillment: Boolean,
+        preOrderTime: Int,
+        mvc: String,
+        cartData: String,
+        isOcc: Boolean,
+        isDisableCourierPromo: Boolean
     ) {
         view?.let {
             it.showLoading()
             val shippingParam = getShippingParam(
-                shipmentDetailData, products, cartString,
-                isTradeInDropOff, recipientAddressModel
+                shipmentDetailData,
+                products,
+                cartString,
+                isTradeInDropOff,
+                recipientAddressModel
             )
             var selectedSpId = 0
             shipmentDetailData.selectedCourier?.let { selectedCourier ->
@@ -93,11 +102,19 @@ class ShippingDurationPresenter @Inject constructor(
     }
 
     private fun loadDuration(
-        selectedSpId: Int, selectedServiceId: Int, codHistory: Int,
-        isCorner: Boolean, isLeasing: Boolean,
-        shopShipmentList: List<ShopShipment>, isRatesTradeInApi: Boolean,
-        shippingParam: ShippingParam, pslCode: String,
-        mvc: String, cartData: String, isOcc: Boolean, disableCourierPromo: Boolean
+        selectedSpId: Int,
+        selectedServiceId: Int,
+        codHistory: Int,
+        isCorner: Boolean,
+        isLeasing: Boolean,
+        shopShipmentList: List<ShopShipment>,
+        isRatesTradeInApi: Boolean,
+        shippingParam: ShippingParam,
+        pslCode: String,
+        mvc: String,
+        cartData: String,
+        isOcc: Boolean,
+        disableCourierPromo: Boolean
     ) {
         val param = RatesParam.Builder(shopShipmentList, shippingParam)
             .isCorner(isCorner)
@@ -232,16 +249,22 @@ class ShippingDurationPresenter @Inject constructor(
         return shippingParam
     }
 
-    override fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
-        for (shippingCourierUiModel in shippingCourierUiModels) {
-            if (shippingCourierUiModel.productData.isRecommend &&
-                !shippingCourierUiModel.productData.isUiRatesHidden &&
-                shippingCourierUiModel.productData.error?.errorMessage?.isEmpty() != false
-            ) {
-                return shippingCourierUiModel
-            }
-        }
-        return null
+    private fun findRecommendedCourier(
+        serviceData: ServiceData,
+        shippingCourierUiModelList: List<ShippingCourierUiModel>
+    ): ShippingCourierUiModel? {
+        return shippingCourierUiModelList.takeIf { serviceData.selectedShipperProductId > 0 }
+            ?.find { shippingCourierUiModel -> shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId }
+            ?: shippingCourierUiModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden && it.productData.error?.errorMessage?.isEmpty() != false }
+    }
+
+    private fun findAutoSelectedCourier(
+        serviceData: ServiceData,
+        shippingCourierUiModelList: List<ShippingCourierUiModel>
+    ): ShippingCourierUiModel {
+        return findRecommendedCourier(serviceData, shippingCourierUiModelList)
+            ?: shippingCourierUiModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
+            ?: shippingCourierUiModelList.first()
     }
 
     override fun getCourierItemDataById(
@@ -305,37 +328,51 @@ class ShippingDurationPresenter @Inject constructor(
 
     override fun onChooseDuration(
         shippingCourierUiModelList: List<ShippingCourierUiModel>,
-        cartPosition: Int, serviceData: ServiceData
+        cartPosition: Int,
+        serviceData: ServiceData,
+        isOcc: Boolean
     ) {
         var flagNeedToSetPinpoint = false
         var selectedServiceId = 0
-        if (view?.isToogleYearEndPromotionOn() == true) {
+        val selectedShippingCourierUiModel = if (isOcc) {
+            findAutoSelectedCourier(
+                serviceData,
+                shippingCourierUiModelList
+            )
+        } else {
+            findRecommendedCourier(serviceData, shippingCourierUiModelList)
+        }
+        if (view?.isToogleYearEndPromotionOn() == true && !isOcc) {
             if (serviceData.error != null && serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED &&
-                !TextUtils.isEmpty(serviceData.error.errorMessage)
+                serviceData.error.errorMessage.isNotEmpty()
             ) {
                 flagNeedToSetPinpoint = true
                 selectedServiceId = serviceData.serviceId
             }
         } else {
-            for (shippingCourierUiModel in shippingCourierUiModelList) {
+            shippingCourierUiModelList.forEach { shippingCourierUiModel ->
                 shippingCourierUiModel.isSelected =
-                    if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else (shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden)
-                if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                    flagNeedToSetPinpoint = true
+                    shippingCourierUiModel == selectedShippingCourierUiModel
+                if (shippingCourierUiModel.productData.error != null &&
+                    shippingCourierUiModel.productData.error.errorMessage != null &&
+                    shippingCourierUiModel.productData.error.errorId != null &&
+                    shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                ) {
                     selectedServiceId = shippingCourierUiModel.serviceData.serviceId
-                    shippingCourierUiModel.serviceData.texts.textRangePrice =
-                        shippingCourierUiModel.productData.error.errorMessage
+                    flagNeedToSetPinpoint = true
+                    if (!isOcc) {
+                        shippingCourierUiModel.serviceData.texts.textRangePrice =
+                            shippingCourierUiModel.productData.error.errorMessage
+                    }
                 }
             }
         }
-        val courierData =
-            if (serviceData.selectedShipperProductId > 0) getCourierItemDataById(
-                serviceData.selectedShipperProductId,
-                shippingCourierUiModelList
-            ) else getCourierItemData(shippingCourierUiModelList)
         view?.onShippingDurationAndRecommendCourierChosen(
             shippingCourierUiModelList,
-            courierData, cartPosition, selectedServiceId, serviceData,
+            selectedShippingCourierUiModel,
+            cartPosition,
+            selectedServiceId,
+            serviceData,
             flagNeedToSetPinpoint
         )
     }
@@ -356,8 +393,13 @@ class ShippingDurationPresenter @Inject constructor(
             return
         }
         view?.onLogisticPromoChosen(
-            shippingDurationUiModel.shippingCourierViewModelList, courierData,
-            shippingDurationUiModel.serviceData, false, data.promoCode, data.serviceId, data
+            shippingDurationUiModel.shippingCourierViewModelList,
+            courierData,
+            shippingDurationUiModel.serviceData,
+            false,
+            data.promoCode,
+            data.serviceId,
+            data
         )
     }
 }

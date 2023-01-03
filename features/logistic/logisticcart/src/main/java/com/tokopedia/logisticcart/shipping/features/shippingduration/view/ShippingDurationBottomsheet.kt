@@ -24,7 +24,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -73,13 +72,19 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         selectedServiceId: Int,
         shopShipmentList: List<ShopShipment>,
         recipientAddressModel: RecipientAddressModel? = null,
-        cartPosition: Int, codHistory: Int = -1,
-        isLeasing: Boolean = false, pslCode: String = "",
-        products: ArrayList<Product>, cartString: String,
+        cartPosition: Int,
+        codHistory: Int = -1,
+        isLeasing: Boolean = false,
+        pslCode: String = "",
+        products: ArrayList<Product>,
+        cartString: String,
         isDisableOrderPrioritas: Boolean,
         isTradeInDropOff: Boolean = false,
-        isFulFillment: Boolean = false, preOrderTime: Int = -1,
-        mvc: String = "", cartData: String, isOcc: Boolean
+        isFulFillment: Boolean = false,
+        preOrderTime: Int = -1,
+        mvc: String = "",
+        cartData: String,
+        isOcc: Boolean
     ) {
         this.activity = activity
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
@@ -236,7 +241,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         rvDuration?.adapter = shippingDurationAdapter
     }
 
-
     /*
     Section: Shipping Duration View
     */
@@ -361,9 +365,10 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     override fun onShippingDurationChoosen(
         shippingCourierUiModelList: List<ShippingCourierUiModel>,
-        cartPosition: Int, serviceData: ServiceData
+        cartPosition: Int,
+        serviceData: ServiceData
     ) {
-        presenter?.onChooseDuration(shippingCourierUiModelList, cartPosition, serviceData)
+        presenter?.onChooseDuration(shippingCourierUiModelList, cartPosition, serviceData, isOcc)
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {

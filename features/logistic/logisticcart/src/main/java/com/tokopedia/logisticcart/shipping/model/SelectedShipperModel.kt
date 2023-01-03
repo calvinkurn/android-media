@@ -35,7 +35,7 @@ data class SelectedShipperModel(
     var freeShippingMetadata: String = "",
     var benefitClass: String = "",
     var shippingSubsidy: Long = 0,
-    var boCampaignId: Long = 0,
+    var boCampaignId: Long = 0
 ) {
     fun updateSelectedShipper(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
         scheduleDeliveryUiModel?.takeIf { it.isSelected }?.let { scheduleDelivery ->
@@ -46,7 +46,6 @@ data class SelectedShipperModel(
             shipperProductId = scheduleDelivery.deliveryProduct.shipperProductId.toInt()
             shipperPrice = scheduleDelivery.deliveryProduct.finalPrice.roundToInt()
             serviceId = scheduleDelivery.deliveryProduct.serviceId.toInt()
-
             insurancePrice = scheduleDelivery.deliveryProduct.insurance.insurancePrice.roundToInt()
             insuranceType = scheduleDelivery.deliveryProduct.insurance.insuranceType
             insuranceUsedType = scheduleDelivery.deliveryProduct.insurance.insuranceUsedType
