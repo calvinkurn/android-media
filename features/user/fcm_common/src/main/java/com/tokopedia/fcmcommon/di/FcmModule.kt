@@ -29,16 +29,16 @@ class FcmModule(@ApplicationContext private val context: Context) {
     @Provides
     @FcmScope
     fun provideFcmManager(
-            updateFcmTokenUseCase: UpdateFcmTokenUseCase,
-            sharedPreferences: SharedPreferences,
-            userSession: UserSessionInterface,
-            sendTokenToCMUseCase: SendTokenToCMUseCase
+        updateFcmTokenUseCase: UpdateFcmTokenUseCase,
+        sharedPreferences: SharedPreferences,
+        userSession: UserSessionInterface,
+        sendTokenToCMUseCase: SendTokenToCMUseCase
     ): FirebaseMessagingManager {
         return FirebaseMessagingManagerImpl(
-                updateFcmTokenUseCase,
-                sharedPreferences,
-                userSession,
-                sendTokenToCMUseCase
+            updateFcmTokenUseCase,
+            sharedPreferences,
+            userSession,
+            sendTokenToCMUseCase
         )
     }
 
@@ -61,7 +61,7 @@ class FcmModule(@ApplicationContext private val context: Context) {
     @Provides
     @FcmScope
     fun provideFcmTokenUseCase(
-            useCase: GraphqlUseCase<UpdateFcmTokenResponse>
+        useCase: GraphqlUseCase<UpdateFcmTokenResponse>
     ): UpdateFcmTokenUseCase {
         val query = loadRaw(context.resources, R.raw.query_update_fcm_token)
         return UpdateFcmTokenUseCase(useCase, query)
@@ -69,12 +69,13 @@ class FcmModule(@ApplicationContext private val context: Context) {
 
     @Provides
     @FcmScope
-    fun provideFcmTokenCMUseCase(): SendTokenToCMUseCase {
-        return SendTokenToCMUseCase(context, R.raw.query_send_token_to_server)
+    fun provideFcmTokenCMUseCase(
+        userSession: UserSessionInterface
+    ): SendTokenToCMUseCase {
+        return SendTokenToCMUseCase(context, userSession)
     }
 
     @Provides
     @FcmScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
 }

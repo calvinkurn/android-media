@@ -8,11 +8,8 @@ import android.text.TextUtils
 import com.tokopedia.fcmcommon.common.FcmCacheHandler
 import com.tokopedia.fcmcommon.common.FcmConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 object FcmTokenUtils {
 
@@ -43,7 +40,13 @@ object FcmTokenUtils {
         return true
     }
 
-    fun isTokenExpired(cacheHandler: FcmCacheHandler, newToken: String, userId: String, gAdId: String, appVersionName: String): Boolean {
+    fun isTokenExpired(
+        cacheHandler: FcmCacheHandler,
+        newToken: String,
+        userId: String,
+        gAdId: String,
+        appVersionName: String
+    ): Boolean {
         return tokenUpdateRequired(newToken, cacheHandler) ||
             mapTokenWithUserRequired(userId, cacheHandler) ||
             mapTokenWithGAdsIdRequired(gAdId, cacheHandler) ||
@@ -75,7 +78,10 @@ object FcmTokenUtils {
         return userIdInt
     }
 
-    private fun mapTokenWithUserRequired(newUserId: String, cacheHandler: FcmCacheHandler): Boolean {
+    private fun mapTokenWithUserRequired(
+        newUserId: String,
+        cacheHandler: FcmCacheHandler
+    ): Boolean {
         val oldUserID = cacheHandler.getStringValue(FcmConstant.USERID_CACHE_KEY)
         if (TextUtils.isEmpty(oldUserID)) {
             return !TextUtils.isEmpty(newUserId)
@@ -97,7 +103,10 @@ object FcmTokenUtils {
         return true
     }
 
-    private fun mapTokenWithAppVersionRequired(appVersionName: String, cacheHandler: FcmCacheHandler): Boolean {
+    private fun mapTokenWithAppVersionRequired(
+        appVersionName: String,
+        cacheHandler: FcmCacheHandler
+    ): Boolean {
         val oldAppVersionName = try {
             cacheHandler.getStringValue(FcmConstant.APP_VERSION_CACHE_KEY)
         } catch (e: ClassCastException) {
@@ -110,7 +119,10 @@ object FcmTokenUtils {
             }
         }
         Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
-        return TextUtils.isEmpty(oldAppVersionName) || !oldAppVersionName.equals(appVersionName, ignoreCase = true)
+        return TextUtils.isEmpty(oldAppVersionName) || !oldAppVersionName.equals(
+            appVersionName,
+            ignoreCase = true
+        )
     }
 
     fun getUniqueAppId(context: Context): String {
@@ -128,14 +140,20 @@ object FcmTokenUtils {
         cacheHandler.saveStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY, token)
     }
 
-    fun getToken(context: Context): String? = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS).getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
+    fun getToken(context: Context): String? = FcmCacheHandler(
+        context,
+        CACHE_CM_NOTIFICATIONS
+    ).getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
 
     fun saveUserId(context: Context, userId: String) {
         val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
         cacheHandler.saveStringValue(FcmConstant.USERID_CACHE_KEY, userId)
     }
 
-    fun getUserId(context: Context): String? = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS).getStringValue(FcmConstant.USERID_CACHE_KEY)
+    fun getUserId(context: Context): String? = FcmCacheHandler(
+        context,
+        CACHE_CM_NOTIFICATIONS
+    ).getStringValue(FcmConstant.USERID_CACHE_KEY)
 
     fun saveGAdsIdId(context: Context, gAdsId: String) {
         val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
@@ -189,16 +207,3 @@ object FcmTokenUtils {
         return macAddress
     }
 }
-
-fun CoroutineScope.launchCatchError(
-    context: CoroutineContext = coroutineContext,
-    block: suspend (() -> Unit),
-    onError: (Throwable) -> Unit
-) =
-    launch(context) {
-        try {
-            block.invoke()
-        } catch (t: Throwable) {
-            onError(t)
-        }
-    }

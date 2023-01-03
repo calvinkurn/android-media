@@ -598,7 +598,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 ),
                 PreferenceManager.getDefaultSharedPreferences(context),
                 userSession,
-                new SendTokenToCMUseCase(getApplicationContext(), com.tokopedia.fcmcommon.R.raw.query_send_token_to_server)
+                new SendTokenToCMUseCase(
+                        getApplicationContext(),
+                        userSession
+                )
         );
     }
 }

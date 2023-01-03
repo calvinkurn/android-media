@@ -1,45 +1,44 @@
 package com.tokopedia.fcmcommon.domain
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
+import com.tokopedia.fcmcommon.R
 import com.tokopedia.fcmcommon.common.FcmCacheHandler
 import com.tokopedia.fcmcommon.common.FcmConstant
 import com.tokopedia.fcmcommon.data.TokenResponse
 import com.tokopedia.fcmcommon.utils.FcmRemoteConfigUtils
 import com.tokopedia.fcmcommon.utils.FcmTokenUtils
-import com.tokopedia.fcmcommon.utils.launchCatchError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class SendTokenToCMUseCase(
-    private val mContext: Context,
-    private val rawQuery: Int
+class SendTokenToCMUseCase @Inject constructor(
+    @ApplicationContext private val mContext: Context,
+    private val userSession: UserSessionInterface
 ) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
 
     private var token: String? = null
-    private val handler = Handler(Looper.getMainLooper())
     private lateinit var graphQlUseCase: GraphqlUseCase
     private val fcmRemoteConfigUtils by lazy {
         FcmRemoteConfigUtils(mContext)
@@ -51,23 +50,6 @@ class SendTokenToCMUseCase(
         )
     private val remoteDelaySeconds: Long
         get() = fcmRemoteConfigUtils.getLongRemoteConfig("app_token_send_delay", 60)
-
-    private var runnable: Runnable = Runnable {
-        launchCatchError(block = {
-            sendFcmTokenToServerGQL(token)
-        }, onError = {
-                ServerLogger.log(
-                    Priority.P2,
-                    "CM_VALIDATION",
-                    mapOf(
-                        "type" to "exception",
-                        "err" to Log.getStackTraceString(it)
-                            .take(FcmConstant.MAX_LIMIT),
-                        "data" to ""
-                    )
-                )
-            })
-    }
 
     private val googleAdId: String
         get() {
@@ -133,21 +115,16 @@ class SendTokenToCMUseCase(
 
     private val userId: String
         get() {
-            val userSession: UserSessionInterface = UserSession(mContext)
             userSession.userId?.let {
                 return it
             }
             return ""
         }
 
-    fun updateToken(token: String, userAction: Boolean) {
+    fun updateToken(token: String) {
         try {
-            var delay = getRandomDelay(remoteDelaySeconds)
-            if (userAction) {
-                delay = 0L
-            }
             this.token = token
-            handler.postDelayed(runnable, delay)
+            sendTokenToCMServer()
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
@@ -161,23 +138,21 @@ class SendTokenToCMUseCase(
         }
     }
 
-    fun cancelRunnable() {
-        try {
-            handler.removeCallbacks(runnable)
-            if (::graphQlUseCase.isInitialized) {
-                graphQlUseCase.unsubscribe()
-            }
-        } catch (e: Exception) {
-            ServerLogger.log(
-                Priority.P2,
-                "CM_VALIDATION",
-                mapOf(
-                    "type" to "exception",
-                    "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
-                    "data" to ""
+    private fun sendTokenToCMServer() {
+        launchCatchError(block = {
+            sendFcmTokenToServerGQL(token)
+        }, onError = {
+                ServerLogger.log(
+                    Priority.P2,
+                    "CM_VALIDATION",
+                    mapOf(
+                        "type" to "exception",
+                        "err" to Log.getStackTraceString(it)
+                            .take(FcmConstant.MAX_LIMIT),
+                        "data" to ""
+                    )
                 )
-            )
-        }
+            })
     }
 
     private fun sendFcmTokenToServerGQL(token: String?) {
@@ -208,7 +183,10 @@ class SendTokenToCMUseCase(
                 graphQlUseCase = GraphqlUseCase()
 
                 val request = GraphqlRequest(
-                    GraphqlHelper.loadRawString(mContext.resources, rawQuery),
+                    GraphqlHelper.loadRawString(
+                        mContext.resources,
+                        R.raw.query_send_token_to_server
+                    ),
                     TokenResponse::class.java,
                     requestParams,
                     "AddToken"
@@ -331,13 +309,6 @@ class SendTokenToCMUseCase(
                 }
             }
         })
-    }
-
-    private fun getRandomDelay(randomDelaySeconds: Long): Long {
-        val rand = Random()
-        val millis = rand.nextInt(1000) + 1 // in millis delay
-        val seconds = rand.nextInt(randomDelaySeconds.toInt()) + 1 // in seconds
-        return (seconds * 1000 + millis).toLong()
     }
 
     companion object {
