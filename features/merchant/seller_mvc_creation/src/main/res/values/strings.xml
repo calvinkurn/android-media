@@ -26,23 +26,20 @@
     <string name="smvc_empty_state_search_result_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
     <string name="smvc_no_showcase">Tokomu belum punya etalase</string>
     <string name="smvc_no_showcase_description">Etalase yang tampil di sini adalah etalase yang dibuat sendiri.</string>
-
     <string name="smvc_placeholder_max_selected_product">Maks. %d Produk</string>
     <string name="smvc_placeholder_selected_product_count">%d/%d</string>
     <string name="smvc_placeholder_check_all_selected_product_count">%d / %d terpilih</string>
     <string name="smvc_placeholder_product_sku">SKU %s</string>
     <string name="smvc_placeholder_product_sold_count">Terjual: %s</string>
     <string name="smvc_placeholder_variant_product_count">%d Varian Produk</string>
-
     <string name="smvc_placeholder_selected_variant_product_count">&lt;b>%d&lt;/b>/%d Varian Produk Terpilih</string>
-
     <string name="smvc_placeholder_product_price_range">Rp%s - Rp%s</string>
     <string name="smvc_placeholder_product_price">Rp%s</string>
     <string name="smvc_placeholder_total_stock">Total stok: %s</string>
     <string name="smvc_placeholder_selected_category_count">%d Kategori</string>
     <string name="smvc_placeholder_selected_showcase_count">%d Etalase</string>
     <string name="smvc_placeholder_selected_variant_count">Pilih (%d)</string>
-    <string name="smvc_placholder_stock">Stok: %d</string>
+    <string name="smvc_placeholder_stock">Stok: %s</string>
 
     <!--Product List page-->
     <string name="smvc_product_list">Daftar Produk</string>

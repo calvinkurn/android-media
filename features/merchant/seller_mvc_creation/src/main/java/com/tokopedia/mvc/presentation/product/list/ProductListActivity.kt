@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
@@ -16,7 +18,8 @@ class ProductListActivity : AppCompatActivity() {
         fun start(
             context: Context,
             voucherConfiguration: VoucherConfiguration,
-            selectedProducts: List<SelectedProduct>
+            selectedProducts: List<SelectedProduct>,
+            selectedWarehouseId: Long
         ) {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
@@ -25,16 +28,45 @@ class ProductListActivity : AppCompatActivity() {
                     ArrayList(selectedProducts)
                 )
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                putLong(BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
             }
             val starter = Intent(context, ProductListActivity::class.java)
                 .putExtras(bundle)
             context.startActivity(starter)
         }
 
-        fun buildEditModeIntent(
+        fun buildIntentForVoucherSummaryPage(
             context: Context,
+            pageMode: PageMode,
             voucherConfiguration: VoucherConfiguration,
-            selectedProducts: List<SelectedProduct>
+            showCtaChangeProductOnToolbar: Boolean,
+            selectedProducts: List<SelectedProduct>,
+            selectedWarehouseId: Long
+        ): Intent {
+            val bundle = Bundle().apply {
+                putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
+                putParcelableArrayList(
+                    BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS,
+                    ArrayList(selectedProducts)
+                )
+                putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                putBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR, showCtaChangeProductOnToolbar)
+                putBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE, true)
+                putLong(BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
+            }
+
+            val intent = Intent(context, ProductListActivity::class.java)
+            intent.putExtras(bundle)
+
+            return intent
+        }
+
+        fun buildIntentForVoucherDetailPage(
+            context: Context,
+            showCtaChangeProductOnToolbar: Boolean,
+            voucherConfiguration: VoucherConfiguration,
+            selectedProducts: List<SelectedProduct>,
+            selectedWarehouseId: Long
         ): Intent {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.EDIT)
@@ -43,6 +75,9 @@ class ProductListActivity : AppCompatActivity() {
                     ArrayList(selectedProducts)
                 )
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                putBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR, showCtaChangeProductOnToolbar)
+                putBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE, false)
+                putLong(BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID, selectedWarehouseId)
             }
 
             val intent = Intent(context, ProductListActivity::class.java)
@@ -57,6 +92,9 @@ class ProductListActivity : AppCompatActivity() {
         intent?.extras?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS)
     }
     private val voucherConfiguration by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
+    private val showCtaChangeProductOnToolbar by lazy { intent?.extras?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR) }
+    private val isEntryPointFromVoucherSummaryPage by lazy { intent?.extras?.getBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE) }
+    private val selectedWarehouseId by lazy { intent?.extras?.getLong(BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID).orZero() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,9 +103,22 @@ class ProductListActivity : AppCompatActivity() {
         val pageMode = pageMode ?: return
         val voucherConfiguration = voucherConfiguration ?: return
         val products = (selectedProducts as? List<SelectedProduct>).orEmpty()
+        val showCtaChangeProductOnToolbar = showCtaChangeProductOnToolbar.orFalse()
+        val isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage.orFalse()
+        val selectedWarehouseId = this.selectedWarehouseId.orZero()
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, ProductListFragment.newInstance(pageMode, voucherConfiguration, products))
+            .replace(
+                R.id.container,
+                ProductListFragment.newInstance(
+                    pageMode,
+                    voucherConfiguration,
+                    products,
+                    showCtaChangeProductOnToolbar,
+                    isEntryPointFromVoucherSummaryPage,
+                    selectedWarehouseId
+                )
+            )
             .commit()
     }
 

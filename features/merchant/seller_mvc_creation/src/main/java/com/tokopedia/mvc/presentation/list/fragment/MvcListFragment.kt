@@ -493,7 +493,6 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
             minPurchase = 50_000,
             productIds = emptyList(),
             targetBuyer = VoucherTargetBuyer.ALL_BUYER,
-            0,
             totalPeriod = 0
         )
 

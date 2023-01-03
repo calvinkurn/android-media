@@ -9,6 +9,7 @@ import java.util.*
 
 @Parcelize
 data class VoucherConfiguration(
+    val voucherId: Long = 0,
     val benefitIdr: Long = 0,
     val benefitMax: Long = 0,
     val benefitPercent: Int = 0,
@@ -25,5 +26,6 @@ data class VoucherConfiguration(
     val voucherCode: String = "",
     val startPeriod: Date = Date(),
     val endPeriod: Date = Date(),
-    val totalPeriod: Int = 0
+    val totalPeriod: Int = 0,
+    val warehouseId: Long = 0
 ) : Parcelable

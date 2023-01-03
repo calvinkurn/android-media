@@ -889,12 +889,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
-        val intent = ProductListActivity.buildEditModeIntent(
-            activity ?: return,
-            voucherDetail.toVoucherConfiguration(),
-            voucherDetail.toSelectedProducts()
+        val intent = ProductListActivity.buildIntentForVoucherDetailPage(
+            context = activity ?: return,
+            showCtaChangeProductOnToolbar = voucherDetail.voucherStatus == VoucherStatus.PROCESSING,
+            voucherConfiguration = voucherDetail.toVoucherConfiguration(),
+            selectedProducts = voucherDetail.toSelectedProducts(),
+            selectedWarehouseId = voucherDetail.warehouseId
         )
 
-        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION)
     }
 }

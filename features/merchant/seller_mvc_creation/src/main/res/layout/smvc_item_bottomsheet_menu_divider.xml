@@ -2,7 +2,7 @@
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/viewMvcHorizontalLine"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/mvc_dimen_1dp"
-    android:layout_marginTop="@dimen/mvc_dimen_12dp"
-    android:layout_marginBottom="@dimen/mvc_dimen_12dp"
+    android:layout_height="1dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
     android:background="@color/Neutral_N75" />
