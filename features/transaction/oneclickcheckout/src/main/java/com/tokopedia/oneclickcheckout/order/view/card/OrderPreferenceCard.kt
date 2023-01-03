@@ -453,7 +453,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             }
             setMultiViewsOnClickListener(iconReloadShipping, btnReloadShipping) {
                 if (profile.enable) {
-                    listener.reloadShipping(shop.shopId.toString())
+                    listener.reloadShipping(shop.shopId)
                 }
             }
             btnReloadShipping.visible()
@@ -902,7 +902,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
             setMultiViewsOnClickListener(tvAddressName, tvAddressDetail, btnChangeAddress) {
                 if (profile.enable) {
-                    listener.chooseAddress(addressModel.addressId.toString())
+                    listener.chooseAddress(addressModel.addressId)
                 }
             }
         }

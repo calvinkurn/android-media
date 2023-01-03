@@ -31,7 +31,7 @@ class UpdateCartTest : BaseCartTest() {
                 isError = false
                 isBundlingItem = false
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
                 trackerAttribution = "t"
                 category = "c"
@@ -40,7 +40,7 @@ class UpdateCartTest : BaseCartTest() {
                 isError = false
                 isBundlingItem = true
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
                 trackerAttribution = "t"
                 category = "c"
@@ -49,7 +49,7 @@ class UpdateCartTest : BaseCartTest() {
                 isError = true
                 isBundlingItem = true
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
                 trackerAttribution = "t"
                 category = "c"
@@ -79,7 +79,7 @@ class UpdateCartTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
             })
         }
@@ -107,7 +107,7 @@ class UpdateCartTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = false
-                productPrice = 1000000
+                productPrice = 1000000.0
                 quantity = 10
             })
         }
@@ -409,7 +409,7 @@ class UpdateCartTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
             })
         }
@@ -438,7 +438,7 @@ class UpdateCartTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
             })
         }
@@ -467,7 +467,7 @@ class UpdateCartTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
             })
         }
@@ -545,7 +545,7 @@ class UpdateCartTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
             })
         }
@@ -573,7 +573,7 @@ class UpdateCartTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
             })
         }
