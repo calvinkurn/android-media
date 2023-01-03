@@ -167,7 +167,7 @@
 
 
     <string name="group_detail_bid_otomatis">Diatur Otomatis</string>
-    <string name="autobid_otomatis">Otomatis</string>
+    <string name="autobid_otomatis">Diatur Sistem Topads</string>
     <string name="autobid_manual">Manual</string>
     <string name="autobid_list_step">Pengaturan Iklan</string>
     <string name="autobid_selection_tip_1">Saat kamu bingung menentukan biaya iklan\n dan kata kunci yang tepat.</string>
@@ -179,6 +179,17 @@
     <string name="autobid_manual_desc">Tentukan sendiri biaya iklan dan kata kunci sesuai\n strategi beriklanmu.</string>
     <string name="autobid_otomatis_ticker_title">Kata kunci dan biaya iklan otomatis</string>
     <string name="autobid_otomatis_ticker_desc">Iklanmu sudah diatur secara optimal oleh TopAds.</string>
+
+    <string name="pengaturan_iklan_title_1">Diatur Sistem TopAds</string>
+    <string name="pengaturan_iklan_title_2">Diatur Manual oleh Seller</string>
+    <string name="pengaturan_iklan_auto_1">Pilih produk &amp; anggaran harian sesuai kebutuhan</string>
+    <string name="pengaturan_iklan_auto_2">Kata kunci akan dipilihkan oleh sistem TopAds</string>
+    <string name="pengaturan_iklan_auto_3">Biaya iklan setiap kata kunci diatur rutin sesuai tren</string>
+    <string name="pengaturan_iklan_auto_4">Lebih praktis untuk memaksimalkan penjualan</string>
+    <string name="pengaturan_iklan_manual_1">Pilih produk &amp; anggaran harian sesuai kebutuhan</string>
+    <string name="pengaturan_iklan_manual_2">Pilih kata kunci sesuai strategi beriklanmu</string>
+    <string name="pengaturan_iklan_manual_3">Atur biaya setiap kata kunci yang kamu pilih</string>
+    <string name="pengaturan_iklan_manual_4">Lebih banyak pengaturan yang bisa kamu sesuaikan sendiri</string>
 
     <string name="topads_common_per_click">per klik</string>
     <string name="topads_common_selected_keyword">Kata kunci dipilih (%d)</string>
@@ -210,6 +221,8 @@
     <string name="ad_placement_ticket_description_pencerian">Penempatan Iklan di Pencarian adalah penempatan iklan yang muncul saat pengguna melakukan pencarian produk.</string>
     <string name="bid_edit_search_successful">Biaya Iklan Pencarian baru berhasil diterapkan.</string>
     <string name="bid_edit_browse_successful">Biaya iklan rekomendasi baru berhasil diterapkan.</string>
+    <string name="bid_state_changed_manual_successful">Grup iklan berhasil diubah ke Pengaturan Manual.</string>
+    <string name="bid_state_changed_automatic_successful">Grup iklan berhasil diubah ke Diatur Sistem TopAds.</string>
 
     <string name="empty_bid_error_message">Tidak boleh kosong</string>
 
@@ -241,4 +254,15 @@
     <string name="topads_common_automatic_dialog_description">Biaya iklan dan kata kunci akan diatur oleh TopAds untuk memaksimalkan penjualanmu.</string>
     <string name="topads_common_manual_dialog_title">Mau ubah ke Atur Manual?</string>
     <string name="topads_common_manual_dialog_description">Dengan Atur Manual, kamu bisa atur sendiri biaya iklan dan kata kunci sesuai strategi beriklanmu.</string>
+
+    <string name="topads_autoads_advantage_title">Kelebihan Diatur Sistem TopAds</string>
+    <string name="topads_autoads_advantage_title_1">Lebih Praktis</string>
+    <string name="topads_autoads_advantage_title_2">Terus mengikuti tren terkini</string>
+    <string name="topads_autoads_advantage_title_3">Atur produk dan anggaran harian</string>
+    <string name="topads_autoads_advantage_title_4">Bantu maksimalkan penjualanmu</string>
+    <string name="topads_autoads_advantage_body_1">Biaya iklan dan kata kunci diatur TopAds, jadi kamu bisa fokus ke produk dan toko.</string>
+    <string name="topads_autoads_advantage_body_2">Biaya iklan dan kata kunci diperbarui setiap hari mengikuti tren di pasar.</string>
+    <string name="topads_autoads_advantage_body_3">Kamu masih bisa atur sendiri produk yang ingin diiklankan dan anggaran harianmu.</string>
+    <string name="topads_autoads_advantage_body_4">Dengan dukungan sistem pintar TopAds, produk tampil lebih sering &amp; tepat sasaran.</string>
+    <string name="topads_autoads_advantage_cta">Ya, Aktifkan</string>
 </resources>

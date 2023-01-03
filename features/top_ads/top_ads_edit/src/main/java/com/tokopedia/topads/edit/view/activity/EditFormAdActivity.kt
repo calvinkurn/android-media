@@ -3,6 +3,8 @@ package com.tokopedia.topads.edit.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -165,9 +167,35 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
     }
 
     private fun onSuccessGroupEdited() {
-        val returnIntent = Intent()
-        setResult(Activity.RESULT_OK, returnIntent)
-        finish()
+
+        var isAutomatic = false
+        dataKeyword[ParamObject.STRATEGIES]?.equals(ParamObject.AUTO_BID_STATE)
+            ?.let {
+                showToaster(it)
+            }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            val returnIntent = Intent()
+            returnIntent.putExtra(ParamObject.STRATEGIES, isAutomatic)
+            setResult(Activity.RESULT_OK, returnIntent)
+            finish()
+        }, 1500)
+
+    }
+
+    private fun showToaster(automatic: Boolean) {
+        val message = if(automatic) {
+            getString(com.tokopedia.topads.common.R.string.bid_state_changed_automatic_successful)
+        } else {
+            getString(com.tokopedia.topads.common.R.string.bid_state_changed_manual_successful)
+        }
+
+        Toaster.build(
+            findViewById(android.R.id.content),
+            message,
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_NORMAL
+        ).show()
     }
 
     private fun onErrorEdit(error: String?) {
