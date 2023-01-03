@@ -88,7 +88,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             binding.tickerOrderProduct.setHtmlDescription(product.errorMessage)
             binding.tickerOrderProduct.visible()
             if (!product.hasTriggerViewErrorProductLevelTicker) {
-                orderSummaryAnalytics.eventViewErrorProductLevelTicker(shop.shopId.toString(), product.errorMessage)
+                orderSummaryAnalytics.eventViewErrorProductLevelTicker(shop.shopId, product.errorMessage)
                 product.hasTriggerViewErrorProductLevelTicker = true
             }
         } else {
@@ -137,12 +137,12 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
             } else if (!product.isError) {
                 lblProductSlashPricePercentage.gone()
-                var slashPrice = 0L
+                var slashPrice = 0.0
                 if (product.wholesalePrice > 0 && product.wholesalePrice < product.productPrice) {
                     slashPrice = product.productPrice
                 }
                 if (product.initialPrice > 0 && product.productPrice < product.initialPrice) {
-                    slashPrice = if (slashPrice == 0L) {
+                    slashPrice = if (slashPrice == 0.0) {
                         product.initialPrice
                     } else {
                         minOf(slashPrice, product.initialPrice)
@@ -238,7 +238,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 tvProductNotesEdit.gone()
                 tvProductNotesPlaceholder.visible()
                 tvProductNotesPlaceholder.setOnClickListener {
-                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
+                    orderSummaryAnalytics.eventClickSellerNotes(product.productId, shop.shopId)
                     showNotesTextField()
                 }
                 return@apply
@@ -248,7 +248,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tvProductNotesPreview.visible()
             tvProductNotesEdit.visible()
             tvProductNotesEdit.setOnClickListener {
-                orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
+                orderSummaryAnalytics.eventClickSellerNotes(product.productId, shop.shopId)
                 showNotesTextField()
                 tfNote.editText.setSelection(tfNote.editText.length())
             }
@@ -334,10 +334,12 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
             }
             qtyEditorProduct.setAddClickListener {
-                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId,
+                    shop.shopId, product.orderQuantity.toString())
             }
             qtyEditorProduct.setSubstractListener {
-                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId,
+                    shop.shopId, product.orderQuantity.toString())
             }
             quantityTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -424,10 +426,10 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                         setAddOnButtonData(addOn)
                         setOnClickListener {
                             listener.onClickAddOnButton(AddOnsResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
-                            orderSummaryAnalytics.eventClickAddOnsDetail(product.productId.toString())
+                            orderSummaryAnalytics.eventClickAddOnsDetail(product.productId)
                         }
                         show()
-                        orderSummaryAnalytics.eventViewAddOnsWidget(product.productId.toString())
+                        orderSummaryAnalytics.eventViewAddOnsWidget(product.productId)
                     }
                 }
                 AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON -> {
@@ -438,7 +440,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                             listener.onClickAddOnButton(AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
                         }
                         show()
-                        orderSummaryAnalytics.eventViewAddOnsWidget(product.productId.toString())
+                        orderSummaryAnalytics.eventViewAddOnsWidget(product.productId)
                     }
                 }
                 else -> {
@@ -463,9 +465,9 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
         fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionPricePerProduct: Int, protectionTitle: String)
 
-        fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long)
+        fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: String)
 
-        fun getLastPurchaseProtectionCheckState(productId: Long): Int
+        fun getLastPurchaseProtectionCheckState(productId: String): Int
 
         fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop)
     }

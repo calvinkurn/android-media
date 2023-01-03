@@ -194,12 +194,9 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartListSimplifiedUseCase,
-            getRecommendationUseCase,
             userSession,
             object : AddToCartNonVariantTestHelper.Callback {
                 override fun `Given first page API will be successful`() { }
-
-                override fun `Given first page API can show recommendation`() { }
             },
         )
 
@@ -273,12 +270,9 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartListSimplifiedUseCase,
-            getRecommendationUseCase,
             userSession,
             object : AddToCartNonVariantTestHelper.Callback {
                 override fun `Given first page API will be successful`() { }
-
-                override fun `Given first page API can show recommendation`() { }
             },
         )
 
@@ -289,11 +283,13 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
         val categoryModel = "category/repurchasewidget/repurchase-widget.json"
             .jsonToObject<CategoryModel>()
 
+        println("CategoryModel: $categoryModel")
         `Given get category first page use case will be successful`(categoryModel)
         `Given view already created`()
         `Given add to cart API will fail`(responseErrorException)
 
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        println("VISITABLES: $visitableList")
         val repurchaseWidget = visitableList.getRepurchaseWidgetUiModel()
         val repurchaseWidgetProduct = repurchaseWidget.productList.find {
             it.productId == PRODUCT_ID_NON_VARIANT_ATC
@@ -301,7 +297,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
         `When add to cart repurchase product`(repurchaseWidgetProduct, addToCartQty)
 
-        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
+        `Then assert cart failed message event`(expectedErrorMessage = responseErrorException.message!!)
         `Then assert repurchase product quantity`(repurchaseWidgetProduct, 0)
     }
 
@@ -313,7 +309,6 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartListSimplifiedUseCase,
-            getRecommendationUseCase,
             userSession,
             object : AddToCartNonVariantTestHelper.Callback {
                 override fun `Given first page API will be successful`() {
@@ -322,8 +317,6 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
                     `Given get category first page use case will be successful`(categoryModel)
                 }
-
-                override fun `Given first page API can show recommendation`() { }
             },
         )
 
@@ -358,7 +351,6 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartListSimplifiedUseCase,
-            getRecommendationUseCase,
             userSession,
             object : AddToCartNonVariantTestHelper.Callback {
                 override fun `Given first page API will be successful`() {
@@ -367,8 +359,6 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
                     `Given get category first page use case will be successful`(categoryModel)
                 }
-
-                override fun `Given first page API can show recommendation`() { }
             },
         )
 
@@ -389,7 +379,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
         `When add to cart repurchase product`(repurchaseWidgetProduct, 0)
 
         `Then assert repurchase product quantity`(repurchaseWidgetProduct, 0)
-        `Then assert cart message event`(expectedSuccessMessage = deleteCartMessage)
+        `Then assert remove from cart message event`(expectedSuccessMessage = deleteCartMessage)
         `Then verify mini cart is refreshed`(2)
         `Then assert update toolbar notification true`()
     }

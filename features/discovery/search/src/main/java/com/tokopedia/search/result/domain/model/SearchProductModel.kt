@@ -1049,7 +1049,7 @@ data class SearchProductModel(
 
         @SerializedName("tracking_option")
         @Expose
-        val trackingOption: Int = 0,
+        val trackingOption: String = "0",
     ) {
         fun asFilter(): Filter =
             Filter(

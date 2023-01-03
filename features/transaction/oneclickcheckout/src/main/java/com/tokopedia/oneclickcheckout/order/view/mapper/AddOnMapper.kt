@@ -5,9 +5,28 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnBottomSheetResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnButtonResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ProductResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.TickerResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
+import kotlin.math.roundToLong
 
 object AddOnMapper {
 
@@ -22,7 +41,7 @@ object AddOnMapper {
         val productId = if (orderProduct.parentId.isNotEmpty() && orderProduct.parentId.toLongOrZero() > 0) {
             orderProduct.parentId
         } else {
-            orderProduct.productId.toString()
+            orderProduct.productId
         }
 
         var defaultReceiver = ""
@@ -57,13 +76,13 @@ object AddOnMapper {
                             productId = productId,
                             productName = orderProduct.productName,
                             productImageUrl = orderProduct.productImageUrl,
-                            productPrice = orderProduct.productPrice,
+                            productPrice = orderProduct.productPrice.roundToLong(),
                             productQuantity = orderProduct.orderQuantity,
                             productParentId = orderProduct.parentId
                     )),
                     isTokoCabang = orderShop.isFulfillment,
                     cartString = orderCart.cartString,
-                    warehouseId = orderShop.warehouseId.toString(),
+                    warehouseId = orderShop.warehouseId,
                     shopName = orderShop.shopName,
                     addOnInfoWording = orderCart.addOnWordingData,
                     addOnSavedStates = addOn.addOnsDataItemModelList.map {
