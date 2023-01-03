@@ -23,14 +23,19 @@ class IntroVoucherCardView @JvmOverloads constructor(
         binding = SmvcIntroCard1Binding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    fun setTextForHtml(mainTitle: String, subtitle: Spanned) {
+    fun setDataForHtml(mainTitle: String, subtitle: Spanned, imageUrl: String = "") {
         binding?.title?.text = mainTitle
         binding?.subtitle?.text = subtitle
+        setImage(imageUrl)
     }
 
     fun setData(mainTitle: String, subtitle: String, imageUrl: String = "") {
         binding?.title?.text = mainTitle
         binding?.subtitle?.text = subtitle
+        setImage(imageUrl)
+    }
+
+    private fun setImage(imageUrl: String) {
         if (imageUrl.isNotEmpty()) {
             binding?.imageView?.loadRemoteImageDrawable(imageUrl, imageUrl)
         }

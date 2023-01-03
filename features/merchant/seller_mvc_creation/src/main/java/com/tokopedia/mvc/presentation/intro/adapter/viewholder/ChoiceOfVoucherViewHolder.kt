@@ -3,6 +3,7 @@ package com.tokopedia.mvc.presentation.intro.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVoucherChoiceOfTargetViewholderBinding
@@ -26,16 +27,16 @@ class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVo
         binding?.apply {
             title.text = element?.title.toBlankOrString()
             element?.list?.getOrNull(ZEROTH_INDEX)?.let {
-                viewFlexibleForCoupons.setData(
+                viewFlexibleForCoupons.setDataForHtml(
                     it.benefitTitle,
-                    it.benefitSubtitle,
+                    MethodChecker.fromHtml(it.benefitSubtitle),
                     it.benefitImageUrl
                 )
             }
             element?.list?.getOrNull(FIRST_INDEX)?.let {
-                viewSelectionCoupons.setData(
+                viewSelectionCoupons.setDataForHtml(
                     it.benefitTitle,
-                    it.benefitSubtitle,
+                    MethodChecker.fromHtml(it.benefitSubtitle),
                     it.benefitImageUrl
                 )
             }
