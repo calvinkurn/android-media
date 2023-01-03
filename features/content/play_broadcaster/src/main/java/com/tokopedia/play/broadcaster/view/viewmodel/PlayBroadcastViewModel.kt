@@ -582,7 +582,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     fun sendLogs() {
-        logger.sendAll(channelId)
+        try {
+            logger.sendAll(channelId)
+        } catch (e: Exception) { }
     }
 
     private fun setActiveInteractiveTitle(title: String) {
