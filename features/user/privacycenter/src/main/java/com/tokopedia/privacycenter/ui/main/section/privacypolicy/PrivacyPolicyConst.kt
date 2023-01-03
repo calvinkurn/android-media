@@ -9,7 +9,7 @@ object PrivacyPolicyConst {
     val GET_LIST_URL = "$BASE_URL?language=id&showAll=true"
     val ORIGIN_HEADER = "Origin"
 
-    val WEBVIEW_URL = "${TokopediaUrl.getInstance().MOBILEWEB}privacy/history/"
+    val WEBVIEW_URL = "${TokopediaUrl.getInstance().WEB}privacy/history/"
 
     const val RESPONSE_OK = "200"
     const val RESPONSE_SUCCESS = "success"
