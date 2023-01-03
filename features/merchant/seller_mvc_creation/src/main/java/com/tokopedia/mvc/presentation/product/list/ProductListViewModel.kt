@@ -50,7 +50,8 @@ class ProductListViewModel @Inject constructor(
                     event.voucherConfiguration,
                     event.selectedProducts,
                     event.showCtaUpdateProductOnToolbar,
-                    event.isEntryPointFromVoucherSummaryPage
+                    event.isEntryPointFromVoucherSummaryPage,
+                    event.selectedWarehouseId
                 )
             }
             is ProductListEvent.MarkProductForDeletion -> handleMarkProductForDeletion(event.productId)
@@ -78,7 +79,8 @@ class ProductListViewModel @Inject constructor(
         voucherConfiguration: VoucherConfiguration,
         selectedProducts: List<SelectedProduct>,
         showCtaUpdateProductOnToolbar: Boolean,
-        isEntryPointFromVoucherSummaryPage: Boolean
+        isEntryPointFromVoucherSummaryPage: Boolean,
+        selectedWarehouseId: Long
     ) {
         launchCatchError(
             dispatchers.io,
@@ -125,7 +127,8 @@ class ProductListViewModel @Inject constructor(
                         maxProductSelection = metadata.maxProduct,
                         voucherConfiguration = voucherConfiguration,
                         showCtaChangeProductOnToolbar = showCtaUpdateProductOnToolbar,
-                        isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage
+                        isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage,
+                        selectedWarehouseId = selectedWarehouseId
                     )
                 }
 
@@ -312,9 +315,11 @@ class ProductListViewModel @Inject constructor(
                 .map { it.picture }
 
 
+            val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(warehouseId = currentState.selectedWarehouseId)
+
             _uiEffect.tryEmit(
                 ProductListEffect.ProceedToVoucherPreviewPage(
-                    currentState.voucherConfiguration,
+                    modifiedVoucherConfiguration,
                     selectedProducts,
                     topSellingProductImageUrls,
                     currentState.originalPageMode

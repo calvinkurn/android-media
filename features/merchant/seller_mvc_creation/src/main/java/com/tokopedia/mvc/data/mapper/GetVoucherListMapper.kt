@@ -28,8 +28,9 @@ class GetVoucherListMapper @Inject constructor() {
                 image = it.voucherImage,
                 imageSquare = it.imageSquare,
                 imagePortrait = it.imagePortrait,
-                status = VoucherStatus.values().firstOrNull {
-                        value -> value.id == it.voucherStatus } ?: VoucherStatus.PROCESSING,
+                status = VoucherStatus.values().firstOrNull { value ->
+                    value.id == it.voucherStatus
+                } ?: VoucherStatus.PROCESSING,
                 discountUsingPercent = it.discountTypeFormatted == DISCOUNT_TYPE_PERCENT,
                 discountAmt = it.discountAmt,
                 discountAmtFormatted = it.discountAmtFormatted,
@@ -50,9 +51,20 @@ class GetVoucherListMapper @Inject constructor() {
                 packageName = it.packageName,
                 isSubsidy = it.isSubsidy == VALUE_ACTIVE,
                 tnc = it.tnc,
-                targetBuyer = VoucherTargetBuyer.values().firstOrNull {
-                        value -> value.id == it.targetBuyer } ?: VoucherTargetBuyer.ALL_BUYER
+                targetBuyer = VoucherTargetBuyer.values().firstOrNull { value ->
+                    value.id == it.targetBuyer
+                } ?: VoucherTargetBuyer.ALL_BUYER,
+                discountTypeFormatted = it.discountTypeFormatted,
+                productIds = it.toProductIds()
             )
         }
 
+    private fun MerchantVoucherModel.toProductIds(): List<Voucher.ProductId> {
+        return productIds.map {
+            Voucher.ProductId(
+                it.parentProductId,
+                it.childProductId
+            )
+        }
+    }
 }

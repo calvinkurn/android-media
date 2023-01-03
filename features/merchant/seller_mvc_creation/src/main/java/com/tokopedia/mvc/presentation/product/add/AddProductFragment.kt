@@ -258,7 +258,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 ProductListActivity.start(
                     activity ?: return,
                     effect.voucherConfiguration,
-                    effect.selectedProducts
+                    effect.selectedProducts,
+                    effect.selectedWarehouseId
                 )
             }
             is AddProductEffect.AddNewProducts -> {

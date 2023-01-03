@@ -599,7 +599,8 @@ class AddProductViewModel @Inject constructor(
                 AddProductEffect.ProductConfirmed(
                     selectedProducts,
                     topSellingProductImageUrls,
-                    currentState.voucherConfiguration
+                    currentState.voucherConfiguration,
+                    currentState.selectedWarehouseLocation.warehouseId
                 )
             )
         }

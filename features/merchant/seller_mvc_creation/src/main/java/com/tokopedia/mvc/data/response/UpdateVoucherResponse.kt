@@ -4,31 +4,28 @@ import com.google.gson.annotations.SerializedName
 
 data class UpdateVoucherResponse(
     @SerializedName("merchantPromotionUpdateMV")
-    val updateVoucher: UpdateVoucherDataModel = UpdateVoucherDataModel()
+    val updateVoucherModel: UpdateVoucherModel = UpdateVoucherModel()
 ) {
-    data class UpdateVoucherDataModel(
+    data class UpdateVoucherModel(
         @SerializedName("status")
-        val responseStatus: Int = 0,
+        val status: Int = 0,
         @SerializedName("message")
         val message: String = "",
         @SerializedName("process_time")
-        val processTime: Float = 0f,
+        val processTime: Long = 0,
         @SerializedName("data")
-        val updateVoucherSuccessData: UpdateVoucherSuccessData = UpdateVoucherSuccessData()
-    )
+        val data: UpdateVoucherData = UpdateVoucherData()
+    ) {
+        data class UpdateVoucherData(
+            @SerializedName("redirect_url")
+            val redirectUrl: String = "",
+            @SerializedName("voucher_id")
+            val voucherId: Long = 0,
+            @SerializedName("status")
+            val status: String = ""
+        )
 
-    data class UpdateVoucherSuccessData(
-        @SerializedName("redirect_url")
-        val redirectUrl: String = "",
-        @SerializedName("voucher_id")
-        val voucherId: String = "",
-        @SerializedName("status")
-        val status: String = "") {
-
-        fun getIsSuccess() = status == UpdateResponse.STATUS_SUCCESS
-    }
-
-    object UpdateResponse {
-        internal const val STATUS_SUCCESS = "Success"
+        fun getIsSuccess() = status == STATUS_CODE_SUCCESS
+        private val STATUS_CODE_SUCCESS = 200
     }
 }

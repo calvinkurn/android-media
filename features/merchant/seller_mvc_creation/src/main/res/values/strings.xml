@@ -94,6 +94,7 @@
     <string name="smvc_voucherlist_create_voucher_text">Buat Kupon</string>
     <string name="smvc_voucherlist_copy_to_clipboard_message">Kode kupon berhasil disalin</string>
     <string name="smvc_voucherlist_search_placeholder">Cari Nama Kupon</string>
+    <string name="smvc_general_error">Oops, ada gangguan yang perlu kami bereskan.</string>
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>
@@ -212,6 +213,43 @@
     <string name="smvc_voucherlist_empty_data_title_text">Belum ada kupon %s, nih!</string>
     <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
     <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
+
+    <!--Voucher 3 dots menu-->
+    <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>
+    <string name="voucher_bs_ubah_kuota">Ubah Kuota</string>
+    <string name="voucher_bs_ubah_periode">Ubah Periode</string>
+    <string name="voucher_bs_ubah">Ubah</string>
+    <string name="voucher_bs_ubah_lihat_detail">Lihat Detail</string>
+    <string name="voucher_bs_ubah_broadcast_chat">Broadcast Chat</string>
+    <string name="voucher_bs_ubah_download">Download</string>
+    <string name="voucher_bs_ubah_batalkan">Batalkan</string>
+    <string name="voucher_bs_ubah_hentikan">Hentikan</string>
+    <string name="voucher_bs_ubah_bagikan">Bagikan</string>
+    <string name="voucher_bs_duplikat">Duplikat</string>
+    <string name="voucher_bs_terms_conditions">Lihat Syarat &amp; Ketentuan Penggunaan Kupon</string>
+
+    <!--Edit Period -->
+    <string name="edit_period_title">Ubah Periode</string>
+    <string name="edit_period_ticker">Perubahan akan berlaku ke jadwal-jadwal berikutnya dari kupon ini.</string>
+    <string name="edit_period_reset">Reset</string>
+    <string name="edit_period_start_date">Mulai</string>
+    <string name="edit_period_end_date">Berakhir</string>
+    <string name="edit_period_button_text">Oke</string>
+    <string name="edit_period_calender_title">Tanggal Mulai</string>
+    <string name="edit_period_time_picker_title">Pilih Waktu</string>
+    <string name="edit_period_success_edit_period">Periode kupon [Nama Kupon] dan semua jadwal berikutnya berhasil diubah.</string>
+    <string name="edit_period_calendar_show_tag">TimePicker Show</string>
+
+    <!-- Voucher Display -->
+    <string name="voucher_bs_coupon_display_title">Tampilan Kupon</string>
+    <string name="voucher_bs_coupon_display_horizontal">Horizontal</string>
+    <string name="voucher_bs_coupon_display_square">Square</string>
+    <string name="voucher_bs_coupon_display_vertical">Vertikal</string>
+
+    <!-- Voucher Period  -->
+    <string name="voucher_bs_period_title_1">Kupon akan aktif pada:</string>
+    <string name="voucher_bs_period_title_2">x jadwal kupon bermasalah</string>
+
 
     <!--Download Voucher-->
     <string name="smvc_download_voucher_image">Download voucher image</string>

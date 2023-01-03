@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -24,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentProductListBinding
@@ -58,7 +61,8 @@ class ProductListFragment : BaseDaggerFragment() {
             voucherConfiguration: VoucherConfiguration,
             selectedProducts: List<SelectedProduct>,
             showCtaChangeProductOnToolbar: Boolean,
-            isEntryPointFromVoucherSummaryPage: Boolean
+            isEntryPointFromVoucherSummaryPage: Boolean,
+            selectedWarehouseId: Long
         ): ProductListFragment {
             return ProductListFragment().apply {
                 arguments = Bundle().apply {
@@ -79,6 +83,10 @@ class ProductListFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE,
                         isEntryPointFromVoucherSummaryPage
                     )
+                    putLong(
+                        BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID,
+                        selectedWarehouseId
+                    )
                 }
             }
         }
@@ -89,6 +97,7 @@ class ProductListFragment : BaseDaggerFragment() {
     private val voucherConfiguration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private val showCtaChangeProductOnToolbar by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR).orFalse() }
     private val isEntryPointFromVoucherSummaryPage by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE).orFalse() }
+    private val selectedWarehouseId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID).orZero() }
 
     private var binding by autoClearedNullable<SmvcFragmentProductListBinding>()
 
@@ -135,7 +144,8 @@ class ProductListFragment : BaseDaggerFragment() {
                 voucherConfiguration ?: return,
                 selectedParentProducts?.toList().orEmpty(),
                 showCtaChangeProductOnToolbar,
-                isEntryPointFromVoucherSummaryPage
+                isEntryPointFromVoucherSummaryPage,
+                selectedWarehouseId
             )
         )
     }
@@ -243,10 +253,12 @@ class ProductListFragment : BaseDaggerFragment() {
         when {
             currentPageMode == PageMode.CREATE -> {
                 binding?.header?.actionTextView?.gone()
+                binding?.header?.isShowBackButton = true
             }
             showCtaChangeProductOnToolbar -> {
                 binding?.header?.actionTextView?.visible()
                 binding?.header?.actionText = getString(R.string.smvc_update_product)
+                binding?.header?.useCloseIcon()
             }
         }
 
@@ -462,6 +474,11 @@ class ProductListFragment : BaseDaggerFragment() {
             voucherConfiguration
         )
         startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION)
+    }
+
+    private fun HeaderUnify.useCloseIcon() {
+        isShowBackButton = false
+        navigationIcon = ContextCompat.getDrawable(activity ?: return, R.drawable.ic_smvc_close)
     }
 
 }

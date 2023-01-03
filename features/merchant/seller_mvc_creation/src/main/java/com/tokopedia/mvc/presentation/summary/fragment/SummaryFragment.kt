@@ -345,10 +345,23 @@ class SummaryFragment :
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
+        //TODO: Replace with real warehouseId
+        redirectionHelper.redirectToAddProductPage(
+            activity = activity ?: return,
+            configuration = configuration,
+            selectedWarehouseId = 0
+        )
         redirectionHelper.redirectToAddProductPage(this, configuration, viewModel.products.value.orEmpty())
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
+        //TODO: Replace with real warehouseId
+        redirectionHelper.redirectToViewProductPage(
+            activity = activity ?: return,
+            configuration = configuration,
+            selectedProducts = listOf(),
+            selectedWarehouseId = 0
+        )
         redirectionHelper.redirectToViewProductPage(this, configuration, viewModel.products.value.orEmpty())
     }
 

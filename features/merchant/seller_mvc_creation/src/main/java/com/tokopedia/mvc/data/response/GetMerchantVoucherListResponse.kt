@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetMerchantVoucherListResponse(
@@ -79,5 +80,15 @@ data class MerchantVoucherModel(
     @SerializedName("total_child")
     val totalChild: Int = 0,
     @SerializedName("target_buyer")
-    val targetBuyer: Int = 0
-)
+    val targetBuyer: Int = 0,
+    @SerializedName("product_ids")
+    val productIds: List<ProductId> = listOf()
+) {
+    data class ProductId(
+        @SerializedName("parent_product_id")
+        val parentProductId: Long = 0,
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("child_product_id")
+        val childProductId: List<Long>? = listOf()
+    )
+}
