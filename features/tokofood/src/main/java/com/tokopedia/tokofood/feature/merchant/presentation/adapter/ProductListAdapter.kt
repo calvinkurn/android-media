@@ -104,8 +104,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
                 isAtc = cartTokoFood.quantity.isMoreThanZero()
                 customOrderDetail?.let { customOrderDetails.add(it) }
             }
+            notifyItemChanged(adapterPosition)
         }
-        notifyItemChanged(adapterPosition)
     }
 
     fun updateCartProductUiModel(
