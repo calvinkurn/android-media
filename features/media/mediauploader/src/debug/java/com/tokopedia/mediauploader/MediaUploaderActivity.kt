@@ -46,22 +46,22 @@ import kotlin.coroutines.CoroutineContext
 
 class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
-    private lateinit var imgPreview: AppCompatImageView
-    private lateinit var progressBar: ProgressBarUnify
-    private lateinit var txtInfo: AppCompatTextView
-    private lateinit var btnPickUp: UnifyButton
-    private lateinit var btnRemove: UnifyButton
-    private lateinit var btnUpload: UnifyButton
-    private lateinit var btnAbort: UnifyButton
-    private lateinit var edtUrl: TextFieldUnify2
-    private lateinit var checkboxSecure: CheckboxUnify
-    private lateinit var edtExtraHeader: AppCompatEditText
-    private lateinit var edtExtraBody: AppCompatEditText
-    private lateinit var secureParamBox: LinearLayout
-    private lateinit var checkboxExtraHeader: CheckboxUnify
-    private lateinit var checkboxExtraBody: CheckboxUnify
-    private lateinit var edtSourceId: TextFieldUnify2
-    private lateinit var edtUserId: TextFieldUnify2
+    private var imgPreview: AppCompatImageView? = null
+    private var progressBar: ProgressBarUnify? = null
+    private var txtInfo: AppCompatTextView? = null
+    private var btnPickUp: UnifyButton? = null
+    private var btnRemove: UnifyButton? = null
+    private var btnUpload: UnifyButton? = null
+    private var btnAbort: UnifyButton? = null
+    private var edtUrl: TextFieldUnify2? = null
+    private var checkboxSecure: CheckboxUnify? = null
+    private var edtExtraHeader: AppCompatEditText? = null
+    private var edtExtraBody: AppCompatEditText? = null
+    private var secureParamBox: LinearLayout? = null
+    private var checkboxExtraHeader: CheckboxUnify? = null
+    private var checkboxExtraBody: CheckboxUnify? = null
+    private var edtSourceId: TextFieldUnify2? = null
+    private var edtUserId: TextFieldUnify2? = null
 
     @Inject lateinit var uploaderUseCase: UploaderUseCase
     @Inject lateinit var userSession: UserSessionInterface
@@ -95,7 +95,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.tokopedia.mediauploader.R.layout.activity_media_uploader)
+        setContentView(R.layout.activity_media_uploader)
         initInjector()
 
         initViewComponent()
@@ -104,37 +104,37 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun initView() {
-        btnPickUp.setOnClickListener {
+        btnPickUp?.setOnClickListener {
             showPickMediaPopUpMenu()
         }
 
-        btnRemove.setOnClickListener {
+        btnRemove?.setOnClickListener {
             viewModel.setUploadingStatus(UploadState.Aborted)
         }
 
-        btnUpload.setOnClickListener {
-            progressBar.setValue(0, true)
+        btnUpload?.setOnClickListener {
+            progressBar?.setValue(0, true)
             showPickUploadPopUpMenu()
         }
 
-        checkboxSecure.setOnCheckedChangeListener { _, isChecked ->
+        checkboxSecure?.setOnCheckedChangeListener { _, isChecked ->
             isSecure = isChecked
             showAllSecureField(isChecked)
         }
 
-        checkboxExtraHeader.setOnCheckedChangeListener { _, isChecked ->
-            edtExtraHeader.showWithCondition(isChecked)
+        checkboxExtraHeader?.setOnCheckedChangeListener { _, isChecked ->
+            edtExtraHeader?.showWithCondition(isChecked)
         }
 
-        checkboxExtraBody.setOnCheckedChangeListener { _, isChecked ->
-            edtExtraBody.showWithCondition(isChecked)
+        checkboxExtraBody?.setOnCheckedChangeListener { _, isChecked ->
+            edtExtraBody?.showWithCondition(isChecked)
         }
 
-        edtExtraHeader.setText("{\n\t\n}")
-        edtExtraBody.setText("{\n\t\n}")
-        edtSourceId.editText.setText(sourceId)
-        edtUserId.editText.setText(userSession.userId)
-        edtUserId.editText.isEnabled = false
+        edtExtraHeader?.setText("{\n\t\n}")
+        edtExtraBody?.setText("{\n\t\n}")
+        edtSourceId?.editText?.setText(sourceId)
+        edtUserId?.editText?.setText(userSession.userId)
+        edtUserId?.editText?.isEnabled = false
 
         abortButtonClicked()
     }
@@ -169,12 +169,12 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     private fun stateLargeUploadIdle() {
         appendInfo("\nready to upload\n")
-        btnUpload.isEnabled = true
-        btnPickUp.hide()
-        btnRemove.show()
-        edtUrl.hide()
+        btnUpload?.isEnabled = true
+        btnPickUp?.hide()
+        btnRemove?.show()
+        edtUrl?.hide()
 
-        progressBar.setValue(0, true)
+        progressBar?.setValue(0, true)
     }
 
     private fun stateLargeUploading(withWorker: Boolean) {
@@ -182,61 +182,61 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             appendInfo("\nthe uploader move to push notification.\n")
         } else {
             appendInfo("\nuploading...\n")
-            btnAbort.show()
+            btnAbort?.show()
         }
 
-        btnUpload.text = "Uploading..."
+        btnUpload?.text = "Uploading..."
 
         // hide pick-up and show remove button
-        btnPickUp.hide()
-        btnRemove.show()
+        btnPickUp?.hide()
+        btnRemove?.show()
 
         // disabled upload button and change caption
-        btnUpload.isEnabled = false
+        btnUpload?.isEnabled = false
     }
 
     private fun stateLargeUploadStopped() {
         appendInfo("\nclick button to retry\n")
-        btnUpload.text = "Retry"
+        btnUpload?.text = "Retry"
 
-        btnUpload.isEnabled = true
+        btnUpload?.isEnabled = true
     }
 
     private fun stateLargeUploadAborted() {
-        txtInfo.text = "Tidak ada info file."
-        imgPreview.setImageDrawable(null)
-        edtUrl.hide()
+        txtInfo?.text = "Tidak ada info file."
+        imgPreview?.setImageDrawable(null)
+        edtUrl?.hide()
 
-        btnUpload.text = "Upload"
+        btnUpload?.text = "Upload"
 
-        btnPickUp.show()
-        btnRemove.hide()
+        btnPickUp?.show()
+        btnRemove?.hide()
 
-        btnUpload.isEnabled = false
-        btnAbort.hide()
+        btnUpload?.isEnabled = false
+        btnAbort?.hide()
     }
 
     private fun stateLargeUploadFinished(result: UploadResult) {
         appendInfo("\nuploaded\n")
-        edtUrl.show()
+        edtUrl?.show()
 
-        btnUpload.text = "Upload"
-        btnUpload.isEnabled = false
-        btnAbort.hide()
+        btnUpload?.text = "Upload"
+        btnUpload?.isEnabled = false
+        btnAbort?.hide()
 
         if (result is UploadResult.Success) {
             if (isUploadImage) {
                 appendInfo("${result.uploadId}\n")
-                edtUrl.editText.setText(if (result.uploadId.isEmpty()) result.fileUrl else result.uploadId)
+                edtUrl?.editText?.setText(if (result.uploadId.isEmpty()) result.fileUrl else result.uploadId)
             } else {
                 appendInfo("${result.videoUrl}\n")
-                edtUrl.editText.setText(result.videoUrl)
+                edtUrl?.editText?.setText(result.videoUrl)
             }
         }
     }
 
     private fun abortButtonClicked() {
-        btnAbort.setOnClickListener {
+        btnAbort?.setOnClickListener {
             if (!isUploadImage && isLargeUpload) {
                 launch {
                     uploaderUseCase.abortUpload(sourceId, mediaFilePath) {
@@ -246,7 +246,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
                             UploaderWorker.cancelWork(applicationContext)
                             coroutineContext.cancelChildren()
-                            btnAbort.hide()
+                            btnAbort?.hide()
                         }
                     }
                 }
@@ -264,11 +264,11 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private fun mediaUploader(withWorker: Boolean) {
         if (mediaFilePath.isEmpty()) return
 
-        btnUpload.isEnabled = false
+        btnUpload?.isEnabled = false
 
-        val extraHeader = Gson().fromJson(edtExtraHeader.text?.toString() ?: "", HashMap::class.java)
-        val extraBody = Gson().fromJson(edtExtraBody.text?.toString() ?: "", HashMap::class.java)
-        val inputSourceId = edtSourceId.editText.text.toString()
+        val extraHeader = Gson().fromJson(edtExtraHeader?.text?.toString() ?: "", HashMap::class.java)
+        val extraBody = Gson().fromJson(edtExtraBody?.text?.toString() ?: "", HashMap::class.java)
+        val inputSourceId = edtSourceId?.editText?.text.toString()
 
         if (!withWorker) {
             val param = uploaderUseCase.createParams(
@@ -281,14 +281,14 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             )
 
             uploaderUseCase.trackProgress { progress ->
-                progressBar.setValue(progress, true)
+                progressBar?.setValue(progress, true)
             }
 
             launch {
                 val result = uploaderUseCase(param)
 
                 withContext(Dispatchers.Main) {
-                    btnAbort.hide()
+                    btnAbort?.hide()
 
                     when(result) {
                         is UploadResult.Success -> {
@@ -322,13 +322,13 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         mediaFilePath = path
         showFileInfo(File(mediaFilePath))
 
-        imgPreview.loadImageRounded(mediaFilePath, RADIUS_PREVIEW) {
+        imgPreview?.loadImageRounded(mediaFilePath, RADIUS_PREVIEW) {
             centerCrop()
         }
     }
 
     private fun appendInfo(text: String) {
-        txtInfo.append(text)
+        txtInfo?.append(text)
     }
 
     @SuppressLint("SetTextI18n")
@@ -349,7 +349,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             }
         }
 
-        txtInfo.text = """
+        txtInfo?.text = """
             -------------------------------
             File info:
             name    : ${file.name}
@@ -446,9 +446,9 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     private fun showAllSecureField(isShow: Boolean) {
         if (isShow) {
-            secureParamBox.show()
+            secureParamBox?.show()
         } else {
-            secureParamBox.hide()
+            secureParamBox?.hide()
         }
     }
 

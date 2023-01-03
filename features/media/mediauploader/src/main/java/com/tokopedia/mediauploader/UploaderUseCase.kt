@@ -23,8 +23,8 @@ class UploaderUseCase @Inject constructor(
     private lateinit var file: File
     private var withTranscode = true
     private var isSecure = false
-    private lateinit var extraHeader: Map<String, String>
-    private lateinit var extraBody: Map<String, String>
+    private var extraHeader: Map<String, String> = mapOf()
+    private var extraBody: Map<String, String> = mapOf()
 
     // this domain isn't using graphql service
     override fun graphqlQuery() = ""
