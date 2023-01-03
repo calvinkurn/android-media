@@ -83,7 +83,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         PlayMoreActionUiModel(
             type = PlayMoreActionType.Report,
             icon = getIconUnifyDrawable(requireContext(), IconUnify.WARNING, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
-            isIconAvailable = true,
             subtitleRes = R.string.play_kebab_report_title,
             onClick = {
                 shouldOpenUserReport()
@@ -96,7 +95,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         PlayMoreActionUiModel(
             type = PlayMoreActionType.PiP,
             icon = MethodChecker.getDrawable(requireContext(), R.drawable.ic_play_pip),
-            isIconAvailable = true,
             subtitleRes = R.string.play_kebab_pip,
             onClick = {
                 mListener?.onPipClicked(this)
@@ -109,7 +107,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         PlayMoreActionUiModel(
             type = PlayMoreActionType.Chromecast,
             icon = null,
-            isIconAvailable = false,
             subtitleRes = R.string.play_kebab_chromecast,
             onClick = {
                 onChromeCastClicked()
@@ -122,7 +119,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         PlayMoreActionUiModel(
             type = PlayMoreActionType.WatchMode,
             icon = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
-            isIconAvailable = true,
             subtitleRes = R.string.play_kebab_watch_mode,
             onClick = {
                 mListener?.onWatchModeClicked(this)
@@ -224,7 +220,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     ) {
         if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
             val currentVisibility = listOfAction.contains(chromecastAction)
-            if(currentVisibility)
+            if (currentVisibility)
                 analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
             buildListAction(action = chromecastAction)
         }
