@@ -23,6 +23,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherTargetSect
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.presentation.bottomsheet.SelectRepeatPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditCalendarBottomSheet
 import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
@@ -94,8 +95,13 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherEndDateChanged(it))
     }
 
+    private var getSelectedRecurringPeriod: (Int) -> Unit = {
+        viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected(it))
+    }
+
     //bottom sheet
     private var voucherEditCalendarBottomSheet: VoucherEditCalendarBottomSheet? = null
+    private var repeatPeriodBottomSheet: SelectRepeatPeriodBottomSheet? = null
 
     override fun getScreenName(): String =
         VoucherInformationFragment::class.java.canonicalName.orEmpty()
@@ -149,8 +155,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             state.isVoucherCodeError,
             state.voucherCodeErrorMsg
         )
+        renderVoucherRecurringToggleChanges(state.voucherConfiguration)
         renderVoucherStartPeriodSelection(state.voucherConfiguration)
         renderVoucherEndPeriodSelection(state.voucherConfiguration)
+        renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
         renderButtonValidation(state.isInputValid())
     }
 
@@ -368,7 +376,16 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 editText.setOnClickListener { onClickListenerForEndDate() }
             }
             cbRepeatPeriod.setOnCheckedChangeListener { _, isChecked ->
-                tfRepeat.isVisible = isChecked
+                viewModel.processEvent(
+                    VoucherCreationStepTwoEvent.OnVoucherRecurringToggled(
+                        isChecked
+                    )
+                )
+            }
+
+            tfRepeat.run {
+                disableText(editText)
+                editText.setOnClickListener { onClickListenerForRecurringPeriod() }
             }
         }
     }
@@ -398,7 +415,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun onClickListenerForEndDate() {
         context?.run {
             DateTimeUtils.getMinDate(endCalendar)?.let { minDate ->
-                DateTimeUtils.getMaxDate(endCalendar)?.let { maxDate ->
+                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             endCalendar,
@@ -417,6 +434,18 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onClickListenerForRecurringPeriod() {
+        val currentVoucherConfig = viewModel.getCurrentVoucherConfiguration()
+        repeatPeriodBottomSheet = SelectRepeatPeriodBottomSheet.newInstance(
+            currentVoucherConfig.totalPeriod,
+            isShowTicker = false
+        )
+        repeatPeriodBottomSheet?.show(
+            childFragmentManager,
+            getSelectedRecurringPeriod
+        )
+    }
+
     private fun setupTime() {
         val currentDate = Date().formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
         val datePlusOneMonth = Calendar.getInstance().run {
@@ -425,6 +454,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
         startCalendar = getGregorianDate(currentDate)
         endCalendar = getGregorianDate(datePlusOneMonth)
+    }
+
+    private fun renderVoucherRecurringToggleChanges(voucherConfiguration: VoucherConfiguration) {
+        voucherPeriodSectionBinding?.run {
+            tfRepeat.isVisible = voucherConfiguration.isPeriod
+        }
     }
 
     private fun renderVoucherStartPeriodSelection(voucherConfiguration: VoucherConfiguration) {
@@ -443,6 +478,19 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherPeriodSectionBinding?.run {
             tfVoucherEndPeriod.run {
                 editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
+            }
+        }
+    }
+
+    private fun renderVoucherRecurringPeriodSelection(voucherConfiguration: VoucherConfiguration) {
+        voucherPeriodSectionBinding?.run {
+            tfRepeat.run {
+                editText.setText(
+                    getString(
+                        R.string.smvc_recurring_period_placeholder_value,
+                        voucherConfiguration.totalPeriod
+                    )
+                )
             }
         }
     }

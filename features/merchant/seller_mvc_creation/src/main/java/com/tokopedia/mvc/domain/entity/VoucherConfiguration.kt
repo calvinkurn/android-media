@@ -2,6 +2,7 @@ package com.tokopedia.mvc.domain.entity
 
 import android.os.Parcelable
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PeriodType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import kotlinx.parcelize.Parcelize
@@ -26,6 +27,9 @@ data class VoucherConfiguration(
     val voucherCode: String = "",
     val startPeriod: Date = Date(),
     val endPeriod: Date = Date(),
-    val totalPeriod: Int = 0,
+    val isPeriod: Boolean = false,
+    val periodType: Int = PeriodType.MONTH.type,
+    val periodRepeat: Int = 1,
+    val totalPeriod: Int = 1,
     val warehouseId: Long = 0
 ) : Parcelable

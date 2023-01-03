@@ -314,7 +314,6 @@
     <string name="smvc_input_empty_error">Kamu belum mengisi informasi ini.</string>
     <string name="smvc_voucher_name_placeholder_label">Contoh Diskon Extra 10%</string>
     <string name="smvc_voucher_code_placeholder_label">SEPTCERIA</string>
-
     <string name="smvc_edu_center_about_my_coupon">Tentang Kupon Toko Saya</string>
     <string name="smvc_edu_center_read_article">Baca Artikel</string>
     <string name="smvc_delete_voucher_confirmation_title_of_dialog">Yakin batalkan kupon?</string>
@@ -342,7 +341,7 @@
     <string name="smvc_success_change_quota_single">Kuota kupon %s berhasil diubah</string>
     <string name="smvc_success_change_quota_multi_period">Kuota kupon %s dan jadwal-jadwal berikutnya berhasil diubah.</string>
     <string name="smvc_failed_change_quota">Kuota kupon %s gagal diubah.</string>
-
+    <string name="smvc_recurring_period_placeholder_value">%d Bulan</string>
 
     <!--Success Upload Bottomsheet-->
     <string name="smvc_success_upload_title">Yay, kupon berhasil dibuat!</string>

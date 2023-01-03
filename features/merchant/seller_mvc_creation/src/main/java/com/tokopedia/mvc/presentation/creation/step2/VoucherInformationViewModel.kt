@@ -28,15 +28,15 @@ class VoucherInformationViewModel @Inject constructor(
 
     fun processEvent(event: VoucherCreationStepTwoEvent) {
         when (event) {
-            is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
-                event.voucherConfiguration
-            )
+            is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(event.voucherConfiguration)
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(event.isPublic)
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
             is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
+            is VoucherCreationStepTwoEvent.OnVoucherRecurringToggled -> handleVoucherRecurringToggleChanges(event.isActive)
             is VoucherCreationStepTwoEvent.OnVoucherStartDateChanged -> setStartDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.OnVoucherEndDateChanged -> setEndDateTime(event.calendar)
+            is VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected -> setRecurringPeriod(event.selectedRecurringPeriod)
             is VoucherCreationStepTwoEvent.ValidateVoucherInput -> {}
             is VoucherCreationStepTwoEvent.NavigateToNextStep -> {}
         }
@@ -50,6 +50,10 @@ class VoucherInformationViewModel @Inject constructor(
             )
         }
         handleVoucherInputValidation()
+    }
+
+    fun getCurrentVoucherConfiguration(): VoucherConfiguration {
+        return currentState.voucherConfiguration
     }
 
     private fun handleBackToPreviousStep() {
@@ -122,6 +126,14 @@ class VoucherInformationViewModel @Inject constructor(
         )
     }
 
+    private fun handleVoucherRecurringToggleChanges(isActive: Boolean) {
+        _uiState.update {
+            it.copy(
+                voucherConfiguration = it.voucherConfiguration.copy(isPeriod = isActive)
+            )
+        }
+    }
+
     private fun setStartDateTime(startDate: Calendar?) {
         startDate?.let {
             _uiState.update {
@@ -139,6 +151,14 @@ class VoucherInformationViewModel @Inject constructor(
                     voucherConfiguration = it.voucherConfiguration.copy(endPeriod = endDate.time)
                 )
             }
+        }
+    }
+
+    private fun setRecurringPeriod(selectedRecurringPeriod: Int) {
+        _uiState.update {
+            it.copy(
+                voucherConfiguration = it.voucherConfiguration.copy(totalPeriod = selectedRecurringPeriod)
+            )
         }
     }
 }
