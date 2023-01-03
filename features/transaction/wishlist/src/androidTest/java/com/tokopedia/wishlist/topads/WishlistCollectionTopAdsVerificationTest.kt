@@ -44,6 +44,7 @@ class WishlistCollectionTopAdsVerificationTest {
             override fun beforeActivityLaunched() {
                 super.beforeActivityLaunched()
                 InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+//                setupRemoteConfig()
                 setupTopAdsDetector()
                 disableWishlistCoachmark(context)
             }
