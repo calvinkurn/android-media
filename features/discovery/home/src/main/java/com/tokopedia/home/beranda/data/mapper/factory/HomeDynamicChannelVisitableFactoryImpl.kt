@@ -354,7 +354,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                     trackingQueue,
-                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+                    userSessionInterface?.userId.orEmpty()
+            )
         }
         context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
                 visitableList.size, channel) }
@@ -511,7 +513,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                     trackingQueue,
-                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+                    userSessionInterface?.userId.orEmpty()
+            )
         }
         return viewModel
     }
