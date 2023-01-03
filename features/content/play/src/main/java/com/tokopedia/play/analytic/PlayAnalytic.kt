@@ -813,11 +813,11 @@ class PlayAnalytic(
         )
     }
 
-    fun sendScreenArchived() {
+    fun sendScreenArchived(channelId: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/archive delete channel")
     }
 
-    fun clickCtaArchived() {
+    fun clickCtaArchived(channelId: String) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - to tokopedia play")
@@ -832,7 +832,7 @@ class PlayAnalytic(
             .send()
     }
 
-    fun clickExitArchived () {
+    fun clickExitArchived (channelId: String) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - exit archive page")

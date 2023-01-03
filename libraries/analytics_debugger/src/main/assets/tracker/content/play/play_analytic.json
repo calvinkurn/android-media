@@ -728,13 +728,15 @@
     },
     {
       "event": "openScreen",
-      "trackerId": "40353",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
+      "networkSpeed": ".*",
+      "clientId": ".*",
       "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
       "screenName": "/group-chat-room/\\d+/archive delete channel",
+      "userId": ".*",
       "sessionIris": ".*",
-      "userId": ".*"
+      "theme": ".*"
     }
   ]
 }
