@@ -44,7 +44,7 @@ class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<Vouch
         }
     }
 
-    //Problems with Carousel
+    // Problems with Carousel
     private fun setUpCarousel(binding: SmvcIntroVouchersPagerViewholderBinding, position: Int) {
         binding.apply {
             containerCarousel.apply {
@@ -76,7 +76,7 @@ class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<Vouch
 
         binding.apply {
             containerCarousel.apply {
-                //      refreshChild()
+                stage.removeAllViews()
                 indicatorPosition = CarouselUnify.INDICATOR_BL
                 infinite = true
 
