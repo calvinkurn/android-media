@@ -459,6 +459,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun renderVoucherRecurringToggleChanges(voucherConfiguration: VoucherConfiguration) {
         voucherPeriodSectionBinding?.run {
             tfRepeat.isVisible = voucherConfiguration.isPeriod
+            recurringPeriodView.run {
+                isVisible = voucherConfiguration.isPeriod
+                isShowOtherScheduleButton = voucherConfiguration.totalPeriod > Int.ONE
+            }
         }
     }
 

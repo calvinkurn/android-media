@@ -65,4 +65,17 @@
         app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
         app:unify_text_field_label="@string/smvc_repeat_for_label" />
 
+    <com.tokopedia.mvc.common.customview.RecurringDateScheduleCustomView
+        android:id="@+id/recurring_period_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tf_repeat" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
