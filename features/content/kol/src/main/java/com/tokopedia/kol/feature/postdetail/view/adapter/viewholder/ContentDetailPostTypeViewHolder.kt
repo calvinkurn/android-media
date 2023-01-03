@@ -871,7 +871,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 ),
                 typeface = getTypeface(
                     context,
-                    "RobotoBold.ttf"
+                    FeedCaption.ROBOTO_BOLD
                 ),
                 clickListener = {
                     listener?.onShopHeaderItemClicked(

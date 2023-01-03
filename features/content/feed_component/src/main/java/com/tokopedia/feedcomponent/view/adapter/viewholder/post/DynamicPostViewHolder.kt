@@ -86,7 +86,6 @@ open class DynamicPostViewHolder(
     private val userSession: UserSessionInterface
 ) : AbstractViewHolder<DynamicPostModel>(v) {
 
-    var captionTv: Typography = itemView.caption
     lateinit var adapter: PostPagerAdapter
 
     companion object {
@@ -101,9 +100,6 @@ open class DynamicPostViewHolder(
         const val PAYLOAD_PLAY_VOD = 18
 
         const val MAX_CHAR = 140
-        const val CAPTION_END = 90
-
-        const val NEWLINE = "(\r\n|\n)"
 
         const val TYPE_DETAIL = "detail"
         const val SOURCE_FEEDS = "feeds"
@@ -398,7 +394,7 @@ open class DynamicPostViewHolder(
                         )
 
             val readMoreCaption = FeedCaption.ReadMore(
-                maxTrimChar = 120,
+                maxTrimChar = MAX_CHAR,
                 label = caption.buttonName,
                 colorRes = MethodChecker.getColor(
                     itemView.context,

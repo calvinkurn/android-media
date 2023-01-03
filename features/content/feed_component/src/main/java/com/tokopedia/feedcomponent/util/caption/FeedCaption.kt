@@ -22,19 +22,27 @@ class FeedCaption private constructor(
     private val readMore: ReadMore?
 ) {
 
+    companion object {
+        /**
+         * based on: unify_principles/src/main/java/com/tokopedia/unifyprinciples/Typography.kt
+         */
+        const val ROBOTO_BOLD = "RobotoBold.ttf"
+    }
+
     private var spannableCaption: Spanned = SpannableString(captionText.trim())
 
     private val tagConverter = TagConverter()
 
     init {
         convertTag()
-        withAuthor()
+        concatAuthorWithCaption()
         trimCaption()
     }
 
     @SuppressLint("PII Data Exposure")
-    private fun withAuthor() {
+    private fun concatAuthorWithCaption() {
         val author = author ?: return
+        if (author.name.isEmpty()) return
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
@@ -117,25 +125,6 @@ class FeedCaption private constructor(
         return spannableCaption
     }
 
-    class Author(
-        val name: String,
-        val colorRes: Int,
-        val typeface: Typeface?,
-        val clickListener: () -> Unit
-    )
-
-    class Tag(
-        val colorRes: Int,
-        val clickListener: (String) -> Unit
-    )
-
-    class ReadMore(
-        val maxTrimChar: Int?,
-        val label: String,
-        val colorRes: Int,
-        val clickListener: () -> Unit
-    )
-
     data class Builder(val captionText: String) {
 
         private var author: Author? = null
@@ -161,5 +150,24 @@ class FeedCaption private constructor(
             readMore
         ).toSpan()
     }
+
+    data class Author(
+        val name: String,
+        val colorRes: Int,
+        val typeface: Typeface?,
+        val clickListener: () -> Unit
+    )
+
+    data class Tag(
+        val colorRes: Int,
+        val clickListener: (String) -> Unit
+    )
+
+    data class ReadMore(
+        val maxTrimChar: Int?,
+        val label: String,
+        val colorRes: Int,
+        val clickListener: () -> Unit
+    )
 
 }
