@@ -2896,7 +2896,11 @@ class FeedPlusFragment :
         }
         if (isRefreshForPostCOntentCreation) {
             isRefreshForPostCOntentCreation = false
-            if (checkIfPostsAreSame(firstPageDomainModel.dynamicFeedDomainModel.postList.firstOrNull()).not()) {
+            val fetchedPostIsSameAsTopMostPost =
+                firstPageDomainModel.dynamicFeedDomainModel.postList.size >= 2 && checkIfPostsAreSame(
+                    firstPageDomainModel.dynamicFeedDomainModel.postList[1]
+                )
+            if (!fetchedPostIsSameAsTopMostPost) {
                 adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
             }
             return
