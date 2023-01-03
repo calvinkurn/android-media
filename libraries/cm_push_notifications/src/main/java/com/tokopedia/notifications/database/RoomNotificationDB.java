@@ -156,7 +156,9 @@ public abstract class RoomNotificationDB extends RoomDatabase {
                                     MIGRATION_9_10,
                                     MIGRATION_10_11,
                                     MIGRATION_11_12
-                            ).build();
+                            )
+                            .fallbackToDestructiveMigrationOnDowngrade()
+                            .build();
                 }
             }
         }

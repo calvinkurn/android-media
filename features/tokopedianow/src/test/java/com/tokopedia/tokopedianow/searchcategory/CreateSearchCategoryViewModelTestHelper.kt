@@ -1,12 +1,10 @@
 package com.tokopedia.tokopedianow.searchcategory
 
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CreateSearchCategoryViewModelTestHelper(
-        private val abTestPlatformWrapper: ABTestPlatformWrapper,
         private val callback: Callback,
 ) {
 

@@ -74,7 +74,6 @@ ext {
             travelPassenger                 : ":features:travel:travel_passenger",
 
             deals                           : ":features:entertainment:deals",
-            digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
             commonEntertainment             : ":features:entertainment:common_entertainment",
 
@@ -111,7 +110,8 @@ ext {
             layanan                         : ":features:fintech:layanan_finansial",
             paylater                        : ":features:fintech:paylater",
             pdpPaylaterWidget               : ":features:fintech:pdp_fintech_widget",
-            fintechHomeWidget                : ":features:fintech:fintech_home_widget",
+            fintechHomeWidget               : ":features:fintech:fintech_home_widget",
+            insurance                       : ":features:fintech:insurance",
 
             dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
@@ -305,6 +305,7 @@ ext {
             logintestapp                    : ":testapp-features:user:logintestapp",
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking",
+            watch                           : ":features:watch",
             tokofood                        : ":features:tokofood"
     ]
 }

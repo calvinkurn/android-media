@@ -34,9 +34,10 @@ class FeedProductItemInfoViewModel @Inject constructor(
     fun fetchMerchantVoucherSummary(shopId: String) {
         launchCatchError(dispatcherProvider.io, block = {
             val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
+            val resultStatus = response.data?.resultStatus
 
-            if (response.data?.resultStatus?.code != "200") {
-                throw ResponseErrorException(response.data?.resultStatus?.message?.get(0).toString())
+            if (resultStatus?.code != "200") {
+                throw ResponseErrorException(resultStatus?.message?.get(0).toString())
             }
 
             response.data?.let {
@@ -46,5 +47,4 @@ class FeedProductItemInfoViewModel @Inject constructor(
             _merchantVoucherSummary.postValue(Fail(it))
         }
     }
-
 }
