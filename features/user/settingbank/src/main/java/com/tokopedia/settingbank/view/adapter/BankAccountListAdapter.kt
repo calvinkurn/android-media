@@ -11,9 +11,6 @@ import com.tokopedia.settingbank.view.viewHolder.BankAccountViewHolder
 
 class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val VIEW_BANK = 0
-    private val VIEW_CATATAN = 1
-
     lateinit var inflater: LayoutInflater
 
     private var templateData: TemplateData? = null
@@ -23,17 +20,13 @@ class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerVie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (!::inflater.isInitialized)
             inflater = LayoutInflater.from(parent.context)
-        return when (viewType) {
-            VIEW_CATATAN -> {
-                val itemView = inflater.inflate(BankTNCViewHolder.LAYOUT, parent, false)
-                BankTNCViewHolder(itemView)
-            }
-            else -> {
-                val itemView = inflater.inflate(BankAccountViewHolder.LAYOUT, parent, false)
-                BankAccountViewHolder(itemView)
-            }
-        }
 
+        val itemView = inflater.inflate(viewType, parent, false)
+
+        return when (viewType) {
+            BankTNCViewHolder.LAYOUT -> BankTNCViewHolder(itemView)
+            else -> BankAccountViewHolder(itemView)
+        }
     }
 
     fun updateItem(list: ArrayList<BankAccount>) {
@@ -53,7 +46,7 @@ class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerVie
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == bankList.size) VIEW_CATATAN else VIEW_BANK
+        return if (position == bankList.size) BankTNCViewHolder.LAYOUT else BankAccountViewHolder.LAYOUT
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

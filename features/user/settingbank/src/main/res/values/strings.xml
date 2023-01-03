@@ -6,6 +6,7 @@
     <string name="bank_name_title">Nama Bank</string>
     <string name="account_number_title">Nomor Rekening</string>
     <string name="account_name_title">Nama Pemilik Rekening</string>
+    <string name="account_name_info">Pastikan sama dengan nama di buku tabungan</string>
     <string name="button_next">Selanjutnya</string>
     <string name="title_add_bank">Tambah Rekening</string>
     <string name="menu_info">Info</string>
@@ -19,7 +20,7 @@
     <string name="sbank_nama_bank">Nama Bank</string>
     <string name="sbank_periksa">Periksa</string>
     <string name="sbank_save_account">Simpan</string>
-    <string name="sbank_add_bank_tnc">Dengan klik “Simpan”, kamu menyetujui Kebijakan Privasi dan Syarat dan Ketentuan.</string>
+    <string name="sbank_add_bank_tnc">Dengan klik tombol di bawah, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi untuk menambahkan rekening</string>
     <string name="sbank_add_bank_tnc_clickable_part">Syarat &amp; Ketentuan</string>
     <string name="sbank_verification_in_progress">Sedang dalam Pengecekan</string>
     <string name="sbank_make_bank_primary">Jadikan Utama</string>
@@ -36,7 +37,7 @@
     <string name="sbank_attach_image_company">Foto Buku Tabungan</string>
     <string name="sbank_attach_image_constraints">Ukuran file maks. 2MB (.png, .jpg, .jpeg)</string>
     <string name="sbank_select_bank">Silakan pilih Bank</string>
-    <string name="sbank_confirm_add_bank_account">Tambah Rekening Bank</string>
+    <string name="sbank_confirm_add_bank_account">Rekeningnya sudah benar, kan?</string>
     <string name="sbank_name_matched_with_other">Apakah nama di rekening sesuai dengan nama di atas?</string>
     <string name="sbank_full_name">Nama Lengkap</string>
     <string name="sbank_yes_name_matched">Ya, Nama Sudah Sesuai</string>
@@ -46,7 +47,7 @@
     <string name="sbank_pic_of_family_card">Foto Kartu Keluarga (KK)</string>
     <string name="sbank_saving_acc_document">Rekening Tabungan</string>
     <string name="sbank_catatan">"Catatan:"</string>
-    <string name="sbank_add_bank_confirm">Kamu akan menambahkan rekening %1$s %2$s a.n %3$s</string>
+    <string name="sbank_add_bank_confirm">Kamu akan tambah rekening %1$s %2$s atas nama %3$s</string>
     <string name="sbank_delete_bank_confirm">Kamu akan menghapus rekening %1$s %2$s a.n %3$s</string>
     <string name="sbank_back">Kembali</string>
     <string name="sbank_delete_account">Hapus Rekening</string>
@@ -57,11 +58,11 @@
     <string name="sbank_please_select_photo">Silakan pilih foto dokumen</string>
     <string name="sbank_name_char_limit_error">Panjang harus dalam min 3 dan maks 128</string>
     <string name="sbank_oke">oke</string>
-    <string name="sbank_ya_tambah">Ya, Tambah</string>
+    <string name="sbank_ya_benar">Ya, Benar</string>
     <string name="sbank_batal">Batal</string>
     <string name="sbank_privacy_url">https://www.tokopedia.com/privacy</string>
     <string name="sbank_privacy">Kebijakan</string>
     <string name="sbank_terms">Syarat</string>
-    <string name="sbank_and_privacy_terms">dan</string>
-
+    <string name="sbank_untuk_tnc">untuk</string>
+    <string name="sbank_serta_tnc">serta</string>
 </resources>

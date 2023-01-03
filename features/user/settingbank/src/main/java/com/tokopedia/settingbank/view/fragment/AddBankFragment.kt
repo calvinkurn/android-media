@@ -2,11 +2,13 @@ package com.tokopedia.settingbank.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.*
 import android.text.method.DigitsKeyListener
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -37,7 +40,6 @@ import com.tokopedia.settingbank.view.viewState.*
 import com.tokopedia.settingbank.view.widgets.BankPrivacyPolicyBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -148,6 +150,16 @@ class AddBankFragment : BaseDaggerFragment() {
             val paddingEndDimen = getDimens(com.tokopedia.unifycomponents.R.dimen.unify_space_32)
             setPadding(paddingLeft, paddingTop, paddingEndDimen, paddingBottom)
         }
+        textAreaBankName.apply {
+            icon1.visible()
+            icon1.setImageDrawable(
+                getIconUnifyDrawable(
+                    context,
+                    IconUnify.CHEVRON_DOWN,
+                    ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN900),
+                )
+            )
+        }
         textAreaBankAccountNumber.editText.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
@@ -157,13 +169,13 @@ class AddBankFragment : BaseDaggerFragment() {
             keyListener = DigitsKeyListener.getInstance(false, false)
             textChangedListener(onTextChangeExt = ::onTextChanged)
         }
-        textAreaBankAccountHolderName.textAreaInput.apply {
+        textAreaBankAccountHolderName.editText.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
                 getDimens(com.tokopedia.unifycomponents.R.dimen.unify_font_16).toFloat()
             )
             inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
-            textAreaBankAccountHolderName.textAreaInput.filters = getAlphabetOnlyInputFilter()
+            textAreaBankAccountHolderName.editText.filters = getAlphabetOnlyInputFilter()
         }
         setAccountNumberInputFilter()
 
@@ -179,7 +191,7 @@ class AddBankFragment : BaseDaggerFragment() {
             builder.getAccountName()?.let {
                 if (it.isNotBlank()) {
                     if (builder.isManual()) {
-                        textAreaBankAccountHolderName.textAreaInput.setText(it)
+                        textAreaBankAccountHolderName.editText.setText(it)
                         textAreaBankAccountHolderName.visible()
                         groupAccountNameAuto.gone()
                     } else {
@@ -296,9 +308,9 @@ class AddBankFragment : BaseDaggerFragment() {
         add_account_button.isEnabled = true
         groupAccountNameAuto.gone()
         textAreaBankAccountHolderName.visible()
-        textAreaBankAccountHolderName.textAreaInput.isEnabled = true
+        textAreaBankAccountHolderName.editText.isEnabled = true
         if (data.accountName.isNotEmpty())
-            textAreaBankAccountHolderName.textAreaInput.setText(data.accountName)
+            textAreaBankAccountHolderName.editText.setText(data.accountName)
         showManualAccountNameError(data.message)
     }
 
@@ -309,8 +321,8 @@ class AddBankFragment : BaseDaggerFragment() {
         } else {
             groupAccountNameAuto.gone()
             textAreaBankAccountHolderName.visible()
-            textAreaBankAccountHolderName.textAreaInput.setText(data.accountName)
-            textAreaBankAccountHolderName.textAreaInput.isEnabled = false
+            textAreaBankAccountHolderName.editText.setText(data.accountName)
+            textAreaBankAccountHolderName.editText.isEnabled = false
             showManualAccountNameError(data.message)
         }
     }
@@ -335,8 +347,9 @@ class AddBankFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showManualAccountNameError(error: String?) {
-        textAreaBankAccountHolderName.textAreaWrapper.error = error
+    private fun showManualAccountNameError(errorStr: String?) {
+        textAreaBankAccountHolderName.setMessage(errorStr ?: "")
+        textAreaBankAccountHolderName.isInputError = !(errorStr == null || errorStr == "")
     }
 
     private fun onValidateAccountNumber(onTextChanged: ValidateAccountNumberSuccess) {
@@ -349,12 +362,13 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun setAccountNumberError(errorStr: String?) {
-       // textAreaBankAccountNumber.textAreaWrapper.error = errorStr
+        textAreaBankAccountNumber.setMessage(errorStr ?: "")
+        textAreaBankAccountNumber.isInputError = !(errorStr == null || errorStr == "")
     }
 
     private fun hideAccountHolderNameUI() {
         tvAccountHolderName.text = ""
-        textAreaBankAccountHolderName.textAreaInput.setText("")
+        textAreaBankAccountHolderName.editText.setText("")
         showManualAccountNameError(null)
         textAreaBankAccountHolderName.gone()
         groupAccountNameAuto.gone()
@@ -397,7 +411,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 } else if (checkAccountNameState is EditableAccountName) {
                     bankSettingAnalytics.eventOnManualNameSimpanClick()
                     val accountHolderName =
-                        textAreaBankAccountHolderName.textAreaInput.text.toString()
+                        textAreaBankAccountHolderName.editText.text.toString()
                     if (isAccountNameLengthValid(accountHolderName)) {
                         if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
                             builder.setAccountName(accountHolderName, true)
@@ -439,7 +453,7 @@ class AddBankFragment : BaseDaggerFragment() {
             ).apply {
                 setTitle(getString(R.string.sbank_confirm_add_bank_account))
                 setDescription(description)
-                setPrimaryCTAText(getString(R.string.sbank_ya_tambah))
+                setPrimaryCTAText(getString(R.string.sbank_ya_benar))
                 setSecondaryCTAText(getString(R.string.sbank_batal))
                 setPrimaryCTAClickListener {
                     bankSettingAnalytics.eventDialogConfirmAddAccountClick()
@@ -548,16 +562,10 @@ class AddBankFragment : BaseDaggerFragment() {
         val originalText = createTermsAndConditionSpannable()
         val startIndexPrivacy = originalText?.indexOf(getString(R.string.sbank_privacy)) ?: 0
         val endIndexPrivacy =
-            originalText?.indexOf(getString(R.string.sbank_and_privacy_terms))?.minus(1) ?: 0
+            originalText?.indexOf(getString(R.string.sbank_untuk_tnc))?.minus(1) ?: 0
         val spannableStringPrivacyPolicy = SpannableString(originalText)
         val color =
-            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
-        spannableStringPrivacyPolicy.setSpan(
-            color,
-            startIndexPrivacy,
-            endIndexPrivacy,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_GN500)
         spannableStringPrivacyPolicy.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 openPrivacyBottomSheet()
@@ -567,6 +575,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.color = color
+                ds.isFakeBoldText = true
             }
         }, startIndexPrivacy, endIndexPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -578,17 +587,9 @@ class AddBankFragment : BaseDaggerFragment() {
         val originalText = getString(R.string.sbank_add_bank_tnc)
         val spannableStringTermAndCondition = SpannableString(originalText)
         val startIndex = originalText.indexOf(getString(R.string.sbank_terms))
-        val endIndex = originalText.length
-
-
+        val endIndex = originalText.indexOf(getString(R.string.sbank_serta_tnc)).minus(1)
         val color =
-            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
-        spannableStringTermAndCondition.setSpan(
-            color,
-            startIndex,
-            endIndex,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_GN500)
         spannableStringTermAndCondition.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 loadTncForAddBank()
@@ -598,6 +599,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.color = color
+                ds.isFakeBoldText = true
             }
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableStringBuilder.valueOf(spannableStringTermAndCondition)
