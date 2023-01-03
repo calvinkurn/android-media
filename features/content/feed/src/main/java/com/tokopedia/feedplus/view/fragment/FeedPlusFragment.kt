@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -473,10 +474,13 @@ class FeedPlusFragment :
                                             feedFollowersOnlyBottomSheet?.dismiss()
                                         }
                                     }
-                                } else {val messageRes =
-                                    if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
-                                           showToast(getString(messageRes), Toaster.TYPE_NORMAL
-                                        )
+                                } else {
+                                    val messageRes =
+                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
+                                    showToast(
+                                        getString(messageRes),
+                                        Toaster.TYPE_NORMAL
+                                    )
                                 }
                                 onSuccessFollowUnfollowKol(data.rowNumber)
                             } else {
@@ -1476,7 +1480,12 @@ class FeedPlusFragment :
         }
         dialog.setSecondaryCTAClickListener {
             feedAnalytics.clickDeleteConfirmThreeDotsPage(
-                id, shopId, type, isFollowed, isVideo, authorType
+                id,
+                shopId,
+                type,
+                isFollowed,
+                isVideo,
+                authorType
             )
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
@@ -1797,7 +1806,12 @@ class FeedPlusFragment :
                     authorType
                 )
                 feedAnalytics.clickDeleteThreeDotsPage(
-                    finalId, authorId, postType, isFollowed, mediaType, authorType
+                    finalId,
+                    authorId,
+                    postType,
+                    isFollowed,
+                    mediaType,
+                    authorType
                 )
             }
             sheet.onDismiss = {
@@ -1813,7 +1827,11 @@ class FeedPlusFragment :
 
             sheet.onClosedClicked = {
                 feedAnalytics.eventCloseThreeDotBS(
-                    finalId, postType, isFollowed, authorId, authorType
+                    finalId,
+                    postType,
+                    isFollowed,
+                    authorId,
+                    authorType
                 )
             }
         }
@@ -2565,8 +2583,8 @@ class FeedPlusFragment :
                     hasVoucher = card.hasVoucher,
                     authorType = card.author.type.toString()
                 ),
-                    viewModelFactory,
- customMvcTracker = customMvcTracker
+                viewModelFactory,
+                customMvcTracker = customMvcTracker
             )
             productTagBS.closeClicked = {
                 val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
@@ -2852,6 +2870,9 @@ class FeedPlusFragment :
         }
         if (isRefreshForPostCOntentCreation) {
             isRefreshForPostCOntentCreation = false
+            Log.v("TAG double post", "check = ${(firstPageDomainModel.dynamicFeedDomainModel.postList[1]) == adapter.getlist()[1]}")
+            Log.v("TAG double post", "check new data = ${(firstPageDomainModel.dynamicFeedDomainModel.postList[1] as DynamicPostUiModel).feedXCard.id}")
+            Log.v("TAG double post", "check adapter = ${(adapter.getlist()[1] as DynamicPostUiModel).feedXCard.id}")
             adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
             return
         }
@@ -3476,7 +3497,11 @@ class FeedPlusFragment :
         if (type == TYPE_TOPADS_HEADLINE_NEW) {
             sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
             feedAnalytics.clickSekSekarang(
-                postId, shopId, type, isFollowed, feedXCard.author.type.toString()
+                postId,
+                shopId,
+                type,
+                isFollowed,
+                feedXCard.author.type.toString()
             )
         } else {
             val trackerId =
