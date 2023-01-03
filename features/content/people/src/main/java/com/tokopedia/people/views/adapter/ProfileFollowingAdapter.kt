@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -48,6 +49,26 @@ open class ProfileFollowingAdapter(
         }
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount = recyclerView.layoutManager!!.childCount
+                val totalItemCount = recyclerView.layoutManager!!.itemCount
+                val firstVisibleItemPosition =
+                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findFirstVisibleItemPosition()
+                if (!isLoading && !isLastPage) {
+                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
+                        && firstVisibleItemPosition >= 0
+                    ) {
+                        startDataLoading("")
+                    }
+                }
+            }
+        })
+    }
+
     override fun getItemViewHolder(
         parent: ViewGroup,
         inflater: LayoutInflater,
@@ -66,8 +87,9 @@ open class ProfileFollowingAdapter(
             return
         }
 
-        args[0]?.let { viewModel.getFollowings(it, cursor, PAGE_COUNT) }
+        args[0]?.let { viewModel.getFollowings(cursor, PAGE_COUNT) }
     }
+
     fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
         if (position >= 0 && position < items.size) {
             items[position].isFollow = isFollowed
@@ -223,7 +245,7 @@ open class ProfileFollowingAdapter(
     }
 
     companion object {
-        const val PAGE_COUNT = 20
+        const val PAGE_COUNT = 10
 
         private const val BADGE_URL_IDX = 1
     }
