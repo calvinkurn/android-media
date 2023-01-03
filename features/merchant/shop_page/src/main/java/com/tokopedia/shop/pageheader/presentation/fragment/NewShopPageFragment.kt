@@ -3072,9 +3072,9 @@ class NewShopPageFragment :
                         ShopPageParamModel.ShopPerformanceLabel.OPERATIONAL_HOURS.labelName
                 }
                 if (opsHourWidget.isNotEmpty()) {
-                    var infoValue = (opsHourWidget.firstOrNull() as? ShopHeaderBadgeTextValueComponentUiModel)?.text?.getOrNull(Int.ONE)?.textHtml.orEmpty()
+                    var infoValue = (opsHourWidget.firstOrNull() as? ShopHeaderBadgeTextValueComponentUiModel)?.text?.firstOrNull()?.textHtml.orEmpty()
                     if (infoValue != getString(R.string.shop_ops_hour_open_all_day) && infoValue != getString(R.string.shop_ops_hour_holiday)) {
-                        infoValue = "Buka $infoValue WIB"
+                        infoValue = getString(R.string.shop_page_share_chat_bubble_operational_hour_format, infoValue)
                     }
                     ogDescription += " | $infoValue"
                 }

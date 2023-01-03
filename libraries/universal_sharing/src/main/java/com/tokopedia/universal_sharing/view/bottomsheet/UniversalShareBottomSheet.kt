@@ -49,12 +49,7 @@ import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
-import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
-import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
-import com.tokopedia.universal_sharing.model.PdpParamModel
-import com.tokopedia.universal_sharing.model.BroadcastChannelModel
-import com.tokopedia.universal_sharing.model.TickerShareModel
-import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
+import com.tokopedia.universal_sharing.model.*
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
@@ -1032,9 +1027,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         setIfAffiliate(shareModel)
         if (getImageFromMedia) {
             when (sourceId) {
-                ImageGeneratorConstants.ImageGeneratorSourceId.PDP,
+                ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
+                    executePdpContextualImage(shareModel)
+                }
                 ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE -> {
-                    executeContextualImage(shareModel)
+                    executeShopContextualImage(shareModel)
                 }
                 ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION -> {
                     executeWishlistCollectionContextualImage(shareModel)
@@ -1055,6 +1052,21 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
             this.productImageUrl = transformOgImageURL(ogImageUrl)
+        }
+
+        lifecycleScope.launchCatchError(block = {
+            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+        }, onError =  {
+            executeSharingFlow(shareModel)
+        })
+    }
+
+    private fun executeShopContextualImage(shareModel: ShareModel) {
+        if (imageGeneratorParam == null || !(imageGeneratorParam is ShopPageParamModel)) return
+        (imageGeneratorParam as? ShopPageParamModel)?.apply {
+            this.platform = shareModel.platform
         }
 
         lifecycleScope.launchCatchError(block = {
