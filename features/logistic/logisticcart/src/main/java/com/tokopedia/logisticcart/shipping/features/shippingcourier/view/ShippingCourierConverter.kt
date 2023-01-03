@@ -130,12 +130,13 @@ class ShippingCourierConverter @Inject constructor() {
         scheduleDate: String?,
         timeslotId: Long?
     ) {
-        scheduleDeliveryData?.takeIf { it.hidden.not() }?.apply {
-            scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
-                scheduleDate ?: "",
-                timeslotId ?: 0L,
-            )
-        }
+        scheduleDeliveryData?.takeIf { it.hidden.not() && it.deliveryServices.isNotEmpty() }
+            ?.apply {
+                scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
+                    scheduleDate ?: "",
+                    timeslotId ?: 0L,
+                )
+            }
     }
 
     fun convertToCourierItemDataWithPromo(shippingCourierUiModel: ShippingCourierUiModel, data: LogisticPromoUiModel): CourierItemData {
