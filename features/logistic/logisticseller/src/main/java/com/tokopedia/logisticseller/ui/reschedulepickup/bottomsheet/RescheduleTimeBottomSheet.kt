@@ -6,17 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.logisticseller.R
-import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleTimeBinding
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleTimeBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 
-class RescheduleTimeBottomSheet(
-    private val timeOption: List<RescheduleTimeOptionModel>,
-    private val listener: ChooseTimeListener
-) : BottomSheetUnify() {
+class RescheduleTimeBottomSheet : BottomSheetUnify() {
 
+    private var timeOption: List<RescheduleTimeOptionModel> = listOf()
+    private var listener: ChooseTimeListener? = null
     private var binding by autoCleared<BottomsheetRescheduleTimeBinding>()
 
     init {
@@ -31,6 +30,14 @@ class RescheduleTimeBottomSheet(
 
     interface ChooseTimeListener {
         fun onTimeChosen(timeChosen: RescheduleTimeOptionModel)
+    }
+
+    fun setTimeOptions(data: List<RescheduleTimeOptionModel>) {
+        this.timeOption = data
+    }
+
+    fun setListener(listener: ChooseTimeListener) {
+        this.listener = listener
     }
 
     override fun onCreateView(
@@ -62,7 +69,7 @@ class RescheduleTimeBottomSheet(
             setData(listWidgetData)
             onLoadFinish {
                 setOnItemClickListener { adapterView, view, index, l ->
-                    listener.onTimeChosen(timeOption[index])
+                    listener?.onTimeChosen(timeOption[index])
                     dismiss()
                 }
             }
@@ -73,5 +80,10 @@ class RescheduleTimeBottomSheet(
         manager?.run {
             super.show(this, "")
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
     }
 }

@@ -28,4 +28,10 @@
     <color name="tokopedianow_quantity_editor_dms_edit_text_not_focus_text_color">#00AA5B</color>
     <color name="tokopedianow_product_card_dms_progress_bar_label_text_color">#808FA1</color>
     <color name="tokopedianow_card_dms_color">@color/cardunify_background</color>
+    <color name="tokopedianow_recipe_white_dms_color">#FFFFFF</color>
+    <color name="tokopedianow_recipe_image_bookmark_background_dms_color">#212121</color>
+    <color name="tokopedianow_recipe_image_bookmark_dms_color">#FFFFFF</color>
+    <color name="tokopedianow_recipe_label_text_background_dms_color">#F0F3F7</color>
+    <color name="tokopedianow_recipe_label_text_dms_color">#6D7588</color>
+    <color name="tokopedianow_recipe_title_home_dms_color">#212121</color>
 </resources>

@@ -50,6 +50,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackSearchClick() {}
     open fun trackGlobalNavBarClick(buttonName: String, userID: String?) {}
     open fun trackLihatSemuaClick(dataItem: DataItem?) {}
+    open fun trackPromoLihat(componentsItems: ComponentsItem) {}
     open fun trackImpressionIconDynamicComponent(headerName: String, icons: List<DataItem>) {}
     open fun trackClickIconDynamicComponent(iconPosition: Int, icon: DataItem) {}
     open fun trackClickSeeAllBanner() {}
@@ -165,4 +166,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackEventProductBundlingAtcClick(componentsItems: ComponentsItem, selectedMultipleBundle: BundleDetailUiModel) {}
     open fun trackEventProductBundlingViewImpression(componentsItems: ComponentsItem, selectedBundle: BundleDetailUiModel, bundlePosition: Int) {}
     open fun trackEventProductBundlingCarouselImpression(componentsItems: ComponentsItem, bundledProductList: List<BundleUiModel>, totalBundlings: Int, totalBundleSeenPosition: Int, lastVisibleItemPosition: Int) {}
+    open fun trackContentCardImpression(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackContentCardClick(componentsItems: ComponentsItem, userID: String?) {}
 }

@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -166,13 +165,18 @@ class ContentDetailFragment :
     }
 
     private fun initVar() {
-        contentDetailSource = arguments?.getString(ContentDetailActivity.PARAM_ENTRY_POINT) ?: ContentDetailActivity.SHARE_LINK
-        postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID) ?: ContentDetailActivity.DEFAULT_POST_ID
+        contentDetailSource = arguments?.getString(ContentDetailActivity.PARAM_ENTRY_POINT)
+            ?: ContentDetailActivity.SHARE_LINK
+        postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID)
+            ?: ContentDetailActivity.DEFAULT_POST_ID
 
         if (contentDetailSource == SOURCE_USER_PROFILE) {
             currentPosition = arguments?.getInt(ContentDetailActivity.PARAM_POSITION) ?: 0
-            visitedUserID = arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ID).orEmpty()
-            visitedUserEncryptedID = arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ENCRYPTED_ID).orEmpty()
+            visitedUserID =
+                arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ID).orEmpty()
+            visitedUserEncryptedID =
+                arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ENCRYPTED_ID)
+                    .orEmpty()
         }
     }
 
@@ -181,15 +185,17 @@ class ContentDetailFragment :
 
         viewModel.run {
             userProfileFeedPost.observe(
-                viewLifecycleOwner,
-                {
-                    when (it) {
-                        is Success -> onSuccessGetUserProfileFeedPost(it.data)
-                        is Fail -> showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
-                    }
+                viewLifecycleOwner
+            ) {
+                when (it) {
+                    is Success -> onSuccessGetUserProfileFeedPost(it.data)
+                    is Fail -> showToast(
+                        getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder),
+                        Toaster.TYPE_ERROR
+                    )
                 }
-            )
-            getCDPPostFirstPostData.observe(viewLifecycleOwner, {
+            }
+            getCDPPostFirstPostData.observe(viewLifecycleOwner) {
                 when (it) {
                     is Success -> {
                         onSuccessGetFirstPostCDPData(it.data)
@@ -201,8 +207,8 @@ class ContentDetailFragment :
                         )
                     }
                 }
-            })
-            cDPPostRecomData.observe(viewLifecycleOwner, {
+            }
+            cDPPostRecomData.observe(viewLifecycleOwner) {
                 when (it) {
                     is Success -> {
                         onSuccessGetCDPRecomData(it.data)
@@ -214,7 +220,7 @@ class ContentDetailFragment :
                         )
                     }
                 }
-            })
+            }
         }
     }
 
@@ -230,7 +236,8 @@ class ContentDetailFragment :
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as ContentDetailActivity
 
-        val backBtn = activity.getHeaderView()?.findViewById<AppCompatImageView>(kolR.id.content_detail_back_icon)
+        val backBtn = activity.getHeaderView()
+            ?.findViewById<AppCompatImageView>(kolR.id.content_detail_back_icon)
         backBtn?.setOnClickListener {
             viewModel.getCDPPostFirstPostData.value?.let {
                 if (it is Success && it.data.postList.firstOrNull()?.isTypeSgcVideo == true) {
@@ -764,7 +771,8 @@ class ContentDetailFragment :
                     isFollowed = item.isFollowed,
                     type = item.postType,
                     productId = item.id,
-                    source = contentDetailSource
+                    source = contentDetailSource,
+                    authorType = ""
                 )
             )
         } else {
@@ -785,7 +793,8 @@ class ContentDetailFragment :
                         trackerIdLongVideo = "34517",
                         trackerIdLongVideoRecomm = "34536"
                     ),
-                    source = contentDetailSource
+                    source = contentDetailSource,
+                    authorType = ""
                 )
             )
         }
@@ -1268,7 +1277,8 @@ class ContentDetailFragment :
                     mediaType = media?.type ?: "",
                     saleStatus = feedXCard.campaign.status,
                     saleType = feedXCard.campaign.name,
-                    hasVoucher = feedXCard.hasVoucher
+                    hasVoucher = feedXCard.hasVoucher,
+                    authorType = feedXCard.author.type.toString()
                 ),
                 viewModelFactory
             )
@@ -1365,7 +1375,8 @@ class ContentDetailFragment :
                 )
             )
         )
-        val authorType = if (feedXCard.author.type == AUTHOR_USER_TYPE_VALUE) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorType =
+            if (feedXCard.author.type == AUTHOR_USER_TYPE_VALUE) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
 
         val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
         intent.putExtra(
@@ -1550,7 +1561,8 @@ class ContentDetailFragment :
                     type = item.postType,
                     productId = item.id,
                     mediaType = item.mediaType,
-                    source = contentDetailSource
+                    source = contentDetailSource,
+                    authorType = ""
                 )
             )
         } else {
@@ -1571,7 +1583,8 @@ class ContentDetailFragment :
                         trackerIdAsgc = "34103",
                         trackerIdLongVideoRecomm = "34533"
                     ),
-                    source = contentDetailSource
+                    source = contentDetailSource,
+                    authorType = ""
                 )
             )
         }
@@ -1622,7 +1635,8 @@ class ContentDetailFragment :
         shopId: String,
         isFollowed: Boolean,
         mediaType: String,
-        hasVoucher: Boolean
+        hasVoucher: Boolean,
+        authorType: String
     ) {
         analyticsTracker.sendImpressionProductSgcImageEvent(
             ContentDetailPageAnalyticsDataModel(
@@ -1648,7 +1662,8 @@ class ContentDetailFragment :
                     trackerIdLongVideo = "34513",
                     trackerIdLongVideoRecomm = "34531"
                 ),
-                source = contentDetailSource
+                source = contentDetailSource,
+                authorType = authorType
             ),
             postTagItemList
         )
@@ -1685,7 +1700,8 @@ class ContentDetailFragment :
                             trackerIdLongVideo = "34514",
                             trackerIdLongVideoRecomm = "34532"
                         ),
-                        source = contentDetailSource
+                        source = contentDetailSource,
+                        authorType = ""
                     )
                 )
             }
@@ -1772,7 +1788,8 @@ class ContentDetailFragment :
                     trackerIdLongVideoRecomm = "34535"
 
                 ),
-                source = contentDetailSource
+                source = contentDetailSource,
+                authorType = ""
             )
         )
         if (userSession.isLoggedIn) {
@@ -1810,7 +1827,8 @@ class ContentDetailFragment :
                     mediaType = mediaType,
                     productId = productId,
                     shopId = shopId,
-                    source = contentDetailSource
+                    source = contentDetailSource,
+                    authorType = ""
                 )
             )
         } else {
@@ -1837,7 +1855,8 @@ class ContentDetailFragment :
                         trackerIdLongVideo = "34515",
                         trackerIdLongVideoRecomm = "34534"
                     ),
-                    source = contentDetailSource
+                    source = contentDetailSource,
+                    authorType = ""
                 )
             )
         }
@@ -1870,7 +1889,8 @@ class ContentDetailFragment :
     }
 
     private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
-        feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+        feedFollowersOnlyBottomSheet =
+            FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
         feedFollowersOnlyBottomSheet?.show(
             childFragmentManager,
             this,
@@ -1932,71 +1952,69 @@ class ContentDetailFragment :
     //region observer
     private fun observeWishlist() {
         viewModel.observableWishlist.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ContentDetailResult.Success -> onWishListSuccess(
-                        it.data.rowNumber,
-                        it.data.productId
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ContentDetailResult.Success -> onWishListSuccess(
+                    it.data.rowNumber,
+                    it.data.productId
+                )
+                is ContentDetailResult.Failure -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(
+                        errorMessage,
+                        requireView()
                     )
-                    is ContentDetailResult.Failure -> {
-                        val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(
-                            errorMessage,
-                            requireView()
-                        )
-                    }
                 }
             }
-        )
+        }
     }
 
     private fun observeFollowUnfollow() {
         viewModel.followShopObservable.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ContentDetailResult.Success -> {
-                        if (it.data.isFollowedFromRSRestrictionBottomSheet && it.data.action.isFollowing) {
-                            if (::productTagBS.isInitialized) {
-                                productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
-                                    Toaster.TYPE_NORMAL,
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
-                                )
-                                feedFollowersOnlyBottomSheet?.dismiss()
-                            }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    if (it.data.isFollowedFromRSRestrictionBottomSheet && it.data.action.isFollowing) {
+                        if (::productTagBS.isInitialized) {
+                            productTagBS.showToasterOnBottomSheetOnSuccessFollow(
+                                getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                Toaster.TYPE_NORMAL,
+                                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
+                            )
+                            feedFollowersOnlyBottomSheet?.dismiss()
                         }
-                        onSuccessFollowShop(it.data)
                     }
-                    is ContentDetailResult.Failure -> {
-                        when (it.error) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                showNoInterNetDialog(requireContext())
+                    onSuccessFollowShop(it.data)
+                }
+                is ContentDetailResult.Failure -> {
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString(it.error.errorMessageId)
+                            } else {
+                                ErrorHandler.getErrorMessage(requireContext(), it.error)
                             }
-                            else -> {
-                                val errorMessage = if (it.error is CustomUiMessageThrowable) {
-                                    requireContext().getString(it.error.errorMessageId)
-                                } else {
-                                    ErrorHandler.getErrorMessage(requireContext(), it.error)
-                                }
 
-                                Toaster.build(
-                                    requireView(),
-                                    errorMessage,
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.abstraction.R.string.title_try_again)
-                                ) { view ->
-                                    it.onRetry()
-                                }
-                                    .show()
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
                             }
+                                .show()
                         }
                     }
                 }
             }
-        )
+        }
         viewModel.followUserObservable.observe(viewLifecycleOwner) {
             when (it) {
                 is ContentDetailResult.Success -> {
@@ -2040,7 +2058,7 @@ class ContentDetailFragment :
     }
 
     private fun observeDeleteContent() {
-        viewModel.deletePostResp.observe(viewLifecycleOwner, {
+        viewModel.deletePostResp.observe(viewLifecycleOwner) {
             when (it) {
                 ContentDetailResult.Loading -> {
                     // todo: add loading state?
@@ -2068,90 +2086,87 @@ class ContentDetailFragment :
                     }
                 }
             }
-        })
+        }
     }
 
     private fun observeReportContent() {
         viewModel.reportResponse.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    ContentDetailResult.Loading -> {
-                        // todo: add loading state?
-                    }
-                    is ContentDetailResult.Success -> {
-                        reportBottomSheet.setFinalView()
-                        onSuccessDeletePost(it.data.rowNumber)
-                    }
-                    is ContentDetailResult.Failure -> {
-                        reportBottomSheet.dismiss()
-                        when (it.error) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                showNoInterNetDialog(requireContext())
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Success -> {
+                    reportBottomSheet.setFinalView()
+                    onSuccessDeletePost(it.data.rowNumber)
+                }
+                is ContentDetailResult.Failure -> {
+                    reportBottomSheet.dismiss()
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage =
+                                ErrorHandler.getErrorMessage(requireContext(), it.error)
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
                             }
-                            else -> {
-                                val errorMessage =
-                                    ErrorHandler.getErrorMessage(requireContext(), it.error)
-                                Toaster.build(
-                                    requireView(),
-                                    errorMessage,
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.abstraction.R.string.title_try_again)
-                                ) { view ->
-                                    it.onRetry()
-                                }
-                                    .show()
-                            }
+                                .show()
                         }
                     }
                 }
             }
-        )
+        }
     }
 
     private fun observeVideoViewData() {
         viewModel.vodViewData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    ContentDetailResult.Loading -> {}
-                    is ContentDetailResult.Success -> onSuccessAddViewVODPost(it.data.rowNumber)
-                    is ContentDetailResult.Failure -> {
-                        // TODO fail case
-                    }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                ContentDetailResult.Loading -> {}
+                is ContentDetailResult.Success -> onSuccessAddViewVODPost(it.data.rowNumber)
+                is ContentDetailResult.Failure -> {
+                    // TODO fail case
                 }
             }
-        )
+        }
     }
 
     private fun observeLikeContent() {
         viewModel.getLikeKolResp.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    ContentDetailResult.Loading -> {}
-                    is ContentDetailResult.Success -> {
-                        onSuccessLikeDislikeKolPost(it.data.rowNumber)
-                    }
-                    is ContentDetailResult.Failure -> {
-                        when (it.error) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                showNoInterNetDialog(requireContext())
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                ContentDetailResult.Loading -> {}
+                is ContentDetailResult.Success -> {
+                    onSuccessLikeDislikeKolPost(it.data.rowNumber)
+                }
+                is ContentDetailResult.Failure -> {
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString(it.error.errorMessageId)
+                            } else {
+                                ErrorHandler.getErrorMessage(requireContext(), it.error)
                             }
-                            else -> {
-                                val errorMessage = if (it.error is CustomUiMessageThrowable) {
-                                    requireContext().getString(it.error.errorMessageId)
-                                } else {
-                                    ErrorHandler.getErrorMessage(requireContext(), it.error)
-                                }
-                                showToast(errorMessage, Toaster.TYPE_ERROR)
-                            }
+                            showToast(errorMessage, Toaster.TYPE_ERROR)
                         }
                     }
                 }
             }
-        )
+        }
     }
 
     private fun onWishListSuccess(
@@ -2182,7 +2197,8 @@ class ContentDetailFragment :
                                 trackerIdSgc = "33271",
                                 trackerIdAsgc = "34105",
                                 trackerIdAsgcRecom = "34093"
-                            )
+                            ),
+                            authorType = feedXCard.author.type.toString()
                         )
                     )
                     RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
@@ -2290,7 +2306,8 @@ class ContentDetailFragment :
         duration = duration,
         feedXProduct = product,
         shareMedia = shareMedia,
-        source = contentDetailSource
+        source = contentDetailSource,
+        authorType = feedXCard.author.type.toString()
     )
 
     private fun getTrackerID(
@@ -2349,76 +2366,76 @@ class ContentDetailFragment :
 
     private fun observeAddToCart() {
         viewModel.atcRespData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    ContentDetailResult.Loading -> {
-                        // todo: add loading state?
-                    }
-                    is ContentDetailResult.Failure -> {
-                        val errorMessage =
-                            it.error.message ?: getString(networkR.string.default_request_error_unknown)
-                        showToast(
-                            errorMessage,
-                            Toaster.TYPE_ERROR
-                        )
-                    }
-                    is ContentDetailResult.Success -> {
-                        Toaster.build(
-                            requireView(),
-                            getString(kolR.string.feed_added_to_cart),
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_NORMAL,
-                            getString(kolR.string.feed_go_to_cart)
-                        ) {
-                            onAddToCartSuccess()
-                        }.show()
-                    }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Failure -> {
+                    val errorMessage =
+                        it.error.message
+                            ?: getString(networkR.string.default_request_error_unknown)
+                    showToast(
+                        errorMessage,
+                        Toaster.TYPE_ERROR
+                    )
+                }
+                is ContentDetailResult.Success -> {
+                    Toaster.build(
+                        requireView(),
+                        getString(kolR.string.feed_added_to_cart),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        getString(kolR.string.feed_go_to_cart)
+                    ) {
+                        onAddToCartSuccess()
+                    }.show()
                 }
             }
-        )
+        }
     }
 
     private fun observeReminderBtnInitialState() {
         viewModel.asgcReminderButtonInitialStatus.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ContentDetailResult.Success -> {
-                        onSuccessFetchStatusCampaignReminderButton(it.data)
-                    }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    onSuccessFetchStatusCampaignReminderButton(it.data)
                 }
             }
-        )
+        }
     }
 
     private fun observeReminderBtnSetState() {
         viewModel.asgcReminderButtonStatus.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ContentDetailResult.Success -> {
-                        onSuccessFetchStatusCampaignReminderButton(it.data, true)
-                    }
-                    is ContentDetailResult.Failure -> {
-                        showToast(ErrorHandler.getErrorMessage(context, it.error), Toaster.TYPE_ERROR)
-                    }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    onSuccessFetchStatusCampaignReminderButton(it.data, true)
+                }
+                is ContentDetailResult.Failure -> {
+                    showToast(
+                        ErrorHandler.getErrorMessage(context, it.error),
+                        Toaster.TYPE_ERROR
+                    )
                 }
             }
-        )
+        }
     }
 
     private fun observeFeedWidgetUpdatedData() {
         viewModel.feedWidgetLatestData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
-                    }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is Success -> {
+                    onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                 }
             }
-        )
+        }
     }
 
     override fun onFollowClickedFromFollowBottomSheet(position: Int) {
