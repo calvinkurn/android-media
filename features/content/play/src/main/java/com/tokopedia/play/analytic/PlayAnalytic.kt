@@ -10,6 +10,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -812,6 +813,40 @@ class PlayAnalytic(
         )
     }
 
+    fun sendScreenArchived() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/archive delete channel")
+    }
+
+    fun clickCtaArchived() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - to tokopedia play")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel(channelId)
+            .setCustomProperty(KEY_TRACKER_ID, "40354")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun clickExitArchived () {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - exit archive page")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel(channelId)
+            .setCustomProperty(KEY_TRACKER_ID, "40355")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
     private fun generateSwipeSession(): String {
         val identifier = if (userId.isNotBlank() && userId.isNotEmpty()) userId else "nonlogin"
         return identifier + System.currentTimeMillis()
@@ -872,6 +907,7 @@ class PlayAnalytic(
         private const val KEY_TRACK_BUSINESS_UNIT = "play"
 
         private const val KEY_TRACK_CLICK = "click"
+        private const val KEY_TRACK_CLICK_CONTENT = "clickContent"
         private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
 
         private const val ERR_STATE_VIDEO = "Video Player"

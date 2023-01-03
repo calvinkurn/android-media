@@ -703,6 +703,38 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - exit archive page",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+",
+      "trackerId": "40355",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - to tokopedia play",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+",
+      "trackerId": "40354",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "openScreen",
+      "trackerId": "40353",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "true|false",
+      "screenName": "/group-chat-room/\\d+/archive delete channel",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

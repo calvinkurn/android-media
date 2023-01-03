@@ -176,7 +176,13 @@ class PlayErrorFragment @Inject constructor(
     }
 
     private fun showArchived(config: ArchivedUiModel) {
+        analytic.sendScreenArchived()
+
         imgBack.setImage(newIconId = IconUnify.ARROW_BACK)
+        imgBack.setOnClickListener {
+            activity?.onBackPressed()
+            analytic.clickExitArchived()
+        }
         tvTitle.text = ""
 
         globalError.apply {
@@ -186,6 +192,7 @@ class PlayErrorFragment @Inject constructor(
             errorAction.text = config.btnTitle
             setActionClickListener {
                 activity?.let { activity ->
+                    analytic.clickCtaArchived()
                     router.route(activity, config.appLink)
                 }
             }
