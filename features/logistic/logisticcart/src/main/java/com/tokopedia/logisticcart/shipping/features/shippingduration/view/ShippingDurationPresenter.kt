@@ -32,8 +32,7 @@ import javax.inject.Inject
 class ShippingDurationPresenter @Inject constructor(
     private val ratesUseCase: GetRatesUseCase,
     private val ratesApiUseCase: GetRatesApiUseCase,
-    private val stateConverter: RatesResponseStateConverter,
-    private val shippingCourierConverter: ShippingCourierConverter
+    private val stateConverter: RatesResponseStateConverter
 ) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
 
     private var view: ShippingDurationContract.View? = null
