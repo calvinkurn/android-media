@@ -32,6 +32,7 @@ class IssueRegistry : IssueRegistry() {
                 CLASS_IMPORT,
                 WRONG_DATA_TYPE,
                 VectorDrawableDetector.ISSUE,
+                VectorDrawableDetector.ATTR_SRC_ISSUE,
                 MethodCallDetector.METHOD_CALL_PROHIBITED_ISSUE,
                 AnimatedVectorDetector.JAVA_ISSUE,
                 AnimatedVectorDetector.XML_ISSUE,

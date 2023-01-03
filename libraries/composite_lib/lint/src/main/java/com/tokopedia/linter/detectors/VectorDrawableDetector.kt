@@ -7,6 +7,7 @@ import com.android.SdkConstants.ATTR_DRAWABLE_LEFT
 import com.android.SdkConstants.ATTR_DRAWABLE_RIGHT
 import com.android.SdkConstants.ATTR_DRAWABLE_START
 import com.android.SdkConstants.ATTR_DRAWABLE_TOP
+import com.android.SdkConstants.ATTR_SRC
 import com.android.SdkConstants.DRAWABLE_FOLDER
 import com.android.SdkConstants.PREFIX_ANDROID
 import com.android.SdkConstants.RES_FOLDER
@@ -18,8 +19,10 @@ import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.LintFix
+import com.android.tools.lint.detector.api.Location
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
+import com.android.tools.lint.detector.api.TextFormat
 import com.android.tools.lint.detector.api.XmlContext
 import com.android.tools.lint.detector.api.XmlScanner
 import com.android.tools.lint.detector.api.getBaseName
@@ -42,6 +45,16 @@ class VectorDrawableDetector : Detector(), XmlScanner {
             implementation = Implementation(VectorDrawableDetector::class.java, Scope.RESOURCE_FILE_SCOPE)
         )
 
+        val ATTR_SRC_ISSUE = Issue.create(
+            id = "SrcVectorDrawable",
+            briefDescription = "Unsafe vector drawable usage.",
+            explanation = "Using app:srcCompat is the most foolproof method of integrating vector drawables. app:srcCompat supports backward compatible vesions of APIs.",
+            category = Category.CORRECTNESS,
+            priority = 5,
+            severity = Severity.FATAL,
+            implementation = Implementation(VectorDrawableDetector::class.java, Scope.RESOURCE_FILE_SCOPE)
+        )
+
         private const val ATTR_ANDROID_BACKGROUND = "${PREFIX_ANDROID}${ATTR_BACKGROUND}"
         private const val ATTR_ANDROID_DRAWABLE_LEFT = "${PREFIX_ANDROID}${ATTR_DRAWABLE_LEFT}"
         private const val ATTR_ANDROID_DRAWABLE_RIGHT = "${PREFIX_ANDROID}${ATTR_DRAWABLE_RIGHT}"
@@ -49,6 +62,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         private const val ATTR_ANDROID_DRAWABLE_BOTTOM = "${PREFIX_ANDROID}${ATTR_DRAWABLE_BOTTOM}"
         private const val ATTR_ANDROID_DRAWABLE_START = "${PREFIX_ANDROID}${ATTR_DRAWABLE_START}"
         private const val ATTR_ANDROID_DRAWABLE_END = "${PREFIX_ANDROID}${ATTR_DRAWABLE_END}"
+        private const val ATTR_ANDROID_SRC = "${PREFIX_ANDROID}${ATTR_SRC}"
     }
 
     private val vectorResources = Sets.newHashSet<String>()
@@ -74,21 +88,29 @@ class VectorDrawableDetector : Detector(), XmlScanner {
             ATTR_DRAWABLE_TOP,
             ATTR_DRAWABLE_BOTTOM,
             ATTR_DRAWABLE_START,
-            ATTR_DRAWABLE_END
+            ATTR_DRAWABLE_END,
+            ATTR_SRC
         )
     }
 
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
         if (attribute.hasVector()) {
-            when (attribute.name) {
-                ATTR_ANDROID_DRAWABLE_LEFT,
-                ATTR_ANDROID_DRAWABLE_RIGHT,
-                ATTR_ANDROID_DRAWABLE_TOP,
-                ATTR_ANDROID_DRAWABLE_BOTTOM,
-                ATTR_ANDROID_DRAWABLE_START,
-                ATTR_ANDROID_DRAWABLE_END -> reportDrawableError(context, attribute)
-                ATTR_ANDROID_BACKGROUND -> reportBackgroundError(context, attribute)
-            }
+            reportAttributeError(context, attribute)
+        } else if (attribute.nodeValue.substringAfter("/").startsWith("iconunify")) {
+            reportAttributeError(context, attribute)
+        }
+    }
+
+    private fun reportAttributeError(context: XmlContext, attribute: Attr) {
+        when (attribute.name) {
+            ATTR_ANDROID_DRAWABLE_LEFT,
+            ATTR_ANDROID_DRAWABLE_RIGHT,
+            ATTR_ANDROID_DRAWABLE_TOP,
+            ATTR_ANDROID_DRAWABLE_BOTTOM,
+            ATTR_ANDROID_DRAWABLE_START,
+            ATTR_ANDROID_DRAWABLE_END -> reportDrawableError(context, attribute)
+            ATTR_ANDROID_BACKGROUND -> reportBackgroundError(context, attribute)
+            ATTR_ANDROID_SRC -> reportSourceError(context, attribute)
         }
     }
 
@@ -97,12 +119,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         val message = "Unsafe vector usage in $attrName. " +
             "Consider using setCompoundDrawablesWithIntrinsicBounds() programmatically."
 
-        val lintFix = LintFix.create()
-            .unset()
-            .attribute(attrName)
-            .build()
-
-        reportError(context, attribute, message, lintFix)
+        reportError(ISSUE, context, attribute, message, context.getValueLocation(attribute))
     }
 
     private fun reportBackgroundError(context: XmlContext, attribute: Attr) {
@@ -110,24 +127,40 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         val message = "Unsafe vector usage in $attrName. " +
             "Consider using setBackgroundResource() programmatically."
 
+        reportError(ISSUE, context, attribute, message, context.getValueLocation(attribute))
+    }
+
+    private fun reportSourceError(context: XmlContext, attribute: Attr) {
+        val attrName = attribute.name
+        val message = "Vector drawable can lead to crash on pre-lollipop device. Avoid using $attrName to set vector drawable. "
         val lintFix = LintFix.create()
-            .unset()
-            .attribute(attrName)
+            .replace()
+            .text("android:src")
+            .with("app:srcCompat")
             .build()
 
-        reportError(context, attribute, message, lintFix)
+        reportError(
+            issue = ATTR_SRC_ISSUE,
+            context = context,
+            attribute = attribute,
+            message = message + ATTR_SRC_ISSUE.getExplanation(TextFormat.TEXT),
+            location = context.getLocation(attribute),
+            quickFix = lintFix
+        )
     }
 
     private fun reportError(
+        issue: Issue,
         context: XmlContext,
         attribute: Attr,
         message: String,
+        location: Location,
         quickFix: LintFix? = null
     ) {
         context.report(
-            ISSUE,
+            issue,
             attribute,
-            context.getValueLocation(attribute),
+            location,
             message,
             quickFix
         )
