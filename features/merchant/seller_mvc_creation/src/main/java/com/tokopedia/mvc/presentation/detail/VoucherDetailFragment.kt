@@ -244,6 +244,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 data.remainingQuota
             )
             pgbUsedVoucher.setValue(usedQuotaPercentage, true)
+            btnDownloadImageVoucher.setOnClickListener { TODO("implement download functionality") }
         }
     }
 
