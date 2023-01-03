@@ -34,7 +34,7 @@ class GoCicilInstallmentRequest(
         get() = JsonArray().apply {
             products.forEach { product ->
                 add(JsonObject().apply {
-                    addProperty(ORDER_METADATA_PRODUCT_DATA_ID, product.productId.toString())
+                    addProperty(ORDER_METADATA_PRODUCT_DATA_ID, product.productId)
                     addProperty(ORDER_METADATA_PRODUCT_DATA_PRICE, product.productPrice)
                     addProperty(ORDER_METADATA_PRODUCT_DATA_QUANTITY, product.orderQuantity)
                     add(ORDER_METADATA_PRODUCT_DATA_CATEGORY, JsonObject().apply {

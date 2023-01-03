@@ -569,8 +569,7 @@ class FeedViewModel @Inject constructor(
         adapterPosition: Int,
         shopId: String,
         follow: Boolean = true,
-        isUnfollowFromBottomSheetMenu: Boolean = false,
-        isFollowedFromFollowRestrictionBottomSheet: Boolean = false,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean = false
     ) {
          launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
@@ -584,7 +583,6 @@ class FeedViewModel @Inject constructor(
                     rowNumber = rowNumber,
                     adapterPosition = adapterPosition,
                     shopId = shopId,
-                    isUnfollowFromShopsMenu = isUnfollowFromBottomSheetMenu,
                     isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet,
                     isSuccess = result is MutationUiModel.Success
                 )
