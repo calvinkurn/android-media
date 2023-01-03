@@ -1,8 +1,8 @@
 package com.tokopedia.shop.product.view.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.shop.R
 
 class ErrorNetworkWrapViewHolder(itemView: View?) : ErrorNetworkViewHolder(itemView) {

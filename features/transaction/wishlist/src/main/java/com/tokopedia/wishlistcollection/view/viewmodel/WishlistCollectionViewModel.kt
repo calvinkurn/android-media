@@ -14,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
+import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
@@ -27,7 +28,6 @@ import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionSharingDataU
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -75,6 +75,7 @@ class WishlistCollectionViewModel @Inject constructor(
         get() = _updateWishlistCollectionResult
 
     fun getWishlistCollections() {
+        WishlistIdlingResource.increment()
         launchCatchError(block = {
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
@@ -91,9 +92,11 @@ class WishlistCollectionViewModel @Inject constructor(
                 _collections.value = Fail(Throwable())
                 _collectionData.value = Fail(Throwable())
             }
+            WishlistIdlingResource.decrement()
         }, onError = {
             _collections.value = Fail(it)
             _collectionData.value = Fail(Throwable())
+            WishlistIdlingResource.decrement()
         })
     }
 
@@ -129,6 +132,7 @@ class WishlistCollectionViewModel @Inject constructor(
     }
 
     fun loadRecommendation(page: Int) {
+        WishlistIdlingResource.increment()
         val listData = arrayListOf<WishlistCollectionTypeLayoutData>()
         launch {
             try {
@@ -143,8 +147,10 @@ class WishlistCollectionViewModel @Inject constructor(
                     )
                 }
                 _collectionData.value = Success(listData)
+                WishlistIdlingResource.decrement()
             } catch (e: Exception) {
                 Timber.d(e)
+                WishlistIdlingResource.decrement()
             }
         }
     }

@@ -55,9 +55,12 @@
 
     <!--Kol Media Preview-->
     <string name="kol_title_media_preview">Media Preview</string>
+    <string name="kol_invalid_protocol_format">TkpdVideoPlayer: invalid source media format.</string>
+    <string name="kol_invalid_protocol_type">TkpdVideoPlayer: Only supported http, https, rtmp, and file format.</string>
 
     <!--Kol Video Detail-->
     <string name="kol_title_video_detail">Video Detail</string>
+    <string name="kol_error_unknown">Kesalahan tidak diketahui</string>
 
     <!--Kol Post Youtube-->
     <string name="kol_title_post_youtube">Post Youtube</string>
@@ -92,7 +95,6 @@
     <string name="kol_next_image_content_desc">Action Next Image</string>
     <string name="kol_prev_image_content_desc">Action Previous Image</string>
 
-
     <!-- Like -->
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
     <!-- Unfollow -->
@@ -120,9 +122,5 @@ dari Feed.</string>
     <string name="feed_post_deleted">Post Kamu Berhasil di Hapus</string>
     <!--Follower-->
     <string name="feed_header_follow_count_text">%s Followers</string>
-
-
-
-
 
 </resources>

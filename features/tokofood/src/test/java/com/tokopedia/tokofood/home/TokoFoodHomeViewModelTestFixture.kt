@@ -27,12 +27,14 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiMo
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
+import com.tokopedia.tokofood.feature.home.presentation.sharedpref.TokofoodHomeSharedPref
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Before
@@ -56,6 +58,8 @@ abstract class TokoFoodHomeViewModelTestFixture {
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
     @RelaxedMockK
     lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+    @RelaxedMockK
+    lateinit var tokofoodHomeSharedPref: TokofoodHomeSharedPref
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -82,6 +86,7 @@ abstract class TokoFoodHomeViewModelTestFixture {
             keroEditAddressUseCase,
             getChooseAddressWarehouseLocUseCase,
             eligibleForAddressUseCase,
+            tokofoodHomeSharedPref,
             CoroutineTestDispatchersProvider
         )
     }
@@ -192,6 +197,12 @@ abstract class TokoFoodHomeViewModelTestFixture {
         localCacheModel: LocalCacheModel = LocalCacheModel()
     ) {
         coEvery { tokoFoodDynamicChanelUseCase.execute(localCacheModel) } throws error
+    }
+
+    protected fun onGetHasSearchCoachMarkShown_thenReturn(hasShown: Boolean) {
+        every {
+            tokofoodHomeSharedPref.getHasSearchCoachmarkShown()
+        } returns hasShown
     }
 
     protected fun verifyCallHomeLayout() {

@@ -235,7 +235,7 @@ class OrderPreferenceCard(
                 serviceErrorMessage = shipping.serviceErrorMessage,
                 onReloadShipping = {
                     if (profile.enable) {
-                        listener.reloadShipping(shop.shopId.toString())
+                        listener.reloadShipping(shop.shopId)
                     }
                 }
             )
@@ -739,7 +739,7 @@ class OrderPreferenceCard(
 
             setMultiViewsOnClickListener(tvAddressName, tvAddressDetail, btnChangeAddress) {
                 if (profile.enable) {
-                    listener.chooseAddress(addressModel.addressId.toString())
+                    listener.chooseAddress(addressModel.addressId)
                 }
             }
         }

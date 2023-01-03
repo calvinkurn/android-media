@@ -164,7 +164,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             verifyUpdateCartUseCaseCalled()
 
             viewModel.updateCartItem
-                .verifySuccessEquals(Success(updateCartResponse))
+                .verifySuccessEquals(Success(Triple(productId,updateCartResponse, quantity)))
         }
     }
 

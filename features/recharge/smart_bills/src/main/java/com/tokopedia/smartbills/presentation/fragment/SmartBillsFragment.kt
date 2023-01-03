@@ -47,6 +47,7 @@ import com.tokopedia.smartbills.data.RechargeStatementMonths
 import com.tokopedia.smartbills.data.Section
 import com.tokopedia.smartbills.data.SmartBillsCatalogMenu
 import com.tokopedia.smartbills.data.uimodel.HighlightCategoryUiModel
+import com.tokopedia.smartbills.databinding.FragmentSmartBillsBinding
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivity
@@ -71,7 +72,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.fragment_smart_bills.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -79,7 +80,8 @@ import javax.inject.Inject
  * @author by resakemal on 17/05/20
  */
 
-class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapterFactory>(),
+class SmartBillsFragment :
+    BaseListFragment<RechargeBillsModel, SmartBillsAdapterFactory>(),
     BaseCheckableViewHolder.CheckableInteractionListener,
     BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
     SmartBillsViewHolder.DetailListener,
@@ -89,8 +91,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     SmartBillsAccordionViewHolder.SBMAccordionListener,
     SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
     SmartBillsCatalogBottomSheet.CatalogCallback,
-    SmartBillsHighlightCategoryWidget.SmartBillsHighlightCategoryListener
-{
+    SmartBillsHighlightCategoryWidget.SmartBillsHighlightCategoryListener {
+
+    private var binding by autoClearedNullable<FragmentSmartBillsBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -125,7 +128,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private var rechargeStatement: RechargeListSmartBills = RechargeListSmartBills()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_smart_bills, container, false)
+        binding = FragmentSmartBillsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,179 +153,215 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
-    private fun observeData(){
-        viewModel.statementMonths.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
-                    ongoingMonth?.let {
-                        viewModel.getStatementBills(
+    private fun observeData() {
+        viewModel.statementMonths.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
+                        ongoingMonth?.let {
+                            viewModel.getStatementBills(
                                 viewModel.createStatementBillsParams(
-                                        it.month,
-                                        it.year,
-                                        SOURCE
+                                    it.month,
+                                    it.year,
+                                    SOURCE
                                 )
-                        )
-                        viewModel.getHightlightCategory()
+                            )
+                            viewModel.getHightlightCategory()
+                        }
+                        if (ongoingMonth == null) {
+                            showGlobalError(getDataErrorException())
+                        }
                     }
-                    if (ongoingMonth == null) {
-                        showGlobalError(getDataErrorException())
+                    is Fail -> {
+                        binding?.viewSmartBillsShimmering?.root?.hide()
+                        var throwable = it.throwable
+                        if (throwable.message == SmartBillsViewModel.STATEMENT_MONTHS_ERROR) {
+                            throwable = getDataErrorException()
+                        }
+                        showGlobalError(throwable)
                     }
-                }
-                is Fail -> {
-                    view_smart_bills_shimmering.hide()
-                    var throwable = it.throwable
-                    if (throwable.message == SmartBillsViewModel.STATEMENT_MONTHS_ERROR) {
-                        throwable = getDataErrorException()
-                    }
-                    showGlobalError(throwable)
                 }
             }
-        })
+        )
 
-        viewModel.statementBills.observe(viewLifecycleOwner, Observer {
-            performanceMonitoring.stopTrace()
+        viewModel.statementBills.observe(
+            viewLifecycleOwner,
+            Observer {
+                performanceMonitoring.stopTrace()
 
-            view_smart_bills_shimmering.hide()
-            when (it) {
-                is Success -> {
-                    adapter.data.clear()
-                    rechargeStatement = it.data
-                    val bills = getNotAccordionSection(it.data.sections)?.bills
-                    if (!bills.isNullOrEmpty()) {
-                        listBills = bills
-                        containerCheckBox?.show()
+                binding?.viewSmartBillsShimmering?.root?.hide()
+                when (it) {
+                    is Success -> {
+                        adapter.data.clear()
+                        rechargeStatement = it.data
+                        val bills = getNotAccordionSection(it.data.sections)?.bills
+                        if (!bills.isNullOrEmpty()) {
+                            listBills = bills
+                            containerCheckBox?.show()
 
-                        if (!getNotAccordionSection(it.data.sections)?.title.isNullOrEmpty())
-                            tv_smart_bills_title.text = getNotAccordionSection(it.data.sections)?.title
+                            if (!getNotAccordionSection(it.data.sections)?.title.isNullOrEmpty()) {
+                                binding?.tvSmartBillsTitle?.text = getNotAccordionSection(it.data.sections)?.title
+                            }
 
-                        renderList(bills)
-                        listAccordion = getAccordionSection(it.data.sections)
-                        renderAccordionList(listAccordion)
-                        smartBillsAnalytics.impressionAllProducts(bills)
+                            renderList(bills)
+                            listAccordion = getAccordionSection(it.data.sections)
+                            renderAccordionList(listAccordion)
+                            smartBillsAnalytics.impressionAllProducts(bills)
 
-                        // Auto select bills based on data
-                        autoTick = true
-                        bills.forEachIndexed { index, rechargeBills ->
-                            if (rechargeBills.isChecked) adapter.updateListByCheck(true, index)
+                            // Auto select bills based on data
+                            autoTick = true
+                            bills.forEachIndexed { index, rechargeBills ->
+                                if (rechargeBills.isChecked) adapter.updateListByCheck(true, index)
+                            }
+                            autoTick = false
+
+                            // Show coach mark
+                            showOnboarding()
+
+                            // Save maximum price
+                            maximumPrice = 0L
+                            for (bill in bills) {
+                                maximumPrice += bill.amount
+                            }
+                        } else {
+                            hideLoading()
+                            // Show empty state
+                            binding?.tvSmartBillsTitle?.hide()
+                            binding?.smartBillsCheckoutView?.setVisibilityLayout(false)
+                            adapter.renderEmptyState()
                         }
-                        autoTick = false
-
-                        // Show coach mark
-                        showOnboarding()
-
-                        // Save maximum price
-                        maximumPrice = 0L
-                        for (bill in bills) {
-                            maximumPrice += bill.amount
+                        successAddBills(message, category)
+                        smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0)
+                    }
+                    is Fail -> {
+                        var throwable = it.throwable
+                        if (throwable.message == SmartBillsViewModel.STATEMENT_BILLS_ERROR) {
+                            throwable = getDataErrorException()
                         }
-                    } else {
-                        hideLoading()
-                        // Show empty state
-                        tv_smart_bills_title.hide()
-                        smart_bills_checkout_view.setVisibilityLayout(false)
-                        adapter.renderEmptyState()
+                        showGlobalError(throwable)
                     }
-                    successAddBills(message, category)
-                    smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0)
-                }
-                is Fail -> {
-                    var throwable = it.throwable
-                    if (throwable.message == SmartBillsViewModel.STATEMENT_BILLS_ERROR) {
-                        throwable = getDataErrorException()
-                    }
-                    showGlobalError(throwable)
                 }
             }
-        })
+        )
 
-        viewModel.multiCheckout.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    // Check if all items' transaction succeeds; if they do, navigate to payment
-                    if (it.data.attributes.allSuccess) {
-                        smartBillsAnalytics.clickPay(adapter.checkedDataList, listBills.size, totalPrice)
+        viewModel.multiCheckout.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        // Check if all items' transaction succeeds; if they do, navigate to payment
+                        if (it.data.attributes.allSuccess) {
+                            smartBillsAnalytics.clickPay(adapter.checkedDataList, listBills.size, totalPrice)
 
-                        val paymentPassData = PaymentPassData()
-                        paymentPassData.convertToPaymenPassData(it.data)
+                            val paymentPassData = PaymentPassData()
+                            paymentPassData.convertToPaymenPassData(it.data)
 
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
-                        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-                        startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
-                    } else { // Else, show error message in affected items
-                        smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size)
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                        } else { // Else, show error message in affected items
+                            smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size)
 
-                        checkout_loading_view.hide()
-                        view?.let { v ->
-                            val throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
-                            Toaster.build(v, ErrorHandler.getErrorMessage(context, throwable),
-                                    Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
-                        }
+                            binding?.checkoutLoadingView?.hide()
+                            view?.let { v ->
+                                val throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
+                                Toaster.build(
+                                    v,
+                                    ErrorHandler.getErrorMessage(context, throwable),
+                                    Toaster.LENGTH_INDEFINITE,
+                                    Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                ).show()
+                            }
 
-                        for (errorItem in it.data.attributes.errors) {
-                            if (errorItem.index >= 0) {
-                                val bill = adapter.data[errorItem.index]
-                                bill.errorMessage = if (errorItem.errorMessage.isNotEmpty()) {
-                                    errorItem.errorMessage
-                                } else {
-                                    getString(R.string.smart_bills_item_default_error)
+                            for (errorItem in it.data.attributes.errors) {
+                                if (errorItem.index >= 0) {
+                                    val bill = adapter.data[errorItem.index]
+                                    bill.errorMessage = if (errorItem.errorMessage.isNotEmpty()) {
+                                        errorItem.errorMessage
+                                    } else {
+                                        getString(R.string.smart_bills_item_default_error)
+                                    }
+                                    adapter.data[errorItem.index] = bill
+                                    adapter.updateListByCheck(false, errorItem.index)
                                 }
-                                adapter.data[errorItem.index] = bill
-                                adapter.updateListByCheck(false, errorItem.index)
                             }
                         }
                     }
-                }
-                is Fail -> {
-                    smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size)
+                    is Fail -> {
+                        smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size)
 
-                    checkout_loading_view.hide()
-                    var throwable = it.throwable
-                    if (throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
-                        throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
-                    }
-                    view?.let { v ->
-                        Toaster.build(v, ErrorHandler.getErrorMessage(context,throwable)
-                                , Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
-                    }
-                }
-            }
-        })
-
-        viewModel.catalogList.observe(viewLifecycleOwner, Observer {
-            hideProgressBar()
-            when (it) {
-                is Success -> {
-                    if (it.data.isNotEmpty()) {
-                        showCatalogBottomSheet(it.data)
-                    } else {
-                        view?.let { view ->
-                            Toaster.build(view, getString(R.string.smart_bills_add_bills_bottom_sheet_catalog_empty), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        binding?.checkoutLoadingView?.hide()
+                        var throwable = it.throwable
+                        if (throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
+                            throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
+                        }
+                        view?.let { v ->
+                            Toaster.build(
+                                v,
+                                ErrorHandler.getErrorMessage(context, throwable),
+                                Toaster.LENGTH_INDEFINITE,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                            ).show()
                         }
                     }
                 }
+            }
+        )
 
-                is Fail -> {
-                    view?.let { view ->
-                        Toaster.build(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        viewModel.catalogList.observe(
+            viewLifecycleOwner,
+            Observer {
+                hideProgressBar()
+                when (it) {
+                    is Success -> {
+                        if (it.data.isNotEmpty()) {
+                            showCatalogBottomSheet(it.data)
+                        } else {
+                            view?.let { view ->
+                                Toaster.build(
+                                    view,
+                                    getString(R.string.smart_bills_add_bills_bottom_sheet_catalog_empty),
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                ).show()
+                            }
+                        }
+                    }
+
+                    is Fail -> {
+                        view?.let { view ->
+                            Toaster.build(
+                                view,
+                                ErrorHandler.getErrorMessage(context, it.throwable),
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                            ).show()
+                        }
                     }
                 }
             }
-        })
+        )
 
-        observe(viewModel.deleteSBM){
-            when(it){
+        observe(viewModel.deleteSBM) {
+            when (it) {
                 is Success -> {
                     val message = it.data.rechargeSBMDeleteBill.message
                     if (!message.isNullOrEmpty()) {
                         view?.let { view ->
                             smartBillsAnalytics.viewDeleteBillSuccess()
-                            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                            Toaster.build(
+                                view,
+                                message,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_NORMAL,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                            ).show()
                         }
                         swipeToRefresh?.isRefreshing = true
                         showLoading()
@@ -331,17 +371,22 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.build(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        Toaster.build(
+                            view,
+                            ErrorHandler.getErrorMessage(context, it.throwable),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR,
+                            getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                        ).show()
                     }
                 }
             }
         }
 
         viewLifecycleOwner.observe(viewModel.highlightCategory) {
-            when(it){
+            when (it) {
                 is Success -> {
-                    if (viewModel.isHighlightNotEmpty(it.data)){
+                    if (viewModel.isHighlightNotEmpty(it.data)) {
                         smartBillsAnalytics.viewHighlightWidget(it.data.title)
                         showHighlightCategory(it.data)
                     } else {
@@ -359,11 +404,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Handle user not logging in from onboarding
-        if(requestCode == REQUEST_CODE_SETTING) {
+        if (requestCode == REQUEST_CODE_SETTING) {
             showLoading()
             loadInitialData()
         } else if (requestCode == REQUEST_CODE_ADD_BILLS) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 swipeToRefresh?.isRefreshing = true
                 showLoading()
                 loadInitialData()
@@ -398,7 +443,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
-    private fun setupUI(){
+    private fun setupUI() {
         view?.apply {
             containerCheckBox = findViewById(R.id.view_smart_bills_select_all_checkbox_container)
         }
@@ -413,60 +458,63 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 putBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, true)
                 applyEditor()
             }
-            startActivityForResult(Intent(context,
-                SmartBillsOnboardingActivity::class.java),
+            startActivityForResult(
+                Intent(
+                    context,
+                    SmartBillsOnboardingActivity::class.java
+                ),
                 REQUEST_CODE_SMART_BILLS_ONBOARDING
             )
         } else {
             smartBillsAnalytics.userId = userSession.userId
 
-            context?.let { context ->
-                // Setup ticker
-                ticker_smart_bills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
-                ticker_smart_bills.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        smartBillsAnalytics.clickSubscription()
-                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+            binding?.run {
+                context?.let { context ->
+                    // Setup ticker
+                    tickerSmartBills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
+                    tickerSmartBills.setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            smartBillsAnalytics.clickSubscription()
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
+                        }
+
+                        override fun onDismiss() {
+                        }
+                    })
+
+                    tvSbmAddBills.apply {
+                        show()
+                        setOnClickListener {
+                            smartBillsAnalytics.clickTambahTagihan()
+                            getCatalogData()
+                        }
                     }
 
-                    override fun onDismiss() {
-
+                    // Setup toggle all items listener
+                    cbSmartBillsSelectAll.setOnClickListener {
+                        toggleAllItems(cbSmartBillsSelectAll.isChecked, true)
                     }
-                })
-
-
-                tv_sbm_add_bills.apply {
-                    show()
-                    setOnClickListener {
-                         smartBillsAnalytics.clickTambahTagihan()
-                         getCatalogData()
+                    tgSmartBillsSelectAll.setOnClickListener {
+                        cbSmartBillsSelectAll.toggle()
+                        toggleAllItems(cbSmartBillsSelectAll.isChecked, true)
                     }
-                }
 
-                // Setup toggle all items listener
-                cb_smart_bills_select_all.setOnClickListener {
-                    toggleAllItems(cb_smart_bills_select_all.isChecked, true)
-                }
-                tg_smart_bills_select_all.setOnClickListener {
-                    cb_smart_bills_select_all.toggle()
-                    toggleAllItems(cb_smart_bills_select_all.isChecked, true)
-                }
+                    rvSmartBillsItems.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    rvSmartBillsItems.adapter = adapter
+                    rvSmartBillsItems.addItemDecoration(DividerSBMItemDecoration(context))
+                    initAccordion()
+                    smartBillsCheckoutView.listener = this@SmartBillsFragment
+                    smartBillsCheckoutView.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
+                    updateCheckoutView()
 
-                rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                rv_smart_bills_items.adapter = adapter
-                rv_smart_bills_items.addItemDecoration(DividerSBMItemDecoration(context))
-                initAccordion()
-                smart_bills_checkout_view.listener = this
-                smart_bills_checkout_view.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
-                updateCheckoutView()
-
-                loadInitialData()
+                    loadInitialData()
+                }
             }
         }
     }
 
-    private fun initAccordion(){
-        rv_smart_bills_accordion?.apply {
+    private fun initAccordion() {
+        binding?.rvSmartBillsAccordion?.apply {
             resertAccordion()
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = adapterAccordion
@@ -474,8 +522,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
-    private fun renderAccordionList(listSection: List<Section>){
-        rv_smart_bills_accordion?.apply {
+    private fun renderAccordionList(listSection: List<Section>) {
+        binding?.rvSmartBillsAccordion?.apply {
             show()
             adapterAccordion.clearAllElements()
             adapterAccordion.addElement(listSection)
@@ -483,20 +531,22 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
-    private fun resertAccordion(){
-        rv_smart_bills_accordion?.apply {
+    private fun resertAccordion() {
+        binding?.rvSmartBillsAccordion?.apply {
             hide()
             adapterAccordion.clearAllElements()
         }
     }
 
-    private fun resetInitialState(){
-        tv_smart_bills_title.show()
-        containerCheckBox?.hide()
-        resertAccordion()
-        view_smart_bills_shimmering.show()
-        smart_bills_checkout_view.setVisibilityLayout(true)
-        toggleAllItems(false)
+    private fun resetInitialState() {
+        binding?.run {
+            tvSmartBillsTitle.show()
+            containerCheckBox?.hide()
+            resertAccordion()
+            viewSmartBillsShimmering.root.show()
+            smartBillsCheckoutView.setVisibilityLayout(true)
+            toggleAllItems(false)
+        }
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -551,8 +601,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun getAdapterTypeFactory(): SmartBillsAdapterFactory {
-        return SmartBillsAdapterFactory(this, this,
-                this, this)
+        return SmartBillsAdapterFactory(
+            this,
+            this,
+            this,
+            this
+        )
     }
 
     override fun showGetListError(throwable: Throwable?) {
@@ -563,7 +617,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun onItemClicked(t: RechargeBillsModel?) {
-
     }
 
     override fun isChecked(position: Int): Boolean {
@@ -571,8 +624,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
-        if (position >= 0)
+        if (position >= 0) {
             adapter.updateListByCheck(isChecked, position)
+        }
     }
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
@@ -621,7 +675,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun showOnboarding() {
-        context?.run {
+        context?.let {
             // Render onboarding coach mark if there are bills & if it's the first visit
             if (adapter.dataSize > 0 && !localCacheHandler.getBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, false)) {
                 localCacheHandler.apply {
@@ -630,39 +684,39 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 }
 
                 // Get first viewholder item for coach marks
-                rv_smart_bills_items?.post {
-                    val billItemView = (rv_smart_bills_items?.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
-                    val coachMarks = ArrayList<CoachMark2Item>()
-                    containerCheckBox?.let {
-                        coachMarks.add(
+                binding?.run {
+                    rvSmartBillsItems.post {
+                        val billItemView = (rvSmartBillsItems.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
+                        val coachMarks = ArrayList<CoachMark2Item>()
+                        containerCheckBox?.let {
+                            coachMarks.add(
                                 CoachMark2Item(
-                                        it,
-                                        getString(R.string.smart_bills_onboarding_title_1),
-                                        getString(R.string.smart_bills_onboarding_description_1)
+                                    it,
+                                    getString(R.string.smart_bills_onboarding_title_1),
+                                    getString(R.string.smart_bills_onboarding_description_1)
                                 )
-                        )
-                    }
-                    billItemView?.run {
+                            )
+                        }
+                        billItemView?.run {
+                            coachMarks.add(
+                                CoachMark2Item(
+                                    this,
+                                    getString(R.string.smart_bills_onboarding_title_2),
+                                    getString(R.string.smart_bills_onboarding_description_2)
+                                )
+                            )
+                        }
                         coachMarks.add(
                             CoachMark2Item(
-                                this,
-                                getString(R.string.smart_bills_onboarding_title_2),
-                                getString(R.string.smart_bills_onboarding_description_2)
+                                smartBillsCheckoutView.getCheckoutButton(),
+                                getString(R.string.smart_bills_onboarding_title_3),
+                                getString(R.string.smart_bills_onboarding_description_3)
                             )
                         )
-                    }
-                    coachMarks.add(
-                        CoachMark2Item(
-                            smart_bills_checkout_view.getCheckoutButton(),
-                            getString(R.string.smart_bills_onboarding_title_3),
-                            getString(R.string.smart_bills_onboarding_description_3)
-                        )
-                    )
 
-                    val coachMark = CoachMark2(this)
-//                    coachMark.enableSkip = true
-//                    coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
-                    coachMark.showCoachMark(coachMarks)
+                        val coachMark = CoachMark2(it)
+                        coachMark.showCoachMark(coachMarks)
+                    }
                 }
             }
         }
@@ -681,22 +735,22 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         fragmentManager?.let {
             smartBillsAnalytics.clickKebab(bill.categoryName)
             val smartBillsDeleteBottomSheet = SmartBillsDeleteBottomSheet(object :
-                    SmartBillsDeleteBottomSheet.DeleteProductSBMListener{
-                override fun onDeleteProductClicked() {
-                    smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
-                    showDeleteDialog(bill)
-                }
+                    SmartBillsDeleteBottomSheet.DeleteProductSBMListener {
+                    override fun onDeleteProductClicked() {
+                        smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
+                        showDeleteDialog(bill)
+                    }
 
-                override fun onCloseBottomSheet() {
-                    smartBillsAnalytics.viewCloseBottomSheet()
-                }
-            })
+                    override fun onCloseBottomSheet() {
+                        smartBillsAnalytics.viewCloseBottomSheet()
+                    }
+                })
 
             smartBillsDeleteBottomSheet.show(it, "")
         }
     }
 
-    private fun showDeleteDialog(bill: RechargeBills){
+    private fun showDeleteDialog(bill: RechargeBills) {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(it.resources.getString(R.string.smart_bills_delete_dialog_title))
@@ -704,19 +758,20 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 setPrimaryCTAText(it.resources.getString(R.string.smart_bills_delete_dialog_yes))
                 setSecondaryCTAText(it.resources.getString(R.string.smart_bills_delete_dialog_no))
 
-                setPrimaryCTAClickListener{
+                setPrimaryCTAClickListener {
                     smartBillsAnalytics.clickConfirmHapusTagihan()
                     dismiss()
-                    viewModel.deleteProductSBM(viewModel.createParamDeleteSBM(
-                        RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)
-                    ))
+                    viewModel.deleteProductSBM(
+                        viewModel.createParamDeleteSBM(
+                            RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)
+                        )
+                    )
                 }
 
-                setSecondaryCTAClickListener{
+                setSecondaryCTAClickListener {
                     smartBillsAnalytics.clickBatalHapusTagihan()
                     dismiss()
                 }
-
             }
             dialog.show()
         }
@@ -729,33 +784,40 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             } else {
                 getString(R.string.smart_bills_no_item_price)
             }
-            smart_bills_checkout_view.setTotalPrice(totalPriceString)
-            smart_bills_checkout_view.getCheckoutButton().isEnabled = totalPrice > 0
+            binding?.smartBillsCheckoutView?.run {
+                setTotalPrice(totalPriceString)
+                getCheckoutButton().isEnabled = totalPrice > 0
+            }
         }
     }
 
     override fun onClickNextBuyButton() {
-        // Prevent multiple checkout calls when one is already underway
-        if (adapter.checkedDataList.isNotEmpty() && !checkout_loading_view.isVisible) {
-            // Reset error in bill items
-            for ((index, bill) in listBills.withIndex()) {
-                if (bill.errorMessage.isNotEmpty()) {
-                    bill.errorMessage = ""
-                    adapter.data[index] = bill
-                    adapter.notifyItemChanged(index)
+        binding?.run {
+            // Prevent multiple checkout calls when one is already underway
+            if (adapter.checkedDataList.isNotEmpty() && !checkoutLoadingView.isVisible) {
+                // Reset error in bill items
+                for ((index, bill) in listBills.withIndex()) {
+                    if (bill.errorMessage.isNotEmpty()) {
+                        bill.errorMessage = ""
+                        adapter.data[index] = bill
+                        adapter.notifyItemChanged(index)
+                    }
                 }
-            }
 
-            checkout_loading_view.show()
-            viewModel.runMultiCheckout(
-                viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession), userSession.userId
-            )
+                checkoutLoadingView.show()
+                viewModel.runMultiCheckout(
+                    viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession),
+                    userSession.userId
+                )
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (checkout_loading_view.isVisible) checkout_loading_view.hide()
+        binding?.run {
+            if (checkoutLoadingView.isVisible) checkoutLoadingView.hide()
+        }
     }
 
     override fun onDestroy() {
@@ -820,32 +882,37 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         return MessageErrorException(getString(R.string.smart_bills_data_error))
     }
 
-    private fun updateCheckAll(){
-        cb_smart_bills_select_all.isChecked = adapter.totalChecked == listBills.size
+    private fun updateCheckAll() {
+        binding?.cbSmartBillsSelectAll?.isChecked = adapter.totalChecked == listBills.size
     }
 
-    private fun showGlobalError(throwable: Throwable){
-        checkout_loading_view.show()
-        smart_bills_checkout_view.setVisibilityLayout(false)
-        sbm_global_error.apply {
-            show()
-            val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-                context, throwable, ErrorHandler.Builder().build())
-            errorTitle.text = errMsg
-            errorDescription.text = "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} " +
+    private fun showGlobalError(throwable: Throwable) {
+        binding?.run {
+            checkoutLoadingView.show()
+            smartBillsCheckoutView.setVisibilityLayout(false)
+            sbmGlobalError.apply {
+                show()
+                val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+                    context,
+                    throwable,
+                    ErrorHandler.Builder().build()
+                )
+                errorTitle.text = errMsg
+                errorDescription.text = "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} " +
                     "Kode Error: ($errCode)"
-            sbm_loader_unify.hide()
-            setActionClickListener {
-                this.gone()
-                checkout_loading_view.hide()
-                smart_bills_checkout_view.setVisibilityLayout(true)
-                showLoading()
-                loadInitialData()
-            }
+                sbmLoaderUnify.hide()
+                setActionClickListener {
+                    this.gone()
+                    checkoutLoadingView.hide()
+                    smartBillsCheckoutView.setVisibilityLayout(true)
+                    showLoading()
+                    loadInitialData()
+                }
 
-            setSecondaryActionClickListener {
-                val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
-                startActivityForResult(intent, REQUEST_CODE_SETTING)
+                setSecondaryActionClickListener {
+                    val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                    startActivityForResult(intent, REQUEST_CODE_SETTING)
+                }
             }
         }
     }
@@ -854,37 +921,41 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ADD_BILLS_SBM, true)
     }
 
-    private fun showProgressBar(){
-        sbm_progress_bar.show()
+    private fun showProgressBar() {
+        binding?.sbmProgressBar?.show()
     }
 
-    private fun hideProgressBar(){
-        sbm_progress_bar.hide()
+    private fun hideProgressBar() {
+        binding?.sbmProgressBar?.hide()
     }
 
     private fun showHighlightCategory(uiModel: HighlightCategoryUiModel) {
         setHeightSpace(isLowHeight = false)
-        highlight_category.showHighlightCategory()
-        highlight_category.renderHighlightCategory(this, uiModel)
+        binding?.highlightCategory?.run {
+            showHighlightCategory()
+            renderHighlightCategory(this@SmartBillsFragment, uiModel)
+        }
     }
 
     private fun hideHighlightCategory() {
         setHeightSpace(isLowHeight = true)
-        highlight_category.hideHighlightCategory()
+        binding?.highlightCategory?.hideHighlightCategory()
     }
 
     private fun setHeightSpace(isLowHeight: Boolean) {
-        val resource = if (isLowHeight) {
-            com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
-        } else {
-            R.dimen.smart_bills_view_separator
+        binding?.run {
+            val resource = if (isLowHeight) {
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+            } else {
+                R.dimen.smart_bills_view_separator
+            }
+            val params: ViewGroup.LayoutParams = viewSpacerSbm.layoutParams
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT
+            params.height = context?.resources?.getDimensionPixelSize(
+                resource
+            ).orZero()
+            viewSpacerSbm.layoutParams = params
         }
-        val params: ViewGroup.LayoutParams = view_spacer_sbm.layoutParams
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT
-        params.height = context?.resources?.getDimensionPixelSize(
-            resource
-        ).orZero()
-        view_spacer_sbm.layoutParams = params
     }
 
     override fun onClickCloseHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
@@ -930,7 +1001,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
         const val REQUEST_CODE_SETTING = 1669
 
-        const val REQUEST_CODE_ADD_BILLS= 2030
+        const val REQUEST_CODE_ADD_BILLS = 2030
         const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
         const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
         const val EXTRA_ADD_BILLS_IS_FROM_SBM = "IS_FROM_SBM"

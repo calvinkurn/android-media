@@ -72,7 +72,6 @@ interface ShippingDurationContract {
             isDisableCourierPromo: Boolean
         )
 
-        fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
         fun getCourierItemDataById(
             spId: Int,
             shippingCourierUiModels: List<ShippingCourierUiModel>
@@ -87,7 +86,9 @@ interface ShippingDurationContract {
 
         fun onChooseDuration(
             shippingCourierUiModelList: List<ShippingCourierUiModel>,
-            cartPosition: Int, serviceData: ServiceData
+            cartPosition: Int,
+            serviceData: ServiceData,
+            isOcc: Boolean
         )
 
         fun onLogisticPromoClicked(data: LogisticPromoUiModel)

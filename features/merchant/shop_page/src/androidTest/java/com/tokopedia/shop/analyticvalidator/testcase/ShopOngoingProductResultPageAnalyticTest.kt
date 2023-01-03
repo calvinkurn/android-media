@@ -32,7 +32,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
 class ShopOngoingProductResultPageAnalyticTest {
 
     companion object {
@@ -43,6 +42,7 @@ class ShopOngoingProductResultPageAnalyticTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<ShopProductListResultActivity> = IntentsTestRule(ShopProductListResultActivity::class.java, false, false)
+
     @get:Rule
     var cassavaRule = CassavaTestRule()
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -51,10 +51,12 @@ class ShopOngoingProductResultPageAnalyticTest {
     fun beforeTest() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_ONGOING_PRODUCT))
-        activityRule.launchActivity(Intent().apply {
-            putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
-            putExtra(ShopParamConstant.EXTRA_ETALASE_ID, SAMPLE_ETALASE_ID_CAMPAIGN)
-        })
+        activityRule.launchActivity(
+            Intent().apply {
+                putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
+                putExtra(ShopParamConstant.EXTRA_ETALASE_ID, SAMPLE_ETALASE_ID_CAMPAIGN)
+            }
+        )
     }
 
     @Test
@@ -87,24 +89,26 @@ class ShopOngoingProductResultPageAnalyticTest {
         val clickedItemPosition = 2
         val sampleProductIdWishlist = "23151232"
         val mockIntentData = Intent().apply {
-            putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, ProductCardOptionsModel(
+            putExtra(
+                PRODUCT_CARD_OPTION_RESULT_PRODUCT,
+                ProductCardOptionsModel(
                     isWishlisted = true,
                     productId = sampleProductIdWishlist
-            ).apply {
-                wishlistResult = ProductCardOptionsModel.WishlistResult(
+                ).apply {
+                    wishlistResult = ProductCardOptionsModel.WishlistResult(
                         isUserLoggedIn = true,
                         isAddWishlist = true,
                         isSuccess = true
-                )
-            })
+                    )
+                }
+            )
         }
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, mockIntentData))
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
         )
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
         )
     }
-
 }

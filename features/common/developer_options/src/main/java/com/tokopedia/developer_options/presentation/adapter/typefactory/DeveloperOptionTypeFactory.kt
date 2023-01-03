@@ -36,6 +36,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ViewAnalyticsLogUiModel): Int
     fun type(uiModel: ViewIrisLogUiModel): Int
     fun type(uiModel: LeakCanaryUiModel): Int
+    fun type(uiModel: StrictModeLeakPublisherUiModel): Int
     fun type(uiModel: RemoteConfigEditorUiModel): Int
     fun type(uiModel: RouteManagerUiModel): Int
     fun type(uiModel: LoggingToServerUiModel): Int

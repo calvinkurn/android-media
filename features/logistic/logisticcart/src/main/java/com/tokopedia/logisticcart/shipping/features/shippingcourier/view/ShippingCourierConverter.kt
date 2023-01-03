@@ -4,6 +4,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticcart.scheduledelivery.domain.model.ScheduleDeliveryData
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -35,7 +36,7 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.maxEtd = it.productData.etd.maxEtd
             courierItemData.shipperPrice = it.productData.price.price
             courierItemData.shipperFormattedPrice = it.productData.price.formattedPrice
-            courierItemData.insurancePrice = it.productData.insurance.insurancePrice
+            courierItemData.insurancePrice = it.productData.insurance.insurancePrice.roundToInt()
             courierItemData.insuranceType = it.productData.insurance.insuranceType
             courierItemData.insuranceUsedType = it.productData.insurance.insuranceUsedType
             courierItemData.insuranceUsedInfo = it.productData.insurance.insuranceUsedInfo
@@ -99,7 +100,7 @@ class ShippingCourierConverter @Inject constructor() {
                 val codProduct = CashOnDeliveryProduct(
                     codProductData.isCodAvailable,
                     codProductData.codText,
-                    codProductData.codPrice,
+                    codProductData.codPrice.roundToInt(),
                     codProductData.formattedPrice,
                     codProductData.tncText,
                     codProductData.tncLink
@@ -129,12 +130,13 @@ class ShippingCourierConverter @Inject constructor() {
         scheduleDate: String?,
         timeslotId: Long?
     ) {
-        scheduleDeliveryData?.takeIf { it.hidden.not() }?.apply {
-            scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
-                scheduleDate ?: "",
-                timeslotId ?: 0L,
-            )
-        }
+        scheduleDeliveryData?.takeIf { it.hidden.not() && it.deliveryServices.isNotEmpty() }
+            ?.apply {
+                scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
+                    scheduleDate ?: "",
+                    timeslotId ?: 0L,
+                )
+            }
     }
 
     fun convertToCourierItemDataWithPromo(shippingCourierUiModel: ShippingCourierUiModel, data: LogisticPromoUiModel): CourierItemData {

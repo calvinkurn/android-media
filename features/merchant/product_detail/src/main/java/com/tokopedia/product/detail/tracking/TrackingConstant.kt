@@ -41,6 +41,7 @@ object TrackingConstant {
         const val SHOP_TYPE = "shopType"
         const val USER_ID = "userId"
         const val TRACKER_ID = "trackerId"
+        const val CATEGORY_ID = "categoryId"
 
     }
 

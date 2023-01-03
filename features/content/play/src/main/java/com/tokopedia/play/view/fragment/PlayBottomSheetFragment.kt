@@ -14,9 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
@@ -67,13 +67,14 @@ import javax.inject.Inject
 class PlayBottomSheetFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayAnalytic,
-    private val newAnalytic: PlayNewAnalytic) :
-    TkpdBaseV4Fragment(),
-        PlayFragmentContract,
-        ProductSheetViewComponent.Listener,
-        VariantSheetViewComponent.Listener,
-        PlayGameLeaderboardViewComponent.Listener,
-        ShopCouponSheetViewComponent.Listener {
+    private val newAnalytic: PlayNewAnalytic,
+    private val router: Router,
+) : TkpdBaseV4Fragment(),
+    PlayFragmentContract,
+    ProductSheetViewComponent.Listener,
+    VariantSheetViewComponent.Listener,
+    PlayGameLeaderboardViewComponent.Listener,
+    ShopCouponSheetViewComponent.Listener {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -147,20 +148,13 @@ class PlayBottomSheetFragment @Inject constructor(
         closeProductSheet()
     }
 
-    override fun onBuyButtonClicked(
+    override fun onButtonTransactionClicked(
         view: ProductSheetViewComponent,
         product: PlayProductUiModel.Product,
-        sectionInfo: ProductSectionUiModel.Section
+        sectionInfo: ProductSectionUiModel.Section,
+        action: ProductAction
     ) {
-        shouldCheckProductVariant(product, sectionInfo, ProductAction.Buy)
-    }
-
-    override fun onAtcButtonClicked(
-        view: ProductSheetViewComponent,
-        product: PlayProductUiModel.Product,
-        sectionInfo: ProductSectionUiModel.Section
-    ) {
-        shouldCheckProductVariant(product, sectionInfo, ProductAction.AddToCart)
+        shouldCheckProductVariant(product, sectionInfo, action)
     }
 
     override fun onProductCardClicked(
@@ -215,11 +209,14 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onCloseButtonClicked(view: VariantSheetViewComponent) {
         closeVariantSheet()
     }
-
+    
     override fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         playViewModel.submitAction(
-            if (action == ProductAction.Buy) BuyProductVariantAction(variant.id, sectionInfo)
-            else AtcProductVariantAction(variant.id, sectionInfo)
+            when (action) {
+                ProductAction.Buy -> BuyProductVariantAction(variant.id, sectionInfo)
+                ProductAction.AddToCart -> AtcProductVariantAction(variant.id, sectionInfo)
+                ProductAction.OCC -> OCCProductVariantAction(variant.id, sectionInfo)
+            }
         )
     }
 
@@ -296,11 +293,10 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     fun showVariantSheet(
-        action: ProductAction,
-        product: PlayProductUiModel.Product,
+        button: ProductButtonUiModel,
     ) {
-        variantSheetView.setAction(action)
-        playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
+        variantSheetView.setAction(button)
+        playViewModel.onShowVariantSheet(variantSheetMaxHeight)
     }
 
     /**
@@ -327,13 +323,17 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
-            showVariantSheet(action, product)
+            val selectedProduct = product.buttons.firstOrNull { it.type.toAction == action }.orDefault()
+            showVariantSheet(selectedProduct)
             analytic.clickActionProductWithVariant(product.id, action)
         }
 
         playViewModel.submitAction(
-            if (action == ProductAction.Buy) BuyProductAction(sectionInfo, product)
-            else AtcProductAction(sectionInfo, product)
+            when (action) {
+                ProductAction.Buy -> BuyProductAction(sectionInfo, product)
+                ProductAction.AddToCart -> AtcProductAction(sectionInfo, product)
+                ProductAction.OCC -> OCCProductAction(sectionInfo, product)
+            }
         )
     }
 
@@ -430,9 +430,9 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
-            RouteManager.route(context, applink, *params)
+            router.route(context, applink, *params)
         } else {
-            val intent = RouteManager.getIntent(context, applink, *params)
+            val intent = router.getIntent(context, applink, *params)
             startActivityForResult(intent, requestCode)
         }
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
@@ -555,12 +555,13 @@ class PlayBottomSheetFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                         is BuySuccessEvent -> {
-                            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-
+                            router.route(requireContext(), ApplinkConstInternalMarketplace.CART)
 
                             val bottomInsetsType = if (event.isVariant) {
                                 BottomInsetsType.VariantSheet
                             } else BottomInsetsType.ProductSheet //TEMPORARY
+
+                            if (event.isProductFeatured) return@collect
 
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
@@ -624,7 +625,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 message = wording,
                                 actionText = toaster,
                                 actionClickListener = {
-                                    RouteManager.route(requireContext(), route)
+                                    router.route(requireContext(), route)
                                     if (event.product.isPinned &&
                                         !playViewModel.bottomInsets.isProductSheetsShown) {
 
@@ -643,6 +644,8 @@ class PlayBottomSheetFragment @Inject constructor(
                             )
 
                             if (event.isVariant) closeVariantSheet()
+
+                            if (event.isProductFeatured) return@collect
 
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
@@ -682,6 +685,24 @@ class PlayBottomSheetFragment @Inject constructor(
                                 },
                             )
                         }
+                        is OCCSuccessEvent -> {
+                            router.route(requireContext(),ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+
+                            val bottomInsetsType = if (event.isVariant) {
+                                BottomInsetsType.VariantSheet
+                            } else BottomInsetsType.ProductSheet //TEMPORARY
+
+                            if (event.isProductFeatured) return@collect
+
+                            analytic.clickProductAction(
+                                product = event.product,
+                                cartId = event.cartId,
+                                productAction = ProductAction.OCC,
+                                bottomInsetsType = bottomInsetsType,
+                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
+                            )
+                        }
                         else -> {}
                     }
                 }
@@ -708,7 +729,7 @@ class PlayBottomSheetFragment @Inject constructor(
     ) {
         newAnalytic.clickInfoNow()
         val appLink = "${ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO}?source=play&channel_id=${playViewModel.channelId}&state=${playViewModel.channelType}"
-        val intent = RouteManager.getIntent(context, appLink)
+        val intent = router.getIntent(context, appLink)
         startActivity(intent)
     }
 

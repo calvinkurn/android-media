@@ -17,11 +17,11 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderActionButtonWidgetViewHolder(
-        itemView: View,
-        private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-        private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-        private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
-        private val adapterShopHeader: ShopPageHeaderAdapter?
+    itemView: View,
+    private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
+    private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+    private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
+    private val adapterShopHeader: ShopPageHeaderAdapter?
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -32,16 +32,18 @@ class ShopHeaderActionButtonWidgetViewHolder(
     private val recyclerViewButtonComponent: RecyclerView? = viewBinding?.rvButtonComponent
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
-        val shopActionButtonWidgetAdapter = ShopActionButtonWidgetAdapter(ShopHeaderActionButtonWidgetAdapterTypeFactory(
+        val shopActionButtonWidgetAdapter = ShopActionButtonWidgetAdapter(
+            ShopHeaderActionButtonWidgetAdapterTypeFactory(
                 model,
                 shopActionButtonWidgetChatButtonComponentListener,
                 shopActionButtonWidgetFollowButtonComponentListener,
                 shopActionButtonWidgetNoteButtonComponentListener
-        ))
+            )
+        )
         adapterShopHeader?.setAdapterWidgetButton(shopActionButtonWidgetAdapter)
         recyclerViewButtonComponent?.apply {
             adapter = shopActionButtonWidgetAdapter
-            val manager= FlexboxLayoutManager(itemView.context)
+            val manager = FlexboxLayoutManager(itemView.context)
             layoutManager = manager
             if (itemDecorationCount == 0)
                 addItemDecoration(ShopPageActionButtonWidgetMarginItemDivider())

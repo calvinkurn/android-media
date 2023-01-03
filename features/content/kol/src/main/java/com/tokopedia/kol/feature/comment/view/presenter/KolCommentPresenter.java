@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase;
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel;
 import com.tokopedia.kol.feature.comment.domain.interactor.DeleteKolCommentUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.SendKolCommentUseCase;
@@ -114,7 +114,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
             getMentionableUserUseCase.unsubscribe();
             getMentionableUserUseCase.execute(
                     GetMentionableUserUseCase.Companion.getParam(keyword),
-                    new Subscriber<List<? extends MentionableUserViewModel>>() {
+                    new Subscriber<List<? extends MentionableUserModel>>() {
                         @Override
                         public void onCompleted() {
 
@@ -126,8 +126,8 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
                         }
 
                         @Override
-                        public void onNext(List<? extends MentionableUserViewModel> mentionableUserViewModels) {
-                            getView().showMentionUserSuggestionList((List<MentionableUserViewModel>) mentionableUserViewModels);
+                        public void onNext(List<? extends MentionableUserModel> mentionableUserViewModels) {
+                            getView().showMentionUserSuggestionList((List<MentionableUserModel>) mentionableUserViewModels);
                         }
                     }
             );

@@ -30,7 +30,6 @@ class ShippingDurationConverter @Inject constructor() {
 
         // Check response not null
         if (ratesData != null && ratesData.ratesDetailData != null) {
-
             // Check if has error
             if (ratesData.ratesDetailData.error != null &&
                 !ratesData.ratesDetailData.error.errorMessage.isNullOrEmpty()
@@ -44,7 +43,6 @@ class ShippingDurationConverter @Inject constructor() {
             if (ratesData.ratesDetailData.services != null &&
                 ratesData.ratesDetailData.services.isNotEmpty()
             ) {
-
                 // Setting up for Logistic Promo
                 shippingRecommendationData.logisticPromo = convertToPromoModel(
                     ratesData.ratesDetailData.listPromoStacking.firstOrNull(),
@@ -177,6 +175,8 @@ class ShippingDurationConverter @Inject constructor() {
         shippingCourierUiModel.serviceData = shippingDurationUiModel.serviceData
         shippingCourierUiModel.ratesId = ratesId
         shippingCourierUiModel.preOrderModel = preOrderModel
+        shippingCourierUiModel.productData.isRecommend =
+            productData.isRecommend && (productData.error?.errorMessage?.isEmpty() != false)
         shippingCourierUiModels.add(shippingCourierUiModel)
     }
 
@@ -223,10 +223,14 @@ class ShippingDurationConverter @Inject constructor() {
     }
 
     private fun convertToPreOrderModel(preOrder: PreOrder?): PreOrderModel? {
-        return if (preOrder == null) null else PreOrderModel(
-            preOrder.header,
-            preOrder.label,
-            preOrder.display
-        )
+        return if (preOrder == null) {
+            null
+        } else {
+            PreOrderModel(
+                preOrder.header,
+                preOrder.label,
+                preOrder.display
+            )
+        }
     }
 }

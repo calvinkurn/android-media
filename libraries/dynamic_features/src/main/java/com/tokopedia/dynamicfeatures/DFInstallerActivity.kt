@@ -33,7 +33,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
-import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -236,6 +235,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         successInstall = DFInstaller.isInstalled(this, moduleName)
         progressGroup.visibility = View.INVISIBLE
         if (launch && successInstall) {
+            DFRemoteConfig.runSplitCompat(this)
             launchAndForwardIntent(deeplink)
         }
         finish()
