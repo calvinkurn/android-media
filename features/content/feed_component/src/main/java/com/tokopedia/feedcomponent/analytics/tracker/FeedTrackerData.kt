@@ -18,5 +18,6 @@ data class FeedTrackerData(
     val product: FeedXProduct = FeedXProduct(),
     val mediaIndex: Int = 0,
     val isProductDetailPage: Boolean = false,
-    val hasVoucher: Boolean = false
+    val hasVoucher: Boolean = false,
+    val authorType: String = ""
 )
