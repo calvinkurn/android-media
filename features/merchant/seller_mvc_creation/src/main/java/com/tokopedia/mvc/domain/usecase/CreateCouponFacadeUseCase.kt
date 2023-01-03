@@ -3,6 +3,7 @@ package com.tokopedia.mvc.domain.usecase
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
+import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import kotlinx.coroutines.async
@@ -11,7 +12,9 @@ import javax.inject.Inject
 
 class CreateCouponFacadeUseCase @Inject constructor(
     private val createCouponProductUseCase: CreateCouponProductUseCase,
-    private val initiateCouponUseCase: GetInitiateVoucherPageUseCase
+    private val updateCouponUseCase: UpdateCouponUseCase,
+    private val initiateCouponUseCase: GetInitiateVoucherPageUseCase,
+    private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase
 ) {
     suspend fun execute(
         configuration: VoucherConfiguration,
@@ -36,6 +39,46 @@ class CreateCouponFacadeUseCase @Inject constructor(
                     warehouseId
                 )
                 createCouponProductUseCase.executeCreation(useCaseParam)
+            }
+            return@coroutineScope createCouponDeferred.await()
+        }
+    }
+
+    suspend fun executeUpdate(
+        configuration: VoucherConfiguration,
+        allProducts: List<SelectedProduct>
+    ): Boolean {
+        return coroutineScope {
+            val imageRatios = listOf(ImageRatio.HORIZONTAL, ImageRatio.SQUARE, ImageRatio.VERTICAL)
+            val initiateCouponDeferred = async { initiateCoupon(true, configuration.promoType, configuration.isVoucherProduct) }
+            val generatedImagesDeferred = imageRatios.map {
+                async {
+                    getCouponImagePreviewUseCase.executeGetImageUrl(
+                        isCreateMode = false,
+                        voucherConfiguration = configuration,
+                        parentProductId = allProducts.map { it.parentProductId }.take(3),
+                        imageRatio = it
+                    )
+                }
+            }
+
+            val coupon = initiateCouponDeferred.await()
+            val imageUrl = generatedImagesDeferred.getOrNull(0)?.await().orEmpty()
+            val squareImageUrl = generatedImagesDeferred.getOrNull(1)?.await().orEmpty()
+            val portraitImageUrl = generatedImagesDeferred.getOrNull(2)?.await().orEmpty()
+
+            val createCouponDeferred = async {
+                val useCaseParam = UpdateCouponUseCase.UpdateCouponUseCaseParam(
+                    couponId = configuration.voucherId,
+                    voucherConfiguration = configuration,
+                    couponProducts = allProducts,
+                    token = coupon.token,
+                    imageUrl = imageUrl,
+                    imageSquare = squareImageUrl,
+                    imagePortrait = portraitImageUrl,
+                    warehouseId = configuration.warehouseId.toString()
+                )
+                updateCouponUseCase.executeUpdate(useCaseParam)
             }
             return@coroutineScope createCouponDeferred.await()
         }

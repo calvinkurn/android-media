@@ -34,6 +34,10 @@ class SummaryViewModel @Inject constructor(
     private val _products = MutableLiveData<List<SelectedProduct>>()
     val products: LiveData<List<SelectedProduct>> get() = _products
 
+    private val _couponImage = MutableLiveData<Bitmap>()
+    val couponImage: LiveData<Bitmap>
+        get() = _couponImage
+
     fun setConfiguration(configuration: VoucherConfiguration) {
         _configuration.value = configuration
     }
@@ -69,10 +73,6 @@ class SummaryViewModel @Inject constructor(
         }
     }
 
-    private val _couponImage = MutableLiveData<Bitmap>()
-    val couponImage: LiveData<Bitmap>
-        get() = _couponImage
-
     fun previewImage(
         isCreateMode: Boolean,
         voucherConfiguration: VoucherConfiguration,
@@ -100,10 +100,9 @@ class SummaryViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = createCouponFacadeUseCase.execute(
+                val result = createCouponFacadeUseCase.executeUpdate(
                     configuration.value ?: return@launchCatchError,
-                    products.value ?: return@launchCatchError,
-                    ""
+                    products.value ?: return@launchCatchError
                 )
                 _error.postValue(MessageErrorException("Sukses"))
             },
