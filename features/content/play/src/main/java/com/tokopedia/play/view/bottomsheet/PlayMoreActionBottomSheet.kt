@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -39,6 +40,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
@@ -57,7 +59,9 @@ import javax.inject.Inject
  * Created by jegul on 10/12/19
  */
 class PlayMoreActionBottomSheet @Inject constructor(
-    private val analytic: PlayAnalytic
+    private val analytic: PlayAnalytic,
+    private val trackingQueue: TrackingQueue,
+    private val analytic2Factory: PlayAnalytic2.Factory,
     ) : BottomSheetUnify(), KebabMenuSheetViewComponent.Listener,
     PlayUserReportSheetViewComponent.Listener,
     PlayUserReportSubmissionViewComponent.Listener {
@@ -121,11 +125,14 @@ class PlayMoreActionBottomSheet @Inject constructor(
             icon = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
             subtitleRes = R.string.play_kebab_watch_mode,
             onClick = {
+                analytic2?.clickWatchMode()
                 mListener?.onWatchModeClicked(this)
             },
             priority = 3,
         )
     }
+
+    private var analytic2: PlayAnalytic2? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -211,6 +218,12 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 val cachedState = it
 
                 if (cachedState.isChanged { it.status.channelStatus.statusType }) renderPiPView(isFreezeOrBanned = cachedState.value.status.channelStatus.statusType.isFreeze || cachedState.value.status.channelStatus.statusType.isBanned)
+
+                if (analytic2 != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
+                analytic2 = analytic2Factory.create(
+                    trackingQueue = trackingQueue,
+                    channelInfo = it.value.channel.channelInfo,
+                )
             }
         }
     }

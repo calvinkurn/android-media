@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.analytic.kebab.PlayKebabAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.analytic.share.PlayShareExperienceAnalytic
@@ -24,12 +25,14 @@ class PlayAnalytic2 @AssistedInject constructor(
     upcomingAnalytic: PlayUpcomingAnalytic,
     shareExperienceAnalytic: PlayShareExperienceAnalytic,
     tagItemsAnalytic: PlayTagItemsAnalytic.Factory,
+    kebabAnalytic: PlayKebabAnalytic.Factory,
 ) : PlayPartnerAnalytic by partnerAnalytic,
     PlayLikeAnalytic by likeAnalytic,
     PlaySocketAnalytic by socketAnalytic,
     PlayUpcomingAnalytic by upcomingAnalytic,
     PlayShareExperienceAnalytic by shareExperienceAnalytic,
-    PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo) {
+    PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo),
+    PlayKebabAnalytic by kebabAnalytic.create(channelInfo) {
 
     @AssistedFactory
     interface Factory {
