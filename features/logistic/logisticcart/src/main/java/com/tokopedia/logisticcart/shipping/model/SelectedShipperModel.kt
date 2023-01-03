@@ -1,5 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
+import kotlin.math.roundToInt
+
 data class SelectedShipperModel(
     var isScheduleDelivery: Boolean = false, // to check schedule delivery or not
     var scheduleDate: String = "", // schedule delivery service id
@@ -42,18 +44,18 @@ data class SelectedShipperModel(
             timeslotId = scheduleDelivery.timeslotId
             shipperId = scheduleDelivery.deliveryProduct.shipperId.toInt()
             shipperProductId = scheduleDelivery.deliveryProduct.shipperProductId.toInt()
-            shipperPrice = scheduleDelivery.deliveryProduct.finalPrice.toInt()
+            shipperPrice = scheduleDelivery.deliveryProduct.finalPrice.roundToInt()
             serviceId = scheduleDelivery.deliveryProduct.serviceId.toInt()
 
-            insurancePrice = scheduleDelivery.deliveryProduct.insurance.insurancePrice
+            insurancePrice = scheduleDelivery.deliveryProduct.insurance.insurancePrice.roundToInt()
             insuranceType = scheduleDelivery.deliveryProduct.insurance.insuranceType
             insuranceUsedType = scheduleDelivery.deliveryProduct.insurance.insuranceUsedType
             insuranceUsedInfo = scheduleDelivery.deliveryProduct.insurance.insuranceUsedInfo
             insuranceUsedDefault = scheduleDelivery.deliveryProduct.insurance.insuranceUsedDefault
 
             logPromoCode = scheduleDelivery.deliveryProduct.promoStacking.promoCode
-            discountedRate = scheduleDelivery.deliveryProduct.finalPrice.toInt()
-            shippingRate = scheduleDelivery.deliveryProduct.realPrice.toInt()
+            discountedRate = scheduleDelivery.deliveryProduct.finalPrice.roundToInt()
+            shippingRate = scheduleDelivery.deliveryProduct.realPrice.roundToInt()
             benefitAmount = 0
             promoTitle = ""
             isHideShipperName = true
