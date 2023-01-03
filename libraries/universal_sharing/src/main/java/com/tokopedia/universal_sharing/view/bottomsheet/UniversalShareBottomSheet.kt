@@ -51,6 +51,7 @@ import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
 import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.BroadcastChannelModel
 import com.tokopedia.universal_sharing.model.TickerShareModel
 import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
@@ -1049,10 +1050,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun executeContextualImage(shareModel: ShareModel) {
-        if (imageGeneratorParam == null) return
-        imageGeneratorParam?.apply {
+    private fun executePdpContextualImage(shareModel: ShareModel) {
+        if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
+        (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
+            this.productImageUrl = transformOgImageURL(ogImageUrl)
         }
 
         lifecycleScope.launchCatchError(block = {

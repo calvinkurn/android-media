@@ -283,7 +283,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, videoPosition, FEED_USER_PROFILE_VIDEO),
+                            convertToPromotion(activityId, imageUrl, videoPosition, "/$FEED_USER_PROFILE_VIDEO"),
                         ),
                     ),
                 ),
@@ -316,7 +316,12 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_CLICK to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, videoPosition, FEED_USER_PROFILE_VIDEO),
+                            convertToPromotion(
+                                activityId,
+                                imageUrl,
+                                videoPosition,
+                                "/$FEED_USER_PROFILE_VIDEO",
+                            ),
                         ),
                     ),
                 ),
@@ -366,7 +371,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, postPosition, FEED_USER_PROFILE_POST),
+                            convertToPromotion(activityId, imageUrl, postPosition + 1, "/$FEED_USER_PROFILE_POST"),
                         ),
                     ),
                 ),
@@ -399,7 +404,12 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_CLICK to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, postPosition, FEED_USER_PROFILE_POST),
+                            convertToPromotion(
+                                activityId,
+                                imageUrl,
+                                postPosition + 1,
+                                "/$FEED_USER_PROFILE_POST",
+                            ),
                         ),
                     ),
                 ),

@@ -24,9 +24,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -48,6 +48,7 @@ import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
@@ -61,7 +62,9 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -78,8 +81,6 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayo
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiffer
-import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
-import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
@@ -111,7 +112,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class TokoFoodHomeFragment : BaseDaggerFragment(),
+class TokoFoodHomeFragment :
+    BaseDaggerFragment(),
     IBaseMultiFragment,
     TokoFoodView,
     TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
@@ -160,7 +162,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 errorStateListener = this,
                 tokofoodScrollChangedListener = this
             ),
-            differ = TokoFoodListDiffer(),
+            differ = TokoFoodListDiffer()
         )
     }
     private val loadMoreListener by lazy { createLoadMoreListener() }
@@ -387,7 +389,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         trackingQueue.putEETracking(
             TokoFoodHomeCategoryCommonAnalytics.impressMerchant(
                 userSession.userId,
-                localCacheModel?.district_id, merchant, horizontalPosition, isHome = true
+                localCacheModel?.district_id,
+                merchant,
+                horizontalPosition,
+                isHome = true
             ) as HashMap<String, Any>
         )
     }
@@ -532,7 +537,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun isGoToSearchPage(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_GOFOOD_SEARCH, ""
+                RollenceKey.KEY_GOFOOD_SEARCH,
+                ""
             ) == RollenceKey.KEY_GOFOOD_SEARCH
         } catch (e: Exception) {
             true
@@ -670,7 +676,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                                 goToPurchasePage()
                             }
                         }
-
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
                         if (!isBackFromOtherPage) {
@@ -893,19 +898,22 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
-
     private fun navigateToSetPinpoint() {
-        val locationPass =  LocationPass().apply {
-            latitude = TOTO_LATITUDE
-            longitude = TOTO_LONGITUDE
+        view?.let {
+            MapsAvailabilityHelper.onMapsAvailableState(it) {
+                val locationPass = LocationPass().apply {
+                    latitude = TOTO_LATITUDE
+                    longitude = TOTO_LONGITUDE
+                }
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle().apply {
+                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                }
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+            }
         }
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
@@ -1066,7 +1074,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun logExceptionTokoFoodHome(
         throwable: Throwable,
         errorType: String,
-        description: String,
+        description: String
     ) {
         TokofoodErrorLogger.logExceptionToServerLogger(
             TokofoodErrorLogger.PAGE.HOME,
@@ -1081,7 +1089,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         if (!viewModel.isShownEmptyState()) {
             localCacheModel?.let {
                 analytics.openScreenHomePage(
-                    userSession.userId, localCacheModel?.district_id,
+                    userSession.userId,
+                    localCacheModel?.district_id,
                     userSession.isLoggedIn
                 )
             }
@@ -1100,7 +1109,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun onShowOutOfCoverage() {
         localCacheModel?.let {
             analytics.openScreenOutOfCoverage(
-                userSession.userId, localCacheModel?.district_id,
+                userSession.userId,
+                localCacheModel?.district_id,
                 userSession.isLoggedIn
             )
         }
@@ -1109,7 +1119,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun onShowNoPinPoin() {
         localCacheModel?.let {
             analytics.openScreenNoPinPoin(
-                userSession.userId, localCacheModel?.district_id,
+                userSession.userId,
+                localCacheModel?.district_id,
                 userSession.isLoggedIn
             )
         }
@@ -1171,8 +1182,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun setRvPadding(isShowMiniCart: Boolean) {
         rvHome?.let {
             if (isShowMiniCart) {
-                it.setPadding(Int.ZERO, Int.ZERO, Int.ZERO,
-                    context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7) ?: Int.ZERO)
+                it.setPadding(
+                    Int.ZERO,
+                    Int.ZERO,
+                    Int.ZERO,
+                    context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7) ?: Int.ZERO
+                )
             } else {
                 it.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
             }

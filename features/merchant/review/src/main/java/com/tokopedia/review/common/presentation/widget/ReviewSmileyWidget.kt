@@ -110,11 +110,11 @@ class ReviewSmileyWidget : BaseCustomView {
             setInactiveImage(score)
         }
         binding.reviewEditableSmiley.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {
+            override fun onAnimationRepeat(animation: Animator) {
                 // No Op
             }
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 if (isActive) {
                     setActiveImage(score)
                 } else {
@@ -124,11 +124,11 @@ class ReviewSmileyWidget : BaseCustomView {
                 binding.reviewEditableSmiley.hide()
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 // No Op
             }
 
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
                 binding.reviewEditableImageView.hide()
                 if (isActive) {
                     showSmileyText()

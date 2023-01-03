@@ -8,6 +8,8 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_VIEW_TOKONOW_IRIS = "viewTokoNowIris"
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"
         const val EVENT_CLICK_PG = "clickPG"
+        const val EVENT_CLICK_GROCERIES = "clickGroceries"
+        const val EVENT_VIEW_GROCERIES = "viewGroceriesIris"
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
@@ -32,6 +34,9 @@ object TokoNowCommonAnalyticConstants {
     object CATEGORY{
         const val EVENT_CATEGORY_TOP_NAV = "tokonow - top nav"
         const val EVENT_CATEGORY_TOKOPEDIA_NOW = "tokopedia now"
+        const val EVENT_CATEGORY_TOKOPEDIA_NOW_SEARCH = "tokonow - search result"
+        const val EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE = "tokonow category page"
+        const val EVENT_CATEGORY_TOKOPEDIA_REPURCHASE_PAGE = "tokonow repurchase page"
         const val EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW = "top nav - tokopedia now"
         const val EVENT_CATEGORY_TOKONOW_HOMEPAGE = "tokonow - homepage"
     }
@@ -47,6 +52,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_38 = "dimension38"
         const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_82 = "dimension82"
+        const val KEY_DIMENSION_84 = "dimension84"
         const val KEY_DIMENSION_49 = "dimension49"
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
@@ -57,6 +63,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_SHOP_TYPE = "shop_type"
         const val KEY_USER_ID = "userId"
         const val KEY_PRODUCT_ID = "productId"
+        const val KEY_TRACKER_ID = "trackerId"
         const val KEY_CATEGORY_ID = "category_id"
         const val KEY_CHANNEL_ID = "channelId"
         const val KEY_CAMPAIGN_CODE = "campaignCode"
@@ -72,7 +79,6 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_PRICE = "price"
         const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val KEY_WAREHOUSE_ID = "warehouseId"
-        const val KEY_TRACKER_ID = "trackerId"
     }
 
     object VALUE {
@@ -99,5 +105,16 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_ACTION_IMPRESSION_SHARING_CHANNEL = "view on sharing channel"
         const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
         const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET  = "click - close share bottom sheet"
+        const val EVENT_ACTION_CLICK_ADD_TO_WISHLIST  = "click bell add to wishlist"
+        const val EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST  = "click bell remove from wishlist"
+    }
+
+    object TRACKER_ID{
+        const val TRACKER_ID_ADD_TO_WISHLIST_CATEGORY = "39601"
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_CATEGORY = "39602"
+        const val TRACKER_ID_ADD_TO_WISHLIST_SEARCH = "39572"
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_SEARCH = "39573"
+        const val TRACKER_ID_ADD_TO_WISHLIST_REPURCHASE = "39957"
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_REPURCHASE = "39958"
     }
 }

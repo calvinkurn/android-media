@@ -117,7 +117,7 @@ object DeepLinkUrlConstant {
         const val ROAMING_XL = "https://www.tokopedia.com/roaming/xl/"
         const val ROAMING_TELKOMSEL = "https://www.tokopedia.com/roaming/telkomsel/"
         const val TOP_UP_MTIX = "https://www.tokopedia.com/top-up/mtix/"
-        const val BPJS_KESEHATAN  = "https://www.tokopedia.com/tagihan/bpjs-kesehatan/"
+        const val BPJS_KESEHATAN = "https://www.tokopedia.com/tagihan/bpjs-kesehatan/"
         const val BJPS_KETENAGAKERJAAN = "https://www.tokopedia.com/tagihan/bpjs-ketenagakerjaan/"
         const val PAKET_DATA_TELKOMSEL = "https://www.tokopedia.com/paket-data/telkomsel/"
         const val PAKET_DATA_INDOSAT = "https://www.tokopedia.com/paket-data/indosat/"
@@ -165,5 +165,6 @@ object DeepLinkUrlConstant {
         const val PLAY_FROM_HOME = "https://www.tokopedia.com/play/channel/13114?source_type=HOME"
         const val PLAY_FROM_FEED = "https://www.tokopedia.com/play/channel/13114?source_type=FEED"
         const val PLAY_WITH_START_TIME = "https://www.tokopedia.com/play/channel/13114?start_time=60000"
+        const val VIDEO_TAB_ON_FEED = "https://www.tokopedia.com/feed/video?tab=live"
     }
 }

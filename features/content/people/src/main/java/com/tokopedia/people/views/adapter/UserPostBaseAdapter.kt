@@ -12,6 +12,7 @@ import com.tokopedia.people.utils.UserProfileVideoMapper
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 
 open class UserPostBaseAdapter(
@@ -27,6 +28,12 @@ open class UserPostBaseAdapter(
             view.findViewById(R.id.play_widget_large_view)
 
         override fun bindView(item: PlayPostContentItem, position: Int) {
+            playWidgetCallback.onImpressPlayWidgetData(
+                item,
+                item.isLive,
+                item.id,
+                position + 1,
+            )
             setData(this, item)
         }
     }
@@ -107,7 +114,9 @@ open class UserPostBaseAdapter(
             selectedData.stats.view.value = totalView
         } else if (isReminderSet != null && isReminderSet != currIsReminderSet) {
             selectedData.configurations.reminder.isSet = isReminderSet
-        } else return
+        } else {
+            return
+        }
 
         val position = items.indexOf(selectedData)
 
@@ -115,7 +124,13 @@ open class UserPostBaseAdapter(
     }
 
     override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel) {
-        playWidgetCallback.onPlayWidgetLargeClick(item.appLink)
+        playWidgetCallback.onPlayWidgetLargeClick(
+            item.appLink,
+            item.channelId,
+            item.video.isLive && item.channelType == PlayWidgetChannelType.Live,
+            item.video.coverUrl,
+            getItemPosition(item.channelId) + 1,
+        )
     }
 
     override fun onToggleReminderChannelClicked(
@@ -130,6 +145,8 @@ open class UserPostBaseAdapter(
 
     interface PlayWidgetCallback {
         fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
-        fun onPlayWidgetLargeClick(appLink: String)
+        fun updatePlayWidgetLatestData(channelId: String, totalView: String, isReminderSet: Boolean)
+        fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int)
+        fun onImpressPlayWidgetData(item: PlayPostContentItem, isLive: Boolean, channelId: String, pos: Int)
     }
 }

@@ -14,9 +14,9 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.databinding.ItemVoucherGameDetailBinding
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapter
-import kotlinx.android.synthetic.main.item_voucher_game_detail.view.*
 
 /**
  * @author by resakemal on 12/08/19
@@ -32,8 +32,9 @@ class VoucherGameProductViewHolder(
 
     override fun bind(product: VoucherGameProduct) {
         with(itemView) {
+            val binding = ItemVoucherGameDetailBinding.bind(this)
             with(product.attributes) {
-                title_product.run {
+                binding.titleProduct.run {
                     text = desc
                     setStatusOutOfStockColor(
                         status,
@@ -42,11 +43,11 @@ class VoucherGameProductViewHolder(
                     )
                 }
 
-                product_price.run {
+                binding.productPrice.run {
                     if (promo != null) {
-                        product_price.text = promo?.newPrice
+                        text = promo?.newPrice
                     } else {
-                        product_price.text = price
+                        text = price
                     }
                     setStatusOutOfStockColor(
                         status,
@@ -55,12 +56,12 @@ class VoucherGameProductViewHolder(
                     )
                 }
 
-                product_promo_price.run {
+                binding.productPromoPrice.run {
                     if (promo != null) {
-                        product_promo_price.show()
-                        product_promo_price.text = price
+                        show()
+                        text = price
                     } else {
-                        product_promo_price.invisible()
+                        invisible()
                     }
                     paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     setStatusOutOfStockColor(
@@ -70,19 +71,19 @@ class VoucherGameProductViewHolder(
                     )
                 }
 
-                product_promo_label.run {
-                    shouldShowWithAction(productLabels.isNotEmpty()){
+                binding.productPromoLabel.run {
+                    shouldShowWithAction(productLabels.isNotEmpty()) {
                         text = productLabels.joinToString(",", limit = 2)
                     }
                     setStatusOutOfStockColor(status, Label.HIGHLIGHT_DARK_RED)
                 }
 
-                product_out_of_stock_label.run {
+                binding.productOutOfStockLabel.run {
                     showWithCondition(status == STATUS_OUT_OF_STOCK)
                     setStatusOutOfStockColor(status, Label.HIGHLIGHT_LIGHT_GREY)
                 }
 
-                product_detail.run {
+                binding.productDetail.run {
                     when {
                         detail.isNotEmpty() -> {
                             show()
@@ -103,11 +104,11 @@ class VoucherGameProductViewHolder(
                 if (::adapter.isInitialized && status != STATUS_OUT_OF_STOCK) {
                     isSelected = adapter.selectedPos == adapterPosition
 
-                    layout_product.setOnClickListener {
+                    binding.layoutProduct.setOnClickListener {
                         listener.onItemClicked(product, adapterPosition)
                     }
                 } else {
-                    layout_product.setOnClickListener {
+                    binding.layoutProduct.setOnClickListener {
                         // do nothing or disabled
                     }
                 }
@@ -151,5 +152,4 @@ class VoucherGameProductViewHolder(
         fun onItemClicked(product: VoucherGameProduct, position: Int)
         fun onDetailClicked(product: VoucherGameProduct)
     }
-
 }

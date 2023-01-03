@@ -35,6 +35,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 
     <queries>
         <package android:name="com.tokopedia.sellerapp" />
@@ -758,7 +761,7 @@
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
         android:requestLegacyExternalStorage="true"
-        tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup,android:resizeableActivity">
+        tools:replace="name,android:label,android:hasCode,android:allowBackup,android:resizeableActivity">
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true" />

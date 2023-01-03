@@ -25,6 +25,7 @@
     <color name="chatbot_dms_right_chat_message_bg">#2ABF70</color>
     <color name="chatbot_dms_left_chat_message_bg">#2D323A</color>
     <color name="chatbot_dms_compose_bg">#1D2025</color>
+    <color name="chatbot_dms_optional_text">#808FA1</color>
 
 
 </resources>

@@ -128,19 +128,23 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         val tags = listOf(
             TagUiModel(
                 tag = "Test Create Tag 3",
-                shouldFormatTag = false
+                shouldFormatTag = false,
+                shouldUseStaticBackgroundColor = false
             ),
             TagUiModel(
                 tag = "Test Create Tag 2",
-                shouldFormatTag = false
+                shouldFormatTag = false,
+                shouldUseStaticBackgroundColor = false
             ),
             TagUiModel(
                 tag = "Test Create Tag 1",
-                shouldFormatTag = false
+                shouldFormatTag = false,
+                shouldUseStaticBackgroundColor = false
             ),
             TagUiModel(
                 tag = "1",
-                shouldFormatTag = true
+                shouldFormatTag = true,
+                shouldUseStaticBackgroundColor = false
             )
         )
 

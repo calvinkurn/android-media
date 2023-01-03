@@ -15,20 +15,24 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
-import com.tokopedia.rechargegeneral.R
+import com.tokopedia.rechargegeneral.databinding.FragmentRechargeGeneralPromoListBinding
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_recharge_general_promo_list.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidget.ActionListener {
 
+    private var binding by autoClearedNullable<FragmentRechargeGeneralPromoListBinding>()
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var viewModel: SharedRechargeGeneralViewModel
+
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
 
@@ -36,7 +40,8 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
     private var showTitle = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recharge_general_promo_list, container, false)
+        binding = FragmentRechargeGeneralPromoListBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +61,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
             showTitle = it.getBoolean(EXTRA_PARAM_SHOW_TITLE, true)
         }
 
-        with(promo_list_widget) {
+        binding?.promoListWidget?.run {
             setListener(this@RechargeGeneralPromoListFragment)
             if (::promoList.isInitialized && promoList.isNotEmpty()) {
                 setPromoList(promoList)
@@ -68,23 +73,26 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
     override fun onCopiedPromoCode(promoId: String, voucherCode: String) {
         rechargeGeneralAnalytics.eventClickCopyPromo(voucherCode, promoList.indexOfFirst { it.promoCode == voucherCode })
 
-        promo_list_widget.notifyPromoItemChanges(promoId)
+        binding?.promoListWidget?.notifyPromoItemChanges(promoId)
         activity?.let {
             val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText(
-                    CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
+                CLIP_DATA_VOUCHER_CODE_DIGITAL,
+                voucherCode
             )
             clipboard.setPrimaryClip(clip)
 
             view?.run {
-                Toaster.build(this,
-                        getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied), Snackbar.LENGTH_LONG).show()
+                Toaster.build(
+                    this,
+                    getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         }
     }
 
     override fun onTrackImpressionPromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>) {
-
     }
 
     override fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int) {
@@ -116,5 +124,4 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
             return fragment
         }
     }
-
 }

@@ -80,6 +80,7 @@
 /features/tokofood/                                     @tokopedia/android-minionstuart-dev
 /features/merchant/shop_admin/                          @tokopedia/android-minionstuart-dev
 /features/merchant/shop_admin_common/                   @tokopedia/android-minionstuart-dev
+/features/merchant/product_ar/                          @tokopedia/android-minionstuart-dev
 /libraries/bubbles/                                     @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
@@ -233,6 +234,7 @@
 /features/user/additional_check/                        @tokopedia/android-minionkevin-dev
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
 /features/user/telephony_masking/                       @tokopedia/android-minionkevin-dev
+/features/user/privacycenter/                           @tokopedia/android-minionkevin-dev
 
 /features/communication/attachcommon/                   @tokopedia/android-minionkevin-dev
 /features/communication/attachinvoice/                  @tokopedia/android-minionkevin-dev
@@ -258,6 +260,7 @@
 /features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionmark-dev
 /features/fintech/saldo_details         				@tokopedia/android-minionmark-dev
 /features/fintech/home_credit           				@tokopedia/android-minionmark-dev
+/features/fintech/insurance           				    @tokopedia/android-minionmark-dev
 /features/promo/tokopoints              				@tokopedia/android-minionsolo-dev
 /features/promo/tokopoints_notification 				@tokopedia/android-minionsolo-dev
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev

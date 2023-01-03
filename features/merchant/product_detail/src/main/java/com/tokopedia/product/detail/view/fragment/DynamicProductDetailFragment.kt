@@ -196,8 +196,11 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
+import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.GeneralInfoTracker
+import com.tokopedia.product.detail.tracking.GeneralInfoTracking
 import com.tokopedia.product.detail.tracking.OneLinersTracking
 import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
@@ -1396,7 +1399,20 @@ open class DynamicProductDetailFragment :
                     componentTrackDataModel
                 )
             }
+            ProductDetailConstant.INFO_OBAT_KERAS -> {
+                if (appLink.isNotEmpty()) {
+                    goToApplink(appLink)
+                    onClickObatKeras(componentTrackDataModel)
+                }
+            }
         }
+    }
+
+    private fun onClickObatKeras(componentTrackDataModel: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+        val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
+        val data = GeneralInfoTracker(isTokoNow, componentTrackDataModel)
+        GeneralInfoTracking.onClickObatKeras(commonTracker, data)
     }
 
     private fun onTradeinClicked(componentTrackDataModel: ComponentTrackDataModel?) {
@@ -1459,6 +1475,11 @@ open class DynamicProductDetailFragment :
         )
 
         goToTradein()
+    }
+
+    private fun generateCommonTracker(): CommonTracker? {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return null
+        return CommonTracker(productInfo, viewModel.userId)
     }
 
     private fun getTradeinData(): ValidateTradeIn {
@@ -2485,7 +2506,7 @@ open class DynamicProductDetailFragment :
                 viewModel.userSessionInterface.isLoggedIn
             )
         }
-        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
+        pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
@@ -3073,7 +3094,7 @@ open class DynamicProductDetailFragment :
             }
         )
 
-        pdpUiUpdater?.updateDataP1(context, productInfo, true)
+        pdpUiUpdater?.updateDataP1(productInfo, true)
         pdpUiUpdater?.updateInitialMedia(productInfo.data.media, productInfo.data.containerType)
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 

@@ -15,15 +15,17 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SearchPageViewModel @Inject constructor(private val repo: KeroRepository,
-                                              private val autoCompleteMapper: AutoCompleteMapper) : ViewModel() {
+class SearchPageViewModel @Inject constructor(
+    private val repo: KeroRepository,
+    private val autoCompleteMapper: AutoCompleteMapper
+) : ViewModel() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
+    var isGmsAvailable: Boolean = true
 
     private val _autoCompleteList = MutableLiveData<Result<Place>>()
     val autoCompleteList: LiveData<Result<Place>>
         get() = _autoCompleteList
-
 
     fun getAutoCompleteList(keyword: String, latlng: String) {
         viewModelScope.launch(onErrorAutoComplete) {
@@ -40,7 +42,7 @@ class SearchPageViewModel @Inject constructor(private val repo: KeroRepository,
         this.saveAddressDataModel = data
     }
 
-    fun getAddress() : SaveAddressDataModel {
+    fun getAddress(): SaveAddressDataModel {
         return this.saveAddressDataModel
     }
 }
