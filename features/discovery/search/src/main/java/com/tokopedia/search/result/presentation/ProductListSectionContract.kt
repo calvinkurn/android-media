@@ -4,8 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.model.WishlistTrackingModel
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -15,6 +13,7 @@ import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetF
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
@@ -74,13 +73,6 @@ interface ProductListSectionContract {
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
         fun refreshItemAtIndex(index: Int)
-        fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
-        fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
-        fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
-        fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
-        fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
-        fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
-        fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
         fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventClickDropdownQuickFilter(filterTitle: String)
@@ -96,7 +88,8 @@ interface ProductListSectionContract {
         TickerPresenter,
         SafeSearchPresenter,
         WishlistPresenter,
-        BottomSheetFilterPresenter {
+        BottomSheetFilterPresenter,
+        InspirationCarouselPresenter {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
@@ -110,17 +103,9 @@ interface ProductListSectionContract {
         fun trackProductClick(item: ProductItemDataView)
         fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>
-        fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
-        fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun onViewResumed()
         fun onLocalizingAddressSelected()
-        fun onInspirationCarouselChipsClick(
-            adapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            searchParameter: Map<String, Any>
-        )
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

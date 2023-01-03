@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.home.analytic
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKONOW_HOMEPAGE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
@@ -35,6 +35,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_ADD_TO_CART_PRODUCT
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_CLICK_CLOSE_BUTTON
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_CLICK_RTR_PRODUCT
@@ -129,16 +130,16 @@ class HomeRealTimeRecomAnalytics(
     override fun trackProductImpression(
         headerName: String,
         productId: String,
-        recomItem: RecommendationItem,
+        item: TokoNowProductCardCarouselItemUiModel,
         position: Int
     ) {
         val items = arrayListOf(
             productItemDataLayer(
-                index = recomItem.position.toString(),
-                productId = recomItem.productId.toString(),
-                productName = recomItem.name,
-                price = recomItem.price.filter { it.isDigit() }.toLongOrZero(),
-                productCategory = recomItem.categoryBreadcrumbs
+                index = position.toString(),
+                productId = item.getProductId(),
+                productName = item.getProductName(),
+                price = item.getProductPrice().filter { it.isDigit() }.toLongOrZero(),
+                productCategory = item.categoryBreadcrumbs
             )
         )
 
@@ -161,16 +162,16 @@ class HomeRealTimeRecomAnalytics(
     override fun trackProductClick(
         headerName: String,
         productId: String,
-        recomItem: RecommendationItem,
+        item: TokoNowProductCardCarouselItemUiModel,
         position: Int
     ) {
         val items = arrayListOf(
             productItemDataLayer(
-                index = recomItem.position.toString(),
-                productId = recomItem.productId.toString(),
-                productName = recomItem.name,
-                price = recomItem.price.filter { it.isDigit() }.toLongOrZero(),
-                productCategory = recomItem.categoryBreadcrumbs
+                index = position.toString(),
+                productId = item.getProductId(),
+                productName = item.getProductName(),
+                price = item.getProductPrice().filter { it.isDigit() }.toLongOrZero(),
+                productCategory = item.categoryBreadcrumbs
             )
         )
 
@@ -192,12 +193,12 @@ class HomeRealTimeRecomAnalytics(
 
     override fun trackAddToCart(
         productId: String,
-        recomItem: RecommendationItem,
+        item: TokoNowProductCardCarouselItemUiModel,
         quantity: Int
     ) {
         val items = arrayListOf(
             productItemDataLayer(
-                recomItem = recomItem,
+                item = item,
                 quantity = quantity
             )
         )
@@ -242,15 +243,15 @@ class HomeRealTimeRecomAnalytics(
         productBrand: String = "",
         productVariant: String = "",
         quantity: Int = 0,
-        recomItem: RecommendationItem
+        item: TokoNowProductCardCarouselItemUiModel
     ): Bundle {
-        val productCategory = recomItem.categoryBreadcrumbs
-        val productId = recomItem.productId.toString()
-        val productName = recomItem.name
-        val price = recomItem.price.filter { it.isDigit() }.toLongOrZero()
-        val shopId = recomItem.shopId
-        val shopName = recomItem.shopName
-        val shopType = recomItem.shopType
+        val productCategory = item.categoryBreadcrumbs
+        val productId = item.getProductId()
+        val productName = item.getProductName()
+        val price = item.getProductPrice().filter { it.isDigit() }.toLongOrZero()
+        val shopId = item.shopId.toIntOrZero()
+        val shopName = item.shopName
+        val shopType = item.shopType
 
         return Bundle().apply {
             putString(KEY_CATEGORY_ID, categoryId)

@@ -203,8 +203,6 @@ object ApplinkConstInternalMarketplace {
     // MembershipDetailActivity
     const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
-    const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
-
     //AdminInvitationConfirmationActivity
     @JvmField
     val ADMIN_INVITATION = "$INTERNAL_MARKETPLACE/shop-admin/invitation-page"
