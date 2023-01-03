@@ -35,7 +35,8 @@ class FeedDetailRepository @Inject constructor(
         const val FEED_GET_ACTIVITY_PRODUCT_QUERY = """
             query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
               feedXGetActivityProducts(req:${'$'}req){
-                hasVoucherproducts{
+                hasVoucher
+                products{
                       id
                       shopID
                       name
