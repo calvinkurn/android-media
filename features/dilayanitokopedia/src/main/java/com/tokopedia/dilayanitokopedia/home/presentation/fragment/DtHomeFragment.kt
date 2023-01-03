@@ -13,6 +13,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -91,6 +92,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -178,7 +180,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 }
             override val homeMainAnchorTabHeight: Int
                 get() {
-                    return binding?.headerCompHolder?.height?:0
+                    return binding?.headerCompHolder?.height ?: 0
                 }
         }
     }
@@ -253,16 +255,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         return object : DtAnchorTabAdapter.AnchorTabListener {
 
             override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int) {
+                Timber.d("onMenuSelected ${anchorTabUiModel.title} and $position")
                 anchorTabAdapter?.selectMenu(anchorTabUiModel)
 
                 val scrollPosition = adapter.data.indexOf(anchorTabUiModel.visitable)
 
                 if (scrollPosition == -1) return
-                rvHome?.smoothScrollToPosition(scrollPosition)
-
                 if (statusBarState == AnchorTabStatus.MAXIMIZE) {
                     setAnchorTabMinimize()
                 }
+
+                smoothScrollToComponentWithPosition(scrollPosition)
             }
         }
     }
@@ -300,7 +303,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun initRefreshLayout(){
+    private fun initRefreshLayout() {
         refreshLayout?.isEnabled = false
     }
 
@@ -530,7 +533,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
-//        startRenderPerformanceMonitoring()
         showHomeLayout(data)
         showHeaderBackground()
         visibilityChooseAddress()
@@ -538,7 +540,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 //        stickyLoginLoadContent()
 //        showOnBoarding()
 //        getLayoutComponentData()
-//        stopRenderPerformanceMonitoring()
     }
 
     private fun updateAnchorTab(data: List<AnchorTabUiModel>) {
@@ -608,11 +609,15 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         navToolbar?.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
     }
 
+    private var staggeredGridLayoutManager: CustomLinearLayoutManager? = null
+
     private fun initRecyclerView() {
+        staggeredGridLayoutManager = CustomLinearLayoutManager(requireContext())
+
         context?.let {
             rvHome?.apply {
                 adapter = this@DtHomeFragment.adapter
-                rvLayoutManager = CustomLinearLayoutManager(it)
+                rvLayoutManager = staggeredGridLayoutManager
                 layoutManager = rvLayoutManager
             }
 
@@ -1038,6 +1043,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 binding?.headerCompHolder?.smoothScrollToPosition(indexAnchorTab)
             }
         }
+    }
+
+    private fun smoothScrollToComponentWithPosition(position: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller =
+            object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+        smoothScroller.targetPosition = position
+        staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
     }
 
     private fun setAnchorTabMaximize() {

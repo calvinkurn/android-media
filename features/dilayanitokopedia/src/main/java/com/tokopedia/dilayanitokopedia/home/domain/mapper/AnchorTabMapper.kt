@@ -28,7 +28,6 @@ object AnchorTabMapper {
         homeLayoutList.forEachIndexed { index, visitable ->
 
             this.forEach anchorTabForEach@{ anchorTab ->
-
                 if (anchorTab.groupId == homeLayoutResponse[index].groupId) {
                     anchorTab.apply {
                         this.visitable = homeLayoutList[index]

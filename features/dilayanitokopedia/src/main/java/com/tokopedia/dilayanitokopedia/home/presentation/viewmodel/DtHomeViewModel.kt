@@ -32,6 +32,10 @@ class DtHomeViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
+    companion object {
+        val RECOMWIDGET_GROUP_ID = "RECOMMENDATION_WIDGET_GROUP_ID_"
+    }
+
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -45,6 +49,8 @@ class DtHomeViewModel @Inject constructor(
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
+
+    val homeRecommendationDataModel = HomeRecommendationFeedDataModel()
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         launchCatchError(block = {
@@ -78,7 +84,10 @@ class DtHomeViewModel @Inject constructor(
             )
 
             _homeLayoutList.postValue(Success(data))
-            _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList()))
+            val menuList = dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList()).toMutableList()
+            menuList.add(AnchorTabUiModel("", "recomTab", "", RECOMWIDGET_GROUP_ID, homeRecommendationDataModel))
+
+            _menuList.postValue(menuList)
 
             getRecommendationForYouNew()
         }) {
@@ -88,7 +97,7 @@ class DtHomeViewModel @Inject constructor(
 
     private fun getRecommendationForYouNew() {
         val newVisitable = getHomeVisitableList().toMutableList()
-        newVisitable.add(HomeRecommendationFeedDataModel())
+        newVisitable.add(homeRecommendationDataModel)
 
         val data = HomeLayoutListUiModel(items = newVisitable, state = DtLayoutState.SHOW)
 
