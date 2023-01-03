@@ -8,6 +8,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVouchersPagerViewholderBinding
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<VoucherIntroCarouselUiModel>(
@@ -46,42 +47,88 @@ class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<Vouch
 
     // Problems with Carousel
     private fun setUpCarousel(binding: SmvcIntroVouchersPagerViewholderBinding, position: Int) {
-        binding.apply {
-            containerCarousel.apply {
-                invalidate()
-            }
-        }
-        val bannerArr: ArrayList<String> = arrayListOf()
-        bannerArr.clear()
+        val bannerArr: java.util.ArrayList<Any> = java.util.ArrayList()
         when (position) {
             0 -> {
 //                bannerArr.add("https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_f563497d-22f9-4295-ae71-423a35af5476.jpg")
 //                bannerArr.add("https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_df8a996c-b290-4a29-b780-f285c89dd720.jpg")
 //                bannerArr.add("https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_9ce16553-f0fd-481e-a3e3-45363dbd8c70.jpg")
                 bannerArr.add(
+                    SampleData(
                     "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_4e29115b-cdf0-48d9-96fc-afe668269d12.jpg"
-                )
+                ))
+                bannerArr.add(
+                    SampleData(
+                    "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_4e29115b-cdf0-48d9-96fc-afe668269d12.jpg"
+                ))
             }
             1 -> {
                 bannerArr.add(
+                    SampleData(
                     "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_9ce16553-f0fd-481e-a3e3-45363dbd8c70.jpg"
-                )
+                ))
                 bannerArr.add(
+                    SampleData(
                     "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_4e29115b-cdf0-48d9-96fc-afe668269d12.jpg"
-                )
+                ))
             }
             2 -> {
+                bannerArr.add(
+                    SampleData(
+                    "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_df8a996c-b290-4a29-b780-f285c89dd720.jpg"
+                ))
             }
+        }
+
+        val itemParam = { view: View, data: Any ->
+            val imageCarousel = view.findViewById<ImageUnify>(R.id.image)
+
+            binding.containerCarousel.post {
+                imageCarousel.initialWidth = binding.containerCarousel.measuredWidth
+            }
+            imageCarousel.setImageUrl((data as SampleData).title, 0.666f)
         }
 
         binding.apply {
             containerCarousel.apply {
-                stage.removeAllViews()
-                indicatorPosition = CarouselUnify.INDICATOR_BL
+                removePreviousItemViews()
+                slideToShow = 1.2f
+                indicatorPosition = CarouselUnify.INDICATOR_BC
                 infinite = true
-
-                addImages(bannerArr)
+                //       setUpItemViews(context, bannerArr)
+                //         addImages(bannerArr)
+                addItems(R.layout.smvc_item_intro_carousel, bannerArr, itemParam)
             }
         }
     }
+
+    private fun CarouselUnify.removePreviousItemViews() {
+        stage.removeAllViews()
+    }
+
+    class SampleData(var title: String)
+
+//    private fun CarouselUnify.setUpItemViews(context: Context, items: List<String>) {
+//        items.forEach {
+//            createItemView(context).apply{
+//                bindItem(this,it)
+//            }.run{
+//                addItem(this)
+//            }
+//        }
+//    }
+//
+//    private fun createItemView(context: Context): View {
+//        return View.inflate(context, MvcIntroCarouselImageViewHolder.RES_LAYOUT, null).apply {
+//            layoutParams = LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.WRAP_CONTENT
+//            )
+//        }
+//    }
+//
+//    private fun bindItem(view: View, data: String) {
+//        val viewHolder = MvcIntroCarouselImageViewHolder(view)
+//        viewHolder.bind(data)
+//    }
 }
