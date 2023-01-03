@@ -17,7 +17,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logger.ServerLogger
@@ -85,7 +84,6 @@ import okhttp3.internal.toImmutableList
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
