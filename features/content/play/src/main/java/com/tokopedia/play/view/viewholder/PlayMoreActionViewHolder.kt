@@ -23,7 +23,7 @@ class PlayMoreActionViewHolder(itemView: View) : BaseViewHolder(itemView) {
     private val btnCast = itemView.findViewById<MediaRouteButton>(R.id.btn_play_cast)
 
     fun bind(item: PlayMoreActionUiModel) {
-        ivIcon.shouldShowWithAction(item.isIconAvailable){
+        ivIcon.shouldShowWithAction(item.icon != null){
             ivIcon.setImageDrawable(item.icon)
         }
         tvSubtitle.text = getString(item.subtitleRes)
