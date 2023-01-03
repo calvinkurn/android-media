@@ -13,6 +13,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UsageSummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import io.mockk.coEvery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -1910,7 +1911,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000.0)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, paymentFees = helper.paymentFeeDetails)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, originalPaymentFees = helper.paymentFeeDetails)
 
         // When
         orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
@@ -1950,7 +1951,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = false), OrderPaymentGoCicilTerms(isActive = true)), selectedTerm = null)
             ),
-            paymentFees = helper.paymentFeeDetails
+            originalPaymentFees = helper.paymentFeeDetails
         )
 
         // When
@@ -1993,7 +1994,128 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 ),
                 selectedTerm = OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isError = true)
             ),
-            paymentFees = helper.paymentFeeDetails
+            originalPaymentFees = helper.paymentFeeDetails
+        )
+
+        // When
+        orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
+
+        // Then
+        assertEquals(
+            OrderTotal(
+                OrderCost(
+                    3045.0, 1000.0, 500.0, paymentFee = 45.0,
+                    totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true, orderPaymentFees = helper.paymentFeeDetails
+                ),
+                OccButtonState.DISABLE,
+                OccButtonType.PAY
+            ),
+            orderSummaryPageViewModel.orderTotal.value
+        )
+    }
+
+    @Test
+    fun `Calculate Total Non Installment With Dynamic Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000.0)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, originalPaymentFees = helper.paymentFeeDetails)
+
+        val orderPaymentFee = OrderPaymentFee(
+            title = "dynamic payment fee",
+            fee = 5000.0
+        )
+        coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns listOf(orderPaymentFee)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(
+            OrderTotal(
+                OrderCost(
+                    8000.0,
+                    1000.0,
+                    500.0,
+                    paymentFee = 6500.0,
+                    totalItemPriceAndShippingFee = 1500.0,
+                    totalPriceWithoutDiscountsAndPaymentFees = 1500.0,
+                    totalPriceWithoutPaymentFees = 1500.0,
+                    orderPaymentFees = helper.paymentFeeDetails + orderPaymentFee
+                ),
+                OccButtonState.NORMAL,
+                OccButtonType.PAY
+            ),
+            orderSummaryPageViewModel.orderTotal.value
+        )
+    }
+
+    @Test
+    fun `Calculate Total Gocicil With Dynamic Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000.0)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            maximumAmount = 100000,
+            walletAmount = 100000,
+            walletData = OrderPaymentWalletAdditionalData(
+                walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = false), OrderPaymentGoCicilTerms(isActive = true)), selectedTerm = null)
+            ),
+            originalPaymentFees = helper.paymentFeeDetails
+        )
+        val orderPaymentFee = OrderPaymentFee(
+            title = "dynamic payment fee",
+            fee = 5000.0
+        )
+        coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns listOf(orderPaymentFee)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(
+            OrderTotal(
+                OrderCost(
+                    3000.0,
+                    1000.0,
+                    500.0,
+                    totalItemPriceAndShippingFee = 1500.0,
+                    totalPriceWithoutDiscountsAndPaymentFees = 1500.0,
+                    totalPriceWithoutPaymentFees = 1500.0,
+                    isInstallment = true,
+                    orderPaymentFees = helper.paymentFeeDetails
+                ),
+                OccButtonState.DISABLE,
+                OccButtonType.PAY
+            ),
+            orderSummaryPageViewModel.orderTotal.value
+        )
+    }
+
+    @Test
+    fun `Calculate Total Credit Card With Dynamic Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000.0)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            creditCard = OrderPaymentCreditCard(
+                numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+                availableTerms = listOf(
+                    OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
+                    OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isError = true)
+                ),
+                selectedTerm = OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isError = true)
+            ),
+            originalPaymentFees = helper.paymentFeeDetails
         )
 
         // When
