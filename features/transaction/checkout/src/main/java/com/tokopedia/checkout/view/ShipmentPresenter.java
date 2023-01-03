@@ -2565,6 +2565,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                         shipmentCartItemModel.setFirstProductErrorIndex(0);
                                                                         shipmentCartItemModel.setError(true);
                                                                         shipmentCartItemModel.setAllItemError(true);
+                                                                        for (CartItemModel itemModel : shipmentCartItemModel.getCartItemModels()) {
+                                                                            itemModel.setError(true);
+                                                                            itemModel.setShopError(true);
+                                                                        }
                                                                         shipmentCartItemModel.setErrorTitle(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, shipmentCartItemModel.getCartItemModels().size()));
                                                                         shipmentCartItemModel.setCustomEpharmacyError(true);
                                                                         shipmentCartItemModel.setSpId(0);
@@ -2706,6 +2710,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                             } else {
                                                                 shipmentCartItemModel.setFirstProductErrorIndex(0);
                                                                 shipmentCartItemModel.setError(true);
+                                                                shipmentCartItemModel.setAllItemError(true);
+                                                                for (CartItemModel itemModel : shipmentCartItemModel.getCartItemModels()) {
+                                                                    itemModel.setError(true);
+                                                                    itemModel.setShopError(true);
+                                                                }
                                                                 shipmentCartItemModel.setErrorTitle(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, shipmentCartItemModel.getCartItemModels().size()));
                                                                 shipmentCartItemModel.setCustomEpharmacyError(true);
                                                                 shipmentCartItemModel.setSpId(0);
