@@ -19,6 +19,7 @@ import com.tokopedia.mvc.presentation.intro.uimodel.IntroVoucherUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
+import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.ViewMoreListener {
@@ -47,9 +48,12 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
         this.contentList = getContentList()
         mvcAdapter = MvcIntroAdapter()
 
-        mvcLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        mvcLayoutManager = object : LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
         binding?.recyclerView?.layoutManager = mvcLayoutManager
-
         mvcAdapter?.clearAllElements()
         mvcAdapter?.addElement(contentList)
 
@@ -63,7 +67,12 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
         setNavigationOnClickListener {
             activity?.finish()
         }
+        context?.resources?.getColor(R.color.mvc_dms_toolbar_color)?.let {
+            binding?.header?.setBackgroundColor(it)
+            activity?.window?.statusBarColor = it
+        }
     }
+
 
     private fun getContentList(): List<Visitable<*>> {
         return context?.resources?.let {
@@ -177,6 +186,20 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
     }
 
     override fun enableRVScroll() {
-        // scrollListener?.enableRecyclerViewScroll(binding?.recyclerView)
+        mvcLayoutManager = object : LinearLayoutManager(context, VERTICAL, false) {
+            override fun canScrollVertically(): Boolean {
+                return true
+            }
+        }
+        binding?.recyclerView?.apply {
+            layoutManager = mvcLayoutManager
+            layoutManager?.scrollToPosition(FIRST_INDEX)
+        }
+        context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Header_Background)
+            ?.let {
+                binding?.header?.setBackgroundColor(it)
+                activity?.window?.statusBarColor = it
+            }
+
     }
 }
