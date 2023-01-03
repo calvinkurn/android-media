@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_MINUTE_PRECISION
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherInformationBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoButtonSectionBinding
@@ -22,12 +23,15 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherTargetSect
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditCalendarBottomSheet
 import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
+import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
+import com.tokopedia.mvc.util.convertUnsafeDateTime
 import com.tokopedia.mvc.util.extension.setToAllCapsMode
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
@@ -53,6 +57,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 }
             }
         }
+
         private const val DEBOUNCE = 300L
     }
 
@@ -76,6 +81,21 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
             ?: VoucherConfiguration()
     }
+    private var startCalendar: GregorianCalendar? = null
+    private var endCalendar: GregorianCalendar? = null
+    private var startHour: Int = 0
+    private var startMinute: Int = 0
+
+    private var getSelectedDateStarting: (Calendar) -> Unit = {
+        viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherStartDateChanged(it))
+    }
+
+    private var getSelectedDateEnding: (Calendar) -> Unit = {
+        viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherEndDateChanged(it))
+    }
+
+    //bottom sheet
+    private var voucherEditCalendarBottomSheet: VoucherEditCalendarBottomSheet? = null
 
     override fun getScreenName(): String =
         VoucherInformationFragment::class.java.canonicalName.orEmpty()
@@ -103,6 +123,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 voucherConfiguration
             )
         )
+        setupTime()
         setupView()
         observeUiState()
         observeUiAction()
@@ -128,6 +149,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             state.isVoucherCodeError,
             state.voucherCodeErrorMsg
         )
+        renderVoucherStartPeriodSelection(state.voucherConfiguration)
+        renderVoucherEndPeriodSelection(state.voucherConfiguration)
         renderButtonValidation(state.isInputValid())
     }
 
@@ -167,6 +190,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         setupVoucherTargetSection()
         setupVoucherNameSection()
         setupVoucherCodeSection()
+        setupVoucherPeriodSection()
         setupButtonSection()
     }
 
@@ -323,6 +347,117 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             tfVoucherCode.editText.setText(voucherConfiguration.voucherCode)
             tfVoucherCode.isInputError = isVoucherCodeError
             tfVoucherCode.setMessage(voucherCodeErrorMsg)
+        }
+    }
+
+    //Voucher period section
+    private fun setupVoucherPeriodSection() {
+        binding?.run {
+            if (viewVoucherActivePeriod.parent != null) {
+                viewVoucherActivePeriod.inflate()
+            }
+        }
+
+        voucherPeriodSectionBinding?.run {
+            tfVoucherStartPeriod.run {
+                disableText(editText)
+                editText.setOnClickListener { onClickListenerForStartDate() }
+            }
+            tfVoucherEndPeriod.run {
+                disableText(editText)
+                editText.setOnClickListener { onClickListenerForEndDate() }
+            }
+            cbRepeatPeriod.setOnCheckedChangeListener { _, isChecked ->
+                tfRepeat.isVisible = isChecked
+            }
+        }
+    }
+
+    private fun onClickListenerForStartDate() {
+        context?.run {
+            DateTimeUtils.getMinDate(startCalendar)?.let { minDate ->
+                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
+                    voucherEditCalendarBottomSheet =
+                        VoucherEditCalendarBottomSheet.newInstance(
+                            startCalendar,
+                            minDate,
+                            maxDate,
+                            startHour,
+                            startMinute,
+                            getSelectedDateStarting
+                        )
+                    voucherEditCalendarBottomSheet?.show(
+                        childFragmentManager,
+                        ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun onClickListenerForEndDate() {
+        context?.run {
+            DateTimeUtils.getMinDate(endCalendar)?.let { minDate ->
+                DateTimeUtils.getMaxDate(endCalendar)?.let { maxDate ->
+                    voucherEditCalendarBottomSheet =
+                        VoucherEditCalendarBottomSheet.newInstance(
+                            endCalendar,
+                            minDate,
+                            maxDate,
+                            startHour,
+                            startMinute,
+                            getSelectedDateEnding
+                        )
+                    voucherEditCalendarBottomSheet?.show(
+                        childFragmentManager,
+                        ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setupTime() {
+        val currentDate = Date().formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val datePlusOneMonth = Calendar.getInstance().run {
+            add(Calendar.MONTH, Int.ONE)
+            time
+        }.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+        startCalendar = getGregorianDate(currentDate)
+        endCalendar = getGregorianDate(datePlusOneMonth)
+    }
+
+    private fun renderVoucherStartPeriodSelection(voucherConfiguration: VoucherConfiguration) {
+        voucherPeriodSectionBinding?.run {
+            tfVoucherStartPeriod.run {
+                editText.setText(
+                    voucherConfiguration.startPeriod.formatTo(
+                        DATE_TIME_MINUTE_PRECISION
+                    )
+                )
+            }
+        }
+    }
+
+    private fun renderVoucherEndPeriodSelection(voucherConfiguration: VoucherConfiguration) {
+        voucherPeriodSectionBinding?.run {
+            tfVoucherEndPeriod.run {
+                editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
+            }
+        }
+    }
+
+    private fun disableText(autoCompleteTextView: AutoCompleteTextView) {
+        autoCompleteTextView.apply {
+            isFocusable = false
+            isClickable = true
+            keyListener = null
+        }
+    }
+
+    private fun getGregorianDate(date: String): GregorianCalendar {
+        return GregorianCalendar().apply {
+            time = date.convertUnsafeDateTime()
         }
     }
 

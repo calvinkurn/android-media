@@ -34,6 +34,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tf_voucher_start_period"
         app:layout_constraintTop_toBottomOf="@+id/tpg_voucher_period_title"
@@ -53,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tf_voucher_start_period" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
-        android:id="@+id/tf_voucher_code"
+        android:id="@+id/tf_repeat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"

@@ -9,6 +9,7 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.*
+import java.util.*
 import javax.inject.Inject
 
 class VoucherInformationViewModel @Inject constructor(
@@ -34,6 +35,8 @@ class VoucherInformationViewModel @Inject constructor(
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
             is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
+            is VoucherCreationStepTwoEvent.OnVoucherStartDateChanged -> setStartDateTime(event.calendar)
+            is VoucherCreationStepTwoEvent.OnVoucherEndDateChanged -> setEndDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.ValidateVoucherInput -> {}
             is VoucherCreationStepTwoEvent.NavigateToNextStep -> {}
         }
@@ -117,5 +120,25 @@ class VoucherInformationViewModel @Inject constructor(
             },
             onError = { }
         )
+    }
+
+    private fun setStartDateTime(startDate: Calendar?) {
+        startDate?.let {
+            _uiState.update {
+                it.copy(
+                    voucherConfiguration = it.voucherConfiguration.copy(startPeriod = startDate.time)
+                )
+            }
+        }
+    }
+
+    private fun setEndDateTime(endDate: Calendar?) {
+        endDate?.let {
+            _uiState.update {
+                it.copy(
+                    voucherConfiguration = it.voucherConfiguration.copy(endPeriod = endDate.time)
+                )
+            }
+        }
     }
 }
