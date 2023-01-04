@@ -2244,7 +2244,8 @@ open class TopChatRoomFragment :
 
     private fun addToWishlistV2(productId: String, success: () -> Unit) {
         viewModel.addToWishListV2(
-            productId, session.userId,
+            productId,
+            session.userId,
             object : WishlistV2ActionListener {
                 override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                     view?.let { v ->
@@ -2268,6 +2269,7 @@ open class TopChatRoomFragment :
                                 context,
                                 v
                             )
+                            success()
                         }
                     }
                 }
