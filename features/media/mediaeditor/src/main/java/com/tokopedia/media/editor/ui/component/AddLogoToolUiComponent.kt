@@ -93,8 +93,8 @@ class AddLogoToolUiComponent constructor(
         uploadAvatarUrl = localAvatarUrl
         selectedLogoUrl = addLogoData.logoUrl
 
-        initShopAvatar()
         initListener()
+        initShopAvatar()
         container().show()
 
         if (localAvatarUrl.isNotEmpty()) {
@@ -176,6 +176,7 @@ class AddLogoToolUiComponent constructor(
     }
 
     private fun isLogoChosen(finishedUrl: String) {
+        // restore previous selected logo from state
         if (selectedLogoUrl.isNotEmpty() && selectedLogoUrl == finishedUrl) {
             when (finishedUrl) {
                 uploadAvatarUrl -> uploadAvatar.performClick()
