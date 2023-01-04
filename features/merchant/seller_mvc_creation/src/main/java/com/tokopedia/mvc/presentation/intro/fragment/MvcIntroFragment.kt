@@ -144,6 +144,7 @@ class MvcIntroFragment :
                         )
                     )
                 ),
+
                 // TODO FIX THE URLS
                 VoucherIntroCarouselUiModel(
                     headerTitle = it.getString(R.string.smvc_intro_voucher_view_pager_header),
@@ -154,26 +155,57 @@ class MvcIntroFragment :
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
                             listOf(
-                                it.getString(R.string.smvc_intro_voucher_carousel_cashback_1),
-                                it.getString(R.string.smvc_intro_voucher_carousel_cashback_1)
-                                )
+                                it.getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon),
+                                it.getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon)
+                            )
                         ),
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
                             listOf(
-                                it.getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
-                                it.getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
+                                it.getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon),
+                                it.getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon)
                             )
                         ),
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
                             listOf(
-                                it.getString(R.string.smvc_intro_voucher_carousel_diskon_1),
-                                it.getString(R.string.smvc_intro_voucher_carousel_diskon_2)
+                                it.getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon),
+                                it.getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon)
                             )
                         )
                     )
                 ),
+
+//                // TODO FIX THE URLS
+//                VoucherIntroCarouselUiModel(
+//                    headerTitle = it.getString(R.string.smvc_intro_voucher_view_pager_header),
+//                    description = it.getString(
+//                        R.string.smvc_intro_voucher_view_pager_tab_description
+//                    ),
+//                    tabsList = listOf(
+//                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+//                            it.getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
+//                            listOf(
+//                                it.getString(R.string.smvc_intro_voucher_carousel_cashback_1),
+//                                it.getString(R.string.smvc_intro_voucher_carousel_cashback_1)
+//                                )
+//                        ),
+//                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+//                            it.getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
+//                            listOf(
+//                                it.getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
+//                                it.getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
+//                            )
+//                        ),
+//                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+//                            it.getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
+//                            listOf(
+//                                it.getString(R.string.smvc_intro_voucher_carousel_diskon_1),
+//                                it.getString(R.string.smvc_intro_voucher_carousel_diskon_2)
+//                            )
+//                        )
+//                    )
+//                ),
                 ChoiceOfVoucherUiModel(
                     it.getString(R.string.smvc_intro_voucher_type_choice_of_target),
                     list = listOf(

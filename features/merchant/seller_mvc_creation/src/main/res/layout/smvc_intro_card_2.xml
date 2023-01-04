@@ -17,7 +17,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/card"
         app:unify_image_type="circle"
-        app:completeUrl="https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/fleksibel_buat_kupon.png"
         android:elevation="20dp"
         />
 
