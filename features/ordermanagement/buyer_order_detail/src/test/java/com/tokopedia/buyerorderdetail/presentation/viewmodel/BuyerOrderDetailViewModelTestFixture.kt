@@ -40,6 +40,7 @@ import io.mockk.mockkObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -324,5 +325,29 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
         rule.runBlockingTest { block(uiStates) }
         uiStateCollectorJob.cancel()
+    }
+
+    fun isProductListCollapsed(): Boolean {
+        return BuyerOrderDetailViewModel::class.java.getDeclaredField("productListCollapsed").run {
+            isAccessible = true
+            (get(viewModel) as MutableStateFlow<*>).value as Boolean
+        }
+    }
+
+    fun isProductListExpanded(): Boolean {
+        return BuyerOrderDetailViewModel::class.java.getDeclaredField("productListCollapsed").run {
+            isAccessible = true
+            !((get(viewModel) as MutableStateFlow<*>).value as Boolean)
+        }
+    }
+
+    fun TestCoroutineScope.getBuyerOrderDetailData(
+        orderId: String = this@BuyerOrderDetailViewModelTestFixture.orderId,
+        paymentId: String = this@BuyerOrderDetailViewModelTestFixture.paymentId,
+        cart: String = this@BuyerOrderDetailViewModelTestFixture.cart,
+        shouldCheckCache: Boolean = false
+    ) {
+        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
+        advanceTimeBy(1000L)
     }
 }
