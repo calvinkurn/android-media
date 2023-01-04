@@ -44,6 +44,7 @@ import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -1661,7 +1662,7 @@ class DiscoveryFragment :
         val campaignId = arguments?.getString(CAMPAIGN_ID, "") ?: ""
         val variantId = arguments?.getString(VARIANT_ID, "") ?: ""
         val shopId = arguments?.getString(SHOP_ID, "") ?: ""
-        val affiliateUID = arguments?.getString(AFFILIATE_UNIQUE_ID, "") ?: ""
+        val affiliateUID = arguments?.getString(AFFILIATE_UNIQUE_ID, "")?.toDecodedString() ?: ""
         val affiliateChannelID = if (isAffiliate && affiliateUID.isNotEmpty()) {
             val trackerID = discoveryViewModel.getTrackerIDForAffiliate()
             "$affiliateUID - $trackerID - $AFFILIATE"

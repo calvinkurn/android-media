@@ -27,6 +27,7 @@ import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -480,7 +481,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 VARIANT_ID to bundle?.getString(VARIANT_ID,""),
                 SHOP_ID to bundle?.getString(SHOP_ID,""),
                 QUERY_PARENT to bundle?.getString(QUERY_PARENT,""),
-                AFFILIATE_UNIQUE_ID to bundle?.getString(AFFILIATE_UNIQUE_ID, ""),
+                AFFILIATE_UNIQUE_ID to bundle?.getString(AFFILIATE_UNIQUE_ID, "")?.toDecodedString(),
                 CHANNEL to bundle?.getString(CHANNEL, ""),
         )
     }
