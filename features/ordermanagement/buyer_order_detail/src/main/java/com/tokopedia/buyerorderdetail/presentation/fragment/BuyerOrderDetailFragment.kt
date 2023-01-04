@@ -91,6 +91,7 @@ open class BuyerOrderDetailFragment :
     DigitalRecommendationViewHolder.ActionListener,
     CourierInfoViewHolder.CourierInfoViewHolderListener,
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
+    OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener {
 
     companion object {
