@@ -152,8 +152,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
-                // TODO change this
-                showDisplayVoucherBottomSheet(voucher)
+                showUpdateQuotaBottomSheet(voucher)
             }
             is MoreMenuUiModel.EditPeriod -> {
                 showEditPeriodBottomSheet(voucher)
@@ -174,6 +173,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
             is MoreMenuUiModel.Share -> {
             }
             is MoreMenuUiModel.Stop -> {
+                deleteVoucher(voucher)
             }
             is MoreMenuUiModel.Copy -> {
             }
