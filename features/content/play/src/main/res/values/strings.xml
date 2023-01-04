@@ -126,4 +126,5 @@
     <string name="play_archived_title">Video telah dihapus</string>
     <string name="play_archived_description">Video ini telah dihapus.</string>
     <string name="play_failed_follow">Oops, gagal follow kreator.</string>
+    <string name="play_explore_widget_name">Eksplor</string>
 </resources>
