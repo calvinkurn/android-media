@@ -102,7 +102,7 @@ class EditorUiModel(
 
         editList.forEachIndexed { index, editorDetailUiModel ->
             if (index > maxStateLimit) return@forEachIndexed
-            if (editorDetailUiModel.isToolAddLogo()) {
+            if (editorDetailUiModel.addLogoValue.overlayLogoUrl.isNotEmpty()) {
                 searchResult = editorDetailUiModel.addLogoValue
             }
         }
