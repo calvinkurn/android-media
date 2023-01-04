@@ -122,8 +122,8 @@ object UohAnalytics {
     private const val VIEW_BERI_ULASAN_BUTTON = "view beri ulasan button"
 
     // tracker id
-    private const val VIEW_BELI_LAGI_BUTTON_TRACKER_ID = "32118"
-    private const val CLICK_BELI_LAGI_BUTTON_TRACKER_ID = "32118"
+    private const val VIEW_BELI_LAGI_BUTTON_TRACKER_ID = "40123"
+    private const val CLICK_BELI_LAGI_BUTTON_TRACKER_ID = "40124"
     private const val VIEW_ERROR_TOASTER_BELI_LAGI_TRACKER_ID = "40125"
     private const val VIEW_BERI_ULASAN_BUTTON_TRACKER_ID = "40126"
 

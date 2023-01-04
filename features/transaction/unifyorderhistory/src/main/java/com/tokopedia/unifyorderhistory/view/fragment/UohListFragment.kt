@@ -862,6 +862,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
+                        UohAnalytics.sendViewErrorToasterBeliLagiEvent()
                     }
                 }
                 is Fail -> {
