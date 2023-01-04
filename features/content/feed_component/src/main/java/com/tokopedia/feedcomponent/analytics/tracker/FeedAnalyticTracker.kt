@@ -280,7 +280,7 @@ class FeedAnalyticTracker
         }
 
         val finalLabel =
-            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) {
+            if (feedTrackerData.campaignStatus.isNotEmpty()) {
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_FIVE_PARAM,
                     activityId,
@@ -329,7 +329,7 @@ class FeedAnalyticTracker
         val mediaType = feedTrackerData.mediaType
         val isAsgcRecomm = feedTrackerData.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !feedTrackerData.isFollowed
         val finalLabel =
-            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) {
+            if (feedTrackerData.campaignStatus.isNotEmpty()) {
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_FIVE_PARAM,
                     activityId,
@@ -446,7 +446,7 @@ class FeedAnalyticTracker
         }
 
         val finalLabel =
-            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) {
+            if (feedTrackerData.campaignStatus.isNotEmpty()) {
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_FIVE_PARAM,
                     activityId,
@@ -1023,7 +1023,7 @@ class FeedAnalyticTracker
         val isAsgcRecomm = feedTrackerData.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !feedTrackerData.isFollowed
 
         val finallabel =
-            if (campaignStatus.isNotEmpty() && isFollowed) {
+            if (campaignStatus.isNotEmpty()) {
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_FIVE_PARAM,
                     activityId,
@@ -1085,7 +1085,7 @@ class FeedAnalyticTracker
         }
 
         val finallabel =
-            if (feedTrackerData.campaignStatus.isNotEmpty() && feedTrackerData.isFollowed) {
+            if (feedTrackerData.campaignStatus.isNotEmpty()) {
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_FIVE_PARAM,
                     activityId,
@@ -1703,7 +1703,7 @@ class FeedAnalyticTracker
         val position = feedTrackerData.mediaIndex
 
         val trackerIdForAsgcCampaign = if (isFollowed) "17984" else "40067"
-        val eventLabelFinal = if (campaignStatus.isNotEmpty() && isFollowed) {
+        val eventLabelFinal = if (campaignStatus.isNotEmpty()) {
             String.format(
                 FORMAT_SIX_PARAM,
                 activityId,
