@@ -405,7 +405,7 @@ class UserProfileFragment @Inject constructor(
         viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
         if (!isRefreshPost) return
         viewModel.submitAction(UserProfileAction.LoadFeedPosts())
-        viewModel.submitAction(UserProfileAction.LoadPlayVideo(""))
+        viewModel.submitAction(UserProfileAction.LoadPlayVideo())
     }
 
     private fun addLiveClickListener(appLink: String) {
