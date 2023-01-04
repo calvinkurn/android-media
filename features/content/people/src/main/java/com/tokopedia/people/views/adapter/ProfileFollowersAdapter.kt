@@ -57,8 +57,8 @@ open class ProfileFollowersAdapter(
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val visibleItemCount = recyclerView.layoutManager!!.childCount
-                val totalItemCount = recyclerView.layoutManager!!.itemCount
+                val visibleItemCount = recyclerView.layoutManager?.childCount.orZero()
+                val totalItemCount = recyclerView.layoutManager?.itemCount.orZero()
                 val firstVisibleItemPosition =
                     (recyclerView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition().orZero()
                 if (!isLoading && !isLastPage) {
