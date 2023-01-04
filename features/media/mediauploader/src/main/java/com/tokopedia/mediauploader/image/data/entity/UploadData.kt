@@ -4,6 +4,5 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class UploadData(
-    @Expose @SerializedName("upload_id") val uploadId: String = "",
-    @Expose @SerializedName("file_url") val fileUrl: String = ""
+    @Expose @SerializedName("upload_id") val uploadId: String = ""
 )

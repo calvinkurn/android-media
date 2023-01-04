@@ -11,9 +11,6 @@ data class ImageUploadParam(
     var timeOut: String,
     var hostUrl: String,
     var file: File,
-    var isSecure: Boolean = false,
-    var extraHeader: Map<String, String>,
-    var extraBody: Map<String, String>
 ) {
 
     fun hasNoParams(): Boolean {

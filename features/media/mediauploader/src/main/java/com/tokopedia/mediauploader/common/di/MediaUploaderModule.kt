@@ -12,7 +12,6 @@ import com.tokopedia.mediauploader.common.internal.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
-import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
@@ -97,25 +96,15 @@ class MediaUploaderModule {
 
     @Provides
     @MediaUploaderQualifier
-    fun provideGetImageSecurePolicyUseCase(
-        repository: GraphqlRepository
-    ): GetImageSecurePolicyUseCase {
-        return GetImageSecurePolicyUseCase(repository)
-    }
-
-    @Provides
-    @MediaUploaderQualifier
     fun provideImageUploaderManager(
         policyManager: SourcePolicyManager,
         imagePolicyUseCase: GetImagePolicyUseCase,
-        imageUploaderUseCase: GetImageUploaderUseCase,
-        imageSecurePolicyUseCase: GetImageSecurePolicyUseCase
+        imageUploaderUseCase: GetImageUploaderUseCase
     ): ImageUploaderManager {
         return ImageUploaderManager(
             policyManager,
             imagePolicyUseCase,
-            imageUploaderUseCase,
-            imageSecurePolicyUseCase
+            imageUploaderUseCase
         )
     }
 

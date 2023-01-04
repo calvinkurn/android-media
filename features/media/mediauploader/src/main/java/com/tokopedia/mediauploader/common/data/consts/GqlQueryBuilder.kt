@@ -41,35 +41,6 @@ object GqlQueryBuilder {
         }
     """.trimIndent()
 
-    var imagePolicySecure = """
-        query dataPolicyQuery($queryParamSourceId: String) {
-         uploadpedia_secure_policy(source: $queryParamSourceId)  {
-            header {
-              process_time
-              reason
-              error_code
-              messages
-            }
-            source_policy {
-              host
-              timeout
-              image_policy {
-                allowed_ext
-                max_file_size
-                max_res {
-                  w
-                  h
-                }
-                min_res {
-                  w
-                  h
-                }
-              }
-            }
-          }
-        }
-    """.trimIndent()
-
     var videoPolicy = """
         query dataPolicyQuery($queryParamSourceId: String) {
           uploadpedia_policy(source: $queryParamSourceId) {

@@ -725,13 +725,6 @@ open class BuyerOrderDetailFragment :
         showEtaBottomSheet(delayedInfo)
     }
 
-    override fun onClickPodPreview() {
-        BuyerOrderDetailTracker.eventClickSeePodPreview(
-            orderId = viewModel.getOrderId(),
-            orderStatusCode = viewModel.getOrderStatusId()
-        )
-    }
-
     private fun showEtaBottomSheet(etaChangedDescription: String) {
         val delayedEtaBottomSheetFragment =
             DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)

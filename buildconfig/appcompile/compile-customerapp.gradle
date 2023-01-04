@@ -14,6 +14,7 @@ includeIfEnabled("features:category:common_tradein")
 includeIfEnabled("features:category:common_category")
 includeIfEnabled("features:category:kategori")
 includeIfEnabled("features:category:category_levels")
+includeIfEnabled("features:category:find_native")
 
 includeIfEnabled("features:content:affiliate_common")
 includeIfEnabled("features:content:content_common")

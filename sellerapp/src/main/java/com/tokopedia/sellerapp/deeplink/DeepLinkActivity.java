@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenterImpl;
 
@@ -16,7 +17,7 @@ import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenterImpl;
  * Created by Herdi_WORK on 10.05.17.
  */
 
-public class DeepLinkActivity extends AppCompatActivity {
+public class DeepLinkActivity extends AppCompatActivity implements DeepLinkView {
     private Uri uriData;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private DeepLinkPresenter presenter;
@@ -29,6 +30,11 @@ public class DeepLinkActivity extends AppCompatActivity {
         }
         presenter = new DeepLinkPresenterImpl(this);
         initDeepLink();
+    }
+
+    @Override
+    public void inflateFragmentV4(androidx.fragment.app.Fragment fragment, String tag) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_view, fragment, tag).commit();
     }
 
     private void setupURIPass(Uri data) {

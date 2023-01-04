@@ -180,7 +180,7 @@ class UserProfileFeedFragment @Inject constructor(
             mediaType,
         )
         val intent = RouteManager.getIntent(requireContext(), appLink)
-        intent.putExtra(KEY_ENTRY_POINT, VAL_ENTRY_POINT)
+        intent.putExtra(KEY_SOURCE, VAL_SOURCE)
         intent.putExtra(KEY_POSITION, position)
         intent.putExtra(KEY_VISITED_USER_ID, viewModel.profileUserID)
         intent.putExtra(KEY_VISITED_USER_ENCRYPTED_ID, viewModel.profileUserEncryptedID)
@@ -236,11 +236,11 @@ class UserProfileFeedFragment @Inject constructor(
 
     companion object {
         private const val TAG = "UserProfileFeedFragment"
-        private const val KEY_ENTRY_POINT = "entry_point"
+        private const val KEY_SOURCE = "source"
         private const val KEY_POSITION = "position"
         private const val KEY_VISITED_USER_ID = "visited_user_id"
         private const val KEY_VISITED_USER_ENCRYPTED_ID = "visited_user_encrypted_id"
-        private const val VAL_ENTRY_POINT = "user_profile"
+        private const val VAL_SOURCE = "user_profile"
         private const val GRID_SPAN_COUNT = 3
         private const val LOADING_SPAN = 3
         private const val DATA_SPAN = 1

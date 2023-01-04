@@ -159,15 +159,6 @@ object BuyerOrderDetailTracker {
         )
     }
 
-    fun eventClickSeePodPreview(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(
-            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_POD_PREVIEW,
-            orderStatusCode = orderStatusCode,
-            orderId = orderId,
-            trackerId = "39813"
-        )
-    }
-
     fun eventClickCopyOrderInvoice(orderStatusCode: String, orderId: String) {
         eventGeneralBuyerOrderDetail(
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_COPY_ORDER_INVOICE,

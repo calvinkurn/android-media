@@ -38,7 +38,6 @@ object BuyerOrderDetailTrackerConstant {
         "on finished order confirmation"
     const val EVENT_ACTION_CLICK_SEE_ORDER_HISTORY_DETAIL = "click lihat detail"
     const val EVENT_ACTION_CLICK_SEE_ORDER_INVOICE = "click lihat invoice"
-    const val EVENT_ACTION_CLICK_POD_PREVIEW = "click lihat - bukti pengiriman"
     const val EVENT_ACTION_CLICK_COPY_ORDER_INVOICE = "click copy invoice number"
     const val EVENT_ACTION_CLICK_SHOP_NAME = "click shop name"
     const val EVENT_ACTION_CLICK_PRODUCT = "click product section"

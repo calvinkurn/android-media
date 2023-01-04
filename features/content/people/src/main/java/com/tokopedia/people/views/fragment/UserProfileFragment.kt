@@ -21,7 +21,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
-import com.tokopedia.content.common.types.BundleData.KEY_IS_OPEN_FROM
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
@@ -57,6 +56,7 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOAR
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
+import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
@@ -403,9 +403,6 @@ class UserProfileFragment @Inject constructor(
 
     fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
-        if (!isRefreshPost) return
-        viewModel.submitAction(UserProfileAction.LoadFeedPosts())
-        viewModel.submitAction(UserProfileAction.LoadPlayVideo())
     }
 
     private fun addLiveClickListener(appLink: String) {
@@ -1035,6 +1032,7 @@ class UserProfileFragment @Inject constructor(
         private const val KEY_TITLE = "title"
         private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
         private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
+        private const val KEY_IS_OPEN_FROM = "key_is_open_from"
         private const val VALUE_IS_OPEN_FROM_USER_PROFILE = "is_open_from_user_profile"
 
         private const val TAG = "UserProfileFragment"
