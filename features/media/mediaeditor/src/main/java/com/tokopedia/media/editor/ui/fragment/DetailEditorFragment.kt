@@ -1,6 +1,5 @@
 package com.tokopedia.media.editor.ui.fragment
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -163,7 +162,21 @@ class DetailEditorFragment @Inject constructor(
                     sourcePath = data.originalUrl
                 )?.path
 
-                finishPage()
+                if (data.addLogoValue != EditorAddLogoUiModel()){
+                    // crop current overlay, need to be a new func
+                    val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
+                    val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
+
+                    if (!isWidthSame || !isHeightSame) {
+                        updateAddLogoOverlay(Pair(it.width, it.height)){
+                            finishPage()
+                        }
+                    } else {
+                        finishPage()
+                    }
+                } else {
+                    finishPage()
+                }
             }
         } else {
             if (data.isToolAddLogo()) {
@@ -1075,6 +1088,25 @@ class DetailEditorFragment @Inject constructor(
             Toast.LENGTH_LONG
         ).show()
         activity?.finish()
+    }
+
+    private fun updateAddLogoOverlay(newSize: Pair<Int, Int>, onFinish:() -> Unit) {
+        loadImageWithEmptyTarget(requireContext(),
+            data.addLogoValue.logoUrl,
+            {},
+            MediaBitmapEmptyTarget(
+                onReady = { logoBitmap ->
+                    viewModel.saveImageCache(
+                        addLogoComponent.generateOverlayImage(
+                            logoBitmap,
+                            newSize
+                        ), sourcePath = "image.png"
+                    )?.let { fileResult ->
+                        data.addLogoValue.overlayLogoUrl = fileResult.path
+                        onFinish()
+                    }
+                }
+            ))
     }
 
     override fun getScreenName() = SCREEN_NAME

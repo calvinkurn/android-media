@@ -139,6 +139,24 @@ class AddLogoToolUiComponent constructor(
         }
     }
 
+    /**
+     * generate new overlay image if product image size is change
+     */
+    fun generateOverlayImage(bitmap: Bitmap, newSize: Pair<Int, Int>): Bitmap {
+        originalImageWidth = newSize.first
+        originalImageHeight = newSize.second
+
+        val resultBitmap =
+            Bitmap.createBitmap(newSize.first, newSize.second, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resultBitmap)
+        drawBitmap(
+            canvas,
+            getDrawLogo(roundedBitmap(bitmap, isCircular = true))
+        )
+
+        return resultBitmap
+    }
+
     private fun initShopAvatar() {
         loadImageWithEmptyTarget(context, shopAvatarUrl, {},
             MediaBitmapEmptyTarget(
@@ -248,7 +266,7 @@ class AddLogoToolUiComponent constructor(
     }
 
     private fun drawBitmap(canvas: Canvas, bitmap: Bitmap) {
-        canvas.drawBitmap(bitmap, LOGO_X_POS, LOGO_Y_POS, Paint())
+        canvas.drawBitmap(bitmap, LOGO_X_POS * originalImageWidth, LOGO_Y_POS * originalImageHeight, Paint())
     }
 
     private fun roundedBitmap(
@@ -305,8 +323,8 @@ class AddLogoToolUiComponent constructor(
     }
 
     companion object {
-        private const val LOGO_X_POS = 100f
-        private const val LOGO_Y_POS = 100f
+        private var LOGO_X_POS = 0.03f
+        private var LOGO_Y_POS = 0.03f
 
         private const val BOTTOM_SHEET_TITLE = "Tips upload logo"
         private const val BOTTOM_SHIT_ICON_SIZE = 17

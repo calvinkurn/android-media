@@ -6,6 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class EditorAddLogoUiModel(
     val imageRealSize: Pair<Int, Int> = Pair(0,0),
-    val overlayLogoUrl: String = "",
+    var overlayLogoUrl: String = "",
     val logoUrl: String = ""
 ): Parcelable
