@@ -10,7 +10,7 @@
             "places": [
               {
                 "name": "Stasiun MRT Sudirman",
-                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "icon": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png",
                 "geoLocation": {
                   "latitude": 0,
                   "longitude": 0
@@ -19,7 +19,7 @@
               },
               {
                 "name": "Lobo Italian Resto",
-                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "icon": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png",
                 "geoLocation": {
                   "latitude": 0,
                   "longitude": 0
@@ -28,7 +28,7 @@
               },
               {
                 "name": "ATM Bank Mandiri KCP",
-                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "icon": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png",
                 "geoLocation": {
                   "latitude": 0,
                   "longitude": 0
@@ -44,7 +44,7 @@
             "places": [
               {
                 "name": "Museum MACAN",
-                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "icon": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png",
                 "geoLocation": {
                   "latitude": 0,
                   "longitude": 0
@@ -53,7 +53,7 @@
               },
               {
                 "name": "Taman Impian Jaya Ancol",
-                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "icon": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png",
                 "geoLocation": {
                   "latitude": 0,
                   "longitude": 0
@@ -62,7 +62,7 @@
               },
               {
                 "name": "National Monument (MONAS)",
-                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "icon": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png",
                 "geoLocation": {
                   "latitude": 0,
                   "longitude": 0

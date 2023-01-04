@@ -35,6 +35,17 @@
     <string name="tokopedianow_20m_category_aisle_header">Kategori 20 menit tiba lainnya</string>
     <string name="tokopedianow_content_desc_image_empty_product">Image Empty Product</string>
     <string name="tokopedianow_find_item_in_tokopedia_now">Jelajahi NOW! 2 Jam Tiba</string>
+    <string name="tokopedianow_feedback_widget_title">Produk yang kamu cari belum ada?</string>
+    <string name="tokopedianow_feedback_widget_desc">Kirim saran biar produk yang kamu butuhkan tersedia di NOW!</string>
+    <string name="tokopedianow_feedback_widget_cta_text">Sarankan Produk</string>
+    <string name="tokopedianow_feedback_bottomsheet_desc">Produk apa yang kamu butuhkan?</string>
+    <string name="tokopedianow_feedback_bottomsheet_input_hint">Tulis nama brand produk, boleh\n lengkap dengan varian, ukuran\n dll.</string>
+    <string name="tokopedianow_feedback_bottomsheet_btn_text">Kirim</string>
+    <string name="tokopedianow_feedback_bottomsheet_title">Sarankan produk untuk NOW!</string>
+    <string name="tokopedianow_feedback_bottomsheet_input_message">Gunakan koma (,) jika produk lebih dari 1</string>
+    <string name="tokopedianow_add_feedback_success_text">Saran produk kamu berhasil dikirim. Terima kasih untuk sarannya!</string>
+    <string name="tokopedianow_add_feedback_failure_text">Maaf, saran gagal dikirim karena terjadi kendala. Coba kirim ulang, ya.</string>
+
 
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
     <string name="tokopedianow_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
@@ -148,9 +159,10 @@
     <string name="tokopedianow_20m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
     <string name="tokopedianow_20m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>
 
-    <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu belanja di Tokopedia NOW!, <b>dapat kupon cashback hingga %3$s.</b> <font color=\'%1$s\'><a href=\'%2$s\'>Selengkapnya</a></font>]]></string>
-    <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Kamu sudah dapat referral dari temanmu. Yuk, belanja sekarang, dapatkan <b>kupon cashback %1$s!</b>]]></string>
-    <string name="tokopedianow_home_referral_widget_button_text_sender">Bagikan ke Temanmu</string>
+    <string name ="tokopedianow_home_referral_widget_title">Mau cashback %1$s?</string>
+    <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu cobain belanja di NOW! <font color=\'%1$s\'>Selengkapnya</font>]]></string>
+    <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Yuk, <b>%1$s</b> untuk pakai kuponnya sebelum hangus!]]></string>
+    <string name="tokopedianow_home_referral_widget_button_text_sender">Ajak Belanja NOW!</string>
     <string name="tokopedianow_home_referral_widget_button_text_receiver">Cek Detail</string>
     <string name="tokopedianow_home_referral_toaster">Oops, referral sedang ada kendala. Tunggu sebentar dan coba lagi nanti, ya.</string>
     <string name="tokopedianow_home_referral_share_title">Bagi Link Referral Tokopedia NOW &amp;  Dapatkan Cashback 20rb</string>
@@ -244,4 +256,8 @@
     <string name="tokopedianow_recipe_apply_filter_button_text">Tampilkan</string>
     <string name="tokopedianow_refresh_recommendation">Cek rekomendasi baru? <![CDATA[<font color=#00AA5B><b>Tampilkan</b></font>]]></string>
     <string name="tokopedianow_real_time_recom_title">Dibeli bersama %s.</string>
+    <string name="error_already_referral">Oops, kamu sudah pernah dapat kupon Belanja NOW! dari temanmu.</string>
+    <string name="error_referral_on_limit">Yaah, kupon Belanja NOW! dari temanmu sudah mencapai batas maksimum.</string>
+    <string name="error_referral_click_their_own_link">Kupon Belanja NOW! hanya bisa dipakai sama temanmu yang pengguna baru.</string>
+    <string name="error_referrral_recurring_user">Yaah, kupon Belanja NOW! hanya berlaku khusus pengguna baru saja.</string>
 </resources>

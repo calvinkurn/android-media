@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -98,7 +98,7 @@ class FeedProductTagSharingHelper(
         val priceFmt: String,
     ) {
         companion object {
-            fun map(item: ProductPostTagViewModelNew) = Model(
+            fun map(item: ProductPostTagModelNew) = Model(
                 title = item.text,
                 imageUrl = item.imgUrl,
                 productName = item.product.name,

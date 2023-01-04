@@ -148,6 +148,7 @@ class PlayUiModelMapper @Inject constructor(
             isTokoNow = prevDetail.isTokoNow,
             isPinned = prevDetail.isPinned,
             isRilisanSpesial = prevDetail.isRilisanSpesial,
+            buttons = prevDetail.buttons,
         )
     }
 }

@@ -50,6 +50,11 @@
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.WhiteUnify"/>
+        <activity android:name="com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:theme="@style/Theme.WhiteUnify"/>
     </application>
 
 </manifest>

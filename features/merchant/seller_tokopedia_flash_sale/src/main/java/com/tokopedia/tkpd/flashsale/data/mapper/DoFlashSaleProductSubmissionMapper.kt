@@ -10,7 +10,9 @@ class DoFlashSaleProductSubmissionMapper @Inject constructor() {
         return ProductSubmissionResult(
             response.doFlashSaleProductSubmission.responseHeader.success,
             response.doFlashSaleProductSubmission.responseHeader.errorMessage.firstOrNull().orEmpty(),
-            totalSubmittedProduct
+            totalSubmittedProduct,
+            response.doFlashSaleProductSubmission.sseKey,
+            response.doFlashSaleProductSubmission.useSse
         )
     }
 }

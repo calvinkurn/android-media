@@ -156,6 +156,8 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
             .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, userSession.isLoggedIn)
+            .setCustomProperty(KEY_CHANNEL, channelInfo.title)
             .setUserId(userId)
             .build()
             .send()

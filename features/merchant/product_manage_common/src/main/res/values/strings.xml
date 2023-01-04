@@ -54,5 +54,9 @@
     <string name="product_manage_zero_stock_info_in_edit_stock_variant"><![CDATA[Produk dengan stok <b>0</b> belum bisa muncul ke pembeli.]]></string>
     <string name="product_manage_has_stock_alert_info_in_edit_stock_variant">Fitur Pengingat Stok untuk produk ini aktif.</string>
     <string name="product_manage_stock_alert_active_info_in_edit_stock_variant">Stok produk di bawah batas min. pengingat stok.</string>
+    <string name="product_manage_stock_description_information_stock_available">"Produk ini dapat tanda “Stok Tersedia” yang bisa dilihat pembeli di halaman produk. "</string>
+    <string name="product_manage_stock_available">"Tanda “Stok Tersedia” "</string>
 
+    <string name="product_manage_stock_available_title" tools:ignore="UnusedResources">Kini, ada tanda “Stok Tersedia” di produkmu, lho!</string>
+    <string name="product_manage_stock_available_description" tools:ignore="UnusedResources"><![CDATA[Tanda ini akan dilihat pembeli di halaman detail produkmu. Yuk, atur stok produkmu! <a href="https://seller.tokopedia.com/edu/reward-tanda-stok-tersedia/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
 </resources>

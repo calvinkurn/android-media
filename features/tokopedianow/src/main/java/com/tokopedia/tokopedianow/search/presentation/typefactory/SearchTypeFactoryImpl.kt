@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
@@ -45,6 +46,7 @@ class SearchTypeFactoryImpl(
     recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
     private val recomWidgetBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?,
     private val broadMatchListener: BroadMatchListener,
+    feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ): BaseSearchCategoryTypeFactoryImpl(
     tokoNowEmptyStateOocListener,
     chooseAddressListener,
@@ -57,6 +59,7 @@ class SearchTypeFactoryImpl(
     tokoNowEmptyStateNoResultListener,
     recommendationCarouselListener,
     recomWidgetBindPageNameListener,
+    feedbackWidgetListener
 ), SearchTypeFactory {
 
     override fun type(suggestionDataView: SuggestionDataView): Int {

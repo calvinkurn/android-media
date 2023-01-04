@@ -7,5 +7,6 @@ data class BundleProductUiModel(
         var productName: String = "",
         var productImageUrl: String = "",
         var productAppLink: String = "",
-        var hasVariant: Boolean = false
+        var hasVariant: Boolean = false,
+        var productCount: Int = 0
 ): ImpressHolder()

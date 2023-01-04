@@ -81,7 +81,7 @@ class PlayActivityRobot(
             withId(R.id.rv_product_featured)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<ProductCarouselViewHolder.PinnedProduct>(
-                0, clickOnViewChild(R.id.btn_buy)
+                0, clickOnViewChild(R.id.btn_second)
             )
         )
     }
@@ -91,7 +91,7 @@ class PlayActivityRobot(
             withId(R.id.rv_product_featured)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<ProductCarouselViewHolder.PinnedProduct>(
-                0, clickOnViewChild(R.id.btn_atc)
+                0, clickOnViewChild(R.id.btn_first)
             )
         )
     }

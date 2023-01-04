@@ -40,8 +40,6 @@ interface ChatbotContract {
 
         fun openCsat(csatResponse: WebSocketCsatResponse)
 
-        fun isBackAllowed(isBackAllowed: Boolean)
-
         fun onReceiveChatSepratorEvent(chatSepratorUiModel: ChatSepratorUiModel, quickReplyList: List<QuickReplyUiModel>)
 
         fun showErrorToast(it: Throwable)
@@ -79,6 +77,10 @@ interface ChatbotContract {
         fun videoUploadEligibilityHandler(state : Boolean)
 
         fun onVideoUploadChangeView(uiModel : VideoUploadUiModel)
+
+        fun setBigReplyBoxTitle(text: String, placeholder: String)
+
+        fun hideReplyBox()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

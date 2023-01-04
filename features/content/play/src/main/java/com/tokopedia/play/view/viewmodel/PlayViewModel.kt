@@ -676,7 +676,7 @@ class PlayViewModel @AssistedInject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowVariantSheet(estimatedProductSheetHeight: Int, product: PlayProductUiModel.Product, action: ProductAction) {
+    fun onShowVariantSheet(estimatedProductSheetHeight: Int) {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
         insetsMap[BottomInsetsType.VariantSheet] =
@@ -939,6 +939,11 @@ class PlayViewModel @AssistedInject constructor(
                 action = ProductAction.AddToCart,
                 isProductFeatured = action.isProductFeatured,
             )
+            is PlayViewerNewAction.OCCProduct -> handleBuyProduct(
+                product = action.product,
+                action = ProductAction.OCC,
+                isProductFeatured = action.isProductFeatured,
+            )
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
@@ -976,7 +981,14 @@ class PlayViewModel @AssistedInject constructor(
                 ProductAction.AddToCart,
                 isProductFeatured = false
             )
+            is OCCProductAction -> handleBuyProduct(
+                action.sectionInfo,
+                action.product,
+                ProductAction.OCC,
+                isProductFeatured = false
+            )
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
+            is OCCProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.OCC)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
@@ -2360,12 +2372,12 @@ class PlayViewModel @AssistedInject constructor(
         if (product.isVariantAvailable) openVariantDetail(product, sectionInfo, isProductFeatured)
         else {
             needLogin {
-                addProductToCart(product) { cartId ->
+                addProductToCart(product, action) { cartId ->
                     _uiEvent.emit(
-                        if (action == ProductAction.Buy) {
-                            BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
-                        } else {
-                            AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        when (action){
+                            ProductAction.Buy -> BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                            ProductAction.OCC -> OCCSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                            else -> AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
                         }
                     )
                 }
@@ -2382,24 +2394,32 @@ class PlayViewModel @AssistedInject constructor(
         if (selectedVariant !is NetworkResult.Success ||
             selectedVariant.data.variantDetail.id != productId) return@needLogin
 
-        addProductToCart(selectedVariant.data.variantDetail) { cartId ->
+        addProductToCart(selectedVariant.data.variantDetail, action) { cartId ->
             _uiEvent.emit(
-                if (action == ProductAction.Buy) {
-                    BuySuccessEvent(
+                when (action) {
+                    ProductAction.Buy -> BuySuccessEvent(
                         selectedVariant.data.variantDetail,
                         true,
                         cartId,
                         selectedVariant.data.sectionInfo,
                         selectedVariant.data.isFeatured,
                     )
+                    ProductAction.OCC -> OCCSuccessEvent(
+                        selectedVariant.data.variantDetail,
+                        true,
+                        cartId,
+                        selectedVariant.data.sectionInfo,
+                        selectedVariant.data.isFeatured,
+                    )
+                    else ->
+                        AtcSuccessEvent(
+                            selectedVariant.data.variantDetail,
+                            true,
+                            cartId,
+                            selectedVariant.data.sectionInfo,
+                            selectedVariant.data.isFeatured,
+                        )
                 }
-                else AtcSuccessEvent(
-                    selectedVariant.data.variantDetail,
-                    true,
-                    cartId,
-                    selectedVariant.data.sectionInfo,
-                    selectedVariant.data.isFeatured,
-                )
             )
         }
     }
@@ -2430,20 +2450,34 @@ class PlayViewModel @AssistedInject constructor(
      */
     private fun addProductToCart(
         product: PlayProductUiModel.Product,
+        action: ProductAction,
         onSuccess: suspend (String) -> Unit,
     ) {
         _loadingBuy.value = true
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val cartId = repo.addProductToCart(
-                id = product.id,
-                name = product.title,
-                shopId = product.shopId,
-                minQty = product.minQty,
-                price = when (product.price) {
-                    is OriginalPrice -> product.price.priceNumber
-                    is DiscountedPrice -> product.price.discountedPriceNumber
-                },
-            )
+            val cartId = if(action == ProductAction.OCC) {
+                repo.addProductToCartOcc(
+                    id = product.id,
+                    name = product.title,
+                    shopId = product.shopId,
+                    minQty = product.minQty,
+                    price = when (product.price) {
+                        is OriginalPrice -> product.price.priceNumber
+                        is DiscountedPrice -> product.price.discountedPriceNumber
+                    },
+                )
+            } else {
+                repo.addProductToCart(
+                    id = product.id,
+                    name = product.title,
+                    shopId = product.shopId,
+                    minQty = product.minQty,
+                    price = when (product.price) {
+                        is OriginalPrice -> product.price.priceNumber
+                        is DiscountedPrice -> product.price.discountedPriceNumber
+                    },
+                )
+            }
             _loadingBuy.value = false
             onSuccess(cartId)
         }) {

@@ -18,7 +18,7 @@
       {
         "bottomsheet": {
           "buttonCopy": "Ganti Alamat, yuk",
-          "iconURL": "https://ecs7.tokopedia.net/img/pdp/info/icon/pdp_illustration_truck_1@3x.png",
+          "iconURL": "https://images.tokopedia.net/img/pdp/info/icon/pdp_illustration_truck_1@3x.png",
           "subtitle": "Tidak ada kurir yang mendukung pengiriman barang ini ke alamat kamu.",
           "title": "Jarak pengiriman terlalu jauh"
         },
@@ -47,7 +47,7 @@
       {
         "bottomsheet": {
           "buttonCopy": "Ganti Alamat, yuk",
-          "iconURL": "https://ecs7.tokopedia.net/img/pdp/info/icon/pdp_illustration_truck_1@3x.png",
+          "iconURL": "https://images.tokopedia.net/img/pdp/info/icon/pdp_illustration_truck_1@3x.png",
           "subtitle": "Tidak ada kurir yang mendukung pengiriman barang ini ke alamat kamu.",
           "title": "Jarak pengiriman terlalu jauh"
         },
@@ -1834,7 +1834,7 @@
       "defaultChild": "2147818570",
       "errorCode": 0,
       "parentID": "2147818569",
-      "sizeChart": "https://ecs7.tokopedia.net/img/VqbcmM/2021/5/27/007b0da0-ca3e-43f1-ae59-6ec86c3ee226.jpg",
+      "sizeChart": "https://images.tokopedia.net/img/VqbcmM/2021/5/27/007b0da0-ca3e-43f1-ae59-6ec86c3ee226.jpg",
       "variants": [
         {
           "identifier": "colour",

@@ -77,6 +77,7 @@ import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
+import com.tokopedia.tokopedianow.home.domain.model.ReferralEvaluateJoinResponse
 import com.tokopedia.tokopedianow.home.domain.model.Shop
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
@@ -3539,6 +3540,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val isSender = true
         val warehouseId = "15021"
         val serviceType = "2h"
+        val titleSection = "Tokonow Referral"
 
         val localCacheModel = LocalCacheModel(
             warehouse_id = warehouseId,
@@ -3586,7 +3588,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             userStatus = userStatus,
             maxReward = maxReward,
             isSender = isSender,
-            warehouseId = warehouseId
+            warehouseId = warehouseId,
+            titleSection = titleSection
         )
 
         onGetHomeLayoutData_thenReturn(layoutResponse, localCacheModel)
@@ -3602,7 +3605,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = Success(HomeLayoutListUiModel(
             items = layoutList,
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.UPDATE,
         ))
 
         verifyGetReferralSenderHomeUseCaseCalled(slug)
@@ -4122,6 +4125,37 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeLayoutList
             .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when get evaluate join return success response`() {
+        // Given
+        val response = ReferralEvaluateJoinResponse(
+            ReferralEvaluateJoinResponse.GamiReferralEvaluateJoinResponse()
+        )
+        val expectedResult = Success(response.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel())
+
+        // When
+        onGetReferralEvalute_thenReturn(response)
+        viewModel.getReceiverHomeDialog(anyString())
+
+        // Then
+        viewModel.referralEvaluate.verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when get evaluate join return error response`() {
+        // Given
+        val error = Exception()
+        val expectedError = Fail(error)
+
+        // When
+        onGetReferralEvalute_thenReturn(error)
+        viewModel.getReceiverHomeDialog(anyString())
+
+        // Then
+        viewModel.referralEvaluate.verifyErrorEquals(expectedError)
+
     }
 }
 

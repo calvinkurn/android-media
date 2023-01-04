@@ -266,7 +266,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
             }
             is SellerTncBottomSheet -> {
-                childFragment.initViews(parentViewModel.tncList)
+                childFragment.setData(parentViewModel.tncList)
                 childFragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() { closeBottomSheet() }
                 })
