@@ -166,8 +166,8 @@ class FeedAnalyticTracker
         const val FORMAT_SIX_PARAM = "%s - %s - %s - %s - %s - %s"
     }
 
-    fun getEvent(isCampaign: Boolean, authorType: String = "") =
-        if (authorType == UGC_AUTHOR_TYPE || authorType == FollowCta.AUTHOR_UGC) CLICK_CONTENT else if (isCampaign) CLICK_PG else CLICK_FEED
+    fun getEvent(isCampaign: Boolean, authorType: String = "", isAsgcRecomm: Boolean = false) =
+        if (authorType == UGC_AUTHOR_TYPE || authorType == FollowCta.AUTHOR_UGC || isAsgcRecomm) CLICK_CONTENT else if (isCampaign) CLICK_PG else CLICK_FEED
 
     object Screen {
         const val FEED = "/feed"
@@ -271,6 +271,8 @@ class FeedAnalyticTracker
         val isFollowed = feedTrackerData.isFollowed
         val shopId = feedTrackerData.shopId
         val mediaType = feedTrackerData.mediaType
+        val isAsgcRecomm = feedTrackerData.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !feedTrackerData.isFollowed
+
         val actionField = if (isCaption) {
             "shop name below"
         } else {
@@ -297,7 +299,7 @@ class FeedAnalyticTracker
                 )
             }
         var map = mapOf(
-            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty()),
+            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty(), isAsgcRecomm = isAsgcRecomm),
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
@@ -325,6 +327,7 @@ class FeedAnalyticTracker
         val isFollowed = feedTrackerData.isFollowed
         val shopId = feedTrackerData.shopId
         val mediaType = feedTrackerData.mediaType
+        val isAsgcRecomm = feedTrackerData.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !feedTrackerData.isFollowed
         val finalLabel =
             if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) {
                 KEY_EVENT_LABEL to String.format(
@@ -345,7 +348,7 @@ class FeedAnalyticTracker
                 )
             }
         var map = mapOf(
-            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty()),
+            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty(), isAsgcRecomm = isAsgcRecomm),
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
@@ -428,6 +431,8 @@ class FeedAnalyticTracker
         val mediaType = feedTrackerData.mediaType
         val isFollowed = feedTrackerData.isFollowed
         val type = feedTrackerData.postType
+        val isAsgcRecomm = feedTrackerData.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !feedTrackerData.isFollowed
+
         val asgcCampaignTrackerId =
             if (feedTrackerData.campaignStatus.isNotEmpty()) {
                 if (isFollowed) "17983" else "13432"
@@ -461,7 +466,7 @@ class FeedAnalyticTracker
             }
 
         var map = mapOf(
-            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty()),
+            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty(), isAsgcRecomm = isAsgcRecomm),
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
@@ -1015,6 +1020,7 @@ class FeedAnalyticTracker
         val isFollowed = feedTrackerData.isFollowed
         val shopId = feedTrackerData.shopId
         val campaignStatus = feedTrackerData.campaignStatus
+        val isAsgcRecomm = feedTrackerData.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !feedTrackerData.isFollowed
 
         val finallabel =
             if (campaignStatus.isNotEmpty() && isFollowed) {
@@ -1036,7 +1042,7 @@ class FeedAnalyticTracker
                 )
             }
         var map = mapOf(
-            KEY_EVENT to getEvent(campaignStatus.isNotEmpty()),
+            KEY_EVENT to getEvent(campaignStatus.isNotEmpty(), isAsgcRecomm = isAsgcRecomm),
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
@@ -2078,7 +2084,8 @@ class FeedAnalyticTracker
         campaignStatus: String = "",
         authorType: String
     ) {
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU, campaignStatus, authorType)
+        val isAsgcRecomm = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU, campaignStatus, authorType, isAsgcRecomm)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -2618,10 +2625,11 @@ class FeedAnalyticTracker
     private fun getCommonMap(
         category: String = CATEGORY_FEED_TIMELINE,
         campaignStatus: String = "",
-        authorType: String = ""
+        authorType: String = "",
+        isAsgcRecomm: Boolean = false
     ): Map<String, String> {
         return mapOf(
-            KEY_EVENT to getEvent(campaignStatus.isNotEmpty(), authorType),
+            KEY_EVENT to getEvent(campaignStatus.isNotEmpty(), authorType, isAsgcRecomm),
             KEY_EVENT_CATEGORY to category,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
