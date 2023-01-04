@@ -146,7 +146,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 broadcastBlastId = item.blastId,
                 source = item.source,
                 broadcastCtaUrl = pojoAttribute.broadcastCtaUrl,
-                broadcastCtaText = pojoAttribute.broadcastCtaText
+                broadcastCtaText = pojoAttribute.broadcastCtaText,
+                broadcastCtaLabel = pojoAttribute.broadcastCtaLabel
         )
     }
 

@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.logisticseller.R
-import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleDayBinding
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
+import com.tokopedia.logisticseller.databinding.BottomsheetRescheduleDayBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 
-class RescheduleDayBottomSheet(
-    private val dayOptions: List<RescheduleDayOptionModel>,
-    private val listener: ChooseDayListener
-) : BottomSheetUnify() {
+class RescheduleDayBottomSheet : BottomSheetUnify() {
+
+    private var dayOptions: List<RescheduleDayOptionModel> = listOf()
+    private var listener: ChooseDayListener? = null
 
     private var binding by autoCleared<BottomsheetRescheduleDayBinding>()
 
@@ -31,6 +31,14 @@ class RescheduleDayBottomSheet(
 
     interface ChooseDayListener {
         fun onDayChosen(dayChosen: RescheduleDayOptionModel)
+    }
+
+    fun setDayOptions(data: List<RescheduleDayOptionModel>) {
+        this.dayOptions = data
+    }
+
+    fun setListener(listener: ChooseDayListener) {
+        this.listener = listener
     }
 
     override fun onCreateView(
@@ -62,7 +70,7 @@ class RescheduleDayBottomSheet(
             setData(listWidgetData)
             onLoadFinish {
                 setOnItemClickListener { adapterView, view, index, l ->
-                    listener.onDayChosen(dayOptions[index])
+                    listener?.onDayChosen(dayOptions[index])
                     dismiss()
                 }
             }
@@ -73,5 +81,10 @@ class RescheduleDayBottomSheet(
         manager?.run {
             super.show(this, "")
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
     }
 }
