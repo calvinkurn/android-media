@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.tokopedia.config.GlobalConfig
 import java.util.concurrent.TimeUnit
 
 object BubblesUtils {
@@ -33,15 +32,7 @@ object BubblesUtils {
     }
 
     private fun getBitmapWhenError(context: Context, imageWidth: Int, imageHeight: Int): Bitmap? {
-        return getLauncherBitmap(context) ?: getAlternateBitmap(context) ?: getEmptyBitmap(imageWidth, imageHeight)
-    }
-
-    private fun getLauncherBitmap(context: Context): Bitmap? {
-        return try {
-            BitmapFactory.decodeResource(context.resources, GlobalConfig.LAUNCHER_ICON_RES_ID)
-        } catch (ex: Exception) {
-            null
-        }
+        return getAlternateBitmap(context) ?: getEmptyBitmap(imageWidth, imageHeight)
     }
 
     private fun getAlternateBitmap(context: Context): Bitmap? {
