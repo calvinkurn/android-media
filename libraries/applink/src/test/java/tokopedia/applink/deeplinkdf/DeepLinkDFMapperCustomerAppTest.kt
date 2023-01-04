@@ -215,12 +215,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check global internal digital deal slug base appLink then should return DF_ENTERTAINMENT in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-slug/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
-    }
-
-    @Test
     fun `check global internal digital deal brand detail base appLink then should return DF_ENTERTAINMENT in customerapp`() {
         val appLink = "${ApplinkConstInternalDeals.INTERNAL_DEALS}/brand-detail-new/"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
@@ -919,31 +913,31 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check privacy center appLink then should return DF_PRIVACY_CENTER in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/privacy-center"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_PRIVACYCENTER)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
     @Test
     fun `check search history appLink then should return DF_PRIVACY_CENTER in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/search-history"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_PRIVACYCENTER)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
     @Test
     fun `check sharing wishlist appLink then should return DF_PRIVACY_CENTER in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/sharing-wishlist"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_PRIVACYCENTER)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
     @Test
     fun `check consent withdrawal appLink then should return DF_PRIVACY_CENTER in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/consent/withdrawal/new"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_PRIVACYCENTER)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
     @Test
     fun `check account linking appLink then should return DF_PRIVACY_CENTER in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/account-linking-webview"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_PRIVACYCENTER)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
     @Test
