@@ -132,7 +132,8 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         val message = "Unsafe vector usage in $attrName. " +
             "Using app:srcCompat is the most foolproof method of integrating vector drawables, app:srcCompat also supports backward-compatibility versions of APIs. " +
             "Referencing vector drawables outside of app:srcCompat will fail prior to Lollipop. " +
-            "\nFor more info : https://android-developers.googleblog.com/2016/02/android-support-library-232.html"
+            "\nFor more info: https://developer.android.com/develop/ui/views/graphics/vector-drawable-resources."
+
         val lintFix = LintFix.create()
             .replace()
             .text("android:src")
