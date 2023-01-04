@@ -97,18 +97,7 @@ class UserConsentWidget : FrameLayout,
 
         viewBinding?.apply {
             buttonAction.setOnClickListener {
-                submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
-                submissionParam.version = consentCollectionParam?.version.orEmpty()
-                collection?.purposes?.forEach {
-                    submissionParam.purposes.add(
-                        Purpose(
-                            purposeID = it.id,
-                            transactionType = CONSENT_OPT_IN,
-                            version = it.version
-                        )
-                    )
-                }
-                viewModel?.submitConsent(submissionParam)
+                submitConsent()
 
                 collection?.purposes?.let {
                     userConsentAnalytics.trackOnActionButtonClicked(it)
@@ -137,6 +126,24 @@ class UserConsentWidget : FrameLayout,
                 recyclerPurposes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
         }
+    }
+
+    /*
+    * if you hide the button, you can call this function when user submit using your own button submit
+    * */
+    fun submitConsent() {
+        submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
+        submissionParam.version = consentCollectionParam?.version.orEmpty()
+        collection?.purposes?.forEach {
+            submissionParam.purposes.add(
+                Purpose(
+                    purposeID = it.id,
+                    transactionType = CONSENT_OPT_IN,
+                    version = it.version
+                )
+            )
+        }
+        viewModel?.submitConsent(submissionParam)
     }
 
     private fun initInjector() {
