@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
@@ -158,11 +159,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
         return RemoteConfigInstance
             .getInstance()
             .abTestPlatform
-            .getString(ROLLENCE_PRIVACY_CENTER)
+            .getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
             .isNotEmpty()
-    }
-
-    companion object {
-        private const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_2"
     }
 }
