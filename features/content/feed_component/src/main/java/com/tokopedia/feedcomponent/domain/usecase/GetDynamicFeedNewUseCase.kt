@@ -94,6 +94,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
@@ -211,6 +212,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
@@ -386,6 +388,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         like {
           label

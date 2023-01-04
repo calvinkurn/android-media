@@ -1146,8 +1146,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[DISCOVERY_NAME] = pageIdentifier
         map[DISCOVERY_SLUG] = pageIdentifier
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[BUSINESS_UNIT] = DISCOVERY
-        map[PAGE_SOURCE] = sourceIdentifier
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[PAGE_DESTINATION] = sourceIdentifier
         map[CATEGORY] = EMPTY_STRING
         map[CATEGORY_ID] = EMPTY_STRING
         map[SUB_CATEGORY] = EMPTY_STRING
@@ -2447,5 +2447,83 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[USER_ID] = userSession.userId
 
         trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackContentCardClick(
+        componentsItems: ComponentsItem,
+        userID: String?
+    ) {
+        val banner = componentsItems.data?.first()
+        val componentName = componentsItems.name ?: EMPTY_STRING
+        val map = createGeneralEvent(
+            eventName = EVENT_PROMO_CLICK,
+            eventAction = CLICK_DYNAMIC_BANNER,
+            eventLabel = "${componentName} - ${banner?.creativeName.toString()} - ${banner?.landingPage?.appLink}",
+            shouldSendSourceAsDestination = true
+        )
+        val list = ArrayList<Map<String, Any>>()
+        banner.let {
+            list.add(mapOf(
+                KEY_ID to "${it?.product?.productId}_0",
+                KEY_NAME to it?.gtmItemName?.replace("#POSITION",(componentsItems.parentComponentPosition + 1).toString()).toString(),
+                KEY_CREATIVE to it?.creativeName.toString(),
+                KEY_POSITION to componentsItems.position + 1
+            ))
+        }
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_CLICK to mapOf(
+                KEY_PROMOTIONS to list))
+        map[KEY_ATTRIBUTION] = banner?.attribution ?: EMPTY_STRING
+        map[KEY_AFFINITY_LABEL] = banner?.name ?: EMPTY_STRING
+        map[KEY_CATEGORY_ID] = banner?.category ?: EMPTY_STRING
+        map[KEY_SHOP_ID] = banner?.shopId ?: EMPTY_STRING
+        map[KEY_CAMPAIGN_CODE] = "${if (banner?.campaignCode.isNullOrEmpty()) campaignCode else banner?.campaignCode}"
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[TRACKER_ID] = "2705"
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[USER_ID] = userID ?: EMPTY_STRING
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    override fun trackContentCardImpression(
+        componentsItems: ComponentsItem,
+        userID: String?
+    ) {
+        val banners = componentsItems.data
+        if (banners?.isNotEmpty() == true) {
+            banners.forEachIndexed { index, banner ->
+                val map = createGeneralEvent(
+                    eventName = EVENT_PROMO_VIEW,
+                    eventAction = IMPRESSION_DYNAMIC_BANNER,
+                    shouldSendSourceAsDestination = true
+                )
+                map[TRACKER_ID] = "2704"
+                map[PAGE_TYPE] = pageType
+                map[PAGE_PATH] = removedDashPageIdentifier
+                val list = ArrayList<Map<String, Any>>()
+                val hashMap = HashMap<String, Any>()
+                banner.let {
+                    val bannerID = "${it.product?.productId}"
+                    hashMap[KEY_ID] = "${bannerID}_0"
+                    hashMap[KEY_NAME] = it.gtmItemName?.replace("#POSITION",(componentsItems.parentComponentPosition + 1).toString()).toString()
+                    hashMap[KEY_CREATIVE] = it.creativeName ?: EMPTY_STRING
+                    hashMap[KEY_POSITION] = componentsItems.position + 1
+                    list.add(hashMap)
+                    val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                        EVENT_PROMO_VIEW to mapOf(
+                            KEY_PROMOTIONS to list
+                        )
+                    )
+                    map[KEY_E_COMMERCE] = eCommerce
+                    map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+                    map[BUSINESS_UNIT] = HOME_BROWSE
+                    map[USER_ID] = userID ?: EMPTY_STRING
+                    trackingQueue.putEETracking(map as HashMap<String, Any>)
+                }
+            }
+        }
     }
 }
