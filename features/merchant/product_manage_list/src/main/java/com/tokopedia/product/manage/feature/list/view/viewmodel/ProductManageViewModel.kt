@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
+import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
@@ -38,6 +38,7 @@ import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ShopStatusUIModel.Companion.mapperShopStatusResponse
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
@@ -48,7 +49,6 @@ import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProduc
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -92,6 +92,7 @@ class ProductManageViewModel @Inject constructor(
     private val getUploadStatusUseCase: GetUploadStatusUseCase,
     private val clearUploadStatusUseCase: ClearUploadStatusUseCase,
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
+    private val getStatusShop: GetStatusShopUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val remoteConfig: FirebaseRemoteConfigImpl,
     private val dispatchers: CoroutineDispatchers
@@ -155,6 +156,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _topAdsInfo
     val uploadStatus: MutableLiveData<UploadStatusModel>
         get() = _uploadStatus
+    val shopStatus: MutableLiveData<StatusInfo>
+        get() = _shopStatus
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _showTicker = MutableLiveData<Boolean>()
@@ -182,6 +185,7 @@ class ProductManageViewModel @Inject constructor(
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
     private val _uploadStatus = MutableLiveData<UploadStatusModel>()
+    private val _shopStatus = MutableLiveData<StatusInfo>()
 
     private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
@@ -331,13 +335,14 @@ class ProductManageViewModel @Inject constructor(
                         null
                     }
                 }
+
                 getProductList.await().productList to maxStockDeffered.await()
+
             }
             _refreshList.value = isRefresh
 
             val (productListResponse, maxStockResponse) = productResponse
             val maxStock = maxStockResponse?.getMaxStockFromResponse()
-
             totalProductCount = productListResponse?.meta?.totalHits.orZero()
             showProductList(productListResponse?.data, maxStock)
             showTicker()
@@ -374,7 +379,11 @@ class ProductManageViewModel @Inject constructor(
                     responseDeferred.await().getProductV3 to maxStockDeferred.await()
                         ?.getMaxStockFromResponse()
 
-                ProductManageVariantMapper.mapToVariantsResult(variant, getAccess(), maxStock)
+                ProductManageVariantMapper.mapToVariantsResult(
+                    variant,
+                    getAccess(),
+                    maxStock
+                )
             }
 
             if (result.variants.isNotEmpty()) {
@@ -388,12 +397,14 @@ class ProductManageViewModel @Inject constructor(
         })
     }
 
-    fun getTickerData() {
+    fun getTickerData(enableStockAvailable: Boolean= true) {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        val isShowTickerNotifyMe =
-            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TICKER_NOTIFY_ME, true)
         _tickerData.value =
-            tickerStaticDataProvider.getTickers(isMultiLocationShop, isShowTickerNotifyMe)
+            tickerStaticDataProvider.getTickers(
+                isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty(),
+                enableStockAvailable
+            )
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -427,16 +438,32 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val currentAccess =
                 withContext(dispatchers.io) {
-                    if (userSessionInterface.isShopOwner) {
-                        ProductManageAccessMapper.mapProductManageOwnerAccess()
-                    } else {
-                        val shopId = userSessionInterface.shopId
-                        val response = getProductManageAccessUseCase.execute(shopId)
-                        ProductManageAccessMapper.mapToProductManageAccess(response)
+                    val shopId = userSessionInterface.shopId
+
+                    val productAccess = async {
+                        if (userSessionInterface.isShopOwner) {
+                            ProductManageAccessMapper.mapProductManageOwnerAccess()
+                        } else {
+                            val response = getProductManageAccessUseCase.execute(shopId)
+                            ProductManageAccessMapper.mapToProductManageAccess(response)
+                        }
                     }
+
+                    val shopStatusResponse = async {
+                        try {
+                            getStatusShop.params =
+                                GetStatusShopUseCase.createRequestParams(shopId.toIntSafely())
+                            getStatusShop.executeOnBackground()
+                        } catch (ex: Exception) {
+                            StatusInfo(String.EMPTY, String.EMPTY, String.EMPTY, String.EMPTY)
+                        }
+                    }
+                    productAccess.await() to shopStatusResponse.await()
                 }
-            access = currentAccess
-            _productManageAccess.value = Success(currentAccess)
+            val (productAccess, shopStatus) = currentAccess
+            access = productAccess
+            _shopStatus.value = shopStatus
+            _productManageAccess.value = Success(productAccess)
         }) {
             _productManageAccess.value = Fail(it)
         }
@@ -883,9 +910,19 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    private fun showProductList(products: List<Product>?, maxStock: Int?) {
+    private fun showProductList(
+        products: List<Product>?,
+        maxStock: Int?
+    ) {
         val isMultiSelectActive = _toggleMultiSelect.value == true
-        val productList = mapToUiModels(products, getAccess(), isMultiSelectActive, maxStock)
+        val productList =
+            mapToUiModels(
+                products,
+                getAccess(),
+                isMultiSelectActive,
+                maxStock,
+                _shopStatus.value?.isOnModerationMode().orFalse()
+            )
         _productListResult.value = Success(productList)
     }
 

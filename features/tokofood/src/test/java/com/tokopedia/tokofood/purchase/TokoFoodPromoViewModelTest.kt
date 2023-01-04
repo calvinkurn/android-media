@@ -39,10 +39,10 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
             )
 
             coEvery {
-                promoListTokoFoodUseCase.get().execute(SOURCE)
+                promoListTokoFoodUseCase.get().execute(SOURCE, "")
             } returns response
 
-            viewModel.loadData()
+            viewModel.loadData(SOURCE, "")
 
             val expectedUiEventState = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE
             val expectedFragmentUiModel = TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(response.data)
@@ -71,10 +71,10 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
             )
 
             coEvery {
-                promoListTokoFoodUseCase.get().execute(SOURCE)
+                promoListTokoFoodUseCase.get().execute(SOURCE, "")
             } returns response
 
-            viewModel.loadData()
+            viewModel.loadData(SOURCE, "")
 
             val expectedUiEventState = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE
             val expectedFragmentUiModel = TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(response.data)
@@ -93,10 +93,10 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
             )
 
             coEvery {
-                promoListTokoFoodUseCase.get().execute(SOURCE)
+                promoListTokoFoodUseCase.get().execute(SOURCE, "")
             } returns response
 
-            viewModel.loadData()
+            viewModel.loadData(SOURCE, "")
 
             val expectedUiEventState = UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE
             assertEquals(expectedUiEventState, viewModel.uiEvent.value?.state)
@@ -116,10 +116,10 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
             )
 
             coEvery {
-                promoListTokoFoodUseCase.get().execute(SOURCE)
+                promoListTokoFoodUseCase.get().execute(SOURCE, "")
             } returns response
 
-            viewModel.loadData()
+            viewModel.loadData(SOURCE, "")
 
             val expectedUiEventState = UiEvent.EVENT_ERROR_PAGE_PROMO_PAGE
             assertEquals(expectedUiEventState, viewModel.uiEvent.value?.state)
@@ -135,10 +135,10 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
             )
 
             coEvery {
-                promoListTokoFoodUseCase.get().execute(SOURCE)
+                promoListTokoFoodUseCase.get().execute(SOURCE, "")
             } returns response
 
-            viewModel.loadData()
+            viewModel.loadData(SOURCE, "")
 
             val expectedUiEventState = UiEvent.EVENT_NO_COUPON
             assertEquals(expectedUiEventState, viewModel.uiEvent.value?.state)
@@ -149,10 +149,10 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
     fun `when loadData failed, should set ui event state to failed load`() {
         runBlocking {
             coEvery {
-                promoListTokoFoodUseCase.get().execute(SOURCE)
+                promoListTokoFoodUseCase.get().execute(SOURCE, "")
             } throws MessageErrorException("")
 
-            viewModel.loadData()
+            viewModel.loadData(SOURCE, "")
 
             val expectedUiEventState = UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE
             assertEquals(expectedUiEventState, viewModel.uiEvent.value?.state)

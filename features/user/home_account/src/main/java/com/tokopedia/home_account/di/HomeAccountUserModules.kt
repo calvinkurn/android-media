@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.home_account.PermissionChecker
+import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
@@ -101,5 +102,11 @@ class HomeAccountUserModules(val context: Context) {
     @ActivityScope
     fun provideTokopediaPlusAnalytics(): TokopediaPlusAnalytics {
         return TokopediaPlusAnalytics()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideAddVerifyPhoneAnalytics(): AddVerifyPhoneAnalytics {
+        return AddVerifyPhoneAnalytics()
     }
 }

@@ -63,6 +63,10 @@ class StickyHeadRecyclerView : ConstraintLayout {
         recyclerView.addOnScrollListener(listener)
     }
 
+    fun removeOnScrollListener(listener: RecyclerView.OnScrollListener) {
+        recyclerView.removeOnScrollListener(listener)
+    }
+
     fun setOnTouchListenerRecyclerView(listener: View.OnTouchListener){
         recyclerView.setOnTouchListener(listener)
     }

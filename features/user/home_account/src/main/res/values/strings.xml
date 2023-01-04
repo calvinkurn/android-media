@@ -239,6 +239,8 @@
     <string name="explicit_profile_back_dialog_title">Kamu belum menyimpan perubahan</string>
     <string name="explicit_profile_back_dialog_desc">Perubahan pengaturan preferensi belum kamu simpan. ingin menyimpan dulu?</string>
     <string name="explicit_profile_back_dialog_exit">Tetap keluar</string>
+    <string name="explicit_profile_max_selection_answer_no_limit">Bisa pilih lebih dari 1 jawaban</string>
+    <string name="explicit_profile_max_selection_answer_limit">Hanya pilih %s jawaban</string>
 
     <!--opt in/out for network-->
     <string name="title_privacy_account">Privasi Akun</string>
@@ -272,5 +274,11 @@
     <string name="consent_withdrawal_dialog_secondary_cta">Batal</string>
     <string name="consent_withdrawal_section_title">Penggunaan Data</string>
     <string name="consent_withdrawal_section_description"><![CDATA[Atur penggunaan datamu di fitur & produk Tokopedia.]]></string>
+
+    <!-- ADD/VERIFY PHONE -->
+    <string name="add_phone_success_message">Yay! Nomor HP berhasil ditambah.</string>
+    <string name="verify_phone_success_message">Yay! Nomor HP berhasil diverifikasi.</string>
+    <string name="text_add_phone">Tambah Nomor HP</string>
+    <string name="text_verify_phone">Verifikasi Nomor HP</string>
 
 </resources>

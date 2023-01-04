@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,6 +12,7 @@ import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
+import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.util.ChatDiffUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
@@ -85,6 +87,32 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl) :
         }
     }
 
+    fun getMostRecentTokopediaCareMessage(): Int {
+        var item = DEFAULT_POSITION_FOR_TKPD_CARD_BUBBLE
+        visitables.forEachIndexed { index, visitable ->
+            try {
+                if (visitable is SendableUiModel && convertToSenderInfo(visitable.source)?.name == TOKOPEDIA_CARE) {
+                    item = index
+                    return item
+                }
+            } catch (_: Exception) {
+
+            }
+        }
+        return item
+    }
+
+    private fun convertToSenderInfo(source: String): SenderInfoData? {
+        val senderInfoPrefix = SENDER_INFO_PREFIX
+        if (source.isNotEmpty() && source.startsWith(senderInfoPrefix)) {
+            val s = source.substring(senderInfoPrefix.length, source.length)
+            return GsonBuilder().create()
+                .fromJson<SenderInfoData>(s,
+                    SenderInfoData::class.java)
+        } else return null
+    }
+
+
     fun showTopLoading() {
         if (visitables.isEmpty()) {
             visitables.add(visitables.size, loadingMoreModel)
@@ -134,5 +162,11 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl) :
     fun reset() {
         visitables.clear()
         notifyDataSetChanged()
+    }
+
+    companion object {
+        const val TOKOPEDIA_CARE = "Tokopedia Care"
+        const val SENDER_INFO_PREFIX = "chatbot_"
+        const val DEFAULT_POSITION_FOR_TKPD_CARD_BUBBLE = -1
     }
 }

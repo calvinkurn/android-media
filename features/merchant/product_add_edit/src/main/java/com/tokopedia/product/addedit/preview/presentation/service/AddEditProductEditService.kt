@@ -16,8 +16,6 @@ import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandle
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
-import com.tokopedia.product.addedit.preview.data.model.responses.ProductAddEditV3Response
-import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
@@ -27,9 +25,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 /**

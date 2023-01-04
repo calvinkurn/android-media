@@ -12,6 +12,7 @@ private const val KEY_IMAGE = "image"
 private const val KEY_URI = "uri"
 private const val KEY_RELATIVE_URI = "relative_uri"
 private const val KEY_PRICE_FORMAT = "price_format"
+private const val KEY_PRICE_RANGE = "price_range"
 private const val KEY_COUNT_TALK_FORMAT = "count_talk_format"
 private const val KEY_COUNT_REVIEW_FORMAT = "count_review_format"
 private const val KEY_CATEGORY = "category"
@@ -70,6 +71,10 @@ data class Product(
     @SerializedName(KEY_PRICE_FORMAT)
     @Expose
     var priceFormat: String = "",
+
+    @SerializedName(KEY_PRICE_RANGE)
+    @Expose
+    var priceRange: String = "",
 
     @SerializedName(KEY_COUNT_TALK_FORMAT)
     @Expose
@@ -173,4 +178,5 @@ data class Product(
     var recommendationType: String = "",
     var isLoaded: Boolean = false,
     var isHasAddToCartButton: Boolean = false
+
 ) : Parcelable

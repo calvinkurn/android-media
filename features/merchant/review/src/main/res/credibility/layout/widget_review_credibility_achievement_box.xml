@@ -85,16 +85,19 @@
             app:layout_constraintWidth_percent="0.3"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_review_credibility_achievement_see_more"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_review_credibility_achievement_see_more"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
+            android:paddingVertical="8dp"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_GN500"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/widget_review_credibility_achievement_1"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="text"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
             tools:text="+3 Pencapaian Lainnya"
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>

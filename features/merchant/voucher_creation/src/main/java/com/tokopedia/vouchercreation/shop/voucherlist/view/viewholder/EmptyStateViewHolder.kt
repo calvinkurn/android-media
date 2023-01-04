@@ -23,7 +23,7 @@ class EmptyStateViewHolder(
 ) : AbstractViewHolder<EmptyStateUiModel>(itemView) {
 
     companion object {
-        const val EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/mvc_empty_state.png"
+        const val EMPTY_IMAGE_URL = "https://images.tokopedia.net/android/others/mvc_empty_state.png"
 
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_voucher_list_empty_state

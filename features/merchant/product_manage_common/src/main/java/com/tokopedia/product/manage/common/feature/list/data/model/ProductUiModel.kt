@@ -31,10 +31,12 @@ data class ProductUiModel(
     val stockAlertActive: Boolean,
     val stockAlertCount: Int,
     val maxStock: Int?,
+    val isShopModerate: Boolean,
     val haveNotifyMeOOS: Boolean,
     val notifyMeOOSCount: String,
     val notifyMeOOSWording: String,
-    val isEmptyStock: Boolean
+    val isEmptyStock: Boolean,
+    val isStockGuaranteed: Boolean
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)
@@ -52,12 +54,11 @@ data class ProductUiModel(
     fun isEmpty(): Boolean = status == ProductStatus.EMPTY || stock == 0
     fun hasTopAds(): Boolean = topAdsInfo?.isTopAds == true || topAdsInfo?.isAutoAds == true
 
-    fun hasEditPriceAccess() = access?.editPrice == true
+    fun hasEditPriceAccess() = access?.editPrice == true && !isShopModerate
     fun hasEditProductAccess() = access?.editProduct == true
 
     fun getCampaignTypeCount() = campaignTypeList?.count().orZero()
     fun isSuspend(): Boolean = suspendLevel != 0
     fun isSuspendLevelTwoUntilFour(): Boolean = suspendLevel > 1
     fun isNotSuspendLevelTwoUntilFour(): Boolean = !(isSuspendLevelTwoUntilFour())
-
 }

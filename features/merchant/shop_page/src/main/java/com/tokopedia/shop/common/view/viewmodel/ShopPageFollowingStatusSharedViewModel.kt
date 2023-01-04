@@ -13,7 +13,7 @@ class ShopPageFollowingStatusSharedViewModel : ViewModel() {
         get() = _shopPageFollowingStatusLiveData
     private val _shopPageFollowingStatusLiveData = MutableLiveData<FollowShop>()
 
-    fun setShopPageFollowingStatus(followShop: FollowShop?, context: Context){
+    fun setShopPageFollowingStatus(followShop: FollowShop?, context: Context) {
         var followingData = followShop
         if (followShop?.isFollowing == false) {
             followingData = followShop.copy(buttonLabel = context.getString(R.string.follow_button_label))

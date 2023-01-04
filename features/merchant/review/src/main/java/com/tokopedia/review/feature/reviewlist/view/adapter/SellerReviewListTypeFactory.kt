@@ -10,9 +10,10 @@ import com.tokopedia.review.feature.reviewlist.view.viewholder.ReviewSellerLoadi
 import com.tokopedia.review.feature.reviewlist.view.viewholder.ReviewSummaryViewHolder
 import com.tokopedia.review.feature.reviewlist.view.viewholder.SellerReviewListViewHolder
 
-class SellerReviewListTypeFactory(private val reviewSummaryListener: ReviewSummaryViewHolder.ReviewSummaryViewListener,
-                                  private val sellerReviewListener: SellerReviewListViewHolder.SellerReviewListListener):
-        BaseAdapterTypeFactory(), TypeFactoryViewHolder {
+open class SellerReviewListTypeFactory(
+    private val reviewSummaryListener: ReviewSummaryViewHolder.ReviewSummaryViewListener,
+    protected val sellerReviewListener: SellerReviewListViewHolder.SellerReviewListListener
+) : BaseAdapterTypeFactory(), TypeFactoryViewHolder {
 
     override fun type(productRatingOverallUiModel: ProductRatingOverallUiModel): Int {
         return ReviewSummaryViewHolder.LAYOUT_RES

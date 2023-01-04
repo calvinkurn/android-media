@@ -2,13 +2,12 @@ package com.tokopedia.chatbot.view.customview.reply
 
 import android.content.Context
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
-import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
+import com.tokopedia.chatbot.view.util.OnboardingDismissListener
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2.Companion.POSITION_TOP
 import com.tokopedia.coachmark.CoachMark2Item
-import java.security.cert.TrustAnchor
 import javax.inject.Inject
 
 class ReplyBubbleOnBoarding @Inject constructor(
@@ -18,27 +17,21 @@ class ReplyBubbleOnBoarding @Inject constructor(
     private var context: Context? = null
     private var anchor: View? = null
     private var coachMark: CoachMark2? = null
-    private var rv: RecyclerView? = null
-    private var adapter: ChatbotAdapter? = null
+    var onboardingDismissListener: OnboardingDismissListener? = null
+
 
     fun showReplyBubbleOnBoarding(
-        rv: RecyclerView,
-        adapter: ChatbotAdapter,
         anchor: View?,
         context: Context? = null
     ) {
-        initializeFields(rv, adapter, anchor, context)
+        initializeFields(anchor, context)
         showReplyBubbleOnBoarding()
     }
 
     private fun initializeFields(
-        rv: RecyclerView,
-        adapter: ChatbotAdapter,
         anchor: View?,
         context: Context? = null
     ) {
-        this.rv = rv
-        this.adapter = adapter
         this.anchor = anchor
         this.context = context
     }
@@ -53,12 +46,13 @@ class ReplyBubbleOnBoarding @Inject constructor(
             coachMark = CoachMark2(it)
             coachMarkItem.add(
                 CoachMark2Item(
-                    anchor!!, title, description, CoachMark2.POSITION_TOP
+                    anchor!!, title, description, POSITION_TOP
                 )
             )
-            coachMark?.showCoachMark(coachMarkItem)
+            coachMark?.showCoachMark(coachMarkItem, null)
+            markAsShowed()
             coachMark?.setOnDismissListener {
-                markAsShowed()
+                onboardingDismissListener?.dismissReplyBubbleOnBoarding()
             }
         }
 
@@ -75,8 +69,6 @@ class ReplyBubbleOnBoarding @Inject constructor(
     fun flush() {
         anchor = null
         context = null
-        rv = null
-        adapter = null
     }
 
     fun dismiss() {

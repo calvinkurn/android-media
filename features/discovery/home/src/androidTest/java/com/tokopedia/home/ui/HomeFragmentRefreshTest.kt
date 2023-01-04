@@ -53,6 +53,7 @@ class HomeFragmentRefreshTest {
          * But if 3 minutes rule reached, total refresh will be above 2
          */
         private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 3
+        private const val TOTAL_PARTIAL_HEADER_RESUME_COUNT = 1
 
         private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
         private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 180001L
@@ -86,7 +87,7 @@ class HomeFragmentRefreshTest {
 
     @get:Rule
     var activityRule = object : ActivityTestRule<InstrumentationHomeRevampTestActivity>(
-            InstrumentationHomeRevampTestActivity::class.java
+        InstrumentationHomeRevampTestActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
             InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
@@ -105,10 +106,10 @@ class HomeFragmentRefreshTest {
     @Before
     fun setupEnvironment() {
         val recyclerView: RecyclerView =
-                activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+            activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
-                recyclerView = recyclerView,
-                limitCountToIdle = totalData
+            recyclerView = recyclerView,
+            limitCountToIdle = totalData
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
         mDevice = UiDevice.getInstance(getInstrumentation())
@@ -137,13 +138,11 @@ class HomeFragmentRefreshTest {
 
         /**
          * Assert data changes count
-         * Partial refresh will only trigger 2 data changes
-         * - Home Balance Widget
-         * - Wallet data changes
-         * - Membership data changes
+         * Partial refresh will only trigger 1 data changes
+         * - Dynamic channel
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
+        Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_RESUME_COUNT)
         Thread.sleep(DELAY_PROCESS)
     }
 
@@ -211,43 +210,45 @@ class HomeFragmentRefreshTest {
     }
 
     private fun goToOtherPage() {
-        context.startActivity(Intent(context, InstrumentationHomeEmptyActivity::class.java).apply {
-            addFlags(FLAG_ACTIVITY_NEW_TASK)
-        })
+        context.startActivity(
+            Intent(context, InstrumentationHomeEmptyActivity::class.java).apply {
+                addFlags(FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
         Thread.sleep(DELAY_PROCESS)
     }
 
     private fun setToLocation1() {
         ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                context = context,
-                addressId = ADDRESS_1_ID,
-                cityId = ADDRESS_1_CITY_ID,
-                districtId = ADDRESS_1_DISTRICT_ID,
-                lat = ADDRESS_1_LAT,
-                long = ADDRESS_1_LONG,
-                label = ADDRESS_1_LABEL,
-                postalCode = ADDRESS_1_POSTAL_CODE,
-                shopId = ADDRESS_1_SHOP_ID,
-                warehouseId = ADDRESS_1_WAREHOUE_ID,
-                warehouses = ADDRESS_1_WAREHOUSES,
-                serviceType = ADDRESS_1_SERVICE_TYPE
+            context = context,
+            addressId = ADDRESS_1_ID,
+            cityId = ADDRESS_1_CITY_ID,
+            districtId = ADDRESS_1_DISTRICT_ID,
+            lat = ADDRESS_1_LAT,
+            long = ADDRESS_1_LONG,
+            label = ADDRESS_1_LABEL,
+            postalCode = ADDRESS_1_POSTAL_CODE,
+            shopId = ADDRESS_1_SHOP_ID,
+            warehouseId = ADDRESS_1_WAREHOUE_ID,
+            warehouses = ADDRESS_1_WAREHOUSES,
+            serviceType = ADDRESS_1_SERVICE_TYPE
         )
     }
 
     private fun setToLocation2() {
         ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                context = context,
-                addressId = ADDRESS_2_ID,
-                cityId = ADDRESS_2_CITY_ID,
-                districtId = ADDRESS_2_DISTRICT_ID,
-                lat = ADDRESS_2_LAT,
-                long = ADDRESS_2_LONG,
-                label = ADDRESS_2_LABEL,
-                postalCode = ADDRESS_2_POSTAL_CODE,
-                shopId = ADDRESS_2_SHOP_ID,
-                warehouseId = ADDRESS_2_WAREHOUE_ID,
-                warehouses = ADDRESS_2_WAREHOUSES,
-                serviceType = ADDRESS_2_SERVICE_TYPE
+            context = context,
+            addressId = ADDRESS_2_ID,
+            cityId = ADDRESS_2_CITY_ID,
+            districtId = ADDRESS_2_DISTRICT_ID,
+            lat = ADDRESS_2_LAT,
+            long = ADDRESS_2_LONG,
+            label = ADDRESS_2_LABEL,
+            postalCode = ADDRESS_2_POSTAL_CODE,
+            shopId = ADDRESS_2_SHOP_ID,
+            warehouseId = ADDRESS_2_WAREHOUE_ID,
+            warehouses = ADDRESS_2_WAREHOUSES,
+            serviceType = ADDRESS_2_SERVICE_TYPE
         )
     }
 
@@ -259,7 +260,6 @@ class HomeFragmentRefreshTest {
                     dataChangedCount++
                 }
             }
-
         }
         return adapterDataObserver
     }

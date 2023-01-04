@@ -58,8 +58,6 @@ interface ChatbotContract {
 
         fun uploadUsingSecureUpload(data: Intent)
 
-        fun uploadUsingOldMechanism(data: Intent)
-
         fun sendInvoiceForArticle()
 
         fun onSuccessGetTickerData(tickerData: TickerData)
@@ -70,8 +68,6 @@ interface ChatbotContract {
 
         fun onSuccessSubmitChatCsat(msg: String)
 
-        fun replyBubbleStateHandler(state: Boolean)
-
         fun visibilityReplyBubble(state: Boolean)
 
         fun onSuccessSendRating(pojo: SendRatingPojo, rating: Int, element: ChatRatingUiModel)
@@ -81,6 +77,10 @@ interface ChatbotContract {
         fun videoUploadEligibilityHandler(state : Boolean)
 
         fun onVideoUploadChangeView(uiModel : VideoUploadUiModel)
+
+        fun setBigReplyBoxTitle(text: String, placeholder: String)
+
+        fun hideReplyBox()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -117,13 +117,6 @@ interface ChatbotContract {
         )
 
         fun sendReadEvent(messageId: String)
-
-        fun uploadImages(
-            it: ImageUploadUiModel,
-            messageId: String,
-            opponentId: String,
-            onError: (Throwable, ImageUploadUiModel) -> Unit
-        )
 
         fun destroyWebSocket()
 

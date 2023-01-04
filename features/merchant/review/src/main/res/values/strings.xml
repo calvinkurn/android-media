@@ -439,4 +439,9 @@
     <string name="image_review_content_description">Lampiran gambar</string>
 
     <string name="review_raw_string_format">%s</string>
+    <string name="create_review_anonymous_info_header">Privasi ulasan ini bisa diatur, lho!</string>
+    <string name="create_review_anonymous_info_description">Kalau kamu ingin sembunyikan nama, maka:</string>
+    <string name="bullet">•</string>
+    <string name="create_review_anonymous_info_description_point_one">Ulasan ini tidak akan ditampilkan di halaman Profil kamu.</string>
+    <string name="create_review_anonymous_info_description_point_two">Nama dan foto profil kamu tidak dapat dilihat di ulasan ini (saat ditampilkan di halaman produk dan halaman toko).</string>
 </resources>

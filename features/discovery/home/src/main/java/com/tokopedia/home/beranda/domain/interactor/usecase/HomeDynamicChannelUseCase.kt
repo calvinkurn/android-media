@@ -52,39 +52,40 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class HomeDynamicChannelUseCase @Inject constructor(
-        private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
-        private val homeDataMapper: HomeDataMapper,
-        private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
-        private val homeDataRepository: HomeDataRepository,
-        private val atfDataRepository: HomeAtfRepository,
-        private val homeFlagRepository: HomeFlagRepository,
-        private val homePageBannerRepository: HomePageBannerRepository,
-        private val homeIconRepository: HomeIconRepository,
-        private val homeTickerRepository: HomeTickerRepository,
-        private val getHomeRoomDataSource: HomeRoomDataSource,
-        private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
-        private val applicationContext: Context?,
-        private val remoteConfig: RemoteConfig,
-        private val homePlayRepository: HomePlayRepository,
-        private val homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
-        private val homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
-        private val homePopularKeywordRepository: HomePopularKeywordRepository,
-        private val homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
-        private val homeRecommendationRepository: HomeRecommendationRepository,
-        private val homeRecommendationChipRepository: HomeRecommendationChipRepository,
-        private val bestSellerMapper: BestSellerMapper,
-        private val homeTopadsImageRepository: HomeTopadsImageRepository,
-        private val homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
-        private val homeSalamWidgetRepository: HomeSalamWidgetRepository,
-        private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
-        private val homeChooseAddressRepository: HomeChooseAddressRepository,
-        private val userSessionInterface: UserSessionInterface,
-        private val homeMissionWidgetRepository: HomeMissionWidgetRepository
+    private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
+    private val homeDataMapper: HomeDataMapper,
+    private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
+    private val homeDataRepository: HomeDataRepository,
+    private val atfDataRepository: HomeAtfRepository,
+    private val homeFlagRepository: HomeFlagRepository,
+    private val homePageBannerRepository: HomePageBannerRepository,
+    private val homeIconRepository: HomeIconRepository,
+    private val homeTickerRepository: HomeTickerRepository,
+    private val getHomeRoomDataSource: HomeRoomDataSource,
+    private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+    private val applicationContext: Context?,
+    private val remoteConfig: RemoteConfig,
+    private val homePlayRepository: HomePlayRepository,
+    private val homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
+    private val homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
+    private val homePopularKeywordRepository: HomePopularKeywordRepository,
+    private val homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
+    private val homeRecommendationRepository: HomeRecommendationRepository,
+    private val homeRecommendationChipRepository: HomeRecommendationChipRepository,
+    private val bestSellerMapper: BestSellerMapper,
+    private val homeTopadsImageRepository: HomeTopadsImageRepository,
+    private val homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
+    private val homeSalamWidgetRepository: HomeSalamWidgetRepository,
+    private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
+    private val homeChooseAddressRepository: HomeChooseAddressRepository,
+    private val userSessionInterface: UserSessionInterface,
+    private val homeMissionWidgetRepository: HomeMissionWidgetRepository
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
     private var currentHeaderDataModel: HomeHeaderDataModel? = null
-    companion object{
+    private var previousHeaderDataModel: HomeHeaderDataModel? = null
+    companion object {
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
         private const val MINIMUM_DC_TO_SHOW_RECOM = 3
@@ -100,7 +101,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel) {
         findWidget<HomeHeaderDataModel>(homeDataModel) { model, index ->
-            homeDataModel.updateWidgetModel(visitable = homeHeaderDataModel, position = index) {}
+            if (model.needToShowUserWallet) {
+                homeDataModel.updateWidgetModel(visitable = homeHeaderDataModel, position = index) {}
+            }
         }
     }
 
@@ -114,28 +117,31 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 if (isCache) {
                     val defaultFlag = HomeFlag()
                     defaultFlag.addFlag(HomeFlag.HAS_TOKOPOINTS_STRING, true)
-                    val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(HomeData(
+                    val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
+                        HomeData(
                             atfData = HomeAtfData(
-                                    dataList = it.map {
-                                        AtfData(
-                                                id = it.id,
-                                                name = it.name,
-                                                component = it.component,
-                                                param = it.param,
-                                                isOptional = it.isOptional,
-                                                content = it.content,
-                                                status = it.status
-                                        )
-                                    },
-                                    isProcessingAtf = true
+                                dataList = it.map {
+                                    AtfData(
+                                        id = it.id,
+                                        name = it.name,
+                                        component = it.component,
+                                        param = it.param,
+                                        isOptional = it.isOptional,
+                                        content = it.content,
+                                        status = it.status
+                                    )
+                                },
+                                isProcessingAtf = true
                             ),
-                            isProcessingDynamicChannel = true, homeFlag = defaultFlag),
-                            isCache = true,
-                            addShimmeringChannel = true,
-                            isLoadingAtf = true
+                            isProcessingDynamicChannel = true,
+                            homeFlag = defaultFlag
+                        ),
+                        isCache = true,
+                        addShimmeringChannel = true,
+                        isLoadingAtf = true
                     )
                     dynamicChannelPlainResponse.apply {
-                        Log.d("Each merge list size:", (""+this.list.size))
+                        Log.d("Each merge list size:", ("" + this.list.size))
                         this.isCache = isCache
                         this.flowCompleted = true
                     }
@@ -149,8 +155,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
 
                 val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
-                        homeData = it,
-                        isCache = isCacheDc
+                    homeData = it,
+                    isCache = isCacheDc
                 )
 
                 /**
@@ -168,8 +174,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    if(currentHeaderDataModel==null){
-                        currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
+                    if (currentHeaderDataModel == null) {
+                        currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(previousHeaderDataModel)
+                        previousHeaderDataModel = currentHeaderDataModel
                     }
                     currentHeaderDataModel?.let {
                         updateHeaderData(it, dynamicChannelPlainResponse)
@@ -189,26 +196,26 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            CarouselPlayWidgetDataModel,
-                            PlayWidgetState>(widgetRepository = homePlayRepository) { visitableFound, data, position ->
+                        CarouselPlayWidgetDataModel,
+                        PlayWidgetState>(widgetRepository = homePlayRepository) { visitableFound, data, position ->
                         visitableFound.copy(widgetState = data)
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            ReviewDataModel,
-                            SuggestedProductReview>(widgetRepository = homeReviewSuggestedRepository) { visitableFound, data, position ->
+                        ReviewDataModel,
+                        SuggestedProductReview>(widgetRepository = homeReviewSuggestedRepository) { visitableFound, data, position ->
                         visitableFound.copy(suggestedProductReview = data)
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            PlayCardDataModel,
-                            PlayData>(widgetRepository = homePlayLiveDynamicRepository) { visitableFound, data, position ->
+                        PlayCardDataModel,
+                        PlayData>(widgetRepository = homePlayLiveDynamicRepository) { visitableFound, data, position ->
                         visitableFound.copy(playCardHome = data.playChannels.first())
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            PopularKeywordListDataModel,
-                            HomeWidget.PopularKeywordQuery>(widgetRepository = homePopularKeywordRepository) { visitableFound, data, position ->
+                        PopularKeywordListDataModel,
+                        HomeWidget.PopularKeywordQuery>(widgetRepository = homePopularKeywordRepository) { visitableFound, data, position ->
                         val resultList = convertPopularKeywordDataList(data.data)
 
                         visitableFound.copy(
@@ -220,8 +227,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
-                            MissionWidgetListDataModel,
-                            HomeMissionWidgetData.HomeMissionWidget>(
+                        MissionWidgetListDataModel,
+                        HomeMissionWidgetData.HomeMissionWidget>(
                         widgetRepository = homeMissionWidgetRepository,
                         bundleParam = {
                             Bundle().apply {
@@ -245,8 +252,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     )
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            FeaturedShopDataModel,
-                            List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>>(
+                        FeaturedShopDataModel,
+                        List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>>(
                         widgetRepository = homeHeadlineAdsRepository,
                         bundleParam = {
                             Bundle().apply {
@@ -261,20 +268,21 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             channelModel = visitableFound.channelModel.copy(
                                 channelGrids = data.mappingTopAdsHeaderToChannelGrid()
                             ),
-                            state = FeaturedShopDataModel.STATE_READY)
+                            state = FeaturedShopDataModel.STATE_READY
+                        )
                     }
 
                     getRecommendationWidget(dynamicChannelPlainResponse)
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            HomeTopAdsBannerDataModel,
-                            ArrayList<TopAdsImageViewModel>>(
+                        HomeTopAdsBannerDataModel,
+                        ArrayList<TopAdsImageViewModel>>(
                         widgetRepository = homeTopadsImageRepository,
                         iterateList = true,
                         onWidgetExist = { size ->
                             val currentPage = topadsTdnPage
                             currentPage.toIntOrNull()?.let {
-                                val nextPage = ((it+1) + size)
+                                val nextPage = ((it + 1) + size)
                                 dynamicChannelPlainResponse.topadsPage = nextPage.toString()
                             }
                             emit(dynamicChannelPlainResponse)
@@ -328,8 +336,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            ReminderWidgetModel,
-                            RechargeRecommendation>(
+                        ReminderWidgetModel,
+                        RechargeRecommendation>(
                         widgetRepository = homeRechargeRecommendationRepository,
                         predicate = {
                             it?.source == ReminderEnum.RECHARGE
@@ -343,8 +351,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                            ReminderWidgetModel,
-                            SalamWidget>(
+                        ReminderWidgetModel,
+                        SalamWidget>(
                         widgetRepository = homeSalamWidgetRepository,
                         predicate = {
                             it?.source == ReminderEnum.SALAM
@@ -357,10 +365,11 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         newFindRechargeRecommendationViewModel
                     }
 
-
-                    emit(dynamicChannelPlainResponse.copy(
-                        isCache = false
-                    ))
+                    emit(
+                        dynamicChannelPlainResponse.copy(
+                            isCache = false
+                        )
+                    )
 
                     val needToGetRecom = dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
                     if (needToGetRecom && dynamicChannelPlainResponse.list.size > MINIMUM_DC_TO_SHOW_RECOM) {
@@ -368,10 +377,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
                 }
 
-                emit(dynamicChannelPlainResponse.copy(
+                emit(
+                    dynamicChannelPlainResponse.copy(
                         isCache = false,
                         flowCompleted = true
-                ))
+                    )
+                )
                 isCacheDc = false
             }
         }
@@ -381,7 +392,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    private inline fun <reified T> widgetIsAvailable(homeDataModel: HomeDynamicChannelModel, predicate: (T) -> Boolean = {true}): Boolean {
+    private inline fun <reified T> widgetIsAvailable(homeDataModel: HomeDynamicChannelModel, predicate: (T) -> Boolean = { true }): Boolean {
         homeDataModel.list.filterIsInstance<T>().let {
             return it.find { predicate.invoke(it) } != null
         }
@@ -393,54 +404,58 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
         try {
             val homeRecommendationTabs = homeRecommendationFeedTabRepository.getRemoteData(
-                    Bundle().apply {
-                        putString(
-                                HomeRecommendationFeedTabRepository.LOCATION_PARAM,
-                                homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
-                        )
-                    }
+                Bundle().apply {
+                    putString(
+                        HomeRecommendationFeedTabRepository.LOCATION_PARAM,
+                        homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                    )
+                }
             )
-            val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
+            val findRetryModel = homeDataModel.list.withIndex().find { data ->
+                data.value is HomeRetryModel
             }
 
             val findLoadingModel = homeDataModel.list.withIndex().find {
-                data -> data.value is HomeLoadingMoreModel
+                    data ->
+                data.value is HomeLoadingMoreModel
             }
 
             homeDataModel.list.withIndex().find {
                 it.value is HomeRecommendationFeedDataModel ||
-                        it.value is HomeLoadingMoreModel ||
-                        it.value is HomeRetryModel
+                    it.value is HomeLoadingMoreModel ||
+                    it.value is HomeRetryModel
             }.let {
                 it?.let {
                     when {
                         findLoadingModel != null -> {
                             val newRecomModel = HomeRecommendationFeedDataModel(
-                                    recommendationTabDataModel = homeRecommendationTabs,
-                                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                                recommendationTabDataModel = homeRecommendationTabs,
+                                homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
                             )
                             homeDataModel.updateWidgetModel(
-                                    visitable = newRecomModel,
-                                    visitableToChange = findLoadingModel.value,
-                                    position = it.index) {}
+                                visitable = newRecomModel,
+                                visitableToChange = findLoadingModel.value,
+                                position = it.index
+                            ) {}
                             this.localHomeRecommendationFeedDataModel = newRecomModel
                         }
                         findRetryModel != null -> {
                             val newRecomModel = HomeRecommendationFeedDataModel(
-                                    recommendationTabDataModel = homeRecommendationTabs,
-                                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                                recommendationTabDataModel = homeRecommendationTabs,
+                                homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
                             )
                             homeDataModel.updateWidgetModel(
-                                    visitable = newRecomModel,
-                                    visitableToChange = findRetryModel.value,
-                                    position = it.index) {}
+                                visitable = newRecomModel,
+                                visitableToChange = findRetryModel.value,
+                                position = it.index
+                            ) {}
                             this.localHomeRecommendationFeedDataModel = newRecomModel
                         }
                         else -> {
                             (it.value as? HomeRecommendationFeedDataModel)?.let { recomModel ->
                                 val newModel = recomModel.copy(
-                                        recommendationTabDataModel = homeRecommendationTabs,
-                                        homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                                    recommendationTabDataModel = homeRecommendationTabs,
+                                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
                                 )
                                 newModel.recommendationTabDataModel = homeRecommendationTabs
                                 newModel.isNewData = true
@@ -452,9 +467,11 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
+            val findRetryModel = homeDataModel.list.withIndex().find { data ->
+                data.value is HomeRetryModel
             }
-            val findLoadingModel = homeDataModel.list.withIndex().find { data -> data.value is HomeLoadingMoreModel
+            val findLoadingModel = homeDataModel.list.withIndex().find { data ->
+                data.value is HomeLoadingMoreModel
             }
             homeDataModel.addWidgetModel(HomeRetryModel())
             homeDataModel.deleteWidgetModel(findLoadingModel?.value, findLoadingModel?.index ?: -1) {}
@@ -462,49 +479,49 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    suspend fun getRecommendationWidget(homeDataModel: HomeDynamicChannelModel){
+    suspend fun getRecommendationWidget(homeDataModel: HomeDynamicChannelModel) {
         findWidget<BestSellerDataModel>(homeDataModel) { bestSellerDataModel, index ->
             val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
 
             val recommendationChip = homeRecommendationChipRepository.getRemoteData(
-                    Bundle().apply {
-                        putString(HomeRecommendationChipRepository.PAGE_NAME, bestSellerDataModel.pageName)
-                        putString(HomeRecommendationChipRepository.QUERY_PARAM, bestSellerDataModel.widgetParam)
-                    }
+                Bundle().apply {
+                    putString(HomeRecommendationChipRepository.PAGE_NAME, bestSellerDataModel.pageName)
+                    putString(HomeRecommendationChipRepository.QUERY_PARAM, bestSellerDataModel.widgetParam)
+                }
             )
             recomFilterList.addAll(recommendationChip)
             val activatedChip = recomFilterList.find { it.isActivated }
             val recomData = if (activatedChip == null) {
                 homeRecommendationRepository.getRemoteData(
-                        Bundle().apply {
-                            putString(HomeRecommendationChipRepository.PAGE_NAME, bestSellerDataModel.pageName)
-                            putString(HomeRecommendationChipRepository.QUERY_PARAM, bestSellerDataModel.widgetParam)
-                        }
+                    Bundle().apply {
+                        putString(HomeRecommendationChipRepository.PAGE_NAME, bestSellerDataModel.pageName)
+                        putString(HomeRecommendationChipRepository.QUERY_PARAM, bestSellerDataModel.widgetParam)
+                    }
                 )
             } else {
                 homeRecommendationRepository.getRemoteData(
-                        Bundle().apply {
-                            putString(HomeRecommendationChipRepository.PAGE_NAME, bestSellerDataModel.pageName)
-                            putString(HomeRecommendationChipRepository.QUERY_PARAM, if(activatedChip.isActivated) activatedChip.value else "")
-                        }
+                    Bundle().apply {
+                        putString(HomeRecommendationChipRepository.PAGE_NAME, bestSellerDataModel.pageName)
+                        putString(HomeRecommendationChipRepository.QUERY_PARAM, if (activatedChip.isActivated) activatedChip.value else "")
+                    }
                 )
             }
 
             if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                 val recomWidget = recomData.first().copy(
-                        recommendationFilterChips = recomFilterList
+                    recommendationFilterChips = recomFilterList
                 )
                 val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget, cardInteraction = true)
 
                 homeDataModel.updateWidgetModel(
-                        visitable = dataModel.copy(
-                                id = bestSellerDataModel.id,
-                                pageName = dataModel.pageName,
-                                widgetParam = bestSellerDataModel.widgetParam,
-                                dividerType = bestSellerDataModel.dividerType
-                        ),
-                        visitableToChange = bestSellerDataModel,
-                        position = index
+                    visitable = dataModel.copy(
+                        id = bestSellerDataModel.id,
+                        pageName = dataModel.pageName,
+                        widgetParam = bestSellerDataModel.widgetParam,
+                        dividerType = bestSellerDataModel.dividerType
+                    ),
+                    visitableToChange = bestSellerDataModel,
+                    position = index
                 ) {}
             } else {
                 homeDataModel.deleteWidgetModel(bestSellerDataModel, index) {}
@@ -517,25 +534,26 @@ class HomeDynamicChannelUseCase @Inject constructor(
         val dataList: MutableList<PopularKeywordDataModel> = mutableListOf()
         for (pojo in keywordList) {
             dataList.add(
-                    PopularKeywordDataModel(
-                            recommendationType = popularKeywordList.recommendationType,
-                            applink = pojo.url,
-                            imageUrl = pojo.imageUrl,
-                            title = pojo.keyword,
-                            productCount = pojo.productCount)
+                PopularKeywordDataModel(
+                    recommendationType = popularKeywordList.recommendationType,
+                    applink = pojo.url,
+                    imageUrl = pojo.imageUrl,
+                    title = pojo.keyword,
+                    productCount = pojo.productCount
+                )
             )
         }
         return dataList
     }
 
-    private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExist(
-            bundleParam: (T) -> Bundle = { Bundle() },
-            iterateList: Boolean = false,
-            widgetRepository: HomeRepository<K>,
-            predicate: (T?) -> Boolean = {true},
-            deleteWidgetWhen:(K?) -> Boolean = {false},
-            onWidgetExist: (Int) -> Unit = {},
-            mapToWidgetData: (T, K, Int) -> T
+    private suspend inline fun <reified T : Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExist(
+        bundleParam: (T) -> Bundle = { Bundle() },
+        iterateList: Boolean = false,
+        widgetRepository: HomeRepository<K>,
+        predicate: (T?) -> Boolean = { true },
+        deleteWidgetWhen: (K?) -> Boolean = { false },
+        onWidgetExist: (Int) -> Unit = {},
+        mapToWidgetData: (T, K, Int) -> T
     ): HomeDynamicChannelModel {
         try {
             if (!iterateList) {
@@ -578,11 +596,11 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 }
             }
             return this
-        } catch (e: Exception){
+        } catch (e: Exception) {
             findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
                 this.deleteWidgetModel(
-                        visitable = visitableFound,
-                        position = visitablePosition
+                    visitable = visitableFound,
+                    position = visitablePosition
                 ) {}
             }
             HomeServerLogger.warning_home_repository_error(e, T::class.java.simpleName, K::class.java.simpleName)
@@ -590,14 +608,14 @@ class HomeDynamicChannelUseCase @Inject constructor(
         return this
     }
 
-    private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExistHandleError(
-            bundleParam: (T) -> Bundle = { Bundle() },
-            widgetRepository: HomeRepository<K>,
-            predicate: (T?) -> Boolean = {true},
-            deleteWidgetWhen:(K?) -> Boolean = {false},
-            onWidgetExist: (Int) -> Unit = {},
-            mapToWidgetData: (T, K, Int) -> T,
-            handleOnFailed: (T) -> T
+    private suspend inline fun <reified T : Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExistHandleError(
+        bundleParam: (T) -> Bundle = { Bundle() },
+        widgetRepository: HomeRepository<K>,
+        predicate: (T?) -> Boolean = { true },
+        deleteWidgetWhen: (K?) -> Boolean = { false },
+        onWidgetExist: (Int) -> Unit = {},
+        mapToWidgetData: (T, K, Int) -> T,
+        handleOnFailed: (T) -> T
     ): HomeDynamicChannelModel {
         findWidgetList<T>(this, predicate) { indexedValueList ->
             onWidgetExist.invoke(indexedValueList.size)
@@ -616,14 +634,14 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             visitableToChange = visitableFound,
                             position = visitablePosition
                         ) {
-                            //no-op
+                            // no-op
                         }
                     } else {
                         this.deleteWidgetModel(
                             visitable = visitableFound,
                             position = visitablePosition
                         ) {
-                            //no-op
+                            // no-op
                         }
                     }
                 } catch (e: Exception) {
@@ -634,7 +652,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         visitableToChange = visitableFound,
                         position = visitablePosition
                     ) {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -643,11 +661,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
     }
 
     private inline fun <reified T> findWidget(
-            homeDataModel: HomeDynamicChannelModel,
-            predicate: (T?) -> Boolean = {true},
-            actionOnFound: (T, Int) -> Unit) {
+        homeDataModel: HomeDynamicChannelModel,
+        predicate: (T?) -> Boolean = { true },
+        actionOnFound: (T, Int) -> Unit
+    ) {
         homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
-            for(visitable in it) {
+            for (visitable in it) {
                 if (visitable.value is T) {
                     actionOnFound.invoke(visitable.value as T, visitable.index)
                 }
@@ -657,9 +676,11 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private inline fun <reified T> findWidgetList(
         homeDataModel: HomeDynamicChannelModel,
-        predicate: (T?) -> Boolean = {true},
-        actionOnFound: (List<IndexedValue<T>>
-        ) -> Unit) {
+        predicate: (T?) -> Boolean = { true },
+        actionOnFound: (
+            List<IndexedValue<T>>
+        ) -> Unit
+    ) {
         val listFound = mutableListOf<IndexedValue<T>>()
         homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
             it.forEach { indexedValue ->
@@ -701,7 +722,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
      *              Then emit error pagination
      *              Because there is no content that we can show, we showing error page
      */
-    fun updateHomeData(): Flow<Result<Any>> = flow{
+    fun updateHomeData(): Flow<Result<Any>> = flow {
         coroutineScope {
             /**
              * Remote config to disable pagination by request with param 0
@@ -723,8 +744,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
             cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                 homeData.isProcessingDynamicChannel = true
             }, isCacheExistAction = {
-                homeData.isProcessingDynamicChannel = false
-            })
+                    homeData.isProcessingDynamicChannel = false
+                })
 
             /**
              * 2. Get above the fold skeleton
@@ -754,7 +775,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-
             }
 
             /**
@@ -764,14 +784,19 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 var nonTickerResponseFinished = false
 
                 homeData.atfData?.dataList?.map { atfData ->
-                    when(atfData.component) {
+                    when (atfData.component) {
                         AtfKey.TYPE_TICKER -> {
                             val job = async {
                                 try {
                                     val ticker = homeTickerRepository.getRemoteData(
-                                            Bundle().apply { putString(HomeTickerRepository.Companion.PARAM_LOCATION,
-                                                    applicationContext?.let {
-                                                        ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "") }
+                                        Bundle().apply {
+                                            putString(
+                                                HomeTickerRepository.Companion.PARAM_LOCATION,
+                                                applicationContext?.let {
+                                                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()
+                                                } ?: ""
+                                            )
+                                        }
                                     )
                                     ticker.let {
                                         atfData.content = gson.toJson(ticker.ticker)
@@ -796,11 +821,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                     val bannerParam = Bundle().apply {
                                         this.putString(
                                             HomePageBannerRepository.BANNER_LOCATION_PARAM,
-                                            homeChooseAddressRepository.getRemoteData()?.convertToLocationParams())
+                                            homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                        )
                                     }
                                     val dynamicChannel = homePageBannerRepository.getRemoteData(bannerParam)
                                     dynamicChannel.let {
-                                        if (it.banner.slides?.size?:0 >= MINIMUM_BANNER_TO_SHOW) {
+                                        if (it.banner.slides?.size ?: 0 >= MINIMUM_BANNER_TO_SHOW) {
                                             val channelFromResponse = it.banner
                                             atfData.content = gson.toJson(channelFromResponse)
                                             atfData.status = AtfKey.STATUS_SUCCESS
@@ -826,15 +852,18 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             val job = async {
                                 try {
                                     val dynamicChannel = homeDynamicChannelsRepository.getRemoteData(
-                                            Bundle().apply {
-                                                putString(
-                                                        HomeDynamicChannelsRepository.PARAMS, atfData.param
-                                                )
-                                                putString(
-                                                        HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
-                                                            ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
-                                                )
-                                            }
+                                        Bundle().apply {
+                                            putString(
+                                                HomeDynamicChannelsRepository.PARAMS,
+                                                atfData.param
+                                            )
+                                            putString(
+                                                HomeDynamicChannelsRepository.LOCATION,
+                                                applicationContext?.let {
+                                                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()
+                                                } ?: ""
+                                            )
+                                        }
                                     )
                                     dynamicChannel.let {
                                         val channelFromResponse = it.dynamicHomeChannel
@@ -859,18 +888,21 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             val job = async {
                                 try {
                                     val dynamicIcon = homeIconRepository.getRemoteData(
-                                            Bundle().apply {
-                                                putString(
-                                                        HomeDynamicChannelsRepository.PARAMS, atfData.param
-                                                )
-                                                putString(
-                                                        HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
-                                                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
-                                                )
-                                            }
+                                        Bundle().apply {
+                                            putString(
+                                                HomeDynamicChannelsRepository.PARAMS,
+                                                atfData.param
+                                            )
+                                            putString(
+                                                HomeDynamicChannelsRepository.LOCATION,
+                                                applicationContext?.let {
+                                                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()
+                                                } ?: ""
+                                            )
+                                        }
                                     )
                                     dynamicIcon.let {
-                                        atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon.copy(type=if(atfData.param.contains(TYPE_ATF_1)) 1 else 2))
+                                        atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon.copy(type = if (atfData.param.contains(TYPE_ATF_1)) 1 else 2))
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
                                     homeData.atfData?.isProcessingAtf = false
@@ -887,7 +919,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             jobList.add(job)
                         }
                         else -> {
-
                         }
                     }
                 }
@@ -903,18 +934,21 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
                     if (!isCacheExistForProcess) {
                         val dynamicChannelResponseValue = try {
-                            val dynamicChannelResponse = homeDynamicChannelsRepository.
-                            getRemoteData(
-                                Bundle().apply {
-                                    putInt(
-                                        HomeDynamicChannelsRepository.NUM_OF_CHANNEL, CHANNEL_LIMIT_FOR_PAGINATION
-                                    )
-                                    putString(
-                                        HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
-                                            ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
-                                    )
-                                }
-                            )
+                            val dynamicChannelResponse = homeDynamicChannelsRepository
+                                .getRemoteData(
+                                    Bundle().apply {
+                                        putInt(
+                                            HomeDynamicChannelsRepository.NUM_OF_CHANNEL,
+                                            CHANNEL_LIMIT_FOR_PAGINATION
+                                        )
+                                        putString(
+                                            HomeDynamicChannelsRepository.LOCATION,
+                                            applicationContext?.let {
+                                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()
+                                            } ?: ""
+                                        )
+                                    }
+                                )
                             dynamicChannelResponse
                         } catch (e: Exception) {
                             if (!isAtfSuccess && !isCacheExistForProcess) {
@@ -952,10 +986,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
                              * Because there is no content that we can show, we showing error page
                              */
                             if (!isCacheExistForProcess &&
-                                (homeData.atfData == null ||
+                                (
+                                    homeData.atfData == null ||
                                         (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
-                                        homeData.atfData?.dataList?.isEmpty() == true)) {
-                                emit(Result.errorGeneral(Throwable(),null))
+                                        homeData.atfData?.dataList?.isEmpty() == true
+                                    )
+                            ) {
+                                emit(Result.errorGeneral(Throwable(), null))
                             } else {
                                 emit(Result.error(Throwable(), null))
                             }
@@ -970,7 +1007,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      *
                      */
                     if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
-                        isCacheExistForProcess) {
+                        isCacheExistForProcess
+                    ) {
                         try {
                             homeData = processFullPageDynamicChannel(homeDataResponse = homeData)
                                 ?: HomeData()
@@ -992,7 +1030,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 }
                             }
                         } catch (e: Exception) {
-
                             /**
                              * 4.1.5 If full channel request is failed
                              * Then emit error pagination
@@ -1016,7 +1053,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
                     try {
                         homeData = processFullPageDynamicChannel(
-                            homeDataResponse = homeData)
+                            homeDataResponse = homeData
+                        )
                             ?: HomeData()
                         homeData.dynamicHomeChannel.channels.forEach {
                             it.timestamp = currentTimeMillisString
@@ -1036,7 +1074,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             }
                         }
                     } catch (e: Exception) {
-
                         /**
                          * 4.2.2 If full dynamic channel request failed
                          * Then emit error pagination
@@ -1074,17 +1111,17 @@ class HomeDynamicChannelUseCase @Inject constructor(
         if (saveAtf) {
             homeData?.atfData?.let {
                 getHomeRoomDataSource.saveCachedAtf(
-                        it.dataList.map {atfData ->
-                            AtfCacheEntity(
-                                    id = atfData.id,
-                                    name = atfData.name,
-                                    component = atfData.component,
-                                    param = atfData.param,
-                                    isOptional = atfData.isOptional,
-                                    content = atfData.content,
-                                    status = atfData.status
-                            )
-                        }
+                    it.dataList.map { atfData ->
+                        AtfCacheEntity(
+                            id = atfData.id,
+                            name = atfData.name,
+                            component = atfData.component,
+                            param = atfData.param,
+                            isOptional = atfData.isOptional,
+                            content = atfData.content,
+                            status = atfData.status
+                        )
+                    }
                 )
             }
         }
@@ -1092,41 +1129,49 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
         val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
-                Bundle().apply {
-                    putString(
-                            HomeDynamicChannelsRepository.GROUP_IDS, groupId
-                    )
-                    putString(
-                            HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
-                        ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
-                    )
-                }
+            Bundle().apply {
+                putString(
+                    HomeDynamicChannelsRepository.GROUP_IDS,
+                    groupId
+                )
+                putString(
+                    HomeDynamicChannelsRepository.LOCATION,
+                    applicationContext?.let {
+                        ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()
+                    } ?: ""
+                )
+            }
         )
         val homeChannelData = HomeChannelData(dynamicChannelResponse.dynamicHomeChannel)
 
         return homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(
-                homeChannelData,
-                isCache = false,
-                addLoadingMore = false,
-                useDefaultWhenEmpty = false)
+            homeChannelData,
+            isCache = false,
+            addLoadingMore = false,
+            useDefaultWhenEmpty = false
+        )
     }
 
     private suspend fun processFullPageDynamicChannel(homeDataResponse: HomeData?): HomeData? {
         val dynamicChannelCompleteResponse = homeDynamicChannelsRepository.getRemoteData(
-                Bundle().apply {
-                    putInt(
-                            HomeDynamicChannelsRepository.NUM_OF_CHANNEL, 0
-                    )
-                    putString(
-                            HomeDynamicChannelsRepository.TOKEN, homeDataResponse?.token?:""
-                    )
-                    putString(
-                            HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
-                        ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
-                    )
-                }
+            Bundle().apply {
+                putInt(
+                    HomeDynamicChannelsRepository.NUM_OF_CHANNEL,
+                    0
+                )
+                putString(
+                    HomeDynamicChannelsRepository.TOKEN,
+                    homeDataResponse?.token ?: ""
+                )
+                putString(
+                    HomeDynamicChannelsRepository.LOCATION,
+                    applicationContext?.let {
+                        ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()
+                    } ?: ""
+                )
+            }
         )
-        val currentChannelList = homeDataResponse?.dynamicHomeChannel?.channels?.toMutableList()?: mutableListOf()
+        val currentChannelList = homeDataResponse?.dynamicHomeChannel?.channels?.toMutableList() ?: mutableListOf()
         currentChannelList.addAll(dynamicChannelCompleteResponse.dynamicHomeChannel.channels)
 
         homeDataResponse?.let {
@@ -1146,7 +1191,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val token = homeChannelData.dynamicHomeChannel.channels[0].token
             homeChannelData.dynamicHomeChannel.channels[0].token = ""
             Pair(token, homeChannelData)
-        } else Pair("", homeChannelData)
+        } else {
+            Pair("", homeChannelData)
+        }
     }
 
     private fun combineChannelWith(currentChannel: DynamicHomeChannel, newChannel: DynamicHomeChannel): DynamicHomeChannel {
@@ -1156,8 +1203,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
     }
 
     private suspend fun cacheCondition(
-            isCache: Boolean,
-            isCacheExistAction: suspend () -> Unit = {}, isCacheEmptyAction: suspend () -> Unit = {}) {
+        isCache: Boolean,
+        isCacheExistAction: suspend () -> Unit = {},
+        isCacheEmptyAction: suspend () -> Unit = {}
+    ) {
         if (isCache) {
             isCacheExistAction.invoke()
         } else {

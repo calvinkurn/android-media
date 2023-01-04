@@ -149,6 +149,7 @@
 
     <!-- Product Detail -->
     <string name="title_product_detail">Product Detail</string>
+    <string name="title_product_ar">Product Ar</string>
 
     <!--Order Management History-->
     <string name="title_order_management_history">Detail Status</string>
@@ -171,7 +172,11 @@
     <!-- Shop Flash Sale -->
     <string name="title_shop_flash_sale">Flash Sale Toko</string>
 
+    <!--Tokopedia Flash Sale-->
+    <string name="title_tokopedia_flash_sale">Flash Sale Tokopedia</string>
+
 <!--    Tokomember seller dashboard-->
     <string name="title_tokomember" translatable="false">Tokomember</string>
+    <string name="title_tokopedia_flash_sale_campaign_detail">Campaign Detail</string>
 
 </resources>

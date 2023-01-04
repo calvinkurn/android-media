@@ -1,7 +1,7 @@
 package com.tokopedia.play.model.interactive
 
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
@@ -69,14 +69,14 @@ interface InteractiveBuilder {
         id: String = "",
         title: String = "",
         waitingDuration: Long = 200L,
-        status: InteractiveUiModel.Giveaway.Status = InteractiveUiModel.Giveaway.Status.Unknown,
-    ): InteractiveUiModel.Giveaway
+        status: GameUiModel.Giveaway.Status = GameUiModel.Giveaway.Status.Unknown,
+    ): GameUiModel.Giveaway
 
     fun buildQuiz(
         id: String = "",
         title: String = "",
         waitingDuration: Long = 200L,
-        status: InteractiveUiModel.Quiz.Status = InteractiveUiModel.Quiz.Status.Unknown,
+        status: GameUiModel.Quiz.Status = GameUiModel.Quiz.Status.Unknown,
         listOfChoices: List<QuizChoicesUiModel> = emptyList(),
-    ): InteractiveUiModel.Quiz
+    ): GameUiModel.Quiz
 }

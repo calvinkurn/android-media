@@ -11,10 +11,10 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader_title_chip1"
-            android:layout_width="@dimen/layout_lvl9"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_width="128dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             app:loader_corner_radius="13dp"
             app:loader_type="rect"
             app:layout_constraintStart_toStartOf="parent"
@@ -22,9 +22,9 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader_title_chip2"
-            android:layout_width="@dimen/layout_lvl9"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_margin="@dimen/spacing_lvl2"
+            android:layout_width="128dp"
+            android:layout_height="32dp"
+            android:layout_margin="4dp"
             app:loader_corner_radius="13dp"
             app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/loader_title_chip1"
@@ -32,9 +32,9 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader_title_chip3"
-            android:layout_width="@dimen/layout_lvl9"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_margin="@dimen/spacing_lvl2"
+            android:layout_width="128dp"
+            android:layout_height="32dp"
+            android:layout_margin="4dp"
             app:loader_corner_radius="13dp"
             app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/loader_title_chip2"
@@ -43,17 +43,17 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerUnify"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_lvl1"
-            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_height="2dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loader_title_chip1" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader_PO"
-            android:layout_width="@dimen/layout_lvl8"
-            android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_width="96dp"
+            android:layout_height="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
             app:loader_corner_radius="8dp"
             app:loader_type="rect"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
             layout="@layout/fragment_entrypoint_item_shimmer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loader_PO" />
@@ -74,7 +74,7 @@
             layout="@layout/fragment_entrypoint_item_shimmer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item1" />
@@ -84,7 +84,7 @@
             layout="@layout/fragment_entrypoint_item_shimmer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item2" />

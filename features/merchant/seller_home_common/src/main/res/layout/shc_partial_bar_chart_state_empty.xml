@@ -11,9 +11,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingStart="12dp"
-        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingTop="8dp"
         android:paddingEnd="12dp"
-        android:paddingBottom="@dimen/spacing_lvl3">
+        android:paddingBottom="8dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcBarChartEmptyStateTitle"
@@ -27,7 +27,7 @@
             android:id="@+id/tvShcBarChartEmptyStateDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="8dp"
             android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -37,7 +37,7 @@
             android:id="@+id/tvShcBarChartEmptyStateCta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="8dp"
             android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
             app:typographyWeight="reguler"

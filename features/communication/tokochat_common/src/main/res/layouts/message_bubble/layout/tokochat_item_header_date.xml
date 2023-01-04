@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tokochat_tv_header_date"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true"
+    android:gravity="center"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:textColor="@color/Unify_NN400"
+    app:typographyType="body_3"
+    tools:text="Hari Ini" />

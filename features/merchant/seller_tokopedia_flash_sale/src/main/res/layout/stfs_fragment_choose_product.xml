@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="-10dp">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/chooseproduct_fs_tokopedia_page_title" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@+id/header" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleCriteria"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/chooseproduct_category_criteria_title"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/rvCategory"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rvCategory"
+        app:typographyType="small"
+        app:typographyWeight="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvTitleCriteria"
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        tool:itemCount="1"
+        tool:listitem="@layout/stfs_item_criteria_selection" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/rvCategory" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layoutSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/divider">
+
+        <com.tokopedia.unifycomponents.SearchBarUnify
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            app:search_bar_placeholder="@string/chooseproduct_search_bar_placeholder"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:search_bar_show_icon="false" />
+
+        <com.tokopedia.sortfilter.SortFilter
+            android:id="@+id/sortFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchBar"
+            app:sort_filter_relationship="AND"
+            app:sort_filter_type="quick" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBundle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/cardFooter"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSearch" />
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyStateProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSearch"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_flash_sale_not_found.png"
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStateTitle="@string/chooseproduct_nodata_title"
+        app:unifyEmptyStateType="section" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-12dp"
+        android:layout_marginEnd="-12dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layoutFooter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp"
+            android:paddingTop="8dp"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tfSelectedProductCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                tool:text="0/135"
+                app:typographyType="display_1"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="@string/chooseproduct_product_count_suffix"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="paragraph_3" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnAddProduct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:enabled="false"
+                app:unifyButtonSize="medium"
+                android:text="@string/chooseproduct_add_button_text"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

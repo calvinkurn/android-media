@@ -63,6 +63,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.loader_dialog
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.graphql)

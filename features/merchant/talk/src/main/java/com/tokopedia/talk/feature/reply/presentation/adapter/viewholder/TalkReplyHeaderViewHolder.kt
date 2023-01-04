@@ -40,7 +40,12 @@ class TalkReplyHeaderViewHolder(view: View,
     override fun bind(element: TalkReplyHeaderModel) {
         with(element) {
             showQuestionWithCondition(isMasked, question, maskedContent, allowUnmask, isSeller)
-            showKebabWithConditions(allowReport, allowDelete, onKebabClickedListener)
+            showKebabWithConditions(
+                allowReport = allowReport,
+                allowDelete = allowDelete,
+                allowBlock = allowReport && isSeller,
+                onKebabClickedListener = onKebabClickedListener
+            )
             showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
             showProfilePictureAndNameWithCondition(element.userThumbnail, element.userId.toString())
             showHeaderDateWithCondition(date)
@@ -144,11 +149,21 @@ class TalkReplyHeaderViewHolder(view: View,
         }
     }
 
-    private fun showKebabWithConditions(allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {
-        if (allowReport || allowDelete) {
+    private fun showKebabWithConditions(
+        allowReport: Boolean,
+        allowDelete: Boolean,
+        allowBlock: Boolean,
+        onKebabClickedListener: OnKebabClickedListener
+    ) {
+        if (allowReport || allowDelete || allowBlock) {
             binding.replyHeaderKebab.apply {
                 setOnClickListener {
-                    onKebabClickedListener.onKebabClicked("", allowReport, allowDelete)
+                    onKebabClickedListener.onKebabClicked(
+                        commentId = "",
+                        allowReport = allowReport,
+                        allowDelete = allowDelete,
+                        allowBlock = allowBlock
+                    )
                 }
                 show()
             }

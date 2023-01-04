@@ -3,20 +3,8 @@ package com.tokopedia.buyerorderdetail.presentation.animator
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
 
 class BuyerOrderDetailContentAnimator(
-        private val buyerOrderDetailMotionLayout: BuyerOrderDetailMotionLayout?
+    private val buyerOrderDetailMotionLayout: BuyerOrderDetailMotionLayout?
 ) {
-
-    companion object {
-        private const val DELAY_INITIAL_LOADING_STATE = 500L
-    }
-
-    fun initPage(onTransitionEnd: () -> Unit) {
-        buyerOrderDetailMotionLayout?.run {
-            postDelayed({
-                animateToLoadingState(onTransitionEnd)
-            }, DELAY_INITIAL_LOADING_STATE)
-        }
-    }
 
     fun animateToLoadingState(onTransitionEnd: () -> Unit) {
         buyerOrderDetailMotionLayout?.run {
@@ -32,11 +20,11 @@ class BuyerOrderDetailContentAnimator(
         }
     }
 
-    fun animateToErrorState() {
-        buyerOrderDetailMotionLayout?.transitionToErrorState()
+    fun animateToErrorState(onTransitionEnd: () -> Unit) {
+        buyerOrderDetailMotionLayout?.transitionToErrorState(onTransitionEnd)
     }
 
-    fun animateToEmptyStateError() {
-        buyerOrderDetailMotionLayout?.transitionToEmptyStateError()
+    fun animateToEmptyStateError(onTransitionEnd: () -> Unit) {
+        buyerOrderDetailMotionLayout?.transitionToEmptyStateError(onTransitionEnd)
     }
 }

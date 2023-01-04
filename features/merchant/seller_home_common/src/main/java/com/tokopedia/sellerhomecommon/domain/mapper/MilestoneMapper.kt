@@ -7,7 +7,14 @@ import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetMilestoneDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.domain.model.MissionProgressBar
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneCtaUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MissionButtonUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MissionProgressUiModel
 import javax.inject.Inject
 
 class MilestoneMapper @Inject constructor(
@@ -29,32 +36,36 @@ class MilestoneMapper @Inject constructor(
     ): List<MilestoneDataUiModel> {
         val data = response.fetchMilestoneWidgetData?.data.orEmpty()
         return data.map {
-            val missions = mapGetMilestoneMission(it.mission.orEmpty())
-            val finishCard = mapGetMilestoneFinish(it.finishMission)
-            val areAllMissionsCompleted = missions.all { m -> m.missionCompletionStatus }
-            val allMissions = if (areAllMissionsCompleted) {
-                finishCard.plus(missions)
-            } else {
-                missions.plus(finishCard)
-            }
-            return@map MilestoneDataUiModel(
-                dataKey = it.dataKey.orEmpty(),
-                error = it.errorMsg.orEmpty(),
-                isFromCache = isFromCache,
-                showWidget = it.showWidget.orTrue(),
-                title = it.title.orEmpty(),
-                subTitle = it.subtitle.orEmpty(),
-                backgroundColor = it.backgroundColor.orEmpty(),
-                backgroundImageUrl = it.backgroundImageUrl.orEmpty(),
-                showNumber = it.showNumber.orFalse(),
-                isError = it.error.orFalse(),
-                milestoneProgress = mapGetMilestoneProgressbar(it.progressBar),
-                milestoneMissions = allMissions,
-                milestoneCta = mapGetMilestoneCta(it.cta),
-                deadlineMillis = convertSecondToMillisecond(it.deadlineMillis.orZero()),
-                lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)
-            )
+            mapToUiModel(it, isFromCache)
         }
+    }
+
+    fun mapToUiModel(it: MilestoneData, isFromCache: Boolean): MilestoneDataUiModel {
+        val missions = mapGetMilestoneMission(it.mission.orEmpty())
+        val finishCard = mapGetMilestoneFinish(it.finishMission)
+        val areAllMissionsCompleted = missions.all { m -> m.missionCompletionStatus }
+        val allMissions = if (areAllMissionsCompleted) {
+            finishCard.plus(missions)
+        } else {
+            missions.plus(finishCard)
+        }
+        return MilestoneDataUiModel(
+            dataKey = it.dataKey.orEmpty(),
+            error = it.errorMsg.orEmpty(),
+            isFromCache = isFromCache,
+            showWidget = it.showWidget.orTrue(),
+            title = it.title.orEmpty(),
+            subTitle = it.subtitle.orEmpty(),
+            backgroundColor = it.backgroundColor.orEmpty(),
+            backgroundImageUrl = it.backgroundImageUrl.orEmpty(),
+            showNumber = it.showNumber.orFalse(),
+            isError = it.error.orFalse(),
+            milestoneProgress = mapGetMilestoneProgressbar(it.progressBar),
+            milestoneMissions = allMissions,
+            milestoneCta = mapGetMilestoneCta(it.cta),
+            deadlineMillis = convertSecondToMillisecond(it.deadlineMillis.orZero()),
+            lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)
+        )
     }
 
     private fun convertSecondToMillisecond(seconds: Long): Long {

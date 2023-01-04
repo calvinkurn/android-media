@@ -23,7 +23,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -33,7 +32,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
@@ -57,14 +55,15 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
 import com.tokopedia.home_account.privacy_account.view.LinkAccountWebviewFragment
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
@@ -95,7 +94,6 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_L
 import com.tokopedia.loginfingerprint.view.activity.RegisterFingerprintActivity
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -113,12 +111,11 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -148,6 +145,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     @Inject
     lateinit var tokopediaAnalytics: TokopediaPlusAnalytics
+
+    @Inject
+    lateinit var addVerifyPhoneAnalytics: AddVerifyPhoneAnalytics
 
     @Inject
     lateinit var biometricTracker: BiometricTracker
@@ -557,6 +557,18 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                             duration = Toaster.LENGTH_INDEFINITE
                         ).show()
                     }
+                }
+            }
+            REQUEST_CODE_ADD_PHONE -> {
+                getData()
+                if (resultCode == Activity.RESULT_OK) {
+                    view?.let { Toaster.build(it, getString(R.string.add_phone_success_message)).show() }
+                }
+            }
+            REQUEST_CODE_VERIFY_PHONE -> {
+                getData()
+                if (resultCode == Activity.RESULT_OK) {
+                    view?.let { Toaster.build(it, getString(R.string.verify_phone_success_message)).show() }
                 }
             }
         }
@@ -969,7 +981,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun getData() {
         binding?.homeAccountUserFragmentRv?.scrollToPosition(POSITION_0)
         endlessRecyclerViewScrollListener?.resetState()
-        viewModel.getBuyerData()
+        viewModel.getBuyerData(BiometricPromptHelper.isBiometricAvailableActivity(activity))
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
@@ -1640,14 +1652,22 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun isShown(isShown: Boolean, pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) { }
 
-    override fun onClick(
-        pageSource: String,
-        tokopediaPlusDataModel: TokopediaPlusDataModel
-    ) {
+    override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
-
         val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
         startActivity(intent)
+    }
+
+    override fun onAddPhoneClicked() {
+        addVerifyPhoneAnalytics.sendClickAddPhoneNumberEvent()
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
+    }
+
+    override fun onVerifyPhoneCLicked(phoneNumber: String) {
+        addVerifyPhoneAnalytics.sendClickVerifiedPhoneNumberEvent()
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE_WITH, phoneNumber)
+        startActivityForResult(intent, REQUEST_CODE_VERIFY_PHONE)
     }
 
     override fun onRetry() {
@@ -1666,6 +1686,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REQUEST_CODE_LINK_ACCOUNT = 302
         private const val REQUEST_CODE_REGISTER_BIOMETRIC = 303
         private const val REQUEST_CODE_EXPLICIT_PROFILE = 304
+        private const val REQUEST_CODE_ADD_PHONE = 305
+        private const val REQUEST_CODE_VERIFY_PHONE = 306
 
         private const val START_TRANSITION_PIXEL = 200
         private const val TOOLBAR_TRANSITION_RANNGE_PIXEL = 50

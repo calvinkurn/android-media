@@ -9,10 +9,11 @@ class PlayVideoModelBuilder {
 
     fun buildModel(
         size: Int = 10,
+        isEmpty: Boolean = false,
     ): UserPostModel {
         return UserPostModel(
             playGetContentSlot = PlayGetContentSlot(
-                data = mutableListOf(
+                data = if (isEmpty) emptyList<PlayPostContent>().toMutableList() else mutableListOf(
                     PlayPostContent(
                         hash = "",
                         type = "",
@@ -33,7 +34,7 @@ class PlayVideoModelBuilder {
                                     view = StatsView(
                                         value = "123",
                                         formatted = "123",
-                                    )
+                                    ),
                                 ),
                                 configurations = PlayPostConfigurations(
                                     hasPromo = false,
@@ -42,20 +43,20 @@ class PlayVideoModelBuilder {
                                     ),
                                     promoLabels = emptyList(),
                                 ),
-                                partner = PlayPostContentItem.Partner(
+                                partner = Partner(
                                     id = "1",
-                                    name = "Siapa Yah"
-                                )
+                                    name = "Siapa Yah",
+                                ),
                             )
-                        }
-                    )
+                        },
+                    ),
                 ),
                 playGetContentSlot = PlayGetContentSlotMeta(
                     isAutoplay = true,
                     maxAutoplayInCell = 30,
-                    nextCursor = "",
-                )
-            )
+                    nextCursor = "123",
+                ),
+            ),
         )
     }
 }

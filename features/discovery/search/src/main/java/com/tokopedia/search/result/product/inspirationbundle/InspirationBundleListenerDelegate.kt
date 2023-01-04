@@ -6,7 +6,7 @@ import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.iris.Iris
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView.BundleDataView
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
@@ -18,7 +18,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class InspirationBundleListenerDelegate(
     context: Context?,
-    private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
     private val iris: Iris,
     private val trackingQueue: TrackingQueue,
     searchParameterProvider: SearchParameterProvider,
@@ -53,7 +52,7 @@ class InspirationBundleListenerDelegate(
             product,
             getSearchParameter()
         )
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data)
+        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
     }
 
     override fun onBundleProductClicked(
@@ -67,7 +66,7 @@ class InspirationBundleListenerDelegate(
             getSearchParameter()
         )
 
-        inspirationCarouselTrackingUnification.trackCarouselClick(data)
+        InspirationCarouselTracking.trackCarouselClick(data)
     }
 
     private fun BundleDataView.asSearchComponentTracking() : SearchComponentTracking =

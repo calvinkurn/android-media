@@ -28,4 +28,5 @@ object ApplinkConstInternalPurchasePlatform {
     const val STRING_EXTRA_MESSAGE_TOASTER = "messageToaster"
     const val STRING_EXTRA_COLLECTION_ID = "collectionId"
     const val REQUEST_CODE_ADD_WISHLIST_COLLECTION = 588
+    const val NEED_FINISH_ACTIVITY = "needFinishActivity"
 }

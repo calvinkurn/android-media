@@ -10,7 +10,7 @@
             android:name=".search.activity.EventSearchActivity"
             android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -28,7 +28,7 @@
             android:name=".search.activity.EventCategoryActivity"
             android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -45,7 +45,7 @@
         <activity
             android:name=".pdp.activity.EventPDPTicketActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -62,7 +62,7 @@
         <activity
             android:name=".pdp.activity.EventCheckoutActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -79,7 +79,7 @@
         <activity
             android:name=".pdp.activity.EventPDPFormActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -97,7 +97,7 @@
             android:name=".pdp.activity.EventRedeemActivity"
             android:label="@string/ent_redeem_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -115,7 +115,7 @@
             android:name=".navigation.EventNavigationActivity"
             android:label="@string/ent_home_page_event_hiburan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <nav-graph android:value="@navigation/event_navigation" />
             <intent-filter>

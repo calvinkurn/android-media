@@ -3,7 +3,7 @@ package com.tokopedia.feed_shop.presenter
 import android.content.Context
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.createpost.common.domain.usecase.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -25,6 +25,7 @@ import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -888,12 +889,13 @@ class FeedShopPresenterTest: KolPostLikeListener {
 
     @Test
     fun `add post tag item success should call onAddToCartSuccess`() {
+        val mockCartData = DataModel(success = 1, productId = 12345)
         every {
             atcUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<AddToCartDataModel>>().onCompleted()
             secondArg<Subscriber<AddToCartDataModel>>().onNext(AddToCartDataModel(
-                    data = DataModel(success = 1)
+                    data = mockCartData
             ))
         }
 
@@ -912,7 +914,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         presenter.addPostTagItemToCart(postTagItem)
 
         verify {
-            view.onAddToCartSuccess()
+            view.onAddToCartSuccess(mockCartData.productId.toString())
         }
     }
 

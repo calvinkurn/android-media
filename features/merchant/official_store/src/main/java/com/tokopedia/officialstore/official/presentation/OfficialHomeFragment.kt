@@ -38,11 +38,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OSPerformanceConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
-import com.tokopedia.officialstore.OSFeaturedShopTracking
+import com.tokopedia.officialstore.analytics.OSFeaturedShopTracking
 import com.tokopedia.officialstore.ApplinkConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
@@ -51,7 +50,6 @@ import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
@@ -294,7 +292,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreLiveData.observe(viewLifecycleOwner){ dataModel ->
             removeLoading(dataModel.isCache)
             swipeRefreshLayout?.isRefreshing = false
-            adapter?.submitList(dataModel.dataList)
+            adapter?.submitList(dataModel.dataList.toList())
             if(dataModel.dataList.any { it is OfficialBannerDataModel }){
                 bannerPerformanceMonitoring.stopTrace()
             }
@@ -485,12 +483,13 @@ class OfficialHomeFragment :
         val applink = gridData.applink
 
         gridData.let {
-            tracking?.dynamicChannelHomeComponentClick(
-                    viewModel.currentSlug,
+            tracking?.clickLego36Image(
+                    viewModel.currentSlugDC,
                     channelModel.channelHeader.name,
                     (position + POS_1).toString(POS_10),
                     it,
-                    channelModel
+                    channelModel,
+                    getUserId()
             )
         }
 
@@ -499,45 +498,14 @@ class OfficialHomeFragment :
 
     override fun legoImpression(channelModel: ChannelModel) {
         if (!sentDynamicChannelTrackers.contains(channelModel.id)) {
-            tracking?.dynamicChannelHomeComponentImpression(viewModel.currentSlug, channelModel)
+            tracking?.impressionLego36Image(viewModel.currentSlugDC, channelModel, getUserId())
             sentDynamicChannelTrackers.add(channelModel.id)
         }
     }
 
-    override fun onClickLegoHeaderActionTextListener(applink: String): View.OnClickListener {
+    override fun onClickFlashSaleActionText(applink: String, channelId: String, headerName: String): View.OnClickListener {
         return View.OnClickListener {
-            RouteManager.route(context, applink)
-        }
-    }
-
-    override fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener {
-        return View.OnClickListener {
-            channelData.grids.getOrNull(position)?.let { gridData ->
-                val applink = gridData.applink
-
-                tracking?.dynamicChannelImageClick(
-                        viewModel.currentSlug,
-                        channelData.header?.name ?: "",
-                        (position + POS_1).toString(POS_10),
-                        gridData,
-                        channelData
-                )
-
-                RouteManager.route(context, applink)
-            }
-        }
-    }
-
-    override fun legoImpression(channelData: Channel) {
-        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            tracking?.dynamicChannelImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id)
-        }
-    }
-
-    override fun onClickFlashSaleActionText(applink: String, headerId: Long): View.OnClickListener {
-        return View.OnClickListener {
-            tracking?.flashSaleActionTextClick(viewModel.currentSlug, headerId)
+            tracking?.flashSaleClickViewAll(viewModel.currentSlugDC, channelId, headerName)
             RouteManager.route(context, applink)
         }
     }
@@ -546,15 +514,13 @@ class OfficialHomeFragment :
         return View.OnClickListener {
             channelData.grids.getOrNull(position)?.let { gridData ->
                 val applink = gridData.applink
-                val campaignId = channelData.campaignID
-                val campaignCode = channelData.campaignCode
                 tracking?.flashSalePDPClick(
-                        viewModel.currentSlug,
+                        viewModel.currentSlugDC,
                         channelData.header?.name ?: "",
                         (position + POS_1).toString(POS_10),
                         gridData,
-                        campaignId,
-                        campaignCode
+                        channelData.id,
+                        getUserId()
                 )
                 RouteManager.route(context, applink)
             }
@@ -564,113 +530,22 @@ class OfficialHomeFragment :
 
     override fun flashSaleImpression(channelData: Channel) {
         if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            val campaignId = channelData.campaignID
-            tracking?.flashSaleImpression(viewModel.currentSlug, channelData, campaignId)
+            tracking?.flashSaleImpression(viewModel.currentSlugDC, channelData, getUserId())
             sentDynamicChannelTrackers.add(channelData.id)
         }
-    }
-
-    override fun onClickMixActionText(applink: String): View.OnClickListener {
-        return View.OnClickListener {
-            RouteManager.route(context, applink)
-        }
-    }
-
-    override fun onClickMixImage(channelData: Channel, position: Int): View.OnClickListener {
-        return View.OnClickListener {
-            channelData.grids.getOrNull(position)?.let { gridData ->
-                val applink = gridData.applink
-                tracking?.dynamicChannelMixCardClick(
-                        viewModel.currentSlug,
-                        channelData.header?.name ?: "",
-                        (position + POS_1).toString(POS_10),
-                        gridData,
-                        channelData.campaignCode,
-                        channelData.campaignID.toString()
-                )
-
-                RouteManager.route(context, applink)
-            }
-
-        }
-    }
-
-    override fun onClickMixBanner(channelData: Channel): View.OnClickListener {
-        return View.OnClickListener {
-            val bannerData = channelData.banner
-            val applink = bannerData?.applink ?: ""
-
-            bannerData?.let {
-                tracking?.dynamicChannelMixBannerClick(
-                        viewModel.currentSlug,
-                        channelData.header?.name ?: "",
-                        it,
-                        channelData
-                )
-            }
-
-            RouteManager.route(context, applink)
-        }
-    }
-
-    override fun mixImageImpression(channelData: Channel) {
-        val impressionTag = "Images Impression"
-
-        if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
-            tracking?.dynamicChannelMixCardImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id + impressionTag)
-        }
-    }
-
-    override fun mixBannerImpression(channelData: Channel) {
-        val impressionTag = "Banner Impression"
-
-        if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
-            tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id + impressionTag)
-        }
-    }
-
-    override fun onFlashSaleCardImpressed(position: Int, grid: Grid, channel: Channel) {
-        tracking?.flashSaleCardImpression(
-                viewModel.currentSlug,
-                channel,
-                grid,
-                position.toString(),
-                isLogin()
-        )
-    }
-
-    override fun onMixFlashSaleSeeAllClicked(channel: Channel, applink: String) {
-        tracking?.seeAllMixFlashSaleClicked(
-                viewModel.currentSlug,
-                channel
-        )
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(context, applink)
-        }
-    }
-
-    override fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String) {
-        tracking?.flashSaleCardClicked(
-                viewModel.currentSlug,
-                channel,
-                grid,
-                position.toString(),
-                isLogin()
-        )
-        RouteManager.route(context, applink)
     }
 
     override fun onClickMixTopBannerItem(applink: String) {
         RouteManager.route(context, applink)
     }
 
-    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String) {
+    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, headerName: String, channelBannerAttribution: String) {
         tracking?.mixTopBannerCtaButtonClicked(
-                viewModel.currentSlug,
+                viewModel.currentSlugDC,
                 cta.text,
-                channelId
+                channelId,
+                headerName,
+                channelBannerAttribution
         )
         if (cta.couponCode.isEmpty()) {
             RouteManager.route(context, applink)
@@ -681,42 +556,27 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickMixLeftBannerImage(channel: Channel, position: Int) {
-        if (RouteManager.route(context, channel.banner?.applink.orEmpty())) {
-            tracking?.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position)
-        }
-    }
-
-
-
-    override fun onMixLeftBannerImpressed(channel: Channel, position: Int) {
-        tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
-    }
-
     override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
-        tracking?.trackerObj?.sendEnhanceEcommerceEvent(
-                OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
-        RouteManager.route(context, channel.channelBanner?.applink.orEmpty())
+        tracking?.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position, getUserId())
+        RouteManager.route(context, channel.channelBanner.applink)
     }
 
     override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
-        tracking?.trackingQueueObj?.putEETracking(
-                OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position, getUserId()) as HashMap<String, Any>)
+        tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position, getUserId())
     }
 
-    override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {
-        tracking?.flashSaleCardImpressionComponent(
+    override fun onProductCardImpressed(position: Int, grid: ChannelGrid, channel: ChannelModel) {
+        tracking?.carouselProductCardImpression(
                 viewModel.currentSlugDC,
                 channel,
                 grid,
                 position.toString(),
-                isLogin(),
                 getUserId()
         )
     }
 
-    override fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String) {
-        tracking?.seeAllMixFlashSaleClickedComponent(
+    override fun onCarouselSeeAllCardClicked(channel: ChannelModel, applink: String) {
+        tracking?.carouselViewAllCardClicked(
                 viewModel.currentSlugDC,
                 channel
         )
@@ -741,8 +601,8 @@ class OfficialHomeFragment :
         return tracking
     }
 
-    override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
-        tracking?.seeAllBannerFlashSaleClickedComponent(
+    override fun onCarouselSeeAllHeaderClicked(channel: ChannelModel, applink: String) {
+        tracking?.carouselHeaderSeeAllClick(
                 viewModel.currentSlugDC,
                 channel
         )
@@ -751,13 +611,12 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
-        tracking?.flashSaleCardClickedComponent(
+    override fun onProductCardClicked(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
+        tracking?.carouselProductCardClicked(
                 viewModel.currentSlugDC,
                 channel,
                 grid,
-                position,
-                isLogin(),
+                position.toString(),
                 getUserId()
         )
         RouteManager.route(context, applink)
@@ -792,27 +651,25 @@ class OfficialHomeFragment :
     }
 
     override fun onFeaturedShopDCClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        tracking?.trackingQueueObj?.putEETracking(
-                OSFeaturedShopTracking.getEventClickShopWidget(
-                        channel = channelModel,
-                        grid = channelGrid,
-                        categoryName = category?.title?:"",
-                        bannerPosition = position,
-                        userId = userSession.userId
-                ) as HashMap<String, Any>
+        OSFeaturedShopTracking.getEventClickShopWidget(
+            channel = channelModel,
+            grid = channelGrid,
+            categoryName = category?.title?:"",
+            bannerPosition = position,
+            userId = userSession.userId
         )
         goToApplink(channelGrid.applink)
     }
 
     override fun onFeaturedShopDCImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        tracking?.trackerObj?.sendEnhanceEcommerceEvent(
+        tracking?.trackingQueueObj?.putEETracking(
                 OSFeaturedShopTracking.getEventImpressionShopWidget(
                         channel = channelModel,
                         grid = channelGrid,
                         categoryName = category?.title?:"",
                         bannerPosition = position,
                         userId = userSession.userId
-                ) as HashMap<String, Any>
+                )
         )
 
         viewModel.recordShopWidgetImpression(channelModel.id, channelGrid.id)
@@ -921,9 +778,6 @@ class OfficialHomeFragment :
         setLoadMoreListener()
         swipeRefreshLayout?.setOnRefreshListener {
             viewModel.counterTitleShouldBeRendered = 0
-            viewModel.removeRecommendation()
-            viewModel.removeRecomWidget()
-            viewModel.removeTopAdsHeadlineWidget()
             loadData(true)
             viewModel.resetShopWidgetImpressionCount()
             viewModel.resetIsFeatureShopAllowed()

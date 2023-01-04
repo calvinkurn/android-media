@@ -21,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Unify_N50"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <LinearLayout
             android:id="@+id/add_comment_area"
@@ -45,17 +46,26 @@
                 tools:listitem="@layout/chatbot_item_quick_reply"
                 tools:visibility="visible" />
 
-            <include
-                android:id="@+id/compose_area"
-                layout="@layout/compose_message_area"
+            <com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/small_reply_box"
+                android:visibility="visible"
+                tools:visibility="visible"/>
+
+            <com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
+                android:id="@+id/big_reply_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                tools:visibility="visible"/>
 
             <FrameLayout
                 android:id="@+id/rv_attachment_menu_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <View
                     android:layout_width="match_parent"
@@ -81,7 +91,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/spacing_lvl3"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
 
     </LinearLayout>
@@ -91,6 +102,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        tools:visibility="visible"
+        app:enableAutoSlide="true"
         app:tickerShapeType="full" />
 
     <androidx.cardview.widget.CardView

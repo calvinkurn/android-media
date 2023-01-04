@@ -14,8 +14,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.ItemProductbundleMultipleWidgetBinding
 import com.tokopedia.productbundlewidget.adapter.ProductBundleMultipleAdapter
+import com.tokopedia.productbundlewidget.adapter.constant.ProductBundleConstant.MAX_PRODUCT_DISPLAYED
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.productbundlewidget.model.BundleProductGroupingHelper.groupDataSet
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productbundlewidget.model.BundleShopUiModel
 import com.tokopedia.productbundlewidget.model.BundleUiModel
@@ -78,7 +80,7 @@ class ProductBundleMultipleViewHolder(
 
         initPreorderAndSoldItem(bundleDetail)
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
-        initBundleProductsRecyclerView(bundleDetail.products.size, bundle, bundleDetail)
+        initBundleProductsRecyclerView(bundle, bundleDetail)
         initActionButton(bundle.actionButtonText, bundleDetail.isPreOrder)
         initListener(bundle, bundleDetail, bundleDetail.products)
     }
@@ -88,7 +90,8 @@ class ProductBundleMultipleViewHolder(
             bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
             bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
             bundleDetail.totalSold.isZero() -> ""
-            else -> itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+            else -> itemView.context.getString(R.string.product_bundle_bundle_sold,
+                bundleDetail.totalSold.toString())
         }
     }
 
@@ -110,10 +113,16 @@ class ProductBundleMultipleViewHolder(
     }
 
     private fun initBundleProductsRecyclerView(
-        spanSize: Int,
         bundle: BundleUiModel,
         bundleDetail: BundleDetailUiModel
     ) {
+        val displayedProducts: List<BundleProductUiModel>
+        val groupedProducts: List<BundleProductUiModel>
+        groupDataSet(bundleDetail.products).apply {
+            displayedProducts = first
+            groupedProducts = second
+        }
+        val spanSize = bundleDetail.products.size.coerceAtMost(MAX_PRODUCT_DISPLAYED)
         rvBundleProducts?.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
@@ -121,7 +130,8 @@ class ProductBundleMultipleViewHolder(
             addItemDecoration(MultipleBundleItemDecoration(context))
         }
         (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
-            bundleDetail.products,
+            displayedProducts,
+            groupedProducts,
             bundleDetail,
             bundle
         )

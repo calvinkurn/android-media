@@ -72,4 +72,8 @@ class CMHomeWidgetViewHolder(
         binding?.cmHomeWidget?.visibility = View.GONE
         callback.onRemoveCMWidgetLocally()
     }
+
+    override fun updateCmMHomeWidget() {
+        callback.getCMHomeWidget()
+    }
 }

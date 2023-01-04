@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/Unify_N50"
     android:orientation="vertical"
-    android:padding="@dimen/layout_lvl2">
+    android:padding="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmQuitPmMessage"
@@ -20,7 +20,7 @@
         android:id="@+id/btnPmCancelQuitSubmission"
         android:layout_width="@dimen/pm_spacing_180dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/pm_cancel_submission"
         android:textStyle="bold"

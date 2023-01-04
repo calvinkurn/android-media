@@ -25,8 +25,8 @@
             "appUrl": "tokopedia://product/209231803",
             "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2527&event=click&experimentVersion=v1.4&page=1&page_name=pdp_1&pid=209231803&pos=1&recommendation=shop_by_product_category&rectype=shop_by_product_category&redirect=https://www.tokopedia.com/safetyfirstjkt/penutup-penyumbat-telinga-earplug-howard-leight-max-30-original?catid2527=%26ref=pdp_1_pa1_po1%26src=r3shop_by_product_category&tid=mUg6EdbPy87xtb-WWSVMB7Fm-bI=&uid=1178254&unique_id=&utime=1585720740&widget=r3_widget&xdevice=android-3.68",
             "wishlistUrl": "",
-            "trackerImageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/9/14/0/0_4cd2d98d-5076-493b-b1a8-3afdc99487c1_300_300.jpg",
-            "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/9/14/0/0_4cd2d98d-5076-493b-b1a8-3afdc99487c1_300_300.jpg",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2017/9/14/0/0_4cd2d98d-5076-493b-b1a8-3afdc99487c1_300_300.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2017/9/14/0/0_4cd2d98d-5076-493b-b1a8-3afdc99487c1_300_300.jpg",
             "price": "Rp 5.000",
             "priceInt": 5000,
             "discountPercentage": 0,
@@ -43,7 +43,7 @@
             "badges": [],
             "freeOngkir": {
               "isActive": true,
-              "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
             },
             "rating": 5,
             "countReview": 77,
@@ -59,8 +59,8 @@
             "appUrl": "tokopedia://product/292963924",
             "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2527&event=click&experimentVersion=v1.4&page=1&page_name=pdp_1&pid=292963924&pos=2&recommendation=shop_by_product_category&rectype=shop_by_product_category&redirect=https://www.tokopedia.com/safetyfirstjkt/earplug-ultrafit-3m-340-4004-original-penutup-telinga-25-db-non-case?catid2527=%26ref=pdp_1_pa1_po2%26src=r3shop_by_product_category&tid=mUg6EdbPy87xtb-WWSVMB7Fm-bI=&uid=1178254&unique_id=&utime=1585720740&widget=r3_widget&xdevice=android-3.68",
             "wishlistUrl": "",
-            "trackerImageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/24/11522372/11522372_62a9a1b9-9f44-4f3a-83f6-89bc2a116899_400_400.jpg",
-            "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/24/11522372/11522372_62a9a1b9-9f44-4f3a-83f6-89bc2a116899_400_400.jpg",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/24/11522372/11522372_62a9a1b9-9f44-4f3a-83f6-89bc2a116899_400_400.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/24/11522372/11522372_62a9a1b9-9f44-4f3a-83f6-89bc2a116899_400_400.jpg",
             "price": "Rp 13.500",
             "priceInt": 13500,
             "discountPercentage": 0,
@@ -76,12 +76,12 @@
             "departmentId": 2527,
             "badges": [
               {
-                "imageUrl": "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
               }
             ],
             "freeOngkir": {
               "isActive": true,
-              "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
             },
             "rating": 5,
             "countReview": 21,
@@ -97,8 +97,8 @@
             "appUrl": "tokopedia://product/202154073",
             "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4223&event=click&experimentVersion=v1.4&page=1&page_name=pdp_1&pid=202154073&pos=3&recommendation=shop_by_product&rectype=shop_by_product&redirect=https://www.tokopedia.com/safetyfirstjkt/penutup-telinga-earplug-penyumbat-telinga-sekelas-ultrafit-3m?catid4223=%26ref=pdp_1_pa1_po3%26src=r3shop_by_product&tid=mUg6EdbPy87xtb-WWSVMB7Fm-bI=&uid=1178254&unique_id=&utime=1585720740&widget=r3_widget&xdevice=android-3.68",
             "wishlistUrl": "",
-            "trackerImageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/6/11522372/11522372_30ab2f40-20ca-4deb-ab24-6fabc31cc01c_1280_1280",
-            "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/6/11522372/11522372_30ab2f40-20ca-4deb-ab24-6fabc31cc01c_1280_1280",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/6/11522372/11522372_30ab2f40-20ca-4deb-ab24-6fabc31cc01c_1280_1280",
+            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/6/11522372/11522372_30ab2f40-20ca-4deb-ab24-6fabc31cc01c_1280_1280",
             "price": "Rp 5.000",
             "priceInt": 5000,
             "discountPercentage": 0,
@@ -114,12 +114,12 @@
             "departmentId": 4223,
             "badges": [
               {
-                "imageUrl": "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
               }
             ],
             "freeOngkir": {
               "isActive": true,
-              "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
             },
             "rating": 5,
             "countReview": 152,
@@ -135,8 +135,8 @@
             "appUrl": "tokopedia://product/287703356",
             "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2520&event=click&experimentVersion=v1.4&page=1&page_name=pdp_1&pid=287703356&pos=4&recommendation=shop_by_product&rectype=shop_by_product&redirect=https://www.tokopedia.com/safetyfirstjkt/masker-3m-3200-halfpiece-face-mask-original-mask-only-respirator?catid2520=%26ref=pdp_1_pa1_po4%26src=r3shop_by_product&tid=mUg6EdbPy87xtb-WWSVMB7Fm-bI=&uid=1178254&unique_id=&utime=1585720740&widget=r3_widget&xdevice=android-3.68",
             "wishlistUrl": "",
-            "trackerImageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/9/11522372/11522372_ceac4568-e18d-43eb-9d4f-da6cc9d35982_1000_709.jpg",
-            "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/9/11522372/11522372_ceac4568-e18d-43eb-9d4f-da6cc9d35982_1000_709.jpg",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/9/11522372/11522372_ceac4568-e18d-43eb-9d4f-da6cc9d35982_1000_709.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/9/11522372/11522372_ceac4568-e18d-43eb-9d4f-da6cc9d35982_1000_709.jpg",
             "price": "Rp 160.000",
             "priceInt": 160000,
             "discountPercentage": 0,
@@ -152,12 +152,12 @@
             "departmentId": 2520,
             "badges": [
               {
-                "imageUrl": "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
               }
             ],
             "freeOngkir": {
               "isActive": true,
-              "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
             },
             "rating": 5,
             "countReview": 21,
@@ -173,8 +173,8 @@
             "appUrl": "tokopedia://product/253780592",
             "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2520&event=click&experimentVersion=v1.4&page=1&page_name=pdp_1&pid=253780592&pos=5&recommendation=shop_by_product&rectype=shop_by_product&redirect=https://www.tokopedia.com/safetyfirstjkt/3m-original-3700-particulate-filter-holder-untuk-masker-3m-3200?catid2520=%26ref=pdp_1_pa1_po5%26src=r3shop_by_product&tid=mUg6EdbPy87xtb-WWSVMB7Fm-bI=&uid=1178254&unique_id=&utime=1585720740&widget=r3_widget&xdevice=android-3.68",
             "wishlistUrl": "",
-            "trackerImageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/1/22/11522372/11522372_d56c2b00-ab5c-4073-a2d2-9cfa2cc59840_800_800.jpg",
-            "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/1/22/11522372/11522372_d56c2b00-ab5c-4073-a2d2-9cfa2cc59840_800_800.jpg",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/1/22/11522372/11522372_d56c2b00-ab5c-4073-a2d2-9cfa2cc59840_800_800.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/1/22/11522372/11522372_d56c2b00-ab5c-4073-a2d2-9cfa2cc59840_800_800.jpg",
             "price": "Rp 50.000",
             "priceInt": 50000,
             "discountPercentage": 0,
@@ -190,12 +190,12 @@
             "departmentId": 2520,
             "badges": [
               {
-                "imageUrl": "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
               }
             ],
             "freeOngkir": {
               "isActive": true,
-              "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
             },
             "rating": 5,
             "countReview": 29,
@@ -211,8 +211,8 @@
             "appUrl": "tokopedia://product/287369304",
             "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2520&event=click&experimentVersion=v1.4&page=1&page_name=pdp_1&pid=287369304&pos=6&recommendation=shop_by_product&rectype=shop_by_product&redirect=https://www.tokopedia.com/safetyfirstjkt/3m-3744k-particulate-filter-organic-respirator-gas-catridge-original?catid2520=%26ref=pdp_1_pa1_po6%26src=r3shop_by_product&tid=mUg6EdbPy87xtb-WWSVMB7Fm-bI=&uid=1178254&unique_id=&utime=1585720740&widget=r3_widget&xdevice=android-3.68",
             "wishlistUrl": "",
-            "trackerImageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/8/11522372/11522372_f2d0c64e-60cd-4086-9102-c8a37028a03b_300_300.jpg",
-            "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/5/8/11522372/11522372_f2d0c64e-60cd-4086-9102-c8a37028a03b_300_300.jpg",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/8/11522372/11522372_f2d0c64e-60cd-4086-9102-c8a37028a03b_300_300.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/8/11522372/11522372_f2d0c64e-60cd-4086-9102-c8a37028a03b_300_300.jpg",
             "price": "Rp 220.000",
             "priceInt": 220000,
             "discountPercentage": 0,
@@ -228,12 +228,12 @@
             "departmentId": 2520,
             "badges": [
               {
-                "imageUrl": "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
               }
             ],
             "freeOngkir": {
               "isActive": true,
-              "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
             },
             "rating": 5,
             "countReview": 22,

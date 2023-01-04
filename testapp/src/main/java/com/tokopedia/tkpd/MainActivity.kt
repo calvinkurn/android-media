@@ -12,14 +12,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.dilayanitokopedia.home.presentation.activity.DtHomeActivity
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
-import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
-import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.watch.TokopediaWatchActivity
 import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_testapp)
         userSession = UserSession(this)
-        userSession.setFirstTimeUserOnboarding(false)
 
         if (TokopediaUrl.getInstance().GQL.contains("staging")) {
             testapp_environment?.text = "STAGING URL"
@@ -98,9 +94,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoginStatus() {
-        if(userSession.isLoggedIn) {
-            val identity = if(userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            loginButton?.text = "Logged in as:\n${identity}"
+        if (userSession.isLoggedIn) {
+            val identity = if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
+            loginButton?.text = "Logged in as:\n$identity"
             logoutButton.visibility = View.VISIBLE
         } else {
             loginButton?.text = "Login"
@@ -121,15 +117,11 @@ class MainActivity : AppCompatActivity() {
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
         val appLink = etAppLink.text.toString()
-        if(appLink.isNotBlank())
+        if (appLink.isNotBlank()) {
             RouteManager.route(this, appLink)
-//        else
-//            startActivity(Intent(applicationContext, MainParentActivity::class.java))
-
-        startActivity(Intent(this,DtHomeActivity::class.java))
-//        startActivity(Intent(this,TokoNowHomeActivity::class.java))
-//        startActivity(Intent(this,MainParentActivity::class.java))
-//        tokopedia://discovery/dilayani-tokopedia?source=search-autocomplete.04.01.01
+        } else {
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getDefaultAppLink(): String {
@@ -137,8 +129,5 @@ class MainActivity : AppCompatActivity() {
          * Put your default applink here
          */
         return ""
-//        return "tokopedia-android-internal://dilayani-tokopedia/home"
-//        return "tokopedia://discovery/dilayani-tokopedia?source=search-autocomplete.04.01.01"
-
     }
 }

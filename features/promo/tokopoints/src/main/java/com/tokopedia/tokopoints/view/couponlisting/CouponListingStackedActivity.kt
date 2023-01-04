@@ -45,6 +45,12 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
     private val mPresenter: StackedCouponActivtyViewModel by lazy { ViewModelProviders.of(this, factory)[StackedCouponActivtyViewModel::class.java] }
 
+    override val activityContext: Context?
+        get() = this
+
+    override val appContext: Context?
+        get() = applicationContext
+
     override fun getToolbarResourceID(): Int {
         return R.id.toolbar_coupon_listing_tokopoint
     }
@@ -198,14 +204,6 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     override fun onError(error: String, hasInternet: Boolean) {
         container?.displayedChild = 2
         server_error_view.showErrorUi(hasInternet)
-    }
-
-    override fun getAppContext(): Context {
-        return applicationContext
-    }
-
-    override fun getActivityContext(): Context {
-        return this
     }
 
     override fun getStringRaw(id: Int): String {

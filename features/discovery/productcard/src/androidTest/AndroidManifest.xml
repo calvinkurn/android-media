@@ -24,5 +24,9 @@
             android:name=".list.ProductCardListViewStubActivityTest"
             android:theme="@style/Theme.White"/>
 
+        <activity
+            android:name=".generator.ProductCardIDGeneratorActivityTest"
+            android:theme="@style/Theme.White"/>
+
     </application>
 </manifest>
