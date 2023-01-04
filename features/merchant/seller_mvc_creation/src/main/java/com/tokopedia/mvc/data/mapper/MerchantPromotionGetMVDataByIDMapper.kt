@@ -21,7 +21,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 voucherId,
                 shopId,
                 voucherName,
-                PromoType.values().firstOrNull { value -> value.id == voucherDiscountType }
+                PromoType.values().firstOrNull { value -> value.id == voucherType }
                     ?: PromoType.FREE_SHIPPING,
                 voucherImage,
                 voucherImageSquare,
