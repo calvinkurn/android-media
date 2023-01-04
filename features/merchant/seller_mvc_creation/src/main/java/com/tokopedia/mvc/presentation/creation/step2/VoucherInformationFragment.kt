@@ -10,8 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_MINUTE_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherInformationBinding
@@ -22,6 +24,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherPeriodSect
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherTargetSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.bottomsheet.SelectRepeatPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditCalendarBottomSheet
@@ -34,6 +37,7 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.convertUnsafeDateTime
 import com.tokopedia.mvc.util.extension.setToAllCapsMode
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -156,9 +160,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             state.voucherCodeErrorMsg
         )
         renderVoucherRecurringToggleChanges(state.voucherConfiguration)
-        renderVoucherStartPeriodSelection(state.voucherConfiguration)
-        renderVoucherEndPeriodSelection(state.voucherConfiguration)
+        renderVoucherStartPeriodSelection(state.voucherConfiguration, state.isStartDateError, state.startDateErrorMsg)
+        renderVoucherEndPeriodSelection(state.voucherConfiguration, state.isEndDateError, state.endDateErrorMsg)
         renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
+        renderAvailableRecurringPeriod(state.voucherConfiguration, state.validationDate)
         renderButtonValidation(state.isInputValid())
     }
 
@@ -415,7 +420,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun onClickListenerForEndDate() {
         context?.run {
             DateTimeUtils.getMinDate(endCalendar)?.let { minDate ->
-                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
+                DateTimeUtils.getMaxDate(endCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             endCalendar,
@@ -459,16 +464,18 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun renderVoucherRecurringToggleChanges(voucherConfiguration: VoucherConfiguration) {
         voucherPeriodSectionBinding?.run {
             tfRepeat.isVisible = voucherConfiguration.isPeriod
-            recurringPeriodView.run {
-                isVisible = voucherConfiguration.isPeriod
-                isShowOtherScheduleButton = voucherConfiguration.totalPeriod > Int.ONE
-            }
         }
     }
 
-    private fun renderVoucherStartPeriodSelection(voucherConfiguration: VoucherConfiguration) {
+    private fun renderVoucherStartPeriodSelection(
+        voucherConfiguration: VoucherConfiguration,
+        isStartDateError: Boolean,
+        startDateErrorMsg: String
+    ) {
         voucherPeriodSectionBinding?.run {
             tfVoucherStartPeriod.run {
+                isInputError = isStartDateError
+                setMessage(startDateErrorMsg)
                 editText.setText(
                     voucherConfiguration.startPeriod.formatTo(
                         DATE_TIME_MINUTE_PRECISION
@@ -478,9 +485,15 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderVoucherEndPeriodSelection(voucherConfiguration: VoucherConfiguration) {
+    private fun renderVoucherEndPeriodSelection(
+        voucherConfiguration: VoucherConfiguration,
+        isEndDateError: Boolean,
+        endDateErrorMsg: String
+    ) {
         voucherPeriodSectionBinding?.run {
             tfVoucherEndPeriod.run {
+                isInputError = isEndDateError
+                setMessage(endDateErrorMsg)
                 editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
             }
         }
@@ -495,6 +508,51 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         voucherConfiguration.totalPeriod
                     )
                 )
+            }
+        }
+    }
+
+    private fun renderAvailableRecurringPeriod(
+        voucherConfiguration: VoucherConfiguration,
+        validationDate: List<VoucherValidationResult.ValidationDate>
+    ) {
+        voucherPeriodSectionBinding?.run {
+            val availableDate = validationDate
+            val unAvailableDate = validationDate.filter { !it.available }
+            if (availableDate.isNotEmpty()) {
+                recurringPeriodView.run {
+                    isVisible = voucherConfiguration.isPeriod
+                    val firstPeriodStartDate = DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        availableDate.first().dateStart
+                    )
+                    val firstPeriodStartHour = availableDate.first().hourStart
+                    val firstPeriodEndDate = DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        availableDate.first().dateEnd
+                    )
+                    val firstPeriodEndHour = availableDate.first().hourEnd
+                    firstSchedule =
+                        "$firstPeriodStartDate, $firstPeriodStartHour - $firstPeriodEndDate, $firstPeriodEndHour"
+
+                    val secondPeriodStartDate = DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        availableDate[Int.ONE].dateStart
+                    )
+                    val secondPeriodStartHour = availableDate[Int.ONE].hourStart
+                    val secondPeriodEndDate = DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        availableDate[Int.ONE].dateEnd
+                    )
+                    val secondPeriodEndHour = availableDate[Int.ONE].hourEnd
+                    secondSchedule =
+                        "$secondPeriodStartDate, $secondPeriodStartHour - $secondPeriodEndDate, $secondPeriodEndHour"
+                    isShowOtherScheduleButton = voucherConfiguration.totalPeriod > Int.ONE
+                }
             }
         }
     }

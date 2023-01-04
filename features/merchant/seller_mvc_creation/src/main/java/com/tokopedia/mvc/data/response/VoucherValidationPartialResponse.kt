@@ -20,7 +20,7 @@ data class VoucherValidationPartialResponse(
             @SerializedName("total_available_quota")
             val totalAvailableQuota: Int = 0,
             @SerializedName("validation_date")
-            val validationDate: List<VoucherValidationResult.ValidationDate> = listOf(),
+            val validationDate: List<ValidationDate> = listOf(),
             @SerializedName("validation_error")
             val validationError: ValidationError = ValidationError(),
             @SerializedName("validation_product")
@@ -96,6 +96,25 @@ data class VoucherValidationPartialResponse(
                     val stock: Int = 0
                 )
             }
+
+            data class ValidationDate(
+                @SerializedName("date_end")
+                val endDate: String = "",
+                @SerializedName("date_start")
+                val startDate: String = "",
+                @SerializedName("hour_end")
+                val endHour: String = "",
+                @SerializedName("hour_start")
+                val startHour: String = "",
+                @SerializedName("total_live_time")
+                val totalLiveTime: String = "",
+                @SerializedName("available")
+                val available: Boolean = false,
+                @SerializedName("not_available_reason")
+                val notAvailableReason: String = "",
+                @SerializedName("type")
+                val type: Int = 0,
+            )
         }
 
         data class Header(

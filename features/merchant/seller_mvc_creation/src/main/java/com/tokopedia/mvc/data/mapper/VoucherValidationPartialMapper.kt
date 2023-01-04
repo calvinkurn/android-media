@@ -26,10 +26,10 @@ class VoucherValidationPartialMapper @Inject constructor() {
     private fun VoucherValidationPartialResponse.VoucherValidationPartial.Data.toValidationDate(): List<VoucherValidationResult.ValidationDate> {
         return this.validationDate.map {
             VoucherValidationResult.ValidationDate(
-                it.dateEnd,
-                it.dateStart,
-                it.hourEnd,
-                it.hourStart,
+                it.endDate,
+                it.startDate,
+                it.endHour,
+                it.startHour,
                 it.totalLiveTime,
                 it.available,
                 it.notAvailableReason,

@@ -145,7 +145,15 @@ class VoucherValidationPartialUseCase @Inject constructor(
             targetBuyer = param.targetBuyer.id,
             couponName = param.couponName,
             isPublic = isPublic,
-            code = param.code
+            code = param.code,
+            isPeriod = param.isPeriod,
+            periodType = param.periodType,
+            periodRepeat = param.periodRepeat,
+            totalPeriod = param.totalPeriod,
+            startDate = param.startDate,
+            endDate = param.endDate,
+            startHour = param.startHour,
+            endHour = param.endHour
         )
 
         val params = mapOf(REQUEST_PARAM_VOUCHER_VALIDATION_PARTIAL_INPUT to payload)
@@ -168,7 +176,15 @@ class VoucherValidationPartialUseCase @Inject constructor(
         val targetBuyer: VoucherTargetBuyer,
         val couponName: String,
         val isPublic: Boolean,
-        val code: String
+        val code: String,
+        val isPeriod: Boolean,
+        val periodType: Int,
+        val periodRepeat: Int,
+        val totalPeriod: Int,
+        val startDate: String,
+        val endDate: String,
+        val startHour: String,
+        val endHour: String
     )
 }
 

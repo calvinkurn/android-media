@@ -2,6 +2,8 @@ package com.tokopedia.mvc.presentation.creation.step2
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
@@ -108,17 +110,30 @@ class VoucherInformationViewModel @Inject constructor(
                     targetBuyer = voucherConfiguration.targetBuyer,
                     couponName = voucherConfiguration.voucherName,
                     isPublic = voucherConfiguration.isVoucherPublic,
-                    code = voucherConfiguration.voucherCode
+                    code = voucherConfiguration.voucherCode,
+                    isPeriod = voucherConfiguration.isPeriod,
+                    periodType = voucherConfiguration.periodType,
+                    periodRepeat = voucherConfiguration.periodRepeat,
+                    totalPeriod = voucherConfiguration.totalPeriod,
+                    startDate = voucherConfiguration.startPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
+                    endDate = voucherConfiguration.endPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
+                    startHour = voucherConfiguration.startPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
+                    endHour = voucherConfiguration.endPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION)
                 )
                 val validationResult =
-                    voucherValidationPartialUseCase.execute(voucherValidationParam).validationError
+                    voucherValidationPartialUseCase.execute(voucherValidationParam)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        isVoucherNameError = validationResult.couponName.isNotBlank(),
-                        voucherNameErrorMsg = validationResult.couponName,
-                        isVoucherCodeError = validationResult.code.isNotBlank(),
-                        voucherCodeErrorMsg = validationResult.code
+                        isVoucherNameError = validationResult.validationError.couponName.isNotBlank(),
+                        voucherNameErrorMsg = validationResult.validationError.couponName,
+                        isVoucherCodeError = validationResult.validationError.code.isNotBlank(),
+                        voucherCodeErrorMsg = validationResult.validationError.code,
+                        isStartDateError = validationResult.validationError.dateStart.isNotBlank(),
+                        startDateErrorMsg = validationResult.validationError.dateStart,
+                        isEndDateError = validationResult.validationError.dateEnd.isNotBlank(),
+                        endDateErrorMsg = validationResult.validationError.dateEnd,
+                        validationDate = validationResult.validationDate
                     )
                 }
             },
@@ -132,6 +147,7 @@ class VoucherInformationViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(isPeriod = isActive)
             )
         }
+        handleVoucherInputValidation()
     }
 
     private fun setStartDateTime(startDate: Calendar?) {
@@ -141,6 +157,7 @@ class VoucherInformationViewModel @Inject constructor(
                     voucherConfiguration = it.voucherConfiguration.copy(startPeriod = startDate.time)
                 )
             }
+            handleVoucherInputValidation()
         }
     }
 
@@ -151,6 +168,7 @@ class VoucherInformationViewModel @Inject constructor(
                     voucherConfiguration = it.voucherConfiguration.copy(endPeriod = endDate.time)
                 )
             }
+            handleVoucherInputValidation()
         }
     }
 
@@ -160,5 +178,6 @@ class VoucherInformationViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(totalPeriod = selectedRecurringPeriod)
             )
         }
+        handleVoucherInputValidation()
     }
 }

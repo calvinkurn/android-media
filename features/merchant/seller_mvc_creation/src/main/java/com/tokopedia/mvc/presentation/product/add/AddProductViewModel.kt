@@ -2,7 +2,9 @@ package com.tokopedia.mvc.presentation.product.add
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
@@ -199,7 +201,15 @@ class AddProductViewModel @Inject constructor(
             targetBuyer = voucherConfiguration.targetBuyer,
             couponName = voucherConfiguration.voucherName,
             isPublic = voucherConfiguration.isVoucherPublic,
-            code = voucherConfiguration.voucherCode
+            code = voucherConfiguration.voucherCode,
+            isPeriod = voucherConfiguration.isPeriod,
+            periodType = voucherConfiguration.periodType,
+            periodRepeat = voucherConfiguration.periodRepeat,
+            totalPeriod = voucherConfiguration.totalPeriod,
+            startDate = voucherConfiguration.startPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
+            endDate = voucherConfiguration.endPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
+            startHour = voucherConfiguration.startPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
+            endHour = voucherConfiguration.endPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION)
         )
 
         val validatedProducts = voucherValidationPartialUseCase.execute(voucherValidationParam).validationProduct

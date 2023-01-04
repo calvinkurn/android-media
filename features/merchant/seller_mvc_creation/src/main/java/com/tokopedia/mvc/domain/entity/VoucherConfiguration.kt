@@ -29,7 +29,7 @@ data class VoucherConfiguration(
     val endPeriod: Date = Date(),
     val isPeriod: Boolean = false,
     val periodType: Int = PeriodType.MONTH.type,
-    val periodRepeat: Int = 1,
+    val periodRepeat: Int = 0,
     val totalPeriod: Int = 1,
     val warehouseId: Long = 0
 ) : Parcelable
