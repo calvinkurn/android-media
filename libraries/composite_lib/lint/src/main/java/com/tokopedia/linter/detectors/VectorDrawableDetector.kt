@@ -22,7 +22,6 @@ import com.android.tools.lint.detector.api.LintFix
 import com.android.tools.lint.detector.api.Location
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
-import com.android.tools.lint.detector.api.TextFormat
 import com.android.tools.lint.detector.api.XmlContext
 import com.android.tools.lint.detector.api.XmlScanner
 import com.android.tools.lint.detector.api.getBaseName
@@ -39,16 +38,6 @@ class VectorDrawableDetector : Detector(), XmlScanner {
             briefDescription = "Unsafe vector drawable usage.",
             explanation = "Vector drawable can lead to crash on pre-lollipop device. " +
                 "Change drawable to non-vector or follow suggestion.",
-            category = Category.CORRECTNESS,
-            priority = 5,
-            severity = Severity.FATAL,
-            implementation = Implementation(VectorDrawableDetector::class.java, Scope.RESOURCE_FILE_SCOPE)
-        )
-
-        val ATTR_SRC_ISSUE = Issue.create(
-            id = "SrcVectorDrawable",
-            briefDescription = "Unsafe vector drawable usage.",
-            explanation = "Using app:srcCompat is the most foolproof method of integrating vector drawables. app:srcCompat supports backward compatible vesions of APIs.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.FATAL,
@@ -96,8 +85,6 @@ class VectorDrawableDetector : Detector(), XmlScanner {
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
         if (attribute.hasVector()) {
             reportAttributeError(context, attribute)
-        } else if (attribute.nodeValue.substringAfter("/").startsWith("iconunify")) {
-            reportAttributeError(context, attribute)
         }
     }
 
@@ -119,7 +106,12 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         val message = "Unsafe vector usage in $attrName. " +
             "Consider using setCompoundDrawablesWithIntrinsicBounds() programmatically."
 
-        reportError(ISSUE, context, attribute, message, context.getValueLocation(attribute))
+        reportError(
+            context = context,
+            attribute = attribute,
+            message = message,
+            location = context.getValueLocation(attribute)
+        )
     }
 
     private fun reportBackgroundError(context: XmlContext, attribute: Attr) {
@@ -127,12 +119,20 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         val message = "Unsafe vector usage in $attrName. " +
             "Consider using setBackgroundResource() programmatically."
 
-        reportError(ISSUE, context, attribute, message, context.getValueLocation(attribute))
+        reportError(
+            context = context,
+            attribute = attribute,
+            message = message,
+            location = context.getValueLocation(attribute)
+        )
     }
 
     private fun reportSourceError(context: XmlContext, attribute: Attr) {
         val attrName = attribute.name
-        val message = "Vector drawable can lead to crash on pre-lollipop device. Avoid using $attrName to set vector drawable. "
+        val message = "Unsafe vector usage in $attrName. " +
+            "Using app:srcCompat is the most foolproof method of integrating vector drawables, app:srcCompat also supports backward-compatibility versions of APIs. " +
+            "Referencing vector drawables outside of app:srcCompat will fail prior to Lollipop. " +
+            "\nFor more info : https://android-developers.googleblog.com/2016/02/android-support-library-232.html"
         val lintFix = LintFix.create()
             .replace()
             .text("android:src")
@@ -140,17 +140,15 @@ class VectorDrawableDetector : Detector(), XmlScanner {
             .build()
 
         reportError(
-            issue = ATTR_SRC_ISSUE,
             context = context,
             attribute = attribute,
-            message = message + ATTR_SRC_ISSUE.getExplanation(TextFormat.TEXT),
+            message = message,
             location = context.getLocation(attribute),
             quickFix = lintFix
         )
     }
 
     private fun reportError(
-        issue: Issue,
         context: XmlContext,
         attribute: Attr,
         message: String,
@@ -158,7 +156,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         quickFix: LintFix? = null
     ) {
         context.report(
-            issue,
+            ISSUE,
             attribute,
             location,
             message,
@@ -187,6 +185,6 @@ class VectorDrawableDetector : Detector(), XmlScanner {
 
     private fun Attr.hasVector(): Boolean {
         val value = value.substringAfter("/")
-        return vectorResources.contains(value)
+        return vectorResources.contains(value) || value.startsWith("iconunify")
     }
 }
