@@ -11,12 +11,14 @@ import javax.inject.Inject
  */
 class PlayBroadcastAccountAnalyticImpl @Inject constructor(
     userSession: UserSessionInterface,
-    hydraConfig: HydraConfigStore,
+    private val hydraConfig: HydraConfigStore,
 ) : PlayBroadcastAccountAnalytic {
 
     private val userId = userSession.userId
-    private val authorId = hydraConfig.getAuthorId()
-    private val authorTypeName = hydraConfig.getAuthorTypeName()
+    private val authorId: String
+        get() = hydraConfig.getAuthorId()
+    private val authorTypeName: String
+        get() = hydraConfig.getAuthorTypeName()
 
     override fun onClickAccountDropdown() {
         Tracker.Builder()
