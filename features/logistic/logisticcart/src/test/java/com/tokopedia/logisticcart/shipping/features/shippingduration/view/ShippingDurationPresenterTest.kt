@@ -1189,6 +1189,22 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
+    fun `select promo logistic Then send courier data and service data from promo logistic data when view is null`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
+        val selectedBo = shippingRecommendationData.listLogisticPromo.first()
+        presenter.shippingData = shippingRecommendationData
+
+        // When
+        presenter.onLogisticPromoClicked(selectedBo)
+
+        // Then
+        verify(exactly = 0) {
+            view.onLogisticPromoChosen(any(), any(), any(), any(), selectedBo.promoCode, selectedBo.serviceId, selectedBo)
+        }
+    }
+
+    @Test
     fun `When select promo logistic and service data is not found Then should show courier promo error`() {
         // Given
         val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
@@ -1203,6 +1219,24 @@ class ShippingDurationPresenterTest {
 
         // Then
         verify {
+            view.showPromoCourierNotAvailable()
+        }
+    }
+
+    @Test
+    fun `select promo logistic and service data is not found Then should show courier promo error when view is null`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
+        val selectedBo = shippingRecommendationData.listLogisticPromo.first().copy(serviceId = 0)
+        shippingRecommendationData.listLogisticPromo = listOf(selectedBo)
+
+        presenter.shippingData = shippingRecommendationData
+
+        // When
+        presenter.onLogisticPromoClicked(selectedBo)
+
+        // Then
+        verify(exactly = 0) {
             view.showPromoCourierNotAvailable()
         }
     }
@@ -1223,6 +1257,25 @@ class ShippingDurationPresenterTest {
 
         // Then
         verify {
+            view.showPromoCourierNotAvailable()
+        }
+    }
+
+    @Test
+    fun `select promo logistic and courier data is not found Then should show courier promo error when view is null`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
+        val selectedBo = shippingRecommendationData.listLogisticPromo.first()
+        val serviceDataForSelectedBo = shippingRecommendationData.shippingDurationUiModels.find { it.serviceData.serviceId == selectedBo.serviceId }
+        serviceDataForSelectedBo?.shippingCourierViewModelList = listOf()
+
+        presenter.shippingData = shippingRecommendationData
+
+        // When
+        presenter.onLogisticPromoClicked(selectedBo)
+
+        // Then
+        verify(exactly = 0) {
             view.showPromoCourierNotAvailable()
         }
     }
