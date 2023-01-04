@@ -151,15 +151,6 @@ import com.tokopedia.wishlist_common.R as Rwishlist
 /**
  * @author by nisie on 5/15/17.
  */
-
-const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
-const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
-const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
-const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
-const val CLICK_SHOP_TOPADS = "click - shop - topads"
-const val CLICK_PRODUCT_TOPADS = "click - product - topads"
-const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
-
 @Suppress("LateinitUsage")
 class FeedPlusFragment :
     BaseDaggerFragment(),
@@ -351,6 +342,14 @@ class FeedPlusFragment :
 
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+
+        const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
+        const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
+        const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
+        const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
+        const val CLICK_SHOP_TOPADS = "click - shop - topads"
+        const val CLICK_PRODUCT_TOPADS = "click - product - topads"
+        const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
 
         fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()

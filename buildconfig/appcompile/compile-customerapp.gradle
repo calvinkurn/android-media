@@ -108,6 +108,7 @@ includeIfEnabled("features:fintech:wallet")
 includeIfEnabled("features:fintech:paylater")
 includeIfEnabled("features:fintech:pdp_fintech_widget")
 includeIfEnabled("features:fintech:fintech_home_widget")
+includeIfEnabled("features:fintech:insurance")
 
 
 includeIfEnabled("features:home:dynamicbanner")
