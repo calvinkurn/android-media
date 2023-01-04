@@ -3,7 +3,6 @@ package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +28,6 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.model.DtShareUniversalModel
 import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
 import com.tokopedia.dilayanitokopedia.common.util.DtUniversalShareUtil
-import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
 import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabStatus
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
@@ -142,11 +139,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
+    private var linearLayoutManager: CustomLinearLayoutManager? = null
+
     private val adapter by lazy {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
                 homeRecommendationFeedListener = createRecommendationCallback(),
-                dtView = createDtView(),
                 featuredShopListener = createFeatureShopCallback(),
                 bannerComponentListener = createSlideBannerCallback(),
                 homeTopComponentListener = createTopComponentCallback(),
@@ -592,15 +590,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun getHomeLayout() {
-        localCacheModel?.let {
-//            val removeAbleWidgets = listOf(
-//                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
-//                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
-//            )
-            viewModelDtHome.getHomeLayout(
-                it
-//                removeAbleWidgets
-            )
+        localCacheModel?.let { lca ->
+            viewModelDtHome.getHomeLayout(lca)
         }
     }
 
@@ -609,20 +600,15 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         navToolbar?.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
     }
 
-    private var staggeredGridLayoutManager: CustomLinearLayoutManager? = null
-
     private fun initRecyclerView() {
-        staggeredGridLayoutManager = CustomLinearLayoutManager(requireContext())
+        linearLayoutManager = CustomLinearLayoutManager(requireContext())
 
         context?.let {
             rvHome?.apply {
                 adapter = this@DtHomeFragment.adapter
-                rvLayoutManager = staggeredGridLayoutManager
+                rvLayoutManager = linearLayoutManager
                 layoutManager = rvLayoutManager
             }
-
-//            rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
-//            addHomeComponentScrollListener()
         }
     }
 
@@ -632,46 +618,13 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    // not done yet - should in p1
     private fun createLegoBannerCallback(): DynamicLegoBannerListener? {
         return DtDynamicLegoBannerCallback(requireContext())
     }
 
-    private fun createDtView(): DtView? {
-        return object : DtView {
-
-            override fun getFragmentPage() = this@DtHomeFragment
-            override fun getFragmentManagerPage(): FragmentManager = this@DtHomeFragment.childFragmentManager
-            override fun refreshLayoutPage() = onRefreshLayout()
-
-            override fun getScrollState(adapterPosition: Int): Parcelable? {
-                // TODO -update later
-                return null
-            }
-
-            override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
-                // TODO -update later
-            }
-
-            override fun saveParallaxState(mapParallaxState: Map<String, Float>) {
-                TODO("Not yet implemented")
-            }
-
-            override fun getParallaxState(): Map<String, Float> {
-                TODO("Not yet implemented")
-            }
-        }
-    }
-
     private fun onRefreshLayout() {
-//        refreshMiniCart()
-//        resetMovingPosition()
-//        removeAllScrollListener()
-//        hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
-//        carouselScrollState.clear()
-//        carouselParallaxState.clear()
-//        isRefreshed = true
+        anchorTabAdapter?.resetToFirst()
         loadLayout()
     }
 
@@ -982,6 +935,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
                 // for recommendation scroll
                 evaluateHomeComponentOnScroll(recyclerView)
+                lastSection()
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -997,6 +951,21 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 }
             }
         })
+    }
+
+    private fun lastSection() {
+        val totalItemCount = linearLayoutManager?.itemCount ?: 0
+        val lastVisible = linearLayoutManager?.findLastVisibleItemPosition()
+        val listIsRecommendationForYou = viewModelDtHome.isLastWidgetIsRecommendationForYou()
+        val endHasBeenReached = (lastVisible?.plus(1) ?: 0) >= totalItemCount
+        if (totalItemCount > 0 && endHasBeenReached && listIsRecommendationForYou == true) {
+            // you have reached to the bottom of your recycler view
+            binding?.headerCompHolder?.gone()
+            binding?.chooseAddressWidget?.gone()
+        } else {
+            binding?.headerCompHolder?.visible()
+            binding?.chooseAddressWidget?.visible()
+        }
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { // set refresh layout to only enabled when reach 0 offset
@@ -1053,7 +1022,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 }
             }
         smoothScroller.targetPosition = position
-        staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+        linearLayoutManager?.startSmoothScroll(smoothScroller)
     }
 
     private fun setAnchorTabMaximize() {

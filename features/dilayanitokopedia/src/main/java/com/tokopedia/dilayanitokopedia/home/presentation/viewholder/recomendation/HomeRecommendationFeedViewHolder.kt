@@ -13,7 +13,6 @@ import com.tokopedia.dilayanitokopedia.home.presentation.activity.DtHomeActivity
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeRecommendationForYouFragment
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtHomeCategoryListener
-import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationFeedViewHolder(
@@ -45,7 +44,6 @@ class HomeRecommendationFeedViewHolder(
          */
 
         layoutParams?.height = listener.windowHeight -
-            listener.homeMainToolbarHeight -
             listener.homeMainAnchorTabHeight
         container?.layoutParams = layoutParams
 

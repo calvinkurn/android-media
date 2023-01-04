@@ -1,5 +1,6 @@
 package com.tokopedia.dilayanitokopedia.home.domain.usecase
 
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.LocationParamMapper.mapLocation
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.domain.query.DtGetHomeLayoutData
@@ -7,7 +8,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -37,13 +37,14 @@ class DtGetHomeLayoutDataUseCase @Inject constructor(
     suspend fun execute(
         token: String = "",
         numOfChannel: Int = 0,
-        localCacheModel: LocalCacheModel?
+        localCacheModel: LocalCacheModel
     ): List<HomeLayoutResponse> {
-        setRequestParams(RequestParams.create()
-            .apply {
-                putString(PARAM_PAGE, PARAM_VALUE_PAGE_DT)
-//            putString(PARAM_LOCATION, mapLocation(localCacheModel))
-            }.parameters
+        setRequestParams(
+            RequestParams.create()
+                .apply {
+                    putString(PARAM_PAGE, PARAM_VALUE_PAGE_DT)
+                    putString(PARAM_LOCATION, mapLocation(localCacheModel))
+                }.parameters
         )
 
         val response = executeOnBackground().response

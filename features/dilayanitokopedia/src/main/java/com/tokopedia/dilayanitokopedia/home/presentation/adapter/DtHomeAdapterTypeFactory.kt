@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeLoadingMoreModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtHomeCategoryListener
@@ -48,13 +47,11 @@ import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 
-
 /**
  * Created by irpan on 12/09/22.
  */
 class DtHomeAdapterTypeFactory(
     private val homeRecommendationFeedListener: DtHomeCategoryListener,
-    private val dtView: DtView? = null,
     private val featuredShopListener: FeaturedShopListener,
     private val bannerComponentListener: BannerComponentListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerListener? = null,
@@ -62,7 +59,6 @@ class DtHomeAdapterTypeFactory(
     private val homeTopCarouselListener: MixTopComponentListener? = null,
     private val homeLeftCarouselListener: MixLeftComponentListener? = null
 ) : BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory {
-
 
     // region Global Home Component
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int = DynamicLegoBannerViewHolder.LAYOUT
@@ -81,25 +77,21 @@ class DtHomeAdapterTypeFactory(
     override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int = FeaturedBrandViewHolder.LAYOUT
     override fun type(questWidgetModel: QuestWidgetModel): Int = QuestWidgetViewHolder.LAYOUT
 
-    //current used in DT
+    // current used in DT
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT
     override fun type(mixLeftDataModel: MixLeftDataModel): Int = MixLeftComponentViewHolder.LAYOUT
     override fun type(featuredShopDataModel: FeaturedShopDataModel): Int = FeaturedShopViewHolder.LAYOUT
 
-
-    //loading from FE.
+    // loading from FE.
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
     override fun type(uiModel: HomeRecommendationFeedDataModel): Int = HomeRecommendationFeedViewHolder.LAYOUT
     override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int = HomeLoadingMoreViewHolder.LAYOUT
 
-
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-
         return when (type) {
-
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
 
-            //loading more for recommendation feeds.
+            // loading more for recommendation feeds.
             HomeLoadingMoreViewHolder.LAYOUT -> HomeLoadingMoreViewHolder(view)
 
             HomeRecommendationFeedViewHolder.LAYOUT -> {
@@ -109,7 +101,6 @@ class DtHomeAdapterTypeFactory(
             BannerComponentViewHolder.LAYOUT -> {
                 BannerComponentViewHolder(view, bannerComponentListener, null)
             }
-
 
             DynamicLegoBannerViewHolder.LAYOUT -> {
                 DynamicLegoBannerViewHolder(view, dynamicLegoBannerCallback, null)
@@ -132,6 +123,4 @@ class DtHomeAdapterTypeFactory(
             }
         }
     }
-
-
 }

@@ -72,9 +72,7 @@ class DtHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
-            val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
-                localCacheModel = localCacheModel
-            )
+            val homeLayoutResponse = getHomeLayoutDataUseCase.execute(localCacheModel = localCacheModel)
 
             homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse)
 
@@ -84,8 +82,7 @@ class DtHomeViewModel @Inject constructor(
             )
 
             _homeLayoutList.postValue(Success(data))
-            val menuList = dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList()).toMutableList()
-            menuList.add(AnchorTabUiModel("", "recomTab", "", RECOMWIDGET_GROUP_ID, homeRecommendationDataModel))
+            val menuList = dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList())
 
             _menuList.postValue(menuList)
 
@@ -141,5 +138,10 @@ class DtHomeViewModel @Inject constructor(
             }
         }
         return -1
+    }
+
+    fun isLastWidgetIsRecommendationForYou(): Boolean? {
+        if (getHomeVisitableList().isEmpty()) return null
+        return getHomeVisitableList().last() == homeRecommendationDataModel
     }
 }

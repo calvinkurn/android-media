@@ -49,6 +49,13 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
         notifyDataSetChanged()
     }
 
+    fun resetToFirst() {
+        if (listMenu.isNotEmpty()) {
+            this.selectedMenu = 0
+            notifyDataSetChanged()
+        }
+    }
+
     fun setMaximizeIcons() {
         maximizeIcons = true
         notifyDataSetChanged()
