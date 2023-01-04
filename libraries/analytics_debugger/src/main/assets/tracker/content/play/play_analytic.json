@@ -734,6 +734,9 @@
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "/group-chat-room/\\d+/archive delete channel",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "trackerId": "40353",
       "userId": ".*",
       "sessionIris": ".*",
       "theme": ".*"

@@ -814,7 +814,8 @@ class PlayAnalytic(
     }
 
     fun sendScreenArchived(channelId: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/archive delete channel")
+        val customDimension = mapOf(KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE, KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT, KEY_TRACKER_ID to "40353")
+        TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/archive delete channel", customDimension)
     }
 
     fun clickCtaArchived(channelId: String) {
