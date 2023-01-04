@@ -12,6 +12,7 @@ import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
 import com.tokopedia.mvc.presentation.intro.util.SECOND_INDEX
 import com.tokopedia.mvc.presentation.intro.util.ZEROTH_INDEX
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.utils.view.binding.viewBinding
 
 class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<VoucherIntroCarouselUiModel>(
@@ -24,6 +25,8 @@ class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<Vouch
             headerText.text = element?.headerTitle
             viewPagerTitle.text = element?.tabsList?.get(ZEROTH_INDEX)?.tabHeader
             viewPagerDescription.text = element?.description
+//            val viewPagerAdapter = MvcIntroViewPager()
+//            viewPager.adapter = viewPagerAdapter
 
             setUpCarousel(this, ZEROTH_INDEX, element)
 
@@ -75,6 +78,8 @@ class VoucherIntroCarouselViewHolder(itemView: View?) : AbstractViewHolder<Vouch
 
         val itemParam = { view: View, data: Any ->
             val imageCarousel = view.findViewById<ImageUnify>(R.id.image)
+            val pageControl = view.findViewById<PageControl>(R.id.carousel_page_control)
+            pageControl.setIndicator(10)
             binding.containerCarousel.post {
                 imageCarousel.initialWidth = binding.containerCarousel.measuredWidth
             }
