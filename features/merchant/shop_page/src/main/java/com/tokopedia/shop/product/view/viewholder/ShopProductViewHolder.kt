@@ -9,6 +9,7 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopNewproductSmallGridBinding
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -44,6 +45,7 @@ class ShopProductViewHolder(
         @LayoutRes
         val GRID_LAYOUT = R.layout.item_shop_newproduct_small_grid
         const val RATIO_WITH_RELATIVE_TO_SCREEN = 2.3
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
     private fun findViews() {
@@ -51,10 +53,20 @@ class ShopProductViewHolder(
     }
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
+        val stockBarLabel = shopProductUiModel.stockLabel
+        var stockBarLabelColor = ""
+        if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+            stockBarLabelColor = ShopUtil.getColorHexString(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+            )
+        }
         val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
             shopProductUiModel = shopProductUiModel,
             isWideContent = false,
             isShowThreeDots = isShowTripleDot
+        ).copy(
+            stockBarLabelColor = stockBarLabelColor
         )
         productCard?.setProductModel(productCardModel)
 
