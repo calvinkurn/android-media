@@ -37,6 +37,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
@@ -144,6 +145,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     @After
     fun cleanup() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
+        unmockkAll()
     }
 
     fun createSuccessGetBuyerOrderDetailDataResult(

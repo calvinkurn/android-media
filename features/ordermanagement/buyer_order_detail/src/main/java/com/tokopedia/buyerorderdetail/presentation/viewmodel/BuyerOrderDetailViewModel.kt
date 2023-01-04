@@ -19,6 +19,7 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataReque
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.AddToCartParamsMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.BuyerOrderDetailUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderInsuranceUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderResolutionTicketStatusUiStateMapper
@@ -58,7 +59,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -95,7 +95,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val buyerOrderDetailDataRequestParams = MutableSharedFlow<GetBuyerOrderDetailDataParams>(replay = Int.ONE)
     private val buyerOrderDetailDataRequestState = buyerOrderDetailDataRequestParams.flatMapLatest(
         ::doGetBuyerOrderDetailData
-    ).toShareFlow()
+    ).toStateFlow(GetBuyerOrderDetailDataRequestState.Requesting())
     private val singleAtcRequestStates = MutableStateFlow<Map<String, AddToCartSingleRequestState>>(mapOf())
     private val productListCollapsed = MutableStateFlow(true)
     private val actionButtonsUiState = buyerOrderDetailDataRequestState.mapLatest(
@@ -202,13 +202,12 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun addMultipleToCart() {
         viewModelScope.launchCatchError(block = {
-            val productListUiState = productListUiState.value
-            if (productListUiState is ProductListUiState.HasData) {
-                val params = ArrayList(
-                    productListUiState.data.getAllProduct().map {
-                        it.mapToAddToCartParam()
-                    }
-                )
+            val params = AddToCartParamsMapper.mapMultiAddToCartParams(
+                buyerOrderDetailDataRequestState = buyerOrderDetailDataRequestState.value,
+                shopId = getShopId(),
+                userId = getUserId()
+            )
+            if (params.isNotEmpty()) {
                 _multiAtcResult.value = mapMultiATCResult(
                     atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params)
                 )
@@ -319,12 +318,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
         initialValue = initialValue
-    )
-
-    private fun <T> Flow<T>.toShareFlow() = shareIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
-        replay = Int.ONE
     )
 
     private suspend fun doGetBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams): Flow<GetBuyerOrderDetailDataRequestState> {

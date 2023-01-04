@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.viewmodel
 
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -119,6 +120,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
         createSuccessGetBuyerOrderDetailDataResult()
+        createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
@@ -229,8 +231,21 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productListHeaderUiModel.shopId } returns shopId
                 every { data.getAllProduct() } returns listOf(product)
             }
+            val mockGetBuyerOrderDetailResult = mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
+                every { details?.nonBundles } returns listOf(
+                    GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
+                        productId = product.productId,
+                        productName = product.productName,
+                        price = product.price,
+                        quantity = product.quantity,
+                        notes = product.productNote
+                    )
+                )
+            }
 
-            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessGetBuyerOrderDetailDataResult(
+                getBuyerOrderDetailResult = mockGetBuyerOrderDetailResult
+            )
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
@@ -241,25 +256,27 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
     @Test
-    fun `addMultipleToCart should not execute UseCase when UI state is not equals to Showing`() =
-        runCollectingUiState {
-            createFailedGetBuyerOrderDetailDataResult()
-
-            getBuyerOrderDetailData()
-            viewModel.addMultipleToCart()
-
-            coVerify(inverse = true) { atcUseCase.execute(any(), any(), any()) }
-        }
-
-    @Test
     fun `addMultipleToCart should success when atc use case return expected data`() =
         runCollectingUiState {
             val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
                 every { data.productListHeaderUiModel.shopId } returns shopId
                 every { data.productList } returns listOf(product)
             }
+            val mockGetBuyerOrderDetailResult = mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
+                every { details?.nonBundles } returns listOf(
+                    GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
+                        productId = product.productId,
+                        productName = product.productName,
+                        price = product.price,
+                        quantity = product.quantity,
+                        notes = product.productNote
+                    )
+                )
+            }
 
-            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessGetBuyerOrderDetailDataResult(
+                getBuyerOrderDetailResult = mockGetBuyerOrderDetailResult
+            )
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
@@ -277,8 +294,21 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             every { data.productListHeaderUiModel.shopId } returns shopId
             every { data.productList } returns listOf(product)
         }
+        val mockGetBuyerOrderDetailResult = mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
+            every { details?.nonBundles } returns listOf(
+                GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
+                    productId = product.productId,
+                    productName = product.productName,
+                    price = product.price,
+                    quantity = product.quantity,
+                    notes = product.productNote
+                )
+            )
+        }
 
-        createSuccessGetBuyerOrderDetailDataResult()
+        createSuccessGetBuyerOrderDetailDataResult(
+            getBuyerOrderDetailResult = mockGetBuyerOrderDetailResult
+        )
         createSuccessATCResult(Fail(mockk(relaxed = true)))
         mockProductListUiStateMapper(showingState = productListShowingState) {
             getBuyerOrderDetailData()
@@ -297,8 +327,21 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productListHeaderUiModel.shopId } returns shopId
                 every { data.productList } returns listOf(product)
             }
+            val mockGetBuyerOrderDetailResult = mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
+                every { details?.nonBundles } returns listOf(
+                    GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
+                        productId = product.productId,
+                        productName = product.productName,
+                        price = product.price,
+                        quantity = product.quantity,
+                        notes = product.productNote
+                    )
+                )
+            }
 
-            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessGetBuyerOrderDetailDataResult(
+                getBuyerOrderDetailResult = mockGetBuyerOrderDetailResult
+            )
             createFailedATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
@@ -311,7 +354,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
     @Test
-    fun `addMultipleToCart should failed when ui state is not equals to Showing`() =
+    fun `addMultipleToCart should failed when params is empty`() =
         runCollectingUiState {
             createFailedGetBuyerOrderDetailDataResult()
 
