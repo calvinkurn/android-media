@@ -134,8 +134,9 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                         showNoBankAccountState()
                     } else {
                         populateBankList(it.data)
-                        loadBankNote()
+                        addTNCNoteInAdapter()
                     }
+                    configAddAccountButtonText(it.data)
                 }
                 is Fail -> {
                     onBankAccountLoadingFailed(it.throwable)
@@ -146,10 +147,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
         settingBankViewModel.addBankAccountStateLiveData.observe(viewLifecycleOwner, Observer {
             updateAddBankAccountBtnState(it)
-        })
-
-        settingBankViewModel.tncNotesLiveData.observe(viewLifecycleOwner, Observer {
-            if (it is Success) populateTNCNoteInAdapter(it.data)
         })
 
         settingBankViewModel.termsAndConditionLiveData.observe(viewLifecycleOwner, Observer {
@@ -221,6 +218,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun showErrorToaster(message: String) {
         view?.let {
+            Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
             Toaster.build(it, message, Toaster.TYPE_NORMAL).show()
         }
     }
@@ -231,13 +229,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         }
     }
 
-    private fun loadBankNote() {
-        settingBankViewModel.loadTermsAndConditionNotes()
-    }
-
     private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
         context?.let { context ->
             view?.let { view ->
+                Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
                 retry?.let {
                     Toaster.build(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
                             Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
@@ -253,23 +248,31 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     fun showToasterOnUI(message: String?) {
         message?.let {
-            view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT).show() }
+            view?.let {
+                Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
+                Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun populateBankList(bankList: List<BankAccount>) {
         showBankAccountDisplayState()
-        if (bankList.isNotEmpty()) {
-            add_account_button.text = context?.getString(R.string.sbank_add_bank_account)
-        }
         account_list_rv.post {
             bankAccountListAdapter.updateItem(bankList as ArrayList<BankAccount>)
         }
     }
 
-    private fun populateTNCNoteInAdapter(templateData: TemplateData) {
+    private fun configAddAccountButtonText(bankList: List<BankAccount>) {
+        if (bankList.isNotEmpty()) {
+            add_account_button.text = context?.getString(R.string.sbank_add_bank_account)
+        } else {
+            add_account_button.text = context?.getString(R.string.sbank_no_bank_add_bank_account)
+        }
+    }
+
+    private fun addTNCNoteInAdapter() {
         account_list_rv.post {
-            bankAccountListAdapter.updateBankTNCNote(templateData)
+            bankAccountListAdapter.addBankTNCNote()
         }
     }
 
@@ -320,6 +323,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(getMenuRes(), menu)
+        val menuItem = menu.findItem(R.id.menu_info)
+        menuItem.actionView.setOnClickListener {
+            onOptionsItemSelected(menuItem)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/addBankContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Background">
@@ -85,7 +86,6 @@
         android:textColor="@color/Unify_NN400"
         android:text="Cek Nama Pemilik"
         app:layout_constraintTop_toTopOf="@id/textAreaBankAccountNumber"
-        app:layout_constraintBottom_toBottomOf="@id/textAreaBankAccountNumber"
         app:layout_constraintRight_toRightOf="@id/textAreaBankAccountNumber"
         android:layout_marginRight="@dimen/unify_space_12"
         />
@@ -135,7 +135,10 @@
                 app:typographyType="display_2"
                 tools:text="MOHAMAD RAVENA UTAMA" />
         </LinearLayout>
+
     </com.tokopedia.unifycomponents.CardUnify2>
+
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAccountHolderNameInfo"

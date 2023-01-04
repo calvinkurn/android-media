@@ -20,7 +20,7 @@
     <string name="sbank_nama_bank">Nama Bank</string>
     <string name="sbank_periksa">Periksa</string>
     <string name="sbank_save_account">Simpan</string>
-    <string name="sbank_add_bank_tnc">Dengan klik tombol di bawah, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi untuk menambahkan rekening</string>
+    <string name="sbank_add_bank_tnc">Dengan klik tombol di bawah, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi untuk menambahkan rekening.</string>
     <string name="sbank_add_bank_tnc_clickable_part">Syarat &amp; Ketentuan</string>
     <string name="sbank_verification_in_progress">Sedang dalam Pengecekan</string>
     <string name="sbank_make_bank_primary">Jadikan Utama</string>
@@ -46,7 +46,8 @@
     <string name="sbank_complete_document">Lengkapi dokumen berikut</string>
     <string name="sbank_pic_of_family_card">Foto Kartu Keluarga (KK)</string>
     <string name="sbank_saving_acc_document">Rekening Tabungan</string>
-    <string name="sbank_catatan">"Catatan:"</string>
+    <string name="sbank_catatan_title">Kamu bisa simpan maks. 3 rekening bank</string>
+    <string name="sbank_catatan_description">Saldo Tokopedia kamu bisa ditarik ke rekening ini.</string>
     <string name="sbank_add_bank_confirm">Kamu akan tambah rekening %1$s %2$s atas nama %3$s</string>
     <string name="sbank_delete_bank_confirm">Kamu akan menghapus rekening %1$s %2$s a.n %3$s</string>
     <string name="sbank_back">Kembali</string>
@@ -65,4 +66,5 @@
     <string name="sbank_terms">Syarat</string>
     <string name="sbank_untuk_tnc">untuk</string>
     <string name="sbank_serta_tnc">serta</string>
+    <string name="sbank_add_back_account_success_message">Oke, rekening berhasil ditambahkan</string>
 </resources>

@@ -25,7 +25,6 @@ class SettingBankViewModel @Inject constructor(
 
 
     val termsAndConditionLiveData = MutableLiveData<Result<TemplateData>>()
-    val tncNotesLiveData = MutableLiveData<Result<TemplateData>>()
 
     val kycInfoLiveData = MutableLiveData<Result<KYCInfo>>()
     val deleteBankAccountLiveData = MutableLiveData<Result<String>>()
@@ -56,14 +55,6 @@ class SettingBankViewModel @Inject constructor(
             termsAndConditionLiveData.postValue(Success(it))
         }, {
             termsAndConditionLiveData.postValue(Fail(it))
-        })
-    }
-
-    fun loadTermsAndConditionNotes() {
-        termsAndConditionUseCase.get().getNotes({
-            tncNotesLiveData.postValue(Success(it))
-        }, {
-            tncNotesLiveData.postValue(Fail(it))
         })
     }
 

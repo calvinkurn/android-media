@@ -2,13 +2,11 @@ package com.tokopedia.settingbank.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.*
 import android.text.method.DigitsKeyListener
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -40,10 +38,13 @@ import com.tokopedia.settingbank.view.viewState.*
 import com.tokopedia.settingbank.view.widgets.BankPrivacyPolicyBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_bank.*
+import kotlinx.android.synthetic.main.fragment_add_bank.add_account_button
+import kotlinx.android.synthetic.main.fragment_add_bank.progress_bar
 import javax.inject.Inject
 
 
@@ -130,10 +131,19 @@ class AddBankFragment : BaseDaggerFragment() {
         setTncText()
         startObservingViewModels()
         setBankName()
+        setTextPeriksaOffset()
         textPeriksa.setOnClickListener { checkAccountNumber() }
         add_account_button.setOnClickListener { onClickAddBankAccount() }
         if (!::bank.isInitialized) {
             openBankListForSelection()
+        }
+    }
+
+    private fun setTextPeriksaOffset() {
+        textPeriksa?.post {
+            textPeriksa.translationY =
+                (textAreaBankAccountNumber.editText.measuredHeight.toFloat()
+                    - textPeriksa.measuredHeight.toFloat()) / 2 + TEXT_PERIKSA_MARGIN_OFFSET_DP.toPx()
         }
     }
 
@@ -263,6 +273,7 @@ class AddBankFragment : BaseDaggerFragment() {
         })
 
         addAccountViewModel.checkAccountDataLiveData.observe(viewLifecycleOwner, Observer {
+            progress_bar.gone()
             when (it) {
                 is Success ->
                     handleCheckAccountState(it.data)
@@ -330,6 +341,7 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun checkAccountNumber() {
         if (::bank.isInitialized) {
             if (textAreaBankAccountNumber.editText.text != null) {
+                progress_bar.visible()
                 bankSettingAnalytics.eventOnPericsaButtonClick()
                 addAccountViewModel.checkAccountNumber(
                     bank.bankID,
@@ -537,6 +549,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
         const val BANK_ACC_START_IDX = 3
         const val BANK_ACC_LAST_IDX = 128
+        const val TEXT_PERIKSA_MARGIN_OFFSET_DP = 5
     }
 
     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -627,6 +640,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 else -> SettingBankErrorHandler.getErrorMessage(context, throwable)
             }
             view?.let { view ->
+                Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
                 retry?.let {
                     Toaster.build(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
                         getString(R.string.sbank_promo_coba_lagi),
@@ -662,12 +676,12 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun setPeriksaButtonState(isEnable: Boolean) {
         if (isEnable)
-
             textPeriksa.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         else
             textPeriksa.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN400))
 
         textPeriksa.isEnabled = isEnable
+        textPeriksa.isClickable = isEnable
     }
 
 }

@@ -12,7 +12,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:paddingLeft="@dimen/unify_space_16"
-        android:paddingRight="@dimen/unify_space_16"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/add_account_button"
         app:layout_constraintTop_toTopOf="parent"
