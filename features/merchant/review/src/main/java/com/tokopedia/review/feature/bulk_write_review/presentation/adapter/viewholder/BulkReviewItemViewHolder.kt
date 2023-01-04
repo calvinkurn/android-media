@@ -263,7 +263,7 @@ class BulkReviewItemViewHolder(
     private inner class BulkReviewItemGestureListener(
         private val uiState: BulkReviewItemUiState
     ) : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             if (uiState is BulkReviewItemUiState.Dimmed || uiState is BulkReviewItemUiState.Focused) {
                 listener.onSingleTapToDismissKeyboard()
             }

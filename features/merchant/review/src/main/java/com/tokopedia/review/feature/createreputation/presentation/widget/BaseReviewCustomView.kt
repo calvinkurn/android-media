@@ -82,7 +82,7 @@ abstract class BaseReviewCustomView<VB : ViewBinding> @JvmOverloads constructor(
                 removeAllListeners()
             } else {
                 addListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator?) {
+                    override fun onAnimationStart(animation: Animator) {
                         onAnimationStart?.invoke()
                     }
 
