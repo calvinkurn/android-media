@@ -11,7 +11,7 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
-import com.tokopedia.mvc.domain.usecase.CreateCouponFacadeUseCase
+import com.tokopedia.mvc.domain.usecase.AddEditCouponFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -21,7 +21,7 @@ class SummaryViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase,
     private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase,
-    private val createCouponFacadeUseCase: CreateCouponFacadeUseCase
+    private val addEditCouponFacadeUseCase: AddEditCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _error = MutableLiveData<Throwable>()
@@ -100,10 +100,11 @@ class SummaryViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = createCouponFacadeUseCase.execute(
-                    configuration.value ?: return@launchCatchError,
+                val voucherConfiguration = configuration.value ?: return@launchCatchError
+                val result = addEditCouponFacadeUseCase.executeAdd(
+                    voucherConfiguration,
                     products.value ?: return@launchCatchError,
-                    ""
+                    voucherConfiguration.warehouseId.toString()
                 )
                 _error.postValue(MessageErrorException("Sukses"))
             },
@@ -117,7 +118,7 @@ class SummaryViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = createCouponFacadeUseCase.executeUpdate(
+                val result = addEditCouponFacadeUseCase.executeEdit(
                     configuration.value ?: return@launchCatchError,
                     products.value ?: return@launchCatchError
                 )

@@ -10,7 +10,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class CreateCouponFacadeUseCase @Inject constructor(
+class AddEditCouponFacadeUseCase @Inject constructor(
     private val createCouponProductUseCase: CreateCouponProductUseCase,
     private val updateCouponUseCase: UpdateCouponUseCase,
     private val initiateCouponUseCase: GetInitiateVoucherPageUseCase,
@@ -35,7 +35,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
                     getCouponImagePreviewUseCase.executeGetImageUrl(
                         isCreateMode = false,
                         voucherConfiguration = configuration,
-                        parentProductId = allProducts.map { it.parentProductId }.take(3),
+                        parentProductId = allProducts.map { it.parentProductId },
                         imageRatio = it
                     )
                 }
@@ -74,7 +74,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
                     getCouponImagePreviewUseCase.executeGetImageUrl(
                         isCreateMode = false,
                         voucherConfiguration = configuration,
-                        parentProductId = allProducts.map { it.parentProductId }.take(3),
+                        parentProductId = allProducts.map { it.parentProductId },
                         imageRatio = it
                     )
                 }
