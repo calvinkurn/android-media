@@ -28,6 +28,7 @@ import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.bottomsheet.SelectRepeatPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditCalendarBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
@@ -107,6 +108,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     // bottom sheet
     private var voucherEditCalendarBottomSheet: VoucherEditCalendarBottomSheet? = null
     private var repeatPeriodBottomSheet: SelectRepeatPeriodBottomSheet? = null
+    private var voucherRecurringPeriodBottomSheet: VoucherPeriodBottomSheet? = null
 
     override fun getScreenName(): String =
         VoucherInformationFragment::class.java.canonicalName.orEmpty()
@@ -161,8 +163,16 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             state.voucherCodeErrorMsg
         )
         renderVoucherRecurringToggleChanges(state.voucherConfiguration)
-        renderVoucherStartPeriodSelection(state.voucherConfiguration, state.isStartDateError, state.startDateErrorMsg)
-        renderVoucherEndPeriodSelection(state.voucherConfiguration, state.isEndDateError, state.endDateErrorMsg)
+        renderVoucherStartPeriodSelection(
+            state.voucherConfiguration,
+            state.isStartDateError,
+            state.startDateErrorMsg
+        )
+        renderVoucherEndPeriodSelection(
+            state.voucherConfiguration,
+            state.isEndDateError,
+            state.endDateErrorMsg
+        )
         renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
         renderAvailableRecurringPeriod(state.voucherConfiguration, state.validationDate)
         renderButtonValidation(state.isInputValid())
@@ -454,7 +464,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun setupTime() {
         val voucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        val startDate = voucherConfiguration.startPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val startDate =
+            voucherConfiguration.startPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
         val endDate = voucherConfiguration.endPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
         startCalendar = getGregorianDate(startDate)
         endCalendar = getGregorianDate(endDate)
@@ -475,7 +486,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             tfVoucherStartPeriod.run {
                 isInputError = isStartDateError
                 setMessage(startDateErrorMsg)
-                editText.setText(voucherConfiguration.startPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
+                editText.setText(
+                    voucherConfiguration.startPeriod.formatTo(
+                        DATE_TIME_MINUTE_PRECISION
+                    )
+                )
             }
         }
         setupTime()
@@ -548,10 +563,29 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                     val secondPeriodEndHour = availableDate[Int.ONE].hourEnd
                     secondSchedule =
                         "$secondPeriodStartDate, $secondPeriodStartHour - $secondPeriodEndDate, $secondPeriodEndHour"
-                    isShowOtherScheduleButton = availableDate.size > minimumActivePeriodCountToShowFullSchedule
+
+                    isShowOtherScheduleButton =
+                        availableDate.size > minimumActivePeriodCountToShowFullSchedule
+
+                    btnSeeOtherSchedule?.setOnClickListener {
+                        onClickSeeOtherRecurringPeriod(
+                            getString(R.string.smvc_voucher_active_label),
+                            validationDate
+                        )
+                    }
                 }
             }
         }
+    }
+
+    private fun onClickSeeOtherRecurringPeriod(
+        title: String,
+        validationDate: List<VoucherValidationResult.ValidationDate>
+    ) {
+        val voucherRecurringData = viewModel.mapVoucherRecurringPeriodData(validationDate)
+        voucherRecurringPeriodBottomSheet =
+            VoucherPeriodBottomSheet.newInstance(title, voucherRecurringData)
+        voucherRecurringPeriodBottomSheet?.show(childFragmentManager, "")
     }
 
     private fun disableText(autoCompleteTextView: AutoCompleteTextView) {

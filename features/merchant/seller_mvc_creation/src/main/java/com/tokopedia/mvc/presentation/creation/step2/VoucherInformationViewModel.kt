@@ -5,7 +5,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
@@ -179,5 +181,16 @@ class VoucherInformationViewModel @Inject constructor(
             )
         }
         handleVoucherInputValidation()
+    }
+
+    fun mapVoucherRecurringPeriodData(validationDate: List<VoucherValidationResult.ValidationDate>): List<DateStartEndData> {
+        return validationDate.map {
+            DateStartEndData(
+                dateStart = it.dateStart,
+                dateEnd = it.dateEnd,
+                hourStart = it.hourStart,
+                hourEnd = it.hourEnd
+            )
+        }
     }
 }
