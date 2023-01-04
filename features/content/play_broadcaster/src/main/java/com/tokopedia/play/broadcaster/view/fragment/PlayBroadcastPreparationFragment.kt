@@ -248,10 +248,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         parentViewModel.submitAction(PlayBroadcastAction.GetAccountList(TYPE_USER))
                     }
 
-                    override fun impressTncOnboarding() {}
-
-                    override fun impressCompleteOnboarding() {}
-
                     override fun clickNextOnTncOnboarding() {
                         analytic.onClickNextOnboardingUGC()
                     }
