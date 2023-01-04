@@ -111,6 +111,40 @@ class SellerHomeActivityViewModel @Inject constructor(
         }
     }
 
+    fun checkIfWearHasCompanionApp() {
+        launch {
+            nodeClient.connectedNodes.await()?.let { connectedNodes ->
+                connectedNodes.firstOrNull { it.isNearby }?.let {
+                    try {
+                        val capabilityInfo = capabilityClient
+                            .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
+                            .await()
+
+                        withContext(Dispatchers.Main) {
+                            // There should only ever be one phone in a node set (much less w/ the correct
+                            // capability), so I am just grabbing the first one (which should be the only one).
+                            val nodes = capabilityInfo?.nodes
+                            val androidPhoneNodeWithApp =
+                                nodes?.firstOrNull { node -> node.isNearby }
+
+                            _shouldAskInstallCompanionApp.value = it != androidPhoneNodeWithApp
+                        }
+                    } catch (cancellationException: CancellationException) {
+                        // Request was cancelled normally
+                    } catch (throwable: Throwable) {
+
+                    }
+                }
+            }
+        }
+    }
+
+    fun launchMarket(marketIntent: Intent) {
+        launch {
+            startRemoteActivity(remoteActivityHelper, marketIntent)
+        }
+    }
+
     private suspend fun getIsRoleChatAdmin(): Boolean {
         return getEligibilityOnlyWhenAdminShouldCheckRole {
             try {
@@ -147,40 +181,6 @@ class SellerHomeActivityViewModel @Inject constructor(
             setIsLocationAdmin(roleType.isLocationAdmin)
             setIsShopAdmin(roleType.isShopAdmin)
             setIsMultiLocationShop(isMultiLocationShop)
-        }
-    }
-
-    fun checkIfWearHasCompanionApp() {
-        launch {
-            nodeClient.connectedNodes.await()?.let { connectedNodes ->
-                connectedNodes.firstOrNull { it.isNearby }?.let {
-                    try {
-                        val capabilityInfo = capabilityClient
-                            .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
-                            .await()
-
-                        withContext(Dispatchers.Main) {
-                            // There should only ever be one phone in a node set (much less w/ the correct
-                            // capability), so I am just grabbing the first one (which should be the only one).
-                            val nodes = capabilityInfo?.nodes
-                            val androidPhoneNodeWithApp =
-                                nodes?.firstOrNull { node -> node.isNearby }
-
-                            _shouldAskInstallCompanionApp.value = it != androidPhoneNodeWithApp
-                        }
-                    } catch (cancellationException: CancellationException) {
-                        // Request was cancelled normally
-                    } catch (throwable: Throwable) {
-
-                    }
-                }
-            }
-        }
-    }
-
-    fun launchMarket(marketIntent: Intent) {
-        launch {
-            startRemoteActivity(remoteActivityHelper, marketIntent)
         }
     }
 

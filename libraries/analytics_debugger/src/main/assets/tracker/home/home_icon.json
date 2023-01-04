@@ -1,0 +1,49 @@
+{
+  "readme": "Home dynamic icon impression & click",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on dynamic icon",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "promotions": [
+        {
+          "creative_name": ".*_.*_.*",
+          "creative_slot": ".* - .*",
+          "item_id": ".*",
+          "item_name": "/ - .* - dynamic icon",
+          "creative_url": ".*"
+        }
+      ]
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "userId": ".*",
+      "eventAction": "click on dynamic icon",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "promotions": [
+        {
+          "creative_name": ".*_.*_.*",
+          "creative_slot": ".* - .*",
+          "item_id": ".*",
+          "item_name": "/ - .* - dynamic icon",
+          "creative_url": ".*"
+        }
+      ],
+      "affinityLabel": ".*",
+      "currentSite": "tokopediamarketplace",
+      "attribution": ".*",
+      "shopId": ".*",
+      "event": "select_content",
+      "categoryId": ".*",
+      "campaignCode": ".*"
+    }
+  ]
+}

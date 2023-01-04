@@ -3,6 +3,8 @@ package com.tokopedia.kol.feature.postdetail.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.domain.SUSPEND_GRAPHQL_REPOSITORY
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapperImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -57,4 +59,10 @@ class ContentDetailModule {
     @ContentDetailScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
+
+    @ContentDetailScope
+    @Provides
+    fun provideProfileUiMapper(@ApplicationContext context: Context): ProfileMutationMapper {
+        return ProfileMutationMapperImpl(context)
+    }
 }

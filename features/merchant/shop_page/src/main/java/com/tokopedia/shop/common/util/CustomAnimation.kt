@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 
-
 class CustomAnimation(view: View, duration: Long, type: Int) : Animation() {
     companion object {
         const val COLLAPSE = 1

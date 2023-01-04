@@ -170,7 +170,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
-        if (Build.VERSION.SDK_INT >= 25) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             homeViewModel.checkIfWearHasCompanionApp()
         }
 

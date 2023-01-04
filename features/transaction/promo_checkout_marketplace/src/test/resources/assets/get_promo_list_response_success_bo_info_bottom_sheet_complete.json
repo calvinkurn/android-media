@@ -33,7 +33,7 @@
               "id": "1",
               "title": "Kupon saya",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
+              "icon_url": "https://images.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
               "is_enabled": true,
               "tags": [],
               "coupon_groups": [
@@ -84,7 +84,7 @@
               "id": "2",
               "title": "Pomade Murrays",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+              "icon_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
               "is_enabled": true,
               "tags": [],
               "coupon_groups": [
@@ -148,7 +148,7 @@
         "title": "Promo dan Bebas Ongkir",
         "content_title": "Lebih mudah pilih Bebas Ongkir di halaman promo",
         "content_description": "<ul><li>Kamu bisa bandingkan keuntungan pakai Bebas Ongkir atau promo lainnya di satu halaman.</li><li>Kalau lihat syarat promo seperti gambar di atas,  pilih pengiriman selain Bebas Ongkir/PLUS.</li></ul>",
-        "image_url": "https://ecs7.tokopedia.net/img/blog/promo/2022/07/Introduction-Banner.png",
+        "image_url": "https://images.tokopedia.net/img/blog/promo/2022/07/Introduction-Banner.png",
         "button_txt": "Oke, Saya Mengerti"
       }
     }

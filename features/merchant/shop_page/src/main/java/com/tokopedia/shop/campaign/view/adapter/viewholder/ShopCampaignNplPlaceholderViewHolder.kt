@@ -7,7 +7,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 
 class ShopCampaignNplPlaceholderViewHolder(
-        itemView: View,
+    itemView: View
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView) {
 
     companion object {
@@ -17,5 +17,4 @@ class ShopCampaignNplPlaceholderViewHolder(
 
     override fun bind(model: ShopHomeNewProductLaunchCampaignUiModel) {
     }
-
 }

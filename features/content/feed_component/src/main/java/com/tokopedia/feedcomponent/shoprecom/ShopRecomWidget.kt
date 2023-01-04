@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.databinding.LayoutShopRecommendationBinding
 import com.tokopedia.feedcomponent.shoprecom.adapter.ShopRecomAdapter
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.decor.ShopRecomItemDecoration
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -63,19 +64,15 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun setData(
-        headerTitle: String,
-        shopRecomItem: List<ShopRecomUiModelItem>,
-        loadNextPage: Boolean = false,
-        nextCursor: String,
-    ) = with(binding) {
-        this@ShopRecomWidget.nextCursor = nextCursor
-        txtHeaderShopRecom.text = headerTitle
+    fun setData(data: ShopRecomUiModel) = with(binding) {
+        nextCursor = data.nextCursor
+        txtHeaderShopRecom.text = data.title
         val model = buildList {
-            addAll(shopRecomItem.map { ShopRecomAdapter.Model.ShopRecomWidget(it) })
-            if (loadNextPage) add(ShopRecomAdapter.Model.Loading)
+            addAll(data.items.map { ShopRecomAdapter.Model.ShopRecomWidget(it) })
+            if (data.loadNextPage) add(ShopRecomAdapter.Model.Loading)
         }
         if (rvShopRecom.isComputingLayout.not()) mAdapterShopRecom.setItemsAndAnimateChanges(model)
+        if (data.isRefresh && mAdapterShopRecom.itemCount > 0) rvShopRecom.scrollToPosition(0)
     }
 
     fun showLoadingShopRecom() = with(binding) {

@@ -15,7 +15,7 @@ data class FreeOngkir(
             imageUrl = parcel.readString() ?: ""
     )
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest?.run {
             writeByte((if (isActive) 1 else 0).toByte())
             writeString(imageUrl)

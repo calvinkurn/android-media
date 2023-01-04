@@ -35,16 +35,18 @@ object HomeRepurchaseMapper {
         miniCartData: MiniCartSimplifiedData? = null
     ): TokoNowRepurchaseUiModel {
         val state = TokoNowLayoutState.SHOW
-        val productList = mapToProductCardUiModel(response, miniCartData)
+        val productList = mapToProductCardUiModel(item.id, response, miniCartData)
         return item.copy(title = response.title, productList = productList, state = state)
     }
 
     private fun mapToProductCardUiModel(
+        channelId: String,
         response: RepurchaseData,
         miniCartData: MiniCartSimplifiedData? = null
     ): List<TokoNowProductCardUiModel> {
         return response.products.mapIndexed { index, repurchaseProduct ->
             TokoNowProductCardUiModel(
+                channelId,
                 repurchaseProduct.id,
                 repurchaseProduct.shop.id,
                 repurchaseProduct.maxOrder,
