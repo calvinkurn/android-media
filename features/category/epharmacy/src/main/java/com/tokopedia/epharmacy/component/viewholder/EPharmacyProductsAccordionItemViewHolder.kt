@@ -9,8 +9,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacyProductsAccordionItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(product: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?) {
-        view.findViewById<Typography>(com.tokopedia.epharmacy.R.id.product_name).text = product?.name
-    view.findViewById<Typography>(com.tokopedia.epharmacy.R.id.product_quantity).text = "${product?.quantity} Barang (${product?.productTotalWeightFmt})"
+        view.findViewById<Typography>(com.tokopedia.epharmacy.R.id.lbl_PAP_productName).text = product?.name
+        view.findViewById<Typography>(com.tokopedia.epharmacy.R.id.lbl_PAP_productWeight).text = "${product?.quantity} Barang (${product?.productTotalWeightFmt})"
         view.findViewById<ImageUnify>(com.tokopedia.epharmacy.R.id.product_image).loadImage(product?.productImage)
     }
 }

@@ -94,10 +94,10 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheetUiData() {
         binding?.run {
             context?.resources?.let { res ->
-                chooserUpload.headingTitle.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_title)
-                chooserUpload.paraSubtitle.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
-                chooserMiniConsultation.headingTitle.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_mini_consult_chooser_title)
-                chooserMiniConsultation.paraSubtitle.text = res.getString(com.tokopedia.epharmacy.R.string.eepharmacy_mini_consult_chooser_subtitle)
+                chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_title)
+                chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
+                chooserMiniConsultation.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_mini_consult_chooser_title)
+                chooserMiniConsultation.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.eepharmacy_mini_consult_chooser_subtitle)
                 chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
                 chooserMiniConsultation.stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
                 if (enableImageURL.isNotBlank()) {

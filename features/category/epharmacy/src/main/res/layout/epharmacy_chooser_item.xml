@@ -13,11 +13,11 @@
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/heading_title"
-        app:layout_constraintBottom_toBottomOf="@id/para_subtitle"/>
+        app:layout_constraintTop_toTopOf="@+id/lbl_PAP_tittleOption_bottomsheet"
+        app:layout_constraintBottom_toBottomOf="@id/lbl_PAP_descriptionOption_bottomsheet"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/heading_title"
+        android:id="@+id/lbl_PAP_tittleOption_bottomsheet"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingHorizontal="16dp"
@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/para_subtitle"
+        android:id="@+id/lbl_PAP_descriptionOption_bottomsheet"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -39,8 +39,8 @@
         android:textColor="@color/Unify_NN600"
         app:typographyType="paragraph_3"
         tools:text="Atau kamu juga bisa Beli Langsung biar lebih cepat prosesnya."
-        app:layout_constraintTop_toBottomOf="@id/heading_title"
-        app:layout_constraintStart_toStartOf="@id/heading_title"
+        app:layout_constraintTop_toBottomOf="@id/lbl_PAP_tittleOption_bottomsheet"
+        app:layout_constraintStart_toStartOf="@id/lbl_PAP_tittleOption_bottomsheet"
         app:layout_constraintEnd_toStartOf="@id/chevron"/>
 
     <com.tokopedia.unifycomponents.DividerUnify

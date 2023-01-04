@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/heading_title"
+            android:id="@+id/lbl_title_epharmacy_bottomsheet"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -39,7 +39,7 @@
             tools:text="Apotek Century Meruya Raden Saleh" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/para_subtitle"
+            android:id="@+id/lbl_description_epharmacy_bottomsheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -47,7 +47,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/heading_title"
+            app:layout_constraintTop_toBottomOf="@id/lbl_title_epharmacy_bottomsheet"
             app:typographyType="paragraph_3"
             tools:text="Obat keras memerlukan resep karena berpotensi membahayakan jika tidak digunakan di bawah pengawasan dokter." />
 
@@ -59,7 +59,7 @@
             android:paddingHorizontal="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/para_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_description_epharmacy_bottomsheet"
             app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="3 Langkah membeli obat keras" />

@@ -9,11 +9,11 @@ object EPharmacyMapper {
     fun mapGroupsToAttachmentComponents(
         group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
         info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
-        index: Int,
+        shopIndex: Int,
         isLastGroup: Boolean
     ): EPharmacyAttachmentDataModel {
         return EPharmacyAttachmentDataModel(
-            getUniqueModelName(group.epharmacyGroupId, index), GROUP_COMPONENT,
+            getUniqueModelName(group.epharmacyGroupId, shopIndex), GROUP_COMPONENT,
             group.epharmacyGroupId,
             group.consultationSource?.enablerName,
             group.consultationSource?.enablerLogoUrl,
@@ -29,8 +29,8 @@ object EPharmacyMapper {
             group.consultationData,
             false,
             group.prescriptionCTA,
-            isLastIndex(group.shopInfo, index),
-            (isLastIndex(group.shopInfo, index) && isLastGroup).not()
+            isLastIndex(group.shopInfo, shopIndex),
+            (isLastIndex(group.shopInfo, shopIndex) && isLastGroup).not()
         )
     }
 
