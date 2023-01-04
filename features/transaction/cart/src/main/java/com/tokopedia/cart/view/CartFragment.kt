@@ -439,10 +439,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     }
 
     override fun onPause() {
-        plusCoachMark?.let {
-            it.setOnDismissListener(null)
-            it.dismissCoachMark()
-        }
+        plusCoachMark?.dismissCoachMark()
         plusCoachMark = null
 
         super.onPause()

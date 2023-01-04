@@ -382,10 +382,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                             CoachMark2.POSITION_BOTTOM
                         )
                     )
-                    plusCoachmark?.setOnDismissListener {
-                        plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
-                    }
                     plusCoachmark?.showCoachMark(coachMarkItem)
+                    plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
                 }
             } else {
                 imgFreeShipping.gone()
