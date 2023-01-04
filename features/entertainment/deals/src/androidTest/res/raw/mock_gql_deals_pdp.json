@@ -24,10 +24,10 @@
           "duration": "",
           "url": "https://booking.tokopedia.com/v1/api/p/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603?cities\u003d",
           "seo_url": "voucher-haagen-dazs-rp-100000-penawaran-spesial-28603",
-          "image_web": "https://ecs7.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
-          "thumbnail_web": "https://ecs7.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
-          "image_app": "https://ecs7.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
-          "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
+          "image_web": "https://images.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
+          "thumbnail_web": "https://images.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
+          "image_app": "https://images.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
+          "thumbnail_app": "https://images.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
           "seatmap_image": "",
           "location": "",
           "app_url": "tokopedia://deals/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603",
@@ -94,7 +94,7 @@
               "is_thumbnail": 1,
               "type": "image",
               "description": "  ",
-              "url": "https://ecs7.tokopedia.net/img/banner/2020/3/19/51998951/51998951_5e4530f8-04ab-4b3e-9364-93968be0e64c.jpg",
+              "url": "https://images.tokopedia.net/img/banner/2020/3/19/51998951/51998951_5e4530f8-04ab-4b3e-9364-93968be0e64c.jpg",
               "client": "",
               "status": 1,
               "created_at": "",
@@ -789,8 +789,8 @@
           "recommendation_url": "https://booking.tokopedia.com/v1/api/s/deal?child_category_ids\u003d25",
           "brand": {
             "title": "Haagen-Dazs",
-            "featured_image": "https://ecs7.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
-            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
+            "featured_image": "https://images.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
+            "featured_thumbnail_image": "https://images.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
             "city_name": "",
             "seo_url": "haagen-dazs-1522"
           },
@@ -798,7 +798,7 @@
             {
               "id": "25",
               "title": "Makanan",
-              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "media_url": "https://images.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
               "url": "makanan"
             }
           ],

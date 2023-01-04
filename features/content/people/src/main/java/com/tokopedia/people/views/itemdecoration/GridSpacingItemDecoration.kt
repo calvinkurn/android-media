@@ -1,8 +1,8 @@
 package com.tokopedia.people.views.itemdecoration
 
 import android.graphics.Rect
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * @author by errysuprayogi on 11/28/17.

@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
  */
 fun <T> LiveData<T>.getOrAwaitValue(
     time: Long = 2,
-    timeUnit: TimeUnit = TimeUnit.SECONDS
+    timeUnit: TimeUnit = TimeUnit.SECONDS,
 ): T {
     var data: T? = null
     val latch = CountDownLatch(1)
@@ -35,7 +35,7 @@ fun <T> LiveData<T>.getOrAwaitValue(
 
 fun <T> LiveData<T>.getOrNullValue(
     time: Long = 2,
-    timeUnit: TimeUnit = TimeUnit.SECONDS
+    timeUnit: TimeUnit = TimeUnit.SECONDS,
 ): T? {
     var data: T? = null
     val latch = CountDownLatch(1)

@@ -11,12 +11,12 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ShopEtalaseItemDataModel(
-        val etalaseId: String = "",
-        val alias: String = "",
-        val etalaseName: String = "",
-        @ShopEtalaseTypeDef val type: Int = ShopEtalaseTypeDef.ETALASE_DEFAULT,
-        val etalaseBadge: String = "",
-        val etalaseCount: Long = 0,
-        val highlighted: Boolean = false,
-        val etalaseRules: List<ShopEtalaseRules> = listOf()
+    val etalaseId: String = "",
+    val alias: String = "",
+    val etalaseName: String = "",
+    @ShopEtalaseTypeDef val type: Int = ShopEtalaseTypeDef.ETALASE_DEFAULT,
+    val etalaseBadge: String = "",
+    val etalaseCount: Long = 0,
+    val highlighted: Boolean = false,
+    val etalaseRules: List<ShopEtalaseRules> = listOf()
 ) : Parcelable

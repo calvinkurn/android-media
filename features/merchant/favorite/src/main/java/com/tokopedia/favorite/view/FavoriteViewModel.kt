@@ -178,9 +178,9 @@ class FavoriteViewModel
                 favoriteShopUiModel.isFavoriteShop = shopItem?.isFav ?: false
                 _addedFavoriteShop.value = favoriteShopUiModel
                 view?.let { _favoriteShopImpression.value = shopItem?.shopClickUrl }
-                if (view == null) {
-                    replaceTopAds(getTopAdsShop())
-                }
+//                if (view == null) {
+//                    replaceTopAds(getTopAdsShop())
+//                }
             }
 
         }, onError = { e ->

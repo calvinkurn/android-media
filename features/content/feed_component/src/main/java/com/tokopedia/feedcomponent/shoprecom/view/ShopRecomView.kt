@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationBinding
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
@@ -52,7 +53,9 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         txtItemShopName.text = data.name
         txtItemShopUsername.text = data.nickname
         imgItemShopImage.setImageUrl(data.logoImageURL)
-        imgItemShopBadge.setImageUrl(data.badgeImageURL)
+        imgItemShopBadge.shouldShowWithAction(data.badgeImageURL.isNotEmpty()) {
+            imgItemShopBadge.setImageUrl(data.badgeImageURL)
+        }
 
         buttonFollowState(data.state)
         onClickListener(data, position)

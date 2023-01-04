@@ -45,5 +45,7 @@ data class WidgetModel(
     @SerializedName("isDismissible")
     val isDismissible: Boolean = false,
     @SerializedName("dismissibleState")
-    val dismissibleState: String = String.EMPTY
+    val dismissibleState: String = String.EMPTY,
+    @SerializedName("useRealtime")
+    val useRealtime: Boolean = false,
 )

@@ -20,7 +20,7 @@ val JCB_LOGO = "creditcard-jcb.png"
 val VISA_LOGO = "creditcard-visa.png"
 val MASTER_CARD_LOGO = "creditcard-mastercard.png"
 
-val DEFAULT_IMAGE_HOST = "http://ecs7.tokopedia.net"
+val DEFAULT_IMAGE_HOST = "http://images.tokopedia.net"
 val CDN_IMG_ANDROID_DOMAIN = "/img/android/"
 
 fun SettingListPaymentModel.getLogoAsset() : String{

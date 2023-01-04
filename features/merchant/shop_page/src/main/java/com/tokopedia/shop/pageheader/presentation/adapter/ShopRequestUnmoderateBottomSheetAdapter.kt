@@ -13,8 +13,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopRequestUnmoderateBottomSheetAdapter(
-        context: Context?,
-        private val bottomsheetViewHolderListener: ShopRequestUnmoderateBottomsheetViewHolderListener
+    context: Context?,
+    private val bottomsheetViewHolderListener: ShopRequestUnmoderateBottomsheetViewHolderListener
 ) : RecyclerView.Adapter<ShopRequestUnmoderateBottomSheetAdapter.ShopRequestUnmoderateBottomSheetViewHolder>() {
 
     companion object {
@@ -23,27 +23,27 @@ class ShopRequestUnmoderateBottomSheetAdapter(
     }
 
     private val requestUnmoderateOptionList = listOf(
-            ShopUnmoderateOption(
-                    context?.getString(R.string.shop_page_header_request_unmoderate_option_1_text),
-                    context?.getString(R.string.shop_page_header_request_unmoderate_option_1_value)
-            ),
-            ShopUnmoderateOption(
-                    context?.getString(R.string.shop_page_header_request_unmoderate_option_2_text),
-                    context?.getString(R.string.shop_page_header_request_unmoderate_option_2_value)
-            )
+        ShopUnmoderateOption(
+            context?.getString(R.string.shop_page_header_request_unmoderate_option_1_text),
+            context?.getString(R.string.shop_page_header_request_unmoderate_option_1_value)
+        ),
+        ShopUnmoderateOption(
+            context?.getString(R.string.shop_page_header_request_unmoderate_option_2_text),
+            context?.getString(R.string.shop_page_header_request_unmoderate_option_2_value)
+        )
     )
     private var lastSelectedRadioPosition = 0
 
     init {
         // set initial radio picker value
-        if(requestUnmoderateOptionList.isNotEmpty()) {
+        if (requestUnmoderateOptionList.isNotEmpty()) {
             bottomsheetViewHolderListener.setOptionValue(requestUnmoderateOptionList[0].optionValue)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopRequestUnmoderateBottomSheetViewHolder {
         return ShopRequestUnmoderateBottomSheetViewHolder(
-                parent.inflateLayout(VIEWHOLDER_LAYOUT)
+            parent.inflateLayout(VIEWHOLDER_LAYOUT)
         )
     }
 
@@ -56,12 +56,11 @@ class ShopRequestUnmoderateBottomSheetAdapter(
         holder.btnRadioUnModerateOption?.isChecked = (lastSelectedRadioPosition == position)
     }
 
-
     /**
      * Adapter view holder inner class
      */
     inner class ShopRequestUnmoderateBottomSheetViewHolder(
-            itemView: View
+        itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
         private val viewBinding: ItemShopRequestUnmoderateBinding? by viewBinding()
         val btnRadioUnModerateOption: RadioButtonUnify? = viewBinding?.btnRadioUnmoderateOption
@@ -75,19 +74,17 @@ class ShopRequestUnmoderateBottomSheetAdapter(
                 bottomsheetViewHolderListener.setOptionValue(item.optionValue)
             }
         }
-
     }
-
 }
 
 interface ShopRequestUnmoderateBottomsheetViewHolderListener {
-    fun setOptionValue(optionValue : String?)
+    fun setOptionValue(optionValue: String?)
 }
 
 /**
  * Shop unmoderate option ui model
  */
 data class ShopUnmoderateOption(
-        val optionText: String? = "",
-        val optionValue: String? = ""
+    val optionText: String? = "",
+    val optionValue: String? = ""
 )

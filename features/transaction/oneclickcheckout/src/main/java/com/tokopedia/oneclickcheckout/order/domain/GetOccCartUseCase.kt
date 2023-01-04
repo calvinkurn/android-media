@@ -226,6 +226,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             slash_price_label
             product_finsurance
             warehouse_id
+            ethical_drug {
+              need_prescription
+              icon_url
+              text
+            }
             free_shipping {
               eligible
             }
@@ -681,6 +686,15 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         change_cc_link
         callback_url
       }
+      image_upload {
+		show_image_upload
+		text
+		left_icon_url
+		right_icon_url
+		checkout_id
+		front_end_validation
+		lite_url
+	  }
       prompt {
         type
         title

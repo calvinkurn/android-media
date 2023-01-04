@@ -16,4 +16,5 @@
     <string name="epharmacy_quantity_weight_text">"%s Barang (%s)"</string>
     <string name="epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
     <string name="epharmacy_upload_title_view_only">Foto Resep Dokter</string>
+    <string name="epharmacy_toko_ini_adalah_partner_resmi">Toko ini adalah partner resmi</string>
 </resources>

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -62,7 +63,7 @@ data class ShipmentAddressFormDataResponse(
         @SerializedName("cross_sell")
         val crossSell: List<CrossSellResponse> = emptyList(),
         @SerializedName("image_upload")
-        val imageUpload: ImageUpload = ImageUpload(),
+        val imageUpload: ImageUploadResponse = ImageUploadResponse(),
         @SerializedName("upsell")
         val upsell: Upsell = Upsell(),
         @SerializedName("upsell_v2")

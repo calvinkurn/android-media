@@ -7,7 +7,7 @@
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbarPmSubscription"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,8 +37,8 @@
 
     <FrameLayout
         android:id="@+id/framePmFragment"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/pmRegistrationFooterView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,8 +46,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderPmSubscription"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,13 +66,13 @@
 
     <com.tokopedia.power_merchant.subscribe.view.viewcomponent.RegistrationFooterView
         android:id="@+id/pmRegistrationFooterView"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_height="@dimen/layout_lvl6"
+        tools:layout_height="48dp"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

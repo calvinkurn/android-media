@@ -14,11 +14,12 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItems
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ACTIONS
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_TYPE
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionKebabMenuItemAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 
-class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
+class BottomSheetWishlistCollectionSettings : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetWishlistCollectionSettingsBinding>()
     private var actionListener: ActionListenerBottomSheetMenu? = null
     private val collectionKebabItemAdapter = BottomSheetWishlistCollectionKebabMenuItemAdapter()
@@ -27,9 +28,12 @@ class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
         private const val TAG: String = "BottomSheetKebabMenuWishlistCollectionItem"
 
         @JvmStatic
-        fun newInstance(collectionName: String,
-                        collectionId: String,
-                        actions: List<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.Setting.Button>): BottomSheetWishlistCollectionSettings {
+        fun newInstance(
+            collectionName: String,
+            collectionId: String,
+            collectionType: Int,
+            actions: List<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.Setting.Button>
+        ): BottomSheetWishlistCollectionSettings {
             return BottomSheetWishlistCollectionSettings().apply {
                 val actionItems = actions.map {
                     BottomSheetKebabActionItemData(
@@ -42,6 +46,7 @@ class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
                 arguments = Bundle().apply {
                     putString(COLLECTION_NAME, collectionName)
                     putString(COLLECTION_ID, collectionId)
+                    putInt(COLLECTION_TYPE, collectionType)
                     putParcelableArray(COLLECTION_ACTIONS, actionItems)
                 }
             }
@@ -67,6 +72,7 @@ class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
     private fun initLayout() {
         val collectionName = arguments?.getString(COLLECTION_NAME) ?: ""
         val collectionId = arguments?.getString(COLLECTION_ID) ?: ""
+        val collectionType = arguments?.getInt(COLLECTION_TYPE, 0)
         val collectionActionItems = (arguments?.getParcelableArray(COLLECTION_ACTIONS) as? Array<BottomSheetKebabActionItemData>)?.toList() ?: emptyList()
         binding = BottomsheetWishlistCollectionSettingsBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {

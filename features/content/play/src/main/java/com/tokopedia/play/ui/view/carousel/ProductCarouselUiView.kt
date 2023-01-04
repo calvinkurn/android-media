@@ -9,6 +9,7 @@ import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 
 /**
@@ -20,8 +21,6 @@ class ProductCarouselUiView(
 ) {
 
     private val context = binding.root.context
-
-    private val impressionSet = mutableSetOf<String>()
 
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -47,18 +46,12 @@ class ProductCarouselUiView(
                 )
             }
 
-            override fun onAtcClicked(
+            override fun onTransactionClicked(
                 viewHolder: ProductCarouselViewHolder.PinnedProduct,
-                product: PlayProductUiModel.Product
+                product: PlayProductUiModel.Product,
+                action: ProductAction
             ) {
-                listener.onAtcClicked(this@ProductCarouselUiView, product)
-            }
-
-            override fun onBuyClicked(
-                viewHolder: ProductCarouselViewHolder.PinnedProduct,
-                product: PlayProductUiModel.Product
-            ) {
-                listener.onBuyClicked(this@ProductCarouselUiView, product)
+                listener.onTransactionClicked(this@ProductCarouselUiView, product, action)
             }
         }
     )
@@ -87,10 +80,10 @@ class ProductCarouselUiView(
         if (products == adapter.getItems()) return
 
         invalidateItemDecorations()
-        impressionSet.clear()
+
+        sendImpression()
 
         adapter.setItemsAndAnimateChanges(products)
-        sendImpression()
     }
 
     fun scrollToFirstPosition() {
@@ -120,6 +113,8 @@ class ProductCarouselUiView(
         binding.root.visible()
     }
 
+    val isShown = binding.root.isShown
+
     fun hide() {
         binding.root.gone()
     }
@@ -134,25 +129,22 @@ class ProductCarouselUiView(
         } catch (ignored: IllegalStateException) {}
     }
 
-    private fun sendImpression() = synchronized(impressionSet) {
+    /**
+     * Expose
+     */
+    private fun sendImpression()  {
         val products = getVisibleProducts()
-        val productsToBeImpressed = products.filter {
-            !impressionSet.contains(it.key.id)
-        }
-        listener.onProductImpressed(this, productsToBeImpressed)
-        productsToBeImpressed.forEach {
-            impressionSet.add(it.key.id)
-        }
+        listener.onProductImpressed(this, products)
     }
 
     /**
      * Analytic Helper
      */
-    private fun getVisibleProducts(): Map<PlayProductUiModel.Product, Int> {
+    fun getVisibleProducts(): Map<PlayProductUiModel.Product, Int> {
         val products = adapter.getItems()
         if (products.isNotEmpty()) {
-            val startPosition = layoutManager.findFirstVisibleItemPosition()
-            val endPosition = layoutManager.findLastVisibleItemPosition()
+            val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
                 return (startPosition..endPosition)
                     .filter { products[it] is PlayProductUiModel.Product }
@@ -171,7 +163,6 @@ class ProductCarouselUiView(
         fun onProductImpressed(view: ProductCarouselUiView, productMap: Map<PlayProductUiModel.Product, Int>)
         fun onProductClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product, position: Int)
 
-        fun onAtcClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product)
-        fun onBuyClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product)
+        fun onTransactionClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product, action: ProductAction)
     }
 }

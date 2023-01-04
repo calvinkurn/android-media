@@ -32,7 +32,7 @@ object RestMockUtil {
             override fun getConstraints(): BaseMatcher<View?> {
                 return object : BaseMatcher<View?>() {
                     override fun matches(item: Any?): Boolean {
-                        return Is.isA(Checkable::class.java).matches(item)
+                        return Is.isA<Any>(Checkable::class.java).matches(item)
                     }
 
                     override fun describeMismatch(item: Any?, mismatchDescription: Description?) {}

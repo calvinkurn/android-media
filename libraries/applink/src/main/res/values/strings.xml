@@ -149,6 +149,7 @@
 
     <!-- Product Detail -->
     <string name="title_product_detail">Product Detail</string>
+    <string name="title_product_ar">Product Ar</string>
 
     <!--Order Management History-->
     <string name="title_order_management_history">Detail Status</string>

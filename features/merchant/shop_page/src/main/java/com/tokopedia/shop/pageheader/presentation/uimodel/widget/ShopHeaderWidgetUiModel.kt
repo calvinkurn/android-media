@@ -5,10 +5,10 @@ import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.Sho
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
 
 data class ShopHeaderWidgetUiModel(
-        val widgetId: String = "",
-        val name: String = "",
-        val type: String = "",
-        val components: List<BaseShopHeaderComponentUiModel> = listOf()
+    val widgetId: String = "",
+    val name: String = "",
+    val type: String = "",
+    val components: List<BaseShopHeaderComponentUiModel> = listOf()
 ) : Visitable<ShopPageHeaderAdapterTypeFactory> {
     object WidgetType {
         const val SHOP_BASIC_INFO = "shop_basic_info"
@@ -20,5 +20,4 @@ data class ShopHeaderWidgetUiModel(
     override fun type(typeFactory: ShopPageHeaderAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

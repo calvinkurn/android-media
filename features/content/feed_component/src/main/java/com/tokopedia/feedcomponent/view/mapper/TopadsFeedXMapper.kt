@@ -15,31 +15,23 @@ object TopadsFeedXMapper {
     var shopName = ""
     var redirectWeblinkShop = ""
     fun cpmModelToFeedXDataModel(impressHolder: ImpressHolder, cpmData: CpmModel , variant:Int=0): FeedXCard {
-        val media = arrayListOf<FeedXMedia>()
         val data = cpmData.data.firstOrNull()
-        shopName = data?.cpm?.cpmShop?.domain ?: ""
+        val topAdsShop = data?.cpm?.cpmShop
+        shopName = topAdsShop?.domain.orEmpty()
         redirectWeblinkShop = data?.redirect ?: ""
-        val merchantVouchers = data?.cpm?.cpmShop?.merchantVouchers
+        val merchantVouchers = topAdsShop?.merchantVouchers.orEmpty()
 
-        val feedXTagging = arrayListOf<FeedXMediaTagging>()
-        cpmData.data.firstOrNull()?.cpm?.cpmShop?.products?.forEachIndexed { index, _ ->
-            feedXTagging.add(getFeedxMediaTagging(index))
-        }
-
-        cpmData.data.firstOrNull()?.cpm?.cpmShop?.products?.forEachIndexed { index, product ->
-            media.add(
-                cpmProductToFeedXMedia(
-                    product,
-                    variant,
-                    merchantVouchers as ArrayList<String>,
-                    index
-                )
+        val media = topAdsShop?.products?.mapIndexed { index, product ->
+            cpmProductToFeedXMedia(
+                product,
+                variant,
+                merchantVouchers,
+                index
             )
         }
 
-        val feedXProducts = arrayListOf<FeedXProduct>()
-        cpmData.data.firstOrNull()?.cpm?.cpmShop?.products?.forEach {
-            feedXProducts.add(cpmProductToFeedXProduct(it, merchantVouchers as ArrayList<String>))
+        val feedXProducts = topAdsShop?.products?.map { product ->
+            cpmProductToFeedXProduct(product, merchantVouchers, topAdsShop.id)
         }
 
         val listOf = arrayListOf("medias:layout_single")
@@ -48,7 +40,7 @@ object TopadsFeedXMapper {
             appLink = data?.applinks ?: "",
             badgeURL = data?.cpm?.badges?.firstOrNull()?.imageUrl ?: "",
             description = data?.cpm?.decription ?: "",
-            id = data?.id ?: "",
+            id = data?.cpm?.cpmShop?.id ?: "",
             logoURL = data?.cpm?.cpmImage?.fullEcs ?: "",
             name = authorName,
             type = 2,
@@ -62,7 +54,7 @@ object TopadsFeedXMapper {
                 webLink = data?.redirect ?: "",
                 coverUrl = data?.cpm?.cpmImage?.fullUrl ?: "",
                 mods = listOf,
-                products = feedXProducts
+                products = feedXProducts.orEmpty()
             )
 
         val share = FeedXShare("Share", "", listOf())
@@ -71,8 +63,6 @@ object TopadsFeedXMapper {
             mods = listOf(),
             transitionFollow = cpmData.data.firstOrNull()?.cpm?.cpmShop?.isFollowed ?: false
         )
-
-
 
         return FeedXCard(
             typename = TYPE_TOPADS_HEADLINE_NEW,
@@ -86,7 +76,7 @@ object TopadsFeedXMapper {
             author = feedXAuthor,
             items = arrayListOf(feedXCardDataItem),
             type = "",
-            products = feedXProducts,
+            products = feedXProducts.orEmpty(),
             subTitle = data?.cpm?.decription ?: "",
             text = data?.cpm?.cpmShop?.slogan ?: "",
             title = data?.cpm?.name ?: "",
@@ -96,8 +86,8 @@ object TopadsFeedXMapper {
             followers = followers,
             appLink = data?.applinks ?: "",
             webLink = redirectWeblinkShop,
-            media = media,
-            tags = feedXProducts,
+            media = media.orEmpty(),
+            tags = feedXProducts.orEmpty(),
             impressHolder = impressHolder,
             isTopAds = true,
             adId = data?.adClickUrl ?: "",
@@ -109,11 +99,12 @@ object TopadsFeedXMapper {
         )
     }
 
-    private fun cpmProductToFeedXMedia(product: Product,variant: Int, merchantVoucher: ArrayList<String>,index: Int): FeedXMedia {
-        var cashback=""
-        if (!merchantVoucher.isNullOrEmpty()){
-            cashback=merchantVoucher[0]
-        }
+    private fun cpmProductToFeedXMedia(
+        product: Product,
+        variant: Int,
+        merchantVoucher: List<String>,
+        index: Int
+    ): FeedXMedia {
         product.run {
             return FeedXMedia(
                 id = id,
@@ -129,7 +120,7 @@ object TopadsFeedXMapper {
                 discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
                 isCashback = isProductCashback,
                 variant = variant,
-                cashBackFmt = cashback
+                cashBackFmt = merchantVoucher.firstOrNull().orEmpty()
             )
         }
     }
@@ -140,19 +131,15 @@ object TopadsFeedXMapper {
 
     private fun cpmProductToFeedXProduct(
         product: Product,
-        merchantVoucher: ArrayList<String>
+        merchantVoucher: List<String>,
+        shopId: String,
     ): FeedXProduct {
-        var cashback=""
-        if (!merchantVoucher.isNullOrEmpty()){
-            cashback=merchantVoucher[0]
-        }
         val isDiscount = product.campaign.discountPercentage > 0
-
         product.run {
             return FeedXProduct(
                 appLink = applinks,
                 discount = campaign.discountPercentage,
-                cashbackFmt = cashback,
+                cashbackFmt = merchantVoucher.firstOrNull().orEmpty(),
                 isBebasOngkir = freeOngkir.isActive,
                 isCashback = isProductCashback,
                 bebasOngkirURL = freeOngkir.imageUrl,
@@ -170,8 +157,9 @@ object TopadsFeedXMapper {
                 totalSold = countSold.toIntOrZero(),
                 discountFmt = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
                 priceDiscountFmt = priceFormat.replace(" ",""),
-                shopName = shopName
-                )
+                shopName = shopName,
+                shopID = shopId
+            )
         }
     }
 }

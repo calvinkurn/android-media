@@ -18,7 +18,7 @@
         android:id="@+id/product_detail_gallery_close_button"
         android:layout_marginTop="16dp"
         android:src="@drawable/ic_close"
-        android:tint="@color/Unify_N0"
+        android:tint="@color/Unify_Static_White"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

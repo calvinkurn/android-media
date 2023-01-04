@@ -11,7 +11,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import javax.inject.Inject
 
 class GetShopPageHeaderLayoutUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+    private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ShopPageHeaderLayoutResponse>(graphqlRepository) {
 
     var params = mapOf<String, Any>()
@@ -20,10 +20,10 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ShopPageHeaderLayoutResponse {
         val request = GraphqlRequest(QUERY, ShopPageHeaderLayoutResponse::class.java, params)
         val cacheStrategy = GraphqlCacheStrategy.Builder(
-                if (isFromCloud)
-                    CacheType.ALWAYS_CLOUD
-                else
-                    CacheType.CLOUD_THEN_CACHE
+            if (isFromCloud)
+                CacheType.ALWAYS_CLOUD
+            else
+                CacheType.CLOUD_THEN_CACHE
         ).build()
         val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(ShopPageHeaderLayoutResponse::class.java)
@@ -98,11 +98,12 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
             }
           }
         """
+
         @JvmStatic
         fun createParams(
-                shopId: String,
-                districtId: String,
-                cityId: String
+            shopId: String,
+            districtId: String,
+            cityId: String
         ) = mapOf(
             PARAM_SHOP_ID to shopId,
             PARAM_DISTRICT_ID to districtId.toIntOrZero(),

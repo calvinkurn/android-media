@@ -6,8 +6,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE
-import com.tokopedia.shop.databinding.ItemShopHomePageImageColumnBinding
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.databinding.ItemShopHomePageImageColumnBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -17,9 +17,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopHomeItemImageColumnViewHolder(
-        itemView: View,
-        val listener: ShopHomeDisplayWidgetListener,
-        private val heightRatio: Float
+    itemView: View,
+    val listener: ShopHomeDisplayWidgetListener,
+    private val heightRatio: Float
 ) : RecyclerView.ViewHolder(itemView) {
 
     var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
@@ -30,9 +30,9 @@ class ShopHomeItemImageColumnViewHolder(
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE)
-        //avoid crash in ShopCarouselBannerImageUnify when image url is returned as base64
+        // avoid crash in ShopCarouselBannerImageUnify when image url is returned as base64
         try {
-            if(ivMultipleColumn?.context.isValidGlideContext()) {
+            if (ivMultipleColumn?.context.isValidGlideContext()) {
                 ivMultipleColumn?.heightRatio = heightRatio
                 ivMultipleColumn?.setImageUrl(data.imageUrl, heightRatio = heightRatio)
             }

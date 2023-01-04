@@ -7,7 +7,7 @@ import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
  */
 data class FollowKolViewModel (
         val followKolDomain: FollowKolDomain = FollowKolDomain(),
-        var id: Int = 0,
+        val id: String = "",
         var status: Int = 0,
         var rowNumber : Int = 0,
         var errorMessage: String = "",

@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 
 /**
  * Created by yusuf.hendrawan on 08/06/21.
@@ -15,10 +16,10 @@ import com.tokopedia.track.TrackAppUtils
 
 object BuyerOrderDetailTracker {
     private fun MutableMap<String, Any>.appendGeneralEventData(
-            eventName: String,
-            eventCategory: String,
-            eventAction: String,
-            eventLabel: String
+        eventName: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
     ): MutableMap<String, Any> {
         put(TrackAppUtils.EVENT, eventName)
         put(TrackAppUtils.EVENT_CATEGORY, eventCategory)
@@ -28,10 +29,10 @@ object BuyerOrderDetailTracker {
     }
 
     private fun Bundle.appendGeneralEventData(
-            eventName: String,
-            eventCategory: String,
-            eventAction: String,
-            eventLabel: String
+        eventName: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
     ): Bundle {
         putString(TrackAppUtils.EVENT, eventName)
         putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
@@ -158,6 +159,15 @@ object BuyerOrderDetailTracker {
         )
     }
 
+    fun eventClickSeePodPreview(orderStatusCode: String, orderId: String) {
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_POD_PREVIEW,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId,
+            trackerId = "39813"
+        )
+    }
+
     fun eventClickCopyOrderInvoice(orderStatusCode: String, orderId: String) {
         eventGeneralBuyerOrderDetail(
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_COPY_ORDER_INVOICE,
@@ -216,8 +226,11 @@ object BuyerOrderDetailTracker {
 
     fun eventClickActionButtonSOM(isPrimaryButton: Boolean, buttonName: String, orderStatusCode: String, orderId: String) {
         val eventAction = StringBuilder().apply {
-            if (isPrimaryButton) append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON)
-            else append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON)
+            if (isPrimaryButton) {
+                append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON)
+            } else {
+                append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON)
+            }
             append(BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP)
             append(buttonName)
         }.toString()
@@ -226,8 +239,11 @@ object BuyerOrderDetailTracker {
 
     fun eventClickActionButtonPG(isPrimaryButton: Boolean, buttonName: String, trackerId: String, orderStatusCode: String, orderId: String) {
         val eventAction = StringBuilder().apply {
-            if (isPrimaryButton) append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON)
-            else append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON)
+            if (isPrimaryButton) {
+                append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON)
+            } else {
+                append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON)
+            }
             append(BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP)
             append(buttonName)
         }.toString()
@@ -302,5 +318,20 @@ object BuyerOrderDetailTracker {
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_CLICK_INSURANCE_WIDGET)
             .sendGeneralEvent()
+    }
+
+    fun sendClickOnResolutionWidgetEvent(orderStatusCode: String, orderId: String) {
+        val eventLabel = "$orderStatusCode - $orderId"
+        val trackerId = "38355"
+        Tracker.Builder()
+            .setEvent(BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG)
+            .setEventAction(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_RESOLUTION_WIDGET)
+            .setEventCategory(BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, trackerId)
+            .setBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .setCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
     }
 }

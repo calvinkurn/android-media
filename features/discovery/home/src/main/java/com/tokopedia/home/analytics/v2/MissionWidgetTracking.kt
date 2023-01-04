@@ -76,7 +76,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             )
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Ecommerce.PROMO_CLICK, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(com.tokopedia.analytic_constant.Event.SELECT_CONTENT, bundle)
     }
 
     fun getMissionWidgetView(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String) : Map<String, Any> {
@@ -154,6 +154,6 @@ object MissionWidgetTracking : BaseTrackerConst() {
             element.buType,
             element.title
         ))
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Ecommerce.PRODUCT_CLICK, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(com.tokopedia.analytic_constant.Event.SELECT_CONTENT, bundle)
     }
 }

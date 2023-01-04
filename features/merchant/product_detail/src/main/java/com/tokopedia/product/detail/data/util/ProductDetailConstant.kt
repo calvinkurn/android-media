@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 object ProductDetailConstant {
     const val PARAM_PRODUCT_ID = "product_id"
+    const val PARAM_SHOP_ID = "shopId"
 
     const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
 
@@ -23,7 +24,7 @@ object ProductDetailConstant {
     const val PDP_RESULT_PLT_RENDER_METRICS = "pdp_result_plt_render_metrics"
     const val PDP_RESULT_TRACE = "pdp_result_trace"
 
-    //PAYLOADS
+    // PAYLOADS
     const val PAYLOAD_WISHLIST = 1
     const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
@@ -36,7 +37,7 @@ object ProductDetailConstant {
     const val PAYLOAD_UPDATE_QTY_RECOM_TOKONOW = 1234
     const val DIFFUTIL_PAYLOAD = "payload"
 
-    //Request Code
+    // Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
     const val REQUEST_CODE_LOGIN = 561
     const val REQUEST_CODE_REPORT = 570
@@ -44,11 +45,11 @@ object ProductDetailConstant {
     const val REQUEST_CODE_SHOP_INFO = 998
     const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
-    //Result
+    // Result
     const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
     const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
 
-    //Mapper
+    // Mapper
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
     const val MINI_SOCIAL_PROOF_STOCK = "mini_social_proof_stock"
     const val PRODUCT_DETAIL = "product_detail"
@@ -79,9 +80,9 @@ object ProductDetailConstant {
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
-    const val COD = "cod"
     const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
+    const val INFO_OBAT_KERAS = "info_obat_keras"
     const val VALUE_PROP = "value_prop"
     const val PRODUCT_CONTENT = "product_content"
     const val MEDIA = "product_media"
@@ -104,8 +105,13 @@ object ProductDetailConstant {
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
     const val DILAYANI_TOKOPEDIA = "dt_info"
+    const val AR_BUTTON = "button_ar"
+    // custom info title as component type
+    const val CUSTOM_INFO_TITLE = "custom_info_title"
+    // custom info title as component name
+    const val OTHER_OFFERS = "other_offers"
 
-    //Arguments
+    // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
     const val ARG_WAREHOUSE_ID = "ARG_WAREHOUSE_ID"
     const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
@@ -124,7 +130,7 @@ object ProductDetailConstant {
     const val ARG_CAMPAIGN_ID = "ARG_CAMPAIGN_ID"
     const val ARG_VARIANT_ID = "ARG_VARIANT_ID"
 
-    //Animation
+    // Animation
     const val CART_MAX_COUNT = 99
     const val CART_ALPHA_ANIMATION_FROM = 1f
     const val CART_ALPHA_ANIMATION_TO = 0f
@@ -133,13 +139,13 @@ object ProductDetailConstant {
     const val CART_SCALE_ANIMATION_PIVOT = 0.5f
     const val CART_ANIMATION_DURATION = 700L
 
-    //Save Instance State
+    // Save Instance State
     const val SAVED_ACTIVITY_RESULT = "saved_activity_result"
 
-    //SHOP
+    // SHOP
     const val ALREADY_FAVORITE_SHOP = 1
 
-    //TopAds Banner
+    // TopAds Banner
     const val ADS_COUNT = 3
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
@@ -147,7 +153,7 @@ object ProductDetailConstant {
     const val HIDE_NPL_BS = false
     const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"
 
-    //View Constant
+    // View Constant
     const val SHOW_VALUE = 1F
     const val HIDE_VALUE = 0F
     const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L

@@ -32,7 +32,7 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
             view, this, this, this,
             this, this, this,
             this, this,
-            (activity as BaseChatToolbarActivity).getToolbar(), analytics,
+            (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
             topchatViewState = it
         }

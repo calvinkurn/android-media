@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
@@ -13,8 +14,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.people.R
-import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.listener.FollowerFollowingListener
+import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.model.ProfileFollowerV2
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
@@ -30,13 +31,14 @@ open class ProfileFollowingAdapter(
     val callback: AdapterCallback,
     val userSession: UserSessionInterface,
     val listener: FollowerFollowingListener,
-    private val followingListener: FollowingFollowerListener
+    private val followingListener: FollowingFollowerListener,
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     var cursor: String = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var imgProfile: ImageUnify = view.findViewById(R.id.img_profile_image)
+        internal var imgBadge: ImageUnify = view.findViewById(R.id.img_badge)
         internal var btnAction: UnifyButton = view.findViewById(R.id.btn_action_follow)
         internal var textName: TextView = view.findViewById(R.id.text_display_name)
         internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
@@ -49,7 +51,7 @@ open class ProfileFollowingAdapter(
     override fun getItemViewHolder(
         parent: ViewGroup,
         inflater: LayoutInflater,
-        viewType: Int
+        viewType: Int,
     ): BaseVH {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.up_item_followers, parent, false)
@@ -74,9 +76,9 @@ open class ProfileFollowingAdapter(
     }
 
     fun onSuccess(data: ProfileFollowingListBase) {
-        if (data == null
-            || data.profileFollowings == null
-            || data.profileFollowings.profileFollower == null
+        if (data == null ||
+            data.profileFollowings == null ||
+            data.profileFollowings.profileFollower == null
         ) {
             loadCompleted(mutableListOf(), data)
             isLastPage = true
@@ -95,7 +97,16 @@ open class ProfileFollowingAdapter(
     private fun setData(holder: ViewHolder, item: ProfileFollowerV2, position: Int) {
         val itemContext = holder.itemView.context
         holder.imgProfile.setImageUrl(item.profile.imageCover)
-        holder.textName.text = item.profile.name
+        holder.textName.text = MethodChecker.fromHtml(item.profile.name)
+
+        val badgeUrl = item.profile.badges.getOrNull(BADGE_URL_IDX).orEmpty()
+        if(badgeUrl.isNotEmpty()) {
+            holder.imgBadge.show()
+            holder.imgBadge.setImageUrl(badgeUrl)
+        }
+        else {
+            holder.imgBadge.hide()
+        }
 
         if (item.profile.username.isNotBlank()) {
             holder.textUsername.show()
@@ -103,7 +114,6 @@ open class ProfileFollowingAdapter(
         } else {
             holder.textUsername.hide()
         }
-
 
         if (item.profile.userID == userSession.userId) {
             holder.btnAction.hide()
@@ -115,15 +125,14 @@ open class ProfileFollowingAdapter(
 
                 holder.btnAction.setOnClickListener { v ->
                     if (!DeviceConnectionInfo.isInternetAvailable(
-                            itemContext.applicationContext
+                            itemContext.applicationContext,
                         )
                     ) {
-
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
                             itemContext.getString(com.tokopedia.people.R.string.up_error_unfollow),
                             Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR
+                            Toaster.TYPE_ERROR,
                         )
 
                         snackBar.show()
@@ -134,7 +143,7 @@ open class ProfileFollowingAdapter(
                     if (!userSession.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW,
                         )
                     } else {
                         followingListener.clickUnfollow(userSession.userId, item.profile.userID == userSession.userId)
@@ -148,15 +157,14 @@ open class ProfileFollowingAdapter(
 
                 holder.btnAction.setOnClickListener { v ->
                     if (!DeviceConnectionInfo.isInternetAvailable(
-                            itemContext.applicationContext
+                            itemContext.applicationContext,
                         )
                     ) {
-
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
                             itemContext.getString(com.tokopedia.people.R.string.up_error_follow),
                             Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR
+                            Toaster.TYPE_ERROR,
                         )
 
                         snackBar.show()
@@ -167,7 +175,7 @@ open class ProfileFollowingAdapter(
                     if (!userSession.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW,
                         )
                     } else {
                         followingListener.clickFollow(userSession.userId, item.profile.userID == userSession.userId)
@@ -183,11 +191,12 @@ open class ProfileFollowingAdapter(
             followingListener.clickUser(userSession.userId, item.profile.userID == userSession.userId)
             val intent = RouteManager.getIntent(
                 itemContext,
-                item.profile.sharelink.applink
+                item.profile.sharelink.applink,
             )
             intent.putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
             listener.callstartActivityFromFragment(
-                intent, UserProfileFragment.REQUEST_CODE_USER_PROFILE
+                intent,
+                UserProfileFragment.REQUEST_CODE_USER_PROFILE,
             )
         }
     }
@@ -215,7 +224,7 @@ open class ProfileFollowingAdapter(
 
     companion object {
         const val PAGE_COUNT = 20
+
+        private const val BADGE_URL_IDX = 1
     }
-
 }
-
