@@ -5,6 +5,9 @@ sealed class UploadResult {
         // image upload result
         val uploadId: String = "",
 
+        // image secure upload result
+        val fileUrl: String = "",
+
         // video upload result
         val videoUrl: String = ""
     ): UploadResult()
