@@ -348,6 +348,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         shouldCheckCache: Boolean = false
     ) {
         viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
+        // skip debounce on viewModel#productListUiState
         advanceTimeBy(1000L)
     }
 }
