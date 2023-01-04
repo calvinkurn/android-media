@@ -217,7 +217,9 @@ object ProductListUiStateMapper {
         val insuranceDetailData = insuranceDetailRequestState.let {
             if (it is GetInsuranceDetailRequestState.Complete.Success) {
                 it.result?.protectionProduct
-            } else null
+            } else {
+                null
+            }
         }
         return ProductListUiState.HasData.Showing(
             mapProductListUiModel(
@@ -433,7 +435,7 @@ object ProductListUiStateMapper {
                 Int.ZERO to this
             }
         } ?: (Int.ZERO to null)
-        val mappedProductBundle =  reducedBundleDetail?.map { bundle ->
+        val mappedProductBundle = reducedBundleDetail?.map { bundle ->
             ProductListUiModel.ProductBundlingUiModel(
                 bundleId = bundle.bundleId,
                 bundleName = bundle.bundleName,
@@ -442,7 +444,8 @@ object ProductListUiStateMapper {
                 totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
                 bundleItemList = bundle.orderDetail.map { bundleDetail ->
                     mapProductBundleItem(bundleDetail, orderId, orderStatusId, bundle.bundleId, insuranceDetailData, singleAtcResultFlow)
-                })
+                }
+            )
         }.orEmpty()
         return numOfRemovedBundleDetail to mappedProductBundle
     }
