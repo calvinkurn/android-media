@@ -163,6 +163,6 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
     }
 
     companion object {
-        private const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and"
+        private const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_2"
     }
 }
