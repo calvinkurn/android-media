@@ -15,9 +15,13 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
     @Test
@@ -51,10 +55,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 cart = cart,
                 shouldCheckCache = false
             )
+            advanceTimeBy(1000L)
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing) // showing without P1 data
-            assertTrue(uiStates[2] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
+            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing)
         }
 
     @Test
@@ -83,6 +87,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 cart = cart,
                 shouldCheckCache = false
             )
+            advanceTimeBy(1000L)
             // reload
             viewModel.getBuyerOrderDetailData(
                 orderId = orderId,
@@ -90,14 +95,14 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 cart = cart,
                 shouldCheckCache = false
             )
+            advanceTimeBy(1000L)
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing) // showing without P1 data
-            assertTrue(uiStates[2] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
-            for (i in 3 until uiStates.size.dec()) {
+            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing)
+            for (i in 2 until uiStates.size.dec()) {
                 assertTrue(uiStates[i] is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
             }
-            assertTrue(uiStates[uiStates.size - 1] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
+            assertTrue(uiStates[uiStates.size - 1] is BuyerOrderDetailUiState.HasData.Showing)
         }
 
     @Test
@@ -194,6 +199,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 cart = cart,
                 shouldCheckCache = false
             )
+            advanceTimeBy(1000L)
             viewModel.addSingleToCart(product)
 
             coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
@@ -211,11 +217,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
                 viewModel.addSingleToCart(product)
 
                 val result = viewModel.singleAtcResult.value
@@ -236,11 +242,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createFailedATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
                 viewModel.addSingleToCart(product)
 
                 val result = viewModel.singleAtcResult.value
@@ -255,18 +261,19 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         runCollectingUiState {
             val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
                 every { data.productListHeaderUiModel.shopId } returns shopId
-                every { data.productList } returns listOf(product)
+                every { data.getAllProduct() } returns listOf(product)
             }
 
             createSuccessGetBuyerOrderDetailDataResult()
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
+                advanceTimeBy(1000L)
                 viewModel.addMultipleToCart()
 
                 coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
@@ -301,6 +308,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+                advanceTimeBy(1000L)
                 viewModel.addMultipleToCart()
 
                 val result = viewModel.multiAtcResult.value
@@ -398,6 +406,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+                advanceTimeBy(1000L)
 
                 assertEquals(product, viewModel.getProducts().firstOrNull())
             }
@@ -423,6 +432,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+                advanceTimeBy(1000L)
 
                 assertEquals(shopId, viewModel.getShopId())
             }
@@ -448,6 +458,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+                advanceTimeBy(1000L)
 
                 assertEquals(shopName, viewModel.getShopName())
             }
@@ -473,6 +484,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+                advanceTimeBy(1000L)
 
                 assertEquals(shopType, viewModel.getShopType())
             }
@@ -498,6 +510,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+                advanceTimeBy(1000L)
 
                 val categoryId = viewModel.getCategoryId()
                 assertEquals(1, categoryId.size)
@@ -548,6 +561,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+                advanceTimeBy(1000L)
 
                 val categoryId = viewModel.getCategoryId()
                 assertEquals(2, categoryId.size)
@@ -585,6 +599,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+                advanceTimeBy(1000L)
 
                 val categoryId = viewModel.getCategoryId()
                 assertEquals(1, categoryId.size)
