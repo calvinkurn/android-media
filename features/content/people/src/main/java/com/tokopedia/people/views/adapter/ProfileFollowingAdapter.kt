@@ -83,12 +83,7 @@ open class ProfileFollowingAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-
-        if (args == null || args.isEmpty()) {
-            return
-        }
-
-        args[0]?.let { viewModel.getFollowings(cursor, PAGE_COUNT) }
+        viewModel.getFollowings(cursor, PAGE_COUNT)
     }
 
     fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {

@@ -85,11 +85,7 @@ open class ProfileFollowersAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-        if (args == null || args.isEmpty()) {
-            return
-        }
-
-        args[0]?.let { viewModel.getFollowers(cursor, PAGE_COUNT) }
+        viewModel.getFollowers(cursor, PAGE_COUNT)
     }
 
     fun onSuccess(data: ProfileFollowerListBase) {
