@@ -23,6 +23,7 @@ import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.*
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CHECKLIST
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_OPT_IN
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
@@ -102,7 +103,7 @@ class UserConsentWidget : FrameLayout,
                     submissionParam.purposes.add(
                         Purpose(
                             purposeID = it.id,
-                            transactionType = it.purposeType,
+                            transactionType = CONSENT_OPT_IN,
                             version = it.version
                         )
                     )
@@ -235,19 +236,19 @@ class UserConsentWidget : FrameLayout,
     private fun renderSinglePurpose() {
         var purposeText = ""
         if (collection?.purposes?.size.orZero() == NUMBER_ONE) {
-            purposeText = collection?.purposes?.first()?.description.orEmpty()
+            purposeText = collection?.purposes?.first()?.attribute?.uiName.orEmpty()
         } else {
             collection?.purposes?.forEachIndexed { index, purposeDataModel ->
                 purposeText += when(index) {
                     (collection?.purposes?.size.orZero() - NUMBER_ONE) -> {
-                        " & ${purposeDataModel.description}"
+                        " & ${purposeDataModel.attribute.uiName}"
                     }
 
                     (collection?.purposes?.size.orZero() - NUMBER_TWO) -> {
-                        purposeDataModel.description
+                        purposeDataModel.attribute.uiName
                     }
                     else -> {
-                        "${purposeDataModel.description}, "
+                        "${purposeDataModel.attribute.uiName}, "
                     }
                 }
             }

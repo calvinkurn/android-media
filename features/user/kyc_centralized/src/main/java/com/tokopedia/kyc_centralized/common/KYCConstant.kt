@@ -29,4 +29,7 @@ object KYCConstant {
     const val TRACKER_ID = "trackerId"
 
     const val LIVENESS_TAG = "LIVENESS_TAG"
+
+    const val consentCollectionId = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
+    const val consentVersion = "1"
 }

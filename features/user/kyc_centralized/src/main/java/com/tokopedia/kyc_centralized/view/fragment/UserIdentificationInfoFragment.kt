@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -40,6 +41,9 @@ import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -113,6 +117,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver(view: View) {
+        loadUserConsent()
         viewModel.userProjectInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -136,8 +141,32 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun loadUserConsent() {
+        val consentParam = ConsentCollectionParam(
+            collectionId = KYCConstant.consentCollectionId,
+            version = KYCConstant.consentVersion
+        )
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.load(
+            viewLifecycleOwner, this, consentParam, object : UserConsentActionListener {
+                override fun onCheckedChange(isChecked: Boolean) {
+                    analytics?.eventClickKycTnc(isChecked)
+                }
+
+                override fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean) {
+                    analytics?.eventClickOnNextOnBoarding()
+                    goToFormActivity()
+                }
+
+                override fun onFailed(throwable: Throwable) {
+                    Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
+                }
+            }
+        )
+    }
+
     private fun getStatusInfo() {
         showLoading()
+        loadUserConsent()
         viewModel.getUserProjectInfo(projectId)
     }
 
@@ -205,15 +234,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
         viewBinding?.mainView?.hide()
         viewBinding?.layoutKycBenefit?.root?.show()
-        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
-            analytics?.eventClickOnNextOnBoarding()
-            goToFormActivity()
-        }, closeButtonAction = {
+        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, closeButtonAction = {
             activity?.onBackPressed()
-        }, onCheckedChanged = {
-            analytics?.eventClickKycTnc(it)
-        }, onTncClicked = {
-            analytics?.eventClickTermsSuccessPage()
         })
         analytics?.eventViewOnKYCOnBoarding()
     }
