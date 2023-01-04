@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_recommendation_feed_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/recom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager_home_feeds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+
+</LinearLayout>

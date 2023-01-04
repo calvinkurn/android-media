@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.dilayanitokopedia">
+
+    <application>
+        <activity
+            android:name=".home.presentation.activity.DtHomeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_dilayani_tokopedia"
+                    android:pathPattern="@string/path_dilayani_tokopedia_home"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

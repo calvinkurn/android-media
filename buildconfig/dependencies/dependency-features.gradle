@@ -129,6 +129,8 @@ ext {
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
             localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
 
+            dilayaniTokopedia                : ":features:dilayanitokopedia",
+
             mediauploader                   : ":features:media:mediauploader",
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
