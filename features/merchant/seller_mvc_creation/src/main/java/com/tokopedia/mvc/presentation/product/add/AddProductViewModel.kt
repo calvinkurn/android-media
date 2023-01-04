@@ -571,7 +571,7 @@ class AddProductViewModel @Inject constructor(
 
             val updatedProducts = currentState.products.map { parentProduct ->
                 if (parentProduct.id == parentProductId) {
-                    parentProduct.copy(selectedVariantsIds = selectedVariantIds)
+                    parentProduct.copy(isSelected = true, selectedVariantsIds = selectedVariantIds)
                 } else {
                     parentProduct
                 }
