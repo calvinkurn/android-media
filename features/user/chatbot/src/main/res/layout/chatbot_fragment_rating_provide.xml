@@ -32,9 +32,9 @@
 
         <LinearLayout
             android:id="@+id/smile_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/dp_chatbot_10"
             android:weightSum="5"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"

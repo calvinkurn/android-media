@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.recipedetail.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.domain.model.TokoNowGetRecipe
 import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe
@@ -20,6 +21,7 @@ class GetRecipeUseCase @Inject constructor(gqlRepository: GraphqlRepository) {
     companion object {
         private const val DEFAULT_RECIPE_ID = "0"
         private const val DEFAULT_SLUG = ""
+        private const val PARAM_ERROR_MESSAGE = "recipeId and slug cannot be empty"
     }
 
     private val graphql by lazy { GraphqlUseCase<TokoNowGetRecipe>(gqlRepository) }
@@ -37,6 +39,10 @@ class GetRecipeUseCase @Inject constructor(gqlRepository: GraphqlRepository) {
         graphql.apply {
             setGraphqlQuery(GetRecipe)
             setTypeClass(TokoNowGetRecipe::class.java)
+
+            if(recipeId.isEmpty() && slug.isEmpty()) {
+                throw MessageErrorException(PARAM_ERROR_MESSAGE)
+            }
 
             setRequestParams(RequestParams.create().apply {
                 putString(PARAM_RECIPE_ID, recipeId)

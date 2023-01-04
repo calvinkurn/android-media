@@ -323,6 +323,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     type = true,
                     mData.author.id,
                     mData.type,
+                    authorType = mData.author.type.toString()
                 )
             }
 
@@ -846,8 +847,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.followers.isFollowed,
                 shopId = feedXCard.author.id,
                 mediaType = feedXCard.media.firstOrNull()?.type ?: "",
-                playChannelId = feedXCard.playChannelID
-
+                playChannelId = feedXCard.playChannelID,
+                authorType = feedXCard.author.type.toString()
             )
         }
 
@@ -912,7 +913,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.typename,
                 feedXCard.followers.isFollowed,
                 shopId = feedXCard.author.id,
-                mediaType = mediaType
+                mediaType = mediaType,
+                authorType = feedXCard.author.type.toString()
             )
         }
     }
