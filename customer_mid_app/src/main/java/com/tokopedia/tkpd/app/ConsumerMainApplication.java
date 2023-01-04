@@ -171,6 +171,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                             return  getString(com.tokopedia.keys.R.string.thanos_token_key);
                         }
                     })
+                    .setLocalRootPath("tracker")
                     .initialize();
         }
         TrackApp.initTrackApp(this);

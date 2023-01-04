@@ -140,6 +140,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
                             return  getString(com.tokopedia.keys.R.string.thanos_token_key);
                         }
                     })
+                    .setLocalRootPath("tracker")
                     .initialize();
         }
         TrackApp.initTrackApp(this);

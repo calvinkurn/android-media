@@ -106,6 +106,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
                             return  getString(com.tokopedia.keys.R.string.thanos_token_key);
                         }
                     })
+                    .setLocalRootPath("tracker")
                     .initialize();
         }
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
@@ -16,6 +17,7 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
+import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -114,6 +116,7 @@ public class MyApplication extends BaseMainApplication
                             return  getString(com.tokopedia.keys.R.string.thanos_token_key);
                         }
                     })
+                    .setLocalRootPath("tracker")
                     .initialize();
         }
         TrackApp.initTrackApp(this);
