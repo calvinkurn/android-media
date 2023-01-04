@@ -90,7 +90,7 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
                 is ReturnToShipperState.ShowToaster -> {
                     showToaster(it.errorMessage)
                     viewModel.delayed(DELAY_SHOWING_TOASTER) {
-                        doFinishActivity()
+                        doFinishActivity(Activity.RESULT_FIRST_USER)
                     }
                 }
                 is ReturnToShipperState.ShowLoading ->
