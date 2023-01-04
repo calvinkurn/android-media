@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.widget.ui.model.PlayCardShimmering
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -46,6 +48,7 @@ data class ChipWidgetUiModel(
     val sourceType: String,
     val sourceId: String,
     val text: String,
+    @TrackingField val impressHolder: ImpressHolder = ImpressHolder(),
 ) : ChipWidgetsUiModel()
 
 object ChipsShimmering : ChipWidgetsUiModel()

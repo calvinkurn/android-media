@@ -15,6 +15,7 @@ import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
 import com.tokopedia.play.view.uimodel.event.OCCSuccessEvent
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.viewcomponent.ExploreWidgetViewComponent
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineScope
@@ -82,6 +83,8 @@ class PlayChannelAnalyticManager @Inject constructor(
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                     KebabIconUiComponent.Event.OnImpressed -> analytic2?.impressKebab()
+                    ExploreWidgetViewComponent.Event.OnImpressed -> analytic2?.impressExploreIcon()
+                    ExploreWidgetViewComponent.Event.OnClicked -> analytic2?.clickExploreIcon()
                 }
             }
         }

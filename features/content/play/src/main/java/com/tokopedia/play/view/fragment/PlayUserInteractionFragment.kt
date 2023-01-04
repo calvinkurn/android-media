@@ -1866,8 +1866,13 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
         playViewModel.submitAction(FetchWidgets)
+        eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked)
         PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader)
             .showNow(childFragmentManager)
+    }
+
+    override fun onExploreWidgetIconImpressed(viewComponent: ExploreWidgetViewComponent) {
+        eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed)
     }
 
     companion object {

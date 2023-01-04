@@ -6,7 +6,6 @@ import com.tokopedia.play.analytic.KEY_TRACK_CLICK_CONTENT
 import com.tokopedia.play.analytic.KEY_TRACK_CURRENT_SITE
 import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
 import com.tokopedia.play.analytic.KEY_TRACK_TRACKER_ID
-import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.track.TrackApp
@@ -38,8 +37,8 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     private val channelId: String
         get() = channelInfo.id
 
-    private val channelType: PlayChannelType
-        get() = channelInfo.channelType
+    private val channelType: String
+        get() = channelInfo.channelType.value
 
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else "0"

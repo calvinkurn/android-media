@@ -4,6 +4,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.databinding.ViewChipShimmeringBinding
 import com.tokopedia.play.databinding.ViewWidgetChipsBinding
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
@@ -18,10 +19,14 @@ class ChipsViewHolder  {
             binding.root.setOnClickListener {
                 listener.onChipsClicked(item)
             }
+            binding.root.addImpressionListener(item.impressHolder) {
+                listener.onChipsImpressed(item)
+            }
         }
 
         interface Listener {
             fun onChipsClicked(item: ChipWidgetUiModel)
+            fun onChipsImpressed(item: ChipWidgetUiModel)
         }
     }
 

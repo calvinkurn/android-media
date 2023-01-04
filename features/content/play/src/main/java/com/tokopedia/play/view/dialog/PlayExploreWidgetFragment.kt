@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -74,6 +75,10 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                analytic?.scrollExplore()
+            }
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.submitAction(NextPageWidgets)
             }
@@ -119,6 +124,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun setupHeader() {
         binding.widgetHeader.title = getString(playR.string.play_explore_widget_header_title)
         binding.widgetHeader.closeListener = View.OnClickListener {
+            analytic?.clickCloseExplore()
             dismiss()
         }
     }
@@ -134,6 +140,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.srExploreWidget.setOnRefreshListener {
             binding.srExploreWidget.isRefreshing = !binding.srExploreWidget.isRefreshing
             viewModel.submitAction(RefreshWidget)
+            analytic?.swipeRefresh()
         }
     }
 
@@ -195,13 +202,18 @@ class PlayExploreWidgetFragment @Inject constructor(
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
             is ResultState.Fail -> {
+                analytic?.impressToasterGlobalError()
                 Toaster.build(
                     view = requireView(),
                     text = state.error.message.orEmpty(),
                     actionText = getString(playR.string.title_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
-                    clickListener = { viewModel.submitAction(RefreshWidget) }).show()
+                    clickListener = {
+                        viewModel.submitAction(RefreshWidget)
+                        analytic?.clickRetryToaster()
+                    }
+                ).show()
             }
         }
     }
@@ -228,14 +240,24 @@ class PlayExploreWidgetFragment @Inject constructor(
         if (!isAdded) showNow(manager, TAG)
     }
 
+    /**
+     * Chips Listener
+     */
+
     override fun onChipsClicked(item: ChipWidgetUiModel) {
         viewModel.submitAction(ClickChipWidget(item))
+        analytic?.clickExploreTab(item.text)
+    }
+
+    override fun onChipsImpressed(item: ChipWidgetUiModel) {
+        analytic?.impressExploreTab(item.text)
     }
 
     /**
      * Card Widget
      */
     override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
+        analytic?.clickContentCard(item)
         router.route(requireContext(), item.appLink)
     }
 
@@ -256,6 +278,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         position: Int
     ) {
         viewModel.submitAction(UpdateReminder(item.channelId, reminderType))
+        analytic?.clickRemind(item.channelId)
     }
 
     override fun dismiss() {
