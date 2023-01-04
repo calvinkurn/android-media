@@ -92,6 +92,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 shouldOpenUserReport()
             },
             priority = 4,
+            onImpress = { analytic2?.impressUserReport() },
         )
     }
 
@@ -101,9 +102,11 @@ class PlayMoreActionBottomSheet @Inject constructor(
             icon = MethodChecker.getDrawable(requireContext(), R.drawable.ic_play_pip),
             subtitleRes = R.string.play_kebab_pip,
             onClick = {
+                analytic2?.clickPiP()
                 mListener?.onPipClicked(this)
             },
             priority = 1,
+            onImpress = { analytic2?.impressPiP() },
         )
     }
 
@@ -116,6 +119,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 onChromeCastClicked()
             },
             priority = 2,
+            onImpress = { analytic2?.impressChromecast() },
         )
     }
 
@@ -129,6 +133,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 mListener?.onWatchModeClicked(this)
             },
             priority = 3,
+            onImpress = { analytic2?.impressWatchMode() },
         )
     }
 
@@ -435,6 +440,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private fun onChromeCastClicked() {
         analytic.clickCast()
+        //new tracker
+        analytic2?.clickChromecast()
         dismiss()
     }
 

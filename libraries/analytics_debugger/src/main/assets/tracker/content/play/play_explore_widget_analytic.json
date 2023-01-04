@@ -58,7 +58,7 @@
       "event": "clickContent",
       "eventAction": "click - channel card",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod) - \\d+ - .*} - \\d+ - (true|false) - .* - (promo|no promo) - .*",
+      "eventLabel": "\\d+ - (live|vod) - \\d+ - .* - \\d+ - (true|false) - .* - (promo|no promo) - .*",
       "trackerId": "39860",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",

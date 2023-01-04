@@ -81,6 +81,7 @@ class PlayChannelAnalyticManager @Inject constructor(
                         sendImpression(it.productMap)
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
+                    KebabIconUiComponent.Event.OnImpressed -> analytic2?.impressKebab()
                 }
             }
         }

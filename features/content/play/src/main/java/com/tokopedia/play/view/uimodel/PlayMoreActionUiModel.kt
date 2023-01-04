@@ -2,6 +2,8 @@ package com.tokopedia.play.view.uimodel
 
 import android.graphics.drawable.Drawable
 import androidx.annotation.StringRes
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.view.type.PlayMoreActionType
 
 /**
@@ -13,4 +15,6 @@ data class PlayMoreActionUiModel(
     @StringRes val subtitleRes: Int,
     val onClick: (PlayMoreActionUiModel) -> Unit,
     val priority: Int,
+    val onImpress: () -> Unit,
+    @TrackingField val impressHolder: ImpressHolder = ImpressHolder(),
 )

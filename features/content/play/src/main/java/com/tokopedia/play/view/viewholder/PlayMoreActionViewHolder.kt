@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.PlayMoreActionType
 import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
+import com.tokopedia.play_common.util.addImpressionListener
 
 /**
  * Created by jegul on 10/12/19
@@ -28,6 +29,9 @@ class PlayMoreActionViewHolder(itemView: View) : BaseViewHolder(itemView) {
         }
         tvSubtitle.text = getString(item.subtitleRes)
         itemView.setOnClickListener { item.onClick(item) }
+        itemView.addImpressionListener(item.impressHolder){
+            item.onImpress()
+        }
 
         setupType(item.type)
     }
