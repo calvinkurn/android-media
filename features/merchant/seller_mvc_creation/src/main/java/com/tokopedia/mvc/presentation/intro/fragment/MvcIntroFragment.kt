@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,14 +21,21 @@ import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
 import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
+import com.tokopedia.mvc.presentation.intro.util.MvcIntroRecyclerViewScrollListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.ViewMoreListener {
+class MvcIntroFragment :
+    BaseDaggerFragment(),
+    VoucherIntroViewMoreCustomView.ViewMoreListener {
 
-    private var binding by autoClearedNullable<SmvcFragmentIntroBinding>()
+    private var binding by autoClearedNullable<SmvcFragmentIntroBinding>(onClear = {
+        scrollerListener?.let { listener -> it.recyclerView.removeOnScrollListener(listener) }
+    })
+
     private var mvcAdapter: MvcIntroAdapter? = null
     private var contentList: List<Visitable<*>> = emptyList()
     private var mvcLayoutManager: LinearLayoutManager? = null
+    private var scrollerListener: MvcIntroRecyclerViewScrollListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +56,11 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
         this.contentList = getContentList()
         mvcAdapter = MvcIntroAdapter()
 
-        mvcLayoutManager = object : LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
+        mvcLayoutManager = object : LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        ) {
             override fun canScrollVertically(): Boolean {
                 return false
             }
@@ -59,6 +71,28 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
 
         binding?.recyclerView?.apply {
             adapter = mvcAdapter
+            initRvScroller(this)
+        }
+    }
+
+    private fun initRvScroller(recyclerView: RecyclerView) {
+        scrollerListener = object : MvcIntroRecyclerViewScrollListener(mvcLayoutManager) {
+            override fun changeBackground(position: Int) {
+                changeBackgroundWithPosition(position)
+            }
+        }.also {
+            recyclerView.addOnScrollListener(it)
+        }
+    }
+
+    private fun changeBackgroundWithPosition(position: Int) {
+        if (position == RecyclerView.NO_POSITION) return
+        context?.resources?.let {
+            if (position == 0) {
+                setGreenBackgroundForToolbar()
+            } else {
+                setWhiteBackgroundForToolbar()
+            }
         }
     }
 
@@ -67,12 +101,8 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
         setNavigationOnClickListener {
             activity?.finish()
         }
-        context?.resources?.getColor(R.color.mvc_dms_toolbar_color)?.let {
-            binding?.header?.setBackgroundColor(it)
-            activity?.window?.statusBarColor = it
-        }
+        setGreenBackgroundForToolbar()
     }
-
 
     private fun getContentList(): List<Visitable<*>> {
         return context?.resources?.let {
@@ -191,15 +221,37 @@ class MvcIntroFragment : BaseDaggerFragment(), VoucherIntroViewMoreCustomView.Vi
                 return true
             }
         }
+
+        val recyclerView = binding?.recyclerView ?: return
+        scrollerListener?.let { recyclerView.removeOnScrollListener(it) }
+        scrollerListener = object : MvcIntroRecyclerViewScrollListener(mvcLayoutManager) {
+            override fun changeBackground(position: Int) {
+                changeBackgroundWithPosition(position)
+            }
+        }.also {
+            recyclerView.addOnScrollListener(it)
+        }
+
         binding?.recyclerView?.apply {
             layoutManager = mvcLayoutManager
             layoutManager?.scrollToPosition(FIRST_INDEX)
         }
+
+        setWhiteBackgroundForToolbar()
+    }
+
+    private fun setWhiteBackgroundForToolbar() {
         context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Header_Background)
             ?.let {
                 binding?.header?.setBackgroundColor(it)
                 activity?.window?.statusBarColor = it
             }
+    }
 
+    private fun setGreenBackgroundForToolbar() {
+        context?.resources?.getColor(R.color.mvc_dms_toolbar_color)?.let {
+            binding?.header?.setBackgroundColor(it)
+            activity?.window?.statusBarColor = it
+        }
     }
 }
