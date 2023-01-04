@@ -48,6 +48,7 @@ data class CartShopHolderData(
     var isPo: Boolean = false,
     var poDuration: String = "",
     var boCode: String = "",
+    var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -118,6 +119,12 @@ class CartShopBoAffordabilityData(
     // list of cartIds for tracker
     var cartIds: String = "",
     var hasSeenTicker: Boolean = false,
+)
+
+class CartShopCoachmarkPlusData(
+    val isShown: Boolean = false,
+    val title: String = "",
+    val content: String = "",
 )
 
 enum class CartShopBoAffordabilityState {
