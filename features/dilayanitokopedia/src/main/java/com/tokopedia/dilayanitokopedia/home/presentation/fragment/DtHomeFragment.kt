@@ -101,7 +101,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     companion object {
         const val SOURCE = "dilayanitokopedia"
         const val SOURCE_TRACKING = "dilayanitokopedia page"
-
         private const val EXTRA_URL = "url"
 
         // scroll listener
