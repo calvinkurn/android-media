@@ -392,4 +392,11 @@
     <string name="smvc_intro_voucher_icon_fleksibel_buat_kupon">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/fleksibel_buat_kupon.png</string>
     <string name="smvc_intro_voucher_icon_beragam_pilihan_promo">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/beragam_pilihan_promo.png</string>
     <string name="smvc_intro_voucher_icon_bebas_tentukan_target">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/bebas_tentukan_target.png</string>
+    <string name="smvc_intro_voucher_carousel_gratis_ongkir_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_gratis_ongkir_1.png</string>
+    <string name="smvc_intro_voucher_carousel_gratis_ongkir_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_gratis_ongkir_2.png</string>
+    <string name="smvc_intro_voucher_carousel_diskon_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_diskon_1.png</string>
+    <string name="smvc_intro_voucher_carousel_diskon_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_diskon_2.png</string>
+    <string name="smvc_intro_voucher_carousel_cashback_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_1.png</string>
+    <string name="smvc_intro_voucher_carousel_cashback_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_2.png</string>
+
 </resources>
