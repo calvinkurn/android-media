@@ -40,7 +40,9 @@ import kotlin.math.min
 class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val actionListener: ActionListener,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
-                         private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
+                         private val compositeSubscription: CompositeSubscription,
+                         private var plusCoachmark: CoachMark2?,
+) : RecyclerView.ViewHolder(binding.root) {
 
     // variable to hold identifier
     private var cartString: String = ""
@@ -372,7 +374,6 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 }
                 if (cartShopHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
                     val coachMarkItem = ArrayList<CoachMark2Item>()
-                    val coachMark = CoachMark2(itemView.context)
                     coachMarkItem.add(
                         CoachMark2Item(
                             imgFreeShipping,
@@ -381,8 +382,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                             CoachMark2.POSITION_BOTTOM
                         )
                     )
-                    coachMark.showCoachMark(coachMarkItem)
-                    plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
+                    plusCoachmark?.setOnDismissListener {
+                        plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
+                    }
+                    plusCoachmark?.showCoachMark(coachMarkItem)
                 }
             } else {
                 imgFreeShipping.gone()

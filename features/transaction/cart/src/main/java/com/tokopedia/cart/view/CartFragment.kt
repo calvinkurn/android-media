@@ -94,6 +94,7 @@ import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_MAINTENANCE
 import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_OVERLOAD
 import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_TIMEOUT
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -252,6 +253,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
     private var isNavToolbar = false
+    private var plusCoachMark: CoachMark2? = null
 
     // temporary variable to handle case edit bundle
     // this is useful if there are multiple same bundleId in cart
@@ -390,6 +392,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
     override fun onStart() {
         super.onStart()
+        plusCoachMark = CoachMark2(context ?: requireContext())
+        plusCoachMark?.let {
+            cartAdapter.setCoachMark(it)
+        }
+
         // Check if currently not refreshing, not ATC external flow and not on error state
         if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && binding?.layoutGlobalError?.visibility != View.VISIBLE) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
@@ -429,6 +436,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         }
 
         super.onStop()
+    }
+
+    override fun onPause() {
+        plusCoachMark?.let {
+            it.setOnDismissListener(null)
+            it.dismissCoachMark()
+        }
+        plusCoachMark = null
+
+        super.onPause()
     }
 
     override fun onDetach() {

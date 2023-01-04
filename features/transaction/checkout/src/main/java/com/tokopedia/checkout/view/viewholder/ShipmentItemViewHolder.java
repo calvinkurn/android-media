@@ -933,20 +933,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             // Is normal shipping
             renderNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         }
-        if (shipmentCartItemModel.getCoachmarkPlus().isShown() && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
-            ArrayList<CoachMark2Item> coachMarkItem = new ArrayList<>();
-            CoachMark2 coachMark = new CoachMark2(itemView.getContext());
-            coachMarkItem.add(
-                    new CoachMark2Item(
-                            containerShippingExperience,
-                            shipmentCartItemModel.getCoachmarkPlus().getTitle(),
-                            shipmentCartItemModel.getCoachmarkPlus().getContent(),
-                            CoachMark2.POSITION_BOTTOM
-                    )
-            );
-            coachMark.showCoachMark(coachMarkItem, null, 0);
-            plusCoachmarkPrefs.setPlusCoachmarkHasShown(true);
-        }
+        showMultiplePlusOrderCoachmark(shipmentCartItemModel, containerShippingExperience);
     }
 
     private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
@@ -1180,20 +1167,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
             );
             containerShippingExperience.setVisibility(View.VISIBLE);
-            if (shipmentCartItemModel.getCoachmarkPlus().isShown() && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
-                ArrayList<CoachMark2Item> coachMarkItem = new ArrayList<>();
-                CoachMark2 coachMark = new CoachMark2(itemView.getContext());
-                coachMarkItem.add(
-                        new CoachMark2Item(
-                                containerShippingExperience,
-                                shipmentCartItemModel.getCoachmarkPlus().getTitle(),
-                                shipmentCartItemModel.getCoachmarkPlus().getContent(),
-                                CoachMark2.POSITION_BOTTOM
-                        )
-                );
-                coachMark.showCoachMark(coachMarkItem, null, 0);
-                plusCoachmarkPrefs.setPlusCoachmarkHasShown(true);
-            }
         }
     }
 
@@ -1318,6 +1291,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             } else {
                 renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, saveStateType);
+                showMultiplePlusOrderCoachmark(shipmentCartItemModel, layoutStateNoSelectedShipping);
             }
         }
     }
@@ -2173,6 +2147,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipperId == id) return true;
         }
         return false;
+    }
+
+    private void showMultiplePlusOrderCoachmark(ShipmentCartItemModel shipmentCartItemModel, View anchorView) {
+        if (shipmentCartItemModel.getCoachmarkPlus().isShown() && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
+            ArrayList<CoachMark2Item> coachMarkItem = new ArrayList<>();
+            CoachMark2 coachMark = new CoachMark2(itemView.getContext());
+            coachMarkItem.add(
+                    new CoachMark2Item(
+                            anchorView,
+                            shipmentCartItemModel.getCoachmarkPlus().getTitle(),
+                            shipmentCartItemModel.getCoachmarkPlus().getContent(),
+                            CoachMark2.POSITION_BOTTOM
+                    )
+            );
+            coachMark.showCoachMark(coachMarkItem, null, 0);
+            plusCoachmarkPrefs.setPlusCoachmarkHasShown(true);
+        }
     }
 
     private interface SaveStateDebounceListener {
