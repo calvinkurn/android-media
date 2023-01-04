@@ -20,8 +20,8 @@ object DateTimeUtils {
     const val TIME_STAMP_MILLISECONDS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
     const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm"
     const val DASH_DATE_FORMAT = "yyyy-MM-dd"
-    private const val EXTRA_DAYS = 30
-    private const val PREVIOUS_EXTRA_DAYS = -30
+    private const val EXTRA_MONTH = 1
+    private const val PREVIOUS_EXTRA_MONTH = -1
     const val DATE_FORMAT = "dd MMM yyyy"
     const val HOUR_FORMAT = "HH:mm"
 
@@ -32,7 +32,7 @@ object DateTimeUtils {
         startCalendar?.let { startDate ->
             GregorianCalendar().apply {
                 time = startDate.time
-                add(Calendar.DATE, PREVIOUS_EXTRA_DAYS)
+                add(Calendar.MONTH, PREVIOUS_EXTRA_MONTH)
             }
         }
 
@@ -43,7 +43,7 @@ object DateTimeUtils {
         startCalendar?.let { startDate ->
             GregorianCalendar().apply {
                 time = startDate.time
-                add(Calendar.DATE, EXTRA_DAYS)
+                add(Calendar.MONTH, EXTRA_MONTH)
             }
         }
 }

@@ -64,6 +64,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
 
         private const val DEBOUNCE = 300L
+        private const val minimumActivePeriodCountToShowFullSchedule = 2
     }
 
     // binding
@@ -103,7 +104,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected(it))
     }
 
-    //bottom sheet
+    // bottom sheet
     private var voucherEditCalendarBottomSheet: VoucherEditCalendarBottomSheet? = null
     private var repeatPeriodBottomSheet: SelectRepeatPeriodBottomSheet? = null
 
@@ -363,7 +364,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    //Voucher period section
+    // Voucher period section
     private fun setupVoucherPeriodSection() {
         binding?.run {
             if (viewVoucherActivePeriod.parent != null) {
@@ -397,7 +398,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun onClickListenerForStartDate() {
         context?.run {
-            DateTimeUtils.getMinDate(startCalendar)?.let { minDate ->
+            startCalendar?.let { minDate ->
                 DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
@@ -419,8 +420,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun onClickListenerForEndDate() {
         context?.run {
-            DateTimeUtils.getMinDate(endCalendar)?.let { minDate ->
-                DateTimeUtils.getMaxDate(endCalendar)?.let { maxDate ->
+            startCalendar?.let { minDate ->
+                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             endCalendar,
@@ -452,13 +453,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupTime() {
-        val currentDate = Date().formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
-        val datePlusOneMonth = Calendar.getInstance().run {
-            add(Calendar.MONTH, Int.ONE)
-            time
-        }.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
-        startCalendar = getGregorianDate(currentDate)
-        endCalendar = getGregorianDate(datePlusOneMonth)
+        val voucherConfiguration = viewModel.getCurrentVoucherConfiguration()
+        val startDate = voucherConfiguration.startPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val endDate = voucherConfiguration.endPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+        startCalendar = getGregorianDate(startDate)
+        endCalendar = getGregorianDate(endDate)
     }
 
     private fun renderVoucherRecurringToggleChanges(voucherConfiguration: VoucherConfiguration) {
@@ -476,13 +475,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             tfVoucherStartPeriod.run {
                 isInputError = isStartDateError
                 setMessage(startDateErrorMsg)
-                editText.setText(
-                    voucherConfiguration.startPeriod.formatTo(
-                        DATE_TIME_MINUTE_PRECISION
-                    )
-                )
+                editText.setText(voucherConfiguration.startPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
             }
         }
+        setupTime()
     }
 
     private fun renderVoucherEndPeriodSelection(
@@ -497,6 +493,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
             }
         }
+        setupTime()
     }
 
     private fun renderVoucherRecurringPeriodSelection(voucherConfiguration: VoucherConfiguration) {
@@ -551,7 +548,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                     val secondPeriodEndHour = availableDate[Int.ONE].hourEnd
                     secondSchedule =
                         "$secondPeriodStartDate, $secondPeriodStartHour - $secondPeriodEndDate, $secondPeriodEndHour"
-                    isShowOtherScheduleButton = voucherConfiguration.totalPeriod > Int.ONE
+                    isShowOtherScheduleButton = availableDate.size > minimumActivePeriodCountToShowFullSchedule
                 }
             }
         }
