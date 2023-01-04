@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
@@ -32,11 +33,15 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBindi
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.SelectedProduct
+import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -189,6 +194,9 @@ class SummaryFragment :
         val corner = CORNER_RADIUS_HEADER.toPx().toFloat()
         drawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, corner, corner, corner, corner)
         viewBg.background = drawable
+        cardPreview.setOnClickListener {
+            DisplayVoucherBottomSheet.newInstance(Voucher()).show(childFragmentManager, "")
+        }
     }
 
     private fun SmvcVoucherDetailVoucherTypeSectionBinding.setupLayoutType() {
@@ -235,6 +243,9 @@ class SummaryFragment :
         btnSubmit.setOnClickListener {
             viewModel.addCoupon()
         }
+        labelSpendingEstimation.iconInfo?.setOnClickListener {
+            ExpenseEstimationBottomSheet.newInstance().show(childFragmentManager)
+        }
     }
 
     private fun SmvcVoucherDetailVoucherSettingSectionBinding.updatePageData(
@@ -264,9 +275,9 @@ class SummaryFragment :
     }
 
     private fun SmvcVoucherDetailVoucherInfoSectionBinding.updatePageInfo(
-        information: VoucherConfiguration
+        configuration: VoucherConfiguration
     ) {
-        with(information) {
+        with(configuration) {
             tpgVoucherName.text = voucherName
             tpgVoucherCode.text = voucherCode
             tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
@@ -274,7 +285,9 @@ class SummaryFragment :
             llVoucherCode.isVisible = !isVoucherPublic
             llVoucherMultiperiod.isVisible = totalPeriod.isMoreThanZero()
             tpgVoucherMultiperiod.text = getString(R.string.smvc_summary_page_multiperiod_format, totalPeriod)
-            tpgVoucherMultiperiodAction.setOnClickListener(::onMultiPeriodClicked)
+            tpgVoucherMultiperiodAction.setOnClickListener {
+                onMultiPeriodClicked(this)
+            }
             try {
                 val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
                 tpgVoucherStartPeriod.text = formatter.format(startPeriod)
@@ -328,8 +341,12 @@ class SummaryFragment :
             .show(childFragmentManager)
     }
 
-    private fun onMultiPeriodClicked(view: View) {
-        // TODO: open BS multipediod list
+    private fun onMultiPeriodClicked(configuration: VoucherConfiguration) {
+        val voucherPeriodBottomSheet = VoucherPeriodBottomSheet.newInstance(
+            title = context?.resources?.getString(R.string.voucher_bs_period_title_1).toBlankOrString(),
+            dateList = viewModel.getOtherPeriod(configuration)
+        )
+        voucherPeriodBottomSheet.show(childFragmentManager, "")
     }
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {

@@ -14,7 +14,12 @@ import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.usecase.AddEditCouponFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
+import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import java.util.*
 import javax.inject.Inject
 
 class SummaryViewModel @Inject constructor(
@@ -128,5 +133,23 @@ class SummaryViewModel @Inject constructor(
                 _error.postValue(it)
             }
         )
+    }
+
+    fun getOtherPeriod(configuration: VoucherConfiguration): MutableList<DateStartEndData> {
+        val list = mutableListOf<DateStartEndData>()
+        repeat(configuration.totalPeriod) {
+            val start = configuration.startPeriod.addTimeToSpesificDate(Calendar.MONTH, it.inc())
+            val end = configuration.endPeriod.addTimeToSpesificDate(Calendar.MONTH, it.inc())
+            list.add(
+                DateStartEndData(
+                    start.formatTo(DateUtil.YYYY_MM_DD),
+                    end.formatTo(DateUtil.YYYY_MM_DD),
+                    start.formatTo(DateUtil.HH_MM),
+                    end.formatTo(DateUtil.HH_MM),
+                )
+            )
+        }
+
+        return list
     }
 }
