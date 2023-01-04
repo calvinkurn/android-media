@@ -22,17 +22,29 @@ class CreateCouponFacadeUseCase @Inject constructor(
         private const val THIRD_IMAGE_URL_INDEX = 2
     }
 
-    suspend fun execute(
+    suspend fun executeAdd(
         configuration: VoucherConfiguration,
         allProducts: List<SelectedProduct>,
         warehouseId: String
     ): Int {
         return coroutineScope {
+            val imageRatios = listOf(ImageRatio.HORIZONTAL, ImageRatio.SQUARE, ImageRatio.VERTICAL)
             val initiateCouponDeferred = async { initiateCoupon(true, configuration.promoType, configuration.isVoucherProduct) }
+            val generatedImagesDeferred = imageRatios.map {
+                async {
+                    getCouponImagePreviewUseCase.executeGetImageUrl(
+                        isCreateMode = false,
+                        voucherConfiguration = configuration,
+                        parentProductId = allProducts.map { it.parentProductId }.take(3),
+                        imageRatio = it
+                    )
+                }
+            }
+
             val coupon = initiateCouponDeferred.await()
-            val imageUrl = ""
-            val squareImageUrl = ""
-            val portraitImageUrl = ""
+            val imageUrl = generatedImagesDeferred.getOrNull(FIRST_IMAGE_URL_INDEX)?.await().orEmpty()
+            val squareImageUrl = generatedImagesDeferred.getOrNull(SECOND_IMAGE_URL_INDEX)?.await().orEmpty()
+            val portraitImageUrl = generatedImagesDeferred.getOrNull(THIRD_IMAGE_URL_INDEX)?.await().orEmpty()
 
             val createCouponDeferred = async {
                 val useCaseParam = CreateCouponProductUseCase.CreateCouponUseCaseParam(
@@ -50,7 +62,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         }
     }
 
-    suspend fun executeUpdate(
+    suspend fun executeEdit(
         configuration: VoucherConfiguration,
         allProducts: List<SelectedProduct>
     ): Boolean {

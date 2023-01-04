@@ -49,8 +49,8 @@ class UpdateCouponUseCase @Inject constructor(
 
         val error = response.getError(UpdateVoucherResponse::class.java)
         if (error.isNullOrEmpty()) {
-            val data = response.getSuccessData<UpdateVoucherResponse>().updateVoucher
-            with(data.updateVoucherSuccessData) {
+            val data = response.getSuccessData<UpdateVoucherResponse>().updateVoucherModel
+            with(data) {
                 if (getIsSuccess()) {
                     return true
                 } else {

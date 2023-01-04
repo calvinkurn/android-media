@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.INTEGER_MILLION
 import com.tokopedia.kotlin.extensions.view.INTEGER_THOUSAND
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.mvc.data.request.GenerateImageParams
 import com.tokopedia.mvc.data.source.ImageGeneratorRemoteDataSource
 import com.tokopedia.mvc.domain.entity.CreateCouponProductParams
 import com.tokopedia.mvc.domain.entity.UpdateCouponRequestParams
@@ -63,32 +64,32 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
     fun mapToPreviewUrlImageParam(param: GetCouponImagePreviewFacadeUseCase.GenerateCouponImageParam): HashMap<String, Any> {
         val imageParams = param.toPreviewImageParam()
         val requestParams = arrayListOf(
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_PLATFORM, imageParams.platform),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_IS_PUBLIC, imageParams.isPublic),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_VOUCHER_BENEFIT_TYPE, imageParams.voucherBenefitType),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_VOUCHER_CASHBACK_TYPE, imageParams.voucherCashbackType),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_VOUCHER_CASHBACK_PERCENTAGE, imageParams.voucherCashbackPercentage.toString()),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_VOUCHER_NOMINAL_AMOUNT, imageParams.voucherNominalAmount.toString()),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_VOUCHER_NOMINAL_SYMBOL, imageParams.voucherNominalSymbol),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_SHOP_LOGO, imageParams.shopLogo),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_SHOP_NAME, imageParams.shopName),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_VOUCHER_CODE, imageParams.voucherCode),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_VOUCHER_START_TIME, imageParams.voucherStartTime),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_VOUCHER_FINISH_TIME, imageParams.voucherFinishTime),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_PRODUCT_COUNT, imageParams.productCount.toString()),
-            GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_AUDIENCE_TARGET, imageParams.audienceTarget)
+            GenerateImageParams(COUPON_PRODUCT_PLATFORM, imageParams.platform),
+            GenerateImageParams(COUPON_PRODUCT_IS_PUBLIC, imageParams.isPublic),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_BENEFIT_TYPE, imageParams.voucherBenefitType),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_CASHBACK_TYPE, imageParams.voucherCashbackType),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_CASHBACK_PERCENTAGE, imageParams.voucherCashbackPercentage.toString()),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_NOMINAL_AMOUNT, imageParams.voucherNominalAmount.toString()),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_NOMINAL_SYMBOL, imageParams.voucherNominalSymbol),
+            GenerateImageParams(COUPON_PRODUCT_SHOP_LOGO, imageParams.shopLogo),
+            GenerateImageParams(COUPON_PRODUCT_SHOP_NAME, imageParams.shopName),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_CODE, imageParams.voucherCode),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_START_TIME, imageParams.voucherStartTime),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_FINISH_TIME, imageParams.voucherFinishTime),
+            GenerateImageParams(COUPON_PRODUCT_PRODUCT_COUNT, imageParams.productCount.toString()),
+            GenerateImageParams(COUPON_PRODUCT_AUDIENCE_TARGET, imageParams.audienceTarget)
         )
 
         if (param.topProductImageUrls.isNotEmpty()) {
-            requestParams.add(GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_FIRST_PRODUCT_IMAGE, imageParams.firstProductImageUrl))
+            requestParams.add(GenerateImageParams(COUPON_PRODUCT_FIRST_PRODUCT_IMAGE, imageParams.firstProductImageUrl))
         }
 
         if (param.topProductImageUrls.size >= SECOND_IMAGE_URL_INDEX) {
-            requestParams.add(GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_SECOND_PRODUCT_IMAGE, imageParams.secondProductImageUrl.orEmpty()))
+            requestParams.add(GenerateImageParams(COUPON_PRODUCT_SECOND_PRODUCT_IMAGE, imageParams.secondProductImageUrl.orEmpty()))
         }
 
         if (param.topProductImageUrls.size >= THIRD_IMAGE_URL_INDEX) {
-            requestParams.add(GenerateImageUseCase.GenerateImageParams(COUPON_PRODUCT_THIRD_PRODUCT_IMAGE, imageParams.thirdProductImageUrl.orEmpty()))
+            requestParams.add(GenerateImageParams(COUPON_PRODUCT_THIRD_PRODUCT_IMAGE, imageParams.thirdProductImageUrl.orEmpty()))
         }
 
         return GenerateImageUseCase.createParam(imageParams.sourceId, requestParams)
@@ -164,7 +165,11 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
                 else -> BENEFIT_TYPE_IDR
             }
-            val couponType = voucherConfiguration.getBenefitType()
+            val couponType = when (voucherConfiguration.promoType) {
+                PromoType.CASHBACK -> "cashback"
+                PromoType.FREE_SHIPPING -> "shipping"
+                else -> ""
+            }
 
             return CreateCouponProductParams(
                 benefitIdr = voucherConfiguration.benefitIdr,

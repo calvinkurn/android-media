@@ -27,32 +27,30 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
         }
     }
 
-    fun redirectToAddProductPage(fragment: Fragment, configuration: VoucherConfiguration, selectedProducts: List<SelectedProduct>) {
-        val context = fragment.context ?: return
     fun redirectToAddProductPage(
-        activity: Activity,
+        fragment: Fragment,
         configuration: VoucherConfiguration,
+        selectedProducts: List<SelectedProduct>,
         selectedWarehouseId: Long
     ) {
+        val context = fragment.context ?: return
         val intent = ProductListActivity.buildIntentForVoucherSummaryPage(
             context = context,
             pageMode = PageMode.CREATE,
             showCtaChangeProductOnToolbar = false,
             voucherConfiguration = configuration,
-            selectedProducts = selectedProducts
-            selectedProducts = emptyList(),
+            selectedProducts = selectedProducts,
             selectedWarehouseId = selectedWarehouseId
         )
         fragment.startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
     }
 
     fun redirectToViewProductPage(
-        activity: Activity,
+        fragment: Fragment,
         configuration: VoucherConfiguration,
         selectedProducts: List<SelectedProduct>,
         selectedWarehouseId: Long
     ) {
-    fun redirectToViewProductPage(fragment: Fragment, configuration: VoucherConfiguration, selectedProducts: List<SelectedProduct>) {
         val context = fragment.context ?: return
         val intent = ProductListActivity.buildIntentForVoucherSummaryPage(
             context = context,
