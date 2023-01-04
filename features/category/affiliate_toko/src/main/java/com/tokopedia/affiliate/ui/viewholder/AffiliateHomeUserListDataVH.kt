@@ -13,12 +13,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class AffiliateHomeUserListDataVH(
     itemView: View,
     private val onPerformaGridClick: AffiliatePerformaClickInterfaces?
 ) : AbstractViewHolder<AffiliateUserPerformanceListModel>(itemView) {
-
 
     companion object {
         @JvmField
@@ -26,7 +29,14 @@ class AffiliateHomeUserListDataVH(
         var LAYOUT = R.layout.affiliate_performa_item
         const val ROTATION_90 = 90f
         const val ROTATION_270 = 270f
+        const val CUMULATIVE_TOTAL_CLICK = "cumulativeTotalClick"
     }
+
+    private val cardUserPerformance = itemView.findViewById<CardUnify2>(R.id.card_user_performance)
+    private val tvValue = itemView.findViewById<Typography>(R.id.value)
+    private val tvChangedValue = itemView.findViewById<Typography>(R.id.value_change_value)
+    private val tvPerformanceType = itemView.findViewById<Typography>(R.id.performa_type)
+    private val valueIcon = itemView.findViewById<IconUnify>(R.id.increase_value_icon)
 
     override fun bind(element: AffiliateUserPerformanceListModel?) {
         setData(element)
@@ -35,7 +45,7 @@ class AffiliateHomeUserListDataVH(
     }
 
     private fun initClickListener(element: AffiliateUserPerformanceListModel?) {
-        itemView.findViewById<CardUnify2>(R.id.card_user_performance).setOnClickListener {
+        cardUserPerformance.setOnClickListener {
             onPerformaGridClick?.onInfoClick(
                 element?.data?.metricTitle,
                 element?.data?.tooltip?.description,
@@ -44,13 +54,35 @@ class AffiliateHomeUserListDataVH(
                 element?.data?.tooltip?.ticker
             )
         }
+        if (element?.data?.metricType == CUMULATIVE_TOTAL_CLICK) {
+            element.totalClick
+                ?.onEach {
+                    tvValue.apply {
+                        post {
+                            text = it?.data?.metricValue?.toString() ?: element.data.metricValueFmt
+                        }
+                    }
+                }
+                ?.launchIn(CoroutineScope(Dispatchers.IO))
+
+            element.totalClickItem
+                ?.onEach {
+                    tvChangedValue.apply {
+                        post {
+                            text =
+                                it?.data?.metricDifferenceValue?.toString()
+                                    ?: element.data.metricDifferenceValueFmt
+                        }
+                    }
+                }
+                ?.launchIn(CoroutineScope(Dispatchers.IO))
+        }
     }
 
     private fun setData(element: AffiliateUserPerformanceListModel?) {
-        itemView.findViewById<Typography>(R.id.performa_type).text = element?.data?.metricTitle
-        itemView.findViewById<Typography>(R.id.value).text = element?.data?.metricValueFmt
-        itemView.findViewById<Typography>(R.id.value_change_value).text =
-            element?.data?.metricDifferenceValueFmt
+        tvPerformanceType.text = element?.data?.metricTitle
+        tvValue.text = element?.data?.metricValueFmt
+        tvChangedValue.text = element?.data?.metricDifferenceValueFmt
     }
 
     private fun setTrend(element: AffiliateUserPerformanceListModel?) {
@@ -62,13 +94,13 @@ class AffiliateHomeUserListDataVH(
                 }
                 metricIntValue > 0 -> {
                     showTrend()
-                    itemView.findViewById<Typography>(R.id.value_change_value).setTextColor(
+                    tvChangedValue.setTextColor(
                         ContextCompat.getColor(
                             itemView.context,
                             com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     )
-                    itemView.findViewById<IconUnify>(R.id.increase_value_icon).apply {
+                    valueIcon.apply {
                         setImage(
                             newLightEnable = MethodChecker.getColor(
                                 itemView.context,
@@ -80,13 +112,13 @@ class AffiliateHomeUserListDataVH(
                 }
                 metricIntValue < 0 -> {
                     showTrend()
-                    itemView.findViewById<Typography>(R.id.value_change_value).setTextColor(
+                    tvChangedValue.setTextColor(
                         MethodChecker.getColor(
                             itemView.context,
                             com.tokopedia.unifyprinciples.R.color.Unify_RN500
                         )
                     )
-                    itemView.findViewById<IconUnify>(R.id.increase_value_icon).apply {
+                    valueIcon.apply {
                         setImage(
                             newLightEnable = MethodChecker.getColor(
                                 itemView.context,
@@ -101,12 +133,12 @@ class AffiliateHomeUserListDataVH(
     }
 
     private fun hideTrend() {
-        itemView.findViewById<Typography>(R.id.value_change_value).hide()
-        itemView.findViewById<IconUnify>(R.id.increase_value_icon).hide()
+        tvChangedValue.hide()
+        valueIcon.hide()
     }
 
     private fun showTrend() {
-        itemView.findViewById<Typography>(R.id.value_change_value).show()
-        itemView.findViewById<IconUnify>(R.id.increase_value_icon).show()
+        tvChangedValue.show()
+        valueIcon.show()
     }
 }

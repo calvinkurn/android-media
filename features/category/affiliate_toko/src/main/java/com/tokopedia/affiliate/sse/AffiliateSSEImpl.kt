@@ -39,8 +39,6 @@ class AffiliateSSEImpl @Inject constructor(
         val request = Request.Builder().get().url(url)
             .header("Origin", TokopediaUrl.getInstance().WEB)
             .header("Authorization", "Bearer ${userSession.accessToken}")
-//            .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
-//            .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
             .build()
 
         sse = OkSse().newServerSentEvent(

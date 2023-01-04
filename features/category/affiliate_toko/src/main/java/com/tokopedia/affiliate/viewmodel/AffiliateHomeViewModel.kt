@@ -21,6 +21,8 @@ import com.tokopedia.affiliate.sse.AffiliateSSE
 import com.tokopedia.affiliate.sse.AffiliateSSEMapper
 import com.tokopedia.affiliate.sse.AffiliateSSEPageSource
 import com.tokopedia.affiliate.sse.model.AffiliateSSEAction
+import com.tokopedia.affiliate.sse.model.AffiliateSSEAdpTotalClick
+import com.tokopedia.affiliate.sse.model.AffiliateSSEAdpTotalClickItem
 import com.tokopedia.affiliate.sse.model.AffiliateSSECloseReason
 import com.tokopedia.affiliate.sse.model.AffiliateSSEResponse
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
@@ -42,11 +44,11 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AffiliateHomeViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
@@ -69,6 +71,9 @@ class AffiliateHomeViewModel @Inject constructor(
     private val validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private val errorMessage = MutableLiveData<Throwable>()
     private val rangeChanged = MutableLiveData<Boolean>()
+    private val affiliateSSEAdpTotalClickItem =
+        MutableStateFlow<AffiliateSSEAdpTotalClickItem?>(null)
+    private val affiliateSSEAdpTotalClick = MutableStateFlow<AffiliateSSEAdpTotalClick?>(null)
     private var lastID = "0"
     private var firstTime = true
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
@@ -274,7 +279,13 @@ class AffiliateHomeViewModel @Inject constructor(
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
                 if (metrics?.order != NO_UI_METRICS && metrics?.metricType != CONVERSION_METRIC) {
-                    performanceTempList.add(AffiliateUserPerformanceListModel(metrics))
+                    performanceTempList.add(
+                        AffiliateUserPerformanceListModel(
+                            metrics,
+                            affiliateSSEAdpTotalClick,
+                            affiliateSSEAdpTotalClickItem
+                        )
+                    )
                 }
             }
         }
@@ -329,7 +340,10 @@ class AffiliateHomeViewModel @Inject constructor(
             val sseMapper = AffiliateSSEMapper(message)
             sseMapper.mapping()
         }
-        // TODO ui state update
+        when (result) {
+            is AffiliateSSEAdpTotalClick -> affiliateSSEAdpTotalClick.value = result
+            is AffiliateSSEAdpTotalClickItem -> affiliateSSEAdpTotalClickItem.value = result
+        }
     }
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
