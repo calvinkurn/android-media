@@ -69,19 +69,20 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.isSelected = true
             courierItemData.preOrderModel = it.preOrderModel
 
-            /*on time delivery*/
-            if (it.productData.features.ontimeDeliveryGuarantee != null) {
-                val otdPrev = it.productData.features.ontimeDeliveryGuarantee
-                val otd = OntimeDelivery(
-                    otdPrev.available,
-                    otdPrev.textLabel,
-                    otdPrev.textDetail,
-                    otdPrev.urlDetail,
-                    otdPrev.value,
-                    otdPrev.iconUrl
-                )
-                courierItemData.ontimeDelivery = otd
-            }
+        /*on time delivery*/
+        if (shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {
+            val otdPrev = shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee
+            val otd = OntimeDelivery(
+                otdPrev.available,
+                otdPrev.textLabel,
+                otdPrev.textDetail,
+                otdPrev.urlDetail,
+                otdPrev.value,
+                otdPrev.iconUrl,
+                otdPrev.urlText
+            )
+            courierItemData.ontimeDelivery = otd
+        }
 
             /*merchant voucher*/
             if (it.productData.features.merchantVoucherProductData != null) {

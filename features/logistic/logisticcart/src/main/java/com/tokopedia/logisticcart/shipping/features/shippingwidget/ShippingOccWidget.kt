@@ -194,6 +194,7 @@ class ShippingOccWidget: ConstraintLayout {
         serviceName: String?,
         shippingPrice: Int,
         serviceEta: String?,
+        description: String?,
         onChangeDurationListener: () -> Unit
     ) {
         binding?.apply {
@@ -214,6 +215,13 @@ class ShippingOccWidget: ConstraintLayout {
                 tvShippingCourierEta.visible()
             } else {
                 tvShippingCourierEta.gone()
+            }
+            if (!description.isNullOrEmpty()) {
+                tvShippingCourierNotes.text = description
+                tvShippingCourierNotes.weightType = Typography.DISPLAY_3
+                tvShippingCourierNotes.visible()
+            } else {
+                tvShippingCourierNotes.gone()
             }
             setMultiViewsOnClickListener(
                 tvShippingCourier,

@@ -28,6 +28,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
+import com.tokopedia.logisticcart.shipping.model.OntimeDelivery
 
 class ShippingWidget : ConstraintLayout {
 
@@ -116,6 +117,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
+            layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             shippingNowWidget.gone()
@@ -144,6 +146,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
+            layoutStateHasSelectedWhitelabelShipping.gone()
             shippingNowWidget.gone()
             layoutStateHasSelectedSingleShipping.visible()
             layoutStateHasSelectedSingleShipping.setOnClickListener { }
@@ -178,6 +181,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
             shippingNowWidget.gone()
+            layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateHasSelectedFreeShipping.visible()
             layoutStateHasSelectedFreeShipping.setOnClickListener {
                 mListener?.onChangeDurationClickListener(shipmentCartItemModel, currentAddress)
@@ -238,6 +242,7 @@ class ShippingWidget : ConstraintLayout {
     ) {
         binding?.apply {
             layoutStateHasSelectedFreeShipping.gone()
+            layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
@@ -485,11 +490,11 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
             shippingNowWidget.gone()
-            layoutStateHasSelectedFreeShipping.visible()
-            layoutStateHasSelectedFreeShipping.setOnClickListener {
+            layoutStateHasSelectedFreeShipping.gone()
+            layoutStateHasSelectedWhitelabelShipping.visible()
+            layoutStateHasSelectedWhitelabelShipping.setOnClickListener {
                 mListener?.onChangeDurationClickListener(shipmentCartItemModel, currentAddress)
             }
-            labelFreeShippingCourierName.gone()
             if (selectedCourierItemData.estimatedTimeDelivery != null) {
                 val titleText = "${selectedCourierItemData.estimatedTimeDelivery} (${
                     removeDecimalSuffix(
@@ -500,14 +505,50 @@ class ShippingWidget : ConstraintLayout {
                     )
                 })"
                 val htmlLinkHelper = HtmlLinkHelper(labelSelectedFreeShipping.context, titleText)
-                labelSelectedFreeShipping.text = htmlLinkHelper.spannedString
-                labelSelectedFreeShipping.setWeight(BOLD)
+                labelSelectedWhitelabelShipping.text = htmlLinkHelper.spannedString
+                labelSelectedWhitelabelShipping.setWeight(BOLD)
             }
+
             if (selectedCourierItemData.durationCardDescription.isNotEmpty()) {
-                labelFreeShippingEta.visible()
-                labelFreeShippingEta.text = selectedCourierItemData.durationCardDescription
+                labelWhitelabelShippingEta.visible()
+                labelWhitelabelShippingEta.text = selectedCourierItemData.durationCardDescription
             } else {
-                labelFreeShippingEta.gone()
+                labelWhitelabelShippingEta.gone()
+            }
+
+            val ontimeDelivery: OntimeDelivery? = selectedCourierItemData.ontimeDelivery
+            if (ontimeDelivery?.available == true) {
+                var whitelabelDescription = ""
+                if (ontimeDelivery.textUrl.isNotEmpty() && ontimeDelivery.urlDetail.isNotEmpty()) {
+                    labelWhitelabelDescription.setOnClickListener {
+                        mListener?.onOnTimeDeliveryClicked(
+                            ontimeDelivery.urlDetail
+                        )
+                    }
+                    whitelabelDescription = if (ontimeDelivery.textLabel.isNotEmpty()) {
+                        context.getString(
+                            R.string.checkout_whitelabel_desc_otdg_url,
+                            ontimeDelivery.textLabel,
+                            ontimeDelivery.urlDetail,
+                            ontimeDelivery.textUrl
+                        )
+                    } else {
+                        context.getString(
+                            R.string.checkout_whitelabel_otdg_url,
+                            ontimeDelivery.urlDetail,
+                            ontimeDelivery.textUrl
+                        )
+                    }
+                } else if (ontimeDelivery.textLabel.isNotEmpty()) {
+                    whitelabelDescription = ontimeDelivery.textLabel
+                }
+                labelWhitelabelDescription.text = HtmlLinkHelper(
+                    context,
+                    whitelabelDescription
+                ).spannedString
+                labelWhitelabelDescription.visible()
+            } else {
+                labelWhitelabelDescription.gone()
             }
         }
     }
@@ -543,6 +584,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
+            layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             shippingNowWidget.gone()
@@ -586,6 +628,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
+            layoutStateHasSelectedWhitelabelShipping.gone()
             shippingNowWidget.gone()
 
             labelSelectedSingleShippingTitle.setText(R.string.checkout_label_set_pinpoint_title)
@@ -652,6 +695,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
+            layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
             shippingNowWidget.visible()
         }
