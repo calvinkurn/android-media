@@ -15,6 +15,7 @@ data class StringRes(
         return try { context?.getString(id, *params).orEmpty() } catch (_: Throwable) { "" }
     }
 
+    @Suppress("SpreadOperator")
     fun getStringValueWithDefaultParam(context: Context?): String {
         return try { context?.getString(id, *params.toTypedArray()).orEmpty() } catch (_: Throwable) { "" }
     }

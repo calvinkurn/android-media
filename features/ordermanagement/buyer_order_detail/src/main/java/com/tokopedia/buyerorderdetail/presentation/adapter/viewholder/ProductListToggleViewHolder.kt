@@ -77,11 +77,10 @@ class ProductListToggleViewHolder(
     }
 
     override fun bind(element: ProductListUiModel.ProductListToggleUiModel?) {
-        element?.run {
-            bindToggleText(text)
-            bindToggleIcon(collapsed = collapsed, animate = false)
-            bindListener(collapsed)
-        }
+        if (element == null) return
+        bindToggleText(element.text)
+        bindToggleIcon(collapsed = element.collapsed, animate = false)
+        bindListener(element.collapsed)
     }
 
     override fun bind(
