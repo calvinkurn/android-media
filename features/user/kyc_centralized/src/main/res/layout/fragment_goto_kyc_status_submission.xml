@@ -41,8 +41,12 @@
                 android:layout_marginBottom="8dp"/>
 
             <include
-                android:id="@+id/layout_benefit"
-                layout="@layout/layout_goto_kyc_benefit" />
+                android:id="@+id/layout_benefit_account"
+                layout="@layout/layout_goto_kyc_benefit_account" />
+
+            <include
+                android:id="@+id/layout_benefit_non_account"
+                layout="@layout/layout_goto_kyc_benefit_non_account" />
 
         </LinearLayout>
 

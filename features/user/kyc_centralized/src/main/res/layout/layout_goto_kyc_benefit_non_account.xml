@@ -11,7 +11,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="@string/goto_kyc_benefit_title"
+        android:text="@string/goto_kyc_benefit_non_account_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,36 +43,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:iconUrl="@string/img_url_goto_kyc_benefit_item_1"
-                app:description="@string/goto_kyc_benefit_item_subtitle_1"
+                app:iconUrl="@string/img_url_goto_kyc_benefit_item_shopping"
+                app:description="@string/goto_kyc_benefit_non_account_item_subtitle_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:title="@string/goto_kyc_benefit_item_title_1" />
+                app:title="@string/goto_kyc_benefit_non_account_item_title_1" />
 
             <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
                 android:id="@+id/goto_kyc_benefit_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:iconUrl="@string/img_url_goto_kyc_benefit_item_2"
-                app:description="@string/goto_kyc_benefit_item_subtitle_2"
+                app:iconUrl="@string/img_url_goto_kyc_benefit_item_seller"
+                app:description="@string/goto_kyc_benefit_non_account_item_subtitle_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/goto_kyc_benefit_1"
-                app:title="@string/goto_kyc_benefit_item_title_2" />
+                app:title="@string/goto_kyc_benefit_non_account_item_title_2" />
 
             <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
                 android:id="@+id/goto_kyc_benefit_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:iconUrl="@string/img_url_goto_kyc_benefit_item_3"
-                app:description="@string/goto_kyc_benefit_item_subtitle_3"
+                app:iconUrl="@string/img_url_goto_kyc_benefit_item_gopay"
+                app:description="@string/goto_kyc_benefit_non_account_item_subtitle_3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/goto_kyc_benefit_2"
-                app:title="@string/goto_kyc_benefit_item_title_3" />
+                app:title="@string/goto_kyc_benefit_non_account_item_title_3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
