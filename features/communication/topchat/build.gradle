@@ -45,9 +45,6 @@ android {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
     }
-    buildFeatures {
-        buildConfig true
-    }
 
 
     testOptions {
@@ -109,6 +106,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.irisSession)
 
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.principles
