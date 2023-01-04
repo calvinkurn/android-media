@@ -10,8 +10,8 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChoo
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
@@ -54,11 +54,6 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayPermissionFragment::class)
     abstract fun getPermissionFragment(fragment: PlayPermissionFragment): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayInteractiveLeaderBoardBottomSheet::class)
-    abstract fun getInteractiveLeaderBoardBottomSheet(fragment: PlayInteractiveLeaderBoardBottomSheet): Fragment
 
     /**
      * Revamp
@@ -110,4 +105,9 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(InteractiveSetupDialogFragment::class)
     abstract fun getInteractiveSetupDialogFragment(fragment: InteractiveSetupDialogFragment) : Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductPickerUGCBottomSheet::class)
+    abstract fun getPlayPlaceholderBottomSheet(bottomSheet: ProductPickerUGCBottomSheet) : Fragment
 }

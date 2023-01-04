@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
+import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.stub.domain.FakeUserSession
@@ -100,5 +101,11 @@ class FakeHomeAccountUserModules(val context: Context) {
     @ActivityScope
     fun provideTokopediaPlusAnalytics(): TokopediaPlusAnalytics {
         return TokopediaPlusAnalytics()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideAddVerifyPhoneAnalytics(): AddVerifyPhoneAnalytics {
+        return AddVerifyPhoneAnalytics()
     }
 }

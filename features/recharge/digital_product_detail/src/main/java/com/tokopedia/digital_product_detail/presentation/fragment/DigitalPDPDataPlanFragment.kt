@@ -1568,6 +1568,7 @@ class DigitalPDPDataPlanFragment :
                         FavoriteNumberType.LIST
                     )
                 )
+                binding?.rechargePdpPaketDataClientNumberWidget?.clearFocusAutoComplete()
             } else if (requestCode == REQUEST_CODE_LOGIN || requestCode == REQUEST_CODE_VERIFY_PHONE_NUMBER) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {

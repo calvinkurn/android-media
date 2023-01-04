@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.ui.bottomsheet
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.content.common.R
@@ -14,10 +15,16 @@ class SellerTncBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
     private var view: PlayTermsAndConditionView? = null
+    private val mDataTnc = mutableListOf<TermsAndConditionUiModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupView()
+        initViews()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initData()
     }
 
     override fun onDestroyView() {
@@ -28,13 +35,14 @@ class SellerTncBottomSheet : BottomSheetUnify() {
     override fun onDestroy() {
         super.onDestroy()
         mListener = null
+        mDataTnc.clear()
     }
 
     fun setListener(listener: Listener) {
         mListener = listener
     }
 
-    private fun setupView() {
+    private fun initViews() {
         view = PlayTermsAndConditionView(requireContext())
             .apply {
                 tag = TAG
@@ -46,6 +54,11 @@ class SellerTncBottomSheet : BottomSheetUnify() {
                 })
             }
 
+        setCloseClickListener {
+            dismiss()
+            mListener?.clickCloseIcon()
+        }
+
         setChild(view)
         bottomSheet to view
 
@@ -55,11 +68,16 @@ class SellerTncBottomSheet : BottomSheetUnify() {
         isCancelable = false
         overlayClickDismiss = false
         clearContentPadding = true
-        setTitle(getString(R.string.play_bro_tnc_title))
     }
 
-    fun initViews(tncList: List<TermsAndConditionUiModel>): SellerTncBottomSheet {
-        if (isAdded) view?.setTermsAndConditions(tncList)
+    private fun initData() {
+        setTitle(getString(R.string.play_bro_tnc_title))
+        view?.setTermsAndConditions(mDataTnc)
+    }
+
+    fun setData(tncList: List<TermsAndConditionUiModel>): SellerTncBottomSheet {
+        if (mDataTnc.isNotEmpty()) mDataTnc.clear()
+        mDataTnc.addAll(tncList)
         return this
     }
 

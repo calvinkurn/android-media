@@ -80,6 +80,7 @@ class SingleProductBundleAdapter(
                     originalPrice = variant?.finalMainPrice.orZero()
                     discountedPrice = variant?.finalPrice.orZero()
                     selectedVariantText = variantText
+                    imageUrl = variant?.picture?.url100.orEmpty()
                     listener.onBundleItemSelected(
                         originalPrice,
                         discountedPrice,

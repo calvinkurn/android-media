@@ -33,13 +33,13 @@ import kotlin.properties.Delegates
  * Created by jegul on 27/01/21
  */
 class PlayVideoWrapper private constructor(
-        private val context: Context,
-        private val exoPlayerCreator: ExoPlayerCreator = DefaultExoPlayerCreator(context),
-        private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon(),
-        ) {
+    private val context: Context,
+    private val exoPlayerCreator: ExoPlayerCreator = DefaultExoPlayerCreator(context),
+    private val liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon(),
+) {
 
     class Builder(
-            context: Context
+        context: Context
     ) {
 
         private val mContext = context.applicationContext
@@ -78,8 +78,8 @@ class PlayVideoWrapper private constructor(
             val parsedException = exoPlaybackExceptionParser.parse(error)
 
             if (
-                    parsedException.isBehindLiveWindowException ||
-                    parsedException.isInvalidResponseCodeException
+                parsedException.isBehindLiveWindowException ||
+                parsedException.isInvalidResponseCodeException
             ) {
 
                 val prepareState = currentPrepareState
@@ -88,8 +88,8 @@ class PlayVideoWrapper private constructor(
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             } else if (
-                    parsedException.isUnknownHostException ||
-                    parsedException.isConnectException
+                parsedException.isUnknownHostException ||
+                parsedException.isConnectException
             ) {
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
@@ -325,14 +325,14 @@ class PlayVideoWrapper private constructor(
         playerModel?.player?.removeListener(playerEventListener)
         val videoLoadControl = initCustomLoadControl(bufferControl)
         val videoPlayer = exoPlayerCreator.createExoPlayer(videoLoadControl)
-                .apply {
-                    addListener(playerEventListener)
-                    setAudioAttributes(initAudioAttributes(), true)
-                }
-                .also {
-                    mute(it, isMuted)
-                    setRepeatMode(it, isRepeated)
-                }
+            .apply {
+                addListener(playerEventListener)
+                setAudioAttributes(initAudioAttributes(), true)
+            }
+            .also {
+                mute(it, isMuted)
+                setRepeatMode(it, isRepeated)
+            }
 
         return PlayPlayerModel(videoPlayer, videoLoadControl)
     }

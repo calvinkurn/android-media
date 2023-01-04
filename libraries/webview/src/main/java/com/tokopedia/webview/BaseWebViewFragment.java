@@ -354,7 +354,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
-            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL);
             webView.loadUrl(kycRedirectionUrl);
             return;
         }
@@ -973,10 +973,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void gotoAlaCarteKyc(Uri uri) {
-        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
-        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
-        String kycType = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE);
+        String projectId = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL);
+        String layout = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_SHOW_INTRO);
+        String kycType = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE);
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl, kycType);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }

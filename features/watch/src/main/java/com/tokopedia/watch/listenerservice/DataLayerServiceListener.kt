@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.watch.TokopediaWatchActivity
 import com.tokopedia.watch.di.DaggerTkpdWatchComponent
 import com.tokopedia.watch.notification.model.NotificationListModel
 import com.tokopedia.watch.notification.usecase.GetNotificationListUseCase
@@ -105,10 +104,7 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 }
             }
             MESSAGE_CLIENT_START_ORDER_ACTIVITY -> {
-                startActivity(
-                    Intent(this, TokopediaWatchActivity::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
+
             }
             MESSAGE_CLIENT_APP_DETECTION -> {
                 messageClient.sendMessage(messageEvent.sourceNodeId, MESSAGE_CLIENT_APP_DETECTION, byteArrayOf())
@@ -152,6 +148,14 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
             }
             OPEN_LOGIN_PAGE -> {
                 val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            OPEN_READY_TO_SHIP -> {
+                val intent = RouteManager.getIntent(this, ApplinkConst.SELLER_SHIPMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            OPEN_NEW_ORDER_LIST -> {
+                val intent = RouteManager.getIntent(this, ApplinkConst.SELLER_NEW_ORDER).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
         }
@@ -272,7 +276,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
             }
 
             override fun onError(e: Throwable?) {
-                Log.d(TAG, e?.message?:"")
             }
 
             override fun onNext(orderListModel: OrderListModel) {
@@ -331,8 +334,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
 
                 // Send a message to all nodes in parallel
                 nodes.map { node ->
-                    Log.d(TAG, "Sending data to watch... ${node.displayName}")
-
                     async {
                         messageClient.sendMessage(
                             node.id,
@@ -342,12 +343,9 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                             .await()
                     }
                 }.awaitAll()
-                Log.d(TAG, "Send data to watch success: $message")
             } catch (cancellationException: CancellationException) {
-                Log.d(TAG, "Send data to watch failed (cancelled): $message")
                 throw cancellationException
             } catch (exception: Exception) {
-                Log.d(TAG, "Send data to watch failed: $exception")
             }
         }
     }
@@ -384,8 +382,10 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         const val GET_PHONE_STATE = "/get-phone-state"
 
         const val ACCEPT_BULK_ORDER_PATH = "/accept-bulk-order"
-        const val TAG = "DataLayerServiceListener"
         const val OPEN_LOGIN_PAGE = "/open-login-page"
+
+        const val OPEN_READY_TO_SHIP = "/open-ready-to-ship"
+        const val OPEN_NEW_ORDER_LIST = "/open-new-order-list"
         private val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
     }
 }

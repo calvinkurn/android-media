@@ -105,13 +105,19 @@ class MultiLineGraphViewHolder(
 
     private fun scrollMetricToPosition(position: Int) {
         binding.rvShcGraphMetrics.post {
-            val mPosition =
-                if (position == Int.ZERO || metricsAdapter.itemCount.minus(Int.ONE) == position) {
-                    position
-                } else {
-                    position.plus(Int.ONE)
-                }
-            binding.rvShcGraphMetrics.smoothScrollToPosition(mPosition)
+            val mPosition = if (position == Int.ZERO
+                || metricsAdapter.itemCount.minus(Int.ONE) == position
+            ) {
+                position
+            } else {
+                position.plus(Int.ONE)
+            }
+
+            try {
+                binding.rvShcGraphMetrics.smoothScrollToPosition(mPosition)
+            } catch (e: IllegalArgumentException) {
+                Timber.e(e)
+            }
         }
     }
 
@@ -145,7 +151,7 @@ class MultiLineGraphViewHolder(
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
-        if (element?.isComparePeriodeOnly == true) {
+        if (element?.isComparePeriodOnly == true) {
             metricsAdapter.items.forEach {
                 it.isSelected = (it == metric)
             }
@@ -209,16 +215,15 @@ class MultiLineGraphViewHolder(
         binding.shcMlgSuccessState.gone()
         binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         binding.shcMultiLineGraphErrorView.gone()
-        emptyStateBinding.multiLineEmptyState.gone()
+        binding.shcMultiLineGraphEmptyStateView.multiLineEmptyState.gone()
         loadingStateBinding.shcMlgLoadingState.visible()
     }
 
     private fun setOnErrorState(element: MultiLineGraphWidgetUiModel) {
         setupTitle(element.title)
         loadingStateBinding.shcMlgLoadingState.gone()
-        emptyStateBinding.multiLineEmptyState.gone()
+        binding.shcMultiLineGraphEmptyStateView.multiLineEmptyState.gone()
         binding.shcMlgSuccessState.visible()
-        emptyStateBinding.multiLineEmptyState.gone()
         binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         getWidgetComponents().forEach {
             it.gone()
@@ -258,11 +263,6 @@ class MultiLineGraphViewHolder(
     private fun setOnSuccessState(element: MultiLineGraphWidgetUiModel) {
         val metricItems = element.data?.metrics.orEmpty()
 
-        if (metricItems.isEmpty()) {
-            setOnErrorState(element)
-            return
-        }
-
         val metric = if (metricItems.contains(lastSelectedMetric)) {
             lastSelectedMetric
         } else {
@@ -297,7 +297,7 @@ class MultiLineGraphViewHolder(
             setupTooltip(element)
 
             horLineShcMultiLineGraphBtm.isVisible = luvShcMultiLineGraph.isVisible
-                    || tvShcMultiLineCta.isVisible
+                || tvShcMultiLineCta.isVisible
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendMultiLineGraphImpressionEvent(element)
             }
@@ -325,7 +325,7 @@ class MultiLineGraphViewHolder(
 
     private fun setupEmptyState() {
         element?.let { element ->
-            with(emptyStateBinding) {
+            with(binding.shcMultiLineGraphEmptyStateView) {
                 val emptyState = element.emptyState
                 multiLineEmptyState.visible()
                 tvLineGraphEmptyStateTitle.text = emptyState.title
@@ -447,8 +447,8 @@ class MultiLineGraphViewHolder(
     ): Boolean {
         return element != null && element.isShowEmpty && metrics.filter { it.isSelected }
             .all { it.isEmpty } &&
-                element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
-                element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
+            element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
+            element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
     }
 
     private fun getLineGraphConfig(lineChartDataSets: List<LineChartData>): LineChartConfigModel {
@@ -659,6 +659,7 @@ class MultiLineGraphViewHolder(
 
     private fun showMetricErrorState() {
         binding.chartViewShcMultiLine.gone()
+        binding.shcMultiLineGraphErrorView.gone()
         binding.shcMultiLineGraphErrorView.visible()
     }
 
@@ -669,7 +670,7 @@ class MultiLineGraphViewHolder(
 
     private fun checkIsMetricError(metric: MultiLineMetricUiModel): Boolean {
         return metric.errorMsg.isNotEmpty() || metric.isError ||
-                metric.linePeriod.currentPeriod.isEmpty()
+            metric.linePeriod.currentPeriod.isEmpty()
     }
 
     private fun getLineChartDataByPeriod(metric: MultiLineMetricUiModel): List<LineChartData> {
@@ -742,18 +743,18 @@ class MultiLineGraphViewHolder(
             if (!multiLineEmptyState.isVisible) return
             hideAnimation = multiLineEmptyState.animatePop(ANIMATION_END, ANIMATION_START)
             hideAnimation?.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationRepeat(animation: Animator) {}
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     multiLineEmptyState.gone()
                     hideAnimation?.removeListener(this)
                 }
 
-                override fun onAnimationCancel(animation: Animator?) {
+                override fun onAnimationCancel(animation: Animator) {
                     hideAnimation?.removeListener(this)
                 }
 
-                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator) {}
             })
         }
     }

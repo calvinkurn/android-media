@@ -40,7 +40,7 @@
     <string name="feed_content_default_filter_value" tools:ignore="UnusedResources">Pembaruan Terakhir</string>
     <string name="content_creation_search_bs_header" tools:ignore="UnusedResources">Pilih produk dari</string>
     <string name="content_creation_tagging_page_header_text" tools:ignore="UnusedResources">Pilih produk dari <![CDATA["<font color='#212121'><b> %s </b></font> ]]></string>
-    <string name="content_creation_search_bs_item_tokopedia">Tokopedia</string>
+    <string name="content_creation_search_bs_item_tokopedia" tools:ignore="UnusedResources">Tokopedia</string>
     <string name="content_creation_search_bs_header_item_tokopedia" tools:ignore="UnusedResources">Akun saya</string>
     <string name="content_creation_search_bs_item_last_purchase">Terakhir Dibeli</string>
     <string name="content_creation_search_bs_item_wishlist">Wishlist</string>
@@ -136,5 +136,4 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="ugc_warning_both_account_live_subtitle">Akhiri Live di perangkat lain jika ingin\nmengambil alih siaran.</string>
     <string name="ugc_warning_account_banned_title">Akun ini melanggar ketentuan\nTokopedia</string>
     <string name="ugc_warning_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun ini.</string>
-
 </resources>

@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.presentation
 
 import SetupNavigation
 import WearAppTheme
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.activity.ComponentActivity
@@ -56,15 +57,26 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
     private val phoneStateFlow = mutableStateOf(STATE.CONNECTED)
     private val phoneStateProgressFlow = mutableStateOf(timeoutStartProgress)
     private val phoneConnectionFailed = mutableStateOf(false)
-
     private var timer: CountDownTimer? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            sharedViewModel.ifPhoneHasApp.collect {
+                it?.let {
+                    if (!it) {
+                        phoneStateFlow.value = STATE.COMPANION_NOT_INSTALLED
+                        phoneStateProgressFlow.value = timeoutMaxProgress
+                        timer?.cancel()
+                    }
+                }
+            }
+        }
         setContent {
             WearAppTheme {
                 val phoneConnectionStatusIsFailed by remember { phoneConnectionFailed }
-                val phoneStateStatus by remember { phoneStateFlow }
+                var phoneStateStatus by remember { phoneStateFlow }
 
                 var isStateStatusVisible by remember { mutableStateOf(true) }
                 if (!phoneConnectionStatusIsFailed) {
@@ -91,10 +103,15 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                         stateMessage = mutableStateOf(phoneStateFlow.value.getMessageBasedOnState()),
                         stateBtnText = if (phoneStateFlow.value == STATE.COMPANION_NOT_LOGIN) {
                             mutableStateOf(stringResource(id = R.string.state_button_login_in_app))}
+                        else if (phoneStateFlow.value == STATE.COMPANION_NOT_INSTALLED) {
+                            mutableStateOf(stringResource(id = R.string.state_button_install_app))}
                         else {
                             mutableStateOf(stringResource(id = R.string.state_button_retry))},
                         stateAction = if (phoneStateFlow.value == STATE.COMPANION_NOT_LOGIN) { mutableStateOf({
                             sharedViewModel.openLoginPageInApp()
+                            finish()
+                        }) } else if (phoneStateFlow.value == STATE.COMPANION_NOT_INSTALLED) { mutableStateOf({
+                            sharedViewModel.openAppInStoreOnPhone()
                             finish()
                         }) } else { mutableStateOf({
                             phoneConnectionFailed.value = false
@@ -153,9 +170,12 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
             }
 
             override fun onFinish() {
-                phoneStateFlow.value = STATE.COMPANION_NOT_REACHABLE
-                phoneStateProgressFlow.value = timeoutMaxProgress
-                validatePhoneState()
+                if (phoneStateFlow.value == STATE.SYNC) {
+                    phoneStateFlow.value = STATE.COMPANION_NOT_REACHABLE
+                    phoneStateProgressFlow.value = timeoutMaxProgress
+                    validatePhoneState()
+                }
+
                 this.cancel()
             }
         }

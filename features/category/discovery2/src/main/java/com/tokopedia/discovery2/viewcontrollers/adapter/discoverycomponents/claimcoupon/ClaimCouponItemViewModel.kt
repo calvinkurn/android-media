@@ -93,12 +93,6 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         navigate(context, getCouponAppLink() ?: "")
     }
 
-    fun getCouponSlug(): String? {
-        if (components.data.isNullOrEmpty()) return ""
-
-        return components.data?.get(0)?.slug
-    }
-
     fun getCouponAppLink(): String? {
         if (components.data.isNullOrEmpty()) return ""
 

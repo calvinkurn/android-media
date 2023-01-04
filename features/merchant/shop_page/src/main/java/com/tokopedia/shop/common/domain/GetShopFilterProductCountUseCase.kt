@@ -12,20 +12,19 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import javax.inject.Inject
 
 class GetShopFilterProductCountUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+    private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<Int>(graphqlRepository) {
 
     companion object {
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_FILTER = "filter"
         fun createParams(
-                shopId: String,
-                filter: ShopProductFilterInput
+            shopId: String,
+            filter: ShopProductFilterInput
         ) = mapOf(
-                PARAM_SHOP_ID to shopId,
-                PARAM_FILTER to filter
+            PARAM_SHOP_ID to shopId,
+            PARAM_FILTER to filter
         )
-
     }
 
     var params = mapOf<String, Any>()

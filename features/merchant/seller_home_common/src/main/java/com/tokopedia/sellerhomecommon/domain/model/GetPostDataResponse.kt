@@ -53,7 +53,9 @@ data class PostItemDataModel(
     @SerializedName("pinned")
     val isPinned: Boolean = false,
     @SerializedName("postItemID")
-    val postItemID: String = String.EMPTY
+    val postItemID: String = String.EMPTY,
+    @SerializedName("countdownDate")
+    val countdownDate: String? = String.EMPTY,
 )
 
 data class PostCtaDataModel(

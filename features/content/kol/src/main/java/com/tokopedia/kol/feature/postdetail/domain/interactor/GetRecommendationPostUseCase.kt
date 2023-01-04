@@ -91,6 +91,7 @@ class GetRecommendationPostUseCase @Inject constructor(
                   price
                   priceFmt
                   mods
+                  shopID
                 }
                 hashtagAppLinkFmt
                 hashtagWebLinkFmt
@@ -138,6 +139,122 @@ class GetRecommendationPostUseCase @Inject constructor(
                 publishedAt
                 mods
               }
+              ... on FeedXCardProductsHighlight {
+                    id
+                    type
+                    author {
+                      id
+                      type
+                      name
+                      description
+                      badgeURL
+                      logoURL
+                      webLink
+                      appLink
+                    }
+                    cta {
+                      text
+                      color
+                      colorGradient {
+                      color
+                      position
+                      }
+                      __typename
+                    }
+                    ribbonImageURL
+                    campaign {
+                        id
+                        status
+                        name
+                        shortName
+                        startTime
+                        endTime
+                      }
+                    title
+                    subTitle
+                    text
+                    webLink
+                    appLink
+                    appLinkProductList
+                    webLinkProductList
+                    maximumDiscountPercentage
+                    maximumDiscountPercentageFmt
+                    totalProducts
+                    products {
+                      id
+                      name
+                      coverURL
+                      webLink
+                      appLink
+                      star
+                      price
+                      priceFmt
+                      priceMasked
+                      priceMaskedFmt
+                      stockWording
+                      stockSoldPercentage
+                      cartable
+                      isDiscount
+                      discount
+                      discountFmt
+                      isCashback
+                      cashbackFmt
+                      priceOriginal
+                      priceOriginalFmt
+                      priceDiscount
+                      priceDiscountFmt
+                      totalSold
+                      isBebasOngkir
+                      bebasOngkirStatus
+                      bebasOngkirURL
+                      mods
+                      shopID
+                    }
+                    like {
+                      label
+                      count
+                      countFmt
+                      likedBy
+                      isLiked
+                      mods
+                    }
+                    comments {
+                      label
+                      count
+                      countFmt
+                      items {
+                        id
+                        author {
+                          id
+                          type
+                          name
+                          description
+                          badgeURL
+                          logoURL
+                          webLink
+                          appLink
+                        }
+                        text
+                        mods
+                      }
+                      mods
+                    }
+                    share {
+                      label
+                      operation
+                      mods
+                    }
+                    followers {
+                      label
+                      isFollowed
+                      count
+                      countFmt
+                      mods
+                    }
+                    publishedAt
+                    deletable
+                    mods
+             }
               ... on FeedXCardPlay {
                 id
                 author {
@@ -192,6 +309,7 @@ class GetRecommendationPostUseCase @Inject constructor(
                   price
                   priceFmt
                   mods
+                  shopID
                 }
                 hashtagAppLinkFmt
                 hashtagWebLinkFmt

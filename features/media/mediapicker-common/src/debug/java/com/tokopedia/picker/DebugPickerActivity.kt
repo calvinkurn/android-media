@@ -7,7 +7,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
-import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
 import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
 import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
 import com.tokopedia.picker.common.EditorParam
@@ -16,6 +15,7 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.databinding.ActivityPickerDebugBinding
+import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
@@ -36,13 +36,42 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         binding?.btnAction?.setOnClickListener {
             val appLink = binding?.edtApplink?.editText?.text?: ""
             val intent = RouteManager.getIntent(applicationContext, appLink.toString()).apply {
-                val pickerJson = binding?.pickerConfig?.text?: ""
-                val fromPickerJson = Gson().fromJson(pickerJson.toString(), PickerParam::class.java)
-                putExtra(EXTRA_PICKER_PARAM, fromPickerJson)
-
                 val editorJson = binding?.editorConfig?.text ?: ""
                 val fromEditorJson = Gson().fromJson(editorJson.toString(), EditorParam::class.java)
-                putExtra(EXTRA_EDITOR_PARAM, fromEditorJson)
+
+                val pickerJson = binding?.pickerConfig?.text?: ""
+                val fromPickerJson = Gson().fromJson(pickerJson.toString(), PickerParam::class.java).apply {
+                    if (isEditorEnabled()) {
+                        withEditor {
+                            resetRatioList()
+                            fromEditorJson.ratioList().forEach {
+                                when(it){
+                                    ImageRatioType.RATIO_1_1 -> ratioListAdd1to1()
+                                    ImageRatioType.RATIO_3_4 -> ratioListAdd3to4()
+                                    ImageRatioType.RATIO_2_1 -> ratioListAdd2to1()
+                                }
+                            }
+
+                            fromEditorJson.editorToolsList().apply {
+                                if (contains(EditorToolType.REMOVE_BACKGROUND)) {
+                                    withRemoveBackground()
+                                }
+
+                                if (contains(EditorToolType.WATERMARK)) {
+                                    withWatermark()
+                                }
+                            }
+
+                            when(fromEditorJson.autoCropRatio()){
+                            ImageRatioType.RATIO_1_1 -> autoCrop1to1()
+                            ImageRatioType.RATIO_3_4 -> autoCrop3to4()
+                            ImageRatioType.RATIO_2_1 -> autoCrop2to1()
+                        }
+                        }
+                    }
+                }
+
+                putExtra(EXTRA_PICKER_PARAM, fromPickerJson)
             }
 
             startActivityForResult(intent, REQUEST_PICKER_CODE)
@@ -55,7 +84,9 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         if (requestCode == REQUEST_PICKER_CODE && resultCode == RESULT_OK) {
             val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
 
-            val rawList = elements.editedImages.mapIndexed { index, imagePath ->
+            val resultList = if (elements.editedImages.isEmpty()) elements.originalPaths else elements.editedImages
+
+            val rawList = resultList.mapIndexed { index, imagePath ->
                 if (imagePath.isEmpty()) {
                     elements.originalPaths[index]
                 } else {
@@ -97,13 +128,11 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
 
     private fun initConfig() {
         val gson = GsonBuilder().setPrettyPrinting().create()
-        val pickerConfigJson = gson.toJson(PickerParam().apply {
-            withEditor(true)
-        })
+        val pickerConfigJson = gson.toJson(PickerParam().apply { })
         val editorConfigJson = gson.toJson(EditorParam().apply {
             withRemoveBackground()
             withWatermark()
-            autoCropRatio = ImageRatioType.RATIO_1_1
+            autoCrop1to1()
         })
 
         binding?.pickerConfig?.setText(pickerConfigJson)

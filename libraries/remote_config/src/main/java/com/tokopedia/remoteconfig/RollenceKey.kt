@@ -17,6 +17,13 @@ object RollenceKey {
     const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
     const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
     const val HOME_COMPONENT_LEGO24BANNER_VARIANT = "lego24_new"
+    const val HOME_COMPONENT_HPB_DURATION_EXP = "hpb_scroll_duration"
+    const val HOME_COMPONENT_HPB_DURATION_CONTROL = "control_scroll_5s"
+    const val HOME_COMPONENT_HPB_DURATION_VARIANT_4S = "scroll_4s"
+    const val HOME_COMPONENT_HPB_DURATION_VARIANT_6S = "scroll_6s"
+    const val HOME_COMPONENT_HPB_DOTS_INFINITE_EXP = "hpb_dots_infinite_2"
+    const val HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL = "control_variant"
+    const val HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT = "new_dots_scroll"
     // end of home component rollence section
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
@@ -40,6 +47,7 @@ object RollenceKey {
     const val WISHLIST_CONTROL_VARIANT = "control_variant"
     const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
+    const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -54,13 +62,16 @@ object RollenceKey {
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
 
     // Food
-    const val KEY_ROLLENCE_FOOD = "m1_gofood"
     const val KEY_GOFOOD_SEARCH = "gofood_search"
+
+    // TokoChat
+    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
     const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
+    const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
 
     // Saldo
     const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval";
@@ -70,6 +81,12 @@ object RollenceKey {
 
     //Play
     const val SWIPE_LIVE_ROOM = "play_sc"
+
+    // Bubbles
+    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat"
+
+    // Logistic
+    const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
 
     object PdpToolbar {
         const val key = "pdp_dyn_container"

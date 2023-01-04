@@ -1,31 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_Background"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/talkReplyReport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/report_bottom_sheet_text"
-        android:paddingBottom="@dimen/layout_lvl2"
+        android:textColor="@color/Unify_NN950"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
-        app:typographyType="body_2" />
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_talk_reply_report"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/talkReplyReport"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkReplyBlock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/block_bottom_sheet_text"
+        android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/divider_talk_reply_report"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_talk_reply_block"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/talkReplyBlock"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/talkReplyDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/Unify_NN950"
         android:visibility="gone"
-        app:layout_goneMarginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/talkReplyReport"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_talk_reply_block"
+        app:layout_goneMarginTop="16dp"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
-        app:typographyType="body_2" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

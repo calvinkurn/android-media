@@ -51,7 +51,9 @@
     <string name="enable_topads_notif">Enable TopAds Log on Notification</string>
     <string name="view_topads_log">View TopAds Log</string>
     <string name="enable_applink_notif">Enable Applink Log on Notification</string>
+    <string name="enable_journey_notif">Enable Journey Log on Notification</string>
     <string name="view_applink_log">View Applink Log</string>
+    <string name="view_journey_log">View Journey Log</string>
     <string name="enable_fpm_log_file">Enable FPM Log on File (Download/fpm-auto-log.txt)</string>
     <string name="enable_fpm_log_notif">Enable FPM Log on Notification</string>
     <string name="enable_fpm_log">View FPM Log</string>
@@ -130,5 +132,6 @@
     <string name="label_function_id">Function ID:</string>
     <string name="label_function_name">Function Name:</string>
     <string name="label_counter">Counter:</string>
+    <string name="enable_strict_mode_leak_publisher">Enable Strict Mode Leak Publihser</string>
 
 </resources>

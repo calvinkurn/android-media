@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.lifecycle.viewModelScope
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
@@ -22,6 +23,7 @@ import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
+import com.tokopedia.sellerapp.util.MenuHelper
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
@@ -120,7 +122,7 @@ class SharedViewModel @Inject constructor(
 
     fun checkPhoneState() {
         viewModelScope.launch {
-            clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+            checkIfPhoneHasApp()
         }
     }
 
@@ -214,8 +216,8 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private val _ifPhoneHasApp = MutableStateFlow(true)
-    val ifPhoneHasApp: StateFlow<Boolean>
+    private val _ifPhoneHasApp: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    val ifPhoneHasApp: StateFlow<Boolean?>
         get() = _ifPhoneHasApp
 
     fun checkIfPhoneHasApp() {
@@ -231,7 +233,12 @@ class SharedViewModel @Inject constructor(
                     val nodes = capabilityInfo.nodes
                     val androidPhoneNodeWithApp =
                         nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
-                    _ifPhoneHasApp.value = androidPhoneNodeWithApp != null
+                    val phoneHasApp = androidPhoneNodeWithApp != null
+                    _ifPhoneHasApp.value = phoneHasApp
+
+                    if (phoneHasApp) {
+                        clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+                    }
                 }
             } catch (cancellationException: CancellationException) {
                 // Request was cancelled normally
@@ -248,6 +255,18 @@ class SharedViewModel @Inject constructor(
 
         launch {
             startRemoteActivity(remoteActivityHelper, intent)
+        }
+    }
+
+    fun openNewOrderList() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_NEW_ORDER_LIST)
+        }
+    }
+
+    fun openReadyToShip() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_READY_TO_SHIP)
         }
     }
 
@@ -275,6 +294,14 @@ class SharedViewModel @Inject constructor(
         launchCatchError(block = {
             _acceptBulkOrder.emit(UiState.Success())
         }){
+        }
+    }
+
+    fun openOrderPageBasedOnType(orderType: String) {
+        if (orderType == MenuHelper.DATAKEY_NEW_ORDER) {
+            openNewOrderList()
+        } else {
+            openReadyToShip()
         }
     }
 

@@ -22,11 +22,13 @@ import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.factory.TestFragmentFactory
 import com.tokopedia.content.test.factory.TestViewModelFactory
 import com.tokopedia.content.test.util.isSiblingWith
+import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.*
@@ -44,6 +46,7 @@ import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
@@ -75,6 +78,8 @@ class PlayViewerIdGenerator {
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
     private val decodeHtml = DefaultHtmlTextTransformer()
+
+    private val socket: PlayWebSocket = mockk(relaxed = true)
 
     private val mapper = PlayUiModelMapper(
         productTagMapper = PlayProductTagUiMapper(),
@@ -124,6 +129,7 @@ class PlayViewerIdGenerator {
                 castPlayerHelper = mockk(relaxed = true),
                 playShareExperience = mockk(relaxed = true),
                 playLog = mockk(relaxed = true),
+                chatManagerFactory = mockk(relaxed = true),
                 chatStreamsFactory = mockk(relaxed = true),
                 liveRoomMetricsCommon = mockk(relaxed = true),
             )
@@ -135,6 +141,7 @@ class PlayViewerIdGenerator {
             PlayFragment::class.java to {
                 PlayFragment(
                     playViewModelFactory,
+                    mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
@@ -150,7 +157,8 @@ class PlayViewerIdGenerator {
                     castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
-                    analyticManagerFactory = mockk(relaxed = true),
+                    analyticManager = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {
@@ -158,6 +166,7 @@ class PlayViewerIdGenerator {
                     viewModelFactory = mockViewModelFactory,
                     analytic = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             },
             PlayVideoFragment::class.java to {
@@ -167,6 +176,7 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
                     playLog = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             }
         )
@@ -239,36 +249,39 @@ class PlayViewerIdGenerator {
             resultState = ResultState.Success,
         )
 
-        val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
-        every { mockChannelStorage.getChannelList() } returns listOf("12669")
-        every { mockChannelStorage.getData(any()) } returns uiModelBuilder.buildChannelData(
-            id = "12669",
-            partnerInfo = PlayPartnerInfo(name = "test"),
-            channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
-            pinnedInfo = PlayPinnedInfoUiModel(
-                PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
+                uiModelBuilder.buildChannelData(
+                    id = "12669",
+                    partnerInfo = PlayPartnerInfo(name = "test"),
+                    channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
+                    pinnedInfo = PlayPinnedInfoUiModel(
+                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+                    ),
+                    videoMetaInfo = PlayVideoMetaInfoUiModel(
+                        videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
+                            params = PlayGeneralVideoPlayerParams(
+                                videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
+                                buffer = PlayBufferControl(),
+                                lastMillis = null,
+                            )
+                        ),
+                        videoStream = PlayVideoStreamUiModel(
+                            "", VideoOrientation.Vertical, "Video Keren"
+                        ),
+                    ),
+                    tagItems = tagItem,
+                )
             ),
-            videoMetaInfo = PlayVideoMetaInfoUiModel(
-                videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
-                    params = PlayGeneralVideoPlayerParams(
-                        videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
-                        buffer = PlayBufferControl(),
-                        lastMillis = null,
-                    )
-                ),
-                videoStream = PlayVideoStreamUiModel(
-                    "", VideoOrientation.Vertical, "Video Keren"
-                ),
-            ),
-            tagItems = tagItem,
+            cursor = "",
         )
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext, mockChannelStorage))
+                .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, webSocket = socket))
                 .build()
         )
 
@@ -318,35 +331,38 @@ class PlayViewerIdGenerator {
 
     @Test
     fun youTubePlayer() {
-        val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        every { mockChannelStorage.getChannelList() } returns listOf("12680")
-        every { mockChannelStorage.getData(any()) } returns PlayChannelData(
-            id = "12669",
-            channelDetail = PlayChannelDetailUiModel(),
-            partnerInfo = PlayPartnerInfo(name = "test"),
-            likeInfo = PlayLikeInfoUiModel(),
-            channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
-            pinnedInfo = PlayPinnedInfoUiModel(
-                PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
-            ),
-            quickReplyInfo = PlayQuickReplyInfoUiModel(emptyList()),
-            videoMetaInfo = PlayVideoMetaInfoUiModel(
-                videoPlayer = PlayVideoPlayerUiModel.YouTube("E4qo_PkR7WE"),
-                videoStream = PlayVideoStreamUiModel(
-                    "", VideoOrientation.Horizontal(16, 9), "Video Keren"
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
+                PlayChannelData(
+                    id = "12680",
+                    channelDetail = PlayChannelDetailUiModel(),
+                    partnerInfo = PlayPartnerInfo(name = "test"),
+                    likeInfo = PlayLikeInfoUiModel(),
+                    channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
+                    pinnedInfo = PlayPinnedInfoUiModel(
+                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+                    ),
+                    quickReplyInfo = PlayQuickReplyInfoUiModel(emptyList()),
+                    videoMetaInfo = PlayVideoMetaInfoUiModel(
+                        videoPlayer = PlayVideoPlayerUiModel.YouTube("E4qo_PkR7WE"),
+                        videoStream = PlayVideoStreamUiModel(
+                            "", VideoOrientation.Horizontal(16, 9), "Video Keren"
+                        ),
+                    ),
+                    upcomingInfo = PlayUpcomingUiModel(),
+                    tagItems = TagItemUiModel.Empty,
+                    status = PlayStatusUiModel.Empty,
+                    leaderboard = LeaderboardUiModel.Empty
                 ),
             ),
-            upcomingInfo = PlayUpcomingUiModel(),
-            tagItems = TagItemUiModel.Empty,
-            status = PlayStatusUiModel.Empty,
-            leaderboard = LeaderboardUiModel.Empty
+            cursor = "",
         )
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext, mockChannelStorage))
+                .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
 

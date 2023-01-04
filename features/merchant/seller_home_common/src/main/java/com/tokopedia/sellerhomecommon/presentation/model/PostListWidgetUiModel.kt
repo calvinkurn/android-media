@@ -33,6 +33,7 @@ data class PostListWidgetUiModel(
     override var dismissibleState: DismissibleState = DismissibleState.NONE,
     override val dismissToken: String = String.EMPTY,
     override var shouldShowDismissalTimer: Boolean = false,
+    override var useRealtime: Boolean = false,
     val postFilter: List<WidgetFilterUiModel>,
     val maxData: Int,
     val maxDisplay: Int,

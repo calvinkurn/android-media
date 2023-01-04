@@ -1,50 +1,37 @@
 package com.tokopedia.play.model.interactive
 
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.LeadeboardType
-import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
+import java.util.Calendar
 
 /**
  * Created by kenny.hadisaputra on 11/05/22
  */
 interface InteractiveBuilder {
 
+    /**
+     * LeaderBoard
+     */
+
     fun buildLeaderboard(
-        data: PlayLeaderboardInfoUiModel = buildLeaderboardInfo(),
+        data: List<LeaderboardGameUiModel> = emptyList(),
         state: ResultState = ResultState.Success,
     ): LeaderboardUiModel
 
-    fun buildLeaderboardInfo(
-        leaderboardWinners: List<PlayLeaderboardUiModel> = emptyList(),
-        totalParticipant: String = "",
-        config: PlayLeaderboardConfigUiModel = buildLeaderboardConfig()
-    ): PlayLeaderboardInfoUiModel
+    fun buildLeaderBoardContent(data: List<LeaderboardGameUiModel>): List<LeaderboardGameUiModel>
 
-    fun buildLeaderboardConfig(
-        sellerMessage: String = "",
-        winnerMessage: String = "",
-        winnerDetail: String = "",
-        loserMessage: String = "",
-        loserDetail: String = "",
-    ): PlayLeaderboardConfigUiModel
-
-    fun buildLeaderboardDetails(
-        title: String = "",
-        winners: List<PlayWinnerUiModel> = emptyList(),
-        choices: List<QuizChoicesUiModel> = emptyList(), //opt = not empty when QUIZ, soon Polling
-        otherParticipantText: String = "",
-        otherParticipant: Long = 0L,
-        emptyLeaderBoardCopyText: String = "",
+    fun buildHeader(
+        title: String ="",
         reward: String = "",
+        endsIn: Calendar? = null,
         leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
-    ): PlayLeaderboardUiModel
+        id: String = "",
+    ): LeaderboardGameUiModel.Header
 
     fun buildWinner(
         rank: Int = 1,
@@ -53,8 +40,21 @@ interface InteractiveBuilder {
         imageUrl: String = "",
         allowChat: () -> Boolean = { false },
         topChatMessage: String = "",
-    ): PlayWinnerUiModel
+    ): LeaderboardGameUiModel.Winner
 
+    fun buildFooter(
+        id: String = "1",
+        totalParticipant: Long = 0L,
+        leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
+        otherParticipantText: String,
+        otherParticipant: Long,
+        emptyLeaderBoardCopyText: String = "",
+    ): LeaderboardGameUiModel.Footer
+
+
+    /**
+     * Interactive
+     */
     fun buildQuizChoices(
         index: Int = 0,
         id: String = "",
@@ -69,14 +69,14 @@ interface InteractiveBuilder {
         id: String = "",
         title: String = "",
         waitingDuration: Long = 200L,
-        status: InteractiveUiModel.Giveaway.Status = InteractiveUiModel.Giveaway.Status.Unknown,
-    ): InteractiveUiModel.Giveaway
+        status: GameUiModel.Giveaway.Status = GameUiModel.Giveaway.Status.Unknown,
+    ): GameUiModel.Giveaway
 
     fun buildQuiz(
         id: String = "",
         title: String = "",
         waitingDuration: Long = 200L,
-        status: InteractiveUiModel.Quiz.Status = InteractiveUiModel.Quiz.Status.Unknown,
+        status: GameUiModel.Quiz.Status = GameUiModel.Quiz.Status.Unknown,
         listOfChoices: List<QuizChoicesUiModel> = emptyList(),
-    ): InteractiveUiModel.Quiz
+    ): GameUiModel.Quiz
 }

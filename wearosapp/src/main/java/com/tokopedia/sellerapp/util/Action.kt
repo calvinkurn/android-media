@@ -14,6 +14,8 @@ enum class Action {
     GET_ALL_DATA,
     GET_SUMMARY,
     GET_PHONE_STATE,
+    OPEN_NEW_ORDER_LIST,
+    OPEN_READY_TO_SHIP,
     OPEN_LOGIN_PAGE;
 
     fun getPath() = when(this) {
@@ -24,5 +26,7 @@ enum class Action {
         GET_ALL_DATA -> MessageConstant.GET_ALL_DATA
         GET_PHONE_STATE -> MessageConstant.GET_PHONE_STATE
         OPEN_LOGIN_PAGE -> MessageConstant.OPEN_LOGIN_PAGE
+        OPEN_READY_TO_SHIP -> MessageConstant.OPEN_READY_TO_SHIP
+        OPEN_NEW_ORDER_LIST -> MessageConstant.OPEN_NEW_ORDER_LIST
     }
 }

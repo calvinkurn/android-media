@@ -14,12 +14,9 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -30,7 +27,6 @@ import javax.inject.Inject
 class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val getInteractiveConfigUseCase: GetInteractiveConfigUseCase,
     private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
-    private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
     private val getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase,
     private val getInteractiveQuizDetailsUseCase: GetInteractiveQuizDetailsUseCase,
     private val getInteractiveQuizChoiceDetailsUseCase: GetInteractiveQuizChoiceDetailsUseCase,
@@ -39,20 +35,20 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val mapper: PlayBroadcastMapper,
     private val interactiveMapper: PlayInteractiveMapper,
-    private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : PlayBroadcastInteractiveRepository {
 
-    override suspend fun getInteractiveConfig(): InteractiveConfigUiModel =
+    override suspend fun getInteractiveConfig(authorId: String, authorType: String): InteractiveConfigUiModel =
         withContext(dispatchers.io) {
             val response = getInteractiveConfigUseCase.apply {
+                //TODO change this with authorId after BE team confirm
                 setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
             }.executeOnBackground()
 
-            return@withContext mapper.mapInteractiveConfig(response)
+            return@withContext mapper.mapInteractiveConfig(authorType, response)
         }
 
-    override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel =
+    override suspend fun getCurrentInteractive(channelId: String): GameUiModel =
         withContext(dispatchers.io) {
             val response = getCurrentInteractiveUseCase.apply {
                 setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
@@ -60,21 +56,12 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             return@withContext interactiveMapper.mapInteractive(response.data)
         }
 
-    override suspend fun getInteractiveLeaderboard(
-        channelId: String,
-        isChatAllowed: () -> Boolean
-    ): PlayLeaderboardInfoUiModel {
-        return interactiveLeaderboardMapper.mapLeaderboard(
-            getInteractiveLeaderboardUseCase.execute(channelId),
-            isChatAllowed
-        )
-    }
-
     override suspend fun createGiveaway(
         channelId: String,
         title: String,
         durationInMs: Long
     ): InteractiveSessionUiModel = withContext(dispatchers.io) {
+        //TODO change this with authorId after BE team confirm
         val response = createInteractiveSessionUseCase.execute(
             userSession.shopId,
             channelId,
@@ -136,7 +123,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
 
     override suspend fun getSellerLeaderboardWithSlot(
         channelId: String, allowChat: Boolean
-    ): List<PlayLeaderboardUiModel> = withContext(dispatchers.io) {
+    ): List<LeaderboardGameUiModel> = withContext(dispatchers.io) {
         val response = getSellerLeaderboardUseCase.apply {
             setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
         }.executeOnBackground()

@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import com.tokopedia.media.common.common.UrlBuilder.urlBuilder
 import com.tokopedia.media.common.data.MediaSettingPreferences
+import com.tokopedia.media.common.util.isValidUrl
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
 
@@ -32,9 +33,12 @@ object Loader {
         if (context == null) return url
 
         val networkState = networkManagerState(context)
-        return if (isAdaptiveImage) {
-            urlBuilder(networkState, settings.qualitySettings(), url)
-        } else url
+
+        if (isAdaptiveImage && url.isValidUrl()) {
+            return urlBuilder(networkState, settings.qualitySettings(), url)
+        }
+
+        return url
     }
 
 }

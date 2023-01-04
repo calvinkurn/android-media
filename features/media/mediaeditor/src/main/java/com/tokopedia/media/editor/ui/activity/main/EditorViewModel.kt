@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.EditorParam
-import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import java.io.File
 import javax.inject.Inject
 
@@ -44,7 +45,7 @@ class EditorViewModel @Inject constructor(
         } else {
             // if state not last edit (user did undo and do edit again) then we will remove last state until current redo state)
             if (state.backValue != 0) {
-                for (i in 0 until state.backValue) {
+                (0 until state.backValue).forEach { _ ->
                     if (state.editList.last().removeBackgroundUrl != null) {
                         state.removedBackgroundUrl = null
                         state.removeBackgroundStartState = 0
@@ -95,12 +96,26 @@ class EditorViewModel @Inject constructor(
     }
 
     fun saveToGallery(dataList: List<EditorUiModel>, onFinish: (result: List<String>) -> Unit) {
+        // store list image of camera picker that need to be saved
+        val cameraImageList = mutableListOf<String>()
+        val pickerCameraCacheDir = getTokopediaCacheDir()
+
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
                 it.getImageUrl()
             } else {
+                it.getOriginalUrl().apply {
+                    if (contains(pickerCameraCacheDir) && !contains(PICKER_URL_FILE_CODE)) {
+                        cameraImageList.add(it.getImageUrl())
+                    }
+                }
                 ""
             }
+        }
+
+        // save camera image that didn't have edit state
+        if (cameraImageList.size != 0) {
+            saveImageRepository.saveToGallery(cameraImageList) {}
         }
 
         saveImageRepository.saveToGallery(

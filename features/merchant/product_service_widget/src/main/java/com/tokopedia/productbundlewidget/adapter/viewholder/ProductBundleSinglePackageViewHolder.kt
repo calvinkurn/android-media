@@ -1,5 +1,6 @@
 package com.tokopedia.productbundlewidget.adapter.viewholder
 
+import android.graphics.PorterDuff
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -24,7 +25,21 @@ class ProductBundleSinglePackageViewHolder(itemView: View): RecyclerView.ViewHol
             text = singleBundleDetailVariant.minOrderWording
             buttonType = if (singleBundleDetailVariant.isSelected)
                 UnifyButton.Type.MAIN else UnifyButton.Type.ALTERNATE
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN900))
+            if (singleBundleDetailVariant.isSelected) {
+                background.setTint(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifycomponents.R.color.Unify_GN50
+                    )
+                )
+                background.setTintMode(PorterDuff.Mode.MULTIPLY)
+            } else {
+                val textColor = ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifycomponents.R.color.Unify_NN950
+                )
+                setTextColor(textColor)
+            }
         }
     }
 }

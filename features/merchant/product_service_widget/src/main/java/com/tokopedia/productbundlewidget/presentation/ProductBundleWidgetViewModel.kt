@@ -2,6 +2,7 @@ package com.tokopedia.productbundlewidget.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.ProductServiceWidgetConstant
@@ -24,6 +25,10 @@ class ProductBundleWidgetViewModel @Inject constructor(
 
     private val _bundleUiModels: MutableLiveData<List<BundleUiModel>> = MutableLiveData()
     val bundleUiModels: LiveData<List<BundleUiModel>> get() = _bundleUiModels
+    val isBundleEmpty = Transformations.map(bundleUiModels) { it.isEmpty() }
+
+    private val _error: MutableLiveData<Throwable> = MutableLiveData()
+    val error: LiveData<Throwable> get() = _error
 
     fun getBundleInfo(param: GetBundleParam) {
         val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
@@ -54,7 +59,7 @@ class ProductBundleWidgetViewModel @Inject constructor(
             }
             _bundleUiModels.value = productBundleWidgetUiMapper.groupAndMap(result.getBundleInfo?.bundleInfo.orEmpty())
         }, onError = {
-
+            _error.value = it
         })
     }
 }

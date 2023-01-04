@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
+import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
@@ -38,6 +38,7 @@ import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ShopStatusUIModel.Companion.mapperShopStatusResponse
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
@@ -47,6 +48,7 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -90,7 +92,9 @@ class ProductManageViewModel @Inject constructor(
     private val getUploadStatusUseCase: GetUploadStatusUseCase,
     private val clearUploadStatusUseCase: ClearUploadStatusUseCase,
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
+    private val getStatusShop: GetStatusShopUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
+    private val remoteConfig: FirebaseRemoteConfigImpl,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -152,6 +156,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _topAdsInfo
     val uploadStatus: MutableLiveData<UploadStatusModel>
         get() = _uploadStatus
+    val shopStatus: MutableLiveData<StatusInfo>
+        get() = _shopStatus
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _showTicker = MutableLiveData<Boolean>()
@@ -179,6 +185,7 @@ class ProductManageViewModel @Inject constructor(
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
     private val _uploadStatus = MutableLiveData<UploadStatusModel>()
+    private val _shopStatus = MutableLiveData<StatusInfo>()
 
     private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
@@ -296,11 +303,11 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun getProductList(
-            shopId: String,
-            filterOptions: List<FilterOption>? = null,
-            sortOption: SortOption? = null,
-            isRefresh: Boolean = false,
-            withDelay: Boolean = false
+        shopId: String,
+        filterOptions: List<FilterOption>? = null,
+        sortOption: SortOption? = null,
+        isRefresh: Boolean = false,
+        withDelay: Boolean = false
     ) {
         getProductListJob?.cancel()
 
@@ -312,7 +319,13 @@ class ProductManageViewModel @Inject constructor(
                 val getProductList = async {
                     val warehouseId = getWarehouseId(shopId)
                     val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
-                    val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, warehouseId, filterOptions, sortOption, extraInfo)
+                    val requestParams = GQLGetProductListUseCase.createRequestParams(
+                        shopId,
+                        warehouseId,
+                        filterOptions,
+                        sortOption,
+                        extraInfo
+                    )
                     getProductListUseCase.execute(requestParams)
                 }
                 val maxStockDeffered = async {
@@ -322,13 +335,14 @@ class ProductManageViewModel @Inject constructor(
                         null
                     }
                 }
+
                 getProductList.await().productList to maxStockDeffered.await()
+
             }
             _refreshList.value = isRefresh
 
             val (productListResponse, maxStockResponse) = productResponse
             val maxStock = maxStockResponse?.getMaxStockFromResponse()
-
             totalProductCount = productListResponse?.meta?.totalHits.orZero()
             showProductList(productListResponse?.data, maxStock)
             showTicker()
@@ -348,7 +362,8 @@ class ProductManageViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 val shopId = userSessionInterface.shopId
                 val warehouseId = getWarehouseId(shopId)
-                val requestParams = GetProductVariantUseCase.createRequestParams(productId, false, warehouseId)
+                val requestParams =
+                    GetProductVariantUseCase.createRequestParams(productId, false, warehouseId)
                 val responseDeferred = async {
                     getProductVariantUseCase.execute(requestParams)
                 }
@@ -361,9 +376,14 @@ class ProductManageViewModel @Inject constructor(
                 }
 
                 val (variant, maxStock) =
-                    responseDeferred.await().getProductV3 to maxStockDeferred.await()?.getMaxStockFromResponse()
+                    responseDeferred.await().getProductV3 to maxStockDeferred.await()
+                        ?.getMaxStockFromResponse()
 
-                ProductManageVariantMapper.mapToVariantsResult(variant, getAccess(), maxStock)
+                ProductManageVariantMapper.mapToVariantsResult(
+                    variant,
+                    getAccess(),
+                    maxStock
+                )
             }
 
             if (result.variants.isNotEmpty()) {
@@ -377,9 +397,14 @@ class ProductManageViewModel @Inject constructor(
         })
     }
 
-    fun getTickerData() {
+    fun getTickerData(enableStockAvailable: Boolean= true) {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        _tickerData.value = tickerStaticDataProvider.getTickers(isMultiLocationShop)
+        _tickerData.value =
+            tickerStaticDataProvider.getTickers(
+                isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty(),
+                enableStockAvailable
+            )
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -392,9 +417,9 @@ class ProductManageViewModel @Inject constructor(
                 }
                 getProductListMetaUseCase.setParams(userSessionInterface.shopId)
                 getProductListMetaUseCase.executeOnBackground()
-                        .productListMetaWrapper
-                        .productListMetaData
-                        .tabs
+                    .productListMetaWrapper
+                    .productListMetaData
+                    .tabs
             }
 
             _productFiltersTab.apply {
@@ -413,16 +438,32 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val currentAccess =
                 withContext(dispatchers.io) {
-                    if (userSessionInterface.isShopOwner) {
-                        ProductManageAccessMapper.mapProductManageOwnerAccess()
-                    } else {
-                        val shopId = userSessionInterface.shopId
-                        val response = getProductManageAccessUseCase.execute(shopId)
-                        ProductManageAccessMapper.mapToProductManageAccess(response)
+                    val shopId = userSessionInterface.shopId
+
+                    val productAccess = async {
+                        if (userSessionInterface.isShopOwner) {
+                            ProductManageAccessMapper.mapProductManageOwnerAccess()
+                        } else {
+                            val response = getProductManageAccessUseCase.execute(shopId)
+                            ProductManageAccessMapper.mapToProductManageAccess(response)
+                        }
                     }
+
+                    val shopStatusResponse = async {
+                        try {
+                            getStatusShop.params =
+                                GetStatusShopUseCase.createRequestParams(shopId.toIntSafely())
+                            getStatusShop.executeOnBackground()
+                        } catch (ex: Exception) {
+                            StatusInfo(String.EMPTY, String.EMPTY, String.EMPTY, String.EMPTY)
+                        }
+                    }
+                    productAccess.await() to shopStatusResponse.await()
                 }
-            access = currentAccess
-            _productManageAccess.value = Success(currentAccess)
+            val (productAccess, shopStatus) = currentAccess
+            access = productAccess
+            _shopStatus.value = shopStatus
+            _productManageAccess.value = Success(productAccess)
         }) {
             _productManageAccess.value = Fail(it)
         }
@@ -433,10 +474,10 @@ class ProductManageViewModel @Inject constructor(
             val productListFeaturedOnly = withContext(dispatchers.io) {
                 val warehouseId = getWarehouseId(shopId)
                 val requestParams = GQLGetProductListUseCase.createRequestParams(
-                        shopId,
-                        warehouseId,
-                        listOf(FilterOption.FilterByCondition.FeaturedOnly),
-                        null
+                    shopId,
+                    warehouseId,
+                    listOf(FilterOption.FilterByCondition.FeaturedOnly),
+                    null
                 )
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListSize = getProductList.productList?.data?.size
@@ -453,27 +494,71 @@ class ProductManageViewModel @Inject constructor(
         showProgressDialog()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toDoubleOrZero())
+                editPriceUseCase.setParams(
+                    userSessionInterface.shopId,
+                    productId,
+                    price.toDoubleOrZero()
+                )
                 editPriceUseCase.executeOnBackground()
             }
             when {
                 result.productUpdateV3Data.isSuccess -> {
-                    _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
+                    _editPriceResult.postValue(
+                        Success(
+                            EditPriceResult(
+                                productName,
+                                productId,
+                                price
+                            )
+                        )
+                    )
                 }
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
-                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                    _editPriceResult.postValue(
+                        Fail(
+                            EditPriceResult(
+                                productName,
+                                productId,
+                                price,
+                                Throwable(message = result.productUpdateV3Data.header.errorMessage.last())
+                            )
+                        )
+                    )
                 }
                 else -> {
-                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                    _editPriceResult.postValue(
+                        Fail(
+                            EditPriceResult(
+                                productName,
+                                productId,
+                                price,
+                                NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                            )
+                        )
+                    )
                 }
             }
         }) {
-            _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+            _editPriceResult.postValue(
+                Fail(
+                    EditPriceResult(
+                        productName,
+                        productId,
+                        price,
+                        NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                    )
+                )
+            )
         }
         hideProgressDialog()
     }
 
-    fun editStock(productId: String, productName: String, stock: Int? = null, status: ProductStatus? = null) {
+    fun editStock(
+        productId: String,
+        productName: String,
+        stock: Int? = null,
+        status: ProductStatus? = null
+    ) {
         showProgressDialog()
         launchCatchError(block = {
             var result: Result<EditStockResult>? = null
@@ -488,8 +573,15 @@ class ProductManageViewModel @Inject constructor(
 
             _editStockResult.postValue(result)
         }) {
-            val message = com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
-            val result = EditStockResult(productName, productId, stock, status, NetworkErrorException(message))
+            val message =
+                com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+            val result = EditStockResult(
+                productName,
+                productId,
+                stock,
+                status,
+                NetworkErrorException(message)
+            )
             _editStockResult.postValue(Fail(result))
         }
         hideProgressDialog()
@@ -543,10 +635,12 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val popupResult = withContext(dispatchers.io) {
-                    val isSuccess = getShopManagerPopupsUseCase.execute(userSessionInterface.shopId.toLongOrZero())
+                    val isSuccess =
+                        getShopManagerPopupsUseCase.execute(userSessionInterface.shopId.toLongOrZero())
                     GetPopUpResult(productId, isSuccess)
                 }
-                _getPopUpResult.value = Success(popupResult)},
+                _getPopUpResult.value = Success(popupResult)
+            },
             onError = {
                 _getPopUpResult.value = Fail(it)
             })
@@ -561,28 +655,66 @@ class ProductManageViewModel @Inject constructor(
             }
             when {
                 result.productUpdateV3Data.isSuccess -> {
-                    _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
+                    _deleteProductResult.postValue(
+                        Success(
+                            DeleteProductResult(
+                                productName,
+                                productId
+                            )
+                        )
+                    )
                 }
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
-                    _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                    _deleteProductResult.postValue(
+                        Fail(
+                            DeleteProductResult(
+                                productName,
+                                productId,
+                                Throwable(message = result.productUpdateV3Data.header.errorMessage.last())
+                            )
+                        )
+                    )
                 }
                 else -> {
-                    _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                    _deleteProductResult.postValue(
+                        Fail(
+                            DeleteProductResult(
+                                productName,
+                                productId,
+                                NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                            )
+                        )
+                    )
                 }
             }
         }) {
-            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+            _deleteProductResult.postValue(
+                Fail(
+                    DeleteProductResult(
+                        productName,
+                        productId,
+                        NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                    )
+                )
+            )
         }
         hideProgressDialog()
     }
 
     fun setFeaturedProduct(productId: String, status: Int) {
-        launchCatchError( block = {
+        launchCatchError(block = {
             setFeaturedProductUseCase.setParams(productId.toLongOrZero(), status)
             withContext(dispatchers.io) {
                 setFeaturedProductUseCase.executeOnBackground()
             }
-            _setFeaturedProductResult.postValue(Success(SetFeaturedProductResult(productId, status)))
+            _setFeaturedProductResult.postValue(
+                Success(
+                    SetFeaturedProductResult(
+                        productId,
+                        status
+                    )
+                )
+            )
         }, onError = { throwable ->
             _setFeaturedProductResult.postValue(Fail(throwable))
         })
@@ -613,22 +745,23 @@ class ProductManageViewModel @Inject constructor(
             selectedFilterAndSort.sortOption?.let { selectedFilterCount++ }
 
             selectedFilterAndSort.copy(
-                    filterOptions = selectedFilter,
-                    filterShownState = list,
-                    selectedFilterCount = selectedFilterCount
+                filterOptions = selectedFilter,
+                filterShownState = list,
+                selectedFilterCount = selectedFilterCount
             )
         } else {
             FilterOptionWrapper(
                 sortOption = null,
                 filterOptions = selectedFilter,
                 filterShownState = listOf(true, true, false, false),
-                selectedFilterCount = selectedFilterCount)
+                selectedFilterCount = selectedFilterCount
+            )
         }
     }
 
     fun resetSelectedFilter() {
         _selectedFilterAndSort.value = FilterOptionWrapper(
-                filterShownState = listOf(true, true, false, false)
+            filterShownState = listOf(true, true, false, false)
         )
     }
 
@@ -687,10 +820,10 @@ class ProductManageViewModel @Inject constructor(
     }
 
     private suspend fun editProductStatus(
-            productId: String,
-            productName: String,
-            stock: Int?,
-            status: ProductStatus
+        productId: String,
+        productName: String,
+        stock: Int?,
+        status: ProductStatus
     ): Result<EditStockResult> {
         return withContext(dispatchers.io) {
             editStatusUseCase.setParams(userSessionInterface.shopId, productId, status)
@@ -708,23 +841,32 @@ class ProductManageViewModel @Inject constructor(
                     Fail(EditStockResult(productName, productId, stock, status, error))
                 }
                 else -> {
-                    val message = com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
-                    Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(message)))
+                    val message =
+                        com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+                    Fail(
+                        EditStockResult(
+                            productName,
+                            productId,
+                            stock,
+                            status,
+                            NetworkErrorException(message)
+                        )
+                    )
                 }
             }
         }
     }
 
     private suspend fun editProductStock(
-            productId: String,
-            productName: String,
-            stock: Int,
-            status: ProductStatus?
+        productId: String,
+        productName: String,
+        stock: Int,
+        status: ProductStatus?
     ): Result<EditStockResult> {
         return withContext(dispatchers.io) {
             val warehouseId = getWarehouseId(userSessionInterface.shopId)
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
-                    userSessionInterface.shopId, productId, warehouseId, stock.toString()
+                userSessionInterface.shopId, productId, warehouseId, stock.toString()
             )
             val response = editStockUseCase.execute(requestParams)
             val productStatus = response.getProductStatus() ?: status
@@ -747,7 +889,7 @@ class ProductManageViewModel @Inject constructor(
                 }
                 else -> {
                     val message = com.tokopedia.product.manage.common.R.string
-                            .product_stock_reminder_toaster_failed_desc.toString()
+                        .product_stock_reminder_toaster_failed_desc.toString()
                     Fail(MessageErrorException(message))
                 }
             }
@@ -761,16 +903,26 @@ class ProductManageViewModel @Inject constructor(
                 ProductStock(it.id, it.stock.toString())
             }
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
-                    userSessionInterface.shopId, warehouseId, productList
+                userSessionInterface.shopId, warehouseId, productList
             )
             editStockUseCase.execute(requestParams)
             Success(result)
         }
     }
 
-    private fun showProductList(products: List<Product>?, maxStock: Int?) {
+    private fun showProductList(
+        products: List<Product>?,
+        maxStock: Int?
+    ) {
         val isMultiSelectActive = _toggleMultiSelect.value == true
-        val productList = mapToUiModels(products, getAccess(), isMultiSelectActive, maxStock)
+        val productList =
+            mapToUiModels(
+                products,
+                getAccess(),
+                isMultiSelectActive,
+                maxStock,
+                _shopStatus.value?.isOnModerationMode().orFalse()
+            )
         _productListResult.value = Success(productList)
     }
 

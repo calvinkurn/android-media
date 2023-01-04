@@ -36,6 +36,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewTopAdsLogUiModel): Int = ViewTopAdsLogViewHolder.LAYOUT
     override fun type(uiModel: ApplinkLogOnNotificationUiModel): Int = ApplinkLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewApplinkLogUiModel): Int = ViewApplinkLogViewHolder.LAYOUT
+    override fun type(uiModel: JourneyLogOnNotificationUiModel): Int = JourneyLogOnNotificationViewHolder.LAYOUT
+    override fun type(uiModel: ViewJourneyLogUiModel): Int = ViewJourneyLogViewHolder.LAYOUT
     override fun type(uiModel: FpmLogOnFileUiModel): Int = FpmLogOnFileViewHolder.LAYOUT
     override fun type(uiModel: FpmLogOnNotificationUiModel): Int = FpmLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewFpmLogUiModel): Int = ViewFpmLogViewHolder.LAYOUT
@@ -44,6 +46,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewAnalyticsLogUiModel): Int = ViewAnalyticsLogViewHolder.LAYOUT
     override fun type(uiModel: ViewIrisLogUiModel): Int = ViewIrisLogViewHolder.LAYOUT
     override fun type(uiModel: LeakCanaryUiModel): Int = LeakCanaryViewHolder.LAYOUT
+    override fun type(uiModel: StrictModeLeakPublisherUiModel): Int = StrictModeLeakPublisherViewHolder.LAYOUT
     override fun type(uiModel: RemoteConfigEditorUiModel): Int = RemoteConfigEditorViewHolder.LAYOUT
     override fun type(uiModel: RouteManagerUiModel): Int = RouteManagerViewHolder.LAYOUT
     override fun type(uiModel: LoggingToServerUiModel): Int = LoggingToServerViewHolder.LAYOUT
@@ -85,6 +88,8 @@ class DeveloperOptionTypeFactoryImpl(
             ViewTopAdsLogViewHolder.LAYOUT -> ViewTopAdsLogViewHolder(view)
             ApplinkLogOnNotificationViewHolder.LAYOUT -> ApplinkLogOnNotificationViewHolder(view)
             ViewApplinkLogViewHolder.LAYOUT -> ViewApplinkLogViewHolder(view)
+            JourneyLogOnNotificationViewHolder.LAYOUT -> JourneyLogOnNotificationViewHolder(view)
+            ViewJourneyLogViewHolder.LAYOUT -> ViewJourneyLogViewHolder(view)
             FpmLogOnFileViewHolder.LAYOUT -> FpmLogOnFileViewHolder(view)
             FpmLogOnNotificationViewHolder.LAYOUT -> FpmLogOnNotificationViewHolder(view)
             ViewFpmLogViewHolder.LAYOUT -> ViewFpmLogViewHolder(view)
@@ -93,6 +98,7 @@ class DeveloperOptionTypeFactoryImpl(
             ViewAnalyticsLogViewHolder.LAYOUT -> ViewAnalyticsLogViewHolder(view)
             ViewIrisLogViewHolder.LAYOUT -> ViewIrisLogViewHolder(view)
             LeakCanaryViewHolder.LAYOUT -> LeakCanaryViewHolder(view)
+            StrictModeLeakPublisherViewHolder.LAYOUT -> StrictModeLeakPublisherViewHolder(view)
             RemoteConfigEditorViewHolder.LAYOUT -> RemoteConfigEditorViewHolder(view)
             RouteManagerViewHolder.LAYOUT -> RouteManagerViewHolder(view)
             LoggingToServerViewHolder.LAYOUT -> LoggingToServerViewHolder(view)

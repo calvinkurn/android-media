@@ -17,6 +17,7 @@
           android:label="Inactive Phone"
           android:theme="@style/Theme.White"
           android:screenOrientation="portrait"
+            android:exported="false"
           android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
           <intent-filter>
             <action android:name="com.tokopedia.internal.VIEW" />

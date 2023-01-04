@@ -41,7 +41,7 @@ import com.tokopedia.media.editor.R as editorR
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
-class EditorDetailViewModelTest  {
+class EditorDetailViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
@@ -166,16 +166,42 @@ class EditorDetailViewModelTest  {
     }
 
     @Test
-    fun `set editor watermark thumbnail should get thumbnail bitmap`() {
+    fun `set editor watermark thumbnail without asset init should get thumbnail bitmap`() {
+        // Given
+        val shopName = "Watermark"
+        val bitmap = ShadowBitmapFactory.create(shopName, BitmapFactory.Options())
+
+        // When
+        every { watermarkFilterRepository.isAssetInitialize() } returns true
+        every { watermarkFilterRepository.watermarkDrawerItem(any(), any()) } returns Pair(
+            bitmap,
+            bitmap
+        )
+        every { userSession.shopName } returns shopName
+
+        viewModel.setWatermarkFilterThumbnail(
+            bitmap
+        )
+
+        // Then
+        verify { watermarkFilterRepository.watermarkDrawerItem(any(), any()) }
+    }
+
+    @Test
+    fun `set editor watermark thumbnail with asset init should get thumbnail bitmap`() {
         // Given
         val shopName = "Watermark"
         val bitmap = ShadowBitmapFactory.create(shopName, BitmapFactory.Options())
         val drawable = ShadowDrawable.createFromResourceId(editorR.drawable.watermark_tokopedia)
 
         // When
+
         every { watermarkFilterRepository.isAssetInitialize() } returns false
-        every { watermarkFilterRepository.watermarkDrawerItem(any(), any()) } returns Pair(bitmap, bitmap)
         every { watermarkFilterRepository.setAsset(any(), any(), any()) } just Runs
+        every { watermarkFilterRepository.watermarkDrawerItem(any(), any()) } returns Pair(
+            bitmap,
+            bitmap
+        )
         every { userSession.shopName } returns shopName
         every { resourceProvider.getWatermarkLogoDrawable() } returns drawable
         every { resourceProvider.getWatermarkTextColor() } returns Pair(0, 0)
@@ -228,7 +254,10 @@ class EditorDetailViewModelTest  {
         )
 
         // Then
-        assertEquals(editorParam.editorToolsList.size, viewModel.editorParam.value?.editorToolsList?.size)
+        assertEquals(
+            editorParam.editorToolsList().size,
+            viewModel.editorParam.value?.editorToolsList()?.size
+        )
     }
 
     @Test
@@ -293,8 +322,8 @@ class EditorDetailViewModelTest  {
         val rotateNumber = 1
         val propertyName = "rotateNumber"
 
-            // When
-        every { rotateFilterRepository setProperty propertyName value less(10)} just Runs
+        // When
+        every { rotateFilterRepository setProperty propertyName value less(10) } just Runs
         every { rotateFilterRepository getProperty propertyName } returns rotateNumber
 
         viewModel.rotateNumber = rotateNumber
@@ -312,7 +341,7 @@ class EditorDetailViewModelTest  {
         val propertyName = "sliderValue"
 
         // When
-        every { rotateFilterRepository setProperty propertyName value less(10f)} just Runs
+        every { rotateFilterRepository setProperty propertyName value less(10f) } just Runs
         every { rotateFilterRepository getProperty propertyName } returns rotateSliderValue
 
         viewModel.rotateSliderValue = rotateSliderValue
@@ -330,7 +359,7 @@ class EditorDetailViewModelTest  {
         val propertyName = "initialScale"
 
         // When
-        every { rotateFilterRepository setProperty propertyName value less(10f)} just Runs
+        every { rotateFilterRepository setProperty propertyName value less(10f) } just Runs
         every { rotateFilterRepository getProperty propertyName } returns rotateInitialScale
 
         viewModel.rotateInitialScale = rotateInitialScale
@@ -348,7 +377,7 @@ class EditorDetailViewModelTest  {
         val propertyName = "previousDegree"
 
         // When
-        every { rotateFilterRepository setProperty propertyName value less(10f)} just Runs
+        every { rotateFilterRepository setProperty propertyName value less(10f) } just Runs
         every { rotateFilterRepository getProperty propertyName } returns rotatePreviousDegree
 
         viewModel.rotatePreviousDegree = rotatePreviousDegree

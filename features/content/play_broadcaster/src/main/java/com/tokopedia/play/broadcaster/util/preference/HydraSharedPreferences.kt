@@ -50,6 +50,36 @@ class HydraSharedPreferences @Inject constructor(
                 ).apply()
     }
 
+    fun isFirstSwitchAccount(): Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.userId),
+            true
+        )
+    }
+
+    fun setNotFirstSwitchAccount() {
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.userId),
+                false
+            ).apply()
+    }
+
+    fun setLastSelectedAccount(selectedAccount: String) {
+        mSharedPrefs.edit()
+            .putString(
+                String.format(KEY_LAST_SELECTED_ACCOUNT, userSession.userId),
+                selectedAccount
+            ).apply()
+    }
+
+    fun getLastSelectedAccount(): String {
+        return mSharedPrefs.getString(
+            String.format(KEY_LAST_SELECTED_ACCOUNT, userSession.userId),
+            ""
+        ) ?: ""
+    }
+
     fun isFirstInteractive(): Boolean {
         return mSharedPrefs.getBoolean(
                 String.format(KEY_FIRST_INTERACTIVE, userSession.shopId),
@@ -104,5 +134,7 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_PERMISSION = "permission_%s"
         private const val KEY_FIRST_SELECT_QUIZ_OPTION = "first_select_quiz_option_%s"
         private const val KEY_FIRST_GAME_RESULT = "first_game_result_%s"
+        private const val KEY_FIRST_SWITCH_ACCOUNT = "first_switch_account_%s"
+        private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s"
     }
 }

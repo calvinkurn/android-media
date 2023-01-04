@@ -4,9 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.mapper.toModel
+import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaRepository
 import com.tokopedia.media.picker.ui.observer.*
+import com.tokopedia.media.update
 import com.tokopedia.media.util.awaitItem
 import com.tokopedia.media.util.collectIntoChannel
 import com.tokopedia.picker.common.PickerParam
@@ -15,13 +17,11 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -37,6 +37,7 @@ class PickerViewModelTest {
     )
 
     private val deviceInfoRepository = mockk<DeviceInfoRepository>()
+    private val bitmapConverterRepository = mockk<BitmapConverterRepository>()
     private val mediaRepository = mockk<MediaRepository>()
     private val paramCacheManager = mockk<ParamCacheManager>()
 
@@ -45,15 +46,20 @@ class PickerViewModelTest {
     @Before
     fun setup() {
         mockkStatic(::mediaToUiModel)
-
         every { mediaToUiModel(any()) } returns mediaUiModelList
 
         viewModel = PickerViewModel(
             deviceInfoRepository,
             mediaRepository,
+            bitmapConverterRepository,
             paramCacheManager,
             coroutineScopeRule.dispatchers
         )
+    }
+
+    @After
+    fun tearDown() {
+        testCoroutineScope.cleanupTestCoroutines()
     }
 
     @Test
@@ -84,6 +90,48 @@ class PickerViewModelTest {
         // Then
         assert(result is EventPickerState.SelectionChanged)
         EventFlowFactory.reset()
+    }
+
+    @Test
+    fun `ui event should be not invoked the SelectionChanged when includeMedias is does not exist`() = coroutineScopeRule.runBlockingTest {
+        // When
+        every {
+            paramCacheManager.get().includeMedias()
+        } returns emptyList()
+
+        // Then
+        viewModel.preSelectedMedias()
+
+        coVerify {
+            bitmapConverterRepository.convert(any())!! wasNot Called
+        }
+    }
+
+    @Test
+    fun `ui event should be invoked the SelectionChanged when includeMedias is exist`() = coroutineScopeRule.runBlockingTest {
+        // Given
+        val mockImageUrl = "https://isfa.com/sample.png"
+        val mockConvertedPath = "/DCIM/Camera/sample.png"
+
+        val includeMedias = listOf(
+            mockImageUrl,
+            "/DCIM/AnotherSample/download.jpeg"
+        )
+
+        val expectedValue = includeMedias
+            .update(0, mockConvertedPath)
+
+        // When
+        every { paramCacheManager.get().includeMedias() } returns includeMedias
+        coEvery { bitmapConverterRepository.convert(mockImageUrl) } returns mockConvertedPath
+
+        // Then
+        viewModel.preSelectedMedias()
+
+        assertEquals(
+            expectedValue,
+            viewModel.includeMedias.value
+        )
     }
 
     @Test

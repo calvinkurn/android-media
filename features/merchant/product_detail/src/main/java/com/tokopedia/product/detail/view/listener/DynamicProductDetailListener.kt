@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.listener
 
 import android.util.SparseIntArray
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
@@ -24,6 +25,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.ImageUnify
 
 interface DynamicProductDetailListener {
     fun refreshPage()
@@ -83,7 +85,6 @@ interface DynamicProductDetailListener {
     fun goToEducational(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
 
     /**
      * BestSellerViewHolder
@@ -94,6 +95,12 @@ interface DynamicProductDetailListener {
      * OneLinerViewHolder
      */
     fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
+    fun onClickInformationIconAtStockAssurance(
+        componentTrackDataModel: ComponentTrackDataModel,
+        appLink: String,
+        label: String
+    )
+    fun showOneLinersImsCoachMark(view: ImageUnify?)
 
     /**
      * ProductDiscussionViewHolder
@@ -165,6 +172,14 @@ interface DynamicProductDetailListener {
     fun onShopCredibilityImpressed(
         countLocation: String,
         componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    /**
+     * [ProductShopAdditionalViewHolder]
+     */
+    fun onLearnButtonShopAdditionalClicked(
+        componentTrackDataModel: ComponentTrackDataModel,
+        eventLabel: String
     )
 
     /**
@@ -284,9 +299,12 @@ interface DynamicProductDetailListener {
      * ProductTickerViewHolder
      */
     fun onTickerShopClicked(
-        tickerTitle: String, tickerType: Int,
+        tickerTitle: String,
+        tickerType: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
-        tickerDescription: String, applink: String, actionType: String,
+        tickerDescription: String,
+        applink: String,
+        actionType: String,
         tickerActionBs: TickerActionBs?
     )
 
@@ -352,6 +370,13 @@ interface DynamicProductDetailListener {
     )
 
     /**
+     * ProductArViewHolder
+     */
+    fun showArCoachMark(view:ConstraintLayout?)
+    fun hideArCoachMark()
+    fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
      * ProductCategoryCarouselViewHolder
      */
     fun onCategoryCarouselImageClicked(
@@ -376,6 +401,12 @@ interface DynamicProductDetailListener {
     )
 
     fun onClickCheckBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onClickActionButtonBundling(
         bundleId: String,
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel

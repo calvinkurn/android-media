@@ -438,7 +438,6 @@ public interface AppEventTracking {
         String CLICK_MY_COUPON = "click kupon saya";
         String CHOOSE_COUPON = "click coupon";
         String CLOSE_COUPON_PAGE = "click close button";
-        String CLICK_TOKO_POINTS_STATUS = "click point & tier status";
         String CLICK_TOKO_POINTS = "click tokopoints";
         String TOKOPOINTS_POP_UP_IMPRESSION = "impression on any pop up";
         String TOKOPOINTS_POP_UP_CLICK = "click any pop up button";

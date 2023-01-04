@@ -1,9 +1,11 @@
 package com.tokopedia.media.preview.ui.activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
 import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
 import com.tokopedia.media.util.test
+import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.getFileFormatByMimeType
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
@@ -23,6 +25,7 @@ class PreviewViewModelTest {
 
     private val saveToGalleryRepository = mockk<SaveToGalleryRepository>()
     private val imageCompressorRepository = mockk<ImageCompressionRepository>()
+    private val paramCache = mockk<ParamCacheManager>()
 
     private lateinit var viewModel: PreviewViewModel
 
@@ -34,10 +37,13 @@ class PreviewViewModelTest {
         // then we can disabled it for all test cases.
         `save to gallery disabled`()
 
+        `param manager get param detail`()
+
         viewModel = PreviewViewModel(
             imageCompressorRepository,
             saveToGalleryRepository,
-            coroutineScopeRule.dispatchers
+            coroutineScopeRule.dispatchers,
+            paramCache
         )
     }
 
@@ -139,6 +145,32 @@ class PreviewViewModelTest {
 
             // Then
             assert(awaitItem().compressedImages.isEmpty())
+        }
+    }
+
+    @Test
+    fun `it should ignore save to gallery on cache file when editor is true`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(true)
+            `image compression is`(true)
+            `param manager get param detail with editor`()
+
+            // When
+            viewModel.files(mediaUiModelList)
+
+            // Then
+            assert(awaitItem().compressedImages.isNotEmpty())
+        }
+    }
+
+    private fun `param manager get param detail`() {
+        every { paramCache.get() } returns PickerParam()
+    }
+
+    private fun `param manager get param detail with editor`() {
+        every { paramCache.get() } returns PickerParam().apply {
+            withEditor {  }
         }
     }
 

@@ -15,8 +15,7 @@ import javax.inject.Inject
  */
 class TitleDataStoreImpl @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
-        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
-        private val userSession: UserSessionInterface,
+        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
 ) : TitleDataStore {
 
     private val _observableTitle: MutableStateFlow<PlayTitleUiModel> = MutableStateFlow(PlayTitleUiModel.NoTitle)
@@ -36,9 +35,9 @@ class TitleDataStoreImpl @Inject constructor(
         _observableTitle.value = PlayTitleUiModel.HasTitle(title)
     }
 
-    override suspend fun uploadTitle(channelId: String, title: String): NetworkResult<Unit> {
+    override suspend fun uploadTitle(authorId: String, channelId: String, title: String): NetworkResult<Unit> {
         return try {
-            uploadTitleToServer(channelId, title)
+            uploadTitleToServer(authorId, channelId, title)
             setTitle(title)
             NetworkResult.Success(Unit)
         } catch (e: Throwable) {
@@ -46,12 +45,12 @@ class TitleDataStoreImpl @Inject constructor(
         }
     }
 
-    private suspend fun uploadTitleToServer(channelId: String, title: String) = withContext(dispatcher.io) {
+    private suspend fun uploadTitleToServer(authorId: String, channelId: String, title: String) = withContext(dispatcher.io) {
         updateChannelUseCase.apply {
             setQueryParams(
                     PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
                             channelId = channelId,
-                            authorId = userSession.shopId,
+                            authorId = authorId,
                             title = title
                     )
             )

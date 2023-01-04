@@ -420,6 +420,7 @@ private fun redirectToAcceptOrderScreen(
     screenNavigation: ScreenNavigation,
     sharedViewModel: SharedViewModel
 ) {
+    screenNavigation.popBackStack()
     orderList?.let {
         sharedViewModel.resetAcceptBulkOrderState()
         screenNavigation.toAcceptOrderScreen(it.map { it.orderId })

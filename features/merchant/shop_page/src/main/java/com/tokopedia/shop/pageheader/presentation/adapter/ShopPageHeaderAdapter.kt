@@ -10,12 +10,12 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHead
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_PLAY
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.SHOP_NAME
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PLAY
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PLAY
 
 class ShopPageHeaderAdapter(
-        typeFactory: ShopPageHeaderAdapterTypeFactory
+    typeFactory: ShopPageHeaderAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ShopPageHeaderAdapterTypeFactory>(typeFactory) {
 
     init {
@@ -41,9 +41,8 @@ class ShopPageHeaderAdapter(
         return getWidgetUiModel(SHOP_PLAY)?.getComponentUiModel<ShopHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY) != null
     }
 
-
     private fun getWidgetUiModel(
-            widgetName: String
+        widgetName: String
     ): ShopHeaderWidgetUiModel? {
         return visitables.filterIsInstance<ShopHeaderWidgetUiModel>().firstOrNull {
             it.name.equals(widgetName, true)
@@ -51,7 +50,7 @@ class ShopPageHeaderAdapter(
     }
 
     private inline fun <reified T : BaseShopHeaderComponentUiModel> ShopHeaderWidgetUiModel.getComponentUiModel(
-            componentName: String
+        componentName: String
     ): T? {
         return this.components.filterIsInstance<T>().firstOrNull {
             it.name.equals(componentName, true)
@@ -66,10 +65,10 @@ class ShopPageHeaderAdapter(
     }
 
     fun setFollowButtonData(
-            label: String? = null,
-            leftDrawableUrl: String? = null,
-            isFollowing: Boolean? = null,
-            isNeverFollow: Boolean? = null
+        label: String? = null,
+        leftDrawableUrl: String? = null,
+        isFollowing: Boolean? = null,
+        isNeverFollow: Boolean? = null
     ) {
         getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW)?.apply {
             label?.let {
@@ -115,5 +114,4 @@ class ShopPageHeaderAdapter(
             }
         }
     }
-
 }

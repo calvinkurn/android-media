@@ -27,7 +27,8 @@ object ProductMapper {
         productList: List<Product>?,
         access: ProductManageAccess?,
         multiSelectActive: Boolean,
-        maxStock: Int?
+        maxStock: Int?,
+        isShopModerate: Boolean
     ): List<ProductUiModel> {
         return productList?.map {
             val minPrice = it.price?.min
@@ -40,12 +41,12 @@ object ProductMapper {
                 title = it.name,
                 imageUrl = picture?.urlThumbnail,
                 minPrice = PriceUiModel(
-                        price = minPrice.toString(),
-                        priceFormatted = minPrice?.getCurrencyFormatted()
+                    price = minPrice.toString(),
+                    priceFormatted = minPrice?.getCurrencyFormatted()
                 ),
                 maxPrice = PriceUiModel(
-                        price = maxPrice.toString(),
-                        priceFormatted = maxPrice?.getCurrencyFormatted()
+                    price = maxPrice.toString(),
+                    priceFormatted = maxPrice?.getCurrencyFormatted()
                 ),
                 status = mapProductStatus(it),
                 stock = it.stock,
@@ -65,7 +66,13 @@ object ProductMapper {
                 hasStockAlert = it.hasStockAlert,
                 stockAlertActive = it.stockAlertActive,
                 stockAlertCount = it.stockAlertCount,
-                maxStock = maxStock
+                maxStock = maxStock,
+                isShopModerate = isShopModerate,
+                haveNotifyMeOOS = it.haveNotifyMeOOS,
+                notifyMeOOSCount = it.notifyMeOOSCount,
+                notifyMeOOSWording = it.notifyMeOOSWording,
+                isEmptyStock = it.isEmptyStock,
+                isStockGuaranteed = it.manageProductData.isStockGuaranteed
             )
         } ?: emptyList()
     }
@@ -93,22 +100,22 @@ object ProductMapper {
         val inActiveFilterCount = inActiveProductFilter?.value.toIntOrZero()
         val violationFilterCount = violationProductFilter?.value.toIntOrZero()
 
-        if(activeFilterCount > 0) {
+        if (activeFilterCount > 0) {
             val activeFilter = Active(activeFilterCount)
             productFilters.add(activeFilter)
         }
 
-        if(inActiveFilterCount > 0) {
+        if (inActiveFilterCount > 0) {
             val inActiveFilter = InActive(inActiveFilterCount)
             productFilters.add(inActiveFilter)
         }
 
-        if(violationFilterCount > 0) {
+        if (violationFilterCount > 0) {
             val violationFilter = Violation(violationFilterCount)
             productFilters.add(violationFilter)
         }
 
-        return if(this?.value == null) {
+        return if (this?.value == null) {
             ShowFilterTab(productFilters)
         } else {
             UpdateFilterTab(productFilters)

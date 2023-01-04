@@ -5,14 +5,14 @@
     android:id="@+id/containerPmOption"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/layout_lvl1"
+    android:padding="8dp"
     tools:background="@drawable/bg_pm_white_bordered_green">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmOptionLabel"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginEnd="4dp"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toStartOf="@+id/icPmOptionCheck"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,9 +23,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmOptionName"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,9 +36,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmOptionDescription"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPmOptionName"
@@ -47,8 +47,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icPmOptionCheck"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_G500"
         app:icon_name="CHECK_CIRCLE"

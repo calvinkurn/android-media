@@ -20,7 +20,6 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_T
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
-
 class FollowerFollowingListingFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
 ) : TkpdBaseV4Fragment() {
@@ -34,7 +33,7 @@ class FollowerFollowingListingFragment @Inject constructor(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.up_fragment_follower_following_listing, container, false)
     }
@@ -53,9 +52,9 @@ class FollowerFollowingListingFragment @Inject constructor(
             tabLayout.setTabTextColors(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600,
                 ),
-                MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G500),
             )
         }
 
@@ -69,22 +68,20 @@ class FollowerFollowingListingFragment @Inject constructor(
         tabLayout?.addNewTab(
             arguments?.getString(
                 EXTRA_TOTAL_FOLLOWERS,
-                getString(com.tokopedia.people.R.string.up_lb_followers)
-            )
-                    + " " +
-                    getString(com.tokopedia.people.R.string.up_lb_followers)
+                getString(com.tokopedia.people.R.string.up_lb_followers),
+            ) +
+                " " +
+                getString(com.tokopedia.people.R.string.up_lb_followers),
         )
         tabLayout?.addNewTab(
-            arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following))
-                    + " " +
-                    getString(R.string.up_lb_following)
+            arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following)) +
+                " " +
+                getString(R.string.up_lb_following),
         )
 
-
-
-        if(tabLayout != null
-            && tabLayout?.getUnifyTabLayout() != null
-            && tabLayout?.getUnifyTabLayout()?.tabCount!! >= 2
+        if (tabLayout != null &&
+            tabLayout?.getUnifyTabLayout() != null &&
+            tabLayout?.getUnifyTabLayout()?.tabCount!! >= 2
         ) {
             if (isFollowersTab) {
                 tabLayout?.getUnifyTabLayout()?.getTabAt(0)?.select()
@@ -109,9 +106,9 @@ class FollowerFollowingListingFragment @Inject constructor(
                 it,
                 arguments?.getString(
                     EXTRA_TOTAL_FOLLOWERS,
-                    getString(com.tokopedia.people.R.string.up_lb_followers)
-                )
-                        + " " + getString(com.tokopedia.people.R.string.up_lb_followers)
+                    getString(com.tokopedia.people.R.string.up_lb_followers),
+                ) +
+                    " " + getString(com.tokopedia.people.R.string.up_lb_followers),
             )
         }
 
@@ -124,46 +121,44 @@ class FollowerFollowingListingFragment @Inject constructor(
         }?.let {
             adapter?.addFragment(
                 it,
-                arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following))
-                        + " " + getString(R.string.up_lb_following)
+                arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following)) +
+                    " " + getString(R.string.up_lb_following),
             )
         }
 
         // setting adapter to view pager.
         viewPager?.adapter = adapter
 
-        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-                if(position == 1) {
-                    userProfileTracker.openFollowingTab(
-                        userId
-                    )
+        viewPager?.addOnPageChangeListener(
+            object : ViewPager.OnPageChangeListener {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int,
+                ) {
                 }
-                else{
-                    userProfileTracker.openFollowersTab(
-                        userId
-                    )
+
+                override fun onPageSelected(position: Int) {
+                    if (position == 1) {
+                        userProfileTracker.openFollowingTab(
+                            userId,
+                        )
+                    } else {
+                        userProfileTracker.openFollowersTab(
+                            userId,
+                        )
+                    }
                 }
-            }
 
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-        })
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+            },
+        )
     }
 
     private fun setHeader() {
         val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
         header?.apply {
-
             title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
             userId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).toString()
             subheaderView?.gone()
@@ -171,7 +166,6 @@ class FollowerFollowingListingFragment @Inject constructor(
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
-
         }
     }
 
@@ -189,11 +183,10 @@ class FollowerFollowingListingFragment @Inject constructor(
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerFollowingListingFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                FollowerFollowingListingFragment::class.java.name
+                FollowerFollowingListingFragment::class.java.name,
             ).apply {
                 arguments = bundle
             } as FollowerFollowingListingFragment
         }
     }
 }
-

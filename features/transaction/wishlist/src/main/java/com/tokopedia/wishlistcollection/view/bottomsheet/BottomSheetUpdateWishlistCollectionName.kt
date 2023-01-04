@@ -30,12 +30,12 @@ import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionNameParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.*
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetUpdateWishlistCollectionNameViewModel
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_ID
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_NAME
 import javax.inject.Inject
 
 class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<WishlistCollectionComponent> {

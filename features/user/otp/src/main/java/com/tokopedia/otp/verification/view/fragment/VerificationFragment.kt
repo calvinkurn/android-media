@@ -111,7 +111,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     override val viewBound = VerificationViewBinding()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
 
 
     override fun getScreenName() = when (otpData.otpType) {
@@ -267,7 +267,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     mode = modeListData.modeText,
                     userIdEnc = otpData.userIdEnc,
                     validateToken = otpData.accessToken,
-                    userId = otpData.userId.toIntOrZero()
+                    userId = otpData.userId.toIntOrZero(),
+                    msisdn = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN).orEmpty()
             )
         } else {
             viewModel.otpValidate(

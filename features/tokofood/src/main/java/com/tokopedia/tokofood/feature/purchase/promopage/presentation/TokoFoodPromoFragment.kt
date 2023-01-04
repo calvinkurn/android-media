@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.feature.purchase.promopage.presentation
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.activity.BaseToolbarActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -41,11 +37,9 @@ import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListT
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
@@ -69,6 +63,14 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     private var toolbar: TokoFoodPromoToolbar? = null
 
+    private val source by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getString(SOURCE_KEY).orEmpty()
+    }
+
+    private val merchantId by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getString(MERCHANT_ID_KEY).orEmpty()
+    }
+
     companion object {
         const val RV_DIRECTION_UP = -1
 
@@ -77,8 +79,19 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
         private const val PAGE_NAME = "promo_page"
 
-        fun createInstance(): TokoFoodPromoFragment {
-            return TokoFoodPromoFragment()
+        private const val SOURCE_KEY = "source_key"
+        private const val MERCHANT_ID_KEY = "merchant_id_key"
+
+        fun createInstance(source: String,
+                           merchantId: String? = null): TokoFoodPromoFragment {
+            return TokoFoodPromoFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SOURCE_KEY, source)
+                    merchantId?.let {
+                        putString(MERCHANT_ID_KEY, it)
+                    }
+                }
+            }
         }
     }
 
@@ -153,7 +166,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         viewBinding?.recyclerViewPurchasePromo?.show()
         adapter.clearAllElements()
         showLoading()
-        viewModel.loadData()
+        viewModel.loadData(source, merchantId)
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -169,7 +182,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     override fun onBackPressed() {
-        (activity as BaseTokofoodActivity).onBackPressed()
+        (activity as? BaseTokofoodActivity)?.onBackPressed()
     }
 
     private fun initializeToolbar() {
@@ -275,14 +288,19 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     private fun renderTotalAmount(fragmentUiModel: TokoFoodPromoFragmentUiModel) {
-        viewBinding?.let {
-            it.totalAmountPurchasePromo.amountCtaView.isEnabled = true
-            it.totalAmountPurchasePromo.setCtaText(
-                context?.getString(com.tokopedia.tokofood.R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
-            it.totalAmountPurchasePromo.setLabelTitle(fragmentUiModel.promoTitle)
-            it.totalAmountPurchasePromo.setAmount(fragmentUiModel.promoAmountStr)
-            it.totalAmountPurchasePromo.amountCtaView.setOnClickListener {
-                (activity as BaseTokofoodActivity).onBackPressed()
+        viewBinding?.totalAmountPurchasePromo?.run {
+            if (fragmentUiModel.promoTitle.isBlank()) {
+                gone()
+            } else {
+                show()
+                amountCtaView.isEnabled = true
+                setCtaText(
+                    context?.getString(com.tokopedia.tokofood.R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
+                setLabelTitle(fragmentUiModel.promoTitle)
+                setAmount(fragmentUiModel.promoAmountStr)
+                amountCtaView.setOnClickListener {
+                    (activity as? BaseTokofoodActivity)?.onBackPressed()
+                }
             }
         }
     }

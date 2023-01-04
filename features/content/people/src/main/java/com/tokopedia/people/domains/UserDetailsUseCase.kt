@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @GqlQuery(UserDetailsUseCase.QUERY_NAME, UserDetailsUseCase.QUERY)
 class UserDetailsUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<ProfileHeaderBase>(graphqlRepository) {
 
     init {
@@ -21,7 +21,7 @@ class UserDetailsUseCase @Inject constructor(
 
     suspend fun executeOnBackground(username: String): ProfileHeaderBase {
         val request = mapOf(
-            KEY_USERNAME to username
+            KEY_USERNAME to username,
         )
         setRequestParams(request)
 

@@ -25,10 +25,14 @@ class DigitalAtcErrorException(message: String?) : IOException(message) {
     }
 
     private fun parseError():List<ErrorAtc>{
-        return if (!errorBody.isNullOrEmpty()){
-            val json = Gson().fromJson(errorBody, Errors::class.java)
-            json.errors
-        }else{
+        return try {
+            if (!errorBody.isNullOrEmpty()) {
+                val json = Gson().fromJson(errorBody, Errors::class.java)
+                json.errors
+            } else {
+                emptyList()
+            }
+        } catch (exception: Exception) {
             emptyList()
         }
     }

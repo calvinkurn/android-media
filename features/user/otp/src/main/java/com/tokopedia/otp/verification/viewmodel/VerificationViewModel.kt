@@ -13,8 +13,8 @@ import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
-import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.GetVerificationMethodPhoneRegisterMandatoryParam
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpRequestPhoneRegisterMandatoryParam
 import com.tokopedia.otp.verification.domain.pojo.OtpValidatePhoneRegisterMandatoryParam
 import com.tokopedia.otp.verification.domain.usecase.*
@@ -341,7 +341,7 @@ open class VerificationViewModel @Inject constructor(
             )
 
             if (mode == OtpConstant.OtpMode.PIN &&
-                isNeedHash(id = userId.toString(), type = SessionConstants.CheckPinType.USER_ID.value)) {
+                isNeedHash(createCheckPinV2Param(userId.toString(), msisdn, ""))) {
                 val keyData = getPublicKey()
                 val encryptedPin = RsaUtils.encryptWithSalt(
                     code,
@@ -403,9 +403,7 @@ open class VerificationViewModel @Inject constructor(
                 timeUnix,
                 userId
             )
-            val id = msisdn.ifEmpty { email }
-            val type = if (msisdn.isNotEmpty()) SessionConstants.CheckPinType.PHONE.value else SessionConstants.CheckPinType.EMAIL.value
-            if (mode == OtpConstant.OtpMode.PIN && isNeedHash(id, type)) {
+            if (mode == OtpConstant.OtpMode.PIN && isNeedHash(createCheckPinV2Param(userId.toString(), msisdn, email))) {
                 val keyData = getPublicKey()
                 val encryptedPin = RsaUtils.encryptWithSalt(
                     code,
@@ -455,8 +453,23 @@ open class VerificationViewModel @Inject constructor(
         return newMap
     }
 
-    suspend fun isNeedHash(id: String, type: String): Boolean {
-        val param = PinStatusParam(id = id, type = type)
+    fun createCheckPinV2Param(userId: String, msisdn: String, email: String): PinStatusParam {
+        var id = ""
+        var type = ""
+        if(userId.isNotEmpty() && userId != "0") {
+            id = userId
+            type = SessionConstants.CheckPinType.USER_ID.value
+        } else if(msisdn.isNotEmpty()) {
+            id = msisdn
+            type = SessionConstants.CheckPinType.PHONE.value
+        } else if(email.isNotEmpty()) {
+            id = email
+            type = SessionConstants.CheckPinType.EMAIL.value
+        }
+        return PinStatusParam(id = id, type = type)
+    }
+
+    suspend fun isNeedHash(param: PinStatusParam): Boolean {
         return checkPinHashV2UseCase(param).data.isNeedHash
     }
 

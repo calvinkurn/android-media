@@ -38,8 +38,22 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            checkoutOccUseCase.executeSuspend(any())
+        } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -50,8 +64,26 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Then
         assertEquals(true, isOnSuccessCalled)
         assertEquals(OccGlobalEvent.Loading, orderSummaryPageViewModel.globalEvent.value)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
-        verify(inverse = true) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
+        verify(inverse = true) {
+            orderSummaryAnalytics.eventPPClickBayar(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -63,9 +95,22 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val transactionId = "123"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id=$transactionId&success=1"))))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl",
+                        form = "transaction_id=$transactionId&success=1"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -75,7 +120,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                transactionId,
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -83,14 +137,32 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val paymentType = "paymentType"
-        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(payment = OrderProfilePayment(gatewayName = paymentType, gatewayCode = "payment"))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
+            payment = OrderProfilePayment(
+                gatewayName = paymentType,
+                gatewayCode = "payment"
+            )
+        )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val transactionId = "123"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id=$transactionId&success=1"))))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl",
+                        form = "transaction_id=$transactionId&success=1"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -100,7 +172,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, paymentType, "", any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                transactionId,
+                paymentType,
+                "",
+                any()
+            )
+        }
     }
 
     @Test
@@ -112,9 +193,22 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val transactionId = "123"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id=$transactionId&success=1"))))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl",
+                        form = "transaction_id=$transactionId&success=1"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -124,7 +218,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE, any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                transactionId,
+                OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE,
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -136,9 +239,22 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val transactionId = "123"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id=$transactionId"))))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl",
+                        form = "transaction_id=$transactionId"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -148,7 +264,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                transactionId,
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -160,8 +285,21 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id="))))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl",
+                        form = "transaction_id="
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -171,7 +309,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), "", any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                "",
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -183,8 +330,21 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id_error=1"))))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl",
+                        form = "transaction_id_error=1"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -194,7 +354,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), "", any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                "",
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -203,20 +372,40 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val paymentType = "paymentType"
         val selectedTenure = 2
-        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(payment = OrderProfilePayment(gatewayName = paymentType, gatewayCode = "payment"))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
+            payment = OrderProfilePayment(
+                gatewayName = paymentType,
+                gatewayCode = "payment"
+            )
+        )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-                walletData = OrderPaymentWalletAdditionalData(walletType = WALLET_TYPE_GOPAYLATERCICIL,
-                        goCicilData = OrderPaymentGoCicilData(
-                                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = selectedTenure)
-                        ))
+            walletData = OrderPaymentWalletAdditionalData(
+                walletType = WALLET_TYPE_GOPAYLATERCICIL,
+                goCicilData = OrderPaymentGoCicilData(
+                    selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = selectedTenure)
+                )
+            )
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val transactionId = "123"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id=$transactionId&success=1"))))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl",
+                        form = "transaction_id=$transactionId&success=1"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -226,7 +415,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, paymentType, selectedTenure.toString(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                transactionId,
+                paymentType,
+                selectedTenure.toString(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -236,19 +434,37 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         val paymentType = "paymentType"
         val selectedTenure = 3
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
-                payment = OrderProfilePayment(metadata = """{"express_checkout_param":{"installment_term":"3"}}""", gatewayName = paymentType, gatewayCode = "payment"))
+            payment = OrderProfilePayment(
+                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                gatewayName = paymentType,
+                gatewayCode = "payment"
+            )
+        )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
-                creditCard = OrderPaymentCreditCard(
-                        selectedTerm = OrderPaymentInstallmentTerm(term = selectedTenure)
-                )
+            creditCard = OrderPaymentCreditCard(
+                selectedTerm = OrderPaymentInstallmentTerm(term = selectedTenure)
+            )
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val transactionId = "123"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id=$transactionId&success=1"))))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl",
+                        form = "transaction_id=$transactionId&success=1"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -258,7 +474,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), transactionId, paymentType, selectedTenure.toString(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                transactionId,
+                paymentType,
+                selectedTenure.toString(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -266,12 +491,27 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(insurance = OrderInsurance(isCheckInsurance = true))
+        orderSummaryPageViewModel.orderShipment.value =
+            helper.orderShipment.copy(insurance = OrderInsurance(isCheckInsurance = true))
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(match { it.carts.data.first().shopProducts.first().finsurance == 1 }) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            checkoutOccUseCase.executeSuspend(match { it.carts.data.first().shopProducts.first().finsurance == 1 })
+        } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -281,22 +521,44 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
     fun `Checkout Success Mode 0`() {
         // Given
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL, buttonType = OccButtonType.PAY)
+        orderSummaryPageViewModel.orderTotal.value =
+            OrderTotal(buttonState = OccButtonState.NORMAL, buttonType = OccButtonType.PAY)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         coEvery {
             checkoutOccUseCase.executeSuspend(match { it.carts.mode == 0 })
-        } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -306,22 +568,46 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
     fun `Checkout Success Mode 1`() {
         // Given
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL, buttonType = OccButtonType.CHOOSE_PAYMENT)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(
+            buttonState = OccButtonState.NORMAL,
+            buttonType = OccButtonType.CHOOSE_PAYMENT
+        )
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         coEvery {
             checkoutOccUseCase.executeSuspend(match { it.carts.mode == 1 })
-        } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -331,7 +617,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -342,18 +637,48 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
+        orderSummaryPageViewModel.lastValidateUsePromoRequest =
+            ValidateUsePromoRequest(mutableListOf("promo"))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        val promoUiModel = PromoUiModel(codes = listOf("promo"), messageUiModel = MessageUiModel(state = "green"),
-                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(code = "promo", type = "type", messageUiModel = MessageUiModel(state = "green"))))
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200", promoUiModel = promoUiModel)
+        val promoUiModel = PromoUiModel(
+            codes = listOf("promo"), messageUiModel = MessageUiModel(state = "green"),
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    code = "promo",
+                    type = "type",
+                    messageUiModel = MessageUiModel(state = "green")
+                )
+            )
+        )
         coEvery {
-            checkoutOccUseCase.executeSuspend(match {
-                val globalCode = it.carts.promos.first()
-                val voucherCode = it.carts.data.first().shopProducts.first().promos.first()
-                globalCode.code == "promo" && globalCode.type == "global" && voucherCode.code == "promo" && voucherCode.type == "type"
-            })
-        } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = promoUiModel
+        )
+        coEvery {
+            checkoutOccUseCase.executeSuspend(
+                match {
+                    val globalCode = it.carts.promos.first()
+                    val voucherCode = it.carts.data.first().shopProducts.first().promos.first()
+                    globalCode.code == "promo" &&
+                        globalCode.type == "global" &&
+                        voucherCode.code == "promo" &&
+                        voucherCode.type == "type"
+                }
+            )
+        } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -363,7 +688,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -375,28 +709,35 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
     fun `Checkout On Invalid Preference State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(payment = OrderProfilePayment())
+        orderSummaryPageViewModel.orderProfile.value =
+            helper.preference.copy(payment = OrderProfilePayment())
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -409,11 +750,14 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -422,34 +766,45 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         var preference = helper.preference
-        preference = preference.copy(payment = preference.payment.copy(metadata = """
+        preference = preference.copy(
+            payment = preference.payment.copy(
+                metadata = """
             {
                 "express_checkout_param" : {}
             }
-        """.trimIndent()))
+                """.trimIndent()
+            )
+        )
         orderSummaryPageViewModel.orderProfile.value = preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(selectedTerm = OrderPaymentInstallmentTerm()))
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            creditCard = OrderPaymentCreditCard(selectedTerm = OrderPaymentInstallmentTerm())
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
     fun `Checkout On Invalid Button State`() {
         // Given
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.LOADING)
+        orderSummaryPageViewModel.orderTotal.value =
+            OrderTotal(buttonState = OccButtonState.LOADING)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.LOADING)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
@@ -459,13 +814,14 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Checkout On Disable Button State`() {
         // Given
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.DISABLE)
+        orderSummaryPageViewModel.orderTotal.value =
+            OrderTotal(buttonState = OccButtonState.DISABLE)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.DISABLE)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
@@ -482,7 +838,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
@@ -498,13 +854,18 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val prompt = OccPrompt(OccPrompt.TYPE_DIALOG)
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, prompt = prompt))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(success = 0, prompt = prompt)
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
@@ -520,17 +881,28 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val errorMessage = "checkout error"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData(message = errorMessage)))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 0,
+                error = CheckoutOccErrorData(message = errorMessage)
+            )
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -546,11 +918,14 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(throwable = exception), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.TriggerRefresh(throwable = exception),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -562,15 +937,23 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         val errorMessage = "cart error"
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws MessageErrorException(errorMessage)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws MessageErrorException(
+            errorMessage
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage, shouldTriggerAnalytics = true), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.TriggerRefresh(
+                errorMessage = errorMessage,
+                shouldTriggerAnalytics = true
+            ),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -582,16 +965,33 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData(ERROR_CODE_PRICE_CHANGE)))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 0,
+                error = CheckoutOccErrorData(ERROR_CODE_PRICE_CHANGE)
+            )
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.PriceChangeError(PriceChangeMessage(PRICE_CHANGE_ERROR_MESSAGE, "", PRICE_CHANGE_ACTION_MESSAGE)), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.PriceChangeError(
+                PriceChangeMessage(
+                    PRICE_CHANGE_ERROR_MESSAGE,
+                    "",
+                    PRICE_CHANGE_ACTION_MESSAGE
+                )
+            ),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -603,17 +1003,28 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val errorMessage = "unknown error"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData("000", message = errorMessage)))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 0,
+                error = CheckoutOccErrorData("000", message = errorMessage)
+            )
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -625,16 +1036,24 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData("000")))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData("000"))
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode 000"), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode 000"),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -646,17 +1065,25 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val responseMessage = "error"
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = "", headerMessage = responseMessage)
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = "",
+            headerMessage = responseMessage
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.TriggerRefresh(errorMessage = responseMessage),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -668,16 +1095,21 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = "")
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = DEFAULT_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.TriggerRefresh(errorMessage = DEFAULT_ERROR_MESSAGE),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -689,13 +1121,15 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
         val response = Throwable()
         coEvery { checkoutOccUseCase.executeSuspend(any()) } throws response
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
@@ -707,29 +1141,57 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
-                payment = OrderProfilePayment(metadata = """{"express_checkout_param":{"installment_term":"3"}}""", gatewayCode = "payment"))
+            payment = OrderProfilePayment(
+                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                gatewayCode = "payment"
+            )
+        )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
-                creditCard = OrderPaymentCreditCard(
-                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
-                        availableTerms = listOf(
-                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, isEnable = true),
-                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isEnable = false)
-                        ),
-                        selectedTerm = OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isEnable = false)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            creditCard = OrderPaymentCreditCard(
+                numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+                availableTerms = listOf(
+                    OrderPaymentInstallmentTerm(
+                        term = 0,
+                        mdr = 1.5f,
+                        mdrSubsidize = 0.5f,
+                        minAmount = 100,
+                        isEnable = true
+                    ),
+                    OrderPaymentInstallmentTerm(
+                        term = 3,
+                        mdr = 1.5f,
+                        mdrSubsidize = 0.5f,
+                        minAmount = 100000,
+                        isSelected = true,
+                        isEnable = false
+                    )
+                ),
+                selectedTerm = OrderPaymentInstallmentTerm(
+                    term = 3,
+                    mdr = 1.5f,
+                    mdrSubsidize = 0.5f,
+                    minAmount = 100000,
+                    isSelected = true,
+                    isEnable = false
                 )
+            )
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
         orderSummaryPageViewModel.finalUpdate({
-            //do nothing
+            // do nothing
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.INSTALLMENT_INVALID_MIN_AMOUNT), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(
+            OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.INSTALLMENT_INVALID_MIN_AMOUNT),
+            orderSummaryPageViewModel.globalEvent.value
+        )
     }
 
     @Test
@@ -737,23 +1199,60 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
-                payment = OrderProfilePayment(metadata = """{"express_checkout_param":{"installment_term":"3"}}""", gatewayCode = "payment"))
+            payment = OrderProfilePayment(
+                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                gatewayCode = "payment"
+            )
+        )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
-                creditCard = OrderPaymentCreditCard(
-                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
-                        availableTerms = listOf(
-                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, isEnable = false),
-                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isEnable = false)
-                        ),
-                        selectedTerm = OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isEnable = false)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            creditCard = OrderPaymentCreditCard(
+                numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+                availableTerms = listOf(
+                    OrderPaymentInstallmentTerm(
+                        term = 0,
+                        mdr = 1.5f,
+                        mdrSubsidize = 0.5f,
+                        minAmount = 100,
+                        isEnable = false
+                    ),
+                    OrderPaymentInstallmentTerm(
+                        term = 3,
+                        mdr = 1.5f,
+                        mdrSubsidize = 0.5f,
+                        minAmount = 100000,
+                        isSelected = true,
+                        isEnable = false
+                    )
+                ),
+                selectedTerm = OrderPaymentInstallmentTerm(
+                    term = 3,
+                    mdr = 1.5f,
+                    mdrSubsidize = 0.5f,
+                    minAmount = 100000,
+                    isSelected = true,
+                    isEnable = false
                 )
+            )
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -763,7 +1262,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any(), any()) }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -773,15 +1281,31 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product.copy(
-                purchaseProtectionPlanData = PurchaseProtectionPlanData(
+        orderSummaryPageViewModel.orderCart = OrderCart(
+            products = mutableListOf(
+                helper.product.copy(
+                    purchaseProtectionPlanData = PurchaseProtectionPlanData(
                         isProtectionAvailable = true,
                         stateChecked = PurchaseProtectionPlanData.STATE_TICKED
-                )))
+                    )
+                )
+            )
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -791,7 +1315,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), any(), "yes") }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventPPClickBayar(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                "yes"
+            )
+        }
     }
 
     @Test
@@ -801,15 +1334,31 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product.copy(
-                purchaseProtectionPlanData = PurchaseProtectionPlanData(
+        orderSummaryPageViewModel.orderCart = OrderCart(
+            products = mutableListOf(
+                helper.product.copy(
+                    purchaseProtectionPlanData = PurchaseProtectionPlanData(
                         isProtectionAvailable = true,
                         stateChecked = PurchaseProtectionPlanData.STATE_UNTICKED
-                )))
+                    )
+                )
+            )
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         var isOnSuccessCalled = false
@@ -819,7 +1368,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), any(), "no") }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventPPClickBayar(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                "no"
+            )
+        }
     }
 
     @Test
@@ -831,8 +1389,20 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -840,7 +1410,9 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         }, false)
 
         // Then
-        coVerify(exactly = 1) { checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata.isEmpty() }) }
+        coVerify(exactly = 1) {
+            checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata.isEmpty() })
+        }
     }
 
     @Test
@@ -850,13 +1422,33 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product))
+        orderSummaryPageViewModel.orderCart =
+            OrderCart(products = mutableListOf(helper.product), cartString = "123")
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ),
-            globalSuccess = true
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "bbo",
+                        uniqueId = "123",
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    )
+                ),
+                globalSuccess = true
             ),
             status = "OK", errorCode = "200"
         )
@@ -868,6 +1460,14 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         }, false)
 
         // Then
-        coVerify(exactly = 1) { checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata.contains(OrderMetadata("free_shipping_metadata", "{\"sent_shipper_partner\":true}")) }) }
+        coVerify(exactly = 1) {
+            checkoutOccUseCase.executeSuspend(
+                match {
+                    it.carts.data[0].shopProducts[0].orderMetadata.contains(
+                        OrderMetadata("free_shipping_metadata", "{\"sent_shipper_partner\":true}")
+                    )
+                }
+            )
+        }
     }
 }

@@ -14,7 +14,7 @@ object KYCConstant {
     const val NOT_SUPPORT_LIVENESS = -9
     const val IS_FILE_LIVENESS_IMAGE_NOT_EXIST = -11
     const val EXTRA_IS_SOURCE_SELLER = "source_seller"
-    const val PARAM_PROJECT_ID = "projectId"
+//    const val PARAM_PROJECT_ID = "projectId"
     const val KTP_RETAKE = 1
     const val FACE_RETAKE = 2
     const val USER_EXIT = -9
@@ -29,4 +29,24 @@ object KYCConstant {
     const val TRACKER_ID = "trackerId"
 
     const val LIVENESS_TAG = "LIVENESS_TAG"
+
+    const val EXTRA_USE_CROPPING = "useCropping"
+    const val EXTRA_USE_COMPRESSION = "useCompression"
+
+    const val PADDING_16 = 16
+    const val PADDING_ZERO = 0
+    const val PADDING_0_5F = 0.5f
+
+    const val QUALITY_100 = 100F
+    const val QUALITY_70 = 70F
+    const val QUALITY_50 = 50F
+    const val QUALITY_40 = 40F
+    const val QUALITY_30 = 30F
+    const val QUALITY_20 = 20F
+
+    const val MB_2 = 2
+    const val MB_3 = 3
+    const val MB_6 = 6
+    const val MB_10 = 10
+    const val MB_15 = 15
 }

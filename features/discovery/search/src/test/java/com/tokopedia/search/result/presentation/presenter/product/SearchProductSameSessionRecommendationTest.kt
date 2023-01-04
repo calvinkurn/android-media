@@ -1,7 +1,9 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -9,12 +11,12 @@ import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationM
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 import com.tokopedia.search.shouldBe
+import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
-import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
@@ -32,6 +34,19 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private val recommendationSlot = slot<SameSessionRecommendationDataView>()
     private val selectedVisitableSlot = slot<Visitable<*>>()
+    private val requestParamsSlot = slot<RequestParams>()
+    private val selectedVisitableIndexSlot = slot<Int>()
+
+    private val warehouseId = "2216"
+    private val dummyChooseAddressData = LocalCacheModel(
+        address_id = "123",
+        city_id = "45",
+        district_id = "123",
+        lat = "10.2131",
+        long = "12.01324",
+        postal_code = "12345",
+        warehouse_id = warehouseId,
+    )
 
     @Test
     fun `Product click return empty recommendation`() {
@@ -51,14 +66,20 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
 
+        `Given viewUpdater getItemAtPosition`(productItemDataViewIndex + 1)
+
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
+        `Then assert same session request params`(productItemDataView, LocalCacheModel())
         `Then verify no recommendationItem added`()
     }
 
     @Test
-    fun `Product click return recommendation`() {
+    fun `Odd Position Product click return recommendation`() {
+        `Setup choose address data`(dummyChooseAddressData)
+        setUp()
+
         val lowIntentionKeywordResponse =
             searchProductLowIntentKeywordResponseJSON.jsonToObject<SearchProductModel>()
         val sameSessionRecommendation =
@@ -74,11 +95,45 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
+        val nextProductItemDataView = visitableList[productItemDataViewIndex + 1] as ProductItemDataView
+
+        `Given viewUpdater getItemAtPosition`(productItemDataViewIndex + 1)
 
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
-        `Then verify recommendationItem`(sameSessionRecommendation, productItemDataView)
+        `Then assert same session request params`(productItemDataView, dummyChooseAddressData)
+        `Then verify recommendationItem`(sameSessionRecommendation, nextProductItemDataView, productItemDataViewIndex)
+    }
+
+    @Test
+    fun `Even Position Product click return recommendation`() {
+        `Setup choose address data`(dummyChooseAddressData)
+        setUp()
+
+        val lowIntentionKeywordResponse =
+            searchProductLowIntentKeywordResponseJSON.jsonToObject<SearchProductModel>()
+        val sameSessionRecommendation =
+            sameSessionRecommendationResponseJSON.jsonToObject<SearchSameSessionRecommendationModel>()
+        `Given view already load data`(lowIntentionKeywordResponse)
+        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
+            sameSessionRecommendation
+        )
+        `Given recyclerViewUpdater`()
+        `Given same session recommendation preference will return empty`()
+        `Given product filter indicator has default sorting and no active filter`()
+        `Given queryKeyProvider queryKey return empty string`()
+
+        val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView } + 1
+        val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
+
+        `Given viewUpdater getItemAtPosition`(productItemDataViewIndex + 1)
+
+        `When product item is clicked`(productItemDataView, productItemDataViewIndex)
+
+        `Then verify same session recommendation API called once`()
+        `Then assert same session request params`(productItemDataView, dummyChooseAddressData)
+        `Then verify recommendationItem`(sameSessionRecommendation, productItemDataView, productItemDataViewIndex)
     }
 
     @Test
@@ -166,7 +221,12 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     private fun `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
         searchSameSessionRecommendationModel: SearchSameSessionRecommendationModel
     ) {
-        every { sameSessionRecommendationUseCase.execute(any(), any()) }.answers {
+        every {
+            sameSessionRecommendationUseCase.execute(
+                capture(requestParamsSlot),
+                any()
+            )
+        }.answers {
             secondArg<Subscriber<SearchSameSessionRecommendationModel>>().complete(
                 searchSameSessionRecommendationModel
             )
@@ -185,6 +245,10 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         every { productFilterIndicator.isAnyFilterOrSortActive } returns true
     }
 
+    private fun `Setup choose address data`(localCacheModel: LocalCacheModel) {
+        every { chooseAddressView.chooseAddressData } returns localCacheModel
+    }
+
     private fun `Given product filter indicator has non-default sorting`() {
         every {
             productFilterIndicator.isAnyFilterOrSortActive
@@ -196,8 +260,18 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     }
 
     private fun `Given recyclerViewUpdater`() {
+        `Given viewUpdater itemList return visitableList`()
         `Given viewUpdater itemCount return visitableList size`()
         `Given recyclerViewUpdater addSameSessionRecommendation`()
+        `Given viewUpdater scrollToPosition`()
+    }
+
+    private fun `Given viewUpdater itemList return visitableList`() {
+        every { viewUpdater.itemList } returns visitableList
+    }
+
+    private fun `Given viewUpdater getItemAtPosition`(position: Int) {
+        every { viewUpdater.getItemAtIndex(position) } returns visitableList[position]
     }
 
     private fun `Given viewUpdater itemCount return visitableList size`() {
@@ -210,6 +284,12 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
                 capture(recommendationSlot),
                 capture(selectedVisitableSlot)
             )
+        } just runs
+    }
+
+    private fun `Given viewUpdater scrollToPosition`() {
+        every {
+            viewUpdater.scrollToPosition(capture(selectedVisitableIndexSlot))
         } just runs
     }
 
@@ -226,7 +306,8 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private fun `Then verify recommendationItem`(
         expectedRecommendation: SearchSameSessionRecommendationModel,
-        expectedSelectedProduct: Visitable<*>,
+        expectedPreviousProduct: Visitable<*>,
+        expectedProductPosition: Int,
     ) {
         verify {
             viewUpdater.removeFirstItemWithCondition(any())
@@ -234,8 +315,10 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
                 recommendationSlot.captured,
                 selectedVisitableSlot.captured
             )
+            viewUpdater.scrollToPosition(selectedVisitableIndexSlot.captured)
         }
-        Assert.assertEquals(expectedSelectedProduct, selectedVisitableSlot.captured)
+        expectedProductPosition shouldBe selectedVisitableIndexSlot.captured
+        expectedPreviousProduct shouldBe selectedVisitableSlot.captured
         expectedRecommendation.assertRecommendation(recommendationSlot.captured)
     }
 
@@ -291,6 +374,33 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         verify(exactly = 1) {
             sameSessionRecommendationUseCase.execute(any(), any())
         }
+    }
+
+    private fun `Then assert same session request params`(
+        productItemDataView: ProductItemDataView,
+        localCacheModel: LocalCacheModel,
+    ) {
+        val requestParams = requestParamsSlot.captured
+        requestParams.assertRequestProductId(productItemDataView)
+        requestParams.assertRequestLocationData(localCacheModel)
+    }
+
+    private fun RequestParams.assertRequestProductId(
+        productItemDataView: ProductItemDataView,
+    ) {
+        getString(SearchApiConst.PRODUCT_ID, "") shouldBe productItemDataView.productID
+    }
+
+    private fun RequestParams.assertRequestLocationData(
+        localCacheModel: LocalCacheModel,
+    ) {
+        getString(SearchApiConst.USER_CITY_ID, "") shouldBe localCacheModel.city_id
+        getString(SearchApiConst.USER_ADDRESS_ID, "") shouldBe localCacheModel.address_id
+        getString(SearchApiConst.USER_DISTRICT_ID, "") shouldBe localCacheModel.district_id
+        getString(SearchApiConst.USER_POST_CODE, "") shouldBe localCacheModel.postal_code
+        getString(SearchApiConst.USER_LAT, "") shouldBe localCacheModel.lat
+        getString(SearchApiConst.USER_LONG, "") shouldBe localCacheModel.long
+        getString(SearchApiConst.USER_WAREHOUSE_ID, "") shouldBe localCacheModel.warehouse_id
     }
 
 }

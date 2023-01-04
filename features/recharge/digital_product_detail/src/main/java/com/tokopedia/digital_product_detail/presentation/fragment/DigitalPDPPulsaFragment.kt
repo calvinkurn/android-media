@@ -1355,6 +1355,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         FavoriteNumberType.LIST
                     )
                 )
+                binding?.rechargePdpPulsaClientNumberWidget?.clearFocusAutoComplete()
             } else if (requestCode == REQUEST_CODE_LOGIN || requestCode == REQUEST_CODE_VERIFY_PHONE_NUMBER) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {

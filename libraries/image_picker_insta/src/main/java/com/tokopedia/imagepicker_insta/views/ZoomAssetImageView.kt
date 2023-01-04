@@ -85,12 +85,12 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
                 return false
             }
 
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 onClickListener?.onClick(this@ZoomAssetImageView)
                 return true
             }
 
-            override fun onLongPress(e: MotionEvent?) {
+            override fun onLongPress(e: MotionEvent) {
                 onLongClickListener?.onLongClick(this@ZoomAssetImageView)
             }
 
@@ -120,7 +120,7 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
                 return true
             }
 
-            override fun onDown(e: MotionEvent?): Boolean {
+            override fun onDown(e: MotionEvent): Boolean {
                 removeCallbacks(flingRunnable)
                 scroller.forceFinished(true)
                 displayRect?.let {
@@ -150,7 +150,7 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         val disallowIntercept =
             currentScale > MIN_SCALE || scaleDetector.isInProgress || handlingDismiss
         if (event?.action == MotionEvent.ACTION_UP) {
@@ -349,20 +349,20 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
                 }
             }
             addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
 
                 }
 
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     handlingDismiss = false
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                     panImage(0F, 0F, setAbsolute = true)
                     handlingDismiss = false
                 }
 
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
 
                 }
             })

@@ -56,7 +56,7 @@
         android:id="@+id/error_state"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:visibility="gone"
         android:gravity="center"
         app:globalerrors_type="SERVER_ERROR"

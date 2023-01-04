@@ -69,7 +69,6 @@ import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.QUEST
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
@@ -109,6 +108,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     var listener: RewardsRecomListener? = null
     lateinit var mUsersession: UserSession
     private var questWidgetPosition = -1
+
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -347,7 +352,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
             if (!sections.isNullOrEmpty()) {
                 for (sectionContent in sections) {
-                    if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
+                    if (sectionContent.layoutCouponAttr.couponList.isNotEmpty()) {
                         sectionListViewBinder = SectionHorizontalViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
@@ -355,7 +360,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                                 sectionListViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
-                    if (sectionContent.layoutTickerAttr != null && sectionContent.layoutTickerAttr.tickerList != null && !sectionContent.layoutTickerAttr.tickerList.isEmpty()) {
+                    if (sectionContent.layoutTickerAttr.tickerList.isNotEmpty()) {
                         val sectionTickerViewBinder = SectionTickerViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
@@ -364,8 +369,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
 
-                    if (sectionContent.layoutCategoryAttr != null && sectionContent.layoutCategoryAttr.categoryTokopointsList != null
-                            && !sectionContent.layoutCategoryAttr.categoryTokopointsList!!.isEmpty()) {
+                    if (sectionContent.layoutCategoryAttr.categoryTokopointsList.isNotEmpty()) {
                         val sectionCategoryViewBinder = SectionVerticalCategoryViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
@@ -374,7 +378,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
 
-                    if (sectionContent.layoutCatalogAttr != null && sectionContent.layoutCatalogAttr.catalogList != null && !sectionContent.layoutCatalogAttr.catalogList!!.isEmpty()) {
+                    if (sectionContent.layoutCatalogAttr.catalogList.isNotEmpty()) {
                         val sectionCatalogListViewBinder = SectionHoriZontalCatalogViewBinder(mPresenter)
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
@@ -383,7 +387,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
 
-                    if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
+                    if (sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
 
                         val sectionTopAdsViewBinder = SectionTopadsViewBinder()
                         @Suppress("UNCHECKED_CAST")
@@ -394,7 +398,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
                     }
 
-                    if (sectionContent.layoutMerchantCouponAttr != null && !sectionContent.layoutMerchantCouponAttr.catalogMVCWithProductsList.isNullOrEmpty()) {
+                    if (!sectionContent.layoutMerchantCouponAttr.catalogMVCWithProductsList.isNullOrEmpty()) {
 
                         val merchantVoucherViewBinder = MerchantVoucherViewBinder()
                         @Suppress("UNCHECKED_CAST")
@@ -404,7 +408,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
 
-                    if (sectionContent.layoutQuestWidgetAttr != null && !sectionContent.layoutQuestWidgetAttr.jsonQuestWidgetDisplayParam.isNullOrEmpty()) {
+                    if (!sectionContent.layoutQuestWidgetAttr.jsonQuestWidgetDisplayParam.isNullOrEmpty()) {
                         // add Quest View binder here
                         val sectionTopQuestViewBinder = SectionTopQuestViewBinder(this)
                         @Suppress("UNCHECKED_CAST")
@@ -600,14 +604,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     override fun hideLoading() {
         mContainerMain?.displayedChild = CONTAINER_MAIN
-    }
-
-    override fun getAppContext(): Context {
-        return requireActivity()
-    }
-
-    override fun getActivityContext(): Context {
-        return requireActivity()
     }
 
     override fun onAttach(context: Context) {

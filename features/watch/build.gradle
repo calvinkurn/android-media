@@ -1,24 +1,14 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply from: "../../compile-instrument-test.gradle"
 
 android{
-    buildFeatures {
-        viewBinding true
-    }
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
     packagingOptions {
         exclude 'META-INF/**'
     }
 
     defaultConfig {
-        multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
@@ -42,103 +32,35 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.navigationSafeArgs
     }
 }
 
 dependencies {
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation projectOrAar(rootProject.ext.features.atc_common)
-    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
-    implementation projectOrAar(rootProject.ext.features.commonWallet)
-    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
-    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.sessioncommon)
-
-    implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation projectOrAar(rootProject.ext.libraries.linker)
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
-    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
-    implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.features.searchbar)
-    implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
-    implementation rootProject.ext.unifyDependencies.icon
-    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.coach_mark
-    implementation rootProject.ext.unifyDependencies.accordion
-    implementation rootProject.ext.unifyDependencies.viewAllCard
-
-    implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.4.0'
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
-
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation projectOrAar(rootProject.ext.libraries.analytics)
-
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-    // UI Test
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
-    androidTestImplementation rootProject.ext.testDependencies.espressoCore
-    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.testDependencies.benchmark
-    androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
-
-    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
-    implementation rootProject.ext.miscDependencies.navigationUiKtx
-    implementation projectOrAar(rootProject.ext.libraries.iris)
-    implementation projectOrAar(rootProject.ext.libraries.irisSession)
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation projectOrAar(rootProject.ext.features.navigationCommon)
-    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation rootProject.ext.playServicesDependencies.playServiceWearable
+    implementation rootProject.ext.miscDependencies.coroutinePlayService
 
     wearApp project(':wearosapp')
-    implementation 'com.google.android.gms:play-services-wearable:17.1.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9"
-    implementation rootProject.ext.unifyDependencies.dialog
-    implementation "androidx.wear:wear-remote-interactions:1.0.0"
 
 }
 

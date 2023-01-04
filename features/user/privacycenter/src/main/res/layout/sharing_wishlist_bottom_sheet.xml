@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bottomSheetTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        android:text="@string/sharing_wishlist_bottom_sheet_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/privateOption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/sharing_wishlist_private_option"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@id/labelPrivate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottomSheetTitle"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelPrivate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sharing_wishlist_label_private"
+        app:labelType="general_light_grey"
+        app:layout_constraintBottom_toBottomOf="@id/privateOption"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/privateOption" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/publicOption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/sharing_wishlist_public_option"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@id/labelPublic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/privateOption"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelPublic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sharing_wishlist_label_public"
+        app:labelType="general_light_grey"
+        app:layout_constraintBottom_toBottomOf="@id/publicOption"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/publicOption" />
+
+    <com.tokopedia.unifycomponents.TipsUnify
+        android:id="@+id/privateTips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/publicOption"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/buttonSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/sharing_wishlist_save_button"
+        android:enabled="false"
+        app:layout_constraintTop_toBottomOf="@id/privateTips"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/buttonAnotherSetup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:unifyButtonVariant="text"
+        android:text="@string/sharing_wishlist_another_setup"
+        app:layout_constraintTop_toBottomOf="@id/buttonSave"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

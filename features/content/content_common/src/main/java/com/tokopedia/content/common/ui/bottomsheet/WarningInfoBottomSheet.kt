@@ -23,7 +23,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
         get() = _binding!!
 
     private var mListener: Listener? = null
-    private var mWarningType: WarningType? = null
+    private var mWarningType: WarningType = WarningType.UNKNOWN
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +84,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
                 tvWarningSubtitle.text = getString(R.string.ugc_warning_both_account_live_subtitle)
                 tvCta.hide()
             }
-            else -> {}
+            WarningType.UNKNOWN -> {}
         }
     }
 
@@ -120,7 +120,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     }
 
     enum class WarningType {
-        BANNED, LIVE
+        BANNED, LIVE, UNKNOWN
     }
 
     interface Listener {

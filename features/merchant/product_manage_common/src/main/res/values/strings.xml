@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">product_manage_common</string>
     
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
@@ -37,12 +37,27 @@
     <string name="product_manage_closable_stock_ticker_description">Untuk melihat harga, jumlah, dan alokasi stok produk di tiap lokasi, akses Tokopedia Seller melalui Desktop, ya.</string>
     <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan harga dan stok lokasi utama</string>
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
+    <string name="product_manage_notifyme_ticker_title" tools:ignore="UnusedResources">Kamu akan tahu saat produkmu ditunggu!</string>
+    <string name="product_manage_notifyme_ticker_description" tools:ignore="UnusedResources"><![CDATA[Kini, kamu akan diberi tahu jika ada calon pembeli yang pasang pengingat stok tersedia saat produkmu habis.<a href="https://seller.tokopedia.com/edu/wishlist-stok-terjamin/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
     <string name="product_manage_maxstock_ticker_title">Perubahan pada stok produk</string>
     <string name="product_manage_maxstock_ticker_description"><![CDATA[Per 14 September 2022, batas maksimum stok produk adalah 100.000. Yuk, atur jumlah stok sesuai ketersediaan di tokomu.<a href="https://seller.tokopedia.com/edu/batas-maksimum-stok/" target="_blank"><span style=color:#00AA5B;>Selengkapnya</span></a>]]></string>
+    <string name="product_manage_shop_moderated_ticker_title" tools:ignore="UnusedResources">Pengaturan produk belum bisa dilakukan</string>
+    <string name="product_manage_shop_moderated_ticker_description" tools:ignore="UnusedResources"><![CDATA[Status tokomu ditangguhkan sementara. Aktifkan toko untuk bisa mengatur produk lagi. <a href="https://seller.tokopedia.com/edu/toko-dimoderasi/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
+    <string name="product_manage_shop_moderated_permanent_ticker_description" tools:ignore="UnusedResources"><![CDATA[Status tokomu ditangguhkan permanen. Aktifkan toko untuk bisa mengatur produk lagi. <a href="https://seller.tokopedia.com/edu/toko-dimoderasi/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
 
     <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>
     <string name="product_manage_campaign_label">Campaign</string>
     <string name="product_manage_campaign_count">%d Promosi</string>
     <string name="product_manage_suspend_stock_info_description">Stok dikosongkan karena sering terjadi pembatalan</string>
+    <string name="product_manage_notify_me_buyer_info_in_edit_stock"><![CDATA[Ada <b>%s</b> calon pembeli yang menunggu produk ini.]]></string>
+    <string name="product_manage_notify_me_buyer_info_in_edit_stock_variant"><![CDATA[Ada <b>%s</b> calon pembeli yang menunggu varian ini.]]></string>
+    <string name="product_manage_zero_stock_info_in_edit_stock_variant"><![CDATA[Produk dengan stok <b>0</b> belum bisa muncul ke pembeli.]]></string>
+    <string name="product_manage_has_stock_alert_info_in_edit_stock_variant">Fitur Pengingat Stok untuk produk ini aktif.</string>
+    <string name="product_manage_stock_alert_active_info_in_edit_stock_variant">Stok produk di bawah batas min. pengingat stok.</string>
+    <string name="product_manage_stock_description_information_stock_available">"Produk ini dapat tanda “Stok Tersedia” yang bisa dilihat pembeli di halaman produk. "</string>
+    <string name="product_manage_stock_available">"Tanda “Stok Tersedia” "</string>
+
+    <string name="product_manage_stock_available_title" tools:ignore="UnusedResources">Produkmu bisa dapat tanda “Stok Tersedia”!</string>
+    <string name="product_manage_stock_available_description" tools:ignore="UnusedResources"><![CDATA[Tanda ini akan ada di halaman detail produkmu yang artinya produk siap dibeli. <a href="https://seller.tokopedia.com/edu/reward-tanda-stok-tersedia/" target="_blank">Baca Artikel</a>]]></string>
 
 </resources>

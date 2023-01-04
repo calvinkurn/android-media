@@ -9,8 +9,8 @@
         android:id="@+id/menuList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         app:has_divider_left_padding="false" />
 
     <com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel

@@ -72,7 +72,7 @@
     <string name="label_service_fee">Biaya layanan</string>
     <string name="label_category_change">Perubahan kategori</string>
     <string name="content_service_fee_bs">Biaya layanan per produk tergantung pada kategori yang kamu pilih. Jika pemilihan kategori kurang sesuai, maka kategori akan diubah oleh Tokopedia.</string>
-    <string name="content_category_change_bs">Kategori yang kamu pilih sebelumnya telah diubah secara otomatis oleh Tokopedia.\nBaca Artikel</string>
+    <string name="content_category_change_bs">Kategori yang kamu pilih sebelumnya telah diubah secara otomatis oleh Tokopedia dan tidak bisa diubah lagi. Pelajari Selengkapnya</string>
     <string name="label_additional_info">Pilih kategori yang sesuai karena biaya layanan akan tergantung pada kategori.</string>
     <string name="text_service_fee_per_sold_product"><![CDATA[Biaya layanan per produk terjual: <b>%s&#37;</b>.\n<a href=link_place_holder>Selengkapnya</a>]]></string>
     <string name="label_no_service_fee"><![CDATA[Bebas biaya layanan untuk 100 transaksi pertama.\n<a href=link_place_holder>Selengkapnya</a>]]></string>
@@ -540,4 +540,9 @@
     <string name="error_minimum_weight">Min.%d g</string>
     <string name="error_max_weight">Maks. %s g</string>
 
+    <string name="label_ineligble_access_warning">Oops, fitur ini belum \ndapat diakses</string>
+    <string name="label_body_ineligble_access_warning">Ini karena tokomu sedang ditangguhkan</string>
+    <string name="label_back_to_list_product">Kembali ke Daftar Produk</string>
+    <string name="label_learn_about_moderation">Pelajari Tentang Penangguhan</string>
+    <string name="format_web_page">%s?url=%s</string>
 </resources>

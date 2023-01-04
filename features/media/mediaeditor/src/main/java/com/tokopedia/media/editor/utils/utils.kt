@@ -10,16 +10,20 @@ import com.tokopedia.media.editor.analytics.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_CENTER
 import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_DIAGONAL
 import com.tokopedia.media.editor.data.repository.WatermarkType
-import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
 private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
+
+@Suppress("SpellCheckingInspection")
+fun getTokopediaCacheDir(): String {
+    return FileUtil.getTokopediaInternalDirectory(ImageProcessingUtil.DEFAULT_DIRECTORY).absolutePath
+}
 
 fun getEditorSaveFolderPath(): String {
     return ImageProcessingUtil.DEFAULT_DIRECTORY + MEDIA_EDITOR_CACHE_DIR
@@ -83,10 +87,20 @@ fun getToolEditorText(editorToolType: Int): Int {
     }
 }
 
-fun cropCenterImage(sourceBitmap: Bitmap?, autoCropRatio: Float): Pair<Bitmap, EditorCropRotateUiModel>? {
+fun cropCenterImage(
+    sourceBitmap: Bitmap?,
+    cropRaw: ImageRatioType
+): Pair<Bitmap, EditorCropRotateUiModel>? {
     sourceBitmap?.let { bitmap ->
+        val autoCropRatio = cropRaw.getRatioY().toFloat() / cropRaw.getRatioX()
+
         val bitmapWidth = bitmap.width
         val bitmapHeight = bitmap.height
+
+        // if source image is already have ratio target then skip crop
+        if (bitmapWidth.toFloat() / bitmapHeight == autoCropRatio) {
+            return null
+        }
 
         var newWidth = bitmapWidth
         var newHeight = (bitmapWidth * autoCropRatio).toInt()
@@ -120,6 +134,7 @@ fun cropCenterImage(sourceBitmap: Bitmap?, autoCropRatio: Float): Pair<Bitmap, E
             isCrop = true
             this.isAutoCrop = true
             croppedSourceWidth = bitmap.width
+            cropRatio = cropRaw.ratio
         }
 
         return Pair(bitmapResult, cropDetail)

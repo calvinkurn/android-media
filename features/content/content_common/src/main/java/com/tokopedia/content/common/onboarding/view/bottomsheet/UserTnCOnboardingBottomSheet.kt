@@ -7,19 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnboardingBottomSheet
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
-import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
+import com.tokopedia.content.common.onboarding.view.uimodel.state.UGCOnboardingUiState
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.databinding.BottomsheetUserTncOnboardingBinding
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import kotlinx.coroutines.flow.collect
@@ -116,8 +114,8 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
 
     /** Render Section */
     private fun renderLayout(
-        prev: FeedUGCOnboardingUiState?,
-        curr: FeedUGCOnboardingUiState,
+        prev: UGCOnboardingUiState?,
+        curr: UGCOnboardingUiState,
     ) {
         if(prev == curr) return
 

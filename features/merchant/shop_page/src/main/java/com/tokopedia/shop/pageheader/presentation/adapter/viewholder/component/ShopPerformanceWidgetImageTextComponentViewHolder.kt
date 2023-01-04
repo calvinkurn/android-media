@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -20,9 +19,9 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPerformanceWidgetImageTextComponentViewHolder(
-        itemView: View,
-        private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
-        private val listener: Listener
+    itemView: View,
+    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val listener: Listener
 ) : AbstractViewHolder<ShopHeaderImageTextComponentUiModel>(itemView) {
 
     companion object {
@@ -31,8 +30,8 @@ class ShopPerformanceWidgetImageTextComponentViewHolder(
 
     interface Listener {
         fun onImpressionShopPerformanceWidgetImageTextItem(
-                componentModel: ShopHeaderImageTextComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopHeaderImageTextComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
     }
 
@@ -44,10 +43,10 @@ class ShopPerformanceWidgetImageTextComponentViewHolder(
     override fun bind(model: ShopHeaderImageTextComponentUiModel) {
         configureLayoutPosition(model)
         setLayoutData(model)
-        itemView.addOnImpressionListener(model){
+        itemView.addOnImpressionListener(model) {
             listener.onImpressionShopPerformanceWidgetImageTextItem(
-                    model,
-                    shopHeaderWidgetUiModel
+                model,
+                shopHeaderWidgetUiModel
             )
         }
     }
@@ -62,12 +61,12 @@ class ShopPerformanceWidgetImageTextComponentViewHolder(
         val valueStyleImages = model.images.style
         val constraintSet = ConstraintSet()
         constraintSet.clone(constraintLayout)
-        if (valueStyleImages == 1){
-            constraintSet.connect(recyclerViewImages?.id.orZero(), ConstraintSet.TOP,textLabel?.id.orZero(), ConstraintSet.BOTTOM)
+        if (valueStyleImages == 1) {
+            constraintSet.connect(recyclerViewImages?.id.orZero(), ConstraintSet.TOP, textLabel?.id.orZero(), ConstraintSet.BOTTOM)
             constraintSet.connect(textLabel?.id.orZero(), ConstraintSet.BOTTOM, recyclerViewImages?.id.orZero(), ConstraintSet.TOP)
             constraintSet.connect(textLabel?.id.orZero(), ConstraintSet.TOP, constraintLayout?.id.orZero(), ConstraintSet.TOP)
-        }else{
-            constraintSet.connect(textLabel?.id.orZero(), ConstraintSet.TOP,recyclerViewImages?.id.orZero(), ConstraintSet.BOTTOM)
+        } else {
+            constraintSet.connect(textLabel?.id.orZero(), ConstraintSet.TOP, recyclerViewImages?.id.orZero(), ConstraintSet.BOTTOM)
             constraintSet.connect(recyclerViewImages?.id.orZero(), ConstraintSet.BOTTOM, textLabel?.id.orZero(), ConstraintSet.TOP)
             constraintSet.connect(recyclerViewImages?.id.orZero(), ConstraintSet.TOP, constraintLayout?.id.orZero(), ConstraintSet.TOP)
         }
@@ -78,10 +77,10 @@ class ShopPerformanceWidgetImageTextComponentViewHolder(
         recyclerViewImages?.apply {
             val adapter = ShopImageTextComponentImagesAdapter()
             this.adapter = adapter
-            val manager= LinearLayoutManager(
-                    itemView.context,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
+            val manager = LinearLayoutManager(
+                itemView.context,
+                LinearLayoutManager.HORIZONTAL,
+                false
             )
             layoutManager = manager
             if (itemDecorationCount == 0)
@@ -89,5 +88,4 @@ class ShopPerformanceWidgetImageTextComponentViewHolder(
             adapter.setImagesData(listImages)
         }
     }
-
 }

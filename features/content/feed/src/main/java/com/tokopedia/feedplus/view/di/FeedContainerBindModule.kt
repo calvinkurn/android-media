@@ -14,4 +14,5 @@ abstract class FeedContainerBindModule {
     @Binds
     @FeedContainerScope
     abstract fun bindFeedPlusRepository(feedPlusRepository: FeedPlusRepositoryImpl): FeedPlusRepository
+
 }

@@ -12,13 +12,13 @@
         android:textColor="@color/Unify_NN950"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="display_1"
-        app:typographyWeight="bold"
+        app:typographyType="heading_4"
         tool:text="Beli Paket Bundling, Bebas Ongkir"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_bundles"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

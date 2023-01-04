@@ -30,5 +30,6 @@
 
     <string name="state_button_login_in_app">"Login In Android App"</string>
     <string name="state_button_retry">"Retry"</string>
+    <string name="state_button_install_app">"Install App"</string>
 
 </resources>

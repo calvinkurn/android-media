@@ -68,4 +68,7 @@ class ScreenNavigation(navController: NavController) {
             )
         )
     }
+    val popBackStack: () -> Unit = {
+        navController.popBackStack()
+    }
 }

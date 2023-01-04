@@ -118,5 +118,6 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
         override fun onHyperlinkClicked(url: String, text: String, meta: TableRowsUiModel.Meta) {
             onHtmlClicked(url, text, meta)
         }
+
     }
 }

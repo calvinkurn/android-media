@@ -198,4 +198,6 @@
 
     <string name="pdp_media_label_builder">%1$s • %2$s </string>
     <string name="pdp_general_info_see">Lihat</string>
+    <string name="text_info_shop_moderated">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
+
 </resources>

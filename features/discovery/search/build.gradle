@@ -44,6 +44,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
 }
@@ -128,6 +129,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     implementation rootProject.ext.dbDependencies.sqliteFramework
 

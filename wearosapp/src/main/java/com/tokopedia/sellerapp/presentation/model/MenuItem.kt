@@ -22,15 +22,18 @@ val ICON_NEW_ORDER = iconR.iconunify_product
 val ICON_READY_TO_SHIP = iconR.iconunify_product_move
 
 fun generateInitialMenu() = listOf(
-    MenuItem(
-        title = TITLE_NOTIF,
-        icon = ICON_NOTIF,
-    ),
-    MenuItem(
-        title = TITLE_CHAT,
-        icon = ICON_CHAT,
-        dataKey = DATAKEY_UNREAD_CHAT
-    ),
+    /**
+     * FOR NEXT DEVELOPMENT
+     */
+//    MenuItem(
+//        title = TITLE_NOTIF,
+//        icon = ICON_NOTIF,
+//    ),
+//    MenuItem(
+//        title = TITLE_CHAT,
+//        icon = ICON_CHAT,
+//        dataKey = DATAKEY_UNREAD_CHAT
+//    ),
     MenuItem(
         title = TITLE_NEW_ORDER,
         icon = ICON_NEW_ORDER,

@@ -1,0 +1,18 @@
+[
+  {
+    "data": {
+      "getHomeTickerV2": {
+        "tickers": [
+          {
+            "id": 1237,
+            "title": "Android Test - Ticker",
+            "color": "#cde4c3",
+            "layout": "default",
+            "message": "We are running android instrumentation test journey.  &nbsp;<a href=\\\"tokopedia://home\\\"\\>Ticker support button</a>",
+            "tickerType": 0
+          }
+        ]
+      }
+    }
+  }
+]

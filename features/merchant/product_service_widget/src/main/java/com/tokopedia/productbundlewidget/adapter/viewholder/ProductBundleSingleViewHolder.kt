@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productbundlewidget.adapter.ProductBundleSingleAdapter
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
@@ -136,7 +137,9 @@ class ProductBundleSingleViewHolder(
         typographyBundlePreOrder?.text = when {
             bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
             bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
-            else -> itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+            bundleDetail.totalSold.isZero() -> ""
+            else -> itemView.context.getString(R.string.product_bundle_bundle_sold,
+                bundleDetail.totalSold.toString())
         }
     }
 

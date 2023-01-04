@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerType="announcement" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_finished_campaing_banner"
+        android:layout_width="match_parent"
+        android:layout_height="158dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_campaign_status_indicator"
+        android:layout_width="4dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:src="@drawable/ic_sfs_campaign_indicator_available"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_campaign_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="@string/registration_over_in_label"
+        android:textColor="@color/gr_700"
+        app:layout_constraintBottom_toBottomOf="@+id/img_campaign_status_indicator"
+        app:layout_constraintStart_toEndOf="@id/img_campaign_status_indicator"
+        app:layout_constraintTop_toTopOf="@+id/img_campaign_status_indicator"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="@+id/tg_campaign_status"
+        app:layout_constraintStart_toEndOf="@+id/tg_campaign_status"
+        app:layout_constraintTop_toTopOf="@+id/tg_campaign_status"
+        app:timer_unify_single_type="minute"
+        app:timer_unify_single_variant="general" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_campaign"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_campaign_status" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_campaign_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image_campaign"
+        app:layout_constraintTop_toTopOf="@+id/image_campaign"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Flash Sale Deals Serba 10rb 7 July 2022 - 24 Jam" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_campaign_period"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tg_campaign_name"
+        app:layout_constraintTop_toBottomOf="@id/tg_campaign_name"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="10 Jul 2022 00:00 - 23:59 WIB" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_header"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_campaign" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="ticker_header, image_finished_campaing_banner"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_campaign_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="img_campaign_status_indicator, tg_campaign_status"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

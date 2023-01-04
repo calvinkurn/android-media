@@ -54,7 +54,7 @@ class LastFilterListenerDelegate @Inject constructor(
         lastFilterPresenter.closeLastFilter(searchParameterMap)
     }
 
-    fun updateLastFilter() {
+    override fun updateLastFilter() {
         val mapParameter = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
         val appliedSort = dynamicFilterModelProvider.dynamicFilterModel?.getAppliedSort(mapParameter)
 

@@ -53,13 +53,13 @@ class UploadPrescriptionUseCase @Inject constructor(
                 BitmapFactory.decodeFile(localFilePath)
             }
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
-            prescriptionImageBitmap.compress(
+            prescriptionImageBitmap?.compress(
                 Bitmap.CompressFormat.JPEG,
                 getImageQualitySafeFix(),
                 prescriptionByteArrayOutputStream
             )
             val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
-            prescriptionImageBitmap.recycle()
+            prescriptionImageBitmap?.recycle()
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             finalEncodedString = "${IMAGE_DATA_PREFIX}${encodedString}"

@@ -107,6 +107,8 @@ data class ComponentData(
     val color: String = "",
     @SerializedName("isVisible")
     val isVisible: Boolean = true,
+    @SerializedName("eduLink")
+    val eduLink: EduLinkData = EduLinkData(),
     //endregioncopy
 
     //region category carousel
@@ -115,11 +117,26 @@ data class ComponentData(
     @SerializedName("list")
     val categoryCarouselList: List<CategoryCarousel> = listOf(),
 
-    // product detail info since improve to pdp catalog
+    // region product detail info since improve to pdp catalog
     @SerializedName("catalogBottomsheet")
     val catalogBottomSheet: ProductDetailInfoSeeMoreData? = null,
     @SerializedName("bottomsheet")
     val bottomSheet: ProductDetailInfoSeeMoreData = ProductDetailInfoSeeMoreData(),
+    // endregion
+
+    // region Additional Value for Global Bundling Component Data
+    @SerializedName("widgetType")
+    val widgetType: Int = -1,
+    @SerializedName("whID")
+    val whId: String = "",
+    // endregion
+
+    // region CustomInfoTitle
+    @SerializedName("status")
+    val status: String = "",
+    @SerializedName("componentName")
+    val componentName: String = ""
+    // endregion
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
