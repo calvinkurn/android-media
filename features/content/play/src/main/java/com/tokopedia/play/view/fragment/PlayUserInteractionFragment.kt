@@ -856,7 +856,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
                 renderWinnerBadge(state = state.winnerBadge)
 
-                handleStatus(state.status)
+                if(cachedState.isChanged { it.status.channelStatus.statusType }) handleStatus(state.status)
                 renderEngagement(prevState?.engagement, state.engagement)
 
                 if (prevState?.tagItems?.product != state.tagItems.product &&
