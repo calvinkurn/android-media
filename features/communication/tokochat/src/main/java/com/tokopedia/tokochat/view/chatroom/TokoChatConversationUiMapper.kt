@@ -59,7 +59,14 @@ class TokoChatConversationUiMapper @Inject constructor(
 
             when (it.customType) {
                 ConversationsConstants.ADMIN_MESSAGE -> {
-                    resultList.add(it.mapToTickerUiModel())
+                    /**
+                     * Convert message data and check the visibility
+                     * to determine whether should be displayed or not
+                     */
+                    val messageWrapper = convertToMessageWrapper(it.messageData)
+                    if (messageWrapper?.data?.visibilityList?.contains(userId) == true) {
+                        resultList.add(it.mapToTickerUiModel(messageWrapper))
+                    }
                 }
                 ConversationsConstants.EXTENSION_MESSAGE -> {
                     val extensionData = convertToExtensionData(it.messageData)
@@ -95,7 +102,10 @@ class TokoChatConversationUiMapper @Inject constructor(
 
         // Add last header date
         lastHeaderDate?.let {
-            resultList.add(it)
+            // No need to add header if there's no chat or ticker shown
+            if (resultList.isNotEmpty()) {
+                resultList.add(it)
+            }
         }
 
         firstTicker?.let {
@@ -149,10 +159,11 @@ class TokoChatConversationUiMapper @Inject constructor(
         )
     }
 
-    private fun ConversationsMessage.mapToTickerUiModel(): TokoChatReminderTickerUiModel {
-        val messageWrapper = convertToMessageWrapper(this.messageData)
+    private fun ConversationsMessage.mapToTickerUiModel(
+        messageWrapper: TokoChatMessageWrapper?
+    ): TokoChatReminderTickerUiModel {
         return TokoChatReminderTickerUiModel(
-            message = messageWrapper?.language?.message?.idID ?: this.messageText,
+            message = messageWrapper?.data?.message?.idID ?: this.messageText,
             tickerType = Int.ZERO
         )
     }

@@ -101,7 +101,7 @@ ext {
     wearRemoteInteractionVersion = '1.0.0'
     conversationsVersion = '7.7.1'
     gojekCourierVersion = '0.1.5'
-    gojekCourierClientVersion = '0.0.8@aar'
+    gojekCourierClientVersion = '0.0.8.1@aar'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -390,8 +390,7 @@ ext {
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",
-            leakPublisher : "com.gojek.android.local:library-leak-publisher:866fb8ad",
-            chuckMqtt       : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion"
+            leakPublisher : "com.gojek.android.local:library-leak-publisher:866fb8ad"
     ]
 
     tkpdLibDependencies = [
