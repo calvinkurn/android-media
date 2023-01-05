@@ -146,7 +146,7 @@ open class ChatListFragment constructor() :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
