@@ -22,12 +22,14 @@ import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.util.SharedPreferencesUtil
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryPreviewBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummarySubmissionBinding
@@ -186,7 +188,15 @@ class SummaryFragment :
             )
         }
         viewModel.uploadCouponSuccess.observe(viewLifecycleOwner) {
-            showSuccessUploadBottomSheet(it)
+            if (it.voucherId.isZero()) {
+                showSuccessUploadBottomSheet(it)
+            } else {
+                activity?.run {
+                    val message = getString(R.string.smvc_summary_page_success_upload_message, it.voucherName)
+                    SharedPreferencesUtil.setUploadResult(this, message)
+                    finish()
+                }
+            }
         }
         viewModel.errorUpload.observe(viewLifecycleOwner) {
             showErrorUploadDialog(ErrorHandler.getErrorMessage(context, it))
