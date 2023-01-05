@@ -12,6 +12,8 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_N
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LATITUDE;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LONGITUDE;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS;
@@ -3025,10 +3027,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChangeTradeInDropOffClicked() {
+    public void onChangeTradeInDropOffClicked(String latitude, String longitude) {
         checkoutTradeInAnalytics.eventTradeInClickPilihIndomaret();
-        startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.DROPOFF_PICKER),
-                LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
+        Intent dropOffIntent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.DROPOFF_PICKER);
+        dropOffIntent.putExtra(EXTRA_DROPOFF_LATITUDE, latitude);
+        dropOffIntent.putExtra(EXTRA_DROPOFF_LONGITUDE, longitude);
+        startActivityForResult(dropOffIntent, LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
     }
 
     /*
