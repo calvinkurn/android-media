@@ -19,7 +19,7 @@ object ScheduleDeliveryAnalytics : TransactionAnalytics() {
 
     fun sendChooseScheduledDeliveryOptionRadioButtonOnTokopediaNowEvent() {
         val gtmData = getGtmData(
-            "",
+            EventName.CLICK_PP,
             EventCategory.COURIER_SELECTION,
             CHOOSE_SCHEDULED_DELIVERY_OPTION_RADIO_BUTTON_ON_TOKOPEDIA_NOW,
             ""
