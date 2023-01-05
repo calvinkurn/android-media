@@ -15,8 +15,11 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +61,7 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
@@ -70,7 +74,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
@@ -108,11 +115,7 @@ import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -138,7 +141,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.net.ConnectException
@@ -474,7 +476,7 @@ class FeedPlusFragment :
                                     }
                                 } else {
                                     val messageRes =
-                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
+                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast
                                     showToast(
                                         getString(messageRes),
                                         Toaster.TYPE_NORMAL
@@ -2840,6 +2842,31 @@ class FeedPlusFragment :
         afterRefresh = false
     }
 
+    private fun checkIfPostsAreSame(model: Visitable<*>?): Boolean {
+        val adapterItemAtFirstPosition = adapter.getlist()[1]
+        when (model) {
+            is DynamicPostUiModel -> {
+                if (adapterItemAtFirstPosition is DynamicPostUiModel) {
+                    return adapterItemAtFirstPosition.feedXCard.id == model.feedXCard.id
+                }
+                return false
+            }
+            is TopadsHeadLineV2Model -> {
+                if (adapterItemAtFirstPosition is TopadsHeadLineV2Model) {
+                    return adapterItemAtFirstPosition.feedXCard.id == model.feedXCard.id
+                }
+                return false
+            }
+            is ShopRecomWidgetModel -> {
+                if (adapterItemAtFirstPosition is ShopRecomWidgetModel) {
+                    return true
+                }
+                return false
+            }
+            else -> return false
+        }
+    }
+
     private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
         if (!firstPageDomainModel.shouldOverwrite) {
             adapter.updateList(firstPageDomainModel.dynamicFeedDomainModel.postList)
@@ -2847,7 +2874,13 @@ class FeedPlusFragment :
         }
         if (isRefreshForPostCOntentCreation) {
             isRefreshForPostCOntentCreation = false
-            adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
+            val fetchedPostIsSameAsTopMostPost =
+                firstPageDomainModel.dynamicFeedDomainModel.postList.size >= 2 && checkIfPostsAreSame(
+                    firstPageDomainModel.dynamicFeedDomainModel.postList[1]
+                )
+            if (!fetchedPostIsSameAsTopMostPost) {
+                adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
+            }
             return
         }
 
