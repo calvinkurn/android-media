@@ -47,12 +47,14 @@ class CatalogLihatSemuaPageViewModel @Inject constructor(private val catalogLibr
     }
 
     private fun mapLihatData(data: CatalogLibraryResponse): CatalogLibraryDataModel {
-        val lihatDataModel = CatalogLihatDataModel(
-            CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
-            CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
-            data.categoryList.categoryDataList
-        )
-        listOfComponents.add(lihatDataModel)
+        data.categoryList.categoryDataList?.forEachIndexed { index, categoryData ->
+            val lihatDataModel = CatalogLihatDataModel(
+                CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
+                "${ CatalogLibraryConstant.CATALOG_LIHAT_SEMUA}_${index}",
+                categoryData
+            )
+            listOfComponents.add(lihatDataModel)
+        }
         return CatalogLibraryDataModel(listOfComponents)
     }
 }

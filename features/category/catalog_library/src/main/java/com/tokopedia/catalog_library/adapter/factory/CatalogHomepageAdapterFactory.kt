@@ -11,6 +11,7 @@ interface CatalogHomepageAdapterFactory {
     fun type(data: CatalogListDataModel): Int
 
     fun type(data: CatalogLihatDataModel): Int
+    fun type(data: CatalogLihatItemDataModel): Int
 
     fun type(data: CatalogTopFiveDataModel): Int
     fun type(data: CatalogMostViralDataModel): Int

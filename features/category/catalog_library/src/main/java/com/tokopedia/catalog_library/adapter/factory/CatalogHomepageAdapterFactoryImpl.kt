@@ -23,7 +23,11 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
     }
 
     override fun type(data: CatalogLihatDataModel): Int {
-        return CatalogLihatContainerViewHolder.LAYOUT
+        return CatalogLihatViewHolder.LAYOUT
+    }
+
+    override fun type(data: CatalogLihatItemDataModel): Int {
+        return CatalogLihatItemViewHolder.LAYOUT
     }
 
     override fun type(data: CatalogTopFiveDataModel): Int {
@@ -52,9 +56,10 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
             CatalogMostViralItemViewHolder.LAYOUT -> CatalogMostViralItemViewHolder(view,catalogLibraryListener)
             CatalogSpecialItemViewHolder.LAYOUT -> CatalogSpecialItemViewHolder(view,catalogLibraryListener)
             CatalogRelevantItemViewHolder.LAYOUT -> CatalogRelevantItemViewHolder(view, catalogLibraryListener)
-            CatalogListContainerViewHolder.LAYOUT -> CatalogListContainerViewHolder(view, catalogLibraryListener)
-            CatalogLihatContainerViewHolder.LAYOUT -> CatalogLihatContainerViewHolder(view, catalogLibraryListener)
+            CatalogLihatViewHolder.LAYOUT -> CatalogLihatViewHolder(view, catalogLibraryListener)
+            CatalogLihatItemViewHolder.LAYOUT -> CatalogLihatItemViewHolder(view, catalogLibraryListener)
             CatalogLandingPageListContainerViewHolder.LAYOUT -> CatalogLandingPageListContainerViewHolder(view, catalogLibraryListener)
+            CatalogListContainerViewHolder.LAYOUT -> CatalogListContainerViewHolder(view, catalogLibraryListener)
             CatalogContainerItemViewHolder.LAYOUT -> CatalogContainerItemViewHolder(view,catalogLibraryListener)
             CatalogShimmerViewHolder.LAYOUT -> CatalogShimmerViewHolder(view)
             else -> super.createViewHolder(view, type)

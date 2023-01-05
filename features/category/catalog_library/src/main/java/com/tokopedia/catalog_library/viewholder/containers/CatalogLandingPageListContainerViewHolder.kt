@@ -8,7 +8,6 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.components.CatalogListAdapter
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLandingListDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogListDataModel
 
 class CatalogLandingPageListContainerViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener) :
     AbstractViewHolder<CatalogLandingListDataModel>(view) {

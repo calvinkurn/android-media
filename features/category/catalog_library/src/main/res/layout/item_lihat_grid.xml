@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:id="@+id/lihat_expanded_item_layout"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:layout_margin="10dp"
-    android:id="@+id/lihat_expanded_item_layout">
+    android:layout_gravity="center"
+    android:gravity="center"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/lihat_item_icon"
@@ -13,18 +19,16 @@
             android:layout_height="24dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/catalog_special_grid_border"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:gravity="center"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/lihat_item_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:typographyType="display_3"
+            android:gravity="center"
             tools:text="Title"
-            app:layout_constraintTop_toBottomOf="@id/lihat_item_icon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

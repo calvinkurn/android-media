@@ -23,6 +23,7 @@ import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
@@ -75,6 +76,12 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         activity?.let {
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
             showShimmer()
+        }
+        view.findViewById<Typography>(R.id.sort_order_0).setOnClickListener {
+            changeSortOrderAsc()
+        }
+        view.findViewById<Typography>(R.id.sort_order_1).setOnClickListener {
+            changeSortOrderDesc()
         }
         setupRecyclerView(view)
         setObservers()
@@ -156,13 +163,11 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         }
     }
 
-    override fun changeSortOrderAsc() {
-        super.changeSortOrderAsc()
+    fun changeSortOrderAsc() {
         lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
     }
 
-    override fun changeSortOrderDesc() {
-        super.changeSortOrderAsc()
+    fun changeSortOrderDesc() {
         lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER, DEVICE)
     }
 

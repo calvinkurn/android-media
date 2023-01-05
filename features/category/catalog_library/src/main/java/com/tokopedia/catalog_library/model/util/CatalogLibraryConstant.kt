@@ -6,6 +6,7 @@ object CatalogLibraryConstant {
     const val CATALOG_LIST = "catalog_list"
 
     const val CATALOG_LIHAT_SEMUA = "catalog_lihat_semua"
+    const val CATALOG_LIHAT_SEMUA_ITEM = "catalog_lihat_semua_item"
     const val CATALOG_TOP_FIVE = "catalog_top_five"
     const val CATALOG_MOST_VIRAL = "catalog_most_viral"
 

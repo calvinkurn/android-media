@@ -1,68 +1,82 @@
 package com.tokopedia.catalog_library.viewholder.components
 
 import android.view.View
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.catalog_library.R
-import com.tokopedia.catalog_library.adapter.components.CatalogLihatGridItemAdapter
+import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
+import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
+import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
 
-class CatalogLihatViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+class CatalogLihatViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogLihatDataModel>(view){
 
     private val accordionView =
         view.findViewById<AccordionUnify>(R.id.lihat_category_accordion_view)
     private var childView: View? = null
 
-    fun bind(
-        catalogLibraryData: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData,
-        catalogLibraryListener: CatalogLibraryListener
-    ) {
+    private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
+        CatalogHomepageAdapterFactoryImpl(
+            catalogLibraryListener
+        )
+    }
+    private val listAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
+            AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
+        CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
+    }
+
+    companion object {
+        val LAYOUT = R.layout.item_catalog_lihat_category
+        val LAYOUT_ACCORDION = R.layout.item_catalog_lihat_expanded_layout
+        const val COLUMN_COUNT = 4
+    }
+
+    override fun bind(element: CatalogLihatDataModel) {
         accordionView.run {
             accordionData.clear()
             removeAllViews()
             onItemClick = { _, isExpanded ->
                 if (isExpanded) {
-                    getLihatGridAdapter(
-                        catalogLibraryData,
-                        catalogLibraryListener
-                    )?.notifyDataSetChanged()
+                    listAdapter.submitList(getChildVisitableList(element.catalogLibraryDataList?.childCategoryList))
                 }
             }
         }
-        childView = View.inflate(view.context, LAYOUT, null)
+        childView = View.inflate(view.context, LAYOUT_ACCORDION, null)
         childView?.findViewById<RecyclerView>(R.id.lihat_grid_view)?.apply {
-            adapter = getLihatGridAdapter(catalogLibraryData, catalogLibraryListener)
+            adapter = listAdapter
             layoutManager = GridLayoutManager(view.context, COLUMN_COUNT)
         }
-        getAccordionData(catalogLibraryData)
+        listAdapter.submitList(getChildVisitableList(element.catalogLibraryDataList?.childCategoryList))
+        getAccordionData(element.catalogLibraryDataList)
     }
 
-    private fun getAccordionData(catalogLibraryData: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData) {
+    private fun getChildVisitableList(childCategoryList: ArrayList<CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList>?): MutableList<BaseCatalogLibraryDataModel>? {
+        val visitables = arrayListOf<BaseCatalogLibraryDataModel>()
+        childCategoryList?.forEach {
+            visitables.add(CatalogLihatItemDataModel(CATALOG_LIHAT_SEMUA_ITEM,CATALOG_LIHAT_SEMUA_ITEM,it))
+        }
+        return visitables
+    }
+
+    private fun getAccordionData(catalogLibraryData: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData?) {
         accordionView.apply {
             childView?.let {
                 val accordionDataUnify = AccordionDataUnify(
-                    title = catalogLibraryData.rootCategoryName.toString(),
+                    title = catalogLibraryData?.rootCategoryName.toString(),
                     expandableView = it, isExpanded = true
                 )
                 addGroup(accordionDataUnify)
             }
         }
-    }
-
-    private fun getLihatGridAdapter(
-        catalogLibraryData: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData,
-        catalogLibraryListener: CatalogLibraryListener
-    ): CatalogLihatGridItemAdapter? {
-        return catalogLibraryData.childCategoryList?.let {
-            CatalogLihatGridItemAdapter(it, catalogLibraryListener)
-        }
-    }
-
-    companion object {
-        val LAYOUT = R.layout.item_catalog_lihat_expanded_layout
-        const val COLUMN_COUNT = 4
     }
 }

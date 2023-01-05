@@ -1,15 +1,9 @@
-package com.tokopedia.catalog_library.viewholder.containers
+package com.tokopedia.catalog_library.viewholder.components
 
 import android.view.View
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
-import com.tokopedia.catalog_library.adapter.components.CatalogListAdapter
-import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.CatalogLandingListDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogListDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
