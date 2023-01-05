@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
@@ -34,8 +35,21 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogHomepageFragment : Fragment(),
-    HasComponent<CatalogLibraryComponent>, CatalogLibraryListener {
+class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
+
+    private var shimmerLayout: ScrollView? = null
+    private var userSession: UserSession? = null
+    private val categoryId = ""
+    private val categoryIdentifier = ""
+    private val brandIdentifier = ""
+    private val keyword = ""
+    private val sortType = "0"
+    private val page = ""
+    private val rows = ""
+
+    companion object {
+        const val CATALOG_HOME_PAGE_FRAGMENT_TAG = "CATALOG_HOME_PAGE_FRAGMENT_TAG"
+    }
 
     @JvmField
     @Inject
@@ -44,6 +58,37 @@ class CatalogHomepageFragment : Fragment(),
         viewModelFactory?.let {
             ViewModelProvider(this, it).get(CatalogHomepageViewModel::class.java)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_catalog_homepage, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        shimmerLayout = view.findViewById(R.id.shimmer_layout)
+//        initHeaderTitle(view)
+        activity?.let { observer ->
+            userSession = UserSession(observer)
+            getDataFromViewModel()
+            showShimmer()
+        }
+        setupRecyclerView(view)
+        setObservers()
+    }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        DaggerCatalogLibraryComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -64,43 +109,6 @@ class CatalogHomepageFragment : Fragment(),
             it.setUpForHomePage()
         }
 
-    private var shimmerLayout: ScrollView? = null
-
-    private var userSession: UserSession? = null
-
-    private val categoryId = ""
-    private val categoryIdentifier = ""
-    private val brandIdentifier = ""
-    private val keyword = ""
-    private val sortType = "0"
-    private val page = ""
-    private val rows = ""
-
-    companion object {
-        const val CATALOG_HOME_PAGE_FRAGMENT_TAG = "CATALOG_HOME_PAGE_FRAGMENT_TAG"
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        component.inject(this)
-        shimmerLayout = view.findViewById(R.id.shimmer_layout)
-//        initHeaderTitle(view)
-        activity?.let { observer ->
-            userSession = UserSession(observer)
-            getDataFromViewModel()
-            showShimmer()
-        }
-        setupRecyclerView(view)
-        setObservers()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_catalog_homepage, container, false)
-    }
 
     private fun setupRecyclerView(view: View) {
         catalogHomeRecyclerView = view.findViewById(R.id.catalog_home_rv)
@@ -126,12 +134,6 @@ class CatalogHomepageFragment : Fragment(),
                 }
             }
         }
-    }
-
-    override fun getComponent(): CatalogLibraryComponent {
-        return DaggerCatalogLibraryComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
     }
 
     private fun updateUi() {
@@ -200,6 +202,5 @@ class CatalogHomepageFragment : Fragment(),
     override fun onCategoryItemClicked(categoryName: String?) {
         super.onCategoryItemClicked(categoryName)
         RouteManager.route(context, "tokopedia://catalog-library/kategori/${categoryName}")
-
     }
 }

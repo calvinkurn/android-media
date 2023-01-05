@@ -8,14 +8,15 @@ import com.tokopedia.catalog_library.ui.fragment.CatalogHomepageFragment
 import com.tokopedia.catalog_library.ui.fragment.CatalogLandingPageFragment
 
 class CatalogLibraryActivity : BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_catalog_library)
         prepareView(savedInstanceState == null)
+    }
+
+    override fun getNewFragment(): Fragment? {
+        return null
     }
 
     override fun getLayoutRes(): Int {
