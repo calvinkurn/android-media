@@ -1,11 +1,16 @@
 package com.tokopedia.tokopedianow.home.presentation.uimodel
 
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 
 data class HomeProductRecomUiModel(
     val id: String,
-    val recomWidget: RecommendationWidget,
+    val title: String,
+    val productList: List<TokoNowProductCardCarouselItemUiModel>,
+    val seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
+    val headerModel: TokoNowDynamicHeaderUiModel? = null,
     val realTimeRecom: HomeRealTimeRecomUiModel = HomeRealTimeRecomUiModel()
 ) : HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {
@@ -14,13 +19,13 @@ data class HomeProductRecomUiModel(
 
     override fun getChangePayload(newModel: HomeLayoutUiModel): Any? {
         val newItem = newModel as HomeProductRecomUiModel
-        val oldRecomWidget = recomWidget.recommendationItemList
-        val newRecomWidget = newItem.recomWidget.recommendationItemList
+        val oldProductList = productList
+        val newProductList = newItem.productList
         val oldRtrWidget = realTimeRecom
         val newRtrWidget = newItem.realTimeRecom
 
         return when {
-            oldRecomWidget != newRecomWidget ||
+            oldProductList != newProductList ||
             oldRtrWidget != newRtrWidget -> true
             else -> null
         }

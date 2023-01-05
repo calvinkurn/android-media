@@ -61,7 +61,6 @@ object MediaLoaderTracker : CoroutineScope {
         val fileSize = bitmap?.allocationByteCount?.toString() ?: "0"
         val fileSizeInMb = fileSize.toLong().formattedToMB()
 
-
         // tracker
         track(
             context = context.applicationContext,
@@ -88,8 +87,10 @@ object MediaLoaderTracker : CoroutineScope {
         context: Context,
         url: String,
         loadTime: String = "",
-        exception: GlideException?,
+        exception: GlideException?
     ) {
+        if (!RemoteCdnService.isValidUrl(url)) return
+
         val pageName = try {
             context.javaClass.name.split(".").last()
         } catch (e: Throwable) {
@@ -126,7 +127,6 @@ object MediaLoaderTracker : CoroutineScope {
                 tag = TAG_CDN_MONITORING,
                 message = map
             )
-
         }, onError = {})
     }
 
@@ -155,7 +155,6 @@ object MediaLoaderTracker : CoroutineScope {
             else -> "Unknown"
         }
     }
-
 }
 
 data class IsIcon(val value: Boolean)

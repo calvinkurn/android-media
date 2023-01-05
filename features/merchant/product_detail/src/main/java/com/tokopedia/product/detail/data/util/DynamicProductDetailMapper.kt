@@ -42,6 +42,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -262,6 +263,13 @@ object DynamicProductDetailMapper {
                         type = component.type
                     )
                     listOfComponent.add(shopAdditional)
+                }
+                ProductDetailConstant.CUSTOM_INFO_TITLE -> {
+                    val customInfoTitle = mapToCustomInfoTitle(component = component)
+
+                    if (customInfoTitle != null) {
+                        listOfComponent.add(customInfoTitle)
+                    }
                 }
             }
         }
@@ -741,6 +749,17 @@ object DynamicProductDetailMapper {
             widgetType = bundlingData.widgetType,
             productId = bundlingData.productId,
             whId = bundlingData.whId
+        )
+    }
+
+    private fun mapToCustomInfoTitle(component: Component): ProductCustomInfoTitleDataModel? {
+        val data = component.componentData.firstOrNull() ?: return null
+
+        return ProductCustomInfoTitleDataModel(
+            name = component.componentName,
+            type = component.type,
+            title = data.title,
+            status = ProductCustomInfoTitleDataModel.Status.fromString(data.status)
         )
     }
 }

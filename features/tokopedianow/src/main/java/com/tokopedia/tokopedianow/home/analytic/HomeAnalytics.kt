@@ -46,6 +46,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_49
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_79
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_82
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_84
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_90
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_INDEX
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS
@@ -72,6 +73,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.PAGE_NAME_TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_ATC_PAST_PURCHASE
@@ -96,6 +98,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARI
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_HALAL_LABEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_VARIANT
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_BANNER_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CART_BUTTON
@@ -112,7 +115,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_REWARD_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SEE_DETAILS_QUEST_WIDGET
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SHARE_BUTTON
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SHARE_SENDER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SLIDER_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SWITCHER_WIDGET
@@ -162,7 +164,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     object ACTION {
         const val EVENT_ACTION_CLICK_SEARCH_BAR = "click search bar on homepage"
         const val EVENT_ACTION_CLICK_CART_BUTTON = "click cart button on homepage"
-        const val EVENT_ACTION_CLICK_SHARE_BUTTON = "click share button on homepage"
         const val EVENT_ACTION_CLICK_SLIDER_BANNER = "click slider banner"
         const val EVENT_ACTION_CLICK_ALL_CATEGORY = "click view all category widget"
         const val EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY = "click category on category widget"
@@ -257,16 +258,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             getDataLayer(
                 event = EVENT_CLICK_TOKONOW,
                 action = EVENT_ACTION_CLICK_CART_BUTTON,
-                category = EVENT_CATEGORY_TOP_NAV
-            )
-        )
-    }
-
-    fun onClickShareButton() {
-        hitCommonHomeTracker(
-            getDataLayer(
-                event = EVENT_CLICK_TOKONOW,
-                action = EVENT_ACTION_CLICK_SHARE_BUTTON,
                 category = EVENT_CATEGORY_TOP_NAV
             )
         )
@@ -371,41 +362,31 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     fun onClickProductRecom(
         channelId: String,
         headerName: String,
-        recommendationItem: RecommendationItem,
-        position: String,
-        isOoc: Boolean
+        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        position: Int
     ) {
-        val productId = recommendationItem.productId.toString()
+        val productId = recommendationItem.productCardModel.productId
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_SELECT_CONTENT,
-            action = if (isOoc) EVENT_ACTION_CLICK_PRODUCT_RECOM_OOC else EVENT_ACTION_CLICK_PRODUCT_RECOM,
-            category = if (isOoc) EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN else EVENT_CATEGORY_RECOM_HOME_PAGE,
-            label = if (isOoc) " - $headerName" else "$channelId - $headerName",
+            action = EVENT_ACTION_CLICK_PRODUCT_RECOM,
+            category = EVENT_CATEGORY_RECOM_HOME_PAGE,
+            label = "$channelId - $headerName",
             items = arrayListOf(
                 productItemDataLayer(
-                    index = position,
-                    productId = recommendationItem.productId.toString(),
-                    productName = recommendationItem.name,
-                    price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero(),
-                    productCategory = recommendationItem.categoryBreadcrumbs
-                )
+                    index = position.getTrackerPosition().toString(),
+                    productId = recommendationItem.productCardModel.productId,
+                    productName = recommendationItem.productCardModel.name,
+                    price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
+                    productCategory = ""
+                ).apply {
+                    putString(KEY_DIMENSION_40, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
+                    putString(KEY_DIMENSION_84, channelId)
+                }
             ),
-            productId = recommendationItem.productId.toString(),
+            productId = recommendationItem.productCardModel.productId,
         )
         dataLayer.putString(KEY_PRODUCT_ID, productId)
-
-        if (isOoc) {
-            dataLayer.remove(KEY_PAGE_SOURCE)
-            dataLayer.putString(
-                KEY_ITEM_LIST,
-                "{'list': '/tokonow - ${recommendationItem.pageName} - rekomendasi untuk anda - ${recommendationItem.recommendationType} - ${if (recommendationItem.isTopAds) PRODUCT_TOPADS else ""} - ooc'}"
-            )
-        } else {
-            dataLayer.putString(
-                KEY_ITEM_LIST,
-                "{'list': '/tokonow - recomproduct - carousel - ${recommendationItem.recommendationType} - ${recommendationItem.pageName} - $headerName'}"
-            )
-        }
+        dataLayer.putString(KEY_ITEM_LIST, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
@@ -413,29 +394,92 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     fun onImpressProductRecom(
         channelId: String,
         headerName: String,
-        recomItem: RecommendationItem,
-        isOoc: Boolean
+        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        position: Int
     ) {
-        val productId = recomItem.productId.toString()
+        val productId = recommendationItem.productCardModel.productId
         val items = arrayListOf(
             productItemDataLayer(
-                index = recomItem.position.toString(),
-                productId = recomItem.productId.toString(),
-                productName = recomItem.name,
-                price = recomItem.price.filter { it.isDigit() }.toLongOrZero(),
-                productCategory = recomItem.categoryBreadcrumbs
+                index = position.getTrackerPosition().toString(),
+                productId = recommendationItem.productCardModel.productId,
+                productName = recommendationItem.productCardModel.name,
+                price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
+                productCategory = ""
+            ).apply {
+                putString(KEY_DIMENSION_40, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
+                putString(KEY_DIMENSION_84, channelId)
+            }
+        )
+        val dataLayer = getEcommerceDataLayer(
+            event = EVENT_VIEW_ITEM_LIST,
+            action = EVENT_ACTION_IMPRESSION_PRODUCT_RECOM,
+            category = EVENT_CATEGORY_RECOM_HOME_PAGE,
+            label = "$channelId - $headerName",
+            items = items
+        )
+        dataLayer.putString(KEY_PRODUCT_ID, productId)
+        dataLayer.putString(KEY_ITEM_LIST, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
+    }
+
+    fun onClickProductRecomOoc(
+        headerName: String,
+        recommendationItem: RecommendationItem,
+        position: Int
+    ) {
+        val productId = recommendationItem.productId
+        val dataLayer = getEcommerceDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_PRODUCT_RECOM_OOC,
+            category = EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN,
+            label = " - $headerName",
+            items = arrayListOf(
+                productItemDataLayer(
+                    index = position.getTrackerPosition().toString(),
+                    productId = recommendationItem.productId.toString(),
+                    productName = recommendationItem.name,
+                    price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero(),
+                    productCategory = recommendationItem.categoryBreadcrumbs
+                ).apply {
+                    putString(KEY_DIMENSION_90, "$EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN.$EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN")
+                }
+            ),
+            productId = recommendationItem.productId.toString(),
+        )
+        dataLayer.putString(KEY_PRODUCT_ID, productId.toString())
+        dataLayer.remove(KEY_PAGE_SOURCE)
+        dataLayer.putString(
+            KEY_ITEM_LIST,
+            "/tokonow - ${recommendationItem.pageName} - rekomendasi untuk anda - ${recommendationItem.recommendationType} - ${if (recommendationItem.isTopAds) PRODUCT_TOPADS else ""} - ooc"
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    fun onImpressProductRecomOoc(
+        headerName: String,
+        recommendationItem: RecommendationItem,
+        position: Int
+    ) {
+        val productId = recommendationItem.productId
+        val items = arrayListOf(
+            productItemDataLayer(
+                index = position.getTrackerPosition().toString(),
+                productId = recommendationItem.productId.toString(),
+                productName = recommendationItem.name,
+                price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero(),
+                productCategory = recommendationItem.categoryBreadcrumbs
             )
         )
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
-            action = if (isOoc) EVENT_ACTION_IMPRESSION_PRODUCT_RECOM_OOC else EVENT_ACTION_IMPRESSION_PRODUCT_RECOM,
-            category = if (isOoc) EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN else EVENT_CATEGORY_RECOM_HOME_PAGE,
-            label = if (isOoc) " - $headerName" else "$channelId - $headerName",
+            action = EVENT_ACTION_IMPRESSION_PRODUCT_RECOM_OOC,
+            category = EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN,
+            label = " - $headerName",
             items = items
         )
-        dataLayer.putString(KEY_PRODUCT_ID, productId)
-
-        if (isOoc) dataLayer.remove(KEY_PAGE_SOURCE)
+        dataLayer.putString(KEY_PRODUCT_ID, productId.toString())
+        dataLayer.remove(KEY_PAGE_SOURCE)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
@@ -443,29 +487,30 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         channelId: String,
         headerName: String,
         quantity: String,
-        recommendationItem: RecommendationItem,
-        position: String,
+        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        position: Int,
         cartId: String
     ) {
         val item = productItemDataLayer(
-            index = position,
-            productId = recommendationItem.productId.toString(),
-            productName = recommendationItem.name,
-            price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero()
+            index = position.getTrackerPosition().toString(),
+            productId = recommendationItem.productCardModel.productId,
+            productName = recommendationItem.productCardModel.name,
+            price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
         ).apply {
             putString(
                 KEY_DIMENSION_40,
-                "{'list': '/tokonow - recomproduct - carousel - ${recommendationItem.recommendationType} - ${recommendationItem.pageName} - $headerName'}"
+                "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName"
             )
             putString(KEY_DIMENSION_45, cartId)
+            putString(KEY_DIMENSION_84, channelId)
             putString(KEY_QUANTITY, quantity)
-            putString(KEY_SHOP_ID, recommendationItem.shopId.toString())
+            putString(KEY_SHOP_ID, recommendationItem.shopId)
             putString(KEY_SHOP_NAME, recommendationItem.shopName)
-            putString(KEY_SHOP_TYPE, recommendationItem.type)
+            putString(KEY_SHOP_TYPE, recommendationItem.shopType)
             putString(KEY_CATEGORY_ID, "")
         }
 
-        val productId = recommendationItem.productId.toString()
+        val productId = recommendationItem.productCardModel.productId
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_ADD_TO_CART,
             action = EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART,
@@ -483,19 +528,19 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         channelId: String,
         headerName: String,
         quantity: String,
-        recommendationItem: RecommendationItem,
-        position: String
+        recommendationItem: TokoNowProductCardCarouselItemUiModel,
+        position: Int
     ) {
         val item = productItemDataLayer(
-            index = position,
-            productId = recommendationItem.productId.toString(),
-            productName = recommendationItem.name,
-            price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero()
+            index = position.getTrackerPosition().toString(),
+            productId = recommendationItem.productCardModel.productId,
+            productName = recommendationItem.productCardModel.name,
+            price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
         ).apply {
             putString(KEY_QUANTITY, quantity)
-            putString(KEY_SHOP_ID, recommendationItem.shopId.toString())
+            putString(KEY_SHOP_ID, recommendationItem.shopId)
             putString(KEY_SHOP_NAME, recommendationItem.shopName)
-            putString(KEY_SHOP_TYPE, recommendationItem.type)
+            putString(KEY_SHOP_TYPE, recommendationItem.shopType)
             putString(KEY_CATEGORY_ID, "")
         }
 
@@ -505,7 +550,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             category = EVENT_CATEGORY_RECOM_HOME_PAGE,
             label = "$channelId - $headerName",
             items = arrayListOf(item),
-            productId = recommendationItem.productId.toString(),
+            productId = recommendationItem.productCardModel.productId,
             pageSource = ""
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_REMOVE_FROM_CART, dataLayer)
@@ -518,10 +563,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     ) {
         val item = productItemDataLayer(
             productId = uiModel.id.toString(),
-            productName = uiModel.productCardModel.productName,
-            price = uiModel.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero()
+            productName = uiModel.productCardModel.name,
+            price = uiModel.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
         ).apply {
-            putString(KEY_DIMENSION_40, "{'list': '/tokonow - recomproduct - carousel - ${uiModel.recommendationType} - ${uiModel.channelPageName} - ${uiModel.channelHeaderName}'}")
+            putString(KEY_DIMENSION_40, "/tokonow - recomproduct - carousel - ${uiModel.recommendationType} - ${uiModel.channelPageName} - ${uiModel.channelHeaderName}")
             putString(KEY_DIMENSION_45, cartId)
             putString(KEY_DIMENSION_90, PRODUCT_PAGE_SOURCE)
             putString(KEY_QUANTITY, quantity)
@@ -641,11 +686,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun trackClickViewAllLeftCarousel(channelId: String, channelHeaderName: String) {
+    fun trackClickViewAllLeftCarousel(id: String, headerName: String) {
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_VIEW_ALL_LEFT_CAROUSEL,
-            label = "$channelId - $channelHeaderName"
+            label = "$id - $headerName"
         )
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
@@ -656,10 +701,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         product: HomeLeftCarouselAtcProductCardUiModel
     ) {
         val productItem = productItemDataLayer(
-            index = position.toString(),
+            index = position.getTrackerPosition().toString(),
             productId = product.id.orEmpty(),
-            productName = product.productCardModel.productName,
-            price = product.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero(),
+            productName = product.productCardModel.name,
+            price = product.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
             productBrand = product.brandId,
             productCategory = product.categoryId
         )
@@ -716,10 +761,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         val items = arrayListOf(
             productItemDataLayer(
-                index = position.toString(),
+                index = position.getTrackerPosition().toString(),
                 productId = product.id.orEmpty(),
-                productName = product.productCardModel.productName,
-                price = product.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero(),
+                productName = product.productCardModel.name,
+                price = product.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = product.brandId,
                 productCategory = product.categoryId
             )
