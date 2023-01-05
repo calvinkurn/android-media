@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.method.LinkMovementMethod
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -32,10 +34,12 @@ import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileValidate
 import com.tokopedia.loginregister.shopcreation.view.util.PhoneNumberTextWatcher
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.text.style.UserConsentTncPolicyUtil
 import javax.inject.Inject
 
 /**
@@ -44,12 +48,6 @@ import javax.inject.Inject
  */
 
 class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
-
-//    private lateinit var toolbarShopCreation: Toolbar
-//    private lateinit var container: View
-//    private lateinit var buttonContinue: UnifyButton
-//    private lateinit var textFieldPhone: TextFieldUnify
-//    private lateinit var errorMessage: Typography
 
     private var phone: String = ""
 
@@ -216,6 +214,8 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             }
         }
 
+        renderTncPolicy()
+
         viewBinding?.btnContinue?.setOnClickListener {
             shopCreationAnalytics.eventClickContinuePhoneShopCreation()
             phone = viewBinding?.textFieldPhone?.textFieldInput?.text.toString().trim()
@@ -242,6 +242,32 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 hideKeyboardFrom(context as Context, view as View)
             }
         }
+    }
+
+    private fun renderTncPolicy() {
+        viewBinding?.tncPolicy?.text = UserConsentTncPolicyUtil.generateText(
+            message = getString(R.string.phone_shop_tnc_policy),
+            tncTitle = getString(R.string.phone_shop_tnc_title),
+            policyTitle = getString(R.string.phone_shop_policy_title),
+            actionTnc = {
+                RouteManager.route(
+                    activity,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TNC)
+                )
+            },
+            actionPolicy = {
+                RouteManager.route(
+                    activity,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_POLICY)
+                )
+            },
+            colorSpan = MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
+            )
+        )
+        viewBinding?.tncPolicy?.movementMethod = LinkMovementMethod.getInstance()
+        viewBinding?.layoutTnc?.visibility = View.VISIBLE
     }
 
     private fun initObserver() {
@@ -355,16 +381,24 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         viewBinding?.errorMessage?.text = message
         context?.let {
             viewBinding?.errorMessage?.text = message
-            viewBinding?.errorMessage?.setTextColor(MethodChecker.getColor(context,
-                com.tokopedia.unifyprinciples.R.color.Unify_R500))
+            viewBinding?.errorMessage?.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_R500
+                )
+            )
         }
     }
 
     private fun clearMessageFieldPhone() {
         context?.let {
             viewBinding?.errorMessage?.text = getString(R.string.desc_phone_shop_creation)
-            viewBinding?.errorMessage?.setTextColor(MethodChecker.getColor(context,
-                com.tokopedia.unifyprinciples.R.color.Unify_R500))
+            viewBinding?.errorMessage?.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_R500
+                )
+            )
         }
     }
 
@@ -384,12 +418,16 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE,
-            LoginConstants.OtpType.OTP_LOGIN_PHONE_NUMBER)
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_OTP_TYPE,
+            LoginConstants.OtpType.OTP_LOGIN_PHONE_NUMBER
+        )
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW,
-            getIsLoginRegisterFlow())
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW,
+            getIsLoginRegisterFlow()
+        )
         startActivityForResult(intent, LoginConstants.Request.REQUEST_LOGIN_PHONE)
     }
 
@@ -399,12 +437,16 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE,
-            RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER)
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_OTP_TYPE,
+            RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER
+        )
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW,
-            getIsLoginRegisterFlow())
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW,
+            getIsLoginRegisterFlow()
+        )
         startActivityForResult(intent, LoginConstants.Request.REQUEST_REGISTER_PHONE)
     }
 
@@ -415,8 +457,10 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW,
-            getIsLoginRegisterFlow())
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW,
+            getIsLoginRegisterFlow()
+        )
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
     }
 
@@ -429,7 +473,8 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToRegisterAddNamePage(phone: String, validateToken: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION)
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
 
@@ -469,6 +514,9 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val OTP_TYPE_PHONE_VERIFICATION = 11
 
         private const val MIN_PHONE_LENGTH = 6
+
+        private val URL_TNC = "${TokopediaUrl.getInstance().WEB}terms?lang=id"
+        private val URL_POLICY = "${TokopediaUrl.getInstance().WEB}privacy?lang=id"
 
         fun createInstance(bundle: Bundle): PhoneShopCreationFragment {
             val fragment = PhoneShopCreationFragment()
