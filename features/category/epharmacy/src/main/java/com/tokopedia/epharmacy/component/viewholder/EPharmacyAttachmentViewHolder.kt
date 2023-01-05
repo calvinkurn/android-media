@@ -6,16 +6,22 @@ import android.view.animation.CycleInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.R
-import com.tokopedia.epharmacy.adapters.EPharmacyAttachmentProductAccordionAdapter
+import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
+import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactoryImpl
+import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUtil
+import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.PRODUCT_COMPONENT
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
@@ -56,6 +62,16 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10
         private const val VIBRATION_ANIMATION_CYCLE = 4f
+    }
+
+    private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(null) }
+
+    private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val asyncDifferConfig: AsyncDifferConfig<BaseEPharmacyDataModel> = AsyncDifferConfig.Builder(
+            EPharmacyAttachmentDetailDiffUtil()
+        )
+            .build()
+        EPharmacyAdapter(asyncDifferConfig, ePharmacyAdapterFactory)
     }
 
     private var dataModel: EPharmacyAttachmentDataModel? = null
@@ -145,28 +161,19 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             productImageUnify.loadImage(firstProduct.productImage)
         }
 
-        if (!dataModel?.shopInfo?.products.isNullOrEmpty() && (
-            dataModel?.shopInfo?.products?.size
-                ?: 0
-            ) > 1
-        ) {
+        if ((dataModel?.shopInfo?.products?.size ?: 0) > 1) {
             productAccordionView.show()
             if (productAccordionRV.adapter == null) {
                 productAccordionRV.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
-                productAccordionRV.adapter = dataModel?.shopInfo?.products?.let { products ->
-                    getAttachmentAccordionAdapter(
-                        products
-                    )
-                }
+                productAccordionRV.adapter = ePharmacyAdapter
                 productAccordionView.setOnClickListener {
                     ePharmacyListener?.onInteractAccordion(bindingAdapterPosition, dataModel?.productsIsExpanded ?: false, dataModel?.name)
                 }
-            } else {
-                dataModel?.shopInfo?.products?.let { products ->
-                    (productAccordionRV.adapter as EPharmacyAttachmentProductAccordionAdapter).setData(
-                        getProductsWithoutFirst(products)
-                    )
-                }
+
+            }
+
+            dataModel?.shopInfo?.let { products ->
+                ePharmacyAdapter.submitList(getProductVisitablesWithoutFirst(products))
             }
 
             if (dataModel?.productsIsExpanded == true) {
@@ -181,14 +188,13 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         }
     }
 
-    private fun getAttachmentAccordionAdapter(products: ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>): EPharmacyAttachmentProductAccordionAdapter {
-        return EPharmacyAttachmentProductAccordionAdapter(getProductsWithoutFirst(products))
-    }
-
-    private fun getProductsWithoutFirst(products: ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>): ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?> {
-        val productSubList = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>()
-        products.forEachIndexed { index, product ->
-            if (index != 0) { productSubList.add(product) }
+    private fun getProductVisitablesWithoutFirst(shopInfo : EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?)
+    : List<BaseEPharmacyDataModel> {
+        val productSubList = arrayListOf<EPharmacyAccordionProductDataModel>()
+        shopInfo?.products?.forEachIndexed { index, product ->
+            if (index != 0) {
+                productSubList.add(EPharmacyAccordionProductDataModel("${PRODUCT_COMPONENT}_${product?.productId}",PRODUCT_COMPONENT,product))
+            }
         }
         return productSubList
     }
