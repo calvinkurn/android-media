@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.error
 
+import com.tokopedia.config.GlobalConfig
+
 /**
  * Created by jegul on 15/06/21
  */
