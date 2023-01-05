@@ -121,10 +121,6 @@ class ShippingScheduleWidget : ConstraintLayout {
             }
         } else null
 
-        if (!available) {
-            ScheduleDeliveryAnalytics.sendViewUnavailableScheduledDeliveryEvent()
-        }
-
         return ShippingScheduleWidgetModel(
             isEnable = available,
             title = getTitleOtherOption(),
