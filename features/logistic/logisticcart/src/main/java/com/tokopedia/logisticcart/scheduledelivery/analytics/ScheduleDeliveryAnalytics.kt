@@ -73,7 +73,6 @@ object ScheduleDeliveryAnalytics : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-
     fun sendViewUnavailableScheduledDeliveryEvent() {
         val gtmData = getGtmData(
             EventName.VIEW_PP_IRIS,
