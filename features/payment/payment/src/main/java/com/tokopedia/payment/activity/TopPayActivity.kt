@@ -164,8 +164,11 @@ class TopPayActivity :
     }
 
     private fun initTimestampLogger() {
-        paymentTimestampLogger = PaymentTimestampLogger()
-        paymentTimestampLogger?.checkoutTimestamp = intent.getLongExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, 0L)
+        val checkoutTimestamp =
+            intent.getLongExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, 0L)
+        if (checkoutTimestamp > 0) {
+            paymentTimestampLogger = PaymentTimestampLogger(remoteConfig)
+        }
     }
 
     private fun initInjector() {
@@ -731,7 +734,7 @@ class TopPayActivity :
             hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
-            paymentTimestampLogger?.paymentFinishLoadTimestamp =  System.currentTimeMillis()
+            paymentTimestampLogger?.paymentFinishLoadTimestamp = System.currentTimeMillis()
             paymentTimestampLogger?.sendLog()
         }
 
