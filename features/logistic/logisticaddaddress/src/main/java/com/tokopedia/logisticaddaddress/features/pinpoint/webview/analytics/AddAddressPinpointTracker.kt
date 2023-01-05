@@ -22,6 +22,7 @@ enum class AddAddressPinpointTracker(val trackerId: String) {
     ClickIconQuestion("11068"),
     ClickPilihLokasiPositive("11069"),
     ClickPilihLokasiNegative("11083"),
+    ClickBackArrowPinpoint("11061"),
     ViewToasterPinpointTidakSesuai("11084");
 
     companion object {

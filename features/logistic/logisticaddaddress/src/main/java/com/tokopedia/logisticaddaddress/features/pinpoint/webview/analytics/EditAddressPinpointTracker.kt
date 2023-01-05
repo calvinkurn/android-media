@@ -9,6 +9,7 @@ enum class EditAddressPinpointTracker(val trackerId: String) {
     ImpressBottomSheetOutOfIndo("29689"),
     ClickCariUlangAlamat("29687"),
     ClickGunakanLokasiSaatIniPinpoint("29686"),
+    ClickBackArrowPinpoint("29691"),
     ClickPilihLokasiIni("29688");
 
     companion object {

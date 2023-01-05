@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
@@ -25,6 +26,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.A
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
+import com.tokopedia.logisticaddaddress.utils.ParcelableHelper.parcelable
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSessionWebViewFragment
@@ -53,6 +55,18 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
         super.onViewCreated(view, savedInstanceState)
         getData()
         observeState()
+        setOnBackPressed()
+    }
+
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.finishWithoutSaveChanges()
+                }
+            }
+        )
     }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
@@ -75,9 +89,9 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
 
     private fun getData() {
         arguments?.let {
-            it.getParcelable<LocationPass>(KEY_LOCATION_PASS)
+            it.parcelable<LocationPass>(KEY_LOCATION_PASS)
                 ?.let { locationPass -> viewModel.setLocationPass(locationPass) }
-            it.getParcelable<SaveAddressDataModel>(KEY_ADDRESS_DATA)
+            it.parcelable<SaveAddressDataModel>(KEY_ADDRESS_DATA)
                 ?.let { addressData -> viewModel.setAddressDataModel(addressData) }
             it.getString(KEY_SOURCE_PINPOINT)?.let { source ->
                 viewModel.setSource(source)
@@ -105,26 +119,31 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
                 is PinpointWebviewState.SendTracker.EditAddress -> {
                     sendEditAddressTracker(it.tracker)
                 }
+                is PinpointWebviewState.FinishActivity -> {
+                    finishActivity()
+                }
             }
         })
     }
 
     private fun finishActivity(
-        addressData: SaveAddressDataModel?,
-        locationPass: LocationPass?,
-        latitude: Double,
-        longitude: Double
+        addressData: SaveAddressDataModel? = null,
+        locationPass: LocationPass? = null,
+        latitude: Double? = null,
+        longitude: Double? = null
     ) {
         activity?.run {
-            setResult(
-                Activity.RESULT_OK,
-                Intent().apply {
-                    locationPass?.let { data -> putExtra(KEY_LOCATION_PASS, data) }
-                    addressData?.let { data -> putExtra(KEY_ADDRESS_DATA, data) }
-                    putExtra(KEY_LAT_ID, latitude)
-                    putExtra(KEY_LONG_ID, longitude)
-                }
-            )
+            if (latitude != null && longitude != null) {
+                setResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
+                        locationPass?.let { data -> putExtra(KEY_LOCATION_PASS, data) }
+                        addressData?.let { data -> putExtra(KEY_ADDRESS_DATA, data) }
+                        putExtra(KEY_LAT_ID, latitude)
+                        putExtra(KEY_LONG_ID, longitude)
+                    }
+                )
+            }
             finish()
         }
     }
@@ -208,6 +227,9 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
             AddAddressPinpointTracker.ViewToasterPinpointTidakSesuai -> {
                 AddNewAddressRevampAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
             }
+            AddAddressPinpointTracker.ClickBackArrowPinpoint -> {
+                AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+            }
         }
     }
 
@@ -239,6 +261,9 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
             }
             EditAddressPinpointTracker.ClickBackArrowSearch -> {
                 EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            }
+            EditAddressPinpointTracker.ClickBackArrowPinpoint -> {
+                EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
             }
         }
     }

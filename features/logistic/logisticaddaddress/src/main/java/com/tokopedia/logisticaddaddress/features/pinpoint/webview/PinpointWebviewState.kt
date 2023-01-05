@@ -21,4 +21,6 @@ sealed class PinpointWebviewState {
         data class AddAddress(val tracker: AddAddressPinpointTracker, val label: String? = null) : SendTracker()
         data class EditAddress(val tracker: EditAddressPinpointTracker, val label: String? = null) : SendTracker()
     }
+
+    object FinishActivity : PinpointWebviewState()
 }

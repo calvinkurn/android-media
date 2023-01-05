@@ -112,6 +112,24 @@ class PinpointWebviewViewModel @Inject constructor(
         }
     }
 
+    fun finishWithoutSaveChanges() {
+        if (source != null) {
+            when (source) {
+                PinpointSource.EDIT_ADDRESS -> {
+                    _pinpointState.value = PinpointWebviewState.SendTracker.EditAddress(
+                        EditAddressPinpointTracker.ClickBackArrowPinpoint
+                    )
+                }
+                else -> {
+                    _pinpointState.value = PinpointWebviewState.SendTracker.AddAddress(
+                        AddAddressPinpointTracker.ClickBackArrowPinpoint
+                    )
+                }
+            }
+        }
+        _pinpointState.value = PinpointWebviewState.FinishActivity
+    }
+
     fun setAddressDataModel(data: SaveAddressDataModel?) {
         saveAddressDataModel = data
     }

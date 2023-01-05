@@ -354,4 +354,63 @@ class PinpointWebviewViewModelTest {
             )
         }
     }
+
+    @Test
+    fun `WHEN finishWithoutSaveChanges on add address THEN should send analytic first`() {
+        viewModel.setSource("ADD_ADDRESS_NEGATIVE")
+
+        viewModel.finishWithoutSaveChanges()
+
+        verify {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.AddAddress(
+                        AddAddressPinpointTracker.ClickBackArrowPinpoint
+                    )
+                }
+            )
+
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.FinishActivity
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN finishWithoutSaveChanges on edit address THEN should send analytic first`() {
+        viewModel.setSource("EDIT_ADDRESS")
+
+        viewModel.finishWithoutSaveChanges()
+
+        verify {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.SendTracker.EditAddress(
+                        EditAddressPinpointTracker.ClickBackArrowPinpoint
+                    )
+                }
+            )
+
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.FinishActivity
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN finishWithoutSaveChanges THEN should finish pinpoint activity`() {
+        viewModel.finishWithoutSaveChanges()
+
+        verify {
+            liveDataObserver.onChanged(
+                match { state ->
+                    state == PinpointWebviewState.FinishActivity
+                }
+            )
+        }
+    }
 }
