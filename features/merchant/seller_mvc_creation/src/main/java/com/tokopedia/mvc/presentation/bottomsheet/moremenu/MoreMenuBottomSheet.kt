@@ -8,8 +8,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetThreeDotsMenuBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
@@ -78,7 +76,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         fun newInstance(
             context: FragmentActivity,
             voucher: Voucher?,
-            title: String = context.resources?.getString(R.string.voucher_three_bots_title).toBlankOrString(),
+            title: String = "",
             isFromVoucherDetailPage: Boolean = false,
             voucherStatus: VoucherStatus = VoucherStatus.PROCESSING
         ): MoreMenuBottomSheet {
