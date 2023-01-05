@@ -47,16 +47,16 @@ class KolModule {
     @KolScope
     @Provides
     fun provideTkpdAuthInterceptor(
-        @ApplicationContext context: Context?,
-        userSession: UserSessionInterface?,
-        networkRouter: NetworkRouter?
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface,
+        networkRouter: NetworkRouter
     ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
     }
 
     @KolScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context?): UserSessionInterface {
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
@@ -67,8 +67,8 @@ class KolModule {
 
     @KolScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context?): NetworkRouter? {
-        return context as NetworkRouter?
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
     }
 
     @KolScope
@@ -78,15 +78,19 @@ class KolModule {
         kolAuthInterceptor: KolAuthInterceptor,
         @KolQualifier retryPolicy: OkHttpRetryPolicy,
         @KolChuckQualifier chuckInterceptor: Interceptor,
-        @ApplicationContext context: Context?
+        @ApplicationContext context: Context
     ): OkHttpClient {
         val clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
             .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
             .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
             .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
             .addInterceptor(kolAuthInterceptor)
-            .addInterceptor(FingerprintInterceptor(context as NetworkRouter?,
-                UserSession(context)))
+            .addInterceptor(
+                FingerprintInterceptor(
+                    context as NetworkRouter,
+                    UserSession(context)
+                )
+            )
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor)
             clientBuilder.addInterceptor(chuckInterceptor)
@@ -98,7 +102,7 @@ class KolModule {
     @Provides
     @KolQualifier
     fun provideKolRetrofit(
-        okHttpClient: OkHttpClient?,
+        okHttpClient: OkHttpClient,
         retrofitBuilder: Retrofit.Builder
     ): Retrofit {
         return retrofitBuilder.baseUrl(TokopediaUrl.getInstance().GQL).client(okHttpClient).build()
@@ -114,10 +118,12 @@ class KolModule {
     @KolQualifier
     @Provides
     fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
-        return OkHttpRetryPolicy(NET_READ_TIMEOUT,
+        return OkHttpRetryPolicy(
+            NET_READ_TIMEOUT,
             NET_WRITE_TIMEOUT,
             NET_CONNECT_TIMEOUT,
-            NET_RETRY)
+            NET_RETRY
+        )
     }
 
     @KolScope
@@ -148,10 +154,10 @@ class KolModule {
     @KolScope
     @Provides
     fun providesFeedAnalyticTracker(
-        trackingQueue: TrackingQueue?,
-        userSessionInterface: UserSessionInterface?
+        trackingQueue: TrackingQueue,
+        userSessionInterface: UserSessionInterface
     ): FeedAnalyticTracker {
-        return FeedAnalyticTracker(trackingQueue!!, userSessionInterface!!)
+        return FeedAnalyticTracker(trackingQueue, userSessionInterface)
     }
 
     companion object {
