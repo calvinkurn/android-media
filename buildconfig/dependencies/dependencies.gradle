@@ -6,7 +6,7 @@ ext {
     buildToolsVersion = "30.0.2"
 
     jacocoVersion = "0.8.7"
-    kotlinVersion = "1.6.21"
+    kotlinVersion = "1.5.31"
 
     navigationVersion = "2.3.5"
     lifeCycleVersion = "2.3.1"
