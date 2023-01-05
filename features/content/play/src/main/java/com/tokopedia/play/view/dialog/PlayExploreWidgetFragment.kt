@@ -257,7 +257,7 @@ class PlayExploreWidgetFragment @Inject constructor(
      * Card Widget
      */
     override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
-        analytic?.clickContentCard(item)
+        analytic?.clickContentCard(item, position, viewModel.selectedChips)
         router.route(requireContext(), item.appLink)
     }
 

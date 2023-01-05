@@ -514,6 +514,10 @@ class PlayViewModel @AssistedInject constructor(
 
     private var socketJob: Job? = null
 
+    //Explore Widget
+    val selectedChips: String
+        get() = _exploreWidget.value.chips.items.firstOrNull { it.isSelected }?.text ?: ""
+
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>() /**Added StateFlow*/

@@ -19,7 +19,7 @@ interface PlayExploreWidgetAnalytic {
     fun clickExploreIcon()
     fun impressExploreTab(categoryName: String)
     fun clickExploreTab(categoryName: String)
-    fun clickContentCard(selectedChannel: PlayWidgetChannelUiModel)
+    fun clickContentCard(selectedChannel: PlayWidgetChannelUiModel, position: Int, categoryName: String)
     fun clickCloseExplore()
     fun clickRemind(selectedChannelId: String)
     fun scrollExplore()

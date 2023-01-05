@@ -95,7 +95,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun clickContentCard(selectedChannel: PlayWidgetChannelUiModel) {
+    override fun clickContentCard(selectedChannel: PlayWidgetChannelUiModel, position: Int, categoryName: String) {
         /**
          * {channel_id live room} - {live/vod live room} - {channel_id clicked} - {card_type} - {position} -
          * {is_autoplay} - {category name} - {promo/no promo} - {recommendation_type}
@@ -104,7 +104,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - channel card")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType} - ${selectedChannel.hasPromo}") //card type == channel type?
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - $position - is autoplay - $categoryName - ${selectedChannel.hasPromo} - ${selectedChannel.recommendationType}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39860")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
