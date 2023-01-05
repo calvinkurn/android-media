@@ -5,6 +5,7 @@
     <string name="cancel">Batal</string>
     <string name="bank_name_title">Nama Bank</string>
     <string name="account_number_title">Nomor Rekening</string>
+    <string name="check_account_name">Cek Nama Pemilik</string>
     <string name="account_name_title">Nama Pemilik Rekening</string>
     <string name="account_name_info">Pastikan sama dengan nama di buku tabungan</string>
     <string name="button_next">Selanjutnya</string>

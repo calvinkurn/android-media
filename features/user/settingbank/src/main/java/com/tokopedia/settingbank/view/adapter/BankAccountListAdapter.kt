@@ -3,6 +3,8 @@ package com.tokopedia.settingbank.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.settingbank.domain.model.BankAccount
 import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.settingbank.view.viewHolder.BankTNCViewHolder
@@ -41,11 +43,11 @@ class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerVie
     fun getBankAccountListSize(): Int = bankList.size
 
     override fun getItemCount(): Int {
-        return if (hasBankTncNote) bankList.size + 1 else bankList.size
+        return if (hasBankTncNote) bankList.size + Int.ONE else bankList.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0 && hasBankTncNote)
+        return if (position == Int.ZERO && hasBankTncNote)
             BankTNCViewHolder.LAYOUT
         else
             BankAccountViewHolder.LAYOUT
@@ -54,7 +56,7 @@ class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerVie
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is BankAccountViewHolder -> holder.bind(
-                bankList[if (hasBankTncNote) position - 1 else position],
+                bankList[if (hasBankTncNote) position - Int.ONE else position],
                 bankAccountClickListener,
             )
             is BankTNCViewHolder -> holder.bind()

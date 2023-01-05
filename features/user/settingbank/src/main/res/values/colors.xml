@@ -2,5 +2,4 @@
 <resources>
     <color name="sbank_dms_top_shadow_color">#1e31353b</color>
     <color name="sbank_dms_transparent">#00000000</color>
-    <color name="sbank_loader_background">#80FFFFFF</color>
 </resources>

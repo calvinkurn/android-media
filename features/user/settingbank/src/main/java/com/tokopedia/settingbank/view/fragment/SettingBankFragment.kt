@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
@@ -86,7 +87,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         add_account_button.gone()
         add_account_button.setOnClickListener {
             when (bankAccountListAdapter.getBankAccountListSize()) {
-                0 -> bankSettingAnalytics.eventOnAddBankClick()
+                Int.ZERO -> bankSettingAnalytics.eventOnAddBankClick()
                 else ->
                     bankSettingAnalytics.eventOnAddAnotherBankClick()
             }
