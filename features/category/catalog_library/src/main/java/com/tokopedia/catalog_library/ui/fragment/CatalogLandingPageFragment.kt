@@ -4,20 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.di.CatalogLibraryComponent
-import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
@@ -35,18 +32,19 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogLandingPageFragment: Fragment(),
-    HasComponent<CatalogLibraryComponent>, CatalogLibraryListener {
+class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
-    private var globalError : GlobalError? = null
+    private var globalError: GlobalError? = null
     private var categoryName = ""
-    @JvmField
+
     @Inject
-    var viewModelFactory: ViewModelProvider.Factory? = null
-    private val landingPageViewModel by lazy {
-        viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogLandingPageViewModel::class.java)
-        }
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val landingPageViewModel: CatalogLandingPageViewModel by lazy(
+        LazyThreadSafetyMode.NONE
+    ) {
+        val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
+        viewModelProvider.get(CatalogLandingPageViewModel::class.java)
     }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -93,11 +91,17 @@ class CatalogLandingPageFragment: Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        component.inject(this)
         extractArguments()
         initViews(view)
         initData()
     }
+
+    override fun getScreenName(): String {
+        // TODO send Screen Name if any GTM
+        return ""
+    }
+
+    override fun initInjector() = getComponent(CatalogLibraryComponent::class.java).inject(this)
 
     private fun extractArguments() {
         categoryName = arguments?.getString(ARG_CATEGORY_NAME, "") ?: ""
@@ -125,7 +129,7 @@ class CatalogLandingPageFragment: Fragment(),
     }
 
     private fun setObservers() {
-        landingPageViewModel?.catalogLandingPageLiveDataResponse?.observe(viewLifecycleOwner) {
+        landingPageViewModel.catalogLandingPageLiveDataResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     // TODO if data not received for an API . Remove its shimmer component
@@ -142,13 +146,7 @@ class CatalogLandingPageFragment: Fragment(),
         }
     }
 
-    override fun getComponent(): CatalogLibraryComponent {
-        return DaggerCatalogLibraryComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-    }
-
-    private fun initHeaderTitle(view: View){
+    private fun initHeaderTitle(view: View) {
         view.findViewById<HeaderUnify>(R.id.clp_header).apply {
             headerTitle = categoryName
             setNavigationOnClickListener {
@@ -169,8 +167,8 @@ class CatalogLandingPageFragment: Fragment(),
 
     private fun onError(e: Throwable) {
         catalogLandingRecyclerView?.hide()
-        if (e is UnknownHostException
-            || e is SocketTimeoutException
+        if (e is UnknownHostException ||
+            e is SocketTimeoutException
         ) {
             globalError?.setType(GlobalError.NO_CONNECTION)
         } else {
@@ -188,9 +186,9 @@ class CatalogLandingPageFragment: Fragment(),
     }
 
     private fun getDataFromViewModel() {
-        landingPageViewModel?.getCatalogTopFiveData(categoryName, TOP_FIVE_SORT_TYPE, TOP_FIVE_TOTAL_ROWS)
-        landingPageViewModel?.getCatalogMostViralData(categoryName, VIRAL_SORT_TYPE, VIRAL_TOTAL_ROWS)
-        landingPageViewModel?.getCatalogListData(categoryName, "", "10")
+        landingPageViewModel.getCatalogTopFiveData(categoryName, TOP_FIVE_SORT_TYPE, TOP_FIVE_TOTAL_ROWS)
+        landingPageViewModel.getCatalogMostViralData(categoryName, VIRAL_SORT_TYPE, VIRAL_TOTAL_ROWS)
+        landingPageViewModel.getCatalogListData(categoryName, "", "10")
     }
 
     private fun addShimmer() {
