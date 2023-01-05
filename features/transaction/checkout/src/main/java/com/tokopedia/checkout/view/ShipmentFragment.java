@@ -3718,7 +3718,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
 
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
-                    !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
+                    !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) &&
+                    !shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()
+                            .equals(newCourierItemData.getSelectedShipper().getLogPromoCode())
+            ) {
                 String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
                 shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
                 ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();

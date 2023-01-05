@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
+import rx.subjects.PublishSubject
 import timber.log.Timber
 
 /**
@@ -25,7 +26,8 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
     private val shipmentCartItemModel: ShipmentCartItemModel,
     private val isInitialLoad: Boolean,
     private val isForceReloadRates: Boolean,
-    private val isBoUnstackEnabled: Boolean
+    private val isBoUnstackEnabled: Boolean,
+    private val logisticDonePublisher: PublishSubject<Boolean>?
 ) : Subscriber<ShippingRecommendationData?>() {
 
     override fun onCompleted() {}
@@ -38,6 +40,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
         view.logOnErrorLoadCourier(e, itemPosition)
+        logisticDonePublisher?.onCompleted()
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
@@ -66,6 +69,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                                 ),
                                                 itemPosition
                                             )
+                                            logisticDonePublisher?.onCompleted()
                                             return
                                         } else {
                                             shippingCourierUiModel.isSelected = true
@@ -116,6 +120,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                             ),
                                             itemPosition
                                         )
+                                        logisticDonePublisher?.onCompleted()
                                         return
                                     } else {
                                         val courierItemData = generateCourierItemData(
@@ -133,6 +138,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                                 MessageErrorException("rates ui hidden but no promo"),
                                                 itemPosition
                                             )
+                                            logisticDonePublisher?.onCompleted()
                                             return
                                         }
                                         shippingCourierUiModel.isSelected = true
@@ -192,6 +198,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                 shipmentCartItemModel,
                                 shippingRecommendationData.preOrderModel
                             )
+                            logisticDonePublisher?.onCompleted()
                             return
                         }
                     }
@@ -199,6 +206,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
             }
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
+        logisticDonePublisher?.onCompleted()
     }
 
     fun generateCourierItemData(

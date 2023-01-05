@@ -2293,7 +2293,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                         new GetScheduleDeliveryCourierRecommendationSubscriber(
                                                                 getView(), this, shipperId, spId, itemPosition,
                                                                 shippingCourierConverter, shipmentCartItemModel,
-                                                                isInitialLoad, isForceReload, isBoUnstackEnabled
+                                                                isInitialLoad, isForceReload, isBoUnstackEnabled,
+                                                                logisticDonePublisher
                                                         ));
                                     } else {
                                         ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
