@@ -51,8 +51,10 @@ object RollenceKey {
     const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
 
     // Global Menu (Me Page)
-    const val ME_PAGE_REVAMP = "Navigation_Mepage"
-    const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
+    const val ME_PAGE_EXP = "Navigation_Mepage"
+    const val ME_PAGE_CONTROL = "Mepage_Control"
+    const val ME_PAGE_VARIANT_1 = "Mepage_Variant_1"
+    const val ME_PAGE_VARIANT_2 = "Mepage_Variant_2"
 
     // Food
     const val KEY_GOFOOD_SEARCH = "gofood_search"

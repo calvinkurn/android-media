@@ -67,14 +67,12 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         return HomeNavTickerDataModel()
     }
 
-    fun getSectionTitle(identifier: Int, isMePageUsingRollenceVariant: Boolean = false): HomeNavTitleDataModel {
+    fun getSectionTitle(identifier: Int): HomeNavTitleDataModel {
         return HomeNavTitleDataModel(
                 identifier = identifier,
                 title = when (identifier) {
                     IDENTIFIER_TITLE_MY_ACTIVITY -> context.getString(R.string.title_transaction_section)
-                    IDENTIFIER_TITLE_ALL_CATEGORIES -> if (isMePageUsingRollenceVariant) context.getString(
-                        R.string.title_category_section
-                    ) else context.getString(com.tokopedia.homenav.R.string.title_all_category_section)
+                    IDENTIFIER_TITLE_ALL_CATEGORIES -> context.getString(com.tokopedia.homenav.R.string.title_all_category_section)
                     IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
                     IDENTIFIER_TITLE_WISHLIST -> context.getString(R.string.title_wishlist_section)
                     IDENTIFIER_TITLE_FAVORITE_SHOP -> context.getString(R.string.title_favorite_shop_section)

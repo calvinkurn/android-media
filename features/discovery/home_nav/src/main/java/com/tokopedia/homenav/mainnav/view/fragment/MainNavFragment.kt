@@ -61,7 +61,6 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
@@ -126,8 +125,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
 
         MePageRollenceController.fetchMePageRollenceValue()
-        val rollence = MePageRollenceController.isMePageUsingRollenceVariant()
-        viewModel.setIsMePageUsingRollenceVariant(rollence)
+        viewModel.setInitialState()
 
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)

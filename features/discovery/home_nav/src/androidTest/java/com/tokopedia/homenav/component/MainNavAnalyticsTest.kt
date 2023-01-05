@@ -258,8 +258,8 @@ class MainNavAnalyticsTest {
 
     private fun setupAbTestRemoteConfig() {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-            RollenceKey.ME_PAGE_REVAMP,
-            RollenceKey.ME_PAGE_REVAMP_VARIANT
+            RollenceKey.ME_PAGE_EXP,
+            RollenceKey.ME_PAGE_VARIANT_1
         )
     }
 }
