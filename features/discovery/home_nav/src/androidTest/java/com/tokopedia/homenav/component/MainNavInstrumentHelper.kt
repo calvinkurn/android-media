@@ -12,7 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaymentRevampViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductRevampViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderReviewViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.ReviewItemViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import org.hamcrest.Matchers
 
@@ -97,7 +97,7 @@ fun clickOnEachItemRecyclerViewOrderHistory(
                 is OrderProductRevampViewHolder -> {
                     clickOrderProduct(recyclerViewId, i)
                 }
-                is OrderReviewViewHolder -> {
+                is ReviewItemViewHolder -> {
                     clickReviewProduct(recyclerViewId, i)
                 }
             }

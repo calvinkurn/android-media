@@ -1,7 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.*
-import com.tokopedia.homenav.mainnav.view.datamodel.review.OrderReviewModel
 
 interface OrderListTypeFactory {
     fun type(orderProductRevampModel: OrderProductRevampModel): Int

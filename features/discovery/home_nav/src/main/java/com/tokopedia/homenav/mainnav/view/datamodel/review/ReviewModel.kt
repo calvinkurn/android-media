@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 /**
  * Created by Frenzel
  */
-data class OrderReviewModel(
+data class ReviewModel(
         val navReviewModel: NavReviewModel
 ): ReviewNavVisitable, ImpressHolder() {
     override fun type(factory: ReviewTypeFactory): Int {

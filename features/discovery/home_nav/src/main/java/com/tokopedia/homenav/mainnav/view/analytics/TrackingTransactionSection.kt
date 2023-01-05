@@ -11,7 +11,7 @@ import com.tokopedia.homenav.common.TrackingConst.EVENT_CLICK_NAVIGATION_DRAWER
 import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.common.TrackingConst.PAGE_SOURCE
-import com.tokopedia.homenav.mainnav.domain.model.NavReviewOrder
+import com.tokopedia.homenav.mainnav.domain.model.NavReviewModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -268,7 +268,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
         getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 
-    fun getImpressionOnReviewProduct(position: Int, userId: String, element: NavReviewOrder) : HashMap<String, Any>  {
+    fun getImpressionOnReviewProduct(position: Int, userId: String, element: NavReviewModel) : HashMap<String, Any>  {
         val trackingBuilder = BaseTrackerBuilder()
         val positionCard = (position + 1).toString()
         return trackingBuilder.constructBasicPromotionView(
@@ -290,7 +290,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 .build() as HashMap<String, Any>
     }
 
-    fun getClickReviewStars(position: Int, userId: String, element: NavReviewOrder, starRating: String) : Pair<String, Bundle> {
+    fun getClickReviewStars(position: Int, userId: String, element: NavReviewModel, starRating: String) : Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_STAR_RATING)
@@ -332,7 +332,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
         return Pair(Event.SELECT_CONTENT, bundle)
     }
 
-    fun getClickReviewCard(position: Int, userId: String, element: NavReviewOrder) : Pair<String, Bundle> {
+    fun getClickReviewCard(position: Int, userId: String, element: NavReviewModel) : Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_CARD)
