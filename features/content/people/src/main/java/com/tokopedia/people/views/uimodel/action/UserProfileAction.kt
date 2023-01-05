@@ -15,7 +15,7 @@ sealed interface UserProfileAction {
 
     data class LoadNextPageShopRecom(val nextCurSor: String) : UserProfileAction
 
-    data class LoadPlayVideo(val cursor: String) : UserProfileAction
+    data class LoadPlayVideo(val cursor: String = "") : UserProfileAction
 
     data class LoadProfile(val isRefresh: Boolean = false) : UserProfileAction
 
