@@ -115,9 +115,6 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     private fun createSortFilterItem(option: Option): SortFilterItem {
         var icon : Drawable? = null
         when (option.name) {
-            "Official Store" -> {
-                icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
-            }
             "4 Keatas" -> {
                 icon = getIconUnifyDrawable(itemView.context, IconUnify.STAR_FILLED, MethodChecker.getColor(itemView.context, R.color.discovery2_dms_5_star))
             }
