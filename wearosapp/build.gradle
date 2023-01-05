@@ -92,7 +92,12 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.2.0-beta01"
+        kotlinCompilerExtensionVersion "1.0.4"
+    }
+    configurations.all {
+        resolutionStrategy {
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+        }
     }
 }
 dependencies {

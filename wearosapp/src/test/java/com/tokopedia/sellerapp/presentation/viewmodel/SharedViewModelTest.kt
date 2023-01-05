@@ -18,21 +18,19 @@ import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_READY_TO_SHIP
 import com.tokopedia.sellerapp.util.UiState
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
 class SharedViewModelTest: SharedViewModelFixture() {
 
     @Test
-    fun `when calling openOrderPageBasedOnType, it should call sendMessagesToNodes function with OPEN_NEW_ORDER_LIST action`() = runTest {
+    fun `when calling openOrderPageBasedOnType, it should call sendMessagesToNodes function with OPEN_NEW_ORDER_LIST action`() = runBlocking {
         viewModel.openOrderPageBasedOnType(DATAKEY_NEW_ORDER)
 
         coVerify {
@@ -41,7 +39,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling openOrderPageBasedOnType, it should call sendMessagesToNodes function with OPEN_READY_TO_SHIP action`() = runTest {
+    fun `when calling openOrderPageBasedOnType, it should call sendMessagesToNodes function with OPEN_READY_TO_SHIP action`() = runBlocking {
         viewModel.openOrderPageBasedOnType(DATAKEY_READY_TO_SHIP)
 
         coVerify {
@@ -50,7 +48,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling sendRequestAcceptBulkOrder, it should call sendMessagesToNodes function with ACCEPT_BULK_ORDER action`() = runTest {
+    fun `when calling sendRequestAcceptBulkOrder, it should call sendMessagesToNodes function with ACCEPT_BULK_ORDER action`() = runBlocking {
         viewModel.sendRequestAcceptBulkOrder(listOf("10"))
 
         coVerify {
@@ -59,7 +57,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling openLoginPageInApp, it should call sendMessagesToNodes function with OPEN_LOGIN_PAGE action`() = runTest {
+    fun `when calling openLoginPageInApp, it should call sendMessagesToNodes function with OPEN_LOGIN_PAGE action`() = runBlocking {
         viewModel.openLoginPageInApp()
 
         coVerify {
@@ -68,21 +66,21 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling setAcceptBulkOrderState, it should reset state to success state`() = runTest {
+    fun `when calling setAcceptBulkOrderState, it should reset state to success state`() = runBlocking {
         viewModel.setAcceptOrderSuccess()
 
         assertTrue(viewModel.acceptBulkOrder.first() is UiState.Success)
     }
 
     @Test
-    fun `when calling resetAcceptBulkOrderState, it should reset state to loading state`() = runTest {
+    fun `when calling resetAcceptBulkOrderState, it should reset state to loading state`() = runBlocking {
         viewModel.resetAcceptBulkOrderState()
 
         assertTrue(viewModel.acceptBulkOrder.first() is UiState.Loading)
     }
 
     @Test
-    fun `when calling the getOrderSummary, it should get object with the same dataKey`() = runTest {
+    fun `when calling the getOrderSummary, it should get object with the same dataKey`() = runBlocking {
         val dataKey = "111"
 
         val expectedResult = listSummaryData.first { it.dataKey == dataKey }
@@ -95,7 +93,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when collecting homeMenu, it should generate initial menu list`() = runTest {
+    fun `when collecting homeMenu, it should generate initial menu list`() = runBlocking {
         val expectedResult = getUpdatedMenuCounter(
             homeMenu = viewModel.homeMenu.value,
             listSummary = listSummaryData
@@ -107,7 +105,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling the getOrderList, it should get list with the same status order`() = runTest {
+    fun `when calling the getOrderList, it should get list with the same status order`() = runBlocking {
         val expectedResult = listOrderData.filter { it.orderStatusId in STATUS_NEW_ORDER }
 
         viewModel.getOrderList(DATAKEY_NEW_ORDER)
@@ -118,7 +116,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling the getOrderDetail, it should get object with the same orderId`() = runTest {
+    fun `when calling the getOrderDetail, it should get object with the same orderId`() = runBlocking {
         val orderId = "10"
 
         val expectedResult = listOrderData.first { it.orderId == orderId }
@@ -131,7 +129,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling the checkIfPhoneHasApp with the first node is nearby, it should return true value`()= runTest {
+    fun `when calling the checkIfPhoneHasApp with the first node is nearby, it should return true value`()= runBlocking {
         val nodes = mutableSetOf(
             FakeNode(
                 id = "122",
@@ -165,7 +163,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling the checkIfPhoneHasApp with the second node is nearby, it should return true value`()= runTest {
+    fun `when calling the checkIfPhoneHasApp with the second node is nearby, it should return true value`()= runBlocking {
         val nodes = mutableSetOf(
             FakeNode(
                 id = "122",
@@ -199,7 +197,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling the checkIfPhoneHasApp with no one node is nearby, it should return false value`()= runTest {
+    fun `when calling the checkIfPhoneHasApp with no one node is nearby, it should return false value`()= runBlocking {
         val nodes = mutableSetOf<Node>()
 
         val task: Task<CapabilityInfo> = Tasks.forResult(
@@ -222,7 +220,7 @@ class SharedViewModelTest: SharedViewModelFixture() {
     }
 
     @Test
-    fun `when calling the checkIfPhoneHasApp but getting throwable, it should have the same value as before`()= runTest {
+    fun `when calling the checkIfPhoneHasApp but getting throwable, it should have the same value as before`()= runBlocking {
         val expectedResult = false
 
         coEvery {

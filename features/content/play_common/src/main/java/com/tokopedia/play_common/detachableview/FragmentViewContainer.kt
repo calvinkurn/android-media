@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.detachableview
 
 import android.view.View
+import androidx.annotation.IdRes
 import androidx.lifecycle.LifecycleObserver
 
 /**
@@ -8,7 +9,7 @@ import androidx.lifecycle.LifecycleObserver
  */
 class FragmentViewContainer {
 
-    private val viewMap = mutableMapOf<Int, View>()
+    private val viewMap = mutableMapOf<@IdRes Int, View>()
 
     private var viewLifecycleObserver: LifecycleObserver? = null
 
