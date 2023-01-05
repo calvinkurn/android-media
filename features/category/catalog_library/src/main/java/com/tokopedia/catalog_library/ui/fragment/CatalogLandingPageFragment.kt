@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
@@ -15,6 +16,7 @@ import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.di.CatalogLibraryComponent
+import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
@@ -101,8 +103,11 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
         return ""
     }
 
-    override fun initInjector() = getComponent(CatalogLibraryComponent::class.java).inject(this)
-
+    override fun initInjector() {
+        DaggerCatalogLibraryComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
+    }
     private fun extractArguments() {
         categoryName = arguments?.getString(ARG_CATEGORY_NAME, "") ?: ""
     }
@@ -193,8 +198,8 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
 
     private fun addShimmer() {
         catalogLibraryUiUpdater.apply {
-            updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_TOP_FIVE, CatalogLibraryConstant.CATALOG_TOP_FIVE, CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE))
-            updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_MOST_VIRAL, CatalogLibraryConstant.CATALOG_MOST_VIRAL, CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL))
+            updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE, CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE, CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE))
+            updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL, CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL, CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL))
             updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_LIST, CatalogLibraryConstant.CATALOG_LIST, CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS))
         }
     }

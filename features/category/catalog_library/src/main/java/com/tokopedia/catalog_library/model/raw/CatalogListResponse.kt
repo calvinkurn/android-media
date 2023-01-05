@@ -50,7 +50,10 @@ data class CatalogListResponse(
                 val brand: String? = "",
                 @SerializedName("marketPrice")
                 @Expose
-                val marketPrice: CatalogListMarketPrice? = null
+                val marketPrice: CatalogListMarketPrice? = null,
+                @SerializedName("rank")
+                @Expose
+                var rank: Int = 0
             ) {
                 data class CatalogListMarketPrice(
                     @SerializedName("min")

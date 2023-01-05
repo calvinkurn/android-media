@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.catalog_library.ui.fragment.CatalogLandingPageFragment
 import com.tokopedia.catalog_library.viewmodels.CatalogHomepageViewModel
 import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageViewModel
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel

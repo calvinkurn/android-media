@@ -3,6 +3,7 @@ package com.tokopedia.catalog_library.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
@@ -88,26 +89,50 @@ class CatalogHomepageViewModel @Inject constructor(
 
     private fun mapSpecialData(data: CatalogSpecialResponse): CatalogLibraryDataModel {
         val specialDataModel =
-            CatalogSpecialDataModel(
-                CatalogLibraryConstant.CATALOG_SPECIAL,
-                CatalogLibraryConstant.CATALOG_SPECIAL,
-                data.catalogCategorySpecial.catalogSpecialDataList
+            CatalogContainerDataModel(
+                CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
+                CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
+                "Kategori spesial buatmi",
+                getSpecialVisitableList(data.catalogCategorySpecial.catalogSpecialDataList),
+                RecyclerView.HORIZONTAL,
+                "tokopedia://catalog-library/kategori",
+                true,
+                isGrid = true,
+                4
             )
         listOfComponents.add(specialDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
     }
 
+    private fun getSpecialVisitableList(catalogSpecialDataList: ArrayList<CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialData>?): ArrayList<BaseCatalogLibraryDataModel>? {
+        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        catalogSpecialDataList?.forEach {
+            visitableList.add(CatalogSpecialDataModel(CatalogLibraryConstant.CATALOG_SPECIAL, CatalogLibraryConstant.CATALOG_SPECIAL,it))
+        }
+        return visitableList
+    }
+
     private fun mapRelevantData(data: CatalogRelevantResponse): CatalogLibraryDataModel {
         val relevantDataModel =
-            CatalogRelevantDataModel(
-                CatalogLibraryConstant.CATALOG_RELEVANT,
-                CatalogLibraryConstant.CATALOG_RELEVANT,
-                data.catalogGetRelevant.catalogsList
+            CatalogContainerDataModel(
+                CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
+                CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
+                "Cek katalognya produk incaranmu",
+                getRelevantVisitableList(data.catalogGetRelevant.catalogsList),
+                RecyclerView.HORIZONTAL
             )
         listOfComponents.add(relevantDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
+    }
+
+    private fun getRelevantVisitableList(catalogsList: ArrayList<CatalogRelevantResponse.Catalogs>): ArrayList<BaseCatalogLibraryDataModel>? {
+        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        catalogsList.forEach {
+            visitableList.add(CatalogRelevantDataModel(CatalogLibraryConstant.CATALOG_RELEVANT, CatalogLibraryConstant.CATALOG_RELEVANT,it))
+        }
+        return visitableList
     }
 
     private fun mapCatalogListData(data: CatalogListResponse): CatalogLibraryDataModel {

@@ -13,35 +13,6 @@ class CatalogLihatGridItemAdapter(
     private val catalogLibraryListener: CatalogLibraryListener
 ) : RecyclerView.Adapter<CatalogLihatItemViewHolder>() {
 
-    var layoutInflater: LayoutInflater? = null
-
-//    override fun getCount() = childCategoryList.size
-//
-//    override fun getItem(position: Int) = null
-//
-//    override fun getItemId(position: Int): Long = 0
-//
-//    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-//        var gridItemView = convertView
-//        if (layoutInflater == null) {
-//            layoutInflater =
-//                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-//        }
-//        if (gridItemView == null) {
-//            gridItemView = layoutInflater?.inflate(R.layout.item_lihat_grid, null)
-//        }
-//        val childCategoryItem = childCategoryList[position]
-//        childCategoryItem.categoryIconUrl?.let { iconUrl ->
-//            gridItemView?.findViewById<ImageUnify>(R.id.lihat_item_icon)
-//                ?.loadImageWithoutPlaceholder(iconUrl)
-//
-//        }
-//        gridItemView?.findViewById<Typography>(R.id.lihat_item_title)?.text =
-//            childCategoryItem.categoryName
-//
-//        return gridItemView
-//    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogLihatItemViewHolder {
         return CatalogLihatItemViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_lihat_grid, parent, false)

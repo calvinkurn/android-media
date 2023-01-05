@@ -11,9 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="12dp">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/container_titile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/kategori_Special_Buatmu"
@@ -36,13 +37,12 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/catalog_special_grid_view"
+        android:id="@+id/container_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:numColumns="4" />
+        android:layout_marginTop="12dp"
+        />
 
 </LinearLayout>

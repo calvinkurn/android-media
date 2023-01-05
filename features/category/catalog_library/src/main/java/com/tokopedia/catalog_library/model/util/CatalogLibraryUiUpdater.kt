@@ -8,15 +8,15 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
     fun setUpForLandingPage() {
         updateModel(
             CatalogShimmerDataModel(
-                CatalogLibraryConstant.CATALOG_TOP_FIVE,
-                CatalogLibraryConstant.CATALOG_TOP_FIVE,
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 1
             )
         )
         updateModel(
             CatalogShimmerDataModel(
-                CatalogLibraryConstant.CATALOG_MOST_VIRAL,
-                CatalogLibraryConstant.CATALOG_MOST_VIRAL,
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                 2
             )
         )
@@ -32,15 +32,15 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
     fun setUpForHomePage() {
         updateModel(
             CatalogShimmerDataModel(
-                CatalogLibraryConstant.CATALOG_SPECIAL,
-                CatalogLibraryConstant.CATALOG_SPECIAL,
+                CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
+                CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
                 1
             )
         )
         updateModel(
             CatalogShimmerDataModel(
-                CatalogLibraryConstant.CATALOG_RELEVANT,
-                CatalogLibraryConstant.CATALOG_RELEVANT,
+                CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
+                CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
                 2
             )
         )

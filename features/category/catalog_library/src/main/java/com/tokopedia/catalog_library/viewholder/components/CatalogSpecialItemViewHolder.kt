@@ -2,35 +2,39 @@ package com.tokopedia.catalog_library.viewholder.components
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
+import com.tokopedia.catalog_library.model.datamodel.CatalogMostViralDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogSpecialDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CatalogSpecialItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class CatalogSpecialItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogSpecialDataModel>(view) {
+
+    private val specialImage = view.findViewById<ImageUnify>(R.id.special_icon)
+    private val specialTitle = view.findViewById<Typography>(R.id.special_title)
+    private val specialLayout = view.findViewById<CardUnify2>(R.id.img_card)
+
     companion object {
-        val LAYOUT = R.layout.catalog_special_container
+        val LAYOUT = R.layout.item_catalog_special
     }
 
-    fun bind(
-        catalogSpecialData: CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialData,
-        catalogLibraryListener: CatalogLibraryListener
-    ) {
-        catalogSpecialData.iconUrl?.let { iconUrl ->
-            val imageView = view.findViewById<ImageUnify>(R.id.special_icon) as ImageUnify
-            imageView.loadImage(iconUrl)
+    override fun bind(element: CatalogSpecialDataModel?) {
+        element?.specialDataListItem?.iconUrl?.let { iconUrl ->
+            specialImage.loadImage(iconUrl)
         }
-        view.findViewById<Typography>(R.id.special_title)?.let {
-            it.text = catalogSpecialData.name
+        specialTitle?.let {
+            it.text = element?.specialDataListItem?.name
             it.setOnClickListener {
-                catalogLibraryListener.onCategoryItemClicked(catalogSpecialData.name)
+                catalogLibraryListener.onCategoryItemClicked(element?.specialDataListItem?.name)
             }
         }
-        view.findViewById<CardUnify2>(R.id.img_card).setOnClickListener {
-            catalogLibraryListener.onCategoryItemClicked(catalogSpecialData.name)
+        specialLayout.setOnClickListener {
+            catalogLibraryListener.onCategoryItemClicked(element?.specialDataListItem?.name)
         }
     }
 }

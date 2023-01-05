@@ -181,14 +181,9 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
             shimmerLayout?.hide()
     }
 
-    override fun onLihatSemuaTextClick() {
-        super.onLihatSemuaTextClick()
-        RouteManager.route(context, "tokopedia://catalog-library/kategori")
-//        requireActivity().supportFragmentManager.beginTransaction().addToBackStack("").replace(
-//            R.id.parent_view,
-//            CatalogLihatSemuaPageFragment(),
-//            CatalogLihatSemuaPageFragment.CATALOG_LIHAT_PAGE_FRAGMENT_TAG
-//        ).commit()
+    override fun onLihatSemuaTextClick(applink: String) {
+        super.onLihatSemuaTextClick(applink)
+        RouteManager.route(context, applink)
     }
 
     override fun onProductCardClicked(applink: String?) {

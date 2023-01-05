@@ -3,6 +3,8 @@ package com.tokopedia.catalog_library.ui.activity
 import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.catalog_library.di.CatalogLibraryComponent
 import com.tokopedia.catalog_library.ui.fragment.CatalogLandingPageFragment
 import com.tokopedia.kotlin.extensions.view.hide
 

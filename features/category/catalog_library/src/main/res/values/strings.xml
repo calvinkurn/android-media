@@ -2,9 +2,7 @@
     <string name="catalog_library_host" translatable="false">catalog-library</string>
     <string name="catalog_lihat_semua">Lihat Semua</string>
     <string name="kategori_Special_Buatmu">Kategori Special Buatmu</string>
-    <string name="cek_katalognya_produk_incaranmu">Cek katalognya produk incaranmu</string>
     <string name="katalog_lainnya_buat_inspirasimu">Katalog lainnya buat inspirasimu</string>
 
     <string name="catalog_homepage_title">Katalog Tokopedia</string>
-    <string name="top_5_category_terlaris_di_toped">Top 5 category terlaris di toped</string>
 </resources>

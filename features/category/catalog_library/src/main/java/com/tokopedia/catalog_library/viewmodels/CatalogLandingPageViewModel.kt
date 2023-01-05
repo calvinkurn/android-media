@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_MOST_VIRAL
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_TOP_FIVE
 import com.tokopedia.catalog_library.usecase.CatalogListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -102,26 +104,45 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogTopFive
 
     private fun mapCatalogTopFiveData(data: CatalogListResponse): CatalogLibraryDataModel {
         val catalogTopFiveDataModel =
-            CatalogTopFiveDataModel(
-                CatalogLibraryConstant.CATALOG_TOP_FIVE,
-                CatalogLibraryConstant.CATALOG_TOP_FIVE,
-                data.catalogGetList.catalogsList
+            CatalogContainerDataModel(
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
+                "Top 5 category terlaris di toped",
+                getTopFiveVisitableList(data.catalogGetList.catalogsList)
             )
         listOfComponents.add(catalogTopFiveDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
     }
 
+    private fun getTopFiveVisitableList(catalogsList: ArrayList<CatalogListResponse.CatalogGetList.CatalogsList>): ArrayList<BaseCatalogLibraryDataModel> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        catalogsList.forEachIndexed { index, catalogTopFive ->
+            catalogTopFive.rank = (index + 1)
+            visitableList.add(CatalogTopFiveDataModel(CATALOG_TOP_FIVE,CATALOG_TOP_FIVE,catalogTopFive))
+        }
+        return visitableList
+    }
+
     private fun mapCatalogMostViralData(data: CatalogListResponse): CatalogLibraryDataModel {
         val catalogMostViralDataModel =
-            CatalogMostViralDataModel(
-                CatalogLibraryConstant.CATALOG_MOST_VIRAL,
-                CatalogLibraryConstant.CATALOG_MOST_VIRAL,
-                data.catalogGetList.catalogsList
+            CatalogContainerDataModel(
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
+                "",
+                getMostViralVisitableList(data.catalogGetList.catalogsList)
             )
         listOfComponents.add(catalogMostViralDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
+    }
+
+    private fun getMostViralVisitableList(catalogsList: ArrayList<CatalogListResponse.CatalogGetList.CatalogsList>): ArrayList<BaseCatalogLibraryDataModel> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        catalogsList.forEach {
+            visitableList.add(CatalogMostViralDataModel(CATALOG_MOST_VIRAL,CATALOG_MOST_VIRAL,it))
+        }
+        return visitableList
     }
 
     private fun mapCatalogListData(categoryIdentifier : String, data: CatalogListResponse): CatalogLibraryDataModel {
