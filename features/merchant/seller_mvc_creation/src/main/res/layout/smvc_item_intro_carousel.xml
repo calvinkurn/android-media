@@ -8,10 +8,11 @@
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:id="@+id/image"
+        android:id="@+id/mvc_intro_carousel_deferred_image"
         app:unify_image_type="circle"
         android:scaleType="fitXY"
         tools:src="@color/Unify_GN500"
+        tools:completeUrl="@string/smvc_intro_voucher_carousel_cashback_1"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"

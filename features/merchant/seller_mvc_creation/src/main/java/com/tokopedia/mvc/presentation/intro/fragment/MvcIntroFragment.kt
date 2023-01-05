@@ -154,7 +154,7 @@ class MvcIntroFragment :
                             it.getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
                             listOf(
                                 it.getString(R.string.smvc_intro_voucher_carousel_cashback_1),
-                                it.getString(R.string.smvc_intro_voucher_carousel_cashback_1)
+                                it.getString(R.string.smvc_intro_voucher_carousel_cashback_2)
                                 )
                         ),
                         VoucherIntroCarouselUiModel.VoucherIntroTabsData(
