@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -29,6 +28,7 @@ import com.tokopedia.settingbank.view.adapter.BankAccountListAdapter
 import com.tokopedia.settingbank.view.viewModel.SettingBankViewModel
 import com.tokopedia.settingbank.view.widgets.AccountConfirmationBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
+import com.tokopedia.settingbank.view.decoration.DividerItemDecoration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -108,7 +108,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun initBankAccountRecyclerView() {
         account_list_rv.layoutManager = LinearLayoutManager(activity)
-        account_list_rv.addItemDecoration(DividerItemDecoration(activity))
+        account_list_rv.addItemDecoration(DividerItemDecoration())
         bankAccountListAdapter.bankAccountClickListener = this
         account_list_rv.adapter = bankAccountListAdapter
     }

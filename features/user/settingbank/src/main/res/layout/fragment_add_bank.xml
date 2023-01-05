@@ -114,31 +114,56 @@
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/textAreaBankAccountHolderName"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd" >
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:padding="12dp" >
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAccountHolderNameTag"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/account_name_title"
                 android:textColor="@color/Unify_NN600"
-                android:textSize="@dimen/sp_12"
-                app:typographyType="display_3" />
+                android:layout_marginEnd="12dp"
+                app:typographyType="display_3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tvChangeAccountHolderName" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAccountHolderName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN950"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="12dp"
                 app:typographyType="display_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAccountHolderNameTag"
+                app:layout_constraintEnd_toStartOf="@id/tvChangeAccountHolderName"
                 tools:text="MOHAMAD RAVENA UTAMA" />
-        </LinearLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvChangeAccountHolderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_GN500"
+                android:text="@string/change_account_name"
+                android:visibility="gone"
+                android:elevation="2dp"
+                android:layout_marginEnd="12dp"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:visibility="visible"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>
-
-
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAccountHolderNameInfo"
