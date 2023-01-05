@@ -1,18 +1,19 @@
-package com.tokopedia.topchat.chatlist.di
+package com.tokopedia.topchat.stub.chatlist.di.module
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.Session
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.stub.fake.FakeIrisSession
 import dagger.Module
 import dagger.Provides
 
 @Module
-class CommonTopchatModule {
+class ChatlistCommonModule {
 
     @ChatListScope
     @Provides
@@ -28,7 +29,7 @@ class CommonTopchatModule {
 
     @ChatListScope
     @Provides
-    fun provideIrisSession(@ApplicationContext context: Context): Session {
-        return IrisSession(context)
+    fun provideFakeIrisSession(): Session {
+        return FakeIrisSession()
     }
 }

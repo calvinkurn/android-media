@@ -13,6 +13,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.Session
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -227,7 +228,7 @@ class ChatModule {
         userSession: UserSessionInterface,
         client: OkHttpClient,
         abTestPlatform: AbTestPlatform,
-        irisSession: IrisSession
+        irisSession: Session
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
             .plus(ChatUrl.CONNECT_WEBSOCKET)
@@ -264,7 +265,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideIrisSession(@ApplicationContext context: Context): IrisSession {
+    fun provideIrisSession(@ApplicationContext context: Context): Session {
         return IrisSession(context)
     }
 }

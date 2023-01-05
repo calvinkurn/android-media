@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.Session
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -168,7 +168,7 @@ class ChatListNetworkModule {
         userSession: UserSessionInterface,
         client: OkHttpClient,
         abTestPlatform: AbTestPlatform,
-        irisSession: IrisSession
+        irisSession: Session
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
             "?os_type=1" +

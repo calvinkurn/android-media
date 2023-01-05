@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.common.websocket
 
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.Session
 import com.tokopedia.network.authentication.AuthHelper.Companion.getUserAgent
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.url.TokopediaUrl
@@ -17,7 +17,7 @@ class DefaultTopChatWebSocket @Inject constructor(
     private val token: String,
     private val page: String,
     private val abTestPlatform: AbTestPlatform,
-    private val irisSession: IrisSession
+    private val irisSession: Session
 ) : TopchatWebSocket {
 
     var webSocket: WebSocket? = null
