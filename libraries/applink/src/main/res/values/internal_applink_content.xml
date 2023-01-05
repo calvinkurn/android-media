@@ -11,8 +11,6 @@
     <string name="kol_applink_post_detail_path_pattern">/post-detail/.*\</string>
     <string name="path_content_report" translatable="false">/content-report/.*\</string>
     <string name="path_video_detail" translatable="false">/video-detail/.*\</string>
-    <string name="path_media_preview" translatable="false">/media-preview/.*\</string>
-    <string name="path_comment" translatable="false">/comment/.*\</string>
     <string name="path_comment_new" translatable="false">/comment-new/.*\</string>
 
     <string name="host_profile" translatable="false">people</string>
@@ -33,10 +31,8 @@
 
     <string name="applink_kol_title_comment">Comments</string>
     <string name="applink_kol_title_post_detail" translatable="false">Post Detail</string>
-    <string name="applink_kol_title_post_youtube" translatable="false">Post Youtube</string>
     <string name="applink_kol_title_content_report" translatable="false">Laporan Konten</string>
     <string name="applink_kol_title_video_detail" translatable="false">Video Detail</string>
-    <string name="applink_kol_title_media_preview" translatable="false">Media Preview</string>
 
     <string name="applink_ip_host" translatable="false">interestpick</string>
     <string name="applink_ip_title" translatable="false">Pilih Inspirasi Kamu</string>

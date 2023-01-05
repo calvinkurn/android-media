@@ -19,8 +19,6 @@ object ApplinkConstInternalContent {
 
     const val CONTENT_REPORT = "$INTERNAL_CONTENT/content-report/{content_id}"
     const val VIDEO_DETAIL = "$INTERNAL_CONTENT/video-detail/{id}"
-    const val MEDIA_PREVIEW = "$INTERNAL_CONTENT/media-preview/{post_id}"
-    const val COMMENT = "$INTERNAL_CONTENT/comment/{post_id}"
     const val COMMENT_NEW = "$INTERNAL_CONTENT/comment-new/{post_id}"
 
     const val SHOP_POST_PICKER = "$INTERNAL_CONTENT/content-shop/picker"
@@ -38,13 +36,7 @@ object ApplinkConstInternalContent {
     const val HOST_PLAY_BROADCASTER = "play-broadcaster"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
 
-    private const val ARGS_FROM_APPLINK = "isFromApplink"
-    private const val ARGS_FROM_APPLINK_VALUE = "true"
-    private const val ARG_MEDIA_INDEX = "media_index"
-    const val DUMMY_MEDIA_INDEX = "{index}"
     const val INTERNAL_CONTENT_POST_DETAIL = "$INTERNAL_CONTENT/post-detail/"
-    const val COMMENT_EXTRA_PARAM = "?$ARGS_FROM_APPLINK=$ARGS_FROM_APPLINK_VALUE"
-    const val INTERNAL_MEDIA_PREVIEW = "$MEDIA_PREVIEW?$ARG_MEDIA_INDEX=$DUMMY_MEDIA_INDEX"
 
     const val PLAY_PATH_LITE = "play/channel/"
     const val FEED_VIDEO = "feed/video"
