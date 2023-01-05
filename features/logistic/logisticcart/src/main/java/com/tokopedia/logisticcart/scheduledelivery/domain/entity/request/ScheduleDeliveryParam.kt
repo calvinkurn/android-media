@@ -44,29 +44,7 @@ data class ScheduleDeliveryParam(
 ) {
 
     fun toMap() = mapOf(
-        "param" to requestParam()
-    )
-
-    private fun requestParam() = mapOf(
-        "origin" to origin,
-        "destination" to destination,
-        "spids" to spids,
-        "warehouse_id" to warehouseId,
-        "cat_id" to catId,
-        "products" to products,
-        "bo_metadata" to boMetadata,
-        "weight" to weight,
-        "actual_weight" to actualWeight,
-        "type" to type,
-        "user_history" to userHistory,
-        "unique_id" to uniqueId,
-        "po_time" to poTime,
-        "shop_id" to shopId,
-        "is_fulfillment" to isFulfillment,
-        "shop_tier" to shopTier,
-        "time_slot_id" to timeSlotId,
-        "schedule_date" to scheduleDate,
-        "source" to source
+        "param" to this
     )
 
     companion object {

@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.scheduledelivery.domain.usecase
 
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.shipping.model.RatesParam
@@ -15,8 +14,6 @@ class GetRatesWithScheduleUseCase @Inject constructor(
     private val scheduler: SchedulerProvider,
     private val mapper: ScheduleDeliveryMapper,
 ) {
-
-    private var gql: GraphqlUseCase? = null
 
     fun execute(ratesParam: RatesParam, warehouseId: String): Observable<ShippingRecommendationData> {
         return Observable.just(ShippingRecommendationData())
@@ -41,9 +38,5 @@ class GetRatesWithScheduleUseCase @Inject constructor(
             }
             .subscribeOn(scheduler.io())
             .observeOn(scheduler.ui())
-    }
-
-    fun unsubscribe() {
-        gql?.unsubscribe()
     }
 }
