@@ -22,17 +22,18 @@ class MoreMenuViewModel @Inject constructor(
         voucherStatus: VoucherStatus?
     ): List<MoreMenuUiModel> {
         if (isFromVoucherDetail) {
-            when (voucherStatus) {
-                VoucherStatus.ONGOING -> {
-                    getVoucherDetailUpcomingOptionsListMenu()
+            menuItem =
+                when (voucherStatus) {
+                    VoucherStatus.ONGOING -> {
+                        getVoucherDetailOngoingOptionsListMenu()
+                    }
+                    VoucherStatus.NOT_STARTED -> {
+                        getVoucherDetailUpcomingOptionsListMenu()
+                    }
+                    else -> {
+                        getVoucherDetailEndedStoppedOptionsListMenu()
+                    }
                 }
-                VoucherStatus.NOT_STARTED -> {
-                    getVoucherDetailOngoingOptionsListMenu()
-                }
-                else -> {
-                    getVoucherDetailEndedStoppedOptionsListMenu()
-                }
-            }
         } else {
             if (voucher == null) {
                 return menuItem
@@ -40,7 +41,6 @@ class MoreMenuViewModel @Inject constructor(
                 voucher.type.let { type ->
                     menuItem = when (type) {
                         PromoType.FREE_SHIPPING.id -> {
-                            // TODO adjust this
                             getOngoingOptionsListMenu()
                         }
                         else -> {
