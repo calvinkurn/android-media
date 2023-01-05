@@ -14,10 +14,12 @@ import com.tokopedia.addongifting.databinding.LayoutAddOnUnavailableBottomSheetB
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class AddOnUnavailableBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify() {
+class AddOnUnavailableBottomSheet : BottomSheetUnify() {
 
     private var adapter: AddOnUnavailableAdapter? = null
     private var viewBinding: LayoutAddOnUnavailableBottomSheetBinding? = null
+
+    internal var addOnProductData: AddOnProductData = AddOnProductData()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewBinding = initializeView()
