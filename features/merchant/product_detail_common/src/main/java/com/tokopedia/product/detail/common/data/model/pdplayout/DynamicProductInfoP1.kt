@@ -4,12 +4,13 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
 
 data class DynamicProductInfoP1(
-        val basic: BasicInfo = BasicInfo(),
-        val data: ComponentData = ComponentData(),
-        val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
-        val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
-        val layoutName: String = "",
-        val pdpSession: String = ""
+    val basic: BasicInfo = BasicInfo(),
+    val data: ComponentData = ComponentData(),
+    val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
+    val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
+    val layoutName: String = "",
+    val pdpSession: String = "",
+    val requestId: String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant

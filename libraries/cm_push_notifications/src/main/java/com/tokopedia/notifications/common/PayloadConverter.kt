@@ -91,7 +91,7 @@ object PayloadConverter {
         model.endTime = dataToLong(data, NOTIFICATION_END_TIME)
 
         if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
-                        model.endTime == 0L)) {
+                model.endTime == 0L)) {
             model.startTime = System.currentTimeMillis()
             model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
         }
@@ -207,7 +207,7 @@ object PayloadConverter {
         model.endTime = data.endTime.toLongOrZero()
 
         if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
-                        model.endTime == 0L)) {
+                model.endTime == 0L)) {
             model.startTime = System.currentTimeMillis()
             model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
         }

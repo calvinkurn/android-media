@@ -101,6 +101,9 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Category Best Seller
     CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
 
+    // CLP Featured Products
+    CLPFeatureProducts(R.layout.carousel_best_seller_recycler_view, ComponentNames.CLPFeaturedProducts.componentName),
+
     //Topads Headline View
     TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),
 
@@ -126,6 +129,9 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName),
     ShopCardInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.ShopCardInfinite.componentName),
     ProductBundling(R.layout.disco_product_bundling_layout,ComponentNames.ProductBundling.componentName),
+    ContentCard(R.layout.disco_content_card, ComponentNames.ContentCard.componentName),
+    ContentCardItem(R.layout.disco_content_card_item, ComponentNames.ContentCardItem.componentName),
+    ThematicHeader(R.layout.disco_thematic_header_layout, ComponentNames.ThematicHeader.componentName),
     ExplicitWidget(R.layout.explicit_widget_layout,ComponentNames.ExplicitWidget.componentName)
 
 }

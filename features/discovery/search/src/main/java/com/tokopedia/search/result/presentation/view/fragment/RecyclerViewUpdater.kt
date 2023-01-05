@@ -41,6 +41,9 @@ class RecyclerViewUpdater @Inject constructor(
     override val itemCount: Int
         get() = productListAdapter?.itemCount ?: 0
 
+    override val itemList: List<Visitable<*>>?
+        get() = productListAdapter?.itemList
+
     fun initialize(
         recyclerView: RecyclerView?,
         rvLayoutManager: RecyclerView.LayoutManager?,
@@ -129,6 +132,10 @@ class RecyclerViewUpdater @Inject constructor(
 
     override fun backToTop() {
         recyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun scrollToPosition(position: Int) {
+        recyclerView?.scrollToPosition(position)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

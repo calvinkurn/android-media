@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity">
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/education_see_all_navToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeCustom"
+        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_education_category_chip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/education_see_all_navToolbar"
+        tools:listitem="@layout/affiliate_item_performance_chip" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_total_items"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_education_category_chip"
+        app:typographyType="heading_5" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_education_see_all"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_total_items"
+        tools:listitem="@layout/affiliate_education_see_all_item" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

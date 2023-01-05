@@ -139,10 +139,10 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             val phone = etPhone?.editText?.text.toString()
             if (phone.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
-                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
+                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.add_phone_wrong_phone_format))
             } else if (!isValidPhone(phone)) {
-                setErrorText(getString(R.string.wrong_phone_format))
-                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
+                setErrorText(getString(R.string.add_phone_wrong_phone_format))
+                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.add_phone_wrong_phone_format))
             } else {
                 showLoading()
                 storeLocalSession(phone, false)
@@ -168,7 +168,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     private fun setErrorText(s: String) {
         if (TextUtils.isEmpty(s)) {
             etPhone.isInputError = false
-            etPhone.setMessage(getString(R.string.sample_phone))
+            etPhone.setMessage(getString(R.string.add_phone_sample_phone))
             buttonSubmit?.isEnabled = true
         } else {
             etPhone.isInputError = true

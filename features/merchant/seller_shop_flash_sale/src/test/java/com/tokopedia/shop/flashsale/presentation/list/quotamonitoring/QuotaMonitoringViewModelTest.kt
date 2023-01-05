@@ -7,6 +7,7 @@ import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
 import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.VpsPackageDummyDataHelper.generateDummyVpsPackageAvailability
 import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.VpsPackageDummyDataHelper.generateDummyVpsPackages
+import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.VpsPackageDummyDataHelper.generateDummyVpsPackagesWithDynamicEndTime
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
@@ -91,7 +92,7 @@ class QuotaMonitoringViewModelTest {
     @Test
     fun `when getPackageAvailability is called, will successfully return package availability data accordingly`() {
         with(viewModel) {
-            val dummyPackages = generateDummyVpsPackages()
+            val dummyPackages = generateDummyVpsPackagesWithDynamicEndTime()
 
             val expected = generateDummyVpsPackageAvailability()
             val actual = getPackageAvailability(dummyPackages)

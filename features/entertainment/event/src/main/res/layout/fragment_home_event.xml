@@ -12,7 +12,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0">
+            android:background="@color/Unify_Background">
 
             <com.tokopedia.header.HeaderUnify
                 android:id="@+id/toolbar_home"
@@ -48,8 +48,7 @@
             android:id="@+id/event_home_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dimen_dp_110"
-            android:background="@color/Unify_N0">
+            android:layout_marginTop="@dimen/dimen_dp_110">
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout_home"

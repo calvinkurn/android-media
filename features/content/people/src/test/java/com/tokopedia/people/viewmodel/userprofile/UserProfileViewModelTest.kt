@@ -2,7 +2,7 @@ package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
@@ -54,7 +54,7 @@ class UserProfileViewModelTest {
 
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
     private val mockOtherProfile = profileBuilder.buildProfile(userID = mockOtherUserId)
-    private val mockShopRecom = shopRecomBuilder.buildModelIsShown()
+    private val mockShopRecom = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
 
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
@@ -62,6 +62,7 @@ class UserProfileViewModelTest {
     private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = false)
 
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
+    private val mockHasNotAcceptTnc = profileWhitelistBuilder.buildHasNotAcceptTnc()
 
     @Before
     fun setUp() {
@@ -72,7 +73,7 @@ class UserProfileViewModelTest {
         coEvery { mockRepo.getProfile(mockOtherUsername) } returns mockOtherProfile
 
         coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
-        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+        coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
     }
 
     @Test
@@ -96,6 +97,7 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+                it.viewModel.profileUserEncryptedID equalTo mockOwnProfile.encryptedUserID
             }
         }
     }
@@ -127,6 +129,50 @@ class UserProfileViewModelTest {
     }
 
     @Test
+    fun `when user load own data, and need to onboarding`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockUserSession.userId } returns mockUserId
+        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                it.viewModel.needOnboarding equalTo false
+            }
+        }
+    }
+
+    @Test
+    fun `when user load own data, and no need to onboarding`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockUserSession.userId } returns mockUserId
+        coEvery { mockRepo.getWhitelist() } returns mockHasNotAcceptTnc
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                it.viewModel.needOnboarding equalTo true
+            }
+        }
+    }
+
+    @Test
     fun `when user load others profile and hasnt follow, it should emit follow status unfollow`() {
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
@@ -146,6 +192,7 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+                it.viewModel.profileUserEncryptedID equalTo mockOtherProfile.encryptedUserID
             }
         }
     }

@@ -5,9 +5,7 @@ import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.chatroom.responses.WebsocketResponses
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.lang.IllegalStateException
@@ -42,6 +40,82 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             webSocketStateHandler.retrySucceed()
         }
         verifySendMarkAsRead()
+    }
+
+    @Test
+    fun should_does_not_send_mark_as_read() {
+        // Given
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onStop()
+        viewModel.markAsRead()
+
+        // Then
+        assertEquals(viewModel.isFromBubble, true)
+        assertEquals(viewModel.isOnStop, true)
+        verify(exactly = 0) {
+            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            chatWebSocket.sendPayload(payload)
+        }
+    }
+
+    @Test
+    fun should_send_mark_as_read_when_not_from_bubble() {
+        // Given
+        val isFromBubble = false
+        viewModel.isFromBubble = isFromBubble
+        viewModel.isOnStop = false
+
+        // When
+        viewModel.markAsRead()
+
+        // Then
+        assertEquals(viewModel.isFromBubble, false)
+        assertEquals(viewModel.isOnStop, false)
+        verify {
+            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            chatWebSocket.sendPayload(payload)
+        }
+    }
+
+    @Test
+    fun should_send_mark_as_read_when_not_from_bubble_and_onstop() {
+        // Given
+        val isFromBubble = false
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onStop()
+        viewModel.markAsRead()
+
+        // Then
+        assertEquals(viewModel.isFromBubble, false)
+        assertEquals(viewModel.isOnStop, true)
+        verify {
+            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            chatWebSocket.sendPayload(payload)
+        }
+    }
+
+    @Test
+    fun should_send_mark_as_read_when_from_bubble_and_onresume() {
+        // Given
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onResume()
+        viewModel.markAsRead()
+
+        // Then
+        assertEquals(viewModel.isFromBubble, true)
+        assertEquals(viewModel.isOnStop, false)
+        verify {
+            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            chatWebSocket.sendPayload(payload)
+        }
     }
 
     @Test
@@ -215,6 +289,66 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             (viewModel.newMsg.value as MessageUiModel).localId,
             (chatUiModel as MessageUiModel).localId
         )
+    }
+
+    @Test
+    fun should_render_msg_and_unread_msg_is_more_than_zero_when_receive_reply_event_and_from_bubble_and_onstop() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = true
+        )
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onStop()
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 1)
+    }
+
+    @Test
+    fun should_render_msg_and_unread_msg_is_more_than_zero_when_receive_reply_event_and_not_from_bubble_and_onstop() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = true
+        )
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onResume()
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 0)
+    }
+
+    @Test
+    fun should_render_msg_and_unread_msg_is_more_than_zero_when_receive_reply_event_and_from_bubble_and_not_onstop() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = true
+        )
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onStop()
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 1)
     }
 
     @Test

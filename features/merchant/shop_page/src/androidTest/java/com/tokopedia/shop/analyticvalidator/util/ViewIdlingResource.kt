@@ -7,10 +7,9 @@ import androidx.test.espresso.ViewFinder
 import org.hamcrest.Matcher
 import java.lang.reflect.Field
 
-
 class ViewIdlingResource(
-        private val viewMatcher: Matcher<View?>?,
-        private val idleMatcher: Matcher<View?>?
+    private val viewMatcher: Matcher<View?>?,
+    private val idleMatcher: Matcher<View?>?
 ) : IdlingResource {
 
     private var resourceCallback: IdlingResource.ResourceCallback? = null
@@ -29,7 +28,7 @@ class ViewIdlingResource(
     }
 
     override fun getName(): String {
-        return "$this ${viewMatcher.toString()}"
+        return "$this $viewMatcher"
     }
 
     private fun getView(viewMatcher: Matcher<View?>?): View? {
@@ -43,5 +42,4 @@ class ViewIdlingResource(
             null
         }
     }
-
 }

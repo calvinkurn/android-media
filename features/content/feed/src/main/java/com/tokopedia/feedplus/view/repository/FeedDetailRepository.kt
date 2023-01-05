@@ -2,74 +2,12 @@ package com.tokopedia.feedplus.view.repository
 
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
+import com.tokopedia.gql_query_annotation.GqlQuery
 import javax.inject.Inject
 
-private const val PARAM_DETAIL_ID = "detailID"
-private const val PARAM_ACTIVITY_ID = "activityID"
-private const val PARAM_PAGE = "pageDetail"
-private const val PARAM_USER_ID = "userID"
-private const val PARAM_LIMIT_DETAIL = "limitDetail"
-private const val PARAM_LIMIT = "limit"
-private const val PARAM_CURSOR = "cursor"
-private const val LIMIT_DETAIL = 30
-const val FEED_X_GET_ACTIVITY_PRODUCTS_QUERY: String = """
-query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
-  feedXGetActivityProducts(req:${'$'}req){
-    products{
-          id
-          shopID
-          name
-          coverURL
-          webLink
-          appLink
-          star
-          price
-          priceFmt
-          isDiscount
-          discount
-          discountFmt
-          priceOriginal
-          priceOriginalFmt
-          priceDiscount
-          priceDiscountFmt
-          priceMasked
-          priceMaskedFmt
-          stockWording
-          stockSoldPercentage
-          cartable
-          totalSold
-          isBebasOngkir
-          bebasOngkirStatus
-          bebasOngkirURL
-          mods
-        }
-        isFollowed
-        contentType
-        campaign{
-          id
-          status
-          name
-          shortName
-          startTime
-          endTime
-          restrictions{
-          label
-          isActive
-          __typename
-          }
-        }
-    nextCursor
-  }
-}
-
-"""
-
-
-class FeedDetailRepository @Inject constructor() {
-
-    @Inject
-    lateinit var baseRepository: BaseRepository
-
+class FeedDetailRepository @Inject constructor(
+    private val baseRepository: BaseRepository
+) {
 
     private fun getFeedDetailParam(detailId: String, cursor: String): Map<String, Any> {
 
@@ -82,8 +20,68 @@ class FeedDetailRepository @Inject constructor() {
 
     }
 
+    @GqlQuery(FEED_GET_ACTIVITY_PRODUCT_QUERY_NAME, FEED_GET_ACTIVITY_PRODUCT_QUERY)
     suspend fun fetchFeedDetail(detailId: String,  cursor: String): FeedXGQLResponse {
-        return baseRepository.getGQLData(FEED_X_GET_ACTIVITY_PRODUCTS_QUERY, FeedXGQLResponse::class.java, getFeedDetailParam(detailId, cursor))
+        return baseRepository.getGQLData(FeedXGetActivityProductsQuery().getQuery(), FeedXGQLResponse::class.java, getFeedDetailParam(detailId, cursor))
     }
 
+    companion object {
+        private const val PARAM_ACTIVITY_ID = "activityID"
+        private const val PARAM_LIMIT = "limit"
+        private const val PARAM_CURSOR = "cursor"
+        private const val LIMIT_DETAIL = 30
+
+        const val FEED_GET_ACTIVITY_PRODUCT_QUERY_NAME = "FeedXGetActivityProductsQuery"
+        const val FEED_GET_ACTIVITY_PRODUCT_QUERY = """
+            query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
+              feedXGetActivityProducts(req:${'$'}req){
+                hasVoucher
+                products{
+                      id
+                      shopID
+                      name
+                      coverURL
+                      webLink
+                      appLink
+                      star
+                      price
+                      priceFmt
+                      isDiscount
+                      discount
+                      discountFmt
+                      priceOriginal
+                      priceOriginalFmt
+                      priceDiscount
+                      priceDiscountFmt
+                      priceMasked
+                      priceMaskedFmt
+                      stockWording
+                      stockSoldPercentage
+                      cartable
+                      totalSold
+                      isBebasOngkir
+                      bebasOngkirStatus
+                      bebasOngkirURL
+                      mods
+                    }
+                    isFollowed
+                    contentType
+                    campaign{
+                      id
+                      status
+                      name
+                      shortName
+                      startTime
+                      endTime
+                      restrictions{
+                      label
+                      isActive
+                      __typename
+                      }
+                    }
+                nextCursor
+              }
+            }
+            """
+    }
 }

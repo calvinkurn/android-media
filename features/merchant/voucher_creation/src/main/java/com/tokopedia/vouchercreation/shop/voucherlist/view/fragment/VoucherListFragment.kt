@@ -22,19 +22,37 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.datepicker.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.universal_sharing.constants.BroadcastChannelType
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -49,6 +67,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
+import com.tokopedia.vouchercreation.common.consts.ShareComponentConstant
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst.JPEG_EXT
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -56,6 +75,7 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
+import com.tokopedia.vouchercreation.common.tracker.SharingComponentTracker
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.databinding.FragmentMvcVoucherListBinding
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -122,6 +142,9 @@ class VoucherListFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var sharingComponentTracker: SharingComponentTracker
+
     private var binding by autoClearedNullable<FragmentMvcVoucherListBinding>()
 
     private val mViewModel: VoucherListViewModel by lazy {
@@ -157,6 +180,8 @@ class VoucherListFragment :
     private var isToolbarAlreadyLoaded = false
 
     private var shopBasicData: ShopBasicDataResult? = null
+
+    private var universalBottomSheet: UniversalShareBottomSheet? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -207,6 +232,80 @@ class VoucherListFragment :
 
         setupView()
         observeLiveData()
+    }
+
+    private fun showUniversalBottomSheet(voucherUiModel: VoucherUiModel) {
+        universalBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setOgImageUrl(voucherUiModel.imageSquare)
+            this@VoucherListFragment.context?.let {
+                setBroadcastChannel(it, BroadcastChannelType.BLAST_PROMO, voucherUiModel.id.toString())
+            }
+
+            init(object: ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    context?.let {
+                        onItemShareClick(shareModel, voucherUiModel, shopBasicData?.shopDomain ?: "")
+                    }
+
+                }
+
+                override fun onCloseOptionClicked() {
+                    sharingComponentTracker.sendShareVoucherBottomSheetDismissClickEvent(voucherUiModel.id.toString(), VoucherCreationAnalyticConstant.Values.TRACKER_ID_DISMISS_SHARE)
+                }
+
+            })
+            getImageFromMedia(getImageFromMediaFlag = true)
+            setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT)
+            setMetaData(voucherUiModel.name, voucherUiModel.imageSquare)
+            voucherUiModel.addParamImageGenerator(this, shopBasicData?.shopName ?: "", shopBasicData?.logo ?: "")
+        }
+        universalBottomSheet?.show(childFragmentManager, "")
+
+        sharingComponentTracker.sendShareVoucherBottomSheetDisplayedEvent(voucherUiModel.id.toString(), VoucherCreationAnalyticConstant.Values.TRACKER_ID_VIEW_SHARE)
+
+    }
+
+    private fun onItemShareClick(shareModel: ShareModel, voucher: VoucherUiModel, shopDomain: String) {
+        val formattedShopName = MethodChecker.fromHtml(shopBasicData?.shopName ?: "").toString()
+        val shareUrl = "${TokopediaUrl.getInstance().WEB}$shopDomain"
+        val linkerShareData = DataMapper.getLinkerShareData(
+            LinkerData().apply {
+            type = LinkerData.MERCHANT_VOUCHER
+            uri = shareUrl
+            id = voucher.id.toString()
+            ogTitle = String.format(getString(R.string.placeholder_share_voucher_component_outgoing_title), formattedShopName)
+            ogDescription = getString(R.string.share_component_voucher_outgoing_text_description)
+            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+            deepLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
+        }
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                0, linkerShareData,
+                object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    linkerShareData?.url?.let { url ->
+                        context?.let { context ->
+                            shareModel.subjectName = voucher.name
+                            val shareMessage = getShareMessage(context, voucher, userSession.shopName, url)
+                            com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareMessage)
+                            universalBottomSheet?.dismiss()
+                        }
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            }
+            )
+        )
+        sharingComponentTracker.sendSelectVoucherShareChannelClickEvent(
+            shareModel.channel.orEmpty(),
+            voucher.id.toString(),
+            VoucherCreationAnalyticConstant.Values.TRACKER_ID_CLICK_CHANNEL_SHARE,
+            UniversalShareBottomSheet.Companion.KEY_CONTEXTUAL_IMAGE
+        )
     }
 
     private fun setupShareBottomSheet(status: Int = 0, promo: Int = 0): ShareVoucherBottomSheet {
@@ -383,6 +482,7 @@ class VoucherListFragment :
             isActive = isActiveVoucher,
             userId = userSession.userId
         )
+        trackerClickEntrypointShare(voucher.id.toString())
         showShareBottomSheet(voucher)
     }
 
@@ -430,6 +530,7 @@ class VoucherListFragment :
             }
             is ShareVoucher -> {
                 moreMenuClickEventAction = Click.SHARE_ONGOING
+                trackerClickEntrypointShare(voucher.id.toString())
                 showShareBottomSheet(voucher)
             }
             is EditPeriod -> {
@@ -644,19 +745,31 @@ class VoucherListFragment :
     }
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
-        if (!isAdded) return
-        shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
-            context?.run {
-                shopBasicData?.shareVoucher(
-                    context = this,
-                    socmedType = socmedType,
-                    voucher = voucher,
-                    userId = userSession.userId,
-                    shopId = userSession.shopId
-                )
+         if (!isAdded) return
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHARE_SELLER, true)) {
+            showUniversalBottomSheet(voucher)
+        } else {
+            shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
+                context?.run {
+                    shopBasicData?.shareVoucher(
+                        context = this,
+                        socmedType = socmedType,
+                        voucher = voucher,
+                        userId = userSession.userId,
+                        shopId = userSession.shopId
+                    )
+                }
             }
+            shareVoucherBottomSheet?.show(childFragmentManager)
         }
-        shareVoucherBottomSheet?.show(childFragmentManager)
+    }
+
+    private fun trackerClickEntrypointShare(voucherId: String) {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHARE_SELLER, true)) {
+            sharingComponentTracker.sendShareVoucherClickEvent(ShareComponentConstant.ENTRY_POINT_COUPON_LIST, voucherId, VoucherCreationAnalyticConstant.Values.TRACKER_ID_CLICK_ENTRYPOINT_SHARE)
+        }
     }
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
@@ -1256,6 +1369,7 @@ class VoucherListFragment :
                     action = Click.VOUCHER_SUCCESS_SHARE_NOW,
                     userId = userSession.userId
                 )
+                trackerClickEntrypointShare(uiModel.id.toString())
                 showShareBottomSheet(uiModel)
             }
             .setOnBroadCastClickListener {

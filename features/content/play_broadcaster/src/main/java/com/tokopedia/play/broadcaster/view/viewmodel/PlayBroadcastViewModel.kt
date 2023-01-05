@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
+import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
@@ -223,7 +224,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
     var warningInfoType: WarningType = WarningType.UNKNOWN
-    var tncList: List<TermsAndConditionUiModel> = emptyList()
+    val tncList = mutableListOf<TermsAndConditionUiModel>()
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
@@ -401,7 +402,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
             is PlayBroadcastAction.GetAccountList -> handleGetAccountList(event.selectedType)
-            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
+            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -533,7 +534,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val channelInfo = playBroadcastMapper.mapChannelInfo(channel)
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
 
-            logger.logChannelStatus(channelInfo.status)
+            logChannelStatus(channelInfo.status)
 
             setChannelId(channelInfo.channelId)
             setChannelTitle(channelInfo.title)
@@ -570,8 +571,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun sendLogs() {
         try {
             logger.sendAll(channelId)
-        } catch (ignored: IllegalStateException) {
-        }
+        } catch (e: Exception) { }
     }
 
     private fun setActiveInteractiveTitle(title: String) {
@@ -698,9 +698,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
             is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
             is LiveDuration -> {
-                // TODO: need to change this validation, instead of remaining changes this to currDuration == maxDuration
-                if (result.remaining <= 0) logger.logSocketType(result)
                 restartLiveDuration(result)
+                if (result.duration >= result.maxDuration) logSocket(result)
             }
             is SectionedProductTagSocketResponse -> {
                 setSelectedProduct(productMapper.mapSectionedProduct(result))
@@ -711,7 +710,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
                 if (eventUiModel.freeze) {
                     _observableEvent.value = eventUiModel
-                    logger.logSocketType(result)
+                    logSocket(result)
                 }
             }
             is Banned -> {
@@ -719,7 +718,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
                 if (eventUiModel.banned) {
                     _observableEvent.value = eventUiModel
-                    logger.logSocketType(result)
+                    logSocket(result)
                 }
             }
             is GiveawayResponse -> {
@@ -1396,6 +1395,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleBroadcastStateChanged(state: PlayBroadcasterState) {
+        logPusherState(state)
         when(state) {
             is PlayBroadcasterState.Started -> handleBroadcasterStart()
             is PlayBroadcasterState.Resume -> handleBroadcasterResume(state.startedBefore, state.shouldContinue)
@@ -1421,6 +1421,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             getPinnedMessage()
             getInteractiveConfig()
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterStart()
             })
@@ -1452,6 +1453,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
             } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 doResumeBroadcaster(shouldContinue)
             })
@@ -1467,6 +1469,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 updateCurrentInteractiveStatus()
             } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterRecovered()
             })
@@ -1484,19 +1487,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             broadcastTimer.pause()
             updateChannelStatus(PlayChannelStatusType.Pause)
-        }) {}
+        }) {
+            logger.logBroadcastError(it)
+        }
     }
 
     private fun handleBroadcasterStop() {
         viewModelScope.launchCatchError(block = {
             closeWebSocket()
             updateChannelStatus(PlayChannelStatusType.Stop)
-        }) {}
+        }) {
+            logger.logBroadcastError(it)
+        }
 
         mIsBroadcastStopped = true
     }
 
-    private fun handleGetAccountList(selectedType: String = TYPE_UNKNOWN) {
+    private fun handleGetAccountList(selectedType: String) {
         viewModelScope.launchCatchError(block = {
             _accountStateInfo.value = AccountStateInfo()
             _observableConfigInfo.value = NetworkResult.Loading
@@ -1547,7 +1554,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         } else nonSellerAccount ?: ContentAccountUiModel.Empty
     }
 
-    private fun handleSwitchAccount(needLoading: Boolean = true) {
+    private fun handleSwitchAccount(needLoading: Boolean) {
         if (needLoading) _observableConfigInfo.value = NetworkResult.Loading
 
         val currentSelected = switchAccount(
@@ -1600,7 +1607,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         selectedAccount = selectedAccount,
                     )
                 }
-                if (selectedAccount.isShop) tncList = configUiModel.tnc
+                if (selectedAccount.isShop) {
+                    tncList.clear()
+                    tncList.addAll(configUiModel.tnc)
+                }
                 false
             }
             else -> true
@@ -1649,23 +1659,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         else DEFAULT_BEFORE_LIVE_COUNT_DOWN
     }
 
-    fun getShopIconUrl(): String = userSession.shopAvatar
-
-    fun getShopName(): String = userSession.shopName
+    fun getAuthorImage(): String = hydraConfigStore.getAuthor().iconUrl
 
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
-            product.updatePinProduct(isLoading = true)
+            product.updatePinProduct(isLoading = true, needToUpdate = false)
             val result = repo.setPinProduct(channelId, product)
             if(result)
                 product.updatePinProduct(isLoading = false, needToUpdate = true)
         }){
-            product.updatePinProduct(isLoading = false)
+            product.updatePinProduct(isLoading = false, needToUpdate = false)
             _uiEvent.emit(PlayBroadcastEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
         }
     }
 
-    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToUpdate: Boolean = false) {
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean, needToUpdate: Boolean) {
         _productSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
@@ -1690,6 +1698,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun stopTimer() {
         broadcastTimer.stop()
+    }
+
+    /**
+     * Logger
+     */
+    private fun logChannelStatus(status: ChannelStatus) {
+        logger.logChannelStatus(status)
+    }
+
+    private fun logPusherState(state: PlayBroadcasterState) {
+        logger.logPusherState(state)
+    }
+
+    private fun logSocket(type: PlaySocketType) {
+        logger.logSocketType(type)
     }
 
     fun sendBroadcasterLog(metric: BroadcasterMetric) {

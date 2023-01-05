@@ -19,7 +19,7 @@ import androidx.transition.Visibility
 class ScaleTransition : Visibility {
 
     constructor() : super()
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     override fun captureStartValues(transitionValues: TransitionValues) {
         super.captureStartValues(transitionValues)
@@ -78,7 +78,7 @@ class ScaleTransition : Visibility {
 
     private fun getAnimatorListener(view: View): AnimatorListenerAdapter {
         return object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 doOnEnd(view)
             }
         }

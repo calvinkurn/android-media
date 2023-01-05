@@ -9,7 +9,7 @@ object MockChannelGrid {
                 warehouseId = "1",
                 minOrder = 1,
                 price = "Rp 389.350",
-                imageUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/3/22/1579059/1579059_86946c79-26f2-40da-a7c3-a6286936345f_700_700",
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/22/1579059/1579059_86946c79-26f2-40da-a7c3-a6286936345f_700_700",
                 name = "Mock Product",
                 applink = "tokopedia://home",
                 url = "https://www.tokopedia.com/",
