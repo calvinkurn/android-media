@@ -318,6 +318,7 @@ object AffiliateAnalytics {
             const val CLICK_ARTICLE_CATEGORY = "click - article category"
             const val IMPRESSION_ARTICLE_CATEGORY = "impression - article category"
             const val IMPRESSION_TUTORIAL_CATEGORY = "impression - tutorial category"
+            const val IMPRESSION_EVENT_CATEGORY = "impression - event category"
             const val CLICK_TUTORIAL_CATEGORY = "click - tutorial category"
             const val CLICK_LIHAT_SEMUA_EVENT_CARD = "click - lihat semua - event card"
             const val CLICK_LIHAT_SEMUA_LATEST_ARTICLE_CARD = "click - lihat semua - latest article card"
@@ -325,6 +326,7 @@ object AffiliateAnalytics {
             const val CLICK_SOCIAL_MEDIA_CARD = "click - social media card"
             const val CLICK_KAMUS_AFFILIATE = "click - kamus affiliate"
             const val CLICK_BANTUAN = "click - bantuan"
+            const val CLICK_EVENT_CATEGORY = "click - event category"
         }
     }
 
