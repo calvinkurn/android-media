@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst.SellerApp.TOPADS_HEADLINE_CREATE
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.dialog.DialogUnify
@@ -46,6 +48,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherB
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
+import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.toPx
@@ -414,10 +417,10 @@ class SummaryFragment :
     }
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {
-        // TODO implement broadcast redirection
+        context?.let { SharingUtil.shareToBroadCastChat(it, voucherConfiguration.voucherId) }
     }
 
     private fun onSuccessBottomsheetAdsClick(voucherConfiguration: VoucherConfiguration) {
-        // TODO implement ads redirection
+        RouteManager.route(context, TOPADS_HEADLINE_CREATE)
     }
 }
