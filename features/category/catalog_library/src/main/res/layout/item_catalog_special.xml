@@ -3,51 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/catalog_special_item_layout">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/img_card"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:card_type="border"
+        app:cardCornerRadius="20dp"
+        android:padding="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <com.tokopedia.unifycomponents.CardUnify2
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            app:card_type="border"
-            app:cardCornerRadius="20dp"
-            android:padding="1dp"
-            android:background="@drawable/squircle">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/special_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+    </com.tokopedia.unifycomponents.CardUnify2>
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/special_icon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"
-                android:background="@drawable/ic_square_circle" />
-        </com.tokopedia.unifycomponents.CardUnify2>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/special_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="display_3"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        tools:text="Title"
+        app:layout_constraintEnd_toEndOf="@id/img_card"
+        app:layout_constraintStart_toStartOf="@id/img_card"
+        app:layout_constraintTop_toBottomOf="@id/img_card" />
 
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/special_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            app:typographyType="display_3"
-            android:layout_marginTop="8dp"
-            tools:text="Title" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/catalog_special_item_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

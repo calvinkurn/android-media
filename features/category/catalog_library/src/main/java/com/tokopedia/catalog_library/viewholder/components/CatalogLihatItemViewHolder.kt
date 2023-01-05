@@ -1,7 +1,7 @@
 package com.tokopedia.catalog_library.viewholder.components
 
 import android.view.View
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
@@ -19,7 +19,7 @@ class CatalogLihatItemViewHolder(val view: View): RecyclerView.ViewHolder(view) 
         }
         view.findViewById<Typography>(R.id.lihat_item_title)?.text =
             childCategoryData.categoryName
-        view.findViewById<LinearLayout>(R.id.lihat_expanded_item_layout).setOnClickListener {
+        view.findViewById<ConstraintLayout>(R.id.lihat_expanded_item_layout).setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(childCategoryData.categoryName)
         }
     }

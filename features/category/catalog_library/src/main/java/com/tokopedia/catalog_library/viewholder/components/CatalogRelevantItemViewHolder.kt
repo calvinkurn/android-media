@@ -1,7 +1,7 @@
 package com.tokopedia.catalog_library.viewholder.components
 
 import android.view.View
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
@@ -16,7 +16,7 @@ class CatalogRelevantItemViewHolder(val view: View): RecyclerView.ViewHolder(vie
             view.findViewById<ImageUnify>(R.id.catalog_relevant_image).loadImageWithoutPlaceholder(iconUrl)
         }
         view.findViewById<Typography>(R.id.catalog_relevant_product_title).text = catalogRelevantResponse.name
-        view.findViewById<LinearLayout>(R.id.catalog_relevant_layout).setOnClickListener{
+        view.findViewById<ConstraintLayout>(R.id.catalog_relevant_layout).setOnClickListener {
             catalogLibraryListener.onProductCardClicked(catalogRelevantResponse.applink)
         }
     }

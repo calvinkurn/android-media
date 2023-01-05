@@ -60,7 +60,10 @@ class CatalogHomepageFragment : Fragment(),
     private var catalogHomeRecyclerView: RecyclerView? = null
 
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
-        CatalogLibraryUiUpdater(mutableMapOf())
+        CatalogLibraryUiUpdater(mutableMapOf()).also {
+            it.setUpForHomePage()
+        }
+
     private var shimmerLayout: ScrollView? = null
 
     private var userSession: UserSession? = null
@@ -81,7 +84,7 @@ class CatalogHomepageFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
         shimmerLayout = view.findViewById(R.id.shimmer_layout)
-
+//        initHeaderTitle(view)
         activity?.let { observer ->
             userSession = UserSession(observer)
             getDataFromViewModel()
@@ -162,6 +165,7 @@ class CatalogHomepageFragment : Fragment(),
         }
     }
 
+
     private fun getDataFromViewModel() {
         homepageViewModel?.getSpecialData(userSession?.userId)
         homepageViewModel?.getRelevantData()
@@ -195,15 +199,7 @@ class CatalogHomepageFragment : Fragment(),
 
     override fun onCategoryItemClicked(categoryName: String?) {
         super.onCategoryItemClicked(categoryName)
-        val bundle = Bundle()
-        val fragment = CatalogLandingPageFragment()
-        bundle.putString(CatalogLandingPageFragment.ARG_CATEGORY_NAME, categoryName)
-        fragment.arguments = bundle
-        requireActivity().supportFragmentManager.beginTransaction().addToBackStack("").replace(
-            R.id.catalog_home_frag,
-            CatalogLandingPageFragment(),
-            CatalogLandingPageFragment.CATALOG_LANDING_PAGE_FRAGMENT_TAG
-        ).commit()
+        RouteManager.route(context, "tokopedia://catalog-library/kategori/${categoryName}")
 
     }
 }

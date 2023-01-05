@@ -6,6 +6,7 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -22,9 +23,13 @@ class CatalogSpecialItemViewHolder(val view: View): RecyclerView.ViewHolder(view
             val imageView = view.findViewById<ImageUnify>(R.id.special_icon) as ImageUnify
             imageView.loadImage(iconUrl)
         }
-        view.findViewById<Typography>(R.id.special_title)?.text =
-            catalogSpecialData.name
-        view.findViewById<View>(R.id.catalog_special_item_layout).setOnClickListener {
+        view.findViewById<Typography>(R.id.special_title)?.let {
+            it.text = catalogSpecialData.name
+            it.setOnClickListener {
+                catalogLibraryListener.onCategoryItemClicked(catalogSpecialData.name)
+            }
+        }
+        view.findViewById<CardUnify2>(R.id.img_card).setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(catalogSpecialData.name)
         }
     }
