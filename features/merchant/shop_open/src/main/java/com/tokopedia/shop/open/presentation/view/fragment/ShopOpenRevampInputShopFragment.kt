@@ -472,7 +472,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
             policyTitle = getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title),
             actionTnc = { onClickUrl(URL_TNC, getString(R.string.open_shop_revamp_tnc_webview_title)) },
             actionPolicy = { onClickUrl(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title))},
-            colorSpan = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            colorSpan = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         )
         txtTermsAndConditions.text = tncPolicyText
         txtTermsAndConditions.movementMethod = LinkMovementMethod.getInstance()
