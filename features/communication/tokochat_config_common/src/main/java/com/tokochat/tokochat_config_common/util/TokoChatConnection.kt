@@ -29,6 +29,7 @@ object TokoChatConnection {
     @Volatile
     private var hasBeenInitialized: Boolean = false
 
+    @JvmStatic
     fun init(context: Context, isFromLoginFlow: Boolean = false) {
         // Initialize AndroidThreeTen for Conversation SDK
         AndroidThreeTen.init(context.applicationContext)

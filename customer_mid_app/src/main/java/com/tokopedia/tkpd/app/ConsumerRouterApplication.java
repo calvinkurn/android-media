@@ -303,7 +303,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void removeTokoChat() {
-        TokoChatConnection.INSTANCE.disconnect();
+        TokoChatConnection.disconnect();
     }
 
     @Override
@@ -608,6 +608,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initTokoChatConnection() {
-        TokoChatConnection.INSTANCE.init(getApplicationContext(), false);
+        TokoChatConnection.init(getApplicationContext(), false);
     }
 }
