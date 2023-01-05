@@ -15,13 +15,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.csat_rating.ProvideRatingContract
 import com.tokopedia.csat_rating.R
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.di.component.DaggerCsatComponent
-import com.tokopedia.csat_rating.di.general.CsatComponentCommon
 import com.tokopedia.csat_rating.di.module.CsatRatingModule
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIFTH_EMOJI
@@ -39,7 +39,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
-import com.tokopedia.abstraction.R as RAbstraction
 
 
 open class BaseFragmentProvideRating : BaseDaggerFragment(),
@@ -81,9 +80,10 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
 
 
     override fun initInjector() {
-        DaggerCsatComponent.builder()
-            .csatRatingModule(CsatRatingModule())
-            .csatComponentCommon(getComponent(CsatComponentCommon::class.java))
+        DaggerCsatComponent.builder().baseAppComponent(
+            ((activity as Activity).application as BaseMainApplication).baseAppComponent
+        )
+            .csatRatingModule(context?.let { CsatRatingModule(it) })
             .build()
             .inject(this)
     }
@@ -200,7 +200,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
             finishFilter = QuickFilterItem()
             finishFilter.name = filter.message
             finishFilter.type = filter.id.toString()
-            finishFilter.setColorBorder(RAbstraction.color.tkpd_main_green)
+            finishFilter.setColorBorder(com.tokopedia.unifyprinciples.R.color.Unify_GN400)
             filterItems.add(finishFilter)
         }
         mFilterReview.renderFilter(filterItems)
@@ -301,12 +301,14 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
     }
 
     override fun disableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(context, RAbstraction.color.grey_500))
+        mTxtFinished.setTextColor(MethodChecker.getColor(context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400))
         mTxtFinished.isEnabled = false
     }
 
     override fun enableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(context, RAbstraction.color.white))
+        mTxtFinished.setTextColor(MethodChecker.getColor(context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         mTxtFinished.isEnabled = true
     }
 

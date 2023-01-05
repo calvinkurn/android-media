@@ -87,27 +87,9 @@ public class GCMHandler {
         return FCMCacheManager.getRegistrationId(context);
     }
 
-
-    // this code should be on main thread.
     public static boolean isPlayServicesAvailable(Activity activity) {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(activity);
-        if (result != ConnectionResult.SUCCESS) {
-            if (googleAPI.isUserResolvableError(result)) {
-                if (!activity.isFinishing()) {
-                    googleAPI.getErrorDialog(activity, result,
-                            PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
-                                Map<String, String> messageMap = new HashMap<>();
-                                messageMap.put("type", "gcm");
-                                messageMap.put("fingerprint", Build.FINGERPRINT);
-                                ServerLogger.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
-                            }).show();
-                }
-            }
-
-            return false;
-        } else {
-            return true;
-        }
+        return result == ConnectionResult.SUCCESS;
     }
 }

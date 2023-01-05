@@ -63,6 +63,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.EmbraceKey;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
@@ -87,7 +88,6 @@ import com.tokopedia.checkout.view.di.CheckoutModule;
 import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
-import com.tokopedia.checkout.view.helper.CartProtectionInfoBottomSheetHelper;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -2600,11 +2600,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToProtectionMore(CartItemModel cartItemModel) {
-        mTrackerPurchaseProtection.eventClickOnPelajari(userSessionInterface.getUserId(),
-                cartItemModel.getProtectionTitle(), cartItemModel.getProtectionPricePerProduct(),
-                cartItemModel.getAnalyticsProductCheckoutData().getProductCategoryId());
-        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(), userSessionInterface,
-                cartItemModel.getProtectionLinkUrl(), getString(R.string.title_activity_checkout_webview));
+        Activity activity = getActivity();
+        if (activity != null) {
+            mTrackerPurchaseProtection.eventClickOnPelajari(userSessionInterface.getUserId(),
+                    cartItemModel.getProtectionTitle(), cartItemModel.getProtectionPricePerProduct(),
+                    cartItemModel.getAnalyticsProductCheckoutData().getProductCategoryId());
+            Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalFintech.INSURANCE_INFO);
+            intent.putExtra(ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL, cartItemModel.getProtectionLinkUrl());
+            startActivity(intent);
+        }
     }
 
     @Override

@@ -47,7 +47,6 @@
     <string name="label_no_courier_bottomsheet_title">Pengiriman</string>
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
-    <string name="title_activity_checkout_webview">Proteksi Produk</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
     <string name="checkout_module_message_cart_error">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
     <string name="ppp_more">Pelajari</string>

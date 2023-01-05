@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.common.data.response.minicartlist
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class Product(
@@ -22,11 +23,11 @@ data class Product(
         @SerializedName("slash_price_label")
         val slashPriceLabel: String = "",
         @SerializedName("product_original_price")
-        val productOriginalPrice: Long = 0,
+        val productOriginalPrice: Double = 0.0,
         @SerializedName("initial_price")
-        val initialPrice: Long = 0L,
+        val initialPrice: Double = 0.0,
         @SerializedName("product_price")
-        val productPrice: Long = 0,
+        val productPrice: Double = 0.0,
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
         @SerializedName("product_notes")
@@ -41,6 +42,7 @@ data class Product(
         val productSwitchInvenage: Int = 0,
         @SerializedName("parent_id")
         val parentId: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("wholesale_price")
         val wholesalePrice: List<WholesalePrice> = emptyList(),
         @SerializedName("campaign_id")
