@@ -659,7 +659,7 @@ object DynamicProductDetailMapper {
             productId = product.basic.productID,
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
             bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
-            productPrice = product.data.price.value.toLong(),
+            productPrice = product.data.campaign.originalPrice.toLong(),
             productRating = product.basic.stats.rating,
             productTitle = product.data.name,
             hasCampaign = product.data.campaign.activeAndHasId.compareTo(false).toString(),
