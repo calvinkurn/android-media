@@ -39,9 +39,8 @@ data class VoucherOrders(
         @SerializedName("benefit_class")
         val benefitClass: String = "",
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("bo_campaign_id")
-        val boCampaignId: Long = 0,
+        val boCampaignId: String = "",
 
         @SerializedName("eta_txt")
         val etaText: String = "",

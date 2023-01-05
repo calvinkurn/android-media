@@ -5,7 +5,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.NO_EMOJI
-import com.tokopedia.csat_rating.presenter.screenState.*
+import com.tokopedia.csat_rating.presenter.screenState.FifthScreenState
+import com.tokopedia.csat_rating.presenter.screenState.FirstScreenState
+import com.tokopedia.csat_rating.presenter.screenState.FourthScreenState
+import com.tokopedia.csat_rating.presenter.screenState.ScreenState
+import com.tokopedia.csat_rating.presenter.screenState.SecondScreenState
+import com.tokopedia.csat_rating.presenter.screenState.ThirdScreenState
+import com.tokopedia.csat_rating.presenter.screenState.ZeroScreenState
 import javax.inject.Inject
 
 class BaseProvideRatingFragmentViewModel @Inject constructor(
@@ -28,6 +34,12 @@ class BaseProvideRatingFragmentViewModel @Inject constructor(
     private set
     var reasonList : ArrayList<BadCsatReasonListItem> = arrayListOf()
     private set
+    var csatTitle : String = ""
+        private set
+
+    fun setCsatTitle(title: String) {
+        csatTitle = title
+    }
 
     fun setCaption(caption : ArrayList<String>){
         captionsList = caption

@@ -2506,7 +2506,7 @@ open class DynamicProductDetailFragment :
                 viewModel.userSessionInterface.isLoggedIn
             )
         }
-        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
+        pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
@@ -3094,7 +3094,7 @@ open class DynamicProductDetailFragment :
             }
         )
 
-        pdpUiUpdater?.updateDataP1(context, productInfo, true)
+        pdpUiUpdater?.updateDataP1(productInfo, true)
         pdpUiUpdater?.updateInitialMedia(productInfo.data.media, productInfo.data.containerType)
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 

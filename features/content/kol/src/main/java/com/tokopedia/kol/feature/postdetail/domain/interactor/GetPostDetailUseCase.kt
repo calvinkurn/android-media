@@ -63,7 +63,7 @@ class GetPostDetailUseCase @Inject constructor(
                 footerModel.totalComment = feedXCard.comments.count
                 val text = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
                 val desc = text.replace("%s", feedXCard.author.name)
-                val title = feedXCard.author.name + " `post"
+                val title = feedXCard.author.name + " post"
                 footerModel.shareData = Share(text=text, description = desc, title = title, url = feedXCard.webLink)
             }
         }

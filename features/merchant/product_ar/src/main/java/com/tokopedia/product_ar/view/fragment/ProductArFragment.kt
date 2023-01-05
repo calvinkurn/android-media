@@ -136,6 +136,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
         binding?.icCompareAr?.run {
             show()
+            disableCompareIcon()
             setOnClickListener {
                 binding?.arLoader?.show()
                 goToArComparissonPage()
