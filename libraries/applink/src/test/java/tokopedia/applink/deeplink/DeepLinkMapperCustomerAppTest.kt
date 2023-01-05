@@ -1747,10 +1747,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check privacy center appLink then should return tokopedia internal home navigation in customerapp`() {
         val expectedDeepLink = ApplinkConsInternalHome.HOME_NAVIGATION
-        val rollencePrivacyCenter = "privacy_center_and"
-
         every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(rollencePrivacyCenter)
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
         } returns ""
 
         assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
