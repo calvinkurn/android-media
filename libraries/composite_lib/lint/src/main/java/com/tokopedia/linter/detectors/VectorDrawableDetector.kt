@@ -44,6 +44,8 @@ class VectorDrawableDetector : Detector(), XmlScanner {
             implementation = Implementation(VectorDrawableDetector::class.java, Scope.RESOURCE_FILE_SCOPE)
         )
 
+        private const val SEPERATOR_NODE_VALUE = "/"
+        private const val ICON_UNIFY_PREFIX = "iconunify"
         private const val ATTR_ANDROID_BACKGROUND = "${PREFIX_ANDROID}${ATTR_BACKGROUND}"
         private const val ATTR_ANDROID_DRAWABLE_LEFT = "${PREFIX_ANDROID}${ATTR_DRAWABLE_LEFT}"
         private const val ATTR_ANDROID_DRAWABLE_RIGHT = "${PREFIX_ANDROID}${ATTR_DRAWABLE_RIGHT}"
@@ -185,7 +187,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
     }
 
     private fun Attr.hasVector(): Boolean {
-        val value = value.substringAfter("/")
-        return vectorResources.contains(value) || value.startsWith("iconunify")
+        val value = value.substringAfter(SEPERATOR_NODE_VALUE)
+        return vectorResources.contains(value) || value.startsWith(ICON_UNIFY_PREFIX)
     }
 }
