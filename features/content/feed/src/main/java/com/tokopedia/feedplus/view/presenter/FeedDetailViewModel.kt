@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
@@ -17,14 +16,13 @@ import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
-class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: FeedDetailRepository,
-                                              private val userSession: UserSessionInterface,
-                                              private val mvcSummaryUseCase: MVCSummaryUseCase,
-                                              private val dispatcherProvider: CoroutineDispatchers
+class FeedDetailViewModel @Inject constructor(
+    private val feedDetailRepository: FeedDetailRepository,
+    private val mvcSummaryUseCase: MVCSummaryUseCase,
+    private val dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel() {
 
     private var feedDetailLiveData: MutableLiveData<FeedDetailViewState> = MutableLiveData()
