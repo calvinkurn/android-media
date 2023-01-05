@@ -5,20 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
-import com.tokopedia.catalog_library.di.CatalogLibraryComponent
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
@@ -39,6 +36,7 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
     private var shimmerLayout: ScrollView? = null
     private var userSession: UserSession? = null
+    private var catalogHomeRecyclerView: RecyclerView? = null
     private val categoryId = ""
     private val categoryIdentifier = ""
     private val brandIdentifier = ""
@@ -49,6 +47,9 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
     companion object {
         const val CATALOG_HOME_PAGE_FRAGMENT_TAG = "CATALOG_HOME_PAGE_FRAGMENT_TAG"
+        fun getInstance(): CatalogHomepageFragment {
+            return CatalogHomepageFragment()
+        }
     }
 
     @JvmField
@@ -102,13 +103,10 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
         CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
     }
 
-    private var catalogHomeRecyclerView: RecyclerView? = null
-
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
             it.setUpForHomePage()
         }
-
 
     private fun setupRecyclerView(view: View) {
         catalogHomeRecyclerView = view.findViewById(R.id.catalog_home_rv)
@@ -167,7 +165,6 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
         }
     }
 
-
     private fun getDataFromViewModel() {
         homepageViewModel?.getSpecialData(userSession?.userId)
         homepageViewModel?.getRelevantData()
@@ -186,12 +183,12 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
     override fun onLihatSemuaTextClick() {
         super.onLihatSemuaTextClick()
-        requireActivity().supportFragmentManager.beginTransaction().addToBackStack("").replace(
-            R.id.catalog_home_frag,
-            CatalogLihatSemuaPageFragment(),
-            CatalogLihatSemuaPageFragment.CATALOG_LIHAT_PAGE_FRAGMENT_TAG
-        ).commit()
-
+        RouteManager.route(context, "tokopedia://catalog-library/kategori")
+//        requireActivity().supportFragmentManager.beginTransaction().addToBackStack("").replace(
+//            R.id.parent_view,
+//            CatalogLihatSemuaPageFragment(),
+//            CatalogLihatSemuaPageFragment.CATALOG_LIHAT_PAGE_FRAGMENT_TAG
+//        ).commit()
     }
 
     override fun onProductCardClicked(applink: String?) {

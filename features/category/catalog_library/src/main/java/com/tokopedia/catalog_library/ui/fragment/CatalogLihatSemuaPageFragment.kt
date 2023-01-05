@@ -5,26 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.catalog_library.R
-import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
+import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
-import com.tokopedia.catalog_library.di.CatalogLibraryComponent
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -37,8 +30,21 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogLihatSemuaPageFragment : Fragment(),
-    HasComponent<CatalogLibraryComponent>, CatalogLibraryListener {
+class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListener {
+
+    private var catalogLihatPageRecyclerView: RecyclerView? = null
+    private var shimmerLayout: ScrollView? = null
+
+    companion object {
+        const val CATALOG_LIHAT_PAGE_FRAGMENT_TAG = "CATALOG_LIHAT_PAGE_FRAGMENT_TAG"
+        const val DEFAULT_ASC_SORT_ORDER = "0"
+        const val DESC_SORT_ORDER = "1"
+        const val DEVICE = ""
+        const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
+        fun newInstance(): CatalogLihatSemuaPageFragment {
+            return CatalogLihatSemuaPageFragment()
+        }
+    }
 
     @JvmField
     @Inject
@@ -60,38 +66,28 @@ class CatalogLihatSemuaPageFragment : Fragment(),
         CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
     }
 
-    private var catalogLihatPageRecyclerView: RecyclerView? = null
-
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf())
-    private var shimmerLayout: ScrollView? = null
-
-    companion object {
-        const val CATALOG_LIHAT_PAGE_FRAGMENT_TAG = "CATALOG_LIHAT_PAGE_FRAGMENT_TAG"
-        const val DEFAULT_ASC_SORT_ORDER = "0"
-        const val DESC_SORT_ORDER = "1"
-        const val DEVICE = ""
-        const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
-        fun newInstance(categoryName: String?): CatalogLihatSemuaPageFragment {
-            val fragment = CatalogLihatSemuaPageFragment()
-            val bundle = Bundle()
-            bundle.putString(ARG_CATEGORY_NAME, categoryName)
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        component.inject(this)
         shimmerLayout = view.findViewById(R.id.shimmer_layout)
-
         activity?.let {
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
             showShimmer()
         }
         setupRecyclerView(view)
         setObservers()
+    }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        DaggerCatalogLibraryComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     override fun onCreateView(
@@ -127,12 +123,6 @@ class CatalogLihatSemuaPageFragment : Fragment(),
                 }
             }
         }
-    }
-
-    override fun getComponent(): CatalogLibraryComponent {
-        return DaggerCatalogLibraryComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
     }
 
     private fun updateUi() {
@@ -182,7 +172,7 @@ class CatalogLihatSemuaPageFragment : Fragment(),
             .beginTransaction()
             .addToBackStack(CatalogLandingPageFragment::class.java.simpleName)
             .replace(
-                R.id.catalog_home_frag,
+                R.id.parent_view,
                 CatalogLandingPageFragment.newInstance(categoryName),
                 CatalogLandingPageFragment.CATALOG_LANDING_PAGE_FRAGMENT_TAG
             ).commit()
