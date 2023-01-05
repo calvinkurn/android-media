@@ -43,6 +43,6 @@ data class CardWidgetUiModel(
     }
 
     fun getWidgetAppLink(): String {
-        return data?.appLink ?: appLink
+        return data?.appLink?.takeIf { it.isNotBlank() } ?: appLink
     }
 }
