@@ -577,7 +577,17 @@ class AddProductViewModel @Inject constructor(
                 }
             }
 
-            _uiState.update { it.copy(products = updatedProducts) }
+            val selectedProducts = updatedProducts.selectedProductsOnly()
+            val checkboxState = determineCheckboxState(selectedProducts.count(), currentState.totalProducts)
+
+            _uiState.update {
+                it.copy(
+                    products = updatedProducts,
+                    selectedProductsIds = selectedProducts,
+                    selectedProductCount = selectedProducts.count(),
+                    checkboxState = checkboxState
+                )
+            }
         }
     }
 
