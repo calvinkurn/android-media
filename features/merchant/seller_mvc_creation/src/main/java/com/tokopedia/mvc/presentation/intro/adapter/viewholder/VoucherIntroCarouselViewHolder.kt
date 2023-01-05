@@ -26,8 +26,6 @@ class VoucherIntroCarouselViewHolder(itemView: View?) :
             headerText.text = element?.headerTitle
             viewPagerTitle.text = element?.tabsList?.get(ZEROTH_INDEX)?.tabHeader
             viewPagerDescription.text = element?.description
-//            val viewPagerAdapter = MvcIntroViewPager()
-//            viewPager.adapter = viewPagerAdapter
 
             setUpCarousel(this, ZEROTH_INDEX, element)
 
@@ -50,43 +48,39 @@ class VoucherIntroCarouselViewHolder(itemView: View?) :
         position: Int,
         element: VoucherIntroCarouselUiModel?
     ) {
-        val bannerArr: java.util.ArrayList<Any> = java.util.ArrayList()
+        val carouselArray: java.util.ArrayList<Any> = java.util.ArrayList()
         when (position) {
             ZEROTH_INDEX -> {
                 val list: List<String>? = element?.tabsList?.get(ZEROTH_INDEX)?.listOfImages
                 list?.let {
-                    bannerArr.addAll(
+                    carouselArray.addAll(
                         it
                     )
                 }
-                binding.carouselPageControl.setIndicator(list?.size ?: 0)
             }
             FIRST_INDEX -> {
                 val list: List<String>? = element?.tabsList?.get(FIRST_INDEX)?.listOfImages
                 list?.let {
-                    bannerArr.addAll(
+                    carouselArray.addAll(
                         it
                     )
                 }
-                binding.carouselPageControl.setIndicator(list?.size ?: 0)
             }
             SECOND_INDEX -> {
                 val list: List<String>? = element?.tabsList?.get(SECOND_INDEX)?.listOfImages
                 list?.let {
-                    bannerArr.addAll(
+                    carouselArray.addAll(
                         it
                     )
                 }
-                binding.carouselPageControl.setIndicator(list?.size ?: 0)
             }
         }
 
+        binding.carouselPageControl.setIndicator(carouselArray.size)
+
         val itemParam = { view: View, data: Any ->
-            val imageCarousel = view.findViewById<DeferredImageView>(R.id.image)
-            binding.containerCarousel.post {
-            //    imageCarousel.initialWidth = binding.containerCarousel.measuredWidth
-            }
-            imageCarousel.loadRemoteImageDrawable(data as String)
+            val imageCarousel = view.findViewById<DeferredImageView>(R.id.mvc_intro_carousel_deferred_image)
+            imageCarousel.loadRemoteImageDrawable(data as String, data)
         }
 
         binding.apply {
@@ -97,7 +91,7 @@ class VoucherIntroCarouselViewHolder(itemView: View?) :
                 indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
                 infinite = true
                 onActiveIndexChangedListener = this@VoucherIntroCarouselViewHolder
-                addItems(R.layout.smvc_item_intro_carousel, bannerArr, itemParam)
+                addItems(R.layout.smvc_item_intro_carousel, carouselArray, itemParam)
             }
         }
     }
