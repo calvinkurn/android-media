@@ -386,7 +386,7 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun setHeader(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        val title = model.header.title
+        val title = model.data?.firstOrNull()?.name.orEmpty()
         val dynamicRuleDescription = model.data?.firstOrNull()?.dynamicRule?.descriptionHeader.orEmpty()
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
         setTitle(title)
