@@ -151,15 +151,6 @@ import com.tokopedia.wishlist_common.R as Rwishlist
 /**
  * @author by nisie on 5/15/17.
  */
-
-const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
-const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
-const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
-const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
-const val CLICK_SHOP_TOPADS = "click - shop - topads"
-const val CLICK_PRODUCT_TOPADS = "click - product - topads"
-const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
-
 @Suppress("LateinitUsage")
 class FeedPlusFragment :
     BaseDaggerFragment(),
@@ -352,6 +343,14 @@ class FeedPlusFragment :
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
 
+        const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
+        const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
+        const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
+        const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
+        const val CLICK_SHOP_TOPADS = "click - shop - topads"
+        const val CLICK_PRODUCT_TOPADS = "click - product - topads"
+        const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
+
         fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()
             fragment.arguments = bundle
@@ -473,10 +472,13 @@ class FeedPlusFragment :
                                             feedFollowersOnlyBottomSheet?.dismiss()
                                         }
                                     }
-                                } else {val messageRes =
-                                    if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
-                                           showToast(getString(messageRes), Toaster.TYPE_NORMAL
-                                        )
+                                } else {
+                                    val messageRes =
+                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
+                                    showToast(
+                                        getString(messageRes),
+                                        Toaster.TYPE_NORMAL
+                                    )
                                 }
                                 onSuccessFollowUnfollowKol(data.rowNumber)
                             } else {
@@ -1623,7 +1625,7 @@ class FeedPlusFragment :
     ) {
         onGoToLink(redirectUrl)
         val trackerId = if (isCaption) {
-            getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17981")
+            getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17981", trackerIdAsgcRecom = "40070")
         } else {
             getTrackerIdForCampaignSaleTracker(
                 positionInFeed,
@@ -1706,7 +1708,7 @@ class FeedPlusFragment :
             val finalId =
                 if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
             val trackerId =
-                getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "13452")
+                getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "13452", trackerIdAsgcRecom = "40065")
             getFeedTrackerDataModelFromPosition(positionInFeed, trackerId)?.let {
                 feedAnalytics.evenClickMenu(
                     it
@@ -1722,7 +1724,7 @@ class FeedPlusFragment :
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
                 val trackerIdReport =
-                    getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17985")
+                    getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17985", trackerIdAsgcRecom = "40066")
                 feedAnalytics.eventClickThreeDotsOption(
                     finalId,
                     "laporkan",
@@ -3487,7 +3489,7 @@ class FeedPlusFragment :
                         "13426"
                     }
                 } else {
-                    ""
+                    if (feedXCard.followers.isFollowed.not()) "40069" else ""
                 }
             getFeedTrackerDataModelFromPosition(positionInFeed, trackerId = trackerId)?.let {
                 feedAnalytics.eventGridMoreProductCLicked(
