@@ -34,7 +34,7 @@ class DynamicPaymentFeeUseCase @Inject constructor(
 //        if (!response.response.success) {
 //            throw MessageErrorException(response.response.errors.getOrNull(0)?.message)
 //        }
-//        return response.response.data.map { OrderPaymentFee(it.title, it.fee, it.showTooltip, false, 0, it.tooltipInfo) }
+//        return response.response.data.map { OrderPaymentFee(it.title, it.fee, it.showTooltip, it.showSlashed, it.slashedFee, it.tooltipInfo) }
         return listOf(OrderPaymentFee("biaya dinamis", 2000.0, true, false, 0, "dinamis"))
     }
 
@@ -50,13 +50,13 @@ class DynamicPaymentFeeUseCase @Inject constructor(
                         message
                     }
                     data {
-                      code
-                      title
-                      amount
-                      show_slashed
-                      slashed_fee
-                      show_tooltip
-                      tooltip_info
+                        code
+                        title
+                        fee
+                        show_slashed
+                        slashed_fee
+                        show_tooltip
+                        tooltip_info
                     }
                 }
             }

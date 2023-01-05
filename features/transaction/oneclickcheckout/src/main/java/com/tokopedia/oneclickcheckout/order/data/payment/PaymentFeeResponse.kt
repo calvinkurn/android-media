@@ -28,10 +28,14 @@ class PaymentFee(
     val code: String = "",
     @SerializedName("title")
     val title: String = "",
-    @SerializedName("amount")
+    @SerializedName("fee")
     val fee: Double = 0.0,
+    @SerializedName("show_slashed")
+    val showSlashed: Boolean = false,
     @SerializedName("show_tooltip")
     val showTooltip: Boolean = false,
+    @SerializedName("slashed_fee")
+    val slashedFee: Int = 0,
     @SerializedName("tooltip_info")
     val tooltipInfo: String = ""
 )
