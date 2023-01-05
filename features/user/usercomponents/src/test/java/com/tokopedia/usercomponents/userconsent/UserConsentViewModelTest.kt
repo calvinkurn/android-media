@@ -150,4 +150,18 @@ class UserConsentViewModelTest {
         }
     }
 
+    @Test
+    fun `submit consent then then failed`() {
+        val parameter = ConsentSubmissionParam()
+
+        coEvery {
+            submitConsentUseCase(parameter)
+        } throws mockThrowable
+        viewModel?.submitConsent(parameter)
+
+        coVerify(exactly = 1) {
+            submitConsentUseCase(parameter)
+        }
+    }
+
 }
