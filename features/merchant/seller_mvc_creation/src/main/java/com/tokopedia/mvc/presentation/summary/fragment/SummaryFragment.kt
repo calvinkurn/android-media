@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_LIST
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.dialog.DialogUnify
@@ -167,6 +170,9 @@ class SummaryFragment :
                 R.string.smvc_summary_page_product_format,
                 it.size
             )
+        }
+        viewModel.uploadCouponSuccess.observe(viewLifecycleOwner) {
+            showSuccessUploadBottomSheet(it)
         }
     }
 

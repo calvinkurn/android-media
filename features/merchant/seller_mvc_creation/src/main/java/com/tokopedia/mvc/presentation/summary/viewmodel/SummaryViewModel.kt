@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -16,7 +17,6 @@ import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.util.formatTo
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import java.util.*
@@ -31,6 +31,9 @@ class SummaryViewModel @Inject constructor(
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    private val _uploadCouponSuccess = MutableLiveData<VoucherConfiguration>()
+    val uploadCouponSuccess: LiveData<VoucherConfiguration> get() = _uploadCouponSuccess
 
     private val _configuration = MutableLiveData<VoucherConfiguration>()
     val configuration: LiveData<VoucherConfiguration> get() = _configuration
@@ -106,12 +109,12 @@ class SummaryViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val voucherConfiguration = configuration.value ?: return@launchCatchError
-                val result = addEditCouponFacadeUseCase.executeAdd(
+                addEditCouponFacadeUseCase.executeAdd(
                     voucherConfiguration,
                     products.value ?: return@launchCatchError,
                     voucherConfiguration.warehouseId.toString()
                 )
-                _error.postValue(MessageErrorException("Sukses"))
+                _uploadCouponSuccess.postValue(voucherConfiguration)
             },
             onError = {
                 _error.postValue(it)
@@ -123,11 +126,12 @@ class SummaryViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
+                val voucherConfiguration = configuration.value ?: return@launchCatchError
                 val result = addEditCouponFacadeUseCase.executeEdit(
-                    configuration.value ?: return@launchCatchError,
+                    voucherConfiguration,
                     products.value ?: return@launchCatchError
                 )
-                _error.postValue(MessageErrorException("Sukses"))
+                _uploadCouponSuccess.postValue(voucherConfiguration)
             },
             onError = {
                 _error.postValue(it)

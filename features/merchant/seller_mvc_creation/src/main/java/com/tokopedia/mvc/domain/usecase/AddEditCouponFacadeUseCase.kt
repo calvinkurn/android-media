@@ -33,7 +33,7 @@ class AddEditCouponFacadeUseCase @Inject constructor(
             val generatedImagesDeferred = imageRatios.map {
                 async {
                     getCouponImagePreviewUseCase.executeGetImageUrl(
-                        isCreateMode = false,
+                        isCreateMode = true,
                         voucherConfiguration = configuration,
                         parentProductId = allProducts.map { it.parentProductId },
                         imageRatio = it
