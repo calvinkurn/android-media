@@ -97,12 +97,10 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     private var isPermissionAccessed: Boolean = false
 
-    private var currentKotaKecamatan: String? = ""
     private var currentLat: Double = DEFAULT_LAT
     private var currentLong: Double = DEFAULT_LONG
     private var permissionState: Int = PERMISSION_NOT_DEFINED
     private var isPolygon: Boolean = false
-    private var distrcitId: Long? = null
 
     private var isEdit: Boolean = false
     private var source: String = ""
@@ -132,9 +130,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         arguments?.let {
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             isFromPinpoint = it.getBoolean(EXTRA_FROM_PINPOINT)
-            currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON)
-            distrcitId = it.getLong(EXTRA_DISTRICT_ID)
             isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
             source = it.getString(PARAM_SOURCE, "")
 
@@ -288,7 +284,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         val intent = Intent(context, AddressFormActivity::class.java).apply {
             putExtra(EXTRA_IS_POSITIVE_FLOW, false)
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-            putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
             putExtra(PARAM_SOURCE, source)
             putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
         }
@@ -593,7 +588,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         bundle.putString(PARAM_SOURCE, source)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
-        distrcitId?.let { bundle.putLong(EXTRA_DISTRICT_ID, it) }
         if (!isEdit) {
             startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
         } else {
@@ -607,7 +601,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                         putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
                         putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
                         putExtra(EXTRA_IS_POLYGON, isPolygon)
-                        distrcitId?.let { putExtra(EXTRA_DISTRICT_ID, it) }
                         putExtra(EXTRA_IS_EDIT, isEdit)
                         putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
                     }

@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
-import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -37,8 +37,8 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     val defaultAddress: LiveData<Result<DefaultAddressData>>
         get() = _defaultAddress
 
-    private val _addressDetail = MutableLiveData<Result<KeroGetAddressResponse.Data>>()
-    val addressDetail: LiveData<Result<KeroGetAddressResponse.Data>>
+    private val _addressDetail = MutableLiveData<Result<SaveAddressDataModel>>()
+    val addressDetail: LiveData<Result<SaveAddressDataModel>>
         get() = _addressDetail
 
     private val _pinpointValidation = MutableLiveData<Result<PinpointValidationResponse.PinpointValidations.PinpointValidationResponseData>>()
@@ -65,7 +65,9 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         viewModelScope.launch {
             try {
                 val addressDetail = repo.getAddressDetail(addressId, getSourceValue())
-                _addressDetail.value = Success(addressDetail)
+                addressDetail.keroGetAddress.data.firstOrNull()?.let {
+                    _addressDetail.value = Success(AddAddressMapper.mapAddressDetailToSaveAddressDataModel(it))
+                }
             } catch (e: Throwable) {
                 _addressDetail.value = Fail(e)
             }

@@ -24,19 +24,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.DistrictItem
-import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
@@ -45,12 +45,12 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIV
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_KOTA_KECAMATAN
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_POSTAL_CODE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_RESET_TO_SEARCH_PAGE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -77,23 +77,14 @@ class AddressFormFragment :
 
     private var bottomSheetInfoPenerima: BottomSheetUnify? = null
     private var saveDataModel: SaveAddressDataModel? = null
-    private var formattedAddress: String = ""
-    private var currentLat: Double = 0.0
-    private var currentLong: Double = 0.0
-    private var currentDistrictName: String? = ""
+
     private var labelAlamatList: Array<Pair<String, Boolean>> = emptyArray()
     private var staticDimen8dp: Int? = 0
     private var isPositiveFlow: Boolean = true
 
     /*To differentiate user pinpoint on ANA Negative*/
-    private var isPinpoint: Boolean = false
     private var validated: Boolean = true
     private val toppers: String = "Toppers-"
-    private var currentKotaKecamatan: String? = ""
-    private var currentAlamat: String = ""
-    private var currentPostalCode: String = ""
-    private var isLatitudeNotEmpty: Boolean? = false
-    private var isLongitudeNotEmpty: Boolean? = false
 
     private var isEdit: Boolean = false
     var isBackDialogClicked: Boolean = false
@@ -117,6 +108,9 @@ class AddressFormFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var saveAddressMapper: SaveAddressMapper
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -138,17 +132,7 @@ class AddressFormFragment :
             isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
             if (!isEdit) {
                 saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
-                isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
-                isLatitudeNotEmpty?.let {
-                    if (it) currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
-                }
-
-                isLongitudeNotEmpty = saveDataModel?.longitude?.isNotEmpty()
-                isLongitudeNotEmpty?.let {
-                    if (it) currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
-                }
                 isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
-                currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
             } else {
                 EditAddressRevampAnalytics.onViewEditAddressPageNew(userSession.userId)
                 addressId = it.getString(EXTRA_ADDRESS_ID, "")
@@ -196,7 +180,6 @@ class AddressFormFragment :
         if (addressDataFromPinpoint == null) {
             addressDataFromPinpoint = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
         }
-        val kotaKecamatanFromEditPinpoint = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
 
         // if user make any changes from pinpoint page, then update data in this page
         if (addressDataFromPinpoint != null) {
@@ -211,15 +194,12 @@ class AddressFormFragment :
                 }
             }
             saveDataModel = addressDataFromPinpoint
-            currentKotaKecamatan = kotaKecamatanFromEditPinpoint
             binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.setText(
-                currentKotaKecamatan
+                saveDataModel?.formattedAddress
             )
-            binding?.cardAddressPinpoint?.addressDistrict?.text = currentKotaKecamatan
+            binding?.cardAddressPinpoint?.addressDistrict?.text = saveDataModel?.formattedAddress
             saveDataModel?.let {
                 if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
-                    currentLat = it.latitude.toDouble()
-                    currentLong = it.longitude.toDouble()
                     binding?.cardAddressNegative?.icLocation?.setImage(IconUnify.LOCATION)
                     binding?.cardAddressNegative?.addressDistrict?.text = if (isEdit) {
                         getString(R.string.tv_pinpoint_defined_edit)
@@ -233,10 +213,6 @@ class AddressFormFragment :
                     }
                     binding?.cardAddressNegative?.btnChangeNegative?.text =
                         getString(R.string.change_pinpoint_positive_text)
-                    if (saveDataModel?.postalCode?.isEmpty() == true) {
-                        saveDataModel?.postalCode =
-                            currentPostalCode
-                    }
                 }
             }
         }
@@ -408,22 +384,19 @@ class AddressFormFragment :
             binding?.loaderAddressForm?.visibility = View.GONE
             when (it) {
                 is Success -> {
-                    it.data.keroGetAddress.data.firstOrNull()?.let { detailAddress ->
-                        saveDataModel =
-                            AddAddressMapper.mapAddressDetailToSaveAddressDataModel(detailAddress)
-                        isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
-                        isLatitudeNotEmpty?.let { notEmpty ->
-                            if (notEmpty) currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
-                        }
-
-                        isLongitudeNotEmpty = saveDataModel?.longitude?.isNotEmpty()
-                        isLongitudeNotEmpty?.let { notEmpty ->
-                            if (notEmpty) currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
-                        }
-                        isPositiveFlow = isLatitudeNotEmpty == true && isLongitudeNotEmpty == true
-                        currentKotaKecamatan =
-                            "${detailAddress.districtName}, ${detailAddress.cityName}, ${detailAddress.provinceName}"
-                        prepareEditLayout(detailAddress)
+                    saveDataModel = it.data
+                    isPositiveFlow = saveDataModel?.hasPinpoint().orFalse()
+                    prepareEditLayout(it.data)
+                }
+                is Fail -> {
+                    val msg = it.throwable.message.toString()
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            msg,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
             }
@@ -510,7 +483,7 @@ class AddressFormFragment :
                     checkKotaKecamatan()
                 }
 
-                formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
+                formAddressNegative.etKotaKecamatan.textFieldInput.setText(saveDataModel?.formattedAddress)
                 formAddressNegative.etKotaKecamatan.textFieldInput.apply {
                     inputType = InputType.TYPE_NULL
                     setOnFocusChangeListener { _, hasFocus ->
@@ -539,14 +512,12 @@ class AddressFormFragment :
                         null
                     )
                 )
-                currentAlamat = formAddressNegative.etAlamat.textFieldInput.text.toString()
             }
         } else {
             binding?.run {
-                formattedAddress = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
                 showPositiveLayout()
 
-                cardAddressPinpoint.addressDistrict.text = formattedAddress
+                cardAddressPinpoint.addressDistrict.text = saveDataModel?.formattedAddress
 
                 formAddress.etLabel.textFieldInput.setText("Rumah")
                 formAddress.etLabel.textFieldInput.addTextChangedListener(
@@ -593,8 +564,8 @@ class AddressFormFragment :
     }
 
     @SuppressLint("SetTextI18n")
-    private fun prepareEditLayout(data: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse) {
-        setupLabelChips(data.addrName)
+    private fun prepareEditLayout(data: SaveAddressDataModel) {
+        setupLabelChips(data.addressName)
         binding?.formAccount?.run {
             etNamaPenerima.textFieldInput.setText(data.receiverName)
             infoNameLayout.visibility = View.GONE
@@ -610,8 +581,6 @@ class AddressFormFragment :
                 showBottomSheetInfoPenerima()
             }
         }
-
-        val addressDetail = data.addressDetailStreet.ifEmpty { data.address1 }
 
         setOnTouchLabelAddress()
         setupRvLabelAlamatChips()
@@ -632,7 +601,7 @@ class AddressFormFragment :
 
                 formAddressNegative.run {
                     etKotaKecamatan.textFieldInput.apply {
-                        setText(currentKotaKecamatan)
+                        setText(saveDataModel?.formattedAddress)
                         inputType = InputType.TYPE_NULL
                         setOnFocusChangeListener { _, hasFocus ->
                             if (hasFocus) {
@@ -646,7 +615,7 @@ class AddressFormFragment :
                         }
                     }
                     etLabel.run {
-                        textFieldInput.setText(data.addrName)
+                        textFieldInput.setText(data.addressName)
                         textFieldInput.addTextChangedListener(
                             setWrapperWatcher(
                                 textFieldWrapper,
@@ -656,8 +625,8 @@ class AddressFormFragment :
                     }
                     rvLabelAlamatChips.visibility = View.GONE
                     etAlamat.run {
-                        textFieldInput.setText(addressDetail)
-                        if (addressDetail.length > MAX_CHAR_ALAMAT) {
+                        textFieldInput.setText(data.address1)
+                        if (data.address1.length > MAX_CHAR_ALAMAT) {
                             this.textFieldWrapper.let { wrapper ->
                                 wrapper.error =
                                     context.getString(R.string.error_alamat_exceed_max_char)
@@ -672,8 +641,8 @@ class AddressFormFragment :
                         )
                     }
                     etCourierNote.run {
-                        textFieldInput.setText(data.addressDetailNotes)
-                        if (data.addressDetailNotes.length > MAX_CHAR_NOTES) {
+                        textFieldInput.setText(data.address1Notes)
+                        if (data.address1Notes.length > MAX_CHAR_NOTES) {
                             textFieldWrapper.let { wrapper ->
                                 wrapper.error =
                                     context.getString(R.string.error_notes_exceed_max_char)
@@ -686,13 +655,11 @@ class AddressFormFragment :
                             )
                         }
                     }
-                    currentAlamat = etAlamat.textFieldInput.text.toString()
                 }
             }
         } else {
             showPositiveLayout()
             binding?.run {
-                formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
                 cardAddressPinpoint.run {
                     context?.let {
                         btnChange.visible()
@@ -701,13 +668,13 @@ class AddressFormFragment :
                             EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
                         }
                     }
+                    addressDistrict.text = saveDataModel?.formattedAddress
                     tvPinpointTitle.visibility = View.VISIBLE
-                    addressDistrict.text = formattedAddress
                 }
                 formAddress.run {
                     etAlamatNew.run {
-                        textFieldInput.setText(addressDetail)
-                        if (addressDetail.length > MAX_CHAR_ALAMAT) {
+                        textFieldInput.setText(data.address1)
+                        if (data.address1.length > MAX_CHAR_ALAMAT) {
                             textFieldWrapper.let { wrapper ->
                                 wrapper.error =
                                     context.getString(R.string.error_alamat_exceed_max_char)
@@ -722,8 +689,8 @@ class AddressFormFragment :
                         )
                     }
                     etCourierNote.run {
-                        textFieldInput.setText(data.addressDetailNotes)
-                        if (data.addressDetailNotes.length > MAX_CHAR_NOTES) {
+                        textFieldInput.setText(data.address1Notes)
+                        if (data.address1Notes.length > MAX_CHAR_NOTES) {
                             this.textFieldWrapper.let { wrapper ->
                                 wrapper.error =
                                     context.getString(R.string.error_notes_exceed_max_char)
@@ -737,7 +704,7 @@ class AddressFormFragment :
                         }
                     }
                     etLabel.run {
-                        textFieldInput.setText(data.addrName)
+                        textFieldInput.setText(data.addressName)
                         textFieldInput.addTextChangedListener(
                             setWrapperWatcher(
                                 textFieldWrapper,
@@ -1108,15 +1075,14 @@ class AddressFormFragment :
 
     private fun goToPinpointPage() {
         val bundle = Bundle()
-        bundle.putDouble(EXTRA_LAT, currentLat)
-        bundle.putDouble(EXTRA_LONG, currentLong)
+        saveDataModel?.run {
+            bundle.putDouble(EXTRA_LAT, latitude.toDoubleOrZero())
+            bundle.putDouble(EXTRA_LONG, longitude.toDoubleOrZero())
+        }
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-        bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
-        bundle.putString(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
         bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveDataModel)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
         bundle.putBoolean(EXTRA_IS_EDIT, isEdit)
-        bundle.putString(EXTRA_POSTAL_CODE, currentPostalCode)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
         if (!isPositiveFlow && !isEdit) bundle.putBoolean(EXTRA_IS_POLYGON, true)
         startActivityForResult(
@@ -1205,7 +1171,7 @@ class AddressFormFragment :
 
     private fun setupNegativePinpointCard() {
         binding?.run {
-            if (!isPinpoint) {
+            if (saveDataModel?.hasPinpoint() != true) {
                 cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
                 cardAddressNegative.addressDistrict.text =
                     if (isEdit) {
@@ -1478,7 +1444,7 @@ class AddressFormFragment :
     private fun doSaveEditAddress() {
         setSaveAddressDataModel()
         saveDataModel?.let {
-            if (currentLat != 0.0 && currentLong != 0.0) {
+            if (it.hasPinpoint()) {
                 binding?.loaderAddressForm?.visibility = View.VISIBLE
                 viewModel.validatePinpoint(it)
             } else {
@@ -1488,32 +1454,24 @@ class AddressFormFragment :
     }
 
     private fun setSaveAddressDataModel() {
-        if (currentLat != 0.0 && currentLong != 0.0) {
+        if (saveDataModel?.hasPinpoint() == true) {
             saveDataModel?.address2 =
-                "$currentLat,$currentLong"
+                "${saveDataModel?.latitude},${saveDataModel?.longitude}"
         }
         binding?.run {
             saveDataModel?.receiverName = formAccount.etNamaPenerima.textFieldInput.text.toString()
             saveDataModel?.phone = formAccount.etNomorHp.textFieldInput.text.toString()
             saveDataModel?.isTokonowRequest = viewModel.isTokonow
             if (isPositiveFlow) {
-                if (formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                    saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
-                    saveDataModel?.address1Notes =
-                        formAddress.etCourierNote.textFieldInput.text.toString()
-                } else {
-                    saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
-                }
+                saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
+                saveDataModel?.address1Notes =
+                    formAddress.etCourierNote.textFieldInput.text.toString()
                 saveDataModel?.addressName = formAddress.etLabel.textFieldInput.text.toString()
                 saveDataModel?.isAnaPositive = PARAM_ANA_POSITIVE
             } else {
-                if (formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                    saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text}"
-                    saveDataModel?.address1Notes =
-                        formAddressNegative.etCourierNote.textFieldInput.text.toString()
-                } else {
-                    saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text}"
-                }
+                saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text}"
+                saveDataModel?.address1Notes =
+                    formAddressNegative.etCourierNote.textFieldInput.text.toString()
                 saveDataModel?.addressName =
                     formAddressNegative.etLabel.textFieldInput.text.toString()
                 saveDataModel?.isAnaPositive = PARAM_ANA_NEGATIVE
@@ -1665,32 +1623,14 @@ class AddressFormFragment :
         postalCode: String,
         isPinpoint: Boolean
     ) {
-        val kotaKecamatanText =
-            "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
-        formattedAddress = kotaKecamatanText
-        currentDistrictName = districtAddress.districtName.toString()
+        saveDataModel = saveAddressMapper.mapAddressModeltoSaveAddressDataModel(districtAddress, postalCode, saveDataModel)
         binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.run {
-            setText(kotaKecamatanText)
-            currentKotaKecamatan = kotaKecamatanText
+            setText(saveDataModel?.formattedAddress)
         }
-
-        val selectedDistrict =
-            "${districtAddress.provinceName}, ${districtAddress.cityName}, ${districtAddress.districtName}"
-        saveDataModel?.selectedDistrict = selectedDistrict
-        saveDataModel?.cityId = districtAddress.cityId
-        saveDataModel?.provinceId = districtAddress.provinceId
-        saveDataModel?.districtId = districtAddress.districtId
-        saveDataModel?.zipCodes = districtAddress.zipCodes
-        saveDataModel?.postalCode = postalCode
-        currentPostalCode = postalCode
-
         // reset lat long
         if (!isEdit) {
-            currentLat = 0.0
-            currentLong = 0.0
-            saveDataModel?.latitude = "0.0"
-            saveDataModel?.longitude = "0.0"
-            this.isPinpoint = false
+            saveDataModel?.latitude = ""
+            saveDataModel?.longitude = ""
             binding?.run {
                 cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
                 cardAddressNegative.addressDistrict.text = context?.let {

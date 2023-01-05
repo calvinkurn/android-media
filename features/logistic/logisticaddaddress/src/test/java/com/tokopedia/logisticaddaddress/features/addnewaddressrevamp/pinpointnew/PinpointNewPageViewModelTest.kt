@@ -89,28 +89,28 @@ class PinpointNewPageViewModelTest {
     @Test
     fun `Get District Boundaries Success`() {
         coEvery { repo.getDistrictBoundaries(any()) } returns GetDistrictBoundaryResponse()
-        pinpointNewPageViewModel.getDistrictBoundaries(11986)
+        pinpointNewPageViewModel.getDistrictBoundaries()
         verify { districtBoundaryObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Boundaries Fail`() {
         coEvery { repo.getDistrictBoundaries(any()) } throws defaultThrowable
-        pinpointNewPageViewModel.getDistrictBoundaries(11986)
+        pinpointNewPageViewModel.getDistrictBoundaries()
         verify { districtBoundaryObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get District Center by District ID Success`() {
         coEvery { repo.getDistrictCenter(any()) } returns KeroAddrGetDistrictCenterResponse.Data()
-        pinpointNewPageViewModel.getDistrictCenter(11986)
+        pinpointNewPageViewModel.getDistrictCenter()
         verify { districtCenterObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get District Center by District ID Fail`() {
         coEvery { repo.getDistrictCenter(any()) } throws defaultThrowable
-        pinpointNewPageViewModel.getDistrictCenter(11986)
+        pinpointNewPageViewModel.getDistrictCenter()
         verify { districtCenterObserver.onChanged(match { it is Fail }) }
     }
 

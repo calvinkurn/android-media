@@ -35,7 +35,7 @@ class AddressFormViewModelTest {
     private val saveAddressObserver: Observer<Result<DataAddAddress>> = mockk(relaxed = true)
     private val defaultAddressObserver: Observer<Result<DefaultAddressData>> = mockk(relaxed = true)
     private val editAddressObserver: Observer<Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>> = mockk(relaxed = true)
-    private val detailAddressObserver: Observer<Result<KeroGetAddressResponse.Data>> = mockk(relaxed = true)
+    private val detailAddressObserver: Observer<Result<SaveAddressDataModel>> = mockk(relaxed = true)
     private val pinpointValidationObserver: Observer<Result<PinpointValidationResponse.PinpointValidations.PinpointValidationResponseData>> = mockk(relaxed = true)
 
     private lateinit var addressFormViewModel: AddressFormViewModel

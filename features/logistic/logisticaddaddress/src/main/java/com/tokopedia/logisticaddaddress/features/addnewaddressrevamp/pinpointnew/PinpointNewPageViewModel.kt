@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
@@ -68,21 +69,22 @@ class PinpointNewPageViewModel @Inject constructor(
         }
     }
 
-    fun getDistrictBoundaries(districtId: Long) {
+    fun getDistrictBoundaries() {
         viewModelScope.launch {
             try {
-                val districtBoundary = repo.getDistrictBoundaries(districtId)
-                _districtBoundary.value = Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
+                val districtBoundary = repo.getDistrictBoundaries(saveAddressDataModel.districtId)
+                _districtBoundary.value =
+                    Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
             } catch (e: Throwable) {
                 _districtBoundary.value = Fail(e)
             }
         }
     }
 
-    fun getDistrictCenter(districtId: Long) {
+    fun getDistrictCenter() {
         viewModelScope.launch {
             try {
-                val data = repo.getDistrictCenter(districtId)
+                val data = repo.getDistrictCenter(saveAddressDataModel.districtId)
                 _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
             } catch (e: Throwable) {
                 _districtCenter.value = Fail(e)
@@ -105,5 +107,17 @@ class PinpointNewPageViewModel @Inject constructor(
 
     fun getAddress(): SaveAddressDataModel {
         return this.saveAddressDataModel
+    }
+
+    fun setLatLong(lat: Double, long: Double) {
+        this.saveAddressDataModel =
+            this.saveAddressDataModel.copy(latitude = lat.toString(), longitude = long.toString())
+    }
+
+    fun getCurrentLocationDetail() {
+        getDistrictData(
+            saveAddressDataModel.latitude.toDoubleOrZero(),
+            saveAddressDataModel.longitude.toDoubleOrZero()
+        )
     }
 }

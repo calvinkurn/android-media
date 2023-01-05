@@ -39,4 +39,8 @@ data class SaveAddressDataModel(
     var warehouses: List<WarehouseDataModel> = listOf(),
     var serviceType: String = "",
     var isTokonowRequest: Boolean = false
-) : Parcelable
+) : Parcelable {
+    fun hasPinpoint(): Boolean {
+        return latitude.isNotEmpty() && longitude.isNotEmpty()
+    }
+}
