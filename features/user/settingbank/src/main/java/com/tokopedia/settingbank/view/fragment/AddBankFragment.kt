@@ -22,7 +22,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
@@ -302,7 +305,7 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun onAccountNumberAndNameValidationSuccess(data: AccountNameFinalValidationSuccess) {
         add_account_button.isEnabled = true
         showManualAccountNameError(null)
-        tvChangeAccountHolderName.hide()
+        tvChangeAccountHolderName.gone()
         if (data.checkAccountAction == ActionValidateAccountName) {
             builder.setAccountName(data.accountHolderName, true)
             openConfirmationPopUp()
@@ -704,7 +707,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun onChangeAccountHolderName() {
         builder.isManual(true)
-        groupAccountNameAuto.hide()
+        groupAccountNameAuto.gone()
         textAreaBankAccountHolderName.visible()
         textAreaBankAccountHolderName.editText.setText("")
     }

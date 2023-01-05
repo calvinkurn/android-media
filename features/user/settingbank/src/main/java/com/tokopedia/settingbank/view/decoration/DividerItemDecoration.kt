@@ -16,7 +16,7 @@ class DividerItemDecoration() : RecyclerView.ItemDecoration() {
             val params = child.layoutParams as RecyclerView.LayoutParams
 
             // Skip drawing the border for the first item if it's the specific view holder
-            if (i == 0 && parent.getChildViewHolder(child) is BankTNCViewHolder) {
+            if (i == 0 && parent.getChildViewHolder(child) is BankTNCViewHolder || i == childCount - 1) {
                 continue
             }
 
