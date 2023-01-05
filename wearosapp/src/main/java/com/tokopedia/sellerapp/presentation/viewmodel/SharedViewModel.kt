@@ -167,7 +167,12 @@ class SharedViewModel @Inject constructor(
                 // capability), so I am just grabbing the first one (which should be the only one).
                 val nodes = capabilityInfo.nodes
                 val androidPhoneNodeWithApp = nodes.firstOrNull { it.isNearby }?.id
-                _ifPhoneHasApp.value = androidPhoneNodeWithApp != null
+                val phoneHasApp = androidPhoneNodeWithApp != null
+                _ifPhoneHasApp.value = phoneHasApp
+
+                if (phoneHasApp) {
+                    clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+                }
             } catch (throwable: Throwable) { /* nothing to do */ }
         }
     }
