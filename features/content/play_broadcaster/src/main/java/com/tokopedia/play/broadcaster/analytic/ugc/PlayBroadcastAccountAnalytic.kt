@@ -9,4 +9,10 @@ interface PlayBroadcastAccountAnalytic {
     fun onClickAccountAndHaveDraft()
     fun onClickCancelSwitchAccount()
     fun onClickConfirmSwitchAccount()
+    fun onClickCloseOnboardingUGC()
+    fun onClickUsernameFieldCompleteOnboardingUGC()
+    fun onClickCheckBoxCompleteOnboardingUGC()
+    fun onClickNextOnboardingUGC()
+    fun onClickCloseTNCSGC()
+    fun onClickOkButtonTNCSGC()
 }

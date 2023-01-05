@@ -36,7 +36,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.*
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
-import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
@@ -68,12 +67,6 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 2019-09-18
  */
-
-private const val PARAM_SHOP_DOMAIN = "shop_domain"
-private const val PARAM_SRC = "src"
-private const val PARAM_AD_KEY = "ad_key"
-private const val DEFAULT_VALUE_SRC = "fav_shop"
-
 class FeedViewModel @Inject constructor(
     private val baseDispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
@@ -102,15 +95,9 @@ class FeedViewModel @Inject constructor(
     companion object {
         private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
         private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
-        const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
-        const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
-        private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
         private const val FOLLOW_TYPE_SHOP = 2
         private const val FOLLOW_TYPE_BUYER = 3
     }
-
-    private val userId: String
-        get() = if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
 
     val getFeedFirstPageResp = MutableLiveData<Result<DynamicFeedFirstPageDomainModel>>()
     val getFeedNextPageResp = MutableLiveData<Result<DynamicFeedDomainModel>>()
