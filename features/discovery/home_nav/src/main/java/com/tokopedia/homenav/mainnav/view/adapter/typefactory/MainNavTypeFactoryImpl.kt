@@ -24,6 +24,8 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataMod
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
@@ -67,6 +69,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return FavoriteShopViewHolder.LAYOUT
     }
 
+    override fun type(reviewListDataModel: ReviewListDataModel): Int {
+        return
+    }
+
     override fun type(visitable: HomeNavTickerDataModel): Int {
         return HomeNavTickerViewHolder.LAYOUT
     }
@@ -92,6 +98,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
     }
 
     override fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel): Int {
+        return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
+    }
+
+    override fun type(shimmerReviewDataModel: ShimmerReviewDataModel): Int {
         return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
     }
 

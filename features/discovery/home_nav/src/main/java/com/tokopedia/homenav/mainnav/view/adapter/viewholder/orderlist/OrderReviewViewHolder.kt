@@ -10,7 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionReviewBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderReviewModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.OrderReviewModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.track.TrackApp

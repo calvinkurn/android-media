@@ -14,7 +14,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OtherTran
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderEmptyModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderReviewModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.OrderReviewModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
@@ -34,10 +34,6 @@ class OrderListTypeFactoryImpl(val mainNavListener: MainNavListener) : BaseAdapt
 
     override fun type(otherTransactionModel: OtherTransactionModel): Int {
         return OtherTransactionViewHolder.LAYOUT
-    }
-
-    override fun type(orderReviewModel: OrderReviewModel): Int {
-        return OrderReviewViewHolder.LAYOUT
     }
 
     override fun type(orderEmptyModel: OrderEmptyModel): Int {

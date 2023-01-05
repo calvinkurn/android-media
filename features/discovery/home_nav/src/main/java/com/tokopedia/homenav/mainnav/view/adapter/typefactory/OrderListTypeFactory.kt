@@ -1,6 +1,7 @@
 package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.*
+import com.tokopedia.homenav.mainnav.view.datamodel.review.OrderReviewModel
 
 interface OrderListTypeFactory {
     fun type(orderProductRevampModel: OrderProductRevampModel): Int
@@ -8,7 +9,6 @@ interface OrderListTypeFactory {
     fun type(orderPaymentModel: OrderPaymentModel): Int
     fun type(orderProductModel: OrderProductModel): Int
     fun type(otherTransactionModel: OtherTransactionModel): Int
-    fun type(orderReviewModel: OrderReviewModel): Int
     fun type(orderEmptyModel: OrderEmptyModel): Int
     fun type(otherTransactionRevampModel: OtherTransactionRevampModel): Int
 }
