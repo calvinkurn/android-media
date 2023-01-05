@@ -4,7 +4,6 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.BuildConfig
 import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import javax.inject.Inject
@@ -14,7 +13,7 @@ import javax.inject.Inject
  */
 @GqlQuery(GetShopProductsUseCase.QUERY_NAME, GetShopProductsUseCase.QUERY)
 class GetShopProductsUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository,
+    private val graphqlRepository: GraphqlRepository
 ) : RetryableGraphqlUseCase<GetShopProductsResponse>(graphqlRepository) {
 
     init {
@@ -87,7 +86,7 @@ class GetShopProductsUseCase @Inject constructor(
             perPage: Int = 25,
             keyword: String = "",
             sort: Int = 0,
-            isQA: Boolean = BuildConfig.DEBUG,
+            isQA: Boolean = GlobalConfig.DEBUG
         ): Map<String, Any> {
             return mapOf(
                 PARAM_SHOP_ID to shopId,
@@ -96,7 +95,7 @@ class GetShopProductsUseCase @Inject constructor(
                 PARAM_PER_PAGE to perPage,
                 PARAM_KEYWORD to keyword,
                 PARAM_SORT to sort,
-                PARAM_IS_QA to isQA,
+                PARAM_IS_QA to isQA
             )
         }
     }
