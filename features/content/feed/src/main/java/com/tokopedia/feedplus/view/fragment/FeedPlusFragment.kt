@@ -477,7 +477,7 @@ class FeedPlusFragment :
                                     }
                                 } else {
                                     val messageRes =
-                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
+                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast
                                     showToast(
                                         getString(messageRes),
                                         Toaster.TYPE_NORMAL
