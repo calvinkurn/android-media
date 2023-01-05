@@ -7,7 +7,6 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -29,22 +28,43 @@ class SummaryViewModel @Inject constructor(
     private val addEditCouponFacadeUseCase: AddEditCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val ADDING_VOUCHER_ID = 0L
+    }
+
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    private val _errorUpload = MutableLiveData<Throwable>()
+    val errorUpload: LiveData<Throwable> get() = _errorUpload
+
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _uploadCouponSuccess = MutableLiveData<VoucherConfiguration>()
     val uploadCouponSuccess: LiveData<VoucherConfiguration> get() = _uploadCouponSuccess
 
     private val _configuration = MutableLiveData<VoucherConfiguration>()
-    val configuration: LiveData<VoucherConfiguration> get() = _configuration
-    val maxExpense = Transformations.map(configuration) { getMaxExpenses(it) }
+    val maxExpense = Transformations.map(_configuration) { getMaxExpenses(it) }
+    val configuration = Transformations.map(_configuration) {
+        if (isDuplicate) {
+            it.copy(voucherId = ADDING_VOUCHER_ID)
+        } else {
+            it
+        }
+    }
 
     private val _products = MutableLiveData<List<SelectedProduct>>()
     val products: LiveData<List<SelectedProduct>> get() = _products
 
+    private val _isInputValid = MutableLiveData(false)
+    val isInputValid: LiveData<Boolean> get() = _isInputValid
+
     private val _couponImage = MutableLiveData<Bitmap>()
     val couponImage: LiveData<Bitmap>
         get() = _couponImage
+
+    private var isDuplicate = false
 
     fun setConfiguration(configuration: VoucherConfiguration) {
         _configuration.value = configuration
@@ -52,6 +72,10 @@ class SummaryViewModel @Inject constructor(
 
     fun updateProductList(products: List<SelectedProduct>) {
         _products.value = products
+    }
+
+    fun setAsDuplicateCoupon() {
+        isDuplicate = true
     }
 
     fun setupEditMode(voucherId: Long) {
@@ -104,39 +128,51 @@ class SummaryViewModel @Inject constructor(
         )
     }
 
-    fun addCoupon() {
+    fun addCoupon(voucherConfiguration: VoucherConfiguration) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val voucherConfiguration = configuration.value ?: return@launchCatchError
                 addEditCouponFacadeUseCase.executeAdd(
                     voucherConfiguration,
                     products.value ?: return@launchCatchError,
                     voucherConfiguration.warehouseId.toString()
                 )
                 _uploadCouponSuccess.postValue(voucherConfiguration)
+                _isLoading.postValue(false)
             },
             onError = {
-                _error.postValue(it)
+                _errorUpload.postValue(it)
+                _isLoading.postValue(false)
             }
         )
     }
 
-    fun editCoupon() {
+    fun editCoupon(voucherConfiguration: VoucherConfiguration) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val voucherConfiguration = configuration.value ?: return@launchCatchError
-                val result = addEditCouponFacadeUseCase.executeEdit(
+                addEditCouponFacadeUseCase.executeEdit(
                     voucherConfiguration,
                     products.value ?: return@launchCatchError
                 )
                 _uploadCouponSuccess.postValue(voucherConfiguration)
+                _isLoading.postValue(false)
             },
             onError = {
-                _error.postValue(it)
+                _errorUpload.postValue(it)
+                _isLoading.postValue(false)
             }
         )
+    }
+
+    fun saveCoupon() {
+        val voucherConfiguration = configuration.value ?: return
+        _isLoading.value = true
+        if (voucherConfiguration.voucherId > ADDING_VOUCHER_ID) {
+            editCoupon(voucherConfiguration)
+        } else {
+            addCoupon(voucherConfiguration)
+        }
     }
 
     fun getOtherPeriod(configuration: VoucherConfiguration): MutableList<DateStartEndData> {
@@ -153,7 +189,10 @@ class SummaryViewModel @Inject constructor(
                 )
             )
         }
-
         return list
+    }
+
+    fun validateTnc(checked: Boolean) {
+        _isInputValid.value = checked
     }
 }

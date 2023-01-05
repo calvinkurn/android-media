@@ -280,7 +280,7 @@
     <string name="smvc_summary_page_max_expense_title">Estimasi Maks. Pengeluaran</string>
     <string name="smvc_summary_page_max_expense_desc">Dipotong dari transaksi selesai</string>
     <string name="smvc_summary_page_error_dialog_title">Yaah, Kuponmu gagal dibuat</string>
-    <string name="smvc_summary_page_error_dialog_desc">Kupon gagal dibuat karena [Alasan gagal]. Tunggu beberapa saat atau coba lagi buat kuponmu, ya.</string>
+    <string name="smvc_summary_page_error_dialog_desc">Kupon gagal dibuat karena %s. Tunggu beberapa saat atau coba lagi buat kuponmu, ya.</string>
     <string name="smvc_summary_page_error_dialog_negative_action">Ke Daftar Kupon</string>
     <string name="smvc_summary_page_error_dialog_positive_action">Coba Lagi</string>
     <string name="smvc_summary_page_multiperiod_format">%d Bulan</string>

@@ -9,13 +9,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_LIST
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
@@ -25,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryBinding
@@ -48,6 +47,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBot
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.date.DateUtil.DEFAULT_LOCALE
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_TIME_FORMAT
@@ -69,7 +69,8 @@ class SummaryFragment :
             pageMode: PageMode,
             voucherId: Long,
             voucherConfiguration: VoucherConfiguration?,
-            selectedProducts: List<SelectedProduct>
+            selectedProducts: List<SelectedProduct>,
+            enableDuplicateVoucher: Boolean
         ): SummaryFragment {
             return SummaryFragment().apply {
                 arguments = Bundle().apply {
@@ -77,6 +78,7 @@ class SummaryFragment :
                     putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
                     putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
                     putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
+                    putBoolean(BundleConstant.BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER, enableDuplicateVoucher)
                 }
             }
         }
@@ -87,6 +89,12 @@ class SummaryFragment :
     private val configuration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private val selectedProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
     private val voucherId by lazy { arguments?.getLong(BundleConstant.BUNDLE_VOUCHER_ID) }
+    private val enableDuplicateVoucher by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER).orFalse() }
+    private val loadingDialog by lazy {
+        context?.let {
+            LoaderDialog(it)
+        }
+    }
     private val redirectionHelper = SummaryPageRedirectionHelper(this)
 
     @Inject
@@ -138,6 +146,9 @@ class SummaryFragment :
             viewModel.setConfiguration(configuration ?: return)
             viewModel.updateProductList(selectedProducts)
         }
+        if (enableDuplicateVoucher) {
+            viewModel.setAsDuplicateCoupon()
+        }
     }
 
     private fun setupObservables() {
@@ -173,6 +184,19 @@ class SummaryFragment :
         }
         viewModel.uploadCouponSuccess.observe(viewLifecycleOwner) {
             showSuccessUploadBottomSheet(it)
+        }
+        viewModel.errorUpload.observe(viewLifecycleOwner) {
+            showErrorUploadDialog(ErrorHandler.getErrorMessage(context, it))
+        }
+        viewModel.isInputValid.observe(viewLifecycleOwner) {
+            binding?.layoutSubmission?.btnSubmit?.isEnabled = it
+        }
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                loadingDialog?.show()
+            } else {
+                loadingDialog?.dismiss()
+            }
         }
     }
 
@@ -247,10 +271,13 @@ class SummaryFragment :
             routeToUrl(TNC_LINK)
         }
         btnSubmit.setOnClickListener {
-            viewModel.addCoupon()
+            viewModel.saveCoupon()
         }
         labelSpendingEstimation.iconInfo?.setOnClickListener {
             ExpenseEstimationBottomSheet.newInstance().show(childFragmentManager)
+        }
+        cbTnc.setOnClickListener {
+            viewModel.validateTnc(cbTnc.isChecked)
         }
     }
 
@@ -321,15 +348,16 @@ class SummaryFragment :
         }
     }
 
-    private fun showErrorUploadDialog() {
+    private fun showErrorUploadDialog(message: String) {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
             setImageUrl(UPLOAD_ERROR_IMAGE_URL)
             setTitle(context.getString(R.string.smvc_summary_page_error_dialog_title))
-            setDescription(context.getString(R.string.smvc_summary_page_error_dialog_desc))
+            setDescription(context.getString(R.string.smvc_summary_page_error_dialog_desc, message))
             setPrimaryCTAText(context.getString(R.string.smvc_summary_page_error_dialog_positive_action))
             setSecondaryCTAText(context.getString(R.string.smvc_summary_page_error_dialog_negative_action))
             setPrimaryCTAClickListener {
                 dismiss()
+                viewModel.saveCoupon()
             }
             setSecondaryCTAClickListener {
                 dismiss()
