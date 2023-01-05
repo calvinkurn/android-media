@@ -1478,7 +1478,12 @@ class FeedPlusFragment :
         }
         dialog.setSecondaryCTAClickListener {
             feedAnalytics.clickDeleteConfirmThreeDotsPage(
-                id, shopId, type, isFollowed, isVideo, authorType
+                id,
+                shopId,
+                type,
+                isFollowed,
+                isVideo,
+                authorType
             )
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
@@ -1799,7 +1804,12 @@ class FeedPlusFragment :
                     authorType
                 )
                 feedAnalytics.clickDeleteThreeDotsPage(
-                    finalId, authorId, postType, isFollowed, mediaType, authorType
+                    finalId,
+                    authorId,
+                    postType,
+                    isFollowed,
+                    mediaType,
+                    authorType
                 )
             }
             sheet.onDismiss = {
@@ -1815,7 +1825,11 @@ class FeedPlusFragment :
 
             sheet.onClosedClicked = {
                 feedAnalytics.eventCloseThreeDotBS(
-                    finalId, postType, isFollowed, authorId, authorType
+                    finalId,
+                    postType,
+                    isFollowed,
+                    authorId,
+                    authorType
                 )
             }
         }
@@ -2287,23 +2301,9 @@ class FeedPlusFragment :
         redirectLink: String,
         isSingleItem: Boolean
     ) {
-        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
-            val (id, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
-            trackCardPostClick(positionInFeed, trackingPostModel)
-
-            if (!isSingleItem && activity != null) {
-                RouteManager.route(
-                    requireContext(),
-                    UriUtil.buildUriAppendParam(
-                        ApplinkConstInternalContent.MEDIA_PREVIEW,
-                        mapOf(
-                            MEDIA_PREVIEW_INDEX to contentPosition.toString()
-                        )
-                    ),
-                    id.toString()
-                )
-            }
-        }
+        /**
+         * will be revamped in the future
+         */
     }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean) {
@@ -2405,16 +2405,9 @@ class FeedPlusFragment :
         contentPosition: Int,
         youtubeId: String
     ) {
-        val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
-
-        if (context != null) {
-            RouteManager.route(context, redirectUrl)
-        }
-
-        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
-            trackCardPostClick(positionInFeed, trackingPostModel)
-        }
+        /**
+         * will be revamped in the future
+         */
     }
 
     override fun onPollOptionClick(
@@ -2567,8 +2560,8 @@ class FeedPlusFragment :
                     hasVoucher = card.hasVoucher,
                     authorType = card.author.type.toString()
                 ),
-                    viewModelFactory,
- customMvcTracker = customMvcTracker
+                viewModelFactory,
+                customMvcTracker = customMvcTracker
             )
             productTagBS.closeClicked = {
                 val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
@@ -3478,7 +3471,11 @@ class FeedPlusFragment :
         if (type == TYPE_TOPADS_HEADLINE_NEW) {
             sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
             feedAnalytics.clickSekSekarang(
-                postId, shopId, type, isFollowed, feedXCard.author.type.toString()
+                postId,
+                shopId,
+                type,
+                isFollowed,
+                feedXCard.author.type.toString()
             )
         } else {
             val trackerId =
