@@ -22,7 +22,12 @@ data class StatusSubmissionParam(
     val dataSource: String = "",
 
     /*
-    *
+    * status submission is a number that you can see at com.tokopedia.kyc_centralized.common.KycStatus
+    * Goto KYC Android only possible get several code, that are:
+    * Rejected (-1)
+    * Pending (0)
+    * Verified (1)
+    * Blacklisted (5)
     * */
     val status: String = "",
 
