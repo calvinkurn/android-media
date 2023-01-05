@@ -14,8 +14,12 @@ class CatalogLibraryActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_catalog_library)
+//        setContentView(R.layout.activity_catalog_library)
         prepareView(savedInstanceState == null)
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_catalog_library
     }
 
     private fun prepareView(savedInstanceIsNull: Boolean) {
