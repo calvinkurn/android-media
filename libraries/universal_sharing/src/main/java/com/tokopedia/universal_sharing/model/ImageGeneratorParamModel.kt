@@ -10,10 +10,10 @@ data class PdpParamModel(
     val productPrice: Long = 0,
     val productRating: Float = 0f,
     val productTitle: String = "",
-    val hasCampaign: Boolean = false,
+    val hasCampaign: String = "0",
     val campaignName: String = "",
     val campaignDiscount: Int = 0,
-    val newProductPrice: Int = 0
+    val newProductPrice: Long = 0
 ) : ImageGeneratorParamModel()
 
 enum class BoTypeImageGeneratorParam(val value: String) {
@@ -22,6 +22,3 @@ enum class BoTypeImageGeneratorParam(val value: String) {
     BEBAS_ONGKIR_EXTRA("extra"),
     BEBAS_ONGKIR_10Rb("10k")
 }
-
-
-
