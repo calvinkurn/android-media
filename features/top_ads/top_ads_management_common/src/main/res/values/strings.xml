@@ -189,7 +189,7 @@
     <string name="pengaturan_iklan_manual_1">Pilih produk &amp; anggaran harian sesuai kebutuhan</string>
     <string name="pengaturan_iklan_manual_2">Pilih kata kunci sesuai strategi beriklanmu</string>
     <string name="pengaturan_iklan_manual_3">Atur biaya setiap kata kunci yang kamu pilih</string>
-    <string name="pengaturan_iklan_manual_4">Lebih banyak pengaturan yang bisa kamu sesuaikan sendiri</string>
+    <string name="pengaturan_iklan_manual_4">Lebih banyak pengaturan yang bisa kamu\nsesuaikan sendiri</string>
 
     <string name="topads_common_per_click">per klik</string>
     <string name="topads_common_selected_keyword">Kata kunci dipilih (%d)</string>
@@ -221,7 +221,7 @@
     <string name="ad_placement_ticket_description_pencerian">Penempatan Iklan di Pencarian adalah penempatan iklan yang muncul saat pengguna melakukan pencarian produk.</string>
     <string name="bid_edit_search_successful">Biaya Iklan Pencarian baru berhasil diterapkan.</string>
     <string name="bid_edit_browse_successful">Biaya iklan rekomendasi baru berhasil diterapkan.</string>
-    <string name="bid_state_changed_manual_successful">Grup iklan berhasil diubah ke Pengaturan Manual.</string>
+    <string name="bid_state_changed_manual_successful">Grup iklan berhasil diubah ke Diatur Manual oleh Seller.</string>
     <string name="bid_state_changed_automatic_successful">Grup iklan berhasil diubah ke Diatur Sistem TopAds.</string>
 
     <string name="empty_bid_error_message">Tidak boleh kosong</string>
