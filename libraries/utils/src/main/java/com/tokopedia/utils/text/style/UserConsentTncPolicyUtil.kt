@@ -6,6 +6,10 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 
+/**
+ * This is temporary user consent for open shop & create shop
+ * for long term solution: tribe needs to integrate with user consent widget
+ */
 object UserConsentTncPolicyUtil {
 
     fun generateText(
