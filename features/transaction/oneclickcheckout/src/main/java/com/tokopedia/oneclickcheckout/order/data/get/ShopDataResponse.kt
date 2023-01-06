@@ -1,13 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
 class ShopDataResponse(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
-        val shopId: Long = 0,
+        val shopId: String = "",
         @SerializedName("shop_name")
         val shopName: String = "",
         @SerializedName("shop_alert_message")
@@ -43,9 +41,8 @@ class ShopDataResponse(
 )
 
 class OccShopShipment(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("ship_id")
-        val shipId: Int = 0,
+        val shipId: String = "",
         @SerializedName("ship_name")
         val shipName: String = "",
         @SerializedName("ship_code")
@@ -59,16 +56,14 @@ class OccShopShipment(
 )
 
 class OccShipProd(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("ship_prod_id")
-        val shipProdId: Int = 0,
+        val shipProdId: String = "",
         @SerializedName("ship_prod_name")
         val shipProdName: String = "",
         @SerializedName("ship_group_name")
         val shipGroupName: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("ship_group_id")
-        val shipGroupId: Int = 0,
+        val shipGroupId: String = "",
         @SerializedName("additional_fee")
         val additionalFee: Int = 0,
         @SerializedName("minimum_weight")

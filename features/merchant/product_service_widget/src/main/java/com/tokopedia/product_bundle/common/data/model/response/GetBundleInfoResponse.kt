@@ -1,5 +1,6 @@
 package com.tokopedia.product_bundle.common.data.model.response
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -150,7 +151,7 @@ data class Child(
         @Expose val stock: Int = 0,
         @SerializedName("isBuyable")
         @Expose val isBuyable: Boolean = false,
-        @SerializedName("optionID")
+        @SerializedName("optionID") @SuppressLint("Invalid Data Type") // data in list type
         @Expose val optionIds: List<Long> = listOf()
 ): Parcelable
 

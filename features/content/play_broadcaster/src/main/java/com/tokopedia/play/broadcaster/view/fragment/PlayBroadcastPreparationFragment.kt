@@ -294,19 +294,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         parentViewModel.submitAction(PlayBroadcastAction.GetAccountList(TYPE_USER))
                     }
 
-                    override fun impressTncOnboarding() {}
+                    override fun clickNextOnTncOnboarding() {
+                        analytic.onClickNextOnboardingUGC()
+                    }
 
-                    override fun impressCompleteOnboarding() {}
+                    override fun clickUsernameFieldOnCompleteOnboarding() {
+                        analytic.onClickUsernameFieldCompleteOnboardingUGC()
+                    }
 
-                    override fun clickTextFieldUsernameOnboarding() {}
+                    override fun clickAcceptTnc() {
+                        analytic.onClickCheckBoxCompleteOnboardingUGC()
+                    }
 
-                    override fun clickAcceptTnc() {}
+                    override fun clickNextOnCompleteOnboarding() {
+                        analytic.onClickNextOnboardingUGC()
+                    }
 
-                    override fun clickNextOnTncOnboarding() {}
-
-                    override fun clickNextOnCompleteOnboarding() {}
-
-                    override fun clickCloseIcon() { closeBottomSheet() }
+                    override fun clickCloseIcon() {
+                        analytic.onClickCloseOnboardingUGC()
+                        closeBottomSheet()
+                    }
                 })
             }
             is WarningInfoBottomSheet -> {
@@ -327,7 +334,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
 
                 childFragment.setListener(object : SellerTncBottomSheet.Listener {
-                    override fun clickCloseIcon() { closeBottomSheet() }
+                    override fun clickOkButton() {
+                        analytic.onClickOkButtonTNCSGC()
+                        closeBottomSheet()
+                    }
+
+                    override fun clickCloseIcon() {
+                        analytic.onClickCloseTNCSGC()
+                        closeBottomSheet()
+                    }
                 })
             }
         }

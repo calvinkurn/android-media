@@ -14,7 +14,6 @@ includeIfEnabled("features:category:common_tradein")
 includeIfEnabled("features:category:common_category")
 includeIfEnabled("features:category:kategori")
 includeIfEnabled("features:category:category_levels")
-includeIfEnabled("features:category:find_native")
 
 includeIfEnabled("features:content:affiliate_common")
 includeIfEnabled("features:content:content_common")
@@ -108,6 +107,7 @@ includeIfEnabled("features:fintech:wallet")
 includeIfEnabled("features:fintech:paylater")
 includeIfEnabled("features:fintech:pdp_fintech_widget")
 includeIfEnabled("features:fintech:fintech_home_widget")
+includeIfEnabled("features:fintech:insurance")
 
 
 includeIfEnabled("features:home:dynamicbanner")
