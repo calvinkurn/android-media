@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
-import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
@@ -36,7 +35,7 @@ class MvcListViewModel @Inject constructor(
     private val cancelVoucherUseCase: CancelVoucherUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
     private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase
-    ) : BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
     private val _voucherList = MutableLiveData<List<Voucher>>()
     val voucherList: LiveData<List<Voucher>> get() = _voucherList
@@ -54,13 +53,14 @@ class MvcListViewModel @Inject constructor(
     val error: LiveData<Throwable> get() = _error
 
     val pageState = Transformations.map(voucherList) {
-        MvcListPageStateHelper.getPageState(it, filter)
+        MvcListPageStateHelper.getPageState(it, filter, page)
     }
 
     private val _deleteUIEffect = MutableSharedFlow<DeleteVoucherUiEffect>(replay = 1)
     val deleteUIEffect = _deleteUIEffect.asSharedFlow()
 
     var filter = FilterModel()
+    var page: Int = 0
 
     fun setFilterKeyword(keyword: String) {
         filter = filter.copy(
@@ -75,6 +75,7 @@ class MvcListViewModel @Inject constructor(
     }
 
     fun getVoucherList(page: Int, pageSize: Int) {
+        this.page = page
         launchCatchError(
             dispatchers.io,
             block = {

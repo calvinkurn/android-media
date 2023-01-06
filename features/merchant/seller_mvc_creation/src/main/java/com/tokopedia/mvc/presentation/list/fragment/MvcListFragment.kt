@@ -27,6 +27,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
@@ -289,7 +290,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         viewModel.voucherList.observe(viewLifecycleOwner) { vouchers ->
             val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
             adapter?.addDataList(vouchers)
-            notifyLoadResult(vouchers.size >= PAGE_SIZE)
+            notifyLoadResult(vouchers.size.isMoreThanZero())
         }
         viewModel.error.observe(viewLifecycleOwner) {
             binding?.loaderPage?.gone()
@@ -419,7 +420,6 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
                 // TODO: Implement loading
             }
         )
-        loadInitialDataList()
         attachPaging(this, config, ::getDataList)
     }
 
