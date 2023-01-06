@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductListResponse
@@ -151,6 +152,19 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     protected fun verifyChooseAddressWidgetLayoutRemovedSuccess() {
         val actualResponse = viewModel.getLayout.value
         val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowChooseAddressWidgetUiModel })
+        Assert.assertTrue(actualObject == null)
+    }
+
+    protected fun verifyProductRecommendationWidgetLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
+        val actualResponse = viewModel.getLayout.value
+        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowProductRecommendationUiModel } as TokoNowProductRecommendationUiModel)
+        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowProductRecommendationUiModel } as TokoNowProductRecommendationUiModel)
+        Assert.assertEquals(expectedObject, actualObject)
+    }
+
+    protected fun verifyProductRecommendationWidgetRemovedSuccess() {
+        val actualResponse = viewModel.getLayout.value
+        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowProductRecommendationUiModel })
         Assert.assertTrue(actualObject == null)
     }
 

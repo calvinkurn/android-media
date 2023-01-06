@@ -70,6 +70,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 discount
                 imageUrl
                 label
+                labelTextColor
                 soldPercentage
                 attribution
                 productClickUrl
@@ -85,6 +86,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 parentProductID
                 minOrder
                 maxOrder
+                stock
                 shop {
                   shopID
                 }
