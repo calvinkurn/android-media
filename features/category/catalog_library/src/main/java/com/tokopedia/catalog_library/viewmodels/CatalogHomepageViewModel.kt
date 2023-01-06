@@ -8,10 +8,10 @@ import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.usecase.CatalogListUseCase
 import com.tokopedia.catalog_library.usecase.CatalogRelevantUseCase
 import com.tokopedia.catalog_library.usecase.CatalogSpecialUseCase
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,22 +20,41 @@ import javax.inject.Inject
 class CatalogHomepageViewModel @Inject constructor(
     private val catalogSpecialUseCase: CatalogSpecialUseCase,
     private val catalogRelevantUseCase: CatalogRelevantUseCase,
-    private val catalogListUseCase: CatalogListUseCase
+    private val catalogListUseCase: CatalogListUseCase,
 ) : ViewModel() {
 
     private val _catalogHomeLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
-    val catalogLibraryLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> = _catalogHomeLiveData
+    val catalogLibraryLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
+        _catalogHomeLiveData
 
     private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
 
-    fun getSpecialData(userId: String?) {
+    fun getSpecialData() {
         catalogSpecialUseCase.cancelJobs()
-        catalogSpecialUseCase.getSpecialData(::onAvailableSpecialData, ::onFailHomeData, userId)
+        catalogSpecialUseCase.getSpecialData(::onAvailableSpecialData, ::onFailHomeData)
+    }
+
+    private fun onAvailableSpecialData(specialDataResponse: CatalogSpecialResponse) {
+        if (specialDataResponse.catalogCategorySpecial.catalogSpecialDataList.isNullOrEmpty()) {
+            onFailHomeData(IllegalStateException("No Special Response Data"))
+        } else {
+            _catalogHomeLiveData.postValue(Success(mapSpecialData(specialDataResponse)))
+        }
     }
 
     fun getRelevantData() {
         catalogRelevantUseCase.cancelJobs()
         catalogRelevantUseCase.getRelevantData(::onAvailableRelevantData, ::onFailHomeData)
+    }
+
+    private fun onAvailableRelevantData(relevantResponse: CatalogRelevantResponse) {
+        if (relevantResponse.catalogGetRelevant.catalogsList.isNullOrEmpty()) {
+            onFailHomeData(IllegalStateException("No Relevant Response Data"))
+        } else {
+            relevantResponse.let {
+                _catalogHomeLiveData.postValue(Success(mapRelevantData(it)))
+            }
+        }
     }
 
     fun getCatalogListData(
@@ -53,31 +72,10 @@ class CatalogHomepageViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableSpecialData(specialDataResponse: CatalogSpecialResponse) {
-        if (specialDataResponse.catalogCategorySpecial.catalogSpecialDataList.isNullOrEmpty()) {
-            onFailHomeData(IllegalStateException("No Special Response Data"))
-        } else {
-            specialDataResponse.let {
-                _catalogHomeLiveData.postValue(Success(mapSpecialData(it)))
-            }
-        }
-    }
-
-    private fun onFailHomeData(throwable: Throwable) {
-        _catalogHomeLiveData.postValue(Fail(throwable))
-    }
-
-    private fun onAvailableRelevantData(relevantResponse: CatalogRelevantResponse) {
-        if (relevantResponse.catalogGetRelevant.catalogsList.isNullOrEmpty()) {
-            onFailHomeData(IllegalStateException("No Relevant Response Data"))
-        } else {
-            relevantResponse.let {
-                _catalogHomeLiveData.postValue(Success(mapRelevantData(it)))
-            }
-        }
-    }
-
-    private fun onAvailableCatalogListData(catalogIdentifier : String , catalogListResponse: CatalogListResponse) {
+    private fun onAvailableCatalogListData(
+        catalogIdentifier: String,
+        catalogListResponse: CatalogListResponse
+    ) {
         if (catalogListResponse.catalogGetList.catalogsList.isNullOrEmpty()) {
             onFailHomeData(IllegalStateException("No Catalog List Response Data"))
         } else {
@@ -85,6 +83,10 @@ class CatalogHomepageViewModel @Inject constructor(
                 _catalogHomeLiveData.postValue(Success(mapCatalogListData(it)))
             }
         }
+    }
+
+    private fun onFailHomeData(throwable: Throwable) {
+        _catalogHomeLiveData.postValue(Fail(throwable))
     }
 
     private fun mapSpecialData(data: CatalogSpecialResponse): CatalogLibraryDataModel {
@@ -108,7 +110,13 @@ class CatalogHomepageViewModel @Inject constructor(
     private fun getSpecialVisitableList(catalogSpecialDataList: ArrayList<CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialData>?): ArrayList<BaseCatalogLibraryDataModel>? {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         catalogSpecialDataList?.forEach {
-            visitableList.add(CatalogSpecialDataModel(CatalogLibraryConstant.CATALOG_SPECIAL, CatalogLibraryConstant.CATALOG_SPECIAL,it))
+            visitableList.add(
+                CatalogSpecialDataModel(
+                    CatalogLibraryConstant.CATALOG_SPECIAL,
+                    CatalogLibraryConstant.CATALOG_SPECIAL,
+                    it
+                )
+            )
         }
         return visitableList
     }
@@ -130,7 +138,13 @@ class CatalogHomepageViewModel @Inject constructor(
     private fun getRelevantVisitableList(catalogsList: ArrayList<CatalogRelevantResponse.Catalogs>): ArrayList<BaseCatalogLibraryDataModel>? {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         catalogsList.forEach {
-            visitableList.add(CatalogRelevantDataModel(CatalogLibraryConstant.CATALOG_RELEVANT, CatalogLibraryConstant.CATALOG_RELEVANT,it))
+            visitableList.add(
+                CatalogRelevantDataModel(
+                    CatalogLibraryConstant.CATALOG_RELEVANT,
+                    CatalogLibraryConstant.CATALOG_RELEVANT,
+                    it
+                )
+            )
         }
         return visitableList
     }

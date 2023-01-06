@@ -5,20 +5,23 @@ import com.tokopedia.catalog_library.model.raw.gql.GQL_CATALOG_SPECIAL
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 @GqlQuery("GQL_CATALOG_SPECIAL", GQL_CATALOG_SPECIAL)
-class CatalogSpecialUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+class CatalogSpecialUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+    private val userSession: UserSessionInterface
+) :
     GraphqlUseCase<CatalogSpecialResponse>(graphqlRepository) {
 
     fun getSpecialData(
         onSuccess: (CatalogSpecialResponse) -> Unit,
-        onError: (Throwable) -> Unit,
-        userId: String?
+        onError: (Throwable) -> Unit
     ) {
         try {
             this.setTypeClass(CatalogSpecialResponse::class.java)
-            this.setRequestParams(getRequestParams(userId))
+            this.setRequestParams(getRequestParams(userSession.userId))
             this.setGraphqlQuery(GQL_CATALOG_SPECIAL)
             this.execute(
                 { result ->

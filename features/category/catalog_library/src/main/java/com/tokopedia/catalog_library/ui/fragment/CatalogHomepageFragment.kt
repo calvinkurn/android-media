@@ -26,7 +26,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -35,7 +34,6 @@ import javax.inject.Inject
 class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
     private var shimmerLayout: ScrollView? = null
-    private var userSession: UserSession? = null
     private var catalogHomeRecyclerView: RecyclerView? = null
     private val categoryId = ""
     private val categoryIdentifier = ""
@@ -73,13 +71,16 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
         super.onViewCreated(view, savedInstanceState)
         shimmerLayout = view.findViewById(R.id.shimmer_layout)
 //        initHeaderTitle(view)
-        activity?.let { observer ->
-            userSession = UserSession(observer)
-            getDataFromViewModel()
-            showShimmer()
-        }
+        getDataFromViewModel()
+        showShimmer()
         setupRecyclerView(view)
         setObservers()
+    }
+
+    private fun getDataFromViewModel() {
+        homepageViewModel?.getSpecialData()
+        homepageViewModel?.getRelevantData()
+        homepageViewModel?.getCatalogListData(categoryIdentifier, sortType, rows)
     }
 
     override fun getScreenName(): String {
@@ -91,12 +92,12 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build().inject(this)
     }
-
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         CatalogHomepageAdapterFactoryImpl(
             this
         )
     }
+
     private val catalogHomeAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
@@ -163,12 +164,6 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
             global_error_page.hide()
             getDataFromViewModel()
         }
-    }
-
-    private fun getDataFromViewModel() {
-        homepageViewModel?.getSpecialData(userSession?.userId)
-        homepageViewModel?.getRelevantData()
-        homepageViewModel?.getCatalogListData(categoryIdentifier, sortType, rows)
     }
 
     private fun showShimmer() {
