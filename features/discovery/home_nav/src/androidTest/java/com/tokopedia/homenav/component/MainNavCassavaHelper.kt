@@ -1,7 +1,7 @@
 package com.tokopedia.homenav.component
 
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import org.hamcrest.MatcherAssert
 
 /**

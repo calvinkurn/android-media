@@ -626,6 +626,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun setTypeUGC(feedXCard: FeedXCard) {
         val media = feedXCard.media
+        val globalCardProductList = feedXCard.tags
         feedVODViewHolder.gone()
         rvCarousel.visible()
         commentButton.visible()
@@ -633,6 +634,15 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             setIndicator(media.size)
             setCurrentIndicator(feedXCard.lastCarouselIndex)
         }.showWithCondition(media.size > 1)
+
+        media.forEach { feedMedia ->
+            if (globalCardProductList.isEmpty()) return@forEach
+            val tags = feedMedia.tagging
+            feedMedia.tagProducts = tags.map { globalCardProductList[it.tagIndex] }.distinctBy { it.id }
+            feedMedia.isImageImpressedFirst = true
+
+            if (!feedMedia.isImage) feedMedia.canPlay = false
+        }
 
         adapter.setItemsAndAnimateChanges(media)
         rvCarousel.addOneTimeGlobalLayoutListener {
