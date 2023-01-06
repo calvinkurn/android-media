@@ -85,6 +85,7 @@ object TokoChatConnection {
         })
     }
 
+    @JvmStatic
     fun disconnect() {
         try {
             // If rollence turned off or not initialized, return
