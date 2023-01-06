@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.analytics.CheckoutScheduleDeliveryAnalytics;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
@@ -807,6 +808,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         shippingWidget.showContainerShippingExperience();
 
         if (shipmentCartItemModel.isShowScheduleDelivery()) {
+            sendScheduleDeliveryAnalytics(shipmentCartItemModel, selectedCourierItemData);
             // Show Schedule delivery widget
             shippingWidget.renderScheduleDeliveryWidget(shipmentCartItemModel, selectedCourierItemData);
         } else if (shipmentCartItemModel.isDisableChangeCourier()) {
@@ -1844,6 +1846,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipperId == id) return true;
         }
         return false;
+    }
+
+    private void sendScheduleDeliveryAnalytics(ShipmentCartItemModel shipmentCartItemModel, CourierItemData selectedCourierItemData) {
+        if (!shipmentCartItemModel.getHasSentScheduleDeliveryAnalytics()) {
+            CheckoutScheduleDeliveryAnalytics.INSTANCE.sendViewScheduledDeliveryWidgetOnTokopediaNowEvent();
+            if (selectedCourierItemData.getScheduleDeliveryUiModel() != null &&
+                    !selectedCourierItemData.getScheduleDeliveryUiModel().getAvailable()) {
+                CheckoutScheduleDeliveryAnalytics.INSTANCE.sendViewUnavailableScheduledDeliveryEvent();
+            }
+            shipmentCartItemModel.setHasSentScheduleDeliveryAnalytics(true);
+        }
+
     }
 
     @NonNull
