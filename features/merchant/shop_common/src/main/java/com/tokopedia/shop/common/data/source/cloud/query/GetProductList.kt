@@ -3,8 +3,8 @@ package com.tokopedia.shop.common.data.source.cloud.query
 internal object GetProductList {
 
     val QUERY = """
-       query ProductList(${'$'}shopID:String!, ${'$'}warehouseID:String, ${'$'}filter:[GoodsFilterInput], ${'$'}sort:GoodsSortInput, ${'$'}extraInfo:[String]){
-        ProductList(shopID:${'$'}shopID, warehouseID:${'$'}warehouseID, filter:${'$'}filter, sort:${'$'}sort, extraInfo:${'$'}extraInfo){
+       query ProductList(${'$'}shopID:String!, ${'$'}warehouseID:String, ${'$'}filter:[GoodsFilterInput], ${'$'}sort:GoodsSortInput, ${'$'}extraInfo:[String], ${'$'}pageSource:String!){
+        ProductList(shopID:${'$'}shopID, warehouseID:${'$'}warehouseID, filter:${'$'}filter, sort:${'$'}sort, extraInfo:${'$'}extraInfo, pageSource:${'$'}pageSource){
             header{
                 processTime
                 messages
