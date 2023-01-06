@@ -53,7 +53,7 @@ private fun NotificationDetailScaffold(
             if (!scalingLazyListState.isScrollInProgress) {
                 TimeText()
             }
-        },
+        }
     ) {
         val notificationDetail by sharedViewModel.notificationDetail.collectAsState()
         when (notificationDetail) {
@@ -85,9 +85,6 @@ private fun NotificationDetailLayout(
                 NotificationDetailImage(imageUrl = notificationDetail.infoThumbnailUrl)
             }
         }
-        item {
-            NotificationDetailCtaButton()
-        }
     }
 }
 
@@ -100,7 +97,7 @@ private fun NotificationDetailCard(notificationDetail: NotificationModel) {
             MaterialTheme.colors.background
         ),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
-        enabled = false,
+        enabled = false
     ) {
         Column {
             Row(
@@ -121,7 +118,7 @@ private fun NotificationDetailCard(notificationDetail: NotificationModel) {
                     Spacer(modifier = Modifier.width(6.dp))
 
                     CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colors.onSurfaceVariant,
+                        LocalContentColor provides MaterialTheme.colors.onSurfaceVariant
                     ) {
                         Text(stringResource(id = R.string.home_title))
                     }
@@ -129,7 +126,7 @@ private fun NotificationDetailCard(notificationDetail: NotificationModel) {
                 Spacer(modifier = Modifier.weight(1.0f))
                 CompositionLocalProvider(
                     LocalContentColor provides MaterialTheme.colors.onSurfaceVariant,
-                    LocalTextStyle provides MaterialTheme.typography.caption1,
+                    LocalTextStyle provides MaterialTheme.typography.caption1
                 ) {
                     Text(text = notificationDetail.getTimeRelative(), fontSize = 10.sp)
                 }
@@ -138,7 +135,7 @@ private fun NotificationDetailCard(notificationDetail: NotificationModel) {
             Row {
                 CompositionLocalProvider(
                     LocalContentColor provides MaterialTheme.colors.onSurface,
-                    LocalTextStyle provides MaterialTheme.typography.title3,
+                    LocalTextStyle provides MaterialTheme.typography.title3
                 ) {
                     Text(notificationDetail.title)
                 }
@@ -146,7 +143,7 @@ private fun NotificationDetailCard(notificationDetail: NotificationModel) {
             if (notificationDetail.shortDescription.isNotBlank()) {
                 CompositionLocalProvider(
                     LocalContentColor provides MaterialTheme.colors.onSurfaceVariant,
-                    LocalTextStyle provides MaterialTheme.typography.body1,
+                    LocalTextStyle provides MaterialTheme.typography.body1
                 ) {
                     Text(text = notificationDetail.shortDescription)
                 }
@@ -162,7 +159,7 @@ private fun NotificationDetailImage(imageUrl: String) {
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
             .requiredHeight(height = 68.dp)
-            .wrapContentSize(align = Alignment.Center),
+            .wrapContentSize(align = Alignment.Center)
     )
 }
 
@@ -170,7 +167,8 @@ private fun NotificationDetailImage(imageUrl: String) {
 private fun NotificationDetailCtaButton() {
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = ChipGrayColor),
-        onClick = {}) {
+        onClick = {}
+    ) {
         Text(
             text = stringResource(id = R.string.notification_list_text_open_from_phone),
             modifier = Modifier.padding(DP_14, DP_6)
