@@ -131,6 +131,12 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         setupObserveDeleteUiEffect()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadInitialDataList()
+        displayUploadResult()
+    }
+
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
         showMoreMenuBottomSheet(voucher)
     }
@@ -161,7 +167,6 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
             }
             is MoreMenuUiModel.Edit -> {
                 // TODO change this , using for testing
-                showVoucherPeriodBottomSheet()
             }
             is MoreMenuUiModel.Clipboard -> {
             }
@@ -652,6 +657,16 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         }
 
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun displayUploadResult() {
+        context?.let {
+            val message = SharedPreferencesUtil.getUploadResult(it)
+            if (message.isNotEmpty()) {
+                SharedPreferencesUtil.clearUploadResult(it)
+                binding?.footer?.root.showToaster(message, getString(R.string.smvc_ok))
+            }
+        }
     }
 
     private fun redirectToQuotaVoucherPage() {
