@@ -70,12 +70,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/sbank_no_saved_account"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guidelineBlankPage"
-        app:typographyType="heading_5" />
+        app:typographyType="heading_2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_comeOn_AddBankAccount"
@@ -89,12 +89,12 @@
         android:paddingRight="@dimen/unify_space_24"
         android:text="@string/sbank_comeon_add_bank_Account"
         android:textAlignment="center"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN600"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_no_save_account"
-        app:typographyType="body_3" />
+        app:typographyType="paragraph_2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBlankPage"

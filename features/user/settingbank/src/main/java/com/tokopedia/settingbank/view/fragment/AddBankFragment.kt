@@ -647,7 +647,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 else -> SettingBankErrorHandler.getErrorMessage(context, throwable)
             }
             view?.let { view ->
-                Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
+                Toaster.toasterCustomBottomHeight = getToasterOffset()
                 retry?.let {
                     Toaster.build(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
                         getString(R.string.sbank_promo_coba_lagi),
@@ -659,6 +659,18 @@ class AddBankFragment : BaseDaggerFragment() {
                     ).show()
                 }
             }
+        }
+    }
+
+    private fun showError(message: String?) {
+        if (message == null) return
+
+        Toaster.toasterCustomBottomHeight = getToasterOffset()
+        view?.let { view ->
+            Toaster.build(
+                view, message,
+                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
@@ -689,6 +701,19 @@ class AddBankFragment : BaseDaggerFragment() {
 
         textPeriksa.isEnabled = isEnable
         textPeriksa.isClickable = isEnable
+    }
+
+    private fun getToasterOffset(): Int {
+        val buttonHeight = add_account_button.measuredHeight
+        val tvAddBankTncHeight = tvAddBankTnc.measuredHeight
+        val tvAddBankTncHeightMarginBottom =
+            (tvAddBankTnc.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+        val shadowHeight = view_btn_top_shadow.measuredHeight
+        val shadowMarginBottom =
+            (view_btn_top_shadow.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+
+        return buttonHeight + tvAddBankTncHeight + tvAddBankTncHeightMarginBottom + shadowHeight +
+            shadowMarginBottom
     }
 
 }

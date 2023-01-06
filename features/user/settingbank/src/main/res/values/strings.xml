@@ -20,7 +20,7 @@
     <string name="sbank_choose_a_bank">Mau tambah rekening apa?</string>
     <string name="sbank_nama_bank">Nama Bank</string>
     <string name="sbank_periksa">Periksa</string>
-    <string name="sbank_save_account">Simpan</string>
+    <string name="sbank_save_account">Tambah Rekening</string>
     <string name="sbank_add_bank_tnc">Dengan klik tombol di bawah, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi untuk menambahkan rekening.</string>
     <string name="sbank_add_bank_tnc_clickable_part">Syarat &amp; Ketentuan</string>
     <string name="sbank_verification_in_progress">Sedang dalam Pengecekan</string>
