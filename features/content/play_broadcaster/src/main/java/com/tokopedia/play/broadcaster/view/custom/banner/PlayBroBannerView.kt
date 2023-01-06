@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroBannerBinding
 import com.tokopedia.unifycomponents.CardUnify2
 
@@ -41,14 +43,15 @@ class PlayBroBannerView(
             binding.icBanner.setImage(value)
         }
 
-    var onVisibilityChanged: ((currentVisibility: Int) -> Unit)? = null
+    fun show() {
+        binding.root.show()
+    }
+
+    fun gone() {
+        binding.root.gone()
+    }
 
     override fun setOnClickListener(l: OnClickListener?) {
         binding.root.setOnClickListener(l)
-    }
-
-    override fun setVisibility(visibility: Int) {
-        super.setVisibility(visibility)
-        onVisibilityChanged?.invoke(visibility)
     }
 }

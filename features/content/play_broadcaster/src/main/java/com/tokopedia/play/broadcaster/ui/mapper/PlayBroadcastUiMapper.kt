@@ -109,6 +109,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 
         return ConfigurationUiModel(
             streamAllowed = config.streamAllowed,
+            shortVideoAllowed = config.shortVideoAllowed,
             channelId = channelStatus.first,
             channelStatus = channelStatus.second,
             durationConfig = DurationConfigUiModel(

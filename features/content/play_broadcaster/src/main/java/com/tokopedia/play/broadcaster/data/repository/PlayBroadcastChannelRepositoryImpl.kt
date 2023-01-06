@@ -45,7 +45,11 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         val response = getConfigurationUseCase.execute(authorId = authorId, authorType = authorType)
 
         return@withContext mapper.mapConfiguration(mapConfiguration(response.authorConfig.config)
-            .copy(streamAllowed = response.authorConfig.streamAllowed, tnc = response.authorConfig.tnc)
+            .copy(
+                streamAllowed = response.authorConfig.streamAllowed,
+                shortVideoAllowed = response.authorConfig.shortVideoAllowed,
+                tnc = response.authorConfig.tnc
+            )
         )
     }
 

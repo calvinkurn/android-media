@@ -31,6 +31,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -48,6 +49,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
@@ -175,7 +177,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupInsets()
         setupListener()
         setupObserver()
-        setupCoachMark()
 
         binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
@@ -390,7 +391,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             description = getString(R.string.play_bro_banner_shorts_description)
             bannerIcon = IconUnify.SHORT_VIDEO
         }
-        analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
     }
 
     private fun setupInsets() {
@@ -495,6 +495,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupCoachMark() {
+        if(coachMark != null) return
+
         val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
             if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)) {
                 add(
@@ -526,17 +528,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
         coachMark?.simpleCloseIcon?.setOnClickListener {
+            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+            viewModel.setNotFirstSwitchAccount()
+
             analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
             coachMark?.dismissCoachMark()
         }
 
-        coachMark?.onDismissListener = {
-            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-        }
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if(coachMarkItem.anchorView == binding.toolbarContentCommon) {
-                    viewModel.setNotFirstSwitchAccount()
+                when(coachMarkItem.anchorView) {
+                    binding.bannerShorts -> coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+                    binding.toolbarContentCommon -> viewModel.setNotFirstSwitchAccount()
                 }
             }
         })
@@ -619,6 +622,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
+                renderShortsEntryPoint(prevState?.channel, state.channel)
             }
         }
     }
@@ -782,6 +786,24 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Complete)
             }
             AccountStateInfoType.Unknown -> return
+        }
+    }
+
+    private fun renderShortsEntryPoint(
+        prev: PlayChannelUiState?,
+        curr: PlayChannelUiState,
+    ) {
+
+        if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
+
+        if(curr.shortVideoAllowed) {
+            binding.bannerShorts.show()
+            setupCoachMark()
+
+            analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+        }
+        else {
+            binding.bannerShorts.gone()
         }
     }
 

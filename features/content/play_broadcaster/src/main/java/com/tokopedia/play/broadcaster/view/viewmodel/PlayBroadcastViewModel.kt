@@ -256,7 +256,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         .filterNotNull()
         .map {
             PlayChannelUiState(
-                canStream = it.streamAllowed,
+                streamAllowed = it.streamAllowed,
+                shortVideoAllowed = it.shortVideoAllowed,
                 tnc = it.tnc
             )
         }
