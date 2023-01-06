@@ -149,33 +149,39 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     }
 
     fun createSuccessGetBuyerOrderDetailDataResult(
-        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true),
+        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true) {
+            every { getPodInfo() } returns null
+        },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        actionBeforeComplete: () -> Unit = {}
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
-        } returns flow {
-            emit(
-                GetBuyerOrderDetailDataRequestState.Requesting(
-                    GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
-                    GetP1DataRequestState.Requesting(
-                        GetOrderResolutionRequestState.Requesting,
-                        GetInsuranceDetailRequestState.Requesting
+        } answers {
+            flow {
+                emit(
+                    GetBuyerOrderDetailDataRequestState.Requesting(
+                        GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
+                        GetP1DataRequestState.Requesting(
+                            GetOrderResolutionRequestState.Requesting,
+                            GetInsuranceDetailRequestState.Requesting
+                        )
                     )
                 )
-            )
-            emit(
-                GetBuyerOrderDetailDataRequestState.Complete(
-                    GetP0DataRequestState.Complete(
-                        GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
-                    ),
-                    GetP1DataRequestState.Complete(
-                        GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
-                        GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                actionBeforeComplete()
+                emit(
+                    GetBuyerOrderDetailDataRequestState.Complete(
+                        GetP0DataRequestState.Complete(
+                            GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
+                        ),
+                        GetP1DataRequestState.Complete(
+                            GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
+                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                        )
                     )
                 )
-            )
+            }
         }
     }
 

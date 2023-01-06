@@ -34,6 +34,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 paymentId = paymentId,
                 shouldCheckCache = false
             )
+            createSuccessGetBuyerOrderDetailDataResult()
 
             getBuyerOrderDetailData()
 
@@ -44,16 +45,13 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `UI state should equals to Showing when getP0DataRequestState is Success`() =
         runCollectingUiState { uiStates ->
-            createSuccessGetBuyerOrderDetailDataResult(
-                getBuyerOrderDetailResult = mockk(relaxed = true) {
-                    every { getPodInfo() } returns null
-                }
-            )
+            createSuccessGetBuyerOrderDetailDataResult()
+
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.FullscreenLoading)
 
             getBuyerOrderDetailData()
 
-            assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
         }
 
     @Test
@@ -61,31 +59,34 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         runCollectingUiState { uiStates ->
             createFailedGetBuyerOrderDetailDataResult()
 
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.FullscreenLoading)
+
             getBuyerOrderDetailData()
 
-            assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.Error)
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.Error)
         }
 
     @Test
     fun `UI state should equals to PullRefreshLoading when reloading P0 data`() =
         runCollectingUiState { uiStates ->
-            createSuccessGetBuyerOrderDetailDataResult(
-                getBuyerOrderDetailResult = mockk(relaxed = true) {
-                    every { getPodInfo() } returns null
-                }
-            )
+            var uiStateBeforeSuccessReloading: BuyerOrderDetailUiState? = null
+            createSuccessGetBuyerOrderDetailDataResult()
+
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.FullscreenLoading)
 
             getBuyerOrderDetailData()
+
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
+
             // reload
+            createSuccessGetBuyerOrderDetailDataResult {
+                uiStateBeforeSuccessReloading = uiStates.last()
+            }
+
             getBuyerOrderDetailData()
 
-            assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing)
-            for (i in 2 until uiStates.size.dec()) {
-                assertTrue(uiStates[i] is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
-            }
-            assertTrue(uiStates[uiStates.size - 1] is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(uiStateBeforeSuccessReloading is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
         }
 
     @Test
