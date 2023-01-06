@@ -53,6 +53,7 @@ internal object GetProductList {
                 isEmptyStock
                 manageProductData {
                    isStockGuaranteed
+                   isTobacco
                 }
             }
         }

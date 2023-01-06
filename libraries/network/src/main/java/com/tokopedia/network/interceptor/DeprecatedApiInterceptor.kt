@@ -7,7 +7,8 @@ import android.widget.Toast
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class DeprecatedApiInterceptor(val context: Context) : Interceptor {
+class
+DeprecatedApiInterceptor(val context: Context) : Interceptor {
     val WARNING_HEADER_KEY = "warning"
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -16,7 +17,7 @@ class DeprecatedApiInterceptor(val context: Context) : Interceptor {
         if (!warningHeaderVal.isNullOrBlank()) {
             val handler = Handler(Looper.getMainLooper())
             handler.post {
-                Toast.makeText(context, warningHeaderVal, Toast.LENGTH_LONG).show()
+//                Toast.makeText(context, warningHeaderVal, Toast.LENGTH_LONG).show()
             }
         }
         return response

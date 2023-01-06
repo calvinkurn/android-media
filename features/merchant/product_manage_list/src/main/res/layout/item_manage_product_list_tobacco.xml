@@ -15,9 +15,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/divider"
         app:tickerShapeType="loose"
-        app:tickerType="error"
+        app:tickerType="warning"
         app:closeButtonVisibility="gone"
-        app:descriptionText="Product Tobacco"
+        app:descriptionText="@string/product_tobacco_message"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.DividerUnify
