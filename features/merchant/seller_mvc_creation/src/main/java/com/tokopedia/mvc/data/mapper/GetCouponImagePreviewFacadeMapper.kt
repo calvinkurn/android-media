@@ -210,24 +210,24 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
         val productCount = topProductImageUrls.filter { it.isNotBlank() }.size
 
         return ImageGeneratorRemoteDataSource.PreviewImageParam(
-            ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT,
-            imageRatio.toFormattedImageRatio(),
-            voucherConfiguration.getCouponVisibility(),
-            voucherConfiguration.getBenefitType(),
-            voucherConfiguration.getCashbackType(),
-            voucherConfiguration.benefitPercent,
-            voucherConfiguration.getNominalAmount(),
-            voucherConfiguration.getSymbol(),
-            shop.logo,
-            MethodChecker.fromHtml(shop.name).toString(),
-            voucherConfiguration.getCouponCode(isCreateMode, couponCodePrefix),
-            startTime,
-            endTime,
-            productCount,
-            firstProductImageUrl,
-            secondProduct,
-            thirdProduct,
-            voucherConfiguration.getAudienceTarget()
+            sourceId = ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT,
+            platform = imageRatio.toFormattedImageRatio(),
+            isPublic = voucherConfiguration.getCouponVisibility(),
+            voucherBenefitType = voucherConfiguration.getBenefitType(),
+            voucherCashbackType = voucherConfiguration.getCashbackType(),
+            voucherCashbackPercentage = voucherConfiguration.benefitPercent,
+            voucherNominalAmount = voucherConfiguration.getNominalAmount(),
+            voucherNominalSymbol = voucherConfiguration.getSymbol(),
+            shopLogo = shop.logo,
+            shopName = MethodChecker.fromHtml(shop.name).toString(),
+            voucherCode = voucherConfiguration.getCouponCode(isCreateMode, couponCodePrefix),
+            voucherStartTime = startTime,
+            voucherFinishTime = endTime,
+            productCount = productCount,
+            firstProductImageUrl = firstProductImageUrl,
+            secondProductImageUrl = secondProduct,
+            thirdProductImageUrl = thirdProduct,
+            audienceTarget = voucherConfiguration.getAudienceTarget()
         )
     }
 
@@ -278,8 +278,10 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
     private fun VoucherConfiguration.getCashbackType(): String {
         return when {
             promoType == PromoType.FREE_SHIPPING -> ImageGeneratorConstants.CashbackType.NOMINAL
-            promoType == PromoType.CASHBACK && benefitType == BenefitType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
-            promoType == PromoType.CASHBACK && benefitType == BenefitType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
+            (promoType == PromoType.CASHBACK || promoType == PromoType.DISCOUNT)
+                && benefitType == BenefitType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
+            (promoType == PromoType.CASHBACK || promoType == PromoType.DISCOUNT)
+                && benefitType == BenefitType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
             else -> ""
         }
     }

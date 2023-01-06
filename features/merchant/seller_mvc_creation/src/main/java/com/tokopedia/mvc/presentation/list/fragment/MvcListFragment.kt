@@ -168,7 +168,6 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
                 showEditPeriodBottomSheet(voucher)
             }
             is MoreMenuUiModel.Edit -> {
-                // TODO change this , using for testing
                 redirectToEditPage(voucher)
             }
             is MoreMenuUiModel.Clipboard -> {
