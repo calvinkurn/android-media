@@ -25,6 +25,9 @@ data class BulkReviewGetFormResponse(
                 @SerializedName("reputationID")
                 @Expose
                 val reputationID: String? = null,
+                @SerializedName("orderID")
+                @Expose
+                val orderID: String? = null,
                 @SerializedName("product")
                 @Expose
                 val product: Product? = null,

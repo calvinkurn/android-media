@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.uistate
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
 
 sealed interface BulkReviewItemUiState {
@@ -9,6 +10,66 @@ sealed interface BulkReviewItemUiState {
     val textAreaUiState: BulkReviewTextAreaUiState
     val mediaPickerUiState: CreateReviewMediaPickerUiState
     val miniActionsUiState: BulkReviewMiniActionsUiState
+
+    fun getReviewItemProductId(): String {
+        return productCardUiState.let { productCardUiState ->
+            if (productCardUiState is BulkReviewProductInfoUiState.Showing) {
+                productCardUiState.productID
+            } else {
+                ""
+            }
+        }
+    }
+
+    fun getReviewItemRating(): Int {
+        return ratingUiState.let { ratingUiState ->
+            if (ratingUiState is BulkReviewRatingUiState.Showing) {
+                ratingUiState.rating
+            } else {
+                Int.ZERO
+            }
+        }
+    }
+
+    fun isReviewItemHasEmptyReview(): Boolean {
+        return textAreaUiState.let { textAreaUiState ->
+            if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                textAreaUiState.text.isBlank()
+            } else {
+                true
+            }
+        }
+    }
+
+    fun getReviewItemReviewLength(): Int {
+        return textAreaUiState.let { textAreaUiState ->
+            if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                textAreaUiState.text.length
+            } else {
+                Int.ZERO
+            }
+        }
+    }
+
+    fun getReviewItemImageAttachmentCount(): Int {
+        return mediaPickerUiState.let { mediaPickerUiState ->
+            if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
+                mediaPickerUiState.getImageCount()
+            } else {
+                Int.ZERO
+            }
+        }
+    }
+
+    fun getReviewItemVideoAttachmentCount(): Int {
+        return mediaPickerUiState.let { mediaPickerUiState ->
+            if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
+                mediaPickerUiState.getVideoCount()
+            } else {
+                Int.ZERO
+            }
+        }
+    }
 
     data class Showing(
         override val productCardUiState: BulkReviewProductInfoUiState,

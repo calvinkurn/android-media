@@ -9,6 +9,7 @@ sealed interface BulkReviewSubmitRequestState {
 
     sealed interface Complete : BulkReviewSubmitRequestState {
         data class Success(
+            val params: List<BulkReviewSubmitRequestParam>,
             val result: BulkReviewSubmitResponse.Data.ProductrevSubmitBulkReview
         ) : Complete {
             override val type: String = Success::class.java.simpleName

@@ -14,7 +14,8 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkR
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
-class BulkReviewBadRatingCategoryBottomSheet : BottomSheetUnify(),
+class BulkReviewBadRatingCategoryBottomSheet :
+    BottomSheetUnify(),
     BulkReviewBadRatingCategoryViewHolder.Listener {
 
     companion object {
@@ -49,12 +50,16 @@ class BulkReviewBadRatingCategoryBottomSheet : BottomSheetUnify(),
         setupRecyclerView()
     }
 
-    override fun onBadRatingCategoryChecked(badRatingCategoryID: String) {
-        listener?.onBadRatingCategorySelected(badRatingCategoryID)
+    override fun onBadRatingCategoryChecked(position: Int, badRatingCategoryID: String, reason: String) {
+        listener?.onBadRatingCategorySelected(position, badRatingCategoryID, reason)
     }
 
-    override fun onBadRatingCategoryUnchecked(badRatingCategoryID: String) {
-        listener?.onBadRatingCategoryUnselected(badRatingCategoryID)
+    override fun onBadRatingCategoryUnchecked(position: Int, badRatingCategoryID: String, reason: String) {
+        listener?.onBadRatingCategoryUnselected(position, badRatingCategoryID, reason)
+    }
+
+    override fun onBadRatingCategoryImpressed(position: Int, reason: String) {
+        listener?.onBadRatingCategoryImpressed(position, reason)
     }
 
     fun show(manager: FragmentManager, tag: String?, onShow: () -> Unit) {
@@ -82,7 +87,9 @@ class BulkReviewBadRatingCategoryBottomSheet : BottomSheetUnify(),
 
     private fun setupRecyclerView() {
         binding?.rvBulkReviewBadRatingCategory?.layoutManager = LinearLayoutManager(
-            context, LinearLayoutManager.VERTICAL, false
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
         )
         binding?.rvBulkReviewBadRatingCategory?.adapter = adapter
     }
@@ -96,7 +103,8 @@ class BulkReviewBadRatingCategoryBottomSheet : BottomSheetUnify(),
     interface Listener {
         fun onDismiss()
         fun onApplyBadRatingCategory()
-        fun onBadRatingCategorySelected(badRatingCategoryID: String)
-        fun onBadRatingCategoryUnselected(badRatingCategoryID: String)
+        fun onBadRatingCategorySelected(position: Int, badRatingCategoryID: String, reason: String)
+        fun onBadRatingCategoryUnselected(position: Int, badRatingCategoryID: String, reason: String)
+        fun onBadRatingCategoryImpressed(position: Int, reason: String)
     }
 }

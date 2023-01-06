@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.mapper
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormResponse
 import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.typefactory.BulkReviewAdapterTypeFactory
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewAnnouncementUiModel
@@ -18,6 +19,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
     fun map(
         productRevGetBulkForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm,
         removedReviewItem: Set<String>,
+        impressedReviewItems: Set<String>,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>,
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
@@ -29,24 +31,29 @@ class BulkReviewVisitableMapper @Inject constructor() {
             textAreaUiState is BulkReviewTextAreaUiState.Showing && textAreaUiState.focused
         }
         return listOf(BulkReviewAnnouncementUiModel).plus(
-            productRevGetBulkForm.reviewForm?.filter {
-                it.inboxID !in removedReviewItem
-            }?.mapNotNull { reviewForm ->
-                mapReviewFormToBulkReviewVisitable(
-                    reviewForm = reviewForm,
-                    hasFocusedReviewItem = hasFocusedReviewItem,
-                    bulkReviewProductInfoUiState = bulkReviewProductInfoUiState,
-                    bulkReviewRatingUiState = bulkReviewRatingUiState,
-                    bulkReviewBadRatingCategoryUiState = bulkReviewBadRatingCategoryUiState,
-                    bulkReviewTextAreaUiState = bulkReviewTextAreaUiState,
-                    bulkReviewMediaPickerUiState = bulkReviewMediaPickerUiState,
-                    bulkReviewMiniActionsUiState = bulkReviewMiniActionsUiState
-                )
+            productRevGetBulkForm.reviewForm?.mapIndexedNotNull { index, reviewForm ->
+                if (reviewForm.inboxID !in removedReviewItem) {
+                    mapReviewFormToBulkReviewVisitable(
+                        index = index,
+                        reviewForm = reviewForm,
+                        hasFocusedReviewItem = hasFocusedReviewItem,
+                        bulkReviewProductInfoUiState = bulkReviewProductInfoUiState,
+                        bulkReviewRatingUiState = bulkReviewRatingUiState,
+                        bulkReviewBadRatingCategoryUiState = bulkReviewBadRatingCategoryUiState,
+                        bulkReviewTextAreaUiState = bulkReviewTextAreaUiState,
+                        bulkReviewMediaPickerUiState = bulkReviewMediaPickerUiState,
+                        bulkReviewMiniActionsUiState = bulkReviewMiniActionsUiState,
+                        reviewItemImpressed = reviewForm.inboxID in impressedReviewItems
+                    )
+                } else {
+                    null
+                }
             }.orEmpty()
         )
     }
 
     private fun mapReviewFormToBulkReviewVisitable(
+        index: Int,
         reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
         hasFocusedReviewItem: Boolean,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
@@ -54,10 +61,12 @@ class BulkReviewVisitableMapper @Inject constructor() {
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
         bulkReviewTextAreaUiState: Map<String, BulkReviewTextAreaUiState>,
         bulkReviewMediaPickerUiState: Map<String, CreateReviewMediaPickerUiState>,
-        bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>
+        bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>,
+        reviewItemImpressed: Boolean
     ): BulkReviewItemUiModel? {
         val inboxID = reviewForm.inboxID.orEmpty()
         val reputationID = reviewForm.reputationID.orEmpty()
+        val orderID = reviewForm.orderID.orEmpty()
         val productCardUiState = bulkReviewProductInfoUiState[inboxID]
         val ratingUiState = bulkReviewRatingUiState[inboxID]
         val badRatingCategoriesUiState = bulkReviewBadRatingCategoryUiState[inboxID]
@@ -66,8 +75,15 @@ class BulkReviewVisitableMapper @Inject constructor() {
         val miniActionsUiState = bulkReviewMiniActionsUiState[inboxID]
         return if (productCardUiState != null && ratingUiState != null && badRatingCategoriesUiState != null && textAreaUiState != null && mediaPickerUiState != null && miniActionsUiState != null) {
             BulkReviewItemUiModel(
+                position = index,
                 inboxID = inboxID,
                 reputationID = reputationID,
+                orderID = orderID,
+                impressHolder = if (reviewItemImpressed) {
+                    ImpressHolder().apply { invoke() }
+                } else {
+                    ImpressHolder()
+                },
                 uiState = if (textAreaUiState is BulkReviewTextAreaUiState.Showing && textAreaUiState.focused) {
                     BulkReviewItemUiState.Focused(
                         productCardUiState = productCardUiState,
@@ -97,6 +113,8 @@ class BulkReviewVisitableMapper @Inject constructor() {
                     )
                 }
             )
-        } else null
+        } else {
+            null
+        }
     }
 }

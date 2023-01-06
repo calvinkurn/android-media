@@ -1,7 +1,9 @@
 package com.tokopedia.review.feature.bulk_write_review.di.module
 
+import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.review.feature.bulk_write_review.di.qualifier.BulkReviewGson
 import com.tokopedia.review.feature.bulk_write_review.di.scope.BulkReviewScope
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetBadRatingCategoryRequestState
@@ -9,6 +11,7 @@ import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGet
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
 import com.tokopedia.reviewcommon.util.RuntimeTypeAdapterFactory
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
 
@@ -81,5 +84,13 @@ class BulkReviewModule {
                 )
             )
             .create()
+    }
+
+    @Provides
+    @BulkReviewScope
+    fun provideTrackingQueue(
+        @ApplicationContext context: Context
+    ): TrackingQueue {
+        return TrackingQueue(context)
     }
 }

@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.ItemBulkReviewFormBinding
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemUiModel
@@ -42,6 +43,7 @@ class BulkReviewItemViewHolder(
     }
 
     override fun bind(element: BulkReviewItemUiModel) {
+        setupImpressionListener(element)
         setupProductInfo(productCardUiState = element.uiState.productCardUiState)
         setupRating(
             inboxID = element.inboxID,
@@ -120,6 +122,12 @@ class BulkReviewItemViewHolder(
 
     private fun setupRootView() {
         binding.root.setOnClickListener { }
+    }
+
+    private fun setupImpressionListener(element: BulkReviewItemUiModel) {
+        binding.root.addOnImpressionListener(element.impressHolder) {
+            listener.onReviewItemImpressed(element.inboxID)
+        }
     }
 
     private fun setupProductInfo(productCardUiState: BulkReviewProductInfoUiState) {
@@ -258,6 +266,7 @@ class BulkReviewItemViewHolder(
         fun onAddMediaClicked(inboxID: String, enabled: Boolean)
         fun onRemoveMediaClicked(inboxID: String, media: CreateReviewMediaUiModel)
         fun onRetryUploadClicked(inboxID: String)
+        fun onReviewItemImpressed(inboxID: String)
     }
 
     private inner class BulkReviewItemGestureListener(

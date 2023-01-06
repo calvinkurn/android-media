@@ -4,18 +4,18 @@ import android.content.Context
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewRemoveReviewItemDialogUiState
+import com.tokopedia.review.feature.bulk_write_review.presentation.util.ResourceProvider
 
 class BulkReviewRemoveReviewItemDialog(
-    context: Context,
+    private val context: Context,
     private val listener: Listener
 ) {
     private val dialog by lazy(LazyThreadSafetyMode.NONE) {
         DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(context.getString(R.string.bulk_review_remove_review_item_dialog_title))
-            setDescription(context.getString(R.string.bulk_review_remove_review_item_dialog_description))
+            setTitle(ResourceProvider.getRemoveReviewItemDialogTitle().getStringValue(context))
+            setDescription(ResourceProvider.getRemoveReviewItemDialogSubtitle().getStringValue(context))
             setPrimaryCTAText(context.getString(R.string.bulk_review_remove_review_item_dialog_primary_cta_text))
             setSecondaryCTAText(context.getString(R.string.bulk_review_remove_review_item_dialog_secondary_cta_text))
-            setSecondaryCTAClickListener { listener.onCancelRemoveReviewItem() }
             setOverlayClose(false)
             setCancelable(false)
         }
@@ -30,7 +30,24 @@ class BulkReviewRemoveReviewItemDialog(
 
     private fun show(inboxID: String) {
         dialog.setPrimaryCTAClickListener {
-            listener.onConfirmRemoveReviewItem(inboxID)
+            listener.onConfirmRemoveReviewItem(
+                inboxID = inboxID,
+                title = ResourceProvider.getRemoveReviewItemDialogTitle().getStringValue(context),
+                subtitle = ResourceProvider.getRemoveReviewItemDialogSubtitle().getStringValue(context)
+            )
+        }
+        dialog.setSecondaryCTAClickListener {
+            listener.onCancelRemoveReviewItem(
+                title = ResourceProvider.getRemoveReviewItemDialogTitle().getStringValue(context),
+                subtitle = ResourceProvider.getRemoveReviewItemDialogSubtitle().getStringValue(context)
+            )
+        }
+        dialog.setOnShowListener {
+            listener.onRemoveReviewItemDialogImpressed(
+                inboxID = inboxID,
+                title = ResourceProvider.getRemoveReviewItemDialogTitle().getStringValue(context),
+                subtitle = ResourceProvider.getRemoveReviewItemDialogSubtitle().getStringValue(context)
+            )
         }
         dialog.show()
     }
@@ -40,7 +57,8 @@ class BulkReviewRemoveReviewItemDialog(
     }
 
     interface Listener {
-        fun onConfirmRemoveReviewItem(inboxID: String)
-        fun onCancelRemoveReviewItem()
+        fun onConfirmRemoveReviewItem(inboxID: String, title: String, subtitle: String)
+        fun onCancelRemoveReviewItem(title: String, subtitle: String)
+        fun onRemoveReviewItemDialogImpressed(inboxID: String, title: String, subtitle: String)
     }
 }

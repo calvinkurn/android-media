@@ -38,7 +38,7 @@ class BulkReviewSubmitUseCase @Inject constructor(
         params: List<BulkReviewSubmitRequestParam>
     ) = flow {
         emit(BulkReviewSubmitRequestState.Requesting())
-        emit(BulkReviewSubmitRequestState.Complete.Success(sendRequest(params)))
+        emit(BulkReviewSubmitRequestState.Complete.Success(params, sendRequest(params)))
     }.catch {
         emit(BulkReviewSubmitRequestState.Complete.Error(it))
     }
@@ -49,12 +49,15 @@ class BulkReviewSubmitUseCase @Inject constructor(
 //        return repository.request(graphqlQuery(), createRequestParam(params))
         Log.d("ReviewLog", Gson().toJson(createRequestParam(params)))
         delay(5000L)
-        return Gson().fromJson("""
-            {"data":{"productrevSubmitBulkReview":{"success":true,"failedInboxIDs":null}}}
-        """.trimIndent(), BulkReviewSubmitResponse::class.java).data!!.productrevSubmitBulkReview!!
 //        return Gson().fromJson("""
-//            {"data":{"productrevSubmitBulkReview":{"success":false,"failedInboxIDs":["1234567891","1234567892","1234567893"]}}}
+//            {"data":{"productrevSubmitBulkReview":{"success":true,"failedInboxIDs":null}}}
 //        """.trimIndent(), BulkReviewSubmitResponse::class.java).data!!.productrevSubmitBulkReview!!
+        return Gson().fromJson(
+            """
+            {"data":{"productrevSubmitBulkReview":{"success":false,"failedInboxIDs":["-2147460944","-2147460936","-2147460934"]}}}
+            """.trimIndent(),
+            BulkReviewSubmitResponse::class.java
+        ).data!!.productrevSubmitBulkReview!!
 //        return Gson().fromJson(
 //            """
 //            {"data":{"productrevSubmitBulkReview":{"success":false,"failedInboxIDs":["1234567891","1234567893"]}}}

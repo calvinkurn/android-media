@@ -157,6 +157,11 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         setupInsetListener()
     }
 
+    override fun onPause() {
+        super.onPause()
+        viewModel.sendAllTrackers()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activityResultHandler.handleResult(requestCode, resultCode, data)
     }
@@ -199,7 +204,9 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
     override fun onClickAddAttachmentMiniAction(inboxID: String) {
         clearViewFocus()
-        goToMediaPicker(inboxID)
+        goToMediaPicker()
+        viewModel.getAndUpdateActiveMediaPickerInboxID(inboxID)
+        viewModel.onClickAddAttachmentMiniAction(inboxID)
     }
 
     override fun onTextAreaGainFocus(inboxID: String, view: View) {
@@ -222,7 +229,8 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
     override fun onAddMediaClicked(inboxID: String, enabled: Boolean) {
         if (enabled) {
-            goToMediaPicker(inboxID)
+            viewModel.getAndUpdateActiveMediaPickerInboxID(inboxID)
+            goToMediaPicker()
         } else {
             viewModel.enqueueToasterDisabledAddMoreMedia()
         }
@@ -234,6 +242,10 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
 
     override fun onRetryUploadClicked(inboxID: String) {
         viewModel.onRetryUploadClicked(inboxID)
+    }
+
+    override fun onReviewItemImpressed(inboxID: String) {
+        viewModel.onReviewItemImpressed(inboxID)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -552,7 +564,7 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
         binding?.root?.findFocus()?.clearFocus()
     }
 
-    private fun goToMediaPicker(inboxID: String) {
+    private fun goToMediaPicker() {
         context?.let {
             val intent = MediaPicker.intent(it) {
                 pageSource(PageSource.Review)
@@ -561,7 +573,6 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                 maxVideoItem(MAX_VIDEO_COUNT)
                 maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
             }
-            viewModel.getAndUpdateActiveMediaPickerInboxID(inboxID)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -826,12 +837,16 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
             viewModel.onApplyBadRatingCategory()
         }
 
-        override fun onBadRatingCategorySelected(badRatingCategoryID: String) {
-            viewModel.onBadRatingCategorySelectionChanged(badRatingCategoryID, true)
+        override fun onBadRatingCategorySelected(position: Int, badRatingCategoryID: String, reason: String) {
+            viewModel.onBadRatingCategorySelectionChanged(position, badRatingCategoryID, reason, true)
         }
 
-        override fun onBadRatingCategoryUnselected(badRatingCategoryID: String) {
-            viewModel.onBadRatingCategorySelectionChanged(badRatingCategoryID, false)
+        override fun onBadRatingCategoryUnselected(position: Int, badRatingCategoryID: String, reason: String) {
+            viewModel.onBadRatingCategorySelectionChanged(position, badRatingCategoryID, reason, false)
+        }
+
+        override fun onBadRatingCategoryImpressed(position: Int, reason: String) {
+            viewModel.onBadRatingCategoryImpressed(position, reason)
         }
     }
 
@@ -842,12 +857,27 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     }
 
     private inner class RemoveReviewItemDialogListener : BulkReviewRemoveReviewItemDialog.Listener {
-        override fun onConfirmRemoveReviewItem(inboxID: String) {
-            viewModel.onConfirmRemoveReviewItem(inboxID)
+        override fun onConfirmRemoveReviewItem(
+            inboxID: String,
+            title: String,
+            subtitle: String
+        ) {
+            viewModel.onConfirmRemoveReviewItem(inboxID, title, subtitle)
         }
 
-        override fun onCancelRemoveReviewItem() {
-            viewModel.onCancelRemoveReviewItem()
+        override fun onCancelRemoveReviewItem(
+            title: String,
+            subtitle: String
+        ) {
+            viewModel.onCancelRemoveReviewItem(title, subtitle)
+        }
+
+        override fun onRemoveReviewItemDialogImpressed(
+            inboxID: String,
+            title: String,
+            subtitle: String
+        ) {
+            viewModel.onRemoveReviewItemDialogImpressed(inboxID, title, subtitle)
         }
     }
 

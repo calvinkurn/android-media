@@ -8,6 +8,14 @@ sealed interface CreateReviewMediaPickerUiState {
 
     interface HasMedia {
         val mediaItems: List<CreateReviewMediaUiModel>
+
+        fun getImageCount(): Int {
+            return mediaItems.count { it is CreateReviewMediaUiModel.Image }
+        }
+
+        fun getVideoCount(): Int {
+            return mediaItems.count { it is CreateReviewMediaUiModel.Video }
+        }
     }
 
     val failedOccurrenceCount: Int
