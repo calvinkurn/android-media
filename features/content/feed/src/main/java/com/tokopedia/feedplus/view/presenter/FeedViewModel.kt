@@ -148,11 +148,13 @@ class FeedViewModel @Inject constructor(
         reasonType: String,
         reasonMessage: String
     ) {
-        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+        viewModelScope.launchCatchError(block = {
             sendReportUseCase.setRequestParams(
                 SubmitReportContentUseCase.createParam(contentId = contentId, reasonType = reasonType, reasonMessage = reasonMessage)
             )
-            val response = sendReportUseCase.executeOnBackground()
+            val response = withContext(baseDispatcher.io) {
+                sendReportUseCase.executeOnBackground()
+            }
             if (response.content.errorMessage.isEmpty())
                 reportResponse.value = Success(DeletePostModel(
                     contentId,
@@ -167,9 +169,11 @@ class FeedViewModel @Inject constructor(
     }
 
     fun trackVisitChannel(channelId: String,rowNumber: Int) {
-        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+        viewModelScope.launchCatchError(block = {
             trackVisitChannelBroadcasterUseCase.setRequestParams(FeedBroadcastTrackerUseCase.createParams(channelId))
-            val trackResponse = trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            val trackResponse = withContext(baseDispatcher.io) {
+                trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            }
             val data = ViewsKolModel()
             data.rowNumber = rowNumber
             data.isSuccess = trackResponse.reportVisitChannelTracking.success
@@ -424,9 +428,11 @@ class FeedViewModel @Inject constructor(
     }
 
     fun doLikeKol(id: Long, rowNumber: Int) {
-        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+        viewModelScope.launchCatchError(block = {
             likeKolPostUseCase.setRequestParams(SubmitLikeContentUseCase.createParam(contentId = id.toString(), action = SubmitLikeContentUseCase.ACTION_LIKE))
-            val isSuccess = likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
+            val isSuccess = withContext(baseDispatcher.io) {
+                likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
+            }
             likeKolResp.value =
                 if (isSuccess) Success(LikeKolViewModel(id = id, rowNumber = rowNumber, isSuccess = true))
                 else Fail(CustomUiMessageThrowable(R.string.feed_like_error_message))
@@ -436,9 +442,11 @@ class FeedViewModel @Inject constructor(
     }
 
     fun doUnlikeKol(id: Long, rowNumber: Int) {
-        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+        viewModelScope.launchCatchError(block = {
             likeKolPostUseCase.setRequestParams(SubmitLikeContentUseCase.createParam(contentId = id.toString(), action = SubmitLikeContentUseCase.ACTION_UNLIKE))
-            val isSuccess = likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
+            val isSuccess = withContext(baseDispatcher.io) {
+                likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
+            }
             likeKolResp.value =if (isSuccess)
                 Success(LikeKolViewModel(id = id, rowNumber = rowNumber, isSuccess = isSuccess))
             else throw MessageErrorException()
@@ -488,9 +496,11 @@ class FeedViewModel @Inject constructor(
     }
 
     fun doDeletePost(id: String, rowNumber: Int) {
-        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+        viewModelScope.launchCatchError(block = {
             deletePostUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId = id))
-            val isSuccess = deletePostUseCase.executeOnBackground().content.success == SubmitPostData.SUCCESS
+            val isSuccess = withContext(baseDispatcher.io) {
+                deletePostUseCase.executeOnBackground().content.success == SubmitPostData.SUCCESS
+            }
             deletePostResp.value = if(isSuccess) Success(DeletePostModel(id = id, rowNumber = rowNumber, isSuccess = isSuccess))
             else throw MessageErrorException()
         }) {
