@@ -242,7 +242,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun setupView() {
         binding.toolbar.apply {
-            navIcon = IconUnify.CLOSE
+            navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
         }
     }
