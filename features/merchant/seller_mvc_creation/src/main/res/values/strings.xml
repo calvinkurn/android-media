@@ -343,7 +343,7 @@
     <string name="smvc_failed_change_quota">Kuota kupon %s gagal diubah.</string>
     <string name="smvc_recurring_period_placeholder_value">%d Bulan</string>
     <string name="smvc_voucher_active_label">Kupon akan aktif pada:</string>
-    <string name="smvc_recurring_date_palceholder_value">• %s</string>
+    <string name="smvc_recurring_date_palceholder_value">• %s, %s - %s, %s</string>
     <string name="smvc_see_other_schedule_label">Lihat Jadwal Lainnya</string>
 
     <!--Success Upload Bottomsheet-->

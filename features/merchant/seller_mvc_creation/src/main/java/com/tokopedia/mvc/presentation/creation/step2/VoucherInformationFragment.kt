@@ -552,7 +552,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                     val firstPeriodEndHour = availableDate.first().hourEnd
                     firstSchedule = getString(
                         R.string.smvc_recurring_date_palceholder_value,
-                        "$firstPeriodStartDate, $firstPeriodStartHour - $firstPeriodEndDate, $firstPeriodEndHour"
+                        firstPeriodStartDate,
+                        firstPeriodStartHour,
+                        firstPeriodEndDate,
+                        firstPeriodEndHour
                     )
 
                     val secondPeriodStartDate = DateUtil.formatDate(
@@ -569,7 +572,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                     val secondPeriodEndHour = availableDate[Int.ONE].hourEnd
                     secondSchedule = getString(
                         R.string.smvc_recurring_date_palceholder_value,
-                        "$secondPeriodStartDate, $secondPeriodStartHour - $secondPeriodEndDate, $secondPeriodEndHour"
+                        secondPeriodStartDate,
+                        secondPeriodStartHour,
+                        secondPeriodEndDate,
+                        secondPeriodEndHour
                     )
 
                     isShowOtherScheduleButton =
