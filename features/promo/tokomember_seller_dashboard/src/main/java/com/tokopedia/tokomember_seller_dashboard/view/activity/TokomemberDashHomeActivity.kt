@@ -48,7 +48,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
     private lateinit var homeTabs: TabsUnify
     private lateinit var homeViewPager: ViewPager
     private var bundleNewIntent: Bundle? = null
-    private lateinit var tmCouponListRefreshCallback: TmCouponListRefreshCallback
+    private var tmCouponListRefreshCallback: TmCouponListRefreshCallback? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -82,7 +82,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
         when {
             supportFragmentManager.backStackEntryCount > 1 -> {
                 if(supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount-1).name == TAG_COUPON_DETAIL)
-                    tmCouponListRefreshCallback.refreshCouponList(ADD_QUOTA)
+                    tmCouponListRefreshCallback?.refreshCouponList(ADD_QUOTA)
                 supportFragmentManager.popBackStack()
             }
             supportFragmentManager.backStackEntryCount == 1 -> {
@@ -118,7 +118,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
         addFragment(TokomemberDashProgramDetailFragment.newInstance(bundle), TAG_HOME)
     }
 
-    override fun openCouponDetailFragment(voucherId:Int, tmCouponListRefreshCallback: TmCouponListRefreshCallback) {
+    override fun openCouponDetailFragment(voucherId:Int, tmCouponListRefreshCallback: TmCouponListRefreshCallback?) {
         this.tmCouponListRefreshCallback = tmCouponListRefreshCallback
         addFragment(TmDashCouponDetailFragment.newInstance(voucherId), TAG_COUPON_DETAIL)
     }
