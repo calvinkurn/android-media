@@ -35,7 +35,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
@@ -197,8 +196,6 @@ public interface ShipmentContract {
         void showPrescriptionReminderDialog(UploadPrescriptionUiModel uploadPrescriptionUiModel);
 
         void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
-
-        void onNoValidCheckoutItem();
 
         void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
     }

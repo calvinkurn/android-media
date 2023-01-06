@@ -195,6 +195,12 @@ class ShipmentCartItemModel(
                 shipmentCartItemModel.isHideChangeCourierCard
             newShipmentCartItemModel.durationCardDescription =
                 shipmentCartItemModel.durationCardDescription
+            newShipmentCartItemModel.hasEthicalProducts = shipmentCartItemModel.hasEthicalProducts
+            newShipmentCartItemModel.hasNonEthicalProducts = shipmentCartItemModel.hasNonEthicalProducts
+            newShipmentCartItemModel.prescriptionIds = shipmentCartItemModel.prescriptionIds
+            newShipmentCartItemModel.tokoConsultationId = shipmentCartItemModel.tokoConsultationId
+            newShipmentCartItemModel.partnerConsultationId = shipmentCartItemModel.partnerConsultationId
+            newShipmentCartItemModel.consultationDataString = shipmentCartItemModel.consultationDataString
             return newShipmentCartItemModel
         }
     }

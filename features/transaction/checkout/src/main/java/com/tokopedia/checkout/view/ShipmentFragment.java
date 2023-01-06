@@ -3466,9 +3466,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
                         if (viewHolder instanceof UploadPrescriptionViewHolder) {
                             if (epharmacyError) {
-                                String toasterMessage = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found);
+                                String toasterMessage;
+                                if (uploadPrescriptionUiModel.getConsultationFlow()) {
+                                    toasterMessage = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found);
+                                } else {
+                                    toasterMessage = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found);
+                                }
                                 if (firstFoundPosition == 0) {
-                                    showToastNormal(toasterMessage);
+                                    showToastError(toasterMessage);
                                     firstFoundPosition = i;
                                 }
                                 uploadPrescriptionUiModel.setError(true);
@@ -3754,11 +3759,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
         shipmentAdapter.updateUploadPrescription(uploadPrescriptionUiModel);
-    }
-
-    @Override
-    public void onNoValidCheckoutItem() {
-        finish();
     }
 
     @Override
