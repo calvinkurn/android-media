@@ -35,7 +35,6 @@ class GetShopProductsUseCase @Inject constructor(
         private const val PARAM_ETALASE_ID = "etalaseId"
         private const val PARAM_IS_QA = "isQA"
         private const val PARAM_SORT = "sort"
-
         const val QUERY_NAME = "GetShopProductsUseCaseQuery"
         const val QUERY = """
             query ShopProducts(
