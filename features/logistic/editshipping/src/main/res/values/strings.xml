@@ -90,7 +90,7 @@
 
     <!--    Whitelabel Instan-->
     <string name="whitelabel_instan_title_coachmark">Ada yang baru di kurir instan, nih!</string>
-    <string name="whitelabel_instan_description_coachmark">Penjual cukup aktifkan layanan pengiriman saja dan kurir akan dipilihkan otomatis dengan pengaturan terbaik.</string>
+    <string name="whitelabel_instan_description_coachmark">Pengaturan pengiriman kini lebih mudah karena Penjual cukup aktifkan layanan pengiriman saja.</string>
     <string name="whitelabel_onboarding_title_coachmark">Pilih tipe kurir yang kamu inginkan</string>
     <string name="whitelabel_onboarding_description_coachmark">Saat memilih kurir, kamu bisa lihat detail informasi untuk mengecek tipe kurir apa saja yang tersedia.</string>
     <string name="img_courier_content_description">placeholder courier logo</string>

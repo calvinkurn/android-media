@@ -58,6 +58,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private var shipperServicesIds: List<Long>? = null
     private var cplParam: List<Long>? = null
 
+    private var whitelabelCoachmark: CoachMark2? = null
+
     private var binding by autoCleared<FragmentCustomProductLogisticBinding>()
 
     override fun getScreenName(): String = ""
@@ -100,6 +102,13 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         initObserver()
     }
 
+    override fun onPause() {
+        whitelabelCoachmark?.dismissCoachMark()
+        whitelabelCoachmark = null
+
+        super.onPause()
+    }
+
     private fun initData() {
         val shouldShowOnBoarding = arguments?.getBoolean(EXTRA_SHOW_ONBOARDING_CPL, false) ?: false
         viewModel.getCPLList(shopId, productId, shipperServicesIds, cplParam, shouldShowOnBoarding)
@@ -131,7 +140,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 val normalServiceView = getNormalServiceView()
 
                 val coachMarkItems = generateOnBoardingCoachMark(normalServiceView, whitelabelView)
-                CoachMark2(it).apply {
+                whitelabelCoachmark = CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems, data)
                     setStateAfterOnBoardingShown()
                     manualScroll(coachMarkItems)

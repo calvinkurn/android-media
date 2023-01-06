@@ -111,6 +111,8 @@ class ShippingEditorFragment :
     private var scrollView: NestedScrollView? = null
     private var globalErrorLayout: GlobalError? = null
 
+    private var whitelabelCoachmark: CoachMark2? = null
+
     private var shippingEditorOnDemandAdapter = ShippingEditorItemAdapter(this, this)
     private var shippingEditorConventionalAdapter = ShippingEditorItemAdapter(this, this)
 
@@ -136,6 +138,13 @@ class ShippingEditorFragment :
         initViews()
         initAdapter()
         initViewModel()
+    }
+
+    override fun onPause() {
+        whitelabelCoachmark?.dismissCoachMark()
+        whitelabelCoachmark = null
+
+        super.onPause()
     }
 
     private fun checkWhitelistedUser() {
