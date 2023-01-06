@@ -68,6 +68,7 @@ import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -168,6 +169,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
             }
             is MoreMenuUiModel.Edit -> {
                 // TODO change this , using for testing
+                redirectToEditPage(voucher)
             }
             is MoreMenuUiModel.Clipboard -> {
             }
@@ -671,5 +673,10 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
 
     private fun redirectToQuotaVoucherPage() {
         // TODO: create redirection here
+    }
+
+    private fun redirectToEditPage(voucher: Voucher) {
+        val intent = SummaryActivity.buildEditModeIntent(requireContext(), voucher.id)
+        startActivity(intent)
     }
 }
