@@ -30,7 +30,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import java.net.URLDecoder
 import java.util.*
 
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -84,6 +83,12 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 lihatImageView.show()
                 lihatTextView.hide()
             }else{
+                if (!data.buttonText.isNullOrEmpty()) {
+                    lihatTextView.text = data.buttonText
+                } else {
+                    lihatTextView.text =
+                        fragment.context?.resources?.getString(R.string.lihat_semua) ?: ""
+                }
                 lihatTextView.show()
                 lihatImageView.hide()
             }
