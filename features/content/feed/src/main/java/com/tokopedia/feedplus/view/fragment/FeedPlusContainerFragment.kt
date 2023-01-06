@@ -49,7 +49,6 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
 import com.tokopedia.feedplus.view.analytics.shorts.PlayShortsInFeedAnalytic
-import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.customview.PostProgressUpdateView
 import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel

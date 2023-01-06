@@ -95,7 +95,7 @@ class PlayShortsActivity : BaseActivity() {
                         analytic.viewOnboardingUGC(viewModel.selectedAccount)
                     }
 
-                    override fun clickTextFieldUsernameOnboarding() {
+                    override fun clickUsernameFieldOnCompleteOnboarding() {
                         analytic.clickTextFieldUsernameOnboardingUGC(viewModel.selectedAccount)
                     }
 
@@ -129,6 +129,10 @@ class PlayShortsActivity : BaseActivity() {
                 })
 
                 fragment.setListener(object : SellerTncBottomSheet.Listener {
+                    override fun clickOkButton() {
+
+                    }
+
                     override fun clickCloseIcon() {
                         if(isFragmentContainerEmpty()) finish()
                     }
