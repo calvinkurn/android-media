@@ -68,3 +68,24 @@ const val GQL_FETCH_CHECKOUT_DETAILS_QUERY = """
       }
     }
 """
+val GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY = """
+    query getEpharmacyStaticData(${"$"}data_type: String!,${'$'}params: EpharmacyStaticInfoParams!) {
+    getEpharmacyStaticData(data_type: ${"$"}data_type, params: ${"$"}params) {
+        header {
+            error_code
+        }
+        data {
+          steps{
+            subtitle
+            title
+            image_url
+          }
+          step_title
+          info_text
+          logo_url
+          logo_title
+          info_title
+        }
+    }
+}
+""".trimIndent()

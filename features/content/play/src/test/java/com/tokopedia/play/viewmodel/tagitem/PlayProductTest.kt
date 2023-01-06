@@ -76,7 +76,7 @@ class PlayProductTest {
                     serverTime = null,
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
-                        imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
+                        imageUrl = "\"https://images.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch",
                     reminder = PlayUpcomingBellStatus.On,
                 )
@@ -123,7 +123,7 @@ class PlayProductTest {
                     serverTime = null,
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
-                        imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
+                        imageUrl = "\"https://images.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch",
                     reminder = PlayUpcomingBellStatus.On,
                 )
@@ -176,7 +176,7 @@ class PlayProductTest {
                     serverTime = null,
                     timerInfo = "Dimulai dalam",
                     background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(),
-                        imageUrl = "\"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
+                        imageUrl = "\"https://images.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg\""),
                     title = "L'oreal New Launch",
                     reminder = PlayUpcomingBellStatus.On,
                 )

@@ -17,6 +17,7 @@ internal interface IconConfigItem { fun get(
 
 object IconList {
     val ID_INBOX = R.drawable.ic_searchbar_new_inbox
+    val ID_SHARE_AB_TEST = R.drawable.ic_share_ab_test
 
     const val ID_MESSAGE = IconUnify.MESSAGE
     const val ID_NOTIFICATION = IconUnify.BELL
@@ -36,6 +37,7 @@ object IconList {
     const val NAME_NAV_GLOBAL = "Global Menu"
     const val NAME_WISHLIST = "Wishlist"
     const val NAME_SHARE = "Share"
+    const val NAME_SHARE_AB = "Share AB"
     const val NAME_SETTING = "Setting"
     const val NAME_BACK_BUTTON = "Back Button"
     const val NAME_SEARCH_BAR = "Search Bar"
@@ -277,6 +279,21 @@ object IconList {
                     name = NAME_WISHLIST,
                     paddingEndRes = R.dimen.lottie_wishlist_padding_end,
                     disableDefaultGtmTracker = disableDefaultGtmTracker
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
+    internal object ShareAbTestIcon: IconConfigItem {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: () -> Unit): IconToolbar {
+            return IconToolbar(
+                id = ID_SHARE_AB_TEST,
+                imageRes = ID_SHARE_AB_TEST,
+                applink = "",
+                disableRouteManager = disableRouteManager,
+                name = NAME_SHARE_AB,
+                disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }

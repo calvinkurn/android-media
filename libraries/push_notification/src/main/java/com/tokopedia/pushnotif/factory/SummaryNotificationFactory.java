@@ -39,8 +39,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
         HistoryRepository.storeNotification(
                 context,
-                applinkNotificationModel.getFullName(),
-                applinkNotificationModel.getSummary(),
+                applinkNotificationModel,
                 notificationType,
                 ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks())
         );

@@ -9,13 +9,17 @@ import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import dagger.Component
 
 @VideoTabScope
-@Component(modules = [
-    VideoViewModelModule::class,
-    VideoTabModule::class,
-    PlayWidgetModule::class,
-    FeedFloatingButtonManagerModule::class,
- ],dependencies = [BaseAppComponent::class])
- interface VideoTabComponent {
+@Component(
+    modules = [
+        VideoViewModelModule::class,
+        VideoTabModule::class,
+        PlayWidgetModule::class,
+        FeedFloatingButtonManagerModule::class,
+        PlayVideoTabRepositoryModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
+)
+interface VideoTabComponent {
     @ApplicationContext
     fun context(): Context?
 

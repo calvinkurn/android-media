@@ -44,4 +44,6 @@
     <string name="applink_af_title_create_post">Create Post</string>
     <string name="applink_title_people">People</string>
 
+    <string name="applink_content_feature_prevention" translatable="false" tools:ignore="UnusedResources">/content-prevention</string>
+
 </resources>

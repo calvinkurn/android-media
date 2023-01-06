@@ -9,12 +9,12 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
  */
 
 data class ShopHomeProductBundleListUiModel(
-        override val widgetId: String = "",
-        override val layoutOrder: Int = -1,
-        override val name: String = "",
-        override val type: String = "",
-        override val header: Header = Header(),
-        val productBundleList: List<ShopHomeProductBundleItemUiModel> = listOf()
+    override val widgetId: String = "",
+    override val layoutOrder: Int = -1,
+    override val name: String = "",
+    override val type: String = "",
+    override val header: Header = Header(),
+    val productBundleList: List<ShopHomeProductBundleItemUiModel> = listOf()
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()
 

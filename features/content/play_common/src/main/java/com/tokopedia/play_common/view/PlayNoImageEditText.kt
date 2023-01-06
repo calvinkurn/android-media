@@ -13,9 +13,9 @@ import androidx.core.view.inputmethod.InputConnectionCompat
  */
 class PlayNoImageEditText : AppCompatEditText {
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?) : super(context!!)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context!!, attrs, defStyleAttr)
 
     private val forbiddenMimeTypes = arrayOf("image/*", "image/png", "image/gif", "image/jpeg")
 
@@ -30,9 +30,7 @@ class PlayNoImageEditText : AppCompatEditText {
                 mOnErrorListener?.onForbiddenImage(this@PlayNoImageEditText)
                 true
             }
-        } else {
-            inputConnection
-        }
+        } else inputConnection
     }
 
     fun setOnErrorListener(onErrorListener: OnErrorListener) {

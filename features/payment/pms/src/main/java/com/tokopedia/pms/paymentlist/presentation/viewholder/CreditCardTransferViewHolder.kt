@@ -77,7 +77,7 @@ class CreditCardTransferViewHolder(
     companion object {
         private val LAYOUT_ID = R.layout.credit_card_payment_list_item
         private const val CARD_ICON_URL =
-            "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png"
+            "https://images.tokopedia.net/img/toppay/product/marketplace.png"
 
         fun getViewHolder(
             inflater: LayoutInflater,

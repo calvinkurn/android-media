@@ -1,7 +1,10 @@
 package com.tkpd.macrobenchmark.util
 
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.*
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Direction
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.Until
 
 object MacroInteration {
     private val DEFAULT_TIMEOUT = 60000L

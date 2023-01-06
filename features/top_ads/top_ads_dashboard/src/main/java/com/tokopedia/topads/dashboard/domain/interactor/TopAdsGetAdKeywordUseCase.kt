@@ -17,8 +17,8 @@ class TopAdsGetAdKeywordUseCase @Inject constructor(graphqlRepository: GraphqlRe
 
     fun setParams(isPositive:Int,group:Int, search:String, sort:String?, status:Int?,page:Int) {
         val map = HashMap<String, Any?>()
-        map[ParamObject.SHOP_id] = userSession.shopId.toInt()
-        map[ParamObject.GROUP] = group
+        map[ParamObject.SHOP_id] = userSession.shopId
+        map[ParamObject.GROUP] = group.toString()
         map[ParamObject.KEYWORD_TAG] = search
         map[ParamObject.IS_POSTIVE] = isPositive
         map[ParamObject.SORT] = sort

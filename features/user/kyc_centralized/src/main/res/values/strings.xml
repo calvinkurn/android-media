@@ -22,7 +22,7 @@
     <string name="kyc_intro_button">Mulai Verifikasi</string>
 
     <string name="kyc_pending_title">Dokumen sedang kami proses</string>
-    <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x12 jam ya.</string>
+    <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x24 jam ya.</string>
     <string name="kyc_pending_button">Mengerti</string>
 
     <string name="kyc_failed_title">Yaah, verifikasinya gagal</string>
@@ -91,7 +91,7 @@
 
     <string name="title_kyc_form_fail_verification">Verifikasi Gagal</string>
 
-    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x12 jam.</string>
+    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x24 jam.</string>
 
     <string name="error_upload_image_kyc">Terjadi kesalahan. Mohon coba beberapa saat lagi
         (%s)</string>

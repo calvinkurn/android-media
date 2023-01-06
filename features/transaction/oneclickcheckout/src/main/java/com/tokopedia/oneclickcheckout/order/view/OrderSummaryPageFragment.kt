@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
@@ -54,6 +55,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
@@ -75,12 +77,11 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
@@ -119,6 +120,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -166,7 +168,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private var shouldDismissProgressDialog: Boolean = false
 
     // Last saved PPP state based on productId
-    private val lastPurchaseProtectionCheckStates: HashMap<Long, Int> = HashMap()
+    private val lastPurchaseProtectionCheckStates: HashMap<String, Int> = HashMap()
 
     private var source: String = SOURCE_OTHERS
     private var tenor: Int = 0
@@ -882,7 +884,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun updateLocalCacheAddressData(addressModel: OrderProfileAddress) {
-        if (addressModel.addressId > 0) {
+        if (addressModel.addressId.isNotBlankOrZero()) {
             activity?.let {
                 val localCache = ChooseAddressUtils.getLocalizingAddressData(it)
                 val newTokoNowData = addressModel.tokoNow
@@ -891,9 +893,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         || localCache.address_id.isEmpty() || localCache.address_id == "0") {
                     ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                             context = it,
-                            addressId = addressModel.addressId.toString(),
-                            cityId = addressModel.cityId.toString(),
-                            districtId = addressModel.districtId.toString(),
+                            addressId = addressModel.addressId,
+                            cityId = addressModel.cityId,
+                            districtId = addressModel.districtId,
                             lat = addressModel.latitude,
                             long = addressModel.longitude,
                             label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
@@ -925,18 +927,22 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun goToPinpoint(address: OrderProfileAddress?, shouldUpdatePinpointFlag: Boolean = true) {
-        address?.let {
-            val locationPass = LocationPass()
-            locationPass.cityName = it.cityName
-            locationPass.districtName = it.districtName
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-            val bundle = Bundle()
-            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-            intent.putExtras(bundle)
-            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
-            if (shouldUpdatePinpointFlag) {
-                viewModel.changePinpoint()
+        view?.let { v ->
+            MapsAvailabilityHelper.onMapsAvailableState(v) {
+                address?.let {
+                    val locationPass = LocationPass()
+                    locationPass.cityName = it.cityName
+                    locationPass.districtName = it.districtName
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                    val bundle = Bundle()
+                    bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                    intent.putExtras(bundle)
+                    startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+                    if (shouldUpdatePinpointFlag) {
+                        viewModel.changePinpoint()
+                    }
+                }
             }
         }
     }
@@ -1350,11 +1356,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionPricePerProduct: Int, protectionTitle: String) {
-            PurchaseProtectionInfoBottomsheet(url,userSession.get()).show(this@OrderSummaryPageFragment)
             orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, protectionPricePerProduct, protectionTitle)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalFintech.INSURANCE_INFO)
+            intent.putExtra(
+                ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL,
+                url
+            )
+            startActivity(intent)
         }
 
-        override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long) {
+        override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: String) {
             lastPurchaseProtectionCheckStates[productId] = if (isChecked) {
                 PurchaseProtectionPlanData.STATE_TICKED
             } else {
@@ -1363,7 +1374,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.calculateTotal()
         }
 
-        override fun getLastPurchaseProtectionCheckState(productId: Long): Int {
+        override fun getLastPurchaseProtectionCheckState(productId: String): Int {
             return lastPurchaseProtectionCheckStates[productId]
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
@@ -1453,7 +1464,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val currentGatewayCode = profile.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
-                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId.toString())
+                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, payment.creditCard.additionalData.profileCode)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_MERCHANT, payment.creditCard.additionalData.merchantCode)
                 val orderCost = viewModel.orderTotal.value.orderCost

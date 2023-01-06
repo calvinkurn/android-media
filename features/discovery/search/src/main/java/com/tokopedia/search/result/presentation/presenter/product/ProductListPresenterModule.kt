@@ -20,9 +20,5 @@ abstract class ProductListPresenterModule {
 
     @SearchScope
     @Binds
-    abstract fun provideDynamicFilterModel(provider: ProductListPresenter): DynamicFilterModelProvider
-
-    @SearchScope
-    @Binds
     abstract fun provideLastFilterPresenter(provider: LastFilterPresenterDelegate): LastFilterPresenter
 }

@@ -16,7 +16,7 @@ import javax.inject.Inject
  * author by Rafli Syam on 26/01/2021
  */
 class ShopRequestUnmoderateUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository
+    private val gqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ShopRequestUnmoderateSuccessResponse>(gqlRepository) {
 
     var params: RequestParams = RequestParams.EMPTY
@@ -24,8 +24,8 @@ class ShopRequestUnmoderateUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ShopRequestUnmoderateSuccessResponse {
         val request = GraphqlRequest(MUTATION, ShopRequestUnmoderateSuccessResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.response(
-                listOf(request),
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+            listOf(request),
+            GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         )
         val gqlErrorResponse = gqlResponse.getError(ShopRequestUnmoderateBaseResponse::class.java)
         if (gqlErrorResponse == null || gqlErrorResponse.isEmpty()) {
@@ -41,25 +41,27 @@ class ShopRequestUnmoderateUseCase @Inject constructor(
         private const val REQUEST_OPEN_MODERATE_STATUS = 1
 
         fun createRequestParams(
-                shopId : Double,
-                description : String
-        ) : RequestParams = RequestParams.create().apply {
-            putObject(INPUT, ShopRequestUnmoderateRequestParams().apply {
-                shopIds = mutableListOf(shopId)
-                status = REQUEST_OPEN_MODERATE_STATUS
-                responseDescription = description
-            })
+            shopId: Double,
+            description: String
+        ): RequestParams = RequestParams.create().apply {
+            putObject(
+                INPUT,
+                ShopRequestUnmoderateRequestParams().apply {
+                    shopIds = mutableListOf(shopId)
+                    status = REQUEST_OPEN_MODERATE_STATUS
+                    responseDescription = description
+                }
+            )
         }
 
         /**
          * Mutation for request unmoderate shop
          */
         private const val MUTATION = "mutation moderateShop(\$input: ShopModerate!) {\n" +
-                "  moderateShop(input:\$input) {\n" +
-                "    success\n" +
-                "    message\n" +
-                "  }\n" +
-                "}"
+            "  moderateShop(input:\$input) {\n" +
+            "    success\n" +
+            "    message\n" +
+            "  }\n" +
+            "}"
     }
-
 }

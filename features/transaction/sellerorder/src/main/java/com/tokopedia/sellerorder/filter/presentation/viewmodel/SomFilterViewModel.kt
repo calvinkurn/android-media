@@ -26,13 +26,14 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                             private val getSomOrderFilterUseCase: GetSomOrderFilterUseCase) : BaseViewModel(dispatcher.io) {
+class SomFilterViewModel @Inject constructor(
+    dispatcher: CoroutineDispatchers,
+    private val getSomOrderFilterUseCase: GetSomOrderFilterUseCase
+) : BaseViewModel(dispatcher.io) {
 
     private val _filterResult = MutableLiveData<Result<List<BaseSomFilter>>>()
     val filterResult: LiveData<Result<List<BaseSomFilter>>> = _filterResult
@@ -157,70 +158,64 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             _filterResult.postValue(Success(somFilterVisitable))
             this@SomFilterViewModel.somFilterDate = somFilterDate
         }, onError = {
-            _filterResult.postValue(Fail(it))
-        })
+                _filterResult.postValue(Fail(it))
+            })
     }
 
     fun updateFilterSelected(idFilter: String, position: Int, chipType: String) {
-        launch {
-            deselectCorrespondingFilterItems(idFilter)
-            updateCorrespondingFilterItemSelectedState(idFilter, position, chipType)
-            val chipsUiModelList = getSomFilterUiModelItems(idFilter)
-            _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
-        }
+        deselectCorrespondingFilterItems(idFilter)
+        updateCorrespondingFilterItemSelectedState(idFilter, position, chipType)
+        val chipsUiModelList = getSomFilterUiModelItems(idFilter)
+        _updateFilterSelected.value = Success(Pair(chipsUiModelList, idFilter))
     }
 
     fun updateFilterManySelected(idFilter: String, chipType: String, position: Int) {
-        launch {
-            updateCorrespondingFilterItemSelectedState(idFilter, position, chipType)
-            val chipsUiModelList = getSomFilterUiModelItems(idFilter)
-            _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
-        }
+        updateCorrespondingFilterItemSelectedState(idFilter, position, chipType)
+        val chipsUiModelList = getSomFilterUiModelItems(idFilter)
+        _updateFilterSelected.value = Success(Pair(chipsUiModelList, idFilter))
     }
 
-    fun updateSomFilterSeeAll(idFilter: String,
-                              somSubFilterList: List<SomFilterChipsUiModel>) {
-        launch {
-            updateSomFilterUiModel(idFilter, somSubFilterList)
-            val chipsUiModelList = getSomFilterUiModelItems(idFilter)
-            _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
-        }
+    fun updateSomFilterSeeAll(
+        idFilter: String,
+        somSubFilterList: List<SomFilterChipsUiModel>
+    ) {
+        updateSomFilterUiModel(idFilter, somSubFilterList)
+        val chipsUiModelList = getSomFilterUiModelItems(idFilter)
+        _updateFilterSelected.value = Success(Pair(chipsUiModelList, idFilter))
     }
 
     fun updateParamSom(idFilter: String) {
-        launch {
-            val idOneSelect = findFirstSelectedFilterUiModelItemId(idFilter)
-            val idManySelect = findAllSelectedFilterUiModelItemsIds(idFilter)
-            when (idFilter) {
-                FILTER_SORT -> {
-                    somListGetOrderListParam.sortBy = idOneSelect
-                }
-                FILTER_STATUS_ORDER -> {
-                    somListGetOrderListParam.statusList = getSomFilterUiModelItems(idFilter).filter {
-                        it.isSelected
-                    }.flatMap { it.idList }
-                }
-                FILTER_TYPE_ORDER -> {
-                    somListGetOrderListParam.orderTypeList = idManySelect
-                }
-                FILTER_COURIER -> {
-                    somListGetOrderListParam.shippingList = idManySelect
-                }
-                FILTER_LABEL -> {
-                    somListGetOrderListParam.isShippingPrinted = idOneSelect
-                }
+        val idOneSelect = findFirstSelectedFilterUiModelItemId(idFilter)
+        val idManySelect = findAllSelectedFilterUiModelItemsIds(idFilter)
+        when (idFilter) {
+            FILTER_SORT -> {
+                somListGetOrderListParam.sortBy = idOneSelect
             }
-            _somFilterOrderListParam.postValue(Success(somListGetOrderListParam))
+            FILTER_STATUS_ORDER -> {
+                somListGetOrderListParam.statusList = getSomFilterUiModelItems(idFilter).filter {
+                    it.isSelected
+                }.flatMap { it.idList }
+            }
+            FILTER_TYPE_ORDER -> {
+                somListGetOrderListParam.orderTypeList = idManySelect
+            }
+            FILTER_COURIER -> {
+                somListGetOrderListParam.shippingList = idManySelect
+            }
+            FILTER_LABEL -> {
+                somListGetOrderListParam.isShippingPrinted = idOneSelect
+            }
         }
+        _somFilterOrderListParam.value = Success(somListGetOrderListParam)
     }
 
     fun resetFilterSelected() {
-        launchCatchError(block = {
+        try {
             somFilterUiModel.map { somFilter ->
                 somFilter.somFilterData.map { chips ->
                     chips.isSelected = false
                 }
-                when(somFilter.nameFilter) {
+                when (somFilter.nameFilter) {
                     FILTER_SORT -> {
                         somListGetOrderListParam.sortBy = SomFilterUtil.getDefaultSortBy(SomConsts.STATUS_ALL_ORDER)
                     }
@@ -241,11 +236,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             val defaultDateFilter = SomFilterUtil.getDefaultDateFilter()
             somListGetOrderListParam.startDate = defaultDateFilter.first
             somListGetOrderListParam.endDate = defaultDateFilter.second
-            _resetFilterResult.postValue(Success(somFilterUiModel))
-            _somFilterOrderListParam.postValue(Success(somListGetOrderListParam))
-        }, onError = {
-            _resetFilterResult.postValue(Fail(it))
-        })
+            _resetFilterResult.value = Success(somFilterUiModel)
+            _somFilterOrderListParam.value = Success(somListGetOrderListParam)
+        } catch (t: Throwable) {
+            _resetFilterResult.value = Fail(t)
+        }
     }
 
     fun getStartDate(): Date? {

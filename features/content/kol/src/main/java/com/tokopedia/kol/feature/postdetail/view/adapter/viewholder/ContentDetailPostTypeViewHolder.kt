@@ -383,8 +383,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             } else context.getString(feedComponentR.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
-            shouldShow = (feedXCard.isTypeProductHighlight)
-                    || (!isFollowed || followers.transitionFollow),
+            shouldShow = (feedXCard.isTypeProductHighlight
+                    || (!isFollowed || followers.transitionFollow)) && !feedXCard.isTypeUGC,
             value = contentSubInfoValue
         )
         //endregion
@@ -616,35 +616,64 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private fun bindItems(
         feedXCard: FeedXCard,
     ) {
-        val media = feedXCard.media
         when {
-            feedXCard.isTypeSGC -> {
-                val globalCardProductList = feedXCard.tags
-                feedVODViewHolder.gone()
-                rvCarousel.visible()
-                commentButton.visible()
-                pageControl.apply {
-                    setIndicator(media.size)
-                    setCurrentIndicator(feedXCard.lastCarouselIndex)
-                }.showWithCondition(media.size > 1)
-
-                media.forEach { feedMedia ->
-                    val tags = feedMedia.tagging
-                    feedMedia.tagProducts = tags.map { globalCardProductList[it.tagIndex] }
-                        .distinctBy { it.id }
-                    feedMedia.isImageImpressedFirst = true
-
-                    if (!feedMedia.isImage) feedMedia.canPlay = false
-                }
-                adapter.setItemsAndAnimateChanges(media)
-                rvCarousel.addOneTimeGlobalLayoutListener {
-                    rvCarousel.scrollToPosition(feedXCard.lastCarouselIndex)
-                }
-            }
+            feedXCard.isTypeUGC -> setTypeUGC(feedXCard)
+            feedXCard.isTypeSGC -> setTypeSGC(feedXCard)
             feedXCard.isTypeLongVideo || feedXCard.isTypeVOD -> setVODLayout(feedXCard)
             feedXCard.isTypeProductHighlight -> setNewASGCLayout(feedXCard)
         }
+    }
 
+    private fun setTypeUGC(feedXCard: FeedXCard) {
+        val media = feedXCard.media
+        val globalCardProductList = feedXCard.tags
+        feedVODViewHolder.gone()
+        rvCarousel.visible()
+        commentButton.visible()
+        pageControl.apply {
+            setIndicator(media.size)
+            setCurrentIndicator(feedXCard.lastCarouselIndex)
+        }.showWithCondition(media.size > 1)
+
+        media.forEach { feedMedia ->
+            if (globalCardProductList.isEmpty()) return@forEach
+            val tags = feedMedia.tagging
+            feedMedia.tagProducts = tags.map { globalCardProductList[it.tagIndex] }.distinctBy { it.id }
+            feedMedia.isImageImpressedFirst = true
+
+            if (!feedMedia.isImage) feedMedia.canPlay = false
+        }
+
+        adapter.setItemsAndAnimateChanges(media)
+        rvCarousel.addOneTimeGlobalLayoutListener {
+            rvCarousel.scrollToPosition(feedXCard.lastCarouselIndex)
+        }
+    }
+
+    private fun setTypeSGC(feedXCard: FeedXCard) {
+        val media = feedXCard.media
+        val globalCardProductList = feedXCard.tags
+        feedVODViewHolder.gone()
+        rvCarousel.visible()
+        commentButton.visible()
+        pageControl.apply {
+            setIndicator(media.size)
+            setCurrentIndicator(feedXCard.lastCarouselIndex)
+        }.showWithCondition(media.size > 1)
+
+        media.forEach { feedMedia ->
+            if (globalCardProductList.isEmpty()) return@forEach
+            val tags = feedMedia.tagging
+            feedMedia.tagProducts = tags.map { globalCardProductList[it.tagIndex] }
+                .distinctBy { it.id }
+            feedMedia.isImageImpressedFirst = true
+
+            if (!feedMedia.isImage) feedMedia.canPlay = false
+        }
+        adapter.setItemsAndAnimateChanges(media)
+        rvCarousel.addOneTimeGlobalLayoutListener {
+            rvCarousel.scrollToPosition(feedXCard.lastCarouselIndex)
+        }
     }
 
     private fun setVODLayout(feedXCard: FeedXCard) {
@@ -678,6 +707,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         feedVODViewHolder.visible()
 
     }
+
     private fun setVODView(
         feedXCard: FeedXCard,
         feedMedia: FeedXMedia,

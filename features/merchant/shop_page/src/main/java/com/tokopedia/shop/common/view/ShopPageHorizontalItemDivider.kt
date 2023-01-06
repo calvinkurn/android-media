@@ -5,8 +5,8 @@ import android.graphics.drawable.Drawable
 import androidx.recyclerview.widget.RecyclerView
 
 class ShopPageHorizontalItemDivider(
-        private val divider: Drawable,
-        private val dividerWidthSize: Int
+    private val divider: Drawable,
+    private val dividerWidthSize: Int
 ) : RecyclerView.ItemDecoration() {
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -16,8 +16,12 @@ class ShopPageHorizontalItemDivider(
         if (parent.clipToPadding) {
             top = parent.paddingTop
             bottom = parent.height - parent.paddingBottom
-            c.clipRect(parent.paddingLeft, top,
-                    parent.width - parent.paddingRight, bottom)
+            c.clipRect(
+                parent.paddingLeft,
+                top,
+                parent.width - parent.paddingRight,
+                bottom
+            )
         } else {
             top = 0
             bottom = parent.height
@@ -35,5 +39,4 @@ class ShopPageHorizontalItemDivider(
             divider.draw(c)
         }
     }
-
 }

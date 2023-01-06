@@ -45,10 +45,12 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
 import com.tokopedia.vouchergame.common.util.VoucherGameGqlQuery
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
+import com.tokopedia.vouchergame.databinding.FragmentVoucherGameDetailBinding
 import com.tokopedia.vouchergame.detail.data.OperatorNotFoundException
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
@@ -62,25 +64,25 @@ import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewMode
 import com.tokopedia.vouchergame.detail.widget.OperatorInfoWidget
 import com.tokopedia.vouchergame.detail.widget.ProductDetailWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
-import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
-import kotlinx.android.synthetic.main.fragment_voucher_game_detail.view.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
  * Created by resakemal on 16/08/19.
  */
-class VoucherGameDetailFragment : BaseTopupBillsFragment(),
-        BaseListAdapter.OnAdapterInteractionListener<Visitable<*>>,
-        VoucherGameDetailAdapter.LoaderListener,
-        VoucherGameProductViewHolder.OnClickListener,
-        TopupBillsCheckoutWidget.ActionListener {
+class VoucherGameDetailFragment :
+    BaseTopupBillsFragment(),
+    BaseListAdapter.OnAdapterInteractionListener<Visitable<*>>,
+    VoucherGameDetailAdapter.LoaderListener,
+    VoucherGameProductViewHolder.OnClickListener,
+    TopupBillsCheckoutWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var voucherGameViewModel: VoucherGameDetailViewModel
 
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private var binding by autoClearedNullable<FragmentVoucherGameDetailBinding>()
 
     lateinit var adapter: VoucherGameDetailAdapter
 
@@ -117,22 +119,25 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
             val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameDetailViewModel::class.java)
 
-            //Setup adapter
-            adapter = VoucherGameDetailAdapter(it, resources,
-                    VoucherGameDetailAdapterFactory(this),
-                    this)
+            // Setup adapter
+            adapter = VoucherGameDetailAdapter(
+                it,
+                it.resources,
+                VoucherGameDetailAdapterFactory(this),
+                this
+            )
         }
 
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME)
-                    ?: VoucherGameExtraParam()
+                ?: VoucherGameExtraParam()
             // Initalize variables of base topup bills fragment
             menuId = voucherGameExtraParam.menuId.toIntSafely()
             categoryId = voucherGameExtraParam.categoryId.toIntSafely()
             productId = voucherGameExtraParam.productId.toIntSafely()
 
             voucherGameOperatorData =
-                    it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: CatalogOperatorAttributes()
+                it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: CatalogOperatorAttributes()
             it.getString(EXTRA_INPUT_FIELD_1)?.let { input -> inputData[EXTRA_INPUT_FIELD_1] = input }
             it.getString(EXTRA_INPUT_FIELD_2)?.let { input -> inputData[EXTRA_INPUT_FIELD_2] = input }
         }
@@ -142,49 +147,58 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        voucherGameViewModel.voucherGameOperatorDetails.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    voucherGameOperatorData = it.data.attributes
-                    setupOperatorDetail()
-                }
-                is Fail -> {
-                    renderPageNotFoundError()
-                }
-            }
-        })
-
-        voucherGameViewModel.voucherGameProducts.observe(viewLifecycleOwner, Observer {
-            it.run {
-                input_field_container_shimmering.visibility = View.GONE
+        voucherGameViewModel.voucherGameOperatorDetails.observe(
+            viewLifecycleOwner,
+            Observer {
                 when (it) {
                     is Success -> {
-                        adapter.hideLoading()
-
-                        setupEnquiryFields(it.data)
-                        checkAutoFillInput()
-
-                        renderProducts(it.data)
-                        checkAutoSelectProduct()
+                        voucherGameOperatorData = it.data.attributes
+                        setupOperatorDetail()
                     }
                     is Fail -> {
-                        adapter.showGetListError(it.throwable)
+                        renderPageNotFoundError()
                     }
                 }
             }
-        })
+        )
+
+        voucherGameViewModel.voucherGameProducts.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    binding?.inputFieldContainerShimmering?.visibility = View.GONE
+                    when (it) {
+                        is Success -> {
+                            adapter.hideLoading()
+
+                            setupEnquiryFields(it.data)
+                            checkAutoFillInput()
+
+                            renderProducts(it.data)
+                            checkAutoSelectProduct()
+                        }
+                        is Fail -> {
+                            adapter.showGetListError(it.throwable)
+                        }
+                    }
+                }
+            }
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Scroll view to top
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CART_DIGITAL && !isEnquired) {
-            vg_detail_scroll_view.smoothScrollTo(0, vg_detail_scroll_view.top)
+            binding?.vgDetailScrollView?.run {
+                smoothScrollTo(0, this.top)
+            }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_voucher_game_detail, container, false)
+        binding = FragmentVoucherGameDetailBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -192,8 +206,12 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         initView()
 
         if (voucherGameOperatorData.name.isEmpty()) {
-            voucherGameViewModel.getVoucherGameOperators(VoucherGameGqlQuery.voucherGameProductList,
-                    voucherGameViewModel.createMenuDetailParams(voucherGameExtraParam.menuId.toIntSafely()), false, voucherGameExtraParam.operatorId)
+            voucherGameViewModel.getVoucherGameOperators(
+                VoucherGameGqlQuery.voucherGameProductList,
+                voucherGameViewModel.createMenuDetailParams(voucherGameExtraParam.menuId.toIntSafely()),
+                false,
+                voucherGameExtraParam.operatorId
+            )
         }
 
         adapter.showLoading()
@@ -202,8 +220,14 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (input_field_1.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_1, input_field_1.getInputText())
-        if (input_field_2.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_2, input_field_2.getInputText())
+        binding?.run {
+            if (inputField1.getInputText().isNotEmpty()) {
+                outState.putString(EXTRA_INPUT_FIELD_1, inputField1.getInputText())
+            }
+            if (inputField2.getInputText().isNotEmpty()) {
+                outState.putString(EXTRA_INPUT_FIELD_2, inputField2.getInputText())
+            }
+        }
         selectedProduct?.run { voucherGameExtraParam.productId = id }
         outState.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
         outState.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorData)
@@ -212,38 +236,42 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     private fun initView() {
         setupOperatorDetail()
 
-        // Show input fields shimmering layout
-        input_field_container.visibility = View.GONE
-        input_field_container_shimmering.visibility = View.VISIBLE
+        binding?.run {
+            // Show input fields shimmering layout
+            inputFieldContainer.visibility = View.GONE
+            inputFieldContainerShimmering.visibility = View.VISIBLE
 
-        recycler_view.adapter = adapter
-        val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(p0: Int): Int {
-                return when (adapter.getItemViewType(p0)) {
-                    VoucherGameProductViewHolder.LAYOUT -> FULL_SCREEN_SPAN_SIZE
-                    else -> PRODUCT_ITEM_SPAN_SIZE
-                }
-            }
-        }
-        recycler_view.layoutManager = layoutManager
-        while (recycler_view.itemDecorationCount > 0) recycler_view.removeItemDecorationAt(0)
-        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val productData = voucherGameViewModel.voucherGameProducts.value
-                    if (productData is Success) {
-                        val visibleIndexes = AnalyticUtils.getVisibleItemIndexesOfType(recycler_view, VoucherGameProductViewHolder.LAYOUT)
-                        voucherGameAnalytics.impressionProductCard(
-                                getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1), voucherGameOperatorData.name)
+            recyclerView.adapter = adapter
+            val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(p0: Int): Int {
+                    return when (adapter.getItemViewType(p0)) {
+                        VoucherGameProductViewHolder.LAYOUT -> FULL_SCREEN_SPAN_SIZE
+                        else -> PRODUCT_ITEM_SPAN_SIZE
                     }
                 }
             }
-        })
+            recyclerView.layoutManager = layoutManager
+            while (recyclerView.itemDecorationCount > 0) recyclerView.removeItemDecorationAt(0)
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        val productData = voucherGameViewModel.voucherGameProducts.value
+                        if (productData is Success) {
+                            val visibleIndexes = AnalyticUtils.getVisibleItemIndexesOfType(recyclerView, VoucherGameProductViewHolder.LAYOUT)
+                            voucherGameAnalytics.impressionProductCard(
+                                getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1),
+                                voucherGameOperatorData.name
+                            )
+                        }
+                    }
+                }
+            })
 
-        checkout_view.setVisibilityLayout(false)
-        checkout_view.listener = this
+            checkoutView.setVisibilityLayout(false)
+            checkoutView.listener = this@VoucherGameDetailFragment
+        }
     }
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
@@ -262,16 +290,17 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     }
 
     override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>) {
-
     }
 
     private fun renderPageNotFoundError() {
-        vg_detail_error_view.show()
-        vg_detail_error_view.showUnifyError(OperatorNotFoundException(), {
-            activity?.onBackPressed()
-        })
-        vg_detail_error_view.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
-            gravity = Gravity.CENTER
+        binding?.run {
+            vgDetailErrorView.show()
+            vgDetailErrorView.showUnifyError(OperatorNotFoundException(), {
+                activity?.onBackPressed()
+            })
+            vgDetailErrorView.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
+                gravity = Gravity.CENTER
+            }
         }
     }
 
@@ -279,50 +308,67 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         toggleEnquiryLoadingBar(false)
         isEnquired = false
         view?.let {
-            Toaster.build(it, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok),
-                    View.OnClickListener { enquireFields() }).show()
+            Toaster.build(
+                it,
+                ErrorHandler.getErrorMessage(context, error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.resources.common.R.string.general_label_ok),
+                View.OnClickListener { enquireFields() }
+            ).show()
         }
     }
 
     override fun onMenuDetailError(error: Throwable) {
-
     }
 
     override fun onLoadingMenuDetail(showLoading: Boolean) {
-        //do nothing
+        // do nothing
     }
 
     override fun onLoadingAtc(showLoading: Boolean) {
-        checkout_view.onBuyButtonLoading(showLoading)
+        binding?.checkoutView?.onBuyButtonLoading(showLoading)
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
-
     }
 
     override fun onFavoriteNumbersError(error: Throwable) {
-
     }
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            Toaster.build(
+                v,
+                ErrorHandler.getErrorMessage(requireContext(), error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+            ).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            Toaster.build(
+                v,
+                ErrorHandler.getErrorMessage(requireContext(), error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+            ).show()
         }
     }
 
     override fun showErrorMessage(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
-                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(
+                v,
+                ErrorHandler.getErrorMessage(requireContext(), error)
+                    ?: "",
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
@@ -335,20 +381,22 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         if (!data.needEnquiry || data.enquiryFields.isEmpty()) {
             inputFieldCount = 0
             isEnquired = true
-            input_field_container.visibility = View.GONE
+            binding?.inputFieldContainer?.visibility = View.GONE
         } else {
             enquiryData = data.enquiryFields
             // Chcek if input count is valid
             if (enquiryData.size in INPUT_COUNT_MIN..INPUT_COUNT_MAX) inputFieldCount = enquiryData.size
 
             if (hasFirstInput()) {
-                // Show first input field
-                setupEnquiryField(input_field_1, enquiryData[0])
-                // Hide second field if there is only one field, setup second field otherwise
-                if (hasSecondInput()) {
-                    setupEnquiryField(input_field_2, enquiryData[1])
+                binding?.run {
+                    // Show first input field
+                    setupEnquiryField(inputField1, enquiryData[0])
+                    // Hide second field if there is only one field, setup second field otherwise
+                    if (hasSecondInput()) {
+                        setupEnquiryField(inputField2, enquiryData[1])
+                    }
+                    inputFieldContainer.visibility = View.VISIBLE
                 }
-                input_field_container.visibility = View.VISIBLE
             }
         }
     }
@@ -378,20 +426,22 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
             }
 
             override fun onTextChangeInput() {
-                //do nothing
+                // do nothing
             }
         }
     }
 
     private fun checkAutoFillInput() {
-        if (::enquiryData.isInitialized && hasInputs() && inputData.isNotEmpty()) {
-            inputData[EXTRA_INPUT_FIELD_1]?.let { input ->
-                if (hasFirstInput()) input_field_1.setInputText(input)
+        binding?.run {
+            if (::enquiryData.isInitialized && hasInputs() && inputData.isNotEmpty()) {
+                inputData[EXTRA_INPUT_FIELD_1]?.let { input ->
+                    if (hasFirstInput()) inputField1.setInputText(input)
+                }
+                inputData[EXTRA_INPUT_FIELD_2]?.let { input ->
+                    if (hasSecondInput()) inputField2.setInputText(input)
+                }
+                if (inputData.size == inputFieldCount) enquireFields()
             }
-            inputData[EXTRA_INPUT_FIELD_2]?.let { input ->
-                if (hasSecondInput()) input_field_2.setInputText(input)
-            }
-            if (inputData.size == inputFieldCount) enquireFields()
         }
     }
 
@@ -403,35 +453,37 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     }
 
     private fun enquireFields() {
-        if (::enquiryData.isInitialized) {
-            val input1 = input_field_1.getInputText()
-            val input2 = input_field_2.getInputText()
-            var isValid = false
+        binding?.run {
+            if (::enquiryData.isInitialized) {
+                val input1 = inputField1.getInputText()
+                val input2 = inputField2.getInputText()
+                var isValid = false
 
-            if (hasFirstInput()) {
-                isValid = verifyField(enquiryData[0].validations, input1)
-            }
-            if (hasSecondInput()) {
-                // Add case when user is still filling the fields (only 1/2 fields are filled)
-                if (input1.isEmpty() xor input2.isEmpty()) {
-                    isEnquired = false
-                    setInputFieldsError(false)
-                    return
+                if (hasFirstInput()) {
+                    isValid = verifyField(enquiryData[0].validations, input1)
+                }
+                if (hasSecondInput()) {
+                    // Add case when user is still filling the fields (only 1/2 fields are filled)
+                    if (input1.isEmpty() xor input2.isEmpty()) {
+                        isEnquired = false
+                        setInputFieldsError(false)
+                        return
+                    }
+
+                    if (isValid) {
+                        isValid = verifyField(enquiryData[1].validations, input2)
+                    }
                 }
 
                 if (isValid) {
-                    isValid = verifyField(enquiryData[1].validations, input2)
-                }
-            }
-
-            if (isValid) {
-                // Enquiry query is not ready, temporarily validate enquiry
-                isEnquired = true
+                    // Enquiry query is not ready, temporarily validate enquiry
+                    isEnquired = true
 //                toggleEnquiryLoadingBar(true)
 //                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
 //                getEnquiry(clientNumber, voucherGameExtraParam.operatorId)
-            } else {
-                isEnquired = false
+                } else {
+                    isEnquired = false
+                }
             }
         }
     }
@@ -445,11 +497,15 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
                 dropdownBottomSheet.dismiss()
             }
 
-            val dropdownView = TopupBillsInputDropdownWidget(context, listener = object : TopupBillsInputDropdownWidget.OnClickListener {
-                override fun onItemClicked(item: TopupBillsInputDropdownData) {
-                    field.setInputText(item.label)
-                }
-            }, selected = field.getInputText())
+            val dropdownView = TopupBillsInputDropdownWidget(
+                context,
+                listener = object : TopupBillsInputDropdownWidget.OnClickListener {
+                    override fun onItemClicked(item: TopupBillsInputDropdownData) {
+                        field.setInputText(item.label)
+                    }
+                },
+                selected = field.getInputText()
+            )
             dropdownView.setData(data)
             dropdownBottomSheet.setChild(dropdownView)
 
@@ -463,11 +519,13 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     }
 
     private fun toggleEnquiryLoadingBar(state: Boolean) {
-        enquiry_loading_bar.visibility = if (state) View.VISIBLE else View.GONE
+        binding?.enquiryLoadingBar?.visibility = if (state) View.VISIBLE else View.GONE
     }
 
-    private fun verifyField(fieldValidation: List<CatalogProductInput.Validation>,
-                            input: String): Boolean {
+    private fun verifyField(
+        fieldValidation: List<CatalogProductInput.Validation>,
+        input: String
+    ): Boolean {
         if (input.isEmpty()) return false
         for (validation in fieldValidation) {
             if (validation.rule.isNotEmpty() && !Pattern.matches(validation.rule, input)) {
@@ -480,20 +538,23 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     private fun setInputFieldsError(value: Boolean) {
         context?.run {
             if (value) {
-                input_field_label.text = getString(R.string.vg_input_field_error_message)
-                input_field_label.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                binding?.inputFieldLabel?.text = getString(R.string.vg_input_field_error_message)
+                binding?.inputFieldLabel?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_R600))
             } else {
-                input_field_label.visibility = View.GONE
+                binding?.inputFieldLabel?.visibility = View.GONE
             }
         }
     }
 
     private fun renderProducts(data: VoucherGameDetailData) {
         val dataCollection = data.product.dataCollections as List<VoucherGameProductData.DataCollection>
-        if (dataCollection.isEmpty()) adapter.showEmpty()
-        else {
+        if (dataCollection.isEmpty()) {
+            adapter.showEmpty()
+        } else {
             val listData = mutableListOf<Visitable<*>>()
-            val decorator = VoucherGameProductDecorator(resources.getDimensionPixelOffset(ITEM_DECORATOR_SIZE))
+            val decorator = VoucherGameProductDecorator(
+                activity?.resources?.getDimensionPixelOffset(ITEM_DECORATOR_SIZE) ?: ITEM_DECORATOR_SIZE_DEFAULT
+            )
             val trackingList = mutableListOf<VoucherGameProduct>()
 
             var hasMoreDetails = false
@@ -514,58 +575,52 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
                 }
             }
             adapter.hasMoreDetails = hasMoreDetails
-            recycler_view.addItemDecoration(decorator)
+            binding?.recyclerView?.addItemDecoration(decorator)
 
             adapter.renderList(listData)
-//            recycler_view.post {
-//                val productData = voucherGameViewModel.voucherGameProducts.value
-//                if (productData is Success) {
-//                    val visibleIndexes = AnalyticUtils.getVisibleItemIndexesOfType(recycler_view, VoucherGameProductViewHolder.LAYOUT)
-//                    voucherGameAnalytics.impressionProductCard(
-//                            getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1))
-//                }
-//            }
         }
     }
 
     private fun renderEnquiryResult(results: List<TopupBillsEnquiryMainInfo>) {
-        input_field_label.visibility = View.INVISIBLE
+        binding?.inputFieldLabel?.visibility = View.INVISIBLE
 
         context?.run {
             for (result in results) {
                 val resultView = VoucherGameEnquiryResultWidget(this)
                 resultView.setEnquiryResult(result.label, result.value)
-                enquiry_result_container.addView(resultView)
+                binding?.enquiryResultContainer?.addView(resultView)
             }
         }
     }
 
     private fun setupOperatorDetail() {
-        // Enlarge info button touch area with TouchDelegate
-        operator_detail_container.post {
-            val delegateArea = Rect()
-            btn_info_icon.getHitRect(delegateArea)
+        binding?.run {
+            // Enlarge info button touch area with TouchDelegate
+            operatorDetailContainer.post {
+                val delegateArea = Rect()
+                btnInfoIcon.getHitRect(delegateArea)
 
-            delegateArea.top -= INFO_TOUCH_AREA_SIZE_PX
-            delegateArea.left -= INFO_TOUCH_AREA_SIZE_PX
-            delegateArea.bottom += INFO_TOUCH_AREA_SIZE_PX
-            delegateArea.right += INFO_TOUCH_AREA_SIZE_PX
+                delegateArea.top -= INFO_TOUCH_AREA_SIZE_PX
+                delegateArea.left -= INFO_TOUCH_AREA_SIZE_PX
+                delegateArea.bottom += INFO_TOUCH_AREA_SIZE_PX
+                delegateArea.right += INFO_TOUCH_AREA_SIZE_PX
 
-            operator_detail_container.apply { touchDelegate = TouchDelegate(delegateArea, btn_info_icon) }
-        }
+                operatorDetailContainer.apply { touchDelegate = TouchDelegate(delegateArea, btnInfoIcon) }
+            }
 
-        if (::voucherGameOperatorData.isInitialized) {
-            voucherGameOperatorData.run {
-                product_name.text = name
-                ImageHandler.LoadImage(product_image, imageUrl)
+            if (::voucherGameOperatorData.isInitialized) {
+                voucherGameOperatorData.run {
+                    productName.text = name
+                    ImageHandler.LoadImage(productImage, imageUrl)
 
-                product_image.setOnClickListener { showProductInfo(name, description) }
-                btn_info_icon.setOnClickListener {
-                    voucherGameAnalytics.eventClickInfoButton()
-                    showProductInfo(name, description)
+                    productImage.setOnClickListener { showProductInfo(name, description) }
+                    btnInfoIcon.setOnClickListener {
+                        voucherGameAnalytics.eventClickInfoButton()
+                        showProductInfo(name, description)
+                    }
+                    helpLabel.text = voucherGameOperatorData.helpCta
+                    helpLabel.setOnClickListener { showProductInfo(desc = helpText, imageUrl = helpImage) }
                 }
-                help_label.text = voucherGameOperatorData.helpCta
-                help_label.setOnClickListener { showProductInfo(desc = helpText, imageUrl = helpImage) }
             }
         }
     }
@@ -599,7 +654,8 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         val menuId = voucherGameExtraParam.menuId.toIntSafely()
         getMenuDetail(menuId)
         voucherGameViewModel.getVoucherGameProducts(
-                voucherGameViewModel.createParams(menuId, voucherGameExtraParam.operatorId))
+            voucherGameViewModel.createParams(menuId, voucherGameExtraParam.operatorId)
+        )
     }
 
     override fun onItemClicked(item: Visitable<*>) {
@@ -665,16 +721,16 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     }
 
     private fun showCheckoutView() {
-        checkout_view.setVisibilityLayout(true)
+        binding?.checkoutView?.setVisibilityLayout(true)
         selectedProduct?.attributes?.run {
-            checkout_view.setTotalPrice(promo?.newPrice ?: price)
+            binding?.checkoutView?.setTotalPrice(promo?.newPrice ?: price)
         }
         // Try to enquire if currently not enquired
         enquireFields()
     }
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
-        return checkout_view
+        return binding?.checkoutView
     }
 
     override fun initAddToCartViewModel() {
@@ -691,7 +747,7 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     ) {
         // do nothing
     }
-    
+
     override fun onSeamlessFavoriteNumbersError(error: Throwable) {
         // do nothing
     }
@@ -701,17 +757,19 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         if (::voucherGameExtraParam.isInitialized) {
             selectedProduct?.run {
                 var checkoutPassDataBuilder = getDefaultCheckoutPassDataBuilder()
-                        .categoryId(voucherGameExtraParam.categoryId)
-                        .isPromo(if (attributes.promo != null) "1" else "0")
-                        .operatorId(voucherGameExtraParam.operatorId)
-                        .productId(id)
-                        .utmCampaign(voucherGameExtraParam.categoryId)
+                    .categoryId(voucherGameExtraParam.categoryId)
+                    .isPromo(if (attributes.promo != null) "1" else "0")
+                    .operatorId(voucherGameExtraParam.operatorId)
+                    .productId(id)
+                    .utmCampaign(voucherGameExtraParam.categoryId)
 
-                if (hasFirstInput()) {
-                    checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
-                }
-                if (hasSecondInput()) {
-                    checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
+                binding?.run {
+                    if (hasFirstInput()) {
+                        checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(inputField1.getInputText())
+                    }
+                    if (hasSecondInput()) {
+                        checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(inputField2.getInputText())
+                    }
                 }
                 checkoutPassData = checkoutPassDataBuilder.build()
             }
@@ -750,6 +808,7 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
 
     companion object {
         val ITEM_DECORATOR_SIZE = R.dimen.voucher_game_dp_6
+        val ITEM_DECORATOR_SIZE_DEFAULT = 6
         const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val FULL_SCREEN_SPAN_SIZE = 1
@@ -765,8 +824,10 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
 
         const val INPUT_DROPDOWN_PARAM = "select_dropdown"
 
-        fun newInstance(voucherGameExtraParam: VoucherGameExtraParam,
-                        voucherGameOperatorAttributes: CatalogOperatorAttributes): Fragment {
+        fun newInstance(
+            voucherGameExtraParam: VoucherGameExtraParam,
+            voucherGameOperatorAttributes: CatalogOperatorAttributes
+        ): Fragment {
             val fragment = VoucherGameDetailFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)

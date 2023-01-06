@@ -8,6 +8,8 @@ data class ShopRecomUiModel(
     val items: List<ShopRecomUiModelItem> = emptyList(),
     val nextCursor: String = "",
     val title: String = "",
+    val loadNextPage: Boolean = false,
+    val isRefresh: Boolean = false,
 )
 
 data class ShopRecomUiModelItem(

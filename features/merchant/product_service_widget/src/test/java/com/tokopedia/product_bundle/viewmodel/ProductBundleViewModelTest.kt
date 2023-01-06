@@ -4,6 +4,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
+import com.tokopedia.product.detail.common.data.model.variant.Picture
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -136,11 +137,13 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val productBundleDetails = listOf(
             ProductBundleDetail(
                 bundlePrice = 500.toDouble(),
-                originalPrice = 1000.toDouble()
+                originalPrice = 1000.toDouble(),
+                productQuantity = 1
             ),
             ProductBundleDetail(
                 bundlePrice = 500.toDouble(),
-                originalPrice = 1000.toDouble()
+                originalPrice = 1000.toDouble(),
+                productQuantity = 1
             )
         )
 
@@ -554,7 +557,10 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
             ProductBundleDetail(productId = 123L),
             ProductBundleDetail(),
             ProductBundleDetail(productVariant = ProductVariant(
-                children = listOf(VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"))),
+                children = listOf(
+                    VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"), picture = Picture(url100 = "")),
+                    VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"), picture = null)
+                ),
                 variants = listOf(Variant(pv = "1111", name = "Warna", options = listOf(
                     VariantOption(id = "1", value = "merah")
                 )))

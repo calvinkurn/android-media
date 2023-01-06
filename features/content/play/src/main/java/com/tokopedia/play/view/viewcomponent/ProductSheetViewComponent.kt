@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.getVisiblePercent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -27,10 +28,12 @@ import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
 import com.tokopedia.play.view.custom.PlayVoucherView
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.util.extension.getBitmapFromUrl
 import com.tokopedia.play_common.view.loadImage
@@ -81,27 +84,17 @@ class ProductSheetViewComponent(
             )
         }
 
-        override fun onBuyProduct(
+        override fun onButtonTransactionProduct(
             viewHolder: ProductLineViewHolder,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
+            action: ProductAction,
         ) {
-            listener.onBuyButtonClicked(
+            listener.onButtonTransactionClicked(
                 this@ProductSheetViewComponent,
                 product,
                 section,
-            )
-        }
-
-        override fun onAtcProduct(
-            viewHolder: ProductLineViewHolder,
-            product: PlayProductUiModel.Product,
-            section: ProductSectionUiModel.Section,
-        ) {
-            listener.onAtcButtonClicked(
-                this@ProductSheetViewComponent,
-                product,
-                section,
+                action,
             )
         }
     }
@@ -213,6 +206,15 @@ class ProductSheetViewComponent(
         }
 
         show()
+
+        /**
+         * Everytime user clicks [View All Icon] hit tracker
+         */
+        scope.launch {
+            rootView.awaitLayout()
+            impressionSet.clear()
+            sendImpression()
+        }
     }
 
     fun setProductSheet(
@@ -225,6 +227,9 @@ class ProductSheetViewComponent(
 
         val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
         val newProductList = buildProductList(sections)
+
+        if(newProductList == productAdapter.getItems()) return
+
         productAdapter.setItemsAndAnimateChanges(newProductList)
 
         scope.launch {
@@ -233,14 +238,13 @@ class ProductSheetViewComponent(
                 rvProductList.invalidateItemDecorations()
             }
         }
-
-        impressionSet.clear()
-
         val merchantVoucher = voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
         voucherInfo.showWithCondition(merchantVoucher.isNotEmpty())
-        if (merchantVoucher.isEmpty()) return
-        voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
+        if (merchantVoucher.isNotEmpty()) {
+            voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
+        }
 
+        impressionSet.clear()
         sendImpression()
     }
 
@@ -282,7 +286,6 @@ class ProductSheetViewComponent(
         if (shouldShow) {
             tvSheetTitle.show()
             rvProductList.show()
-            voucherInfo.show()
 
             globalError.hide()
             clProductEmpty.hide()
@@ -366,27 +369,30 @@ class ProductSheetViewComponent(
         }
     }
 
-    private fun getVisibleProducts(): List<ProductSheetAdapter.Item.Product> {
-        val products = productAdapter.getItems().filterIsInstance<ProductSheetAdapter.Item.Product>()
+    private fun sendImpression() = synchronized(impressionSet) {
+        if (getVisiblePercent(rootView) == -1) return@synchronized
+
+        val products = getVisibleProducts().filterNot {
+            impressionSet.contains(it.key.product.id)
+        }
+        listener.onProductImpressed(this, products)
+        products.forEach {
+            impressionSet.add(it.key.product.id)
+        }
+    }
+
+    private fun getVisibleProducts(): Map<ProductSheetAdapter.Item.Product, Int> {
+        val products = productAdapter.getItems()
         if (products.isNotEmpty()) {
             val startPosition = linearLayoutManager.findFirstVisibleItemPosition()
             val endPosition = linearLayoutManager.findLastVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
-                return products.slice(startPosition..endPosition)
+                return (startPosition..endPosition)
+                    .filter { rvProductList.findViewHolderForAdapterPosition(it) is ProductLineViewHolder }
+                    .associateBy { products[it] as ProductSheetAdapter.Item.Product}
             }
         }
-        return emptyList()
-    }
-
-    private fun sendImpression() = synchronized(impressionSet) {
-        val products = getVisibleProducts()
-        val productsToBeImpressed = products.filterNot {
-            impressionSet.contains(it.product.id)
-        }
-        listener.onProductImpressed(this, productsToBeImpressed)
-        productsToBeImpressed.forEach {
-            impressionSet.add(it.product.id)
-        }
+        return emptyMap()
     }
 
     /**
@@ -402,6 +408,7 @@ class ProductSheetViewComponent(
         rvProductList.removeItemDecoration(itemDecoration)
         rvProductList.removeOnScrollListener(scrollListener)
         itemDecoration.release()
+        voucherInfo.setupListener(null)
     }
 
     companion object {
@@ -410,13 +417,12 @@ class ProductSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
-        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
-        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onButtonTransactionClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent)
         fun onProductImpressed(
             view: ProductSheetViewComponent,
-            products: List<ProductSheetAdapter.Item.Product>,
+            products: Map<ProductSheetAdapter.Item.Product, Int>,
         )
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
         fun onReminderClicked(view: ProductSheetViewComponent, productSectionUiModel: ProductSectionUiModel.Section)

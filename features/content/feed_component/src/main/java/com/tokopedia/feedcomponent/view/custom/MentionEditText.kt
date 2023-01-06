@@ -33,8 +33,8 @@ class MentionEditText : AppCompatMultiAutoCompleteTextView {
         fun onTextChanged(spannedText: CharSequence, fullText: String)
     }
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     private var listener: MentionEditTextListener? = null
 

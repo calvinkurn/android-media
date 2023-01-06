@@ -12,8 +12,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_poll_option.view.*
@@ -22,11 +22,11 @@ import kotlinx.android.synthetic.main.item_poll_option.view.*
  * @author by milhamj on 12/12/18.
  */
 class PollAdapter(private val contentPosition: Int,
-                  private val pollViewModel: PollContentViewModel,
+                  private val pollViewModel: PollContentModel,
                   private val listener: PollOptionListener)
     : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
 
-    private val optionList: MutableList<PollContentOptionViewModel> = ArrayList()
+    private val optionList: MutableList<PollContentOptionModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_poll_option, parent, false)
@@ -39,7 +39,7 @@ class PollAdapter(private val contentPosition: Int,
         holder.bind(optionList[position])
     }
 
-    fun setList(list: MutableList<PollContentOptionViewModel>) {
+    fun setList(list: MutableList<PollContentOptionModel>) {
         optionList.clear()
         optionList.addAll(list)
         notifyDataSetChanged()
@@ -47,13 +47,13 @@ class PollAdapter(private val contentPosition: Int,
 
     class OptionViewHolder(v: View,
                            private val contentPosition: Int,
-                           private val pollViewModel: PollContentViewModel,
+                           private val pollViewModel: PollContentModel,
                            private val listener: PollOptionListener?)
         : RecyclerView.ViewHolder(v) {
 
-        fun bind(element: PollContentOptionViewModel) {
+        fun bind(element: PollContentOptionModel) {
             val context = itemView.context
-            if (element.selected == PollContentOptionViewModel.DEFAULT) {
+            if (element.selected == PollContentOptionModel.DEFAULT) {
                 itemView.shadowLayer.hide()
                 itemView.percent.hide()
                 itemView.percentLayout.hide()
@@ -64,9 +64,9 @@ class PollAdapter(private val contentPosition: Int,
                 itemView.percent.show()
                 itemView.percentLayout.show()
                 itemView.progressBar.progress = element.percentage
-                if (element.selected == PollContentOptionViewModel.SELECTED) {
+                if (element.selected == PollContentOptionModel.SELECTED) {
                     itemView.progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)
-                } else if (element.selected == PollContentOptionViewModel.UNSELECTED) {
+                } else if (element.selected == PollContentOptionModel.UNSELECTED) {
                     itemView.progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_unselected)
                 }
             }
@@ -85,7 +85,7 @@ class PollAdapter(private val contentPosition: Int,
                                 itemView.imageView.height,
                                 itemView.imageView.width)
 
-                        if (element.selected == PollContentOptionViewModel.DEFAULT) {
+                        if (element.selected == PollContentOptionModel.DEFAULT) {
                             itemView.shadowLayer.visibility = View.GONE
                         } else {
                             itemView.shadowLayer.visibility = View.VISIBLE

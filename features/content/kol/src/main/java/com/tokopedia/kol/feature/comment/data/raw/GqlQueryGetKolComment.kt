@@ -45,6 +45,7 @@ const val GQL_QUERY_GET_KOL_COMMENT: String = """query GetKolComment(${'$'}idPos
       comment
       userBadge
       isShop
+      allowReport
     }
     lastCursor
     error
