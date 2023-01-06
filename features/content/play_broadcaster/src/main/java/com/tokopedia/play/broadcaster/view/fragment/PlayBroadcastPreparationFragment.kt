@@ -302,8 +302,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         analytic.onClickUsernameFieldCompleteOnboardingUGC()
                     }
 
-                    override fun clickAcceptTnc() {
-                        analytic.onClickCheckBoxCompleteOnboardingUGC()
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        if(isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
                     }
 
                     override fun clickNextOnCompleteOnboarding() {

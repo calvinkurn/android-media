@@ -111,7 +111,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         }
 
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
-            _listener?.clickAcceptTnc()
+            _listener?.clickAcceptTnc(binding.layoutTnc.cbxTnc.isChecked)
             viewModel.submitAction(UGCOnboardingAction.CheckTnc)
         }
 
@@ -200,7 +200,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
 
     interface Listener : BaseUserOnboardingBottomSheet.Listener {
         fun clickUsernameFieldOnCompleteOnboarding()
-        fun clickAcceptTnc()
+        fun clickAcceptTnc(isChecked: Boolean)
         fun clickNextOnCompleteOnboarding()
     }
 

@@ -99,8 +99,8 @@ class PlayShortsActivity : BaseActivity() {
                         analytic.clickTextFieldUsernameOnboardingUGC(viewModel.selectedAccount)
                     }
 
-                    override fun clickAcceptTnc() {
-                        analytic.clickAcceptTncOnboardingUGC(viewModel.selectedAccount)
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        if(isChecked) analytic.clickAcceptTncOnboardingUGC(viewModel.selectedAccount)
                     }
 
                     override fun clickNextOnTncOnboarding() {
