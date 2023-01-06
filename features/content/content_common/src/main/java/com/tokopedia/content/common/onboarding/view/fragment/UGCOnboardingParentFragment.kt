@@ -57,12 +57,12 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
             is UserCompleteOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserCompleteOnboardingBottomSheet.Listener,
                     BaseUserOnboardingBottomSheet.Listener {
-                    override fun clickTextFieldUsername() {
-                        mListener?.clickTextFieldUsernameOnboarding()
+                    override fun clickUsernameFieldOnCompleteOnboarding() {
+                        mListener?.clickUsernameFieldOnCompleteOnboarding()
                     }
 
-                    override fun clickAcceptTnc() {
-                        mListener?.clickAcceptTnc()
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        mListener?.clickAcceptTnc(isChecked)
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
@@ -81,8 +81,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
             is UserTnCOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserTnCOnboardingBottomSheet.Listener,
                         BaseUserOnboardingBottomSheet.Listener {
-                    override fun clickAcceptTnc() {
-                        mListener?.clickAcceptTnc()
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        mListener?.clickAcceptTnc(isChecked)
                     }
 
                     override fun clickNextOnTncOnboarding() {
@@ -133,14 +133,14 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     }
 
     interface Listener {
-        fun onSuccess()
-        fun impressTncOnboarding()
-        fun impressCompleteOnboarding()
-        fun clickTextFieldUsernameOnboarding()
-        fun clickAcceptTnc()
-        fun clickNextOnTncOnboarding()
-        fun clickNextOnCompleteOnboarding()
-        fun clickCloseIcon()
+        fun onSuccess() {}
+        fun impressTncOnboarding() {}
+        fun impressCompleteOnboarding() {}
+        fun clickNextOnTncOnboarding() {}
+        fun clickUsernameFieldOnCompleteOnboarding() {}
+        fun clickAcceptTnc(isChecked: Boolean) {}
+        fun clickNextOnCompleteOnboarding() {}
+        fun clickCloseIcon() {}
     }
 
     enum class OnboardingType(val value: Int) {

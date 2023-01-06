@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
-
 import androidx.fragment.app.viewModels
 import com.tokopedia.content.common.util.hideKeyboard
 
@@ -88,7 +87,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         binding.textFieldUsername.editText.apply {
             setOnTouchListener { _, motionEvent ->
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
-                    _listener?.clickTextFieldUsername()
+                    _listener?.clickUsernameFieldOnCompleteOnboarding()
                 }
                 false
             }
@@ -112,7 +111,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         }
 
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
-            _listener?.clickAcceptTnc()
+            _listener?.clickAcceptTnc(binding.layoutTnc.cbxTnc.isChecked)
             viewModel.submitAction(UGCOnboardingAction.CheckTnc)
         }
 
@@ -200,8 +199,8 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
     }
 
     interface Listener : BaseUserOnboardingBottomSheet.Listener {
-        fun clickTextFieldUsername()
-        fun clickAcceptTnc()
+        fun clickUsernameFieldOnCompleteOnboarding()
+        fun clickAcceptTnc(isChecked: Boolean)
         fun clickNextOnCompleteOnboarding()
     }
 

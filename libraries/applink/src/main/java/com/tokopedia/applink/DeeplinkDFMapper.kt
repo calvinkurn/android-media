@@ -53,7 +53,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
@@ -212,7 +211,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
-    const val DF_USER_PRIVACYCENTER = "df_user_privacycenter"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_USER_FINGERPRINT = "df_user_fingerprint"
@@ -495,7 +493,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(DEALS_HOMEPAGE) ||
                         it.startsWith(DEALS_BRAND_PAGE) ||
                         it.startsWith(DEALS_CATEGORY_PAGE) ||
-                        it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE) ||
                         it.startsWith(DEALS_BRAND_DETAIL_PAGE)
             }, DF_ENTERTAINMENT, R.string.title_entertainment, { DFWebviewFallbackUrl.ENTERTAINMENT_DEALS }))
 
@@ -569,7 +566,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWithPattern(ACCOUNT_LINKING_WEBVIEW) ||
                 it.startsWithPattern(SEARCH_HISTORY) ||
                 it.startsWithPattern(SHARING_WISHLIST)
-            }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
+            }, DF_USER_SETTINGS, R.string.title_privacy_center))
 
             // Media
             add(DFP({

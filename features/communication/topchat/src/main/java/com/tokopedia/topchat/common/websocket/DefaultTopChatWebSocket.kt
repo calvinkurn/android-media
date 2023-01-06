@@ -39,6 +39,11 @@ class DefaultTopChatWebSocket @Inject constructor(
         webSocket?.send(wsPayload)
     }
 
+    override fun reset() {
+        webSocket = null
+        isDestroyed = false
+    }
+
     private fun generateWsRequest(): Request {
         val requestBuilder = Request.Builder().url(webSocketUrl)
             .header(HEADER_KEY_ORIGIN, TokopediaUrl.getInstance().WEB)
@@ -70,5 +75,4 @@ class DefaultTopChatWebSocket @Inject constructor(
         const val PAGE_CHATLIST = "chatlist"
         const val PAGE_CHATROOM = "chatroom"
     }
-
 }

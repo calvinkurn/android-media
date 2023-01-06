@@ -20,7 +20,7 @@ class TokoNowRecipeHomeFragment: BaseTokoNowRecipeListFragment() {
             return TokoNowRecipeHomeFragment()
         }
 
-        private const val PAGE_NAME = "TokoNow Recipe Home"
+        const val PAGE_NAME = "TokoNow Recipe Home"
     }
 
     @Inject

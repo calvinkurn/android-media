@@ -231,21 +231,41 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
-                    this?.status = HomeBalanceModel.STATUS_LOADING
-                } ?: HomeBalanceModel()
-                val headerDataModel = headerModel.headerDataModel?.copy(
-                    homeBalanceModel = homeBalanceModel
-                )
-                val initialHeaderModel = headerModel.copy(
-                    headerDataModel = headerDataModel
-                )
-                updateHeaderData(initialHeaderModel, index)
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData()
-                val visitable = updateHeaderData(currentHeaderDataModel, index)
-                visitable?.let {
-                    homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
-                        updateHomeData(homeDataModel)
+                if (headerModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) {
+                    val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
+                        this?.status = HomeBalanceModel.STATUS_LOADING
+                    } ?: HomeBalanceModel()
+                    val headerDataModel = headerModel.headerDataModel?.copy(
+                        homeBalanceModel = homeBalanceModel
+                    )
+                    val initialHeaderModel = headerModel.copy(
+                        headerDataModel = headerDataModel
+                    )
+                    updateHeaderData(initialHeaderModel, index)
+                    val currentHeaderDataModel =
+                        homeBalanceWidgetUseCase.get().onGetBalanceWidgetData()
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let {
+                        homeDataModel.updateWidgetModel(
+                            visitableToChange = visitable,
+                            visitable = currentHeaderDataModel,
+                            position = index
+                        ) {
+                            updateHomeData(homeDataModel)
+                        }
+                    }
+                } else {
+                    val currentHeaderDataModel =
+                        homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(headerModel)
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let {
+                        homeDataModel.updateWidgetModel(
+                            visitableToChange = visitable,
+                            visitable = currentHeaderDataModel,
+                            position = index
+                        ) {
+                            updateHomeData(homeDataModel)
+                        }
                     }
                 }
             }

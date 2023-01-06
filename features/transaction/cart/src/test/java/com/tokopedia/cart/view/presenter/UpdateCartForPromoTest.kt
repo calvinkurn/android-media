@@ -4,7 +4,12 @@ import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.network.exception.ResponseErrorException
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 
 class UpdateCartForPromoTest : BaseCartTest() {
@@ -15,7 +20,7 @@ class UpdateCartForPromoTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
             })
         }
@@ -45,7 +50,7 @@ class UpdateCartForPromoTest : BaseCartTest() {
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 isCod = true
-                productPrice = 1000
+                productPrice = 1000.0
                 quantity = 10
             })
         }

@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -199,26 +201,16 @@ class DetailEditorFragment @Inject constructor(
                 } else {
                     viewModel.setRemoveBackground(it) { _ ->
                         if (activity?.isFinishing != false) return@setRemoveBackground
-                        viewBinding?.let {
-                            Toaster.build(
-                                it.editorFragmentDetailRoot,
-                                getString(editorR.string.editor_tool_remove_background_failed_normal),
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_NORMAL,
-                                getString(editorR.string.editor_tool_remove_background_failed_cta)
-                            ) {
-                                removeBackgroundRetryLimit--
-                                if (removeBackgroundRetryLimit == 0) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(editorR.string.editor_tool_remove_background_failed_normal),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    activity?.finish()
-                                } else
+                        removeBgConnectionToast {
+                            removeBackgroundRetryLimit--
+                            if (removeBackgroundRetryLimit == 0) {
+                                removeBgClosePage()
+                            } else {
+                                Handler().postDelayed({
                                     onRemoveBackgroundClicked(removeBackgroundType)
-                            }.show()
-                        }
+                                }, DELAY_REMOVE_BG_TOASTER)
+                            }
+                        }?.show()
                     }
                 }
             }
@@ -566,7 +558,11 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun watermarkRotateBitmap(rotateValue: EditorCropRotateUiModel, source: Bitmap, isInverse: Boolean = false): Bitmap {
+    private fun watermarkRotateBitmap(
+        rotateValue: EditorCropRotateUiModel,
+        source: Bitmap,
+        isInverse: Boolean = false
+    ): Bitmap {
         var finalRotateDegree = rotateValue.let {
             it.rotateDegree + (it.orientationChangeNumber * ROTATE_BTN_DEGREE)
         }
@@ -595,7 +591,8 @@ class DetailEditorFragment @Inject constructor(
 
     // neutralize rotate value on watermark result
     private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap {
-        val neutralizeBitmap = watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)
+        val neutralizeBitmap =
+            watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)
 
         val cropX = (neutralizeBitmap.width - globalWidth) / 2
         val cropY = (neutralizeBitmap.height - globalHeight) / 2
@@ -898,6 +895,28 @@ class DetailEditorFragment @Inject constructor(
         return editHistory
     }
 
+    private fun removeBgConnectionToast(ctaAction: () -> Unit): Snackbar? {
+        viewBinding?.let {
+            return Toaster.build(
+                it.editorFragmentDetailRoot,
+                getString(editorR.string.editor_tool_remove_background_failed_normal),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(editorR.string.editor_tool_remove_background_failed_cta)
+            ) { ctaAction() }
+        }
+        return null
+    }
+
+    private fun removeBgClosePage() {
+        Toast.makeText(
+            requireContext(),
+            getString(editorR.string.editor_tool_remove_background_failed_normal),
+            Toast.LENGTH_LONG
+        ).show()
+        activity?.finish()
+    }
+
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -908,5 +927,7 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_EXECUTION_PREVIOUS_CROP = 400L
         private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 400L
+
+        private const val DELAY_REMOVE_BG_TOASTER = 300L
     }
 }
