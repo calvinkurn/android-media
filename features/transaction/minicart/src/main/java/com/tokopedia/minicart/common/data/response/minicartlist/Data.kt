@@ -1,6 +1,5 @@
 package com.tokopedia.minicart.common.data.response.minicartlist
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 
@@ -29,9 +28,8 @@ data class Data(
         val availableSection: AvailableSection = AvailableSection(),
         @SerializedName("total_product_count")
         val totalProductCount: Int = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("total_product_price")
-        val totalProductPrice: Long = 0L,
+        val totalProductPrice: Double = 0.0,
         @SerializedName("total_product_error")
         val totalProductError: Int = 0,
         @SerializedName("bottom_bar")

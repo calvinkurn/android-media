@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.ui.tokoKyc.camera
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -132,13 +133,17 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
     }
 
     private fun checkPermission(isGranted: () -> Unit = {}) {
+        val listPermission = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+            )
+        } else {
+            arrayOf(PermissionCheckerHelper.Companion.PERMISSION_CAMERA)
+        }
+
         activity?.let {
-            permissionCheckerHelper.request(
-                it, arrayOf(
-                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA
-                )
-            ) {
+            permissionCheckerHelper.request(it, listPermission) {
                 isGranted.invoke()
             }
         }

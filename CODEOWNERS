@@ -80,6 +80,7 @@
 /features/tokofood/                                     @tokopedia/android-minionstuart-dev
 /features/merchant/shop_admin/                          @tokopedia/android-minionstuart-dev
 /features/merchant/shop_admin_common/                   @tokopedia/android-minionstuart-dev
+/features/merchant/product_ar/                          @tokopedia/android-minionstuart-dev
 /libraries/bubbles/                                     @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
@@ -259,6 +260,7 @@
 /features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionmark-dev
 /features/fintech/saldo_details         				@tokopedia/android-minionmark-dev
 /features/fintech/home_credit           				@tokopedia/android-minionmark-dev
+/features/fintech/insurance           				    @tokopedia/android-minionmark-dev
 /features/promo/tokopoints              				@tokopedia/android-minionsolo-dev
 /features/promo/tokopoints_notification 				@tokopedia/android-minionsolo-dev
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev
@@ -300,7 +302,6 @@
 /libraries/base_list/							        @tokopedia/android-core-dev
 /libraries/base_list_seller/							@tokopedia/android-core-dev
 /libraries/bottom_sheet_builder/						@tokopedia/android-core-dev
-/libraries/cassavatest/						            @tokopedia/android-core-dev
 /libraries/cache_api/									@tokopedia/android-core-dev
 /libraries/cameraview/									@tokopedia/android-core-dev
 /libraries/charts/				    		            @tokopedia/android-core-dev
@@ -369,7 +370,6 @@
 /libraries/imagepreviewslider                           @tokopedia/android-core-dev
 /libraries/blockcanary                                  @tokopedia/android-core-dev
 /libraries/annotation_proc_central                      @tokopedia/android-core-dev
-/libraries/cassavatest                                  @tokopedia/android-core-dev
 /libraries/screen_recorder                              @tokopedia/android-core-dev
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/telemetry                                    @tokopedia/android-core-dev
