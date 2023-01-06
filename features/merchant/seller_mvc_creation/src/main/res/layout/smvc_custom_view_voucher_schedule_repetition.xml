@@ -12,6 +12,14 @@
         android:layout_height="match_parent"
         android:paddingBottom="12dp">
 
+        <ImageView
+            android:id="@+id/ic_tooltip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_tooltip"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpg_title"
             android:layout_width="wrap_content"

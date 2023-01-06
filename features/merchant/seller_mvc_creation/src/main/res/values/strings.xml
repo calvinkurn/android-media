@@ -342,6 +342,9 @@
     <string name="smvc_success_change_quota_multi_period">Kuota kupon %s dan jadwal-jadwal berikutnya berhasil diubah.</string>
     <string name="smvc_failed_change_quota">Kuota kupon %s gagal diubah.</string>
     <string name="smvc_recurring_period_placeholder_value">%d Bulan</string>
+    <string name="smvc_voucher_active_label">Kupon akan aktif pada:</string>
+    <string name="smvc_recurring_date_palceholder_value">• %s</string>
+    <string name="smvc_see_other_schedule_label">Lihat Jadwal Lainnya</string>
 
     <!--Success Upload Bottomsheet-->
     <string name="smvc_success_upload_title">Yay, kupon berhasil dibuat!</string>
@@ -353,8 +356,5 @@
     <string name="smvc_success_upload_via_ads_desc">Jangkau banyak pembeli baru &amp; potensial!</string>
     <string name="smvc_success_upload_via_broadcast_desc">Tingkatkan penggunaan voucher 3x lipat.</string>
     <string name="smvc_success_upload_free_label_text">Gratis</string>
-    <string name="smvc_voucher_active_label">Kupon akan aktif pada:</string>
-    <string name="smvc_recurring_date_palceholder_value">• Bullet</string>
-    <string name="smvc_see_other_schedule_label">Lihat Jadwal Lainnya</string>
 
 </resources>

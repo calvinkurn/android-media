@@ -62,8 +62,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cb_repeat_period"
-        app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
         app:unify_text_field_label="@string/smvc_repeat_for_label" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_chevron_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@+id/tf_repeat"
+        app:layout_constraintEnd_toEndOf="@+id/tf_repeat"
+        app:layout_constraintTop_toTopOf="@+id/tf_repeat" />
 
     <com.tokopedia.mvc.common.customview.RecurringDateScheduleCustomView
         android:id="@+id/recurring_period_view"

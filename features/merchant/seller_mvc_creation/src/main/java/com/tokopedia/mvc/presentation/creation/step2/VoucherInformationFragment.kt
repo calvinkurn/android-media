@@ -16,6 +16,7 @@ import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECI
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.customview.RecurringDateScheduleCustomView
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherInformationBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoButtonSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherCodeSectionBinding
@@ -529,11 +530,14 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         validationDate: List<VoucherValidationResult.ValidationDate>
     ) {
         voucherPeriodSectionBinding?.run {
-            val availableDate = validationDate
+            val availableDate = validationDate.filter { it.available }
             val unAvailableDate = validationDate.filter { !it.available }
             if (availableDate.isNotEmpty()) {
                 recurringPeriodView.run {
+                    type = RecurringDateScheduleCustomView.TYPE_NORMAL
+                    title = getString(R.string.smvc_voucher_active_label)
                     isVisible = voucherConfiguration.isPeriod
+
                     val firstPeriodStartDate = DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
                         DATE_YEAR_PRECISION,
@@ -546,8 +550,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         availableDate.first().dateEnd
                     )
                     val firstPeriodEndHour = availableDate.first().hourEnd
-                    firstSchedule =
+                    firstSchedule = getString(
+                        R.string.smvc_recurring_date_palceholder_value,
                         "$firstPeriodStartDate, $firstPeriodStartHour - $firstPeriodEndDate, $firstPeriodEndHour"
+                    )
 
                     val secondPeriodStartDate = DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
@@ -561,8 +567,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         availableDate[Int.ONE].dateEnd
                     )
                     val secondPeriodEndHour = availableDate[Int.ONE].hourEnd
-                    secondSchedule =
+                    secondSchedule = getString(
+                        R.string.smvc_recurring_date_palceholder_value,
                         "$secondPeriodStartDate, $secondPeriodStartHour - $secondPeriodEndDate, $secondPeriodEndHour"
+                    )
 
                     isShowOtherScheduleButton =
                         availableDate.size > minimumActivePeriodCountToShowFullSchedule
