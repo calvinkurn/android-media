@@ -76,10 +76,9 @@ import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseS
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -839,7 +838,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertToolbarTitle(expectedTitle: String) {
         onView(
-            Matchers.allOf(
+            allOf(
                 withId(com.tokopedia.chat_common.R.id.title),
                 isDescendantOfA(withId(R.id.toolbar))
             )
@@ -891,7 +890,7 @@ abstract class TopchatRoomTest {
 
     protected fun clickSrwPreviewItemAt(position: Int) {
         onView(
-            Matchers.allOf(
+            allOf(
                 withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
                     position,
                     R.id.tp_srw_title
