@@ -283,11 +283,13 @@ class UiModelBuilder {
         tncList: List<TermsAndConditionUiModel> = buildTncList(),
         maxTitleCharacter: Int = 24,
         maxTaggedProduct: Int = 30,
+        shortsVideoSourceId: String = "asdf",
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
         tncList = tncList,
         maxTitleCharacter = maxTitleCharacter,
-        maxTaggedProduct = maxTaggedProduct
+        maxTaggedProduct = maxTaggedProduct,
+        shortsVideoSourceId = shortsVideoSourceId,
     )
 }
