@@ -11,7 +11,6 @@
     <string name="button_next">Selanjutnya</string>
     <string name="title_add_bank">Tambah Rekening</string>
     <string name="menu_info">Info</string>
-    <string name="change_account_name">Ubah</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
     <string name="sbank_no_saved_account">Belum ada rekening tersimpan</string>

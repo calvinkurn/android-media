@@ -325,7 +325,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(getMenuRes(), menu)
         val menuItem = menu.findItem(R.id.menu_info)
-        menuItem.actionView.setOnClickListener {
+        menuItem?.actionView?.setOnClickListener {
             onOptionsItemSelected(menuItem)
         }
         super.onCreateOptionsMenu(menu, inflater)

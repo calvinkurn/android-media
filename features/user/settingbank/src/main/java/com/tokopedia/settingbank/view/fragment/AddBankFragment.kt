@@ -135,7 +135,6 @@ class AddBankFragment : BaseDaggerFragment() {
         setTextPeriksaOffset()
         textPeriksa.setOnClickListener { checkAccountNumber() }
         add_account_button.setOnClickListener { onClickAddBankAccount() }
-        tvChangeAccountHolderName.setOnClickListener { onChangeAccountHolderName() }
         if (!::bank.isInitialized) {
             openBankListForSelection()
         }
@@ -305,7 +304,6 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun onAccountNumberAndNameValidationSuccess(data: AccountNameFinalValidationSuccess) {
         add_account_button.isEnabled = true
         showManualAccountNameError(null)
-        tvChangeAccountHolderName.gone()
         if (data.checkAccountAction == ActionValidateAccountName) {
             builder.setAccountName(data.accountHolderName, true)
             openConfirmationPopUp()
@@ -318,22 +316,13 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun onEditableAccountFound(data: EditableAccountName) {
+        builder.isManual(true)
         add_account_button.isEnabled = true
-        groupAccountNameAuto.showWithCondition(data.accountName.isNotEmpty())
-        textAreaBankAccountHolderName.showWithCondition(data.accountName.isEmpty())
-
-        if (data.accountName.isNotEmpty()) {
-            builder.isManual(false)
-            builder.setAccountName(data.accountName, false)
-            tvAccountHolderName.text = data.accountName
-
-            tvChangeAccountHolderName.visible()
-            tvChangeAccountHolderName.isEnabled = true
-            tvChangeAccountHolderName.isClickable = true
-        } else {
-            builder.isManual(true)
-            textAreaBankAccountHolderName.editText.isEnabled = true
-        }
+        groupAccountNameAuto.gone()
+        textAreaBankAccountHolderName.visible()
+        textAreaBankAccountHolderName.editText.isEnabled = true
+        if (data.accountName.isNotEmpty())
+            textAreaBankAccountHolderName.editText.setText(data.accountName)
 
         showManualAccountNameError(data.message)
     }
@@ -444,7 +433,7 @@ class AddBankFragment : BaseDaggerFragment() {
                         textAreaBankAccountHolderName.editText.text.toString()
                     if (isAccountNameLengthValid(accountHolderName)) {
                         if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
-                            if (builder.isManual()) builder.setAccountName(accountHolderName, true)
+                            builder.setAccountName(accountHolderName, true)
                             openConfirmationPopUp()
                         } else {
                             addAccountViewModel.validateEditedAccountInfo(
@@ -571,9 +560,6 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        tvChangeAccountHolderName.isEnabled = true
-        tvChangeAccountHolderName.isClickable = true
-
         s?.let {
             addAccountViewModel.validateAccountNumber(bank, s.toString())
         } ?: run {
@@ -703,13 +689,6 @@ class AddBankFragment : BaseDaggerFragment() {
 
         textPeriksa.isEnabled = isEnable
         textPeriksa.isClickable = isEnable
-    }
-
-    private fun onChangeAccountHolderName() {
-        builder.isManual(true)
-        groupAccountNameAuto.gone()
-        textAreaBankAccountHolderName.visible()
-        textAreaBankAccountHolderName.editText.setText("")
     }
 
 }
