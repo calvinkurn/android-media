@@ -262,7 +262,7 @@ class UserProfileContentViewModelTest {
     @Test
     fun `when user successfully load user play video, it will emit the data`() {
         robot.recordState {
-            submitAction(UserProfileAction.LoadPlayVideo(""))
+            submitAction(UserProfileAction.LoadPlayVideo())
         } andThen {
             videoPostsContent equalTo mockPlayVideo
         }
@@ -275,7 +275,7 @@ class UserProfileContentViewModelTest {
                 coEvery { mockRepo.getPlayVideo(any(), "123") } returns mockPlayVideo
             }
             it.recordState {
-                submitAction(UserProfileAction.LoadPlayVideo(""))
+                submitAction(UserProfileAction.LoadPlayVideo())
                 submitAction(UserProfileAction.LoadPlayVideo("123"))
             } andThen {
                 videoPostsContent.playGetContentSlot.data.size equalTo mockPlayVideo.playGetContentSlot.data.size * 2
@@ -290,7 +290,7 @@ class UserProfileContentViewModelTest {
                 coEvery { mockRepo.getPlayVideo(any(), any()) } returns mockPlayVideoEmpty
             }
             it.recordState {
-                submitAction(UserProfileAction.LoadPlayVideo(""))
+                submitAction(UserProfileAction.LoadPlayVideo())
             } andThen {
                 videoPostsContent equalTo mockPlayVideoEmpty
             }
@@ -301,7 +301,7 @@ class UserProfileContentViewModelTest {
     fun `when user failed load user play video, it will emit error`() {
         robot.recordEvent {
             coEvery { mockRepo.getPlayVideo(any(), any()) } throws mockException
-            submitAction(UserProfileAction.LoadPlayVideo(""))
+            submitAction(UserProfileAction.LoadPlayVideo())
         } andThen {
             last().assertEvent(UserProfileUiEvent.ErrorVideoPosts(mockException))
         }

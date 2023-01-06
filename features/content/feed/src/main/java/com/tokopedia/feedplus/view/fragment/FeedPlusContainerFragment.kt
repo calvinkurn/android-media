@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -50,7 +49,6 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
 import com.tokopedia.feedplus.view.analytics.shorts.PlayShortsInFeedAnalytic
-import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.customview.PostProgressUpdateView
 import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
@@ -91,12 +89,8 @@ import com.tokopedia.feedcomponent.R as feedComponentR
 /**
  * @author by milhamj on 25/07/18.
  */
-
-private const val FEED_PAGE = "feed"
-private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
-
 @Keep
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener, PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener {
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener {
 
     private var showOldToolbar: Boolean = false
     private var shouldHitFeedTracker: Boolean = false
@@ -110,12 +104,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var mInProgress = false
 
     companion object {
-        const val TOOLBAR_GRADIENT = 1
-        const val TOOLBAR_WHITE = 2
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
-        const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
         const val FEED_FRAGMENT_INDEX = 0
 
         const val ARGS_FEED_TAB_POSITION = "FEED_TAB_POSITION"
@@ -129,6 +120,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val UPDATE_TAB_POSITION = "1"
         const val EXPLORE_TAB_POSITION = "2"
         const val VIDEO_TAB_POSITION = "3"
+
+        private const val FEED_PAGE = "feed"
+        private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -195,14 +189,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var badgeNumberCart: Int = 0
-    private var toolbarType = TOOLBAR_GRADIENT
-    private var startToTransitionOffset = 0
-    private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
     private var isSeller = false
 
     private lateinit var coachMarkItem: CoachMarkItem
-    private lateinit var feedBackgroundCrossfader: TransitionDrawable
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -299,7 +289,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initNewToolBar() {
-        feed_background_frame.hide()
         feedToolbar = context?.let { NavToolbar(it) }
         (feedToolbar as? NavToolbar)?.let {
             it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
@@ -424,10 +413,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
-        (feedToolbar as? FeedMainToolbar)?.run {
-            setNotificationNumber(notificationCount)
-            setInboxNumber(inboxCount)
-        }
         (feedToolbar as? NavToolbar)?.run {
             setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(getInboxIcon(), inboxCount)
@@ -926,15 +911,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         onImageSearchClick()
     }
 
-    override fun onImageSearchClick() {
+    private fun onImageSearchClick() {
         toolBarAnalytics.eventClickSearch()
     }
 
-    override fun onInboxButtonClick() {
+    private fun onInboxButtonClick() {
         toolBarAnalytics.eventClickInbox()
     }
 
-    override fun onNotificationClick() {
+    private fun onNotificationClick() {
         toolBarAnalytics.eventClickNotification()
     }
 
