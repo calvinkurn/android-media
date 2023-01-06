@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="8dp"
+    android:fillViewport="true"
+    tools:viewBindingIgnore="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/manualRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:bold="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tambah Kredit Manual"
+            android:textColor="#212121"
+            app:layout_constraintStart_toEndOf="@id/manualRadioButton"
+            app:layout_constraintTop_toTopOf="@id/manualRadioButton"
+            app:typographyType="paragraph_1" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/autoRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:bold="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/manualRadioButton" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/autoRadioButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tambah Kredit Otomatis"
+            android:textColor="#212121"
+            app:layout_constraintStart_toEndOf="@id/autoRadioButton"
+            app:layout_constraintTop_toTopOf="@id/autoRadioButton"
+            app:typographyType="paragraph_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/autoRadioButtonTextDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dapatkan bonus lebih besar!"
+            android:textColor="#6D7588"
+            app:layout_constraintStart_toEndOf="@+id/autoRadioButton"
+            app:layout_constraintTop_toBottomOf="@+id/autoRadioButtonText"
+            app:typographyType="paragraph_3" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="16dp"
+            android:background="#F0F3F7"
+            app:layout_constraintTop_toBottomOf="@id/autoRadioButtonTextDescription" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/creditItemRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/saveButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            tools:itemCount="3"
+            tools:listitem="@layout/topads_top_up_credit_item" />
+
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/topads_common_save_butt"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
+

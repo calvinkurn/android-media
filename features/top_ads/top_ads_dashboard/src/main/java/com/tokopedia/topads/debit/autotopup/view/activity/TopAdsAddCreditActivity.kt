@@ -19,6 +19,7 @@ import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsPaymentCreditActivity
+import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseCreditBottomSheet
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseNominalBottomSheet
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import com.tokopedia.user.session.UserSession
@@ -47,8 +48,8 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     private var userSession: UserSessionInterface? = null
 
     override fun getScreenName(): String? = null
-    private val sheet: TopAdsChooseNominalBottomSheet? by lazy {
-        TopAdsChooseNominalBottomSheet.newInstance().also {
+    private val sheet: TopAdsChooseCreditBottomSheet? by lazy {
+        TopAdsChooseCreditBottomSheet.newInstance().also {
             if(showFullScreenBottomSheet()) it.isFullpage = true
         }
     }
@@ -86,7 +87,8 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     private fun onSuccessCreditInfo(data: CreditResponse) {
         creditResponse = data
-        sheet?.show(supportFragmentManager, creditResponse, true, 0)
+//        sheet?.show(supportFragmentManager, creditResponse, true, 0)
+        sheet?.show(supportFragmentManager, creditResponse)
         sheet?.setTitle(resources.getString(R.string.title_top_ads_add_credit))
         sheet?.onSaved = { pos ->
             if (creditResponse?.credit?.isNotEmpty() == true)
