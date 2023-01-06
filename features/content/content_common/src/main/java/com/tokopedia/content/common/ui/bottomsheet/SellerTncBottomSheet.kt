@@ -56,7 +56,7 @@ class SellerTncBottomSheet : BottomSheetUnify() {
                 setListener(object : PlayTermsAndConditionView.Listener {
                     override fun onOkButtonClicked(view: PlayTermsAndConditionView) {
                         dismiss()
-                        mListener?.clickCloseIcon()
+                        mListener?.clickOkButton()
                     }
                 })
             }
@@ -102,6 +102,7 @@ class SellerTncBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
+        fun clickOkButton()
         fun clickCloseIcon()
     }
 

@@ -57,6 +57,14 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
             is UserCompleteOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserCompleteOnboardingBottomSheet.Listener,
                     BaseUserOnboardingBottomSheet.Listener {
+                    override fun clickUsernameFieldOnCompleteOnboarding() {
+                        mListener?.clickUsernameFieldOnCompleteOnboarding()
+                    }
+
+                    override fun clickCheckBoxOnCompleteOnboarding() {
+                        mListener?.clickCheckBoxOnCompleteOnboarding()
+                    }
+
                     override fun clickNextOnCompleteOnboarding() {
                         mListener?.clickNextOnCompleteOnboarding()
                     }
@@ -121,12 +129,14 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     }
 
     interface Listener {
-        fun onSuccess()
-        fun impressTncOnboarding()
-        fun impressCompleteOnboarding()
-        fun clickNextOnTncOnboarding()
-        fun clickNextOnCompleteOnboarding()
-        fun clickCloseIcon()
+        fun onSuccess() {}
+        fun impressTncOnboarding() {}
+        fun impressCompleteOnboarding() {}
+        fun clickNextOnTncOnboarding() {}
+        fun clickUsernameFieldOnCompleteOnboarding() {}
+        fun clickCheckBoxOnCompleteOnboarding() {}
+        fun clickNextOnCompleteOnboarding() {}
+        fun clickCloseIcon() {}
     }
 
     enum class OnboardingType(val value: Int) {
