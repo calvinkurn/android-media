@@ -2632,7 +2632,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     if (lastApplyUiModel != null) {
                         for (LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel : lastApplyUiModel.getVoucherOrders()) {
                             if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyVoucherOrdersItemUiModel.getUniqueId())) {
-                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.getCode())) {
+                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.getCode()) && !lastApplyVoucherOrdersItemUiModel.isTypeLogistic()) {
                                     listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.getCode());
                                 }
                                 break;

@@ -734,6 +734,7 @@ class ShipmentMapper @Inject constructor() {
                         code = voucherOrdersItem.code
                         uniqueId = voucherOrdersItem.uniqueId
                         message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
+                        type = voucherOrdersItem.type
                     }
             )
         }
