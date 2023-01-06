@@ -143,7 +143,9 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     }
 
     fun createSuccessGetBuyerOrderDetailDataResult(
-        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true),
+        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true) {
+            every { getPodInfo() } returns null
+        },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
         getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
     ) {
@@ -320,5 +322,42 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
         block(uiStates)
         uiStateCollectorJob.cancel()
+    }
+
+    fun doBeforeGetBuyerOrderDetailDataComplete(
+        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true) {
+            every { getPodInfo() } returns null
+        },
+        getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        action: () -> Unit
+    ) {
+        coEvery {
+            getBuyerOrderDetailDataUseCase(any())
+        } answers {
+            flow {
+                emit(
+                    GetBuyerOrderDetailDataRequestState.Requesting(
+                        GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
+                        GetP1DataRequestState.Requesting(
+                            GetOrderResolutionRequestState.Requesting,
+                            GetInsuranceDetailRequestState.Requesting
+                        )
+                    )
+                )
+                action()
+                emit(
+                    GetBuyerOrderDetailDataRequestState.Complete(
+                        GetP0DataRequestState.Complete(
+                            GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
+                        ),
+                        GetP1DataRequestState.Complete(
+                            GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
+                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                        )
+                    )
+                )
+            }
+        }
     }
 }

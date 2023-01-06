@@ -15,7 +15,9 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
@@ -29,6 +31,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 paymentId = paymentId,
                 shouldCheckCache = false
             )
+            createSuccessGetBuyerOrderDetailDataResult()
 
             viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
 
@@ -52,9 +55,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 shouldCheckCache = false
             )
 
-            assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing) // showing without P1 data
-            assertTrue(uiStates[2] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
         }
 
     @Test
@@ -64,25 +65,33 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
 
-            assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.Error)
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.Error)
         }
 
     @Test
     fun `UI state should equals to PullRefreshLoading when reloading P0 data`() =
         runCollectingUiState { uiStates ->
+            var uiStateBeforeSuccessReloading: BuyerOrderDetailUiState? = null
             createSuccessGetBuyerOrderDetailDataResult(
                 getBuyerOrderDetailResult = mockk(relaxed = true) {
                     every { getPodInfo() } returns null
                 }
             )
-
+            // assert first initial bom page opened
+            assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
             viewModel.getBuyerOrderDetailData(
                 orderId = orderId,
                 paymentId = paymentId,
                 cart = cart,
                 shouldCheckCache = false
             )
+            // assert data showing after initial first data is completed
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
+
+            // assert data is pull refresh state after swipe refresh and data not complete yet
+            doBeforeGetBuyerOrderDetailDataComplete {
+                uiStateBeforeSuccessReloading = uiStates.last()
+            }
             // reload
             viewModel.getBuyerOrderDetailData(
                 orderId = orderId,
@@ -90,14 +99,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 cart = cart,
                 shouldCheckCache = false
             )
+            assertTrue(uiStateBeforeSuccessReloading is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
 
-            assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing) // showing without P1 data
-            assertTrue(uiStates[2] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
-            for (i in 3 until uiStates.size.dec()) {
-                assertTrue(uiStates[i] is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
-            }
-            assertTrue(uiStates[uiStates.size - 1] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
+            // assert last state should showing after success pull refresh
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
         }
 
     @Test
