@@ -131,6 +131,31 @@ class SettingBankViewModelTest {
     }
 
     @Test
+    fun `loadTermsAndConditionNotes Failed`() {
+        val failedResult = mockk<Throwable>()
+        coEvery { termsAndConditionUseCase.get().getNotes(any(), any()) }
+                .coAnswers {
+                    secondArg<(Throwable) -> Unit>()
+                            .invoke(failedResult)
+                }
+        viewModel.loadTermsAndConditionNotes()
+        assert(viewModel.tncNotesLiveData.value is Fail)
+    }
+
+    @Test
+    fun `loadTermsAndConditionNotes Success`() {
+        val success = mockk<TemplateData>()
+        coEvery { termsAndConditionUseCase.get().getNotes(any(), any()) }
+                .coAnswers {
+                    firstArg<(TemplateData) -> Unit>()
+                            .invoke(success)
+                }
+        viewModel.loadTermsAndConditionNotes()
+        assert(viewModel.tncNotesLiveData.value is Success)
+    }
+
+
+    @Test
     fun `getKYCInfo Success`() {
         val success = mockk<KYCInfo>()
         coEvery { kyCInfoUseCase.get().getKYCCheckInfo(any(), any()) }
