@@ -1,4 +1,4 @@
-package com.tokopedia.play.uitest
+package com.tokopedia.play.uitest.status
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner

@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.explicit.cassava.ExplicitCassava.validateTracker
