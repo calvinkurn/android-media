@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -265,7 +266,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener,
     }
 
     private fun navigateToNewFragment(fragment: Fragment) {
-        navigateToNewFragment(fragment)
+        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
     }
 
     private fun logExceptionToServerLogger(

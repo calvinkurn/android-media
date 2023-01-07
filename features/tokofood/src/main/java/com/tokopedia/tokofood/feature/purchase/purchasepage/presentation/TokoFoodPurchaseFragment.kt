@@ -114,10 +114,10 @@ class TokoFoodPurchaseFragment :
         ViewModelProvider(this, viewModelFactory).get(TokoFoodPurchaseViewModel::class.java)
     }
 
-    private val adapterTypeFactory by lazy {
+    private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
         TokoFoodPurchaseAdapterTypeFactory(this)
     }
-    private val rvLayoutManager by lazy {
+    private val rvLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         activity?.let {
             LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
         }

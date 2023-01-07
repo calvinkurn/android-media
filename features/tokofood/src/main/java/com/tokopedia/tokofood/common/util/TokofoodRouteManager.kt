@@ -7,12 +7,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
-import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
 import com.tokopedia.tokofood.feature.search.container.presentation.fragment.SearchContainerFragment
 
 object TokofoodRouteManager {
