@@ -227,12 +227,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         observeLiveData()
         switchServiceOrLoadLayout()
 
-        /**
-         * Temporary
-         * Remove later
-         */
-//        showLayout()
-
         loadLayout()
     }
 
@@ -676,10 +670,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun switchServiceOrLoadLayout() {
         localCacheModel?.apply {
-            viewModelDtHome.switchServiceOrLoadLayout(
-//                externalServiceType = externalServiceType,
-//                localCacheModel = this
-            )
+            viewModelDtHome.switchServiceOrLoadLayout()
         }
     }
 
