@@ -1,10 +1,9 @@
 package com.tokopedia.common.topupbills.util
 
 import android.content.Context
+import com.tokopedia.common.topupbills.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.common.topupbills.test.R
-
 
 class TopupBillsFavoriteNumberMockResponseConfig(
     private val isMockFilledFavoriteNumber: Boolean,
@@ -13,7 +12,7 @@ class TopupBillsFavoriteNumberMockResponseConfig(
 
     companion object {
         const val KEY_QUERY_MODIFY_FAV_NUMBER = "updateFavoriteDetail"
-        const val KEY_QUERY_FETCH_FAV_NUMBER = "rechargeFetchFavoriteNumber"
+        const val KEY_QUERY_FETCH_FAV_NUMBER = "digiPersoGetPersonalizedItems"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {

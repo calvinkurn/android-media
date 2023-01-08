@@ -14,9 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -30,7 +29,6 @@ import org.junit.runner.RunWith
 class RechargeHomepageSearchAutocompleteInstrumentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -46,8 +44,6 @@ class RechargeHomepageSearchAutocompleteInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
-
             setupGraphqlMockResponse(RechargeHomepageSearchAutocompleteMockResponse())
         }
     }

@@ -1,10 +1,11 @@
 package com.tokopedia.product_bundle.common.data.model.response
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.orZero
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class GetBundleInfoResponse(
         @SerializedName("GetBundleInfo")
@@ -44,10 +45,14 @@ data class BundleInfo(
         @Expose val originalQuota: Int = 0,
         @SerializedName("maxOrder")
         @Expose val maxOrder: Int = 0,
+        @SerializedName("bundleStats")
+        @Expose val bundleStats: BundleStats = BundleStats(),
         @SerializedName("preorder")
-        @Expose val preorder: Preorder = Preorder(),
+        @Expose var preorder: Preorder = Preorder(),
         @SerializedName("bundleItem")
-        @Expose val bundleItems: List<BundleItem> = listOf()
+        @Expose val bundleItems: List<BundleItem> = listOf(),
+        @SerializedName("shopInformation")
+        @Expose val shopInformation: ShopInformation = ShopInformation(),
 ): Parcelable
 
 @Parcelize
@@ -77,11 +82,19 @@ data class BundleItem(
         @SerializedName("productStatus")
         @Expose val productStatus: String = ""
 ): Parcelable {
-        fun getPreviewOriginalPrice() = if (originalPrice > 0) originalPrice else
-                children.minByOrNull { it.bundlePrice }?.originalPrice.orZero()
 
-        fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
-                children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+    fun getPreviewOriginalPrice() = if (originalPrice > 0) originalPrice else
+        children.minByOrNull { it.bundlePrice }?.originalPrice.orZero()
+
+    fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
+        children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+
+    fun getMultipliedOriginalPrice() = getPreviewOriginalPrice() * getPreviewMinOrder()
+
+    fun getMultipliedBundlePrice() = getPreviewBundlePrice() * getPreviewMinOrder()
+
+    fun getPreviewMinOrder() = if (minOrder > 0) minOrder else
+        children.minByOrNull { it.minOrder }?.minOrder.orZero()
 }
 
 @Parcelize
@@ -138,7 +151,7 @@ data class Child(
         @Expose val stock: Int = 0,
         @SerializedName("isBuyable")
         @Expose val isBuyable: Boolean = false,
-        @SerializedName("optionID")
+        @SerializedName("optionID") @SuppressLint("Invalid Data Type") // data in list type
         @Expose val optionIds: List<Long> = listOf()
 ): Parcelable
 
@@ -164,4 +177,22 @@ data class Preorder(
         @Expose val processDay: Long = 0L,
         @SerializedName("processTime")
         @Expose val processTime: String = ""
+): Parcelable
+
+@Parcelize
+data class ShopInformation (
+    @SerializedName("ShopName")
+    @Expose val shopName: String = "",
+    @SerializedName("ShopType")
+    @Expose val shopType: String = "",
+    @SerializedName("ShopBadge")
+    @Expose val shopBadge: String = "",
+    @SerializedName("ShopID")
+    @Expose val shopId: Long = 0L,
+): Parcelable
+
+@Parcelize
+data class BundleStats (
+    @SerializedName("SoldItem")
+    @Expose val totalSold: String = ""
 ): Parcelable

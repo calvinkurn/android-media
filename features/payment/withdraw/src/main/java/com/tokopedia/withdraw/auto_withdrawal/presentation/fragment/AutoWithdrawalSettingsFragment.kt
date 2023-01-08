@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -587,7 +588,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
     private fun verifyUserUsingOTP() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.get().email)
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.get().phoneNumber)

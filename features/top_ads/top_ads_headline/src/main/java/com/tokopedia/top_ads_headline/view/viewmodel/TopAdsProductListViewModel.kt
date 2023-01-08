@@ -57,7 +57,7 @@ class TopAdsProductListViewModel @Inject constructor(private val topAdsGetListPr
         response.topadsGetRecommendedHeadlineProducts.recommendedProducts.products.forEach {
             list.add(TopAdsProductModel(productID = it.id,
                     productName = it.name, productPrice = it.priceFmt, productPriceNum = it.price, productImage = it.imageURL, productRating = it.rating.toIntOrZero(),
-                    productReviewCount = it.reviewCount.toIntOrZero(), departmentID = it.category.id, departmentName = it.category.name, isRecommended = true
+                    productReviewCount = it.reviewCount, departmentID = it.category.id, departmentName = it.category.name, isRecommended = true
             ))
         }
         return list

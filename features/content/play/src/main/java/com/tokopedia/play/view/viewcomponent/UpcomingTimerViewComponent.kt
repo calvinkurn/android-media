@@ -5,11 +5,7 @@ import androidx.annotation.IdRes
 import com.tokopedia.play.R
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 
 /**
@@ -21,7 +17,7 @@ class UpcomingTimerViewComponent(
     private val listener: Listener,
 ): ViewComponent(container, idRes) {
 
-    private val timerUpcoming = findViewById<TimerUnifyHighlight>(R.id.timer_upcoming)
+    private val timerUpcoming = findViewById<TimerUnifySingle>(R.id.timer_upcoming)
 
     fun setupTimer(startTime: String) {
         val targetCalendar = PlayDateTimeFormatter.convertToCalendar(startTime)

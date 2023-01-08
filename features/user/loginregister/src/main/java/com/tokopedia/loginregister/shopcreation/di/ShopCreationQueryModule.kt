@@ -1,6 +1,6 @@
 package com.tokopedia.loginregister.shopcreation.di
 
-import com.tokopedia.loginregister.shopcreation.domain.query.MutationRegisterCheck
+import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
 import com.tokopedia.loginregister.shopcreation.domain.query.QueryShopInfo
 import dagger.Module
 import dagger.Provides

@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -30,9 +29,10 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
-import com.tokopedia.hotel.common.util.HotelGqlMutation
-import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.HotelUtils
+import com.tokopedia.hotel.common.util.MutationDeleteRecentSearch
+import com.tokopedia.hotel.common.util.QueryHotelHomepageDefaultParameter
+import com.tokopedia.hotel.common.util.QueryHotelRecentSearchData
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
 import com.tokopedia.hotel.databinding.FragmentHotelHomepageBinding
 import com.tokopedia.hotel.destination.data.model.PopularSearch
@@ -106,7 +106,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_HOMEPAGE)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
         }
 
@@ -166,7 +166,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         loadTickerData()
 
         if (hotelHomepageModel.locName.isEmpty()) {
-            homepageViewModel.getDefaultHomepageParameter(HotelGqlQuery.DEFAULT_HOMEPAGE_PARAMETER)
+            homepageViewModel.getDefaultHomepageParameter(QueryHotelHomepageDefaultParameter())
         }
     }
 
@@ -356,7 +356,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
         bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_WIDTH_DIVIDER).toInt()
-        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
+        context?.resources?.let {
+            bannerWidthInPixels -= it.getDimensionPixelSize(R.dimen.hotel_banner_offset)
+        }
     }
 
     private fun loadTickerData() {
@@ -618,7 +620,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun loadRecentSearchData() {
-        homepageViewModel.getRecentSearch(HotelGqlQuery.RECENT_SEARCH_DATA)
+        homepageViewModel.getRecentSearch(QueryHotelRecentSearchData())
     }
 
     val bannerImpressionIndex: HashSet<Int> = hashSetOf()
@@ -686,7 +688,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         binding?.tvHotelLastSearchTitle?.text = data.title
         binding?.tvHotelHomepageDeleteLastSearch?.setOnClickListener {
-            homepageViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH)
+            homepageViewModel.deleteRecentSearch(MutationDeleteRecentSearch())
         }
         binding?.rvHotelHomepageLastSearch?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         binding?.rvHotelHomepageLastSearch?.adapter = HotelLastSearchAdapter(data.items, this)
@@ -784,7 +786,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
+        const val HOMEPAGE_BG_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 

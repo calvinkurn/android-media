@@ -6,7 +6,7 @@ import com.tokopedia.navigation.presentation.adapter.InboxTypeFactory
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 class InboxTopAdsBannerUiModel constructor(
-        var ad: TopAdsImageViewModel? = null
+        var ads: List<TopAdsImageViewModel>? = null
 ) : Visitable<InboxTypeFactory> {
 
     val impressHolder: ImpressHolder = ImpressHolder()
@@ -16,7 +16,7 @@ class InboxTopAdsBannerUiModel constructor(
         return typeFactory.type(this)
     }
 
-    fun hasAd(): Boolean {
-        return ad != null
+    fun hasAds(): Boolean {
+        return ads != null
     }
 }

@@ -3,14 +3,14 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
-import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.INPUT_PARAMS
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
@@ -19,83 +19,74 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
-import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.common.data.SavedOption
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
-import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.mapper.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BroadMatch
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchProduct
-import com.tokopedia.search.result.presentation.model.CarouselOptionType
-import com.tokopedia.search.result.presentation.model.CarouselProductType
-import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
-import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.DynamicFilterModelProvider
+import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
+import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
-import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
+import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
+import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
+import com.tokopedia.search.result.product.localsearch.EMPTY_LOCAL_SEARCH_RESPONSE_CODE
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_TDN
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
-import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
-import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenter
+import com.tokopedia.search.result.product.visitable.VisitableFactory
+import com.tokopedia.search.result.product.visitable.VisitableFactoryFirstPageData
+import com.tokopedia.search.result.product.visitable.VisitableFactorySecondPageData
+import com.tokopedia.search.result.product.wishlist.WishlistPresenter
+import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
+import com.tokopedia.search.utils.getUserId
 import com.tokopedia.search.utils.getValueString
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -109,7 +100,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
@@ -134,6 +124,7 @@ class ProductListPresenter @Inject constructor(
     private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
     @param:Named(SAVE_LAST_FILTER_USE_CASE)
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
+    private val addToCartUseCase: AddToCartUseCase,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val schedulersProvider: SchedulersProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
@@ -142,25 +133,37 @@ class ProductListPresenter @Inject constructor(
     private val bannerDelegate: BannerPresenterDelegate,
     private val requestParamsGenerator: RequestParamsGenerator,
     private val paginationImpl: PaginationImpl,
+    private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
+    private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
+    private val bannedProductsPresenterDelegate: BannedProductsPresenterDelegate,
+    private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
+    private val broadMatchDelegate: BroadMatchPresenterDelegate,
+    private val suggestionPresenter: SuggestionPresenter,
+    private val tickerPresenter: TickerPresenter,
+    private val safeSearchPresenter: SafeSearchPresenter,
+    wishlistPresenterDelegate: WishlistPresenterDelegate,
+    dynamicFilterModelProvider: DynamicFilterModelProvider,
+    bottomSheetFilterPresenter: BottomSheetFilterPresenter,
+    private val visitableFactory: VisitableFactory,
+    private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
-    Pagination by paginationImpl {
+    Pagination by paginationImpl,
+    BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
+    DynamicFilterModelProvider by dynamicFilterModelProvider,
+    LastFilterPresenter by lastFilterPresenterDelegate,
+    InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
+    BroadMatchPresenter by broadMatchDelegate,
+    TickerPresenter by tickerPresenter,
+    SafeSearchPresenter by safeSearchPresenter,
+    WishlistPresenter by wishlistPresenterDelegate,
+    BottomSheetFilterPresenter by bottomSheetFilterPresenter,
+    InspirationCarouselPresenter by inspirationCarouselPresenter {
 
     companion object {
-        private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
-        private val showSuggestionResponseCodeList = listOf("3", "6", "7")
-        private val showInspirationCarouselLayout = listOf(
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
-        )
-        private val showInspirationCarouselLayoutWithVideo = showInspirationCarouselLayout + SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
-        private const val DEFAULT_USER_ID = "0"
         private const val QUICK_FILTER_MINIMUM_SIZE = 2
         private val LOCAL_SEARCH_KEY_PARAMS = listOf(
                 SearchApiConst.NAVSOURCE,
@@ -169,7 +172,6 @@ class ProductListPresenter @Inject constructor(
         )
         private const val RESPONSE_CODE_RELATED = "3"
         private const val RESPONSE_CODE_SUGGESTION = "6"
-        private const val EMPTY_LOCAL_SEARCH_RESPONSE_CODE = "11"
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
@@ -178,8 +180,6 @@ class ProductListPresenter @Inject constructor(
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
-    override var isBottomSheetFilterEnabled = true
-        private set
     private var hasLoadData = false
     private var responseCode = ""
     private var navSource = ""
@@ -188,21 +188,12 @@ class ProductListPresenter @Inject constructor(
     private var searchRef = ""
     private var dimension90 = ""
     private var autoCompleteApplink = ""
-    private var isGlobalNavWidgetAvailable = false
-    private var isShowHeadlineAdsBasedOnGlobalNav = false
+    private var externalReference = ""
 
     private var productList = mutableListOf<Visitable<*>>()
-    private var inspirationCarouselDataView = mutableListOf<InspirationCarouselDataView>()
-    private var inspirationWidgetVisitable = mutableListOf<InspirationWidgetVisitable>()
-    private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
-    private var suggestionDataView: SuggestionDataView? = null
-    private var relatedDataView: RelatedDataView? = null
     override val quickFilterList = mutableListOf<Filter>()
-    override var dynamicFilterModel: DynamicFilterModel? = null
-        private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
-    private var categoryIdL2 = ""
     private var suggestionKeyword = ""
     private var relatedKeyword = ""
     override var pageComponentId: String = ""
@@ -216,40 +207,18 @@ class ProductListPresenter @Inject constructor(
         chooseAddressDelegate.updateChooseAddress()
     }
 
-    //region AB Test booleans
-    private val isABTestVideoWidget: Boolean by lazy {
-        getABTestVideoWidget()
-    }
-
-    private fun getABTestVideoWidget() : Boolean {
-        return try {
-            val abTestVideoWidget = view.abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_VIDEO_WIDGET,
-                ""
-            )
-            RollenceKey.SEARCH_VIDEO_WIDGET_VARIANT == abTestVideoWidget
-        } catch (e: Exception) {
-            false
-        }
-    }
-    //endregion
-
     override val userId: String
-        get() = if (userSession.isLoggedIn) userSession.userId else DEFAULT_USER_ID
+        get() = getUserId(userSession)
 
     override val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
 
-    //region Ticker
-    override var isTickerHasDismissed = false
-        private set
-
-    override fun onPriceFilterTickerDismissed() {
-        isTickerHasDismissed = true
-    }
-    //endregion
-
     //region Load Data / Load More / Recommendations
+    override fun clearData() {
+        postProcessingFilter.resetCount()
+        paginationImpl.clearData()
+    }
+
     override fun onViewCreated() {
         val isFirstActiveTab = view.isFirstActiveTab
 
@@ -264,7 +233,6 @@ class ProductListPresenter @Inject constructor(
 
     override fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean) {
         if (isViewVisible) {
-            view.setupSearchNavigation()
             view.trackScreenAuthenticated()
 
             if (isViewAdded && !hasLoadData)
@@ -348,11 +316,15 @@ class ProductListPresenter @Inject constructor(
         additionalParams = productDataView.additionalParams
 
         if (productDataView.productList.isEmpty()) {
-            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadMoreData) {
+            postProcessingFilter.checkPostProcessingFilter(
+                searchProductModel.isPostProcessing,
+                searchParameter,
+                totalData,
+                ::loadMoreData
+            ) {
                 getViewToProcessEmptyResultDuringLoadMore()
             }
-        }
-        else {
+        } else {
             postProcessingFilter.resetCount()
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
@@ -374,6 +346,7 @@ class ProductListPresenter @Inject constructor(
             dimension90,
             keyword,
             isShowLocalSearchRecommendation(),
+            externalReference,
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -392,10 +365,12 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getViewToProcessEmptyResultDuringLoadMore() {
-        val list = mutableListOf<Visitable<*>>()
-
-        processBroadMatch(list)
-        addSearchInTokopedia(list)
+        val list = visitableFactory.createEmptyResultDuringLoadMoreVisitableList(
+            responseCode,
+            productList,
+            isLocalSearch(),
+            constructGlobalSearchApplink()
+        )
 
         view.removeLoading()
         view.addProductList(list)
@@ -420,31 +395,32 @@ class ProductListPresenter @Inject constructor(
             searchProductModel: SearchProductModel,
             searchParameter: Map<String, Any>,
     ): List<Visitable<*>> {
-        val list = createProductItemVisitableList(
+        val loadMoreProductList = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.getProductListType()
-        ).toMutableList()
-        productList.addAll(list)
+            searchProductModel.getProductListType(),
+            searchProductModel.isShowButtonAtc,
+        )
+        productList.addAll(loadMoreProductList)
 
-        processHeadlineAdsLoadMore(searchProductModel, list)
-        processTopAdsImageViewModel(searchParameter, list)
-        processInspirationWidgetPosition(searchParameter, list)
-        processInspirationCarouselPosition(searchParameter, list)
-        processBannerAndBroadmatchInSamePosition(list)
-        bannerDelegate.processBanner(list, productList) { index, banner ->
-            list.add(index, banner)
-        }
-        processBroadMatch(list)
-        addSearchInTokopedia(list)
-
-        return list
+        return visitableFactory.createLoadMoreVisitableList(
+            VisitableFactorySecondPageData(
+                isLocalSearch(),
+                responseCode,
+                productList,
+                searchProductModel,
+                externalReference,
+                constructGlobalSearchApplink(),
+                loadMoreProductList,
+            )
+        )
     }
 
     private fun createProductItemVisitableList(
         productDataView: ProductDataView,
         searchParameter: Map<String, Any>,
         productListType: String,
+        showButtonAtc: Boolean,
     ): List<Visitable<*>> {
         return if (isHideProductAds(productDataView))
             productDataView.productList
@@ -455,6 +431,9 @@ class ProductListPresenter @Inject constructor(
                 searchParameter,
                 dimension90,
                 productListType,
+                externalReference,
+                productDataView.keywordIntention,
+                showButtonAtc,
             )
     }
 
@@ -463,18 +442,6 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun isLocalSearch() = navSource.isNotEmpty() && pageId.isNotEmpty()
-
-    private fun processHeadlineAdsLoadMore(
-        searchProductModel: SearchProductModel,
-        list: MutableList<Visitable<*>>,
-    ) {
-        if (!isHeadlineAdsAllowed()) return
-
-        topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
-            val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
-            processHeadlineAdsAtPosition(list, productList.size, cpmDataView, isUseSeparator)
-        }
-    }
 
     private fun loadMoreDataSubscriberOnComplete() {
         if (isViewNotAttached) return
@@ -504,6 +471,7 @@ class ProductListPresenter @Inject constructor(
         pageId = searchParameter.getValueString(SearchApiConst.SRP_PAGE_ID)
         pageTitle = searchParameter.getValueString(SearchApiConst.SRP_PAGE_TITLE)
         searchRef = searchParameter.getValueString(SearchApiConst.SEARCH_REF)
+        externalReference = searchParameter.getValueString(SearchApiConst.SRP_EXT_REF)
         dimension90 = Dimension90Utils.getDimension90(searchParameter)
         additionalParams = ""
 
@@ -622,12 +590,12 @@ class ProductListPresenter @Inject constructor(
         val productDataView = createFirstProductDataView(searchProductModel)
 
         responseCode = productDataView.responseCode ?: ""
-        suggestionDataView = productDataView.suggestionModel
-        relatedDataView = productDataView.relatedDataView
+        suggestionPresenter.setSuggestionDataView(productDataView.suggestionModel)
+        broadMatchDelegate.setRelatedDataView(productDataView.relatedDataView)
         bannerDelegate.setBannerData(productDataView.bannerDataView)
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         paginationImpl.totalData = productDataView.totalData
-        categoryIdL2 = productDataView.categoryIdL2
+        lastFilterPresenterDelegate.categoryIdL2 = productDataView.categoryIdL2
         relatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
         suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
         pageComponentId = productDataView.pageComponentId
@@ -635,8 +603,15 @@ class ProductListPresenter @Inject constructor(
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
 
+        if (!productDataView.isQuerySafe) view.showAdultRestriction()
+
         if (productDataView.productList.isEmpty()) {
-            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadData) {
+            postProcessingFilter.checkPostProcessingFilter(
+                searchProductModel.isPostProcessing,
+                searchParameter,
+                productDataView.totalData,
+                ::loadData
+            ) {
                 getViewToHandleEmptyProductList(
                     searchProductModel.searchProduct,
                     productDataView,
@@ -653,8 +628,6 @@ class ProductListPresenter @Inject constructor(
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER) {
             processFilters(searchProductModel)
         }
-
-        view.updateScrollListener()
 
         getViewToSendTrackingSearchAttempt(productDataView)
     }
@@ -680,118 +653,50 @@ class ProductListPresenter @Inject constructor(
             searchProduct: SearchProductModel.SearchProduct,
             productDataView: ProductDataView,
     ) {
-        if (isShowBroadMatch()) {
-            getViewToShowBroadMatchToReplaceEmptySearch()
+        if (broadMatchDelegate.isShowBroadMatch(responseCode)) {
+            broadMatchDelegate.showBroadMatchReplaceEmptySearch()
         } else {
-            if (!productDataView.errorMessage.isNullOrEmpty()) {
-                getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
-            } else if(productDataView.violation != null) {
+            if (bannedProductsPresenterDelegate.isBannedProducts(searchProduct)) {
+                bannedProductsPresenterDelegate.processBannedProducts(
+                    searchProduct,
+                    getGlobalNavViewModel(productDataView)
+                )
+            } else if (productDataView.violation != null) {
                 getViewToHandleViolation(productDataView)
             } else {
                 getViewToShowEmptySearch(productDataView)
 
-                if (isShowBroadMatchWithEmptyLocalSearch()) {
-                    val visitableList = mutableListOf<Visitable<*>>()
-                    addBroadMatchToVisitableList(visitableList)
-
-                    view.addProductList(visitableList)
-                }
+                broadMatchDelegate.appendBroadMatchInEmptyLocalSearch(responseCode)
             }
 
             getViewToShowRecommendationItem()
         }
+
+        view.updateScrollListener()
     }
-
-    private fun isShowBroadMatch() =
-            showBroadMatchResponseCodeList.contains(responseCode)
-                && (relatedDataView?.broadMatchDataViewList?.isNotEmpty() == true)
-
-    private fun getViewToShowBroadMatchToReplaceEmptySearch() {
-        val visitableList = mutableListOf<Visitable<*>>()
-
-        addBroadMatchToVisitableList(visitableList)
-
-        view.removeLoading()
-        view.setProductList(visitableList)
-        view.backToTop()
-    }
-
-    private fun addBroadMatchToVisitableList(visitableList: MutableList<Visitable<*>>) {
-        suggestionDataView?.let {
-            if (it.suggestionText.isNotEmpty())
-                visitableList.add(it)
-
-            suggestionDataView = null
-        }
-
-        relatedDataView?.let {
-            visitableList.addAll(it.broadMatchDataViewList)
-            relatedDataView = null
-        }
-    }
-
-    private fun getViewToHandleEmptySearchWithErrorMessage(
-        searchProduct: SearchProductModel.SearchProduct,
-        productDataView: ProductDataView,
-    ) {
-        val bannedProductsVisitableList =
-            createBannedProductsVisitableList(searchProduct, productDataView)
-
-        view.removeLoading()
-        view.setBannedProductsErrorMessage(bannedProductsVisitableList)
-        view.trackEventImpressionBannedProducts(true)
-    }
-
-    private fun createBannedProductsVisitableList(
-        searchProduct: SearchProductModel.SearchProduct,
-        productDataView: ProductDataView,
-    ): List<Visitable<*>> =
-        mutableListOf<Visitable<*>>().apply {
-            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
-                add(globalNavDataView)
-            }
-
-            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
-        }
-
 
     private fun getViewToHandleViolation(
         productDataView: ProductDataView,
     ) {
-        val violationProductsVisitableList =
-            createViolationVisitableList(productDataView)
+        val violationProductsVisitableList = visitableFactory.createViolationVisitableList(
+                productDataView,
+                getGlobalNavViewModel(productDataView),
+            )
 
         view.removeLoading()
         view.addProductList(violationProductsVisitableList)
     }
 
-    private fun createViolationVisitableList(
-        productDataView: ProductDataView,
-    ) : List<Visitable<*>> {
-        val violation = productDataView.violation ?: return emptyList()
-        return mutableListOf<Visitable<*>>().apply {
-            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
-                add(globalNavDataView)
-            }
-
-            add(violation)
-            add(SeparatorDataView())
-        }
-    }
-
     private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
         clearData()
         view.removeLoading()
-        view.setProductList(constructEmptyStateProductList(productDataView))
+        view.setProductList(
+            visitableFactory.constructEmptyStateProductList(
+                getGlobalNavViewModel(productDataView),
+                createEmptyStateDataView(),
+            )
+        )
     }
-
-    private fun constructEmptyStateProductList(
-        productDataView: ProductDataView,
-    ): List<Visitable<*>> =
-        mutableListOf<Visitable<*>>().apply {
-            getGlobalNavViewModel(productDataView)?.let { add(it) }
-            add(createEmptyStateDataView())
-        }
 
     private fun getGlobalNavViewModel(productDataView: ProductDataView): GlobalNavDataView? {
         val isGlobalNavWidgetAvailable = productDataView.globalNavDataView != null && enableGlobalNavWidget
@@ -816,10 +721,6 @@ class ProductListPresenter @Inject constructor(
             )
         else
             null
-
-    private fun isShowBroadMatchWithEmptyLocalSearch() =
-            responseCode == EMPTY_LOCAL_SEARCH_RESPONSE_CODE
-                    && (relatedDataView?.broadMatchDataViewList?.isNotEmpty() == true)
 
     private fun isShowLocalSearchRecommendation() =
             responseCode == EMPTY_LOCAL_SEARCH_RESPONSE_CODE
@@ -930,106 +831,44 @@ class ProductListPresenter @Inject constructor(
         )
     }
 
-
     private fun getViewToShowProductList(
             searchParameter: Map<String, Any>,
             searchProductModel: SearchProductModel,
             productDataView: ProductDataView,
     ) {
-        val searchProduct = searchProductModel.searchProduct
-        val list = mutableListOf<Visitable<*>>()
-
-        if (!productDataView.isQuerySafe) view.showAdultRestriction()
-
-        addPageTitle(list)
-
-        isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productDataView)
-        if (isGlobalNavWidgetAvailable) {
-            productDataView.globalNavDataView?.let {
-                list.add(it)
-                isShowHeadlineAdsBasedOnGlobalNav = it.isShowTopAds
-            }
-        }
-
-        addLastFilterDataView(list, productDataView)
-
-        list.add(ChooseAddressDataView())
-
-        productDataView.tickerModel?.let {
-            if (!isTickerHasDismissed && it.text.isNotEmpty())
-                list.add(it)
-        }
-
-        if (shouldShowSuggestion(productDataView)) {
-            productDataView.suggestionModel?.let {
-                list.add(it)
-            }
-        }
-
-        if (searchProduct.header.errorMessage.isNotEmpty()) {
-            list.add(createBannedProductsTickerDataView(searchProduct.header.errorMessage))
-            view.trackEventImpressionBannedProducts(false)
-        }
-
         adsInjector.resetTopAdsPosition()
         productList = createProductItemVisitableList(
             productDataView,
             searchParameter,
             searchProductModel.getProductListType(),
+            searchProductModel.isShowButtonAtc,
         ).toMutableList()
-        list.addAll(productList)
 
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
-            processHeadlineAdsFirstPage(searchProductModel, list)
-        }
+        val visitableList = visitableFactory.createFirstPageVisitableList(
+            VisitableFactoryFirstPageData(
+                productDataView,
+                pageTitle,
+                getIsGlobalNavWidgetAvailable(productDataView),
+                isLocalSearch(),
+                isTickerHasDismissed,
+                responseCode,
+                productList,
+                searchProductModel,
+                externalReference,
+                constructGlobalSearchApplink(),
+            )
+        )
 
         additionalParams = productDataView.additionalParams
-
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
-            inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
-            processInspirationCarouselPosition(searchParameter, list)
-        }
-
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
-            inspirationWidgetVisitable = productDataView.inspirationWidgetDataView.toMutableList()
-            processInspirationWidgetPosition(searchParameter, list)
-        }
-
-        processBannerAndBroadmatchInSamePosition(list)
-        bannerDelegate.processBanner(list, productList) { index, banner ->
-            list.add(index, banner)
-        }
-
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
-            processBroadMatch(list)
-        }
-
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
-            topAdsImageViewModelList =
-                searchProductModel.getTopAdsImageViewModelList().toMutableList()
-
-            processTopAdsImageViewModel(searchParameter, list)
-        }
-
-        addSearchInTokopedia(list)
-        firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list)
+        firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(visitableList)
 
         view.removeLoading()
-        view.setProductList(list)
+        view.setProductList(visitableList)
         view.backToTop()
         if (hasNextPage())
             view.addLoading()
-    }
 
-    private fun addLastFilterDataView(
-        visitableList: MutableList<Visitable<*>>,
-        productDataView: ProductDataView,
-    ) {
-        val lastFilterDataView = productDataView.lastFilterDataView
-
-        if (lastFilterDataView.shouldShow()) {
-            visitableList.add(lastFilterDataView)
-        }
+        view.updateScrollListener()
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
@@ -1043,25 +882,11 @@ class ProductListPresenter @Inject constructor(
         return max(firstProductPositionWithBOELabel, -1)
     }
 
-    private fun addPageTitle(list: MutableList<Visitable<*>>) {
-        if (pageTitle.isEmpty()) return
-
-        list.add(SearchProductTitleDataView(pageTitle, isRecommendationTitle = false))
-    }
-
     private fun getIsGlobalNavWidgetAvailable(productDataView: ProductDataView): Boolean {
         return productDataView.globalNavDataView != null
                 && enableGlobalNavWidget
                 && !view.isAnyFilterActive
                 && !view.isAnySortActive
-    }
-
-    private fun addSearchInTokopedia(list: MutableList<Visitable<*>>) {
-        if (isLastPage() && isLocalSearch()) {
-            val globalSearchApplink = constructGlobalSearchApplink()
-            val searchInTokopediaDataView = SearchInTokopediaDataView(globalSearchApplink)
-            list.add(searchInTokopediaDataView)
-        }
     }
 
     private fun constructGlobalSearchApplink(): String {
@@ -1070,397 +895,6 @@ class ProductListPresenter @Inject constructor(
 
         return ApplinkConstInternalDiscovery.SEARCH_RESULT +
                 (if (globalSearchQueryParams.isNotEmpty()) "?$globalSearchQueryParams" else "")
-    }
-
-    private fun shouldShowSuggestion(productDataView: ProductDataView): Boolean {
-        return showSuggestionResponseCodeList.contains(responseCode)
-                && (productDataView.suggestionModel?.suggestionText?.isNotEmpty() == true)
-    }
-
-    private fun processHeadlineAdsFirstPage(
-        searchProductModel: SearchProductModel,
-        list: MutableList<Visitable<*>>,
-    ) {
-        if (!isHeadlineAdsAllowed()) return
-        topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel, 1) { index, cpmDataList,  isUseSeparator ->
-            val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
-            if (index == 0)
-                processHeadlineAdsAtTop(list, cpmDataView)
-            else
-                processHeadlineAdsAtPosition(list, productList.size, cpmDataView, isUseSeparator)
-        }
-    }
-
-    private fun isHeadlineAdsAllowed(): Boolean {
-        return !isLocalSearch()
-                && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav)
-    }
-
-    private fun createCpmDataView(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmDataView {
-        val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
-        return CpmDataView(cpmForViewModel)
-    }
-
-    private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmModel {
-        return CpmModel().apply {
-            header = cpmModel.header
-            status = cpmModel.status
-            error = cpmModel.error
-            data = cpmData
-        }
-    }
-
-    private fun processHeadlineAdsAtTop(visitableList: MutableList<Visitable<*>>, cpmDataView: CpmDataView) {
-        if (productList.isEmpty()) return
-
-        val firstProductIndex = visitableList.indexOf(productList[0])
-        if (firstProductIndex !in visitableList.indices) return
-
-        visitableList.add(firstProductIndex, cpmDataView)
-    }
-
-    private fun processHeadlineAdsAtPosition(
-            visitableList: MutableList<Visitable<*>>,
-            position: Int,
-            cpmDataView: CpmDataView,
-            isUseSeparator: Boolean,
-    ) {
-        val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
-        if (isUseSeparator) {
-            headlineAdsVisitableList.add(SeparatorDataView())
-            headlineAdsVisitableList.add(cpmDataView)
-            headlineAdsVisitableList.add(SeparatorDataView())
-        } else {
-            headlineAdsVisitableList.add(cpmDataView)
-        }
-
-
-        val product = productList[position - 1]
-        val headlineAdsIndex = visitableList.indexOf(product) + 1
-        visitableList.addAll(headlineAdsIndex, headlineAdsVisitableList)
-    }
-
-    private fun createBannedProductsTickerDataView(errorMessage: String): BannedProductsTickerDataView {
-        val htmlErrorMessage = "$errorMessage Gunakan browser"
-        return BannedProductsTickerDataView(htmlErrorMessage)
-    }
-
-    private fun processInspirationWidgetPosition(
-        searchParameter: Map<String, Any>,
-        list: MutableList<Visitable<*>>,
-    ) {
-        if (inspirationWidgetVisitable.isEmpty()) return
-
-        val inspirationWidgetVisitableIterator = inspirationWidgetVisitable.iterator()
-        while (inspirationWidgetVisitableIterator.hasNext()) {
-            val data = inspirationWidgetVisitableIterator.next()
-            val inspirationWidgetVisitableList = constructInspirationWidgetVisitableList(data)
-
-            if (data.data.position < 0) {
-                inspirationWidgetVisitableIterator.remove()
-                continue
-            }
-
-            val widgetPosition = data.data.position
-            if (widgetPosition <= productList.size) {
-                try {
-                    val productListPosition = maxOf(widgetPosition, 1)
-                    val product = productList[productListPosition - 1]
-                    val addIndex = minOf(widgetPosition, 1)
-                    val visitableIndex = list.indexOf(product) + addIndex
-
-                    list.addAll(visitableIndex, inspirationWidgetVisitableList)
-                    inspirationWidgetVisitableIterator.remove()
-                } catch (exception: Throwable) {
-                    Timber.w(exception)
-                    view.logWarning(
-                        UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>),
-                        exception,
-                    )
-                }
-            }
-        }
-    }
-
-    private fun constructInspirationWidgetVisitableList(
-        data: InspirationWidgetVisitable
-    ): List<Visitable<ProductListTypeFactory>> {
-        val inspirationSizeVisitableList = mutableListOf<Visitable<ProductListTypeFactory>>()
-
-        if (data.hasTopSeparator)
-            inspirationSizeVisitableList.add(SeparatorDataView())
-
-        inspirationSizeVisitableList.add(data)
-
-        if (data.hasBottomSeparator)
-            inspirationSizeVisitableList.add(SeparatorDataView())
-
-        return inspirationSizeVisitableList
-    }
-
-    private fun processInspirationCarouselPosition(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
-        if (inspirationCarouselDataView.isEmpty()) return
-
-        val inspirationCarouselViewModelIterator = inspirationCarouselDataView.iterator()
-        while (inspirationCarouselViewModelIterator.hasNext()) {
-            val data = inspirationCarouselViewModelIterator.next()
-
-            if (isInvalidInspirationCarousel(data)) {
-                inspirationCarouselViewModelIterator.remove()
-                continue
-            }
-
-            if (data.position <= productList.size && shouldShowInspirationCarousel(data.layout)) {
-                try {
-                    val inspirationCarouselVisitableList = constructInspirationCarouselVisitableList(data)
-                    val product = productList[data.position - 1]
-                    list.addAll(list.indexOf(product) + 1, inspirationCarouselVisitableList)
-                    inspirationCarouselViewModelIterator.remove()
-                } catch (exception: java.lang.Exception) {
-                    Timber.w(exception)
-                    view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
-                }
-            }
-        }
-    }
-
-    private fun isInvalidInspirationCarousel(data: InspirationCarouselDataView): Boolean {
-        if (data.position <= 0) return true
-        return isInvalidInspirationCarouselLayout(data)
-    }
-
-    private fun InspirationCarouselDataView.isFirstOptionHasNoProducts() : Boolean {
-        val firstOption = options.getOrNull(0)
-        return firstOption != null && !firstOption.hasProducts()
-    }
-
-    private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
-        return !isABTestVideoWidget && isVideoLayout() && isFirstOptionHasNoProducts()
-    }
-
-    private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
-        return data.isInvalidCarouselChipsLayout() || data.isInvalidCarouselVideoLayout()
-    }
-
-    private fun shouldShowInspirationCarousel(layout: String): Boolean {
-        val validInspirationCarouselLayout = if(!isABTestVideoWidget) {
-            showInspirationCarouselLayout
-        } else {
-            showInspirationCarouselLayoutWithVideo
-        }
-        return validInspirationCarouselLayout.contains(layout)
-    }
-
-    private fun constructInspirationCarouselVisitableList(data: InspirationCarouselDataView) =
-        when {
-            data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
-            data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
-            else -> listOf(data)
-        }
-    private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
-        return isABTestVideoWidget && isVideoLayout()
-    }
-    private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
-        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
-                && isFirstOptionHasNoProducts()
-    }
-    private fun InspirationCarouselDataView.isDynamicProductLayout() =
-            layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
-    private fun InspirationCarouselDataView.isVideoLayout() =
-            layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
-
-    private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView) : List<Visitable<*>> {
-        return listOf(InspirationCarouselVideoDataView(data))
-    }
-
-    private fun convertInspirationCarouselToBroadMatch(data: InspirationCarouselDataView): List<Visitable<*>> {
-        val broadMatchVisitableList = mutableListOf<Visitable<*>>()
-
-        broadMatchVisitableList.add(SeparatorDataView())
-        if (data.title.isNotEmpty()) broadMatchVisitableList.add(SuggestionDataView(data.title))
-        broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView(data.type))
-        broadMatchVisitableList.add(SeparatorDataView())
-
-        return broadMatchVisitableList
-    }
-
-    private fun List<InspirationCarouselDataView.Option>.mapToBroadMatchDataView(
-            type: String,
-    ): List<Visitable<*>> {
-        return map { option ->
-            BroadMatchDataView(
-                keyword = option.title,
-                subtitle = option.subtitle,
-                applink = option.applink,
-                carouselOptionType = determineCarouselOptionType(type, option),
-                broadMatchItemDataViewList = option.product.mapIndexed { index, product ->
-                    BroadMatchItemDataView(
-                        id = product.id,
-                        name = product.name,
-                        price = product.price,
-                        imageUrl = product.imgUrl,
-                        url = product.url,
-                        applink = product.applink,
-                        priceString = product.priceStr,
-                        ratingAverage = product.ratingAverage,
-                        labelGroupDataList = product.labelGroupDataList,
-                        badgeItemDataViewList = product.badgeItemDataViewList,
-                        shopLocation = product.shopLocation,
-                        shopName = product.shopName,
-                        position = index + 1,
-                        alternativeKeyword = option.title,
-                        carouselProductType = determineInspirationCarouselProductType(
-                            type,
-                            option,
-                            product,
-                        ),
-                        freeOngkirDataView = product.freeOngkirDataView,
-                        isOrganicAds = product.isOrganicAds,
-                        topAdsViewUrl = product.topAdsViewUrl,
-                        topAdsClickUrl = product.topAdsClickUrl,
-                        topAdsWishlistUrl = product.topAdsWishlistUrl,
-                        componentId = product.componentId,
-                        originalPrice = product.originalPrice,
-                        discountPercentage = product.discountPercentage,
-                    )
-                },
-                cardButton = BroadMatchDataView.CardButton(
-                    option.cardButton.title,
-                    option.cardButton.applink,
-                ),
-            )
-        }
-    }
-
-    private fun determineCarouselOptionType(
-        type: String,
-        option: InspirationCarouselDataView.Option
-    ): CarouselOptionType =
-        if (type == TYPE_INSPIRATION_CAROUSEL_KEYWORD) BroadMatch
-        else DynamicCarouselOption(option)
-
-    private fun determineInspirationCarouselProductType(
-            type: String,
-            option: InspirationCarouselDataView.Option,
-            product: InspirationCarouselDataView.Option.Product,
-    ): CarouselProductType {
-        return if (type == TYPE_INSPIRATION_CAROUSEL_KEYWORD)
-            BroadMatchProduct(false)
-        else
-            DynamicCarouselProduct(option.inspirationCarouselType, product)
-    }
-
-    private fun processBannerAndBroadmatchInSamePosition(
-        list: MutableList<Visitable<*>>,
-    ) {
-        val relatedDataView = relatedDataView ?: return
-
-        if (bannerDelegate.isShowBanner() && isShowBroadMatch()) {
-            if (bannerDelegate.isLastPositionBanner && relatedDataView.position == 0) {
-                processBroadMatchAtBottom(list)
-                bannerDelegate.processBannerAtBottom(list) { _, banner ->
-                    list.add(banner)
-                }
-            } else if (bannerDelegate.isFirstPositionBanner && relatedDataView.position == 1) {
-                processBroadMatchAtTop(list)
-                bannerDelegate.processBannerAtTop(list, productList) { index, banner ->
-                    list.add(index, banner)
-                }
-            }
-        }
-    }
-
-    private fun processBroadMatch(list: MutableList<Visitable<*>>) {
-        try {
-            if (!isShowBroadMatch()) return
-
-            val broadMatchPosition = relatedDataView?.position ?: -1
-            if (broadMatchPosition == 0) processBroadMatchAtBottom(list)
-            else if (broadMatchPosition == 1) processBroadMatchAtTop(list)
-            else if (broadMatchPosition > 1) processBroadMatchAtPosition(list, broadMatchPosition)
-        } catch (exception: Throwable) {
-            Timber.w(exception)
-        }
-    }
-
-    private fun processBroadMatchAtBottom(list: MutableList<Visitable<*>>) {
-        if (isLastPage()) {
-            list.add(SeparatorDataView())
-            addBroadMatchToVisitableList(list)
-        }
-    }
-
-    private fun processBroadMatchAtTop(list: MutableList<Visitable<*>>) {
-        val broadMatchVisitableList = mutableListOf<Visitable<*>>()
-        addBroadMatchToVisitableList(broadMatchVisitableList)
-        broadMatchVisitableList.add(SeparatorDataView())
-
-        list.addAll(list.indexOf(productList[0]), broadMatchVisitableList)
-    }
-
-    private fun processBroadMatchAtPosition(list: MutableList<Visitable<*>>, broadMatchPosition: Int) {
-        if (productList.size < broadMatchPosition) return
-
-        val broadMatchVisitableList = mutableListOf<Visitable<*>>()
-        broadMatchVisitableList.add(SeparatorDataView())
-        addBroadMatchToVisitableList(broadMatchVisitableList)
-        broadMatchVisitableList.add(SeparatorDataView())
-
-        val productItemAtBroadMatchPosition = productList[broadMatchPosition - 1]
-        val broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1
-        list.addAll(broadMatchIndex, broadMatchVisitableList)
-    }
-
-    private fun processTopAdsImageViewModel(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
-        if (topAdsImageViewModelList.isEmpty()) return
-
-        val topAdsImageViewModelIterator = topAdsImageViewModelList.iterator()
-
-        while (topAdsImageViewModelIterator.hasNext()) {
-            val data = topAdsImageViewModelIterator.next()
-
-            if (data.position <= 0) {
-                topAdsImageViewModelIterator.remove()
-                continue
-            }
-
-            if (data.position <= productList.size) {
-                try {
-                    processTopAdsImageViewModelInPosition(list, data)
-                    topAdsImageViewModelIterator.remove()
-                } catch (exception: java.lang.Exception) {
-                    Timber.w(exception)
-                    view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
-                }
-            }
-        }
-    }
-
-    private fun processTopAdsImageViewModelInPosition(list: MutableList<Visitable<*>>, data: TopAdsImageViewModel) {
-        val isTopPosition = data.position == 1
-        val searchProductTopAdsImageDataView = SearchProductTopAdsImageDataView(data)
-        if (isTopPosition) {
-            val index = getIndexOfTopAdsImageViewModelAtTop(list)
-            list.add(index, searchProductTopAdsImageDataView)
-        } else {
-            val product = productList[data.position - 1]
-            list.add(list.indexOf(product) + 1, searchProductTopAdsImageDataView)
-        }
-    }
-
-    private fun getIndexOfTopAdsImageViewModelAtTop(list: List<Visitable<*>>): Int {
-        var index = 0
-        while (shouldIncrementIndexForTopAdsImageViewModel(index, list)) index++
-        return index
-    }
-
-    private fun shouldIncrementIndexForTopAdsImageViewModel(index: Int, list: List<Visitable<*>>): Boolean {
-        if (index >= list.size) return false
-
-        val visitable = list[index]
-        val isCPMOrProductItem = visitable is CpmDataView || visitable is ProductItemDataView
-
-        return !isCPMOrProductItem
     }
 
     private fun processFilters(searchProductModel: SearchProductModel) {
@@ -1527,7 +961,7 @@ class ProductListPresenter @Inject constructor(
         return when {
             optionSize == 1 -> activeOptions.first().name
             optionSize > 1 -> "$optionSize ${filter.title}"
-            else -> filter.title
+            else -> filter.chipName
         }
     }
 
@@ -1626,7 +1060,8 @@ class ProductListPresenter @Inject constructor(
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
                 productDataView.backendFilters,
-                productDataView.pageComponentId
+                productDataView.pageComponentId,
+                externalReference,
             )
         )
     }
@@ -1738,93 +1173,6 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region Wishlist
-    override fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
-        if (isViewNotAttached) return
-        productCardOptionsModel ?: return
-
-        if (productCardOptionsModel.isRecommendation)
-            handleWishlistRecommendationProduct(productCardOptionsModel)
-        else
-            handleWishlistNonRecommendationProduct(productCardOptionsModel)
-    }
-
-    private fun handleWishlistRecommendationProduct(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (wishlistResult.isUserLoggedIn)
-            handleWishlistRecommendationProductWithLoggedInUser(productCardOptionsModel)
-        else
-            handleWishlistRecommendationProductWithNotLoggedInUser(productCardOptionsModel)
-    }
-
-    private fun handleWishlistRecommendationProductWithLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult)
-        } else {
-            view.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
-            view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult)
-            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistRecommendationProductWithNotLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        view.trackWishlistRecommendationProductNonLoginUser()
-        view.launchLoginActivity(productCardOptionsModel.productId)
-    }
-
-    private fun handleWishlistNonRecommendationProduct(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (wishlistResult.isUserLoggedIn)
-            handleWishlistNonRecommendationProductWithLoggedInUser(productCardOptionsModel)
-        else
-            handleWishlistNonRecommendationProductWithNotLoggedInUser(productCardOptionsModel)
-    }
-
-    private fun handleWishlistNonRecommendationProductWithLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult)
-        } else {
-            view.trackWishlistProduct(createWishlistTrackingModel(
-                    productCardOptionsModel,
-                    productCardOptionsModel.wishlistResult.isAddWishlist
-            ))
-            view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult)
-            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
-        }
-    }
-
-    private fun createWishlistTrackingModel(
-            productCardOptionsModel: ProductCardOptionsModel,
-            isAddWishlist: Boolean,
-    ): WishlistTrackingModel {
-        val wishlistTrackingModel = WishlistTrackingModel()
-
-        wishlistTrackingModel.productId = productCardOptionsModel.productId
-        wishlistTrackingModel.isTopAds = productCardOptionsModel.isTopAds
-        wishlistTrackingModel.keyword = view.queryKey
-        wishlistTrackingModel.isUserLoggedIn = productCardOptionsModel.wishlistResult.isUserLoggedIn
-        wishlistTrackingModel.isAddWishlist = isAddWishlist
-
-        return wishlistTrackingModel
-    }
-
-    private fun handleWishlistNonRecommendationProductWithNotLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        view.trackWishlistProduct(createWishlistTrackingModel(
-                productCardOptionsModel,
-                !productCardOptionsModel.isWishlisted
-        ))
-        view.launchLoginActivity(productCardOptionsModel.productId)
-    }
-    //endregion
-
     //region Product Impression, Click, and Three Dots
     override fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int) {
         if (isViewNotAttached || item == null) return
@@ -1887,20 +1235,32 @@ class ProductListPresenter @Inject constructor(
     override fun onProductClick(item: ProductItemDataView?, adapterPosition: Int) {
         if (isViewNotAttached || item == null) return
 
-        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
-        else getViewToTrackOnClickOrganicProduct(item)
+        trackProductClick(item)
+
+        sameSessionRecommendationPresenterDelegate.requestSameSessionRecommendation(
+            item,
+            adapterPosition,
+            dimension90,
+            externalReference,
+            chooseAddressDelegate.getChooseAddressParams(),
+        )
 
         view.routeToProductDetail(item, adapterPosition)
     }
 
+    override fun trackProductClick(item: ProductItemDataView) {
+        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
+        else getViewToTrackOnClickOrganicProduct(item)
+    }
+
     private fun getViewToTrackOnClickTopAdsProduct(item: ProductItemDataView) {
         topAdsUrlHitter.hitClickUrl(
-                view.className,
-                item.topadsClickUrl,
-                item.productID,
-                item.productName,
-                item.imageUrl,
-                SearchConstant.TopAdsComponent.TOP_ADS
+            view.className,
+            item.topadsClickUrl,
+            item.productID,
+            item.productName,
+            item.imageUrl,
+            SearchConstant.TopAdsComponent.TOP_ADS
         )
 
         view.sendTopAdsGTMTrackingProductClick(item)
@@ -1909,16 +1269,65 @@ class ProductListPresenter @Inject constructor(
     private fun getViewToTrackOnClickOrganicProduct(item: ProductItemDataView) {
         if (item.isOrganicAds) {
             topAdsUrlHitter.hitClickUrl(
-                    view.className,
-                    item.topadsClickUrl,
-                    item.productID,
-                    item.productName,
-                    item.imageUrl,
-                    SearchConstant.TopAdsComponent.ORGANIC_ADS
+                view.className,
+                item.topadsClickUrl,
+                item.productID,
+                item.productName,
+                item.imageUrl,
+                SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
         }
 
         view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
+    }
+
+    override fun onProductAddToCart(item: ProductItemDataView) {
+        if (item.shouldOpenVariantBottomSheet()) {
+            view.openVariantBottomSheet(item)
+        } else {
+            executeAtcCommon(item)
+        }
+    }
+
+    private fun executeAtcCommon(data: ProductItemDataView) {
+        val requestParams = data.createAddToCartRequestParams()
+
+        addToCartUseCase.setParams(requestParams)
+        addToCartUseCase.execute(
+            {
+                onAddToCartUseCaseSuccess(it, data)
+            },
+            ::onAddToCartUseCaseFailed
+        )
+    }
+
+    private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
+        return AddToCartRequestParams(
+            productId = productID.toLongOrZero(),
+            shopId = shopID.toIntOrZero(),
+            quantity = minOrder,
+            productName = productName,
+            price = price,
+            userId = if (userSession.isLoggedIn) userSession.userId else "0"
+        )
+    }
+
+    private fun onAddToCartUseCaseSuccess(
+        addToCartDataModel: AddToCartDataModel?,
+        productItemDataView: ProductItemDataView,
+    ) {
+        view.updateSearchBarNotification()
+
+        val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
+        view.openAddToCartToaster(message, true)
+
+        trackProductClick(productItemDataView)
+        view.sendGTMTrackingProductATC(productItemDataView, addToCartDataModel?.data?.cartId)
+    }
+
+    private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
+        val message = throwable?.message ?: ""
+        view.openAddToCartToaster(message, false)
     }
 
     override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {
@@ -1963,290 +1372,9 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region BottomSheet Filter
-    override fun getProductCount(mapParameter: Map<String, String>?) {
-        if (isViewNotAttached) return
-        if (mapParameter == null) {
-            view.setProductCount("0")
-            return
-        }
-
-        val getProductCountRequestParams = requestParamsGenerator.createGetProductCountRequestParams(
-            mapParameter,
-            chooseAddressDelegate.getChooseAddressParams(),
-        )
-        val getProductCountSubscriber = createGetProductCountSubscriber()
-        getProductCountUseCase.get().execute(getProductCountRequestParams, getProductCountSubscriber)
-    }
-
-    private fun createGetProductCountSubscriber(): Subscriber<String> {
-        return object : Subscriber<String>() {
-            override fun onCompleted() { }
-
-            override fun onError(e: Throwable) {
-                setProductCount("0")
-            }
-
-            override fun onNext(productCountText: String) {
-                setProductCount(productCountText)
-            }
-        }
-    }
-
-    private fun setProductCount(productCountText: String) {
-        if (isViewNotAttached) return
-
-        view.setProductCount(productCountText)
-    }
-
-    override fun openFilterPage(searchParameter: Map<String, Any>?) {
-        if (isViewNotAttached || searchParameter == null) return
-        if (!isBottomSheetFilterEnabled) return
-
-        isBottomSheetFilterEnabled = false
-
-        view.sendTrackingOpenFilterPage()
-        view.openBottomSheetFilter(dynamicFilterModel)
-
-        if (dynamicFilterModel == null) {
-            val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
-                searchParameter,
-                chooseAddressDelegate.getChooseAddressParams(),
-            )
-            getDynamicFilterUseCase.get().execute(
-                    getDynamicFilterRequestParams,
-                    createGetDynamicFilterModelSubscriber()
-            )
-        }
-    }
-
-    private fun createGetDynamicFilterModelSubscriber(): Subscriber<DynamicFilterModel> {
-        return object : Subscriber<DynamicFilterModel>() {
-            override fun onCompleted() { }
-
-            override fun onNext(dynamicFilterModel: DynamicFilterModel) {
-                handleGetDynamicFilterSuccess(dynamicFilterModel)
-            }
-
-            override fun onError(e: Throwable) {
-                handleGetDynamicFilterFailed()
-            }
-        }
-    }
-
-    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
-        if (!dynamicFilterModel.isEmpty()) {
-            this.dynamicFilterModel = dynamicFilterModel
-            getViewToSetDynamicFilterModel(dynamicFilterModel)
-        } else {
-            handleGetDynamicFilterFailed()
-        }
-    }
-
-    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
-        if (isViewNotAttached) return
-
-        view.setDynamicFilter(dynamicFilterModel)
-    }
-
-    private fun handleGetDynamicFilterFailed() {
-        getViewToSetDynamicFilterModel(createSearchProductDefaultFilter())
-    }
-
-    override fun onBottomSheetFilterDismissed() {
-        isBottomSheetFilterEnabled = true
-    }
-
-    override fun onApplySortFilter(mapParameter: Map<String, Any>) {
-        val keywordFromFilter = mapParameter[SearchApiConst.Q] ?: ""
-        val currentKeyword = view?.queryKey ?: ""
-
-        if (currentKeyword != keywordFromFilter)
-            dynamicFilterModel = null
-    }
-    //endregion
-
-    //region Broad Match impression and click
-    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
-        if (isViewNotAttached) return
-
-        if (broadMatchItemDataView.isOrganicAds)
-            sendTrackingImpressBroadMatchAds(broadMatchItemDataView)
-
-        when(val carouselProductType = broadMatchItemDataView.carouselProductType) {
-            is BroadMatchProduct -> view.trackEventImpressionBroadMatchItem(broadMatchItemDataView)
-            is DynamicCarouselProduct -> view.trackDynamicProductCarouselImpression(
-                    broadMatchItemDataView,
-                    carouselProductType.type,
-                    carouselProductType.inspirationCarouselProduct,
-            )
-        }
-    }
-
-    private fun sendTrackingImpressBroadMatchAds(broadMatchItemDataView: BroadMatchItemDataView) {
-        topAdsUrlHitter.hitImpressionUrl(
-                view.className,
-                broadMatchItemDataView.topAdsViewUrl,
-                broadMatchItemDataView.id,
-                broadMatchItemDataView.name,
-                broadMatchItemDataView.imageUrl,
-                SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
-        )
-    }
-
-    override fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView) {
-        if (isViewNotAttached) return
-
-        when(val carouselProductType = broadMatchItemDataView.carouselProductType) {
-            is BroadMatchProduct -> view.trackEventClickBroadMatchItem(broadMatchItemDataView)
-            is DynamicCarouselProduct -> view.trackDynamicProductCarouselClick(
-                    broadMatchItemDataView,
-                    carouselProductType.type,
-                    carouselProductType.inspirationCarouselProduct,
-            )
-        }
-        view.redirectionStartActivity(broadMatchItemDataView.applink, broadMatchItemDataView.url)
-
-        if (broadMatchItemDataView.isOrganicAds)
-            sendTrackingClickBroadMatchAds(broadMatchItemDataView)
-    }
-
-    private fun sendTrackingClickBroadMatchAds(broadMatchItemDataView: BroadMatchItemDataView) {
-        topAdsUrlHitter.hitClickUrl(
-                view.className,
-                broadMatchItemDataView.topAdsClickUrl,
-                broadMatchItemDataView.id,
-                broadMatchItemDataView.name,
-                broadMatchItemDataView.imageUrl,
-                SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
-        )
-    }
-
-    override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
-        if (isViewNotAttached) return
-
-        if (broadMatchDataView.carouselOptionType == BroadMatch)
-            view.trackEventImpressionBroadMatch(broadMatchDataView)
-    }
-
-    override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
-        if (isViewNotAttached) return
-        trackBroadMatchSeeMoreClick(broadMatchDataView)
-
-        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.applink)
-        view.redirectionStartActivity(applink, broadMatchDataView.url)
-    }
-
-    override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
-        if (isViewNotAttached) return
-        trackBroadMatchSeeMoreClick(broadMatchDataView)
-
-        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.cardButton.applink)
-        view.redirectionStartActivity(applink, null)
-    }
-
-    private fun getModifiedApplinkToSearchResultIfNeeded(applink: String): String {
-        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            view.modifyApplinkToSearchResult(applink)
-        else applink
-    }
-
-    private fun trackBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
-        when(val carouselOptionType = broadMatchDataView.carouselOptionType) {
-            is BroadMatch -> view.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
-            is DynamicCarouselOption -> view.trackEventClickSeeMoreDynamicProductCarousel(
-                broadMatchDataView,
-                carouselOptionType.option.inspirationCarouselType,
-                carouselOptionType.option,
-            )
-        }
-    }
-    //endregion
-
-    //region Inspiration Carousel
-    override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
-        if (isViewNotAttached) return
-
-        if(product.isOrganicAds) sendTrackingImpressInspirationCarouselAds(product)
-
-        when(product.layout) {
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID ->
-                view.trackEventImpressionInspirationCarouselGridItem(product)
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
-                view.trackEventImpressionInspirationCarouselChipsItem(product)
-            else -> view.trackEventImpressionInspirationCarouselListItem(product)
-        }
-    }
-
-    private fun sendTrackingImpressInspirationCarouselAds(product: InspirationCarouselDataView.Option.Product) {
-        topAdsUrlHitter.hitImpressionUrl(
-            view.className,
-            product.topAdsViewUrl,
-            product.id,
-            product.name,
-            product.imgUrl,
-            SearchConstant.TopAdsComponent.ORGANIC_ADS
-        )
-    }
-
-    override fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product) {
-        if (isViewNotAttached) return
-
-        view.redirectionStartActivity(product.applink, product.url)
-
-        when(product.layout) {
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID ->
-                view.trackEventClickInspirationCarouselGridItem(product)
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
-                view.trackEventClickInspirationCarouselChipsItem(product)
-            else -> view.trackEventClickInspirationCarouselListItem(product)
-        }
-
-        if(product.isOrganicAds) sendTrackingClickInspirationCarouselAds(product)
-    }
-
-    private fun sendTrackingClickInspirationCarouselAds(product: InspirationCarouselDataView.Option.Product) {
-        topAdsUrlHitter.hitClickUrl(
-            view.className,
-            product.topAdsClickUrl,
-            product.id,
-            product.name,
-            product.imgUrl,
-            SearchConstant.TopAdsComponent.ORGANIC_ADS
-        )
-    }
-    //endregion
-
-    //region Change View
-    override fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType) {
-        if (isViewNotAttached) return
-
-        when (currentLayoutType) {
-            SearchConstant.ViewType.LIST -> switchToBigGridView(position)
-            SearchConstant.ViewType.SMALL_GRID -> switchToListView(position)
-            SearchConstant.ViewType.BIG_GRID -> switchToSmallGridView(position)
-        }
-    }
-
     override fun onViewResumed() {
         chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
     }
-
-    private fun switchToBigGridView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToBigGridView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID)
-    }
-
-    private fun switchToListView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToListView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_LIST)
-    }
-
-    private fun switchToSmallGridView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToSmallGridView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID)
-    }
-    //endregion
 
     override fun onLocalizingAddressSelected() {
         chooseAddressDelegate.updateChooseAddress(::refreshData)
@@ -2255,167 +1383,9 @@ class ProductListPresenter @Inject constructor(
     private fun refreshData() {
         if (isViewNotAttached) return
 
-        dynamicFilterModel = null
+        clearDynamicFilter()
 
         view.reloadData()
-    }
-
-    //region Inspiration Carousel Chips
-    override fun onInspirationCarouselChipsClick(
-            adapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            searchParameter: Map<String, Any>,
-    ) {
-        if (isViewNotAttached) return
-
-        changeActiveInspirationCarouselChips(inspirationCarouselViewModel, clickedInspirationCarouselOption)
-
-        view.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
-        view.refreshItemAtIndex(adapterPosition)
-
-        if (clickedInspirationCarouselOption.hasProducts()) return
-
-        getInspirationCarouselChipProducts(
-                adapterPosition,
-                clickedInspirationCarouselOption,
-                searchParameter,
-                inspirationCarouselViewModel.title,
-        )
-    }
-
-    private fun changeActiveInspirationCarouselChips(
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-    ) {
-        inspirationCarouselViewModel.options.forEach {
-            it.isChipsActive = false
-        }
-
-        clickedInspirationCarouselOption.isChipsActive = true
-    }
-
-    private fun getInspirationCarouselChipProducts(
-        adapterPosition: Int,
-        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        searchParameter: Map<String, Any>,
-        inspirationCarouselTitle: String,
-    ) {
-        getInspirationCarouselChipsUseCase.get().unsubscribe()
-
-        val requestParams = requestParamsGenerator.createGetInspirationCarouselChipProductsRequestParams(
-            clickedInspirationCarouselOption,
-            searchParameter,
-            chooseAddressDelegate.getChooseAddressParams(),
-        )
-
-        getInspirationCarouselChipsUseCase.get().execute(
-            requestParams,
-            createGetInspirationCarouselChipProductsSubscriber(
-                adapterPosition,
-                clickedInspirationCarouselOption,
-                inspirationCarouselTitle,
-            )
-        )
-    }
-
-    private fun createGetInspirationCarouselChipProductsSubscriber(
-            adapterPosition: Int,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            inspirationCarouselTitle: String,
-    ): Subscriber<InspirationCarouselChipsProductModel> {
-        return object : Subscriber<InspirationCarouselChipsProductModel>() {
-            override fun onCompleted() { }
-
-            override fun onError(e: Throwable) {}
-
-            override fun onNext(inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel) {
-                getInspirationCarouselChipsSuccess(
-                        adapterPosition,
-                        inspirationCarouselChipsProductModel,
-                        clickedInspirationCarouselOption,
-                        inspirationCarouselTitle
-                )
-            }
-        }
-    }
-
-    private fun getInspirationCarouselChipsSuccess(
-            adapterPosition: Int,
-            inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            inspirationCarouselTitle: String,
-    ) {
-        if (isViewNotAttached) return
-
-        val mapper = InspirationCarouselProductDataViewMapper()
-        val productList = mapper.convertToInspirationCarouselProductDataView(
-                inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product,
-                clickedInspirationCarouselOption.optionPosition,
-                clickedInspirationCarouselOption.inspirationCarouselType,
-                clickedInspirationCarouselOption.layout,
-                this::productLabelGroupToLabelGroupDataView,
-                clickedInspirationCarouselOption.title,
-                inspirationCarouselTitle,
-                dimension90,
-        )
-
-        clickedInspirationCarouselOption.product = productList
-
-        view.refreshItemAtIndex(adapterPosition)
-    }
-
-    private fun productLabelGroupToLabelGroupDataView(
-            productLabelGroupList: List<ProductLabelGroup>,
-    ): List<LabelGroupDataView> {
-        return productLabelGroupList.map {
-            LabelGroupDataView(
-                    it.position,
-                    it.type,
-                    it.title,
-                    it.url,
-            )
-        }
-    }
-    //endregion
-
-    //region Save Last Filter
-    override fun updateLastFilter(
-        searchParameter: Map<String, Any>,
-        savedOptionList: List<SavedOption>,
-    ) {
-        val searchParams = requestParamsGenerator.createInitializeSearchParam(
-            searchParameter,
-            chooseAddressDelegate.getChooseAddressParams(),
-        )
-        val saveLastFilterInput = SaveLastFilterInput(
-            lastFilter = savedOptionList,
-            mapParameter = searchParams.parameters,
-            categoryIdL2 = categoryIdL2,
-        )
-
-        val requestParams = RequestParams.create()
-        requestParams.putObject(INPUT_PARAMS, saveLastFilterInput)
-
-        saveLastFilterUseCase.get().unsubscribe()
-        saveLastFilterUseCase.get().execute(requestParams, emptySubscriber())
-    }
-
-    private fun <T> emptySubscriber() = object : Subscriber<T>() {
-        override fun onCompleted() {}
-
-        override fun onError(e: Throwable?) {}
-
-        override fun onNext(t: T?) {}
-    }
-
-    override fun closeLastFilter(searchParameter: Map<String, Any>) {
-        updateLastFilter(searchParameter, listOf())
-    }
-    //endregion
-
-    override fun shopAdsImpressionCount(impressionCount: Int) {
-        topAdsHeadlineHelper.seenAds = impressionCount
     }
 
     override fun detachView() {
@@ -2429,6 +1399,7 @@ class ProductListPresenter @Inject constructor(
         getLocalSearchRecommendationUseCase.get()?.unsubscribe()
         getInspirationCarouselChipsUseCase.get()?.unsubscribe()
         saveLastFilterUseCase.get()?.unsubscribe()
+        onSafeSearchViewDestroyed()
         if (compositeSubscription?.isUnsubscribed == true) unsubscribeCompositeSubscription()
     }
 

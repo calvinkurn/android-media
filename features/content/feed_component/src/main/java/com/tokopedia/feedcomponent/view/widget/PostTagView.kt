@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -48,7 +49,7 @@ class PostTagView @JvmOverloads constructor(
     private var productViewPrice: Typography
     private var productViewSlashedPrice: Typography
     private var constraintLayout: ConstraintLayout
-    private var listener: DynamicPostViewHolder.DynamicPostListener? = null
+    private var listener: TagBubbleListener? = null
     private var bubbleMarginStart: Int = 0
     private var dotMarginStart: Int = 0
     private var dotMarginTop: Int = 0
@@ -86,14 +87,15 @@ class PostTagView @JvmOverloads constructor(
     }
 
     fun bindData(
-        dynamicPostListener: DynamicPostViewHolder.DynamicPostListener?,
+        tagBubbleListener: TagBubbleListener?,
         products: List<FeedXProduct>,
         width: Int,
         height: Int,
         positionInFeed: Int,
-        bitmap: Bitmap?
+        bitmap: Bitmap?,
+        campaign: FeedXCampaign?
     ) {
-        this.listener = dynamicPostListener
+        this.listener = tagBubbleListener
         this.dotMarginStart = (width * (feedXTag.posX)).toInt()
         this.dotMarginTop = (height * (feedXTag.posY)).toInt()
         this.postImageHeight = height
@@ -101,7 +103,10 @@ class PostTagView @JvmOverloads constructor(
         val product = products[feedXTag.tagIndex]
         productViewName.text = product.name
 
-        if (product.isDiscount) {
+        if (campaign?.isUpcoming == true) {
+            productViewPrice.text = product.priceMaskedFmt
+            setSlashedPriceText(product.priceFmt)
+        } else if (product.isDiscount) {
             productViewPrice.text = product.priceDiscountFmt
             setSlashedPriceText(product.priceOriginalFmt)
         } else {
@@ -285,6 +290,14 @@ class PostTagView @JvmOverloads constructor(
                 0
         }
         return 0
+    }
+    interface TagBubbleListener{
+        fun onPostTagBubbleClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            adClickUrl: String
+        )
     }
 }
 

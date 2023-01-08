@@ -37,6 +37,9 @@ class GetQuestionUseCase @Inject constructor(
                         options {
                           value
                           caption
+                          message
+                          applink
+                          textApplink
                         }
                       }
                     }

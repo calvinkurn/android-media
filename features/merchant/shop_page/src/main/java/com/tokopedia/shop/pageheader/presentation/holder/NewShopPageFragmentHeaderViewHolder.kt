@@ -18,12 +18,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.ShopTickerType
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
-import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
@@ -37,19 +38,21 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
-class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding?, private val listener: ShopPageFragmentViewHolderListener,
-                                          private val shopPageTracking: ShopPageTrackingBuyer?,
-                                          private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
-                                          private val context: Context,
-                                          private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
-                                          private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
-                                          private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
-                                          private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-                                          private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-                                          private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
-                                          private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
-                                          private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
-                                          private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
+class NewShopPageFragmentHeaderViewHolder(
+    private val viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding?,
+    private val listener: ShopPageFragmentViewHolderListener,
+    private val shopPageTracking: ShopPageTrackingBuyer?,
+    private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
+    private val context: Context,
+    private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
+    private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+    private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
+    private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
+    private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+    private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
+    private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
+    private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
+    private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 ) {
     private var isShopFavorite = false
     private var isUserNeverFollow = false
@@ -62,11 +65,11 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     private val rvShopPageHeaderWidget: RecyclerView? = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.rvShopPageHeaderWidget
     private val tickerShopStatus: Ticker? = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.tickerShopStatus
 
-    fun updateChooseAddressWidget(){
+    fun updateChooseAddressWidget() {
         chooseAddressWidget?.updateWidget()
     }
 
-    fun hideChooseAddressWidget(){
+    fun hideChooseAddressWidget() {
         chooseAddressWidget?.hide()
     }
 
@@ -74,8 +77,8 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
         chooseAddressWidget?.apply {
             val isRollOutUser = true
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
-                    ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
-                    true
+                ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
+                true
             )
             if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
                 show()
@@ -89,7 +92,8 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     }
 
     fun setShopHeaderWidgetData(listWidget: List<ShopHeaderWidgetUiModel>) {
-        shopPageHeaderAdapter = ShopPageHeaderAdapter(ShopPageHeaderAdapterTypeFactory(
+        shopPageHeaderAdapter = ShopPageHeaderAdapter(
+            ShopPageHeaderAdapterTypeFactory(
                 shopHeaderBasicInfoWidgetListener,
                 shopPerformanceWidgetBadgeTextValueListener,
                 shopPerformanceWidgetImageOnlyListener,
@@ -99,7 +103,8 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
                 shopPageTrackingSGCPlayWidget,
                 shopPlayWidgetListener,
                 shopPerformanceWidgetImageTextListener
-        ))
+            )
+        )
         rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvShopPageHeaderWidget?.itemAnimator = null
         rvShopPageHeaderWidget?.adapter = shopPageHeaderAdapter
@@ -111,10 +116,10 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
         isUserNeverFollow = followStatus?.status?.userNeverFollow == true
         followStatus?.let {
             shopPageHeaderAdapter?.setFollowButtonData(
-                    it.followButton?.buttonLabel.orEmpty(),
-                    it.followButton?.voucherIconURL.orEmpty(),
-                    isShopFavorite,
-                    isUserNeverFollow
+                it.followButton?.buttonLabel.orEmpty(),
+                it.followButton?.voucherIconURL.orEmpty(),
+                isShopFavorite,
+                isUserNeverFollow
             )
         }
     }
@@ -122,12 +127,12 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     fun updateFollowStatus(followShop: FollowShop) {
         isShopFavorite = followShop.isFollowing == true
         shopPageHeaderAdapter?.setFollowButtonData(
-                label = followShop.buttonLabel.orEmpty(),
-                isFollowing = isShopFavorite
+            label = followShop.buttonLabel.orEmpty(),
+            isFollowing = isShopFavorite
         )
     }
 
-    fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel){
+    fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel) {
         shopPageHeaderAdapter?.setPlayWidgetData(shopPageHeaderDataModel)
     }
 
@@ -175,19 +180,24 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
         val statusTitle = shopInfo.statusInfo.statusTitle
         val shopStatus = shopInfo.statusInfo.shopStatus
+        val shopTickerType = shopInfo.statusInfo.tickerType
         val statusMessage = shopInfo.statusInfo.statusMessage
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
         tickerShopStatus?.show()
-        tickerShopStatus?.tickerType = Ticker.TYPE_WARNING
+        tickerShopStatus?.tickerType = when (shopTickerType) {
+            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
+            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_WARNING
+        }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
         tickerShopStatus?.setHtmlDescription(
-                if(shopStatus == ShopStatusDef.MODERATED && isMyShop) {
-                    generateShopModerateTickerDescription(statusMessage)
-                } else {
-                    statusMessage
-                }
+            if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
+                generateShopModerateTickerDescription(statusMessage)
+            } else {
+                statusMessage
+            }
         )
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -195,27 +205,33 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
                 when (shopStatus) {
                     ShopStatusDef.CLOSED -> {
                         shopPageTracking?.sendOpenShop()
-                        shopPageTracking?.clickOpenOperationalShop(CustomDimensionShopPage
+                        shopPageTracking?.clickOpenOperationalShop(
+                            CustomDimensionShopPage
                                 .create(
-                                        shopId,
-                                        isOfficialStore,
-                                        isGoldMerchant
-                                ))
+                                    shopId,
+                                    isOfficialStore,
+                                    isGoldMerchant
+                                )
+                        )
                     }
                     ShopStatusDef.NOT_ACTIVE -> {
-                        shopPageTracking?.clickHowToActivateShop(CustomDimensionShopPage
+                        shopPageTracking?.clickHowToActivateShop(
+                            CustomDimensionShopPage
                                 .create(
-                                        shopId,
-                                        isOfficialStore,
-                                        isGoldMerchant
-                                ))
+                                    shopId,
+                                    isOfficialStore,
+                                    isGoldMerchant
+                                )
+                        )
                     }
                 }
-                if(linkUrl == context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url)) {
+                if (linkUrl == context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url)) {
                     // linkUrl is from appended moderate description, show bottomsheet to request open moderate
-                    listener.setShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance().apply {
-                        init(listener)
-                    })
+                    listener.setShopUnmoderateRequestBottomSheet(
+                        ShopRequestUnmoderateBottomSheet.createInstance().apply {
+                            init(listener)
+                        }
+                    )
                 } else {
                     // original url, open web view
                     listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
@@ -223,12 +239,19 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
             }
 
             override fun onDismiss() {}
-
         })
-        if (isMyShop) {
-            tickerShopStatus?.closeButtonVisibility = View.GONE
-        } else {
+
+        // special handling for shop status incubated
+        if (shopInfo.statusInfo.shopStatus == ShopStatusDef.INCUBATED) {
+            // always show ticker close button if shop is incubated
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+        } else {
+            // default general condition for shop ticker
+            if (isMyShop) {
+                tickerShopStatus?.closeButtonVisibility = View.GONE
+            } else {
+                tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+            }
         }
     }
 
@@ -236,12 +259,12 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
         tickerShopStatus?.hide()
     }
 
-    private fun generateShopModerateTickerDescription(originalStatusMessage: String) : String {
+    private fun generateShopModerateTickerDescription(originalStatusMessage: String): String {
         // append action text to request open moderation
         val appendedText = context.getString(
-                R.string.shop_page_header_request_unmoderate_appended_text,
-                context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url),
-                context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
+            R.string.shop_page_header_request_unmoderate_appended_text,
+            context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url),
+            context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
         )
         return originalStatusMessage + appendedText
     }
@@ -257,43 +280,43 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     }
 
     fun showCoachMark(
-            followStatusData: FollowStatus?,
-            shopId: String,
-            userId: String
-    ){
+        followStatusData: FollowStatus?,
+        shopId: String,
+        userId: String
+    ) {
         val coachMarkList = arrayListOf<CoachMark2Item>().apply {
-            getShopFollowButtonCoachMarkItem(followStatusData)?.let{
+            getShopFollowButtonCoachMarkItem(followStatusData)?.let {
                 add(it)
             }
-            getChooseAddressWidgetCoachMarkItem()?.let{
+            getChooseAddressWidgetCoachMarkItem()?.let {
                 add(it)
             }
         }
-        if(coachMarkList.isNotEmpty()){
+        if (coachMarkList.isNotEmpty()) {
             coachMark = CoachMark2(context)
             coachMark?.isOutsideTouchable = true
             coachMark?.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     checkCoachMarkImpression(
-                            onCoachMarkFollowButtonImpressed = {
-                                listener.saveFirstTimeVisit()
-                                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
-                            },
-                            onCoachMarkChooseAddressWidgetImpressed = {
-                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(context)
-                            }
+                        onCoachMarkFollowButtonImpressed = {
+                            listener.saveFirstTimeVisit()
+                            shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                        },
+                        onCoachMarkChooseAddressWidgetImpressed = {
+                            ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(context)
+                        }
                     )
                 }
             })
             coachMark?.showCoachMark(coachMarkList)
             checkCoachMarkImpression(
-                    onCoachMarkFollowButtonImpressed = {
-                        listener.saveFirstTimeVisit()
-                        shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
-                    },
-                    onCoachMarkChooseAddressWidgetImpressed = {
-                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(context)
-                    }
+                onCoachMarkFollowButtonImpressed = {
+                    listener.saveFirstTimeVisit()
+                    shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                },
+                onCoachMarkChooseAddressWidgetImpressed = {
+                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(context)
+                }
             )
         }
     }
@@ -303,9 +326,9 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let {
                 CoachMark2Item(
-                        it,
-                        context.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
-                        context.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
+                    it,
+                    context.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
+                    context.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
                 )
             }
         } else {
@@ -314,8 +337,8 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     }
 
     private fun checkCoachMarkImpression(
-            onCoachMarkFollowButtonImpressed: () -> Unit,
-            onCoachMarkChooseAddressWidgetImpressed: () -> Unit
+        onCoachMarkFollowButtonImpressed: () -> Unit,
+        onCoachMarkChooseAddressWidgetImpressed: () -> Unit
     ) {
         coachMark?.coachMarkItem?.getOrNull(coachMark?.currentIndex.orZero())?.let {
             when (it.anchorView.id) {
@@ -331,15 +354,15 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     }
 
     private fun getShopFollowButtonCoachMarkItem(
-            followStatusData: FollowStatus?
+        followStatusData: FollowStatus?
     ): CoachMark2Item? {
         val buttonFollowView = shopPageHeaderAdapter?.getFollowButtonView()
         val coachMarkText = followStatusData?.followButton?.coachmarkText.orEmpty()
         return if (!coachMarkText.isBlank() && listener.isFirstTimeVisit() == false && buttonFollowView != null) {
             CoachMark2Item(
-                    anchorView = buttonFollowView,
-                    title = "",
-                    description = MethodChecker.fromHtml(coachMarkText)
+                anchorView = buttonFollowView,
+                title = "",
+                description = MethodChecker.fromHtml(coachMarkText)
             )
         } else {
             null
@@ -351,8 +374,7 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     }
 
     fun updateShopName(shopName: String) {
-        if(shopName.isNotEmpty())
+        if (shopName.isNotEmpty())
             shopPageHeaderAdapter?.setShopName(MethodChecker.fromHtml(shopName).toString())
     }
-
 }

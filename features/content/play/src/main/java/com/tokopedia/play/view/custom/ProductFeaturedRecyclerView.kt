@@ -9,6 +9,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.Shader
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -36,7 +37,7 @@ class ProductFeaturedRecyclerView : RecyclerView {
     private val mEndGradientRect = Rect(0, 0, 0, 0)
 
     override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
-        if (visibility == View.GONE) {
+        if (visibility == View.GONE || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return super.drawChild(canvas, child, drawingTime)
         }
 
@@ -67,7 +68,7 @@ class ProductFeaturedRecyclerView : RecyclerView {
     }
 
     private fun setupEndGradientRect(endBounds: Int) {
-        val startGradient = width - 3 * endBounds
+        val startGradient = width - START_GRADIENT * endBounds
         mFadingEdgePaint.shader = getHorizontalGradientShader(
             startGradient.toFloat(),
             endBounds.toFloat()
@@ -94,5 +95,9 @@ class ProductFeaturedRecyclerView : RecyclerView {
             null,
             Shader.TileMode.CLAMP
         )
+    }
+
+    companion object {
+        private const val START_GRADIENT = 3
     }
 }

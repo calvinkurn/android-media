@@ -10,13 +10,17 @@ import org.hamcrest.TypeSafeMatcher
 fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?>? {
     return object : TypeSafeMatcher<View?>() {
         var currentIndex = 0
+        var foundIndex = -1
         override fun describeTo(description: Description) {
             description.appendText("with index: ")
             description.appendValue(index)
+            description.appendText("found index: ")
+            description.appendValue(foundIndex)
             matcher.describeTo(description)
         }
 
         override fun matchesSafely(view: View?): Boolean {
+            foundIndex = currentIndex
             return matcher.matches(view) && currentIndex++ == index
         }
     }

@@ -35,19 +35,25 @@ private const val DY_ELEVATION_DIVIDER = 3f
 private const val SHADOW_LAYER_DX = 0f
 
 fun View.show() {
-    this.visibility = View.VISIBLE
+    // optimize recalculate
+    if (this.visibility != View.VISIBLE)
+        this.visibility = View.VISIBLE
 }
 
 fun View.hide() {
-    this.visibility = View.GONE
+    // optimize recalculate
+    if (this.visibility != View.GONE)
+        this.visibility = View.GONE
 }
 
 fun View.invisible() {
-    this.visibility = View.INVISIBLE
+    // optimize recalculate
+    if (this.visibility != View.INVISIBLE)
+        this.visibility = View.INVISIBLE
 }
 
 fun View.showWithCondition(shouldShow: Boolean) {
-    this.visibility = if (shouldShow) View.VISIBLE else View.GONE
+    if (shouldShow) show() else gone()
 }
 
 fun View.visibleWithCondition(isShown: Boolean) {
@@ -71,11 +77,11 @@ fun <T : View> T.showIfWithBlock(predicate: Boolean, block: T.() -> Unit) {
 }
 
 fun View.visible() {
-    visibility = View.VISIBLE
+    show()
 }
 
 fun View.gone() {
-    visibility = View.GONE
+    hide()
 }
 
 var View.isVisible: Boolean
@@ -99,6 +105,18 @@ fun TextView.setTextAndCheckShow(text: String?) {
 
 fun ViewGroup.inflateLayout(layoutId: Int, isAttached: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutId, this, isAttached)
+}
+
+fun ViewGroup?.setViewGroupEnabled(enable: Boolean) {
+    if (this != null) {
+        repeat (childCount) {
+            val child = getChildAt(it)
+            child.isEnabled = enable
+            if (child is ViewGroup) {
+                child.setViewGroupEnabled(enable)
+            }
+        }
+    }
 }
 
 fun Activity.createDefaultProgressDialog(loadingMessage: String?,
@@ -406,4 +424,10 @@ fun View?.generateBackgroundWithShadow(@ColorRes backgroundColor: Int,
     drawable.setLayerInset(0, 0, elevationValue * 2, 0, 0)
 
     return drawable
+}
+
+fun View.setLayoutHeight(height: Int) {
+    if (layoutParams.height == height) return
+
+    layoutParams.height = height
 }

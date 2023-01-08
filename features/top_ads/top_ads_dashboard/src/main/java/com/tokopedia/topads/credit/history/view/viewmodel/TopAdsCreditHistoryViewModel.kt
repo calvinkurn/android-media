@@ -3,25 +3,21 @@ package com.tokopedia.topads.credit.history.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
-import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_END_DATE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_START_DATE
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.domain.usecase.TopadsCreditHistoryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -30,12 +26,13 @@ class TopAdsCreditHistoryViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
-    private val topAdsCreditHistoryUseCase: GraphqlUseCase<TopAdsCreditHistory.CreditsResponse>,
+    private val creditHistoryUseCase: TopadsCreditHistoryUseCase,
     @Named("Main") val dispatcher: CoroutineDispatcher,
     private val pendingRewardUseCase: TopadsGetFreeDepositUseCase,
 ) : BaseViewModel(dispatcher) {
 
-    val creditsHistory = MutableLiveData<Result<TopAdsCreditHistory>>()
+    private val _creditsHistory = MutableLiveData<Result<TopAdsCreditHistory>>()
+    val creditsHistory : LiveData<Result<TopAdsCreditHistory>> = _creditsHistory
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
     val creditAmount = MutableLiveData<String>()
 
@@ -48,25 +45,13 @@ class TopAdsCreditHistoryViewModel @Inject constructor(
         }
     }
 
-    fun getCreditHistory(rawQuery: String, startDate: Date? = null, endDate: Date? = null) {
-        val params = mapOf(
-                SHOP_Id to userSessionInterface.shopId.toIntOrZero(),
-                PARAM_USER_ID to userSessionInterface.userId.toIntOrZero(),
-                PARAM_START_DATE to startDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) },
-                PARAM_END_DATE to endDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) }
-        )
-        topAdsCreditHistoryUseCase.setRequestParams(params)
-        topAdsCreditHistoryUseCase.setGraphqlQuery(rawQuery)
-        topAdsCreditHistoryUseCase.setTypeClass(TopAdsCreditHistory.CreditsResponse::class.java)
-        topAdsCreditHistoryUseCase.execute(
-                { data ->
-                    when {
-                        data.response.errors.isEmpty() -> creditsHistory.value = Success(data.response.dataHistory)
-                        else -> creditsHistory.value = Fail(ResponseErrorException(data.response.errors))
-                    }
-
-                }, {
-            creditsHistory.value = Fail(it)
+    fun getCreditHistory(startDate: Date? = null, endDate: Date? = null) {
+        launchCatchError(block = {
+            creditHistoryUseCase.executeQuery(startDate, endDate).collect {
+                _creditsHistory.postValue(it)
+            }
+        }, onError = {
+            _creditsHistory.postValue(Fail(it))
         })
     }
 

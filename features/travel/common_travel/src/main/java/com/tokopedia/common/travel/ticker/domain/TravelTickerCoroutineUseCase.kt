@@ -1,6 +1,6 @@
 package com.tokopedia.common.travel.ticker.domain
 
-import com.tokopedia.common.travel.data.TravelTickerGQLQuery
+import com.tokopedia.common.travel.data.QueryTravelTicker
 import com.tokopedia.common.travel.ticker.data.TravelTickerRequest
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerAttribute
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerEntity
@@ -29,8 +29,7 @@ class TravelTickerCoroutineUseCase @Inject constructor(
                 PARAM_TICKER_REQUEST to TravelTickerRequest(pageName, instanceName, ANDROID_DEVICE_ID)
         )
         return try {
-            val query = TravelTickerGQLQuery.TRAVEL_TICKER
-            val graphqlRequest = GraphqlRequest(query, TravelTickerEntity::class.java, params)
+            val graphqlRequest = GraphqlRequest(QueryTravelTicker(), TravelTickerEntity::class.java, params)
             useCase.addRequest(graphqlRequest)
 
             val tickerData = useCase.executeOnBackground().getSuccessData<TravelTickerEntity>().travelTicker

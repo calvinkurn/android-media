@@ -1,0 +1,25 @@
+{
+  "profile": {
+    "user_id": "111",
+    "full_name": "Habibi",
+    "first_name": "Habibi",
+    "email": "habib@tokopedia.com",
+    "bday": "0001-01-01T00:00:00Z",
+    "gender": "0",
+    "phone": "",
+    "phone_masked": "",
+    "phone_verified": false,
+    "profile_picture": "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-21.jpg",
+    "created_password": true,
+    "isLoggedIn": true
+  },
+  "shopBasicData": {
+    "result": {
+      "shopID": "",
+      "name": "",
+      "domain": "",
+      "level": 0,
+      "logo": ""
+    }
+  }
+}

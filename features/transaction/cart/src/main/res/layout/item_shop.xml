@@ -175,6 +175,7 @@
                 android:layout_height="20dp"
                 android:gravity="center_vertical"
                 android:scaleType="fitStart"
+                app:unify_image_corner_radius="0"
                 tools:src="@color/Unify_G500" />
 
         </com.google.android.flexbox.FlexboxLayout>

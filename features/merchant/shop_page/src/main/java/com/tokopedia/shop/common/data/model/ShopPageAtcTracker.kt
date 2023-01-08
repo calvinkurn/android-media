@@ -10,6 +10,14 @@ data class ShopPageAtcTracker(
     val atcType: AtcType,
     val componentName: String
 ) {
+
+    /**
+     * Enum for action activity
+     * @property ADD for action adding item
+     * @property UPDATE_ADD for action add quantity
+     * @property UPDATE_REMOVE for action minus quantity
+     * @property REMOVE for action removing item
+     * */
     enum class AtcType {
         ADD,
         UPDATE_ADD,

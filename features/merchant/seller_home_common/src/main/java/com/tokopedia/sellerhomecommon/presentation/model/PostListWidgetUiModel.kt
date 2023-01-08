@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 /**
@@ -27,10 +29,16 @@ data class PostListWidgetUiModel(
     override var isNeedToBeRemoved: Boolean = false,
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
+    override val isDismissible: Boolean = false,
+    override var dismissibleState: DismissibleState = DismissibleState.NONE,
+    override val dismissToken: String = String.EMPTY,
+    override var shouldShowDismissalTimer: Boolean = false,
+    override var useRealtime: Boolean = false,
     val postFilter: List<WidgetFilterUiModel>,
     val maxData: Int,
-    val maxDisplay: Int
-) : BaseWidgetUiModel<PostListDataUiModel> {
+    val maxDisplay: Int,
+    var isCheckingMode: Boolean = false
+) : BaseDismissibleWidgetUiModel<PostListDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)

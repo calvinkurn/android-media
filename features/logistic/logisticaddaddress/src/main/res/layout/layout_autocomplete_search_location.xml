@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -8,17 +9,21 @@
     android:paddingRight="10dp"
     android:paddingBottom="5dp">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dip"
-        android:textSize="@dimen/sp_16" />
+        android:textColor="@color/dms_default_text_view_color"
+        app:typographyWeight="reguler"
+        app:typographyType="paragraph_1" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@android:id/text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_12" />
+        android:textColor="@color/dms_default_text_view_color"
+        app:typographyWeight="reguler"
+        app:typographyType="paragraph_3" />
 
 </LinearLayout>

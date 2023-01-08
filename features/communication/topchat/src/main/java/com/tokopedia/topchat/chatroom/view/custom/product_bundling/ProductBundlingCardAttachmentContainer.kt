@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Slide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,7 +39,8 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private var singleBundlingLayout: ConstraintLayout? = null
     private var image: ImageUnify? = null
     private var label: Label? = null
-    private var bundlingName: Typography? = null
+    private var singleItemBundlingName: Typography? = null
+    private var multipleItemBundlingName: Typography? = null
     private var originalPrice: Typography? = null
     private var totalDiscount: Typography? = null
     private var bundlePrice: Typography? = null
@@ -55,8 +55,10 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private var deferredAttachment: DeferredViewHolderAttachment? = null
 
     private var recyclerView: RecyclerView? = null
-    private val adapter = MultipleBundlingItemAdapter()
-    private val itemDecoration = BundleSpaceItemDecoration(SPACE)
+    private var adapter: MultipleBundlingItemAdapter? = null
+    private var itemDecorationProductAttachment: BundleSpaceItemDecoration? = null
+    private var itemDecorationBroadcastAttachment: BroadcastBundleSpaceItemDecoration? = null
+    private var source: BundlingSource? = null
 
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
@@ -73,22 +75,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         )
     }
 
-    private val bgSender: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
-        ViewUtil.generateBackgroundWithShadow(
-                this,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-                R.dimen.dp_topchat_2,
-                R.dimen.dp_topchat_1,
-                Gravity.CENTER,
-                com.tokopedia.unifyprinciples.R.color.Unify_G200,
-                getStrokeWidthSenderDimenRes()
-            )
-    }
+    private var bgSender: Drawable? = null
 
     private val defaultMarginLeft: Int by lazy(LazyThreadSafetyMode.NONE) {
         (layoutParams as? LinearLayout.LayoutParams)?.leftMargin ?: 0
@@ -128,7 +115,8 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         singleBundlingLayout = findViewById(R.id.single_bundling_layout)
         image = findViewById(R.id.iv_single_product_thumbnail)
         label = findViewById(R.id.label_package)
-        bundlingName = findViewById(R.id.tv_product_bundling_name)
+        singleItemBundlingName = findViewById(R.id.tv_product_bundling_name)
+        multipleItemBundlingName = findViewById(R.id.tv_product_bundle_name)
         originalPrice = findViewById(R.id.tv_original_price)
         totalDiscount = findViewById(R.id.tv_total_discount)
         bundlePrice = findViewById(R.id.tv_bundle_price)
@@ -144,11 +132,12 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         adapterListener: AdapterListener,
         searchListener: SearchListener,
         commonListener: CommonViewHolderListener,
-        deferredAttachment: DeferredViewHolderAttachment
+        deferredAttachment: DeferredViewHolderAttachment,
+        source: BundlingSource?
     ) {
+        this.source = source
         this.adapterPosition = adapterPosition
         bindListener(listener, adapterListener, searchListener, commonListener, deferredAttachment)
-        bindLayoutGravity(element)
         bindBackground(element)
         bindSyncProductBundling(element)
         bindLoading(element)
@@ -166,11 +155,12 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             initRecyclerView(element)
             showRecyclerView()
         } else {
-            bindImage(element.productBundling.bundleItem?.first())
+            bindImage(element.productBundling.bundleItem?.first(), element)
             bindLabel(element.productBundling.bundleItem?.first())
             bindBundlingName(element.productBundling.bundleItem?.first())
             hideRecyclerView()
         }
+        bindItemBundlingName(element)
     }
 
     private fun isMultipleBundleItem(element: ProductBundlingUiModel) : Boolean {
@@ -187,12 +177,20 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         recyclerView?.show()
     }
 
+    private fun bindItemBundlingName(element: ProductBundlingUiModel) {
+        if (source == BundlingSource.BROADCAST_ATTACHMENT_SINGLE ||
+                source == BundlingSource.BROADCAST_ATTACHMENT_MULTIPLE) {
+            multipleItemBundlingName?.text = element.productBundling.bundleTitle
+            multipleItemBundlingName?.show()
+        } else {
+            multipleItemBundlingName?.hide()
+        }
+    }
+
     private fun initRecyclerView(element: ProductBundlingUiModel) {
         recyclerView?.let {
             it.adapter = adapter
-            element.productBundling.bundleItem?.let { list ->
-                bindBundleItemList(list)
-            }
+            bindBundleItemList(element)
             it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false)
@@ -200,8 +198,11 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindBundleItemList(list : List<BundleItem>) {
-        adapter.bundlingList = list
+    private fun bindBundleItemList(element: ProductBundlingUiModel) {
+        element.productBundling.bundleItem?.let { list ->
+            adapter?.bundlingList = list
+        }
+        adapter?.productBundling = element
     }
 
     private fun addItemDecoration() {
@@ -209,7 +210,31 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         for (i in 0 until counter) {
             recyclerView?.removeItemDecorationAt(i)
         }
-        recyclerView?.addItemDecoration(itemDecoration)
+        setSpaceItemDecoration()
+    }
+
+    private fun setSpaceItemDecoration() {
+        when (source) {
+            BundlingSource.PRODUCT_ATTACHMENT -> {
+                if (itemDecorationProductAttachment == null) {
+                    itemDecorationProductAttachment = BundleSpaceItemDecoration()
+                }
+                itemDecorationProductAttachment?.let {
+                    recyclerView?.addItemDecoration(it)
+                }
+            }
+            BundlingSource.BROADCAST_ATTACHMENT_SINGLE,
+            BundlingSource.BROADCAST_ATTACHMENT_MULTIPLE -> {
+                if (itemDecorationBroadcastAttachment == null) {
+                    source?.let {
+                        itemDecorationBroadcastAttachment = BroadcastBundleSpaceItemDecoration(it)
+                    }
+                }
+                itemDecorationBroadcastAttachment?.let {
+                    recyclerView?.addItemDecoration(it)
+                }
+            }
+        }
     }
 
     private fun bindListener(
@@ -224,14 +249,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         this.searchListener = searchListener
         this.commonListener = commonListener
         this.deferredAttachment = deferredAttachment
-    }
-
-    private fun bindLayoutGravity(element: ProductBundlingUiModel) {
-        if (element.isSender) {
-            gravityRight()
-        } else {
-            gravityLeft()
-        }
+        adapter = MultipleBundlingItemAdapter(listener)
     }
 
     private fun bindLoading(element: ProductBundlingUiModel) {
@@ -242,9 +260,14 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindImage(item: BundleItem?) {
-        item?.imageUrl?.let {
-            image?.setImageUrl(it)
+    private fun bindImage(item: BundleItem?, element: ProductBundlingUiModel) {
+        item?.let { bundleItem ->
+            image?.apply {
+                this.setImageUrl(bundleItem.imageUrl)
+                this.setOnClickListener {
+                    listener?.onClickProductBundlingImage(bundleItem, element)
+                }
+            }
         }
     }
 
@@ -270,7 +293,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
                 }
             }
         }
-        bundlingName?.text = spanText
+        singleItemBundlingName?.text = spanText
     }
 
     private fun bindPrice(element: ProductBundlingUiModel) {
@@ -296,11 +319,21 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindButton(button: UnifyButton, element: ProductBundlingUiModel) {
-        button.text = element.productBundling.ctaBundling?.ctaText
+        button.text = getButtonText(element)
         button.buttonType = UnifyButton.Type.MAIN
         when(element.productBundling.ctaBundling?.isDisabled) {
             false -> bindActiveButton(button, element)
             true -> bindDisabledButton(button)
+        }
+    }
+
+    private fun getButtonText(element: ProductBundlingUiModel): String? {
+        return if (element.isBroadcast() &&
+            element.productBundling.ctaBundling?.isDisabled == false
+        ) {
+            context?.getString(R.string.action_atc)
+        } else {
+            element.productBundling.ctaBundling?.ctaText
         }
     }
 
@@ -342,10 +375,33 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     private fun bindBackground(element: ProductBundlingUiModel) {
         background = if (element.isSender) {
+            setSellerBackground()
             bgSender
         } else {
             bgOpposite
         }
+    }
+
+    private fun setSellerBackground() {
+        val stroke = if (source == BundlingSource.PRODUCT_ATTACHMENT) {
+            com.tokopedia.unifyprinciples.R.color.Unify_G200
+        } else {
+            null
+        }
+        bgSender = ViewUtil.generateBackgroundWithShadow(
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            stroke,
+            getStrokeWidthSenderDimenRes()
+        )
     }
 
     /**
@@ -363,22 +419,13 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun gravityRight() {
-        setLayoutGravity(Gravity.END)
-    }
-
-    private fun gravityLeft() {
-        setLayoutGravity(Gravity.START)
-    }
-
-    private fun setLayoutGravity(@Slide.GravityFlag gravity: Int) {
-        (layoutParams as? LinearLayout.LayoutParams)?.apply {
-            this.gravity = gravity
-        }
+    enum class BundlingSource {
+        PRODUCT_ATTACHMENT,
+        BROADCAST_ATTACHMENT_MULTIPLE,
+        BROADCAST_ATTACHMENT_SINGLE
     }
 
     companion object {
-        private const val SPACE = 6
         private val LAYOUT = R.layout.item_topchat_product_bundling_card
     }
 }

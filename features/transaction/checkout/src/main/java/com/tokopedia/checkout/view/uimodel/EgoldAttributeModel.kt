@@ -16,5 +16,8 @@ class EgoldAttributeModel(
         var isChecked: Boolean = false,
         var buyEgoldValue: Long = 0,
         var egoldTieringModelArrayList: List<EgoldTieringModel> = emptyList(),
-        var isEnabled: Boolean = true
+        var isEnabled: Boolean = true,
+        var hyperlinkText: String? = null,
+        var hyperlinkUrl: String? = null,
+        var isShowHyperlink: Boolean = false
 ) : Parcelable

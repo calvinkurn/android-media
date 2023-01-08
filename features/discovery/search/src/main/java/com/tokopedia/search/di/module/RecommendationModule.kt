@@ -5,11 +5,11 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import dagger.Provides
-import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.di.qualifier.SearchContext
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
+import dagger.Provides
 import javax.inject.Named
 
 @Module

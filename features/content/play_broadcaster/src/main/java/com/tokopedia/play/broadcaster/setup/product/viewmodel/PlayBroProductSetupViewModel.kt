@@ -9,39 +9,44 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.ui.model.PagingType
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play_common.util.extension.combine
+import com.tokopedia.play_common.util.extension.switch
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -49,6 +54,7 @@ import kotlinx.coroutines.launch
 class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted isEligibleForPin: Boolean,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     userSession: UserSessionInterface,
@@ -60,6 +66,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         fun create(
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
+            isEligibleForPin: Boolean,
         ): PlayBroProductSetupViewModel
     }
 
@@ -67,6 +74,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         if (!savedStateHandle.hasProductSections()) {
             savedStateHandle.setProductSections(productSectionList)
         }
+        savedStateHandle.setEligiblePinStatus(isEligibleForPin)
     }
 
     val channelId: String
@@ -74,6 +82,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val maxProduct: Int
         get() = configStore.getMaxProduct()
+
+    val isEligibleForPin: Boolean
+        get() = savedStateHandle.isEligibleForPin()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(
@@ -97,7 +108,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val uiEvent: SharedFlow<PlayBroProductChooserEvent>
         get() = _uiEvent
 
-    val uiState = combine(
+    val uiState: StateFlow<ProductChooserUiState> = combine(
         _campaignAndEtalase,
         _focusedProductList,
         _selectedProductList,
@@ -116,7 +127,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.WhileSubscribed(STOP_TIME_OUT_MILLIS),
         ProductChooserUiState.Empty,
     )
 
@@ -131,11 +142,14 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         )
     }
 
+    val selectedProducts: List<ProductUiModel>
+        get() = _selectedProductList.value
+
     init {
         getCampaignAndEtalaseList()
 
         viewModelScope.launch {
-            searchQuery.debounce(300)
+            searchQuery.debounce(DEBOUNCE_TIME_OUT_MILLIS)
                 .collectLatest { query ->
                     _loadParam.update {
                         it.copy(keyword = query)
@@ -161,7 +175,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             _productTagSectionList.collectLatest { sections ->
-                savedStateHandle[KEY_PRODUCT_SECTIONS] = sections
+                savedStateHandle.setProductSections(sections)
             }
         }
     }
@@ -171,7 +185,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             is ProductSetupAction.SetSort -> handleSetSort(action.sort)
             is ProductSetupAction.SelectEtalase -> handleSelectEtalase(action.etalase)
             is ProductSetupAction.SelectCampaign -> handleSelectCampaign(action.campaign)
-            is ProductSetupAction.SelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.ToggleSelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.SetProducts -> handleSetProducts(action.products)
             is ProductSetupAction.LoadProductList -> handleLoadProductList(
                 param = _loadParam.value,
                 resetList = false,
@@ -180,6 +195,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             ProductSetupAction.SaveProducts -> handleSaveProducts()
             ProductSetupAction.RetryFetchProducts -> handleRetryFetchProducts()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
+            is ProductSetupAction.ClickPinProduct -> handleClickPin(action.product)
         }
     }
 
@@ -252,6 +268,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSetProducts(products: List<ProductUiModel>) = whenProductsNotSaving {
+        val productsSize = min(configStore.getMaxProduct(), products.size)
+        _selectedProductList.value = products.subList(0, productsSize).filterNot { it.stock <= 0 }
+    }
+
     private fun handleLoadProductList(
         param: ProductListPaging.Param,
         resetList: Boolean,
@@ -269,9 +290,15 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
         }
         getProductListJob = viewModelScope.launchCatchError(dispatchers.io, block = {
-            val page = if (resetList) 1 else _focusedProductList.value.page + 1
+            val pagingType = _focusedProductList.value.pagingType
             when (val selectedEtalase = _loadParam.value.etalase) {
                 is SelectedEtalaseModel.Campaign -> {
+                    val page = when {
+                        resetList -> 1
+                        pagingType is PagingType.Page -> pagingType.page + 1
+                        else -> 1
+                    }
+
                     val pagedProductList = repo.getProductsInCampaign(
                         campaignId = selectedEtalase.campaign.id,
                         page = page
@@ -281,17 +308,23 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                         it.copy(
                             productList = it.productList + pagedProductList.dataList,
                             resultState = PageResultState.Success(pagedProductList.hasNextPage),
-                            page = page,
+                            pagingType = PagingType.Page(page),
                         )
                     }
                 }
                 is SelectedEtalaseModel.Etalase,
                 SelectedEtalaseModel.None -> {
+                    val cursor = when {
+                        resetList -> ""
+                        pagingType is PagingType.Cursor -> pagingType.cursor
+                        else -> ""
+                    }
+
                     val pagedProductList = repo.getProductsInEtalase(
                         etalaseId = if (selectedEtalase is SelectedEtalaseModel.Etalase) {
                             selectedEtalase.etalase.id
                         } else "",
-                        page = page,
+                        cursor = cursor,
                         keyword = param.keyword,
                         sort = param.sort ?: SortUiModel.supportedSortList.first(),
                     )
@@ -300,7 +333,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                         it.copy(
                             productList = it.productList + pagedProductList.dataList,
                             resultState = PageResultState.Success(pagedProductList.hasNextPage),
-                            page = page,
+                            pagingType = PagingType.Cursor(pagedProductList.cursor),
                         )
                     }
                 }
@@ -323,9 +356,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSaveProducts() {
-        _saveState.update {
+        val currentState = _saveState.getAndUpdate {
             it.copy(isLoading = true)
         }
+        if (currentState.isLoading) return
+
         viewModelScope.launchCatchError(dispatchers.io, block = {
             repo.setProductTags(
                 channelId = configStore.getChannelId(),
@@ -399,11 +434,55 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         savedStateHandle[KEY_PRODUCT_SECTIONS] = productSectionList
     }
 
+    private fun SavedStateHandle.setEligiblePinStatus(
+        isEligibleForPin: Boolean
+    ) {
+        savedStateHandle[KEY_ELIGIBLE_PIN] = isEligibleForPin
+    }
+
     private fun SavedStateHandle.hasProductSections(): Boolean {
         return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
     }
 
+    private fun SavedStateHandle.isEligibleForPin(): Boolean {
+        return savedStateHandle[KEY_ELIGIBLE_PIN] ?: true
+    }
+
+    private fun handleClickPin(product: ProductUiModel){
+        viewModelScope.launchCatchError(block = {
+            product.updatePinProduct(isLoading = true, needToReset = true)
+            val result = repo.setPinProduct(channelId, product)
+            if(result)
+                product.updatePinProduct(isLoading = false)
+        }){
+            product.updatePinProduct(isLoading = false, needToReset = true)
+            _uiEvent.emit(PlayBroProductChooserEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
+        }
+    }
+
+    /**
+     * hacky way needToReset -> find better approach
+     */
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToReset: Boolean = false) {
+        _productTagSectionList.update { sectionList ->
+            sectionList.map { sectionUiModel ->
+                sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
+                sectionUiModel.products.map { prod ->
+                    if(prod.id == this.id)
+                        prod.copy(pinStatus = this.pinStatus.copy(isLoading = isLoading, isPinned =
+                            if(!needToReset) this.pinStatus.isPinned.switch()
+                            else this.pinStatus.isPinned))
+                    else prod.copy(pinStatus = prod.pinStatus.copy(isPinned = prod.pinStatus.isPinned && needToReset))
+                })
+            }
+        }
+    }
+
     companion object {
         private const val KEY_PRODUCT_SECTIONS = "product_sections"
+        private const val KEY_ELIGIBLE_PIN = "eligible_pin_status"
+
+        private const val STOP_TIME_OUT_MILLIS = 5000L
+        private const val DEBOUNCE_TIME_OUT_MILLIS = 300L
     }
 }

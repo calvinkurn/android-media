@@ -26,22 +26,22 @@ class ToolbarPromoCheckout : Toolbar {
         init()
     }
 
-    fun disableResetButton() {
-        viewBinding?.buttonResetPromo?.isEnabled = false
-        viewBinding?.buttonResetPromo?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+    fun disableInputPromoButton() {
+        viewBinding?.buttonInputPromo?.isEnabled = false
+        viewBinding?.buttonInputPromo?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
     }
 
-    fun enableResetButton() {
-        viewBinding?.buttonResetPromo?.isEnabled = true
-        viewBinding?.buttonResetPromo?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+    fun enableInputPromoButton() {
+        viewBinding?.buttonInputPromo?.isEnabled = true
+        viewBinding?.buttonInputPromo?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
     }
 
-    fun hideResetButton() {
-        viewBinding?.buttonResetPromo?.gone()
+    fun hideInputPromoButton() {
+        viewBinding?.buttonInputPromo?.gone()
     }
 
-    fun showResetButton() {
-        viewBinding?.buttonResetPromo?.show()
+    fun showInputPromoButton() {
+        viewBinding?.buttonInputPromo?.show()
     }
 
     private fun init() {
@@ -51,10 +51,8 @@ class ToolbarPromoCheckout : Toolbar {
             listener?.onBackPressed()
         }
 
-        viewBinding?.buttonResetPromo?.setOnClickListener {
-            if (viewBinding?.buttonResetPromo?.isEnabled == true) {
-                listener?.onClickResetPromo()
-            }
+        viewBinding?.buttonInputPromo?.setOnClickListener {
+            listener?.onClickInputCode()
         }
     }
 

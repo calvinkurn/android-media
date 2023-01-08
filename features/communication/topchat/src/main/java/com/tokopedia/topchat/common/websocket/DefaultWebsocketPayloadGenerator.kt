@@ -17,9 +17,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.ArrayList
 import javax.inject.Inject
 
-class DefaultWebsocketPayloadGenerator @Inject constructor(
+open class DefaultWebsocketPayloadGenerator @Inject constructor(
     private val userSession: UserSessionInterface
 ) : WebsocketPayloadGenerator {
+
+    override fun generateLocalId(): String {
+        return IdentifierUtil.generateLocalId()
+    }
 
     override fun generatePreviewMsg(
         message: String,
@@ -28,7 +32,7 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
         referredMsg: ParentReply?
     ): SendableUiModel {
         val startTime = SendableUiModel.generateStartTime()
-        val localId = IdentifierUtil.generateLocalId()
+        val localId = generateLocalId()
         return MessageUiModel.Builder()
             .withMsgId(roomMetaData.msgId)
             .withFromUid(userSession.userId)

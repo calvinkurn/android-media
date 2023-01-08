@@ -30,7 +30,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import javax.inject.Inject
@@ -71,7 +70,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
         "SmartLockActivity",
         "OvoRegisterInitialActivity",
         "OvoFinalPageActivity",
-        "SettingProfileActivity",
+        "ProfileInfoActivity",
         "LinkAccountReminderActivity",
         "SilentVerificationActivity",
         "LinkAccountWebViewActivity",
@@ -100,7 +99,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
         "SmartLockActivity",
         "ShopOpenRevampActivity",
         "PinpointMapActivity",
-        "SettingProfileActivity",
+        "ProfileInfoActivity",
         "LinkAccountReminderActivity",
         "SilentVerificationActivity",
         "LinkAccountWebViewActivity",
@@ -110,9 +109,6 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
         "BiometricOfferingActivity"
     )
 
-
-    private fun isEnableNew2Fa(): Boolean =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(NEW_BIOMETRIC_OFFERING) == NEW_BIOMETRIC_OFFERING
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (!exceptionPage.contains(activity.javaClass.simpleName)) {
@@ -203,19 +199,11 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     }
 
     private fun checking(activity: Activity) {
-        if (isEnableNew2Fa()) {
-            viewModel.getOffering(BiometricPromptHelper.isBiometricAvailableActivity(activity), {
-                handleResponseOfferingData(activity, it)
-            }, {
-                it.printStackTrace()
-            })
-        } else {
-            viewModel.check(onSuccess = {
-                handleResponse(activity, showInterruptData = it)
-            }, onError = {
-                it.printStackTrace()
-            })
-        }
+        viewModel.getOffering(BiometricPromptHelper.isBiometricAvailableActivity(activity), {
+            handleResponseOfferingData(activity, it)
+        }, {
+            it.printStackTrace()
+        })
     }
 
     override fun onActivityDestroyed(activity: Activity) {}
@@ -303,8 +291,6 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 
         const val encryptionPrefName = "ENCRYPTION_STATE_PREF"
         const val encryptionKeyName = "KEY_ENCRYPTION_ERROR"
-
-        private const val NEW_BIOMETRIC_OFFERING = "biometric_offer_an"
 
         private const val MAX_REFRESH_ATTEMPT = 10
 

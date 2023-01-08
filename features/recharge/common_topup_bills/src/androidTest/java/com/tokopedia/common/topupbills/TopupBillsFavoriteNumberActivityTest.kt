@@ -13,9 +13,7 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -24,14 +22,13 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.topupbills.data.prefix_select.*
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment.Companion.CACHE_PREFERENCES_NAME
+import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment.Companion.CACHE_SHOW_COACH_MARK_KEY
+import com.tokopedia.common.topupbills.favoritepage.view.viewholder.PersoFavoriteNumberViewHolder
 import com.tokopedia.common.topupbills.util.TopupBillsFavoriteNumberMockResponseConfig
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.Companion.CACHE_PREFERENCES_NAME
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.Companion.CACHE_SHOW_COACH_MARK_KEY
-import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -61,7 +58,7 @@ class TopupBillsFavoriteNumberActivityTest {
     var cassavaTestRule = CassavaTestRule()
 
     @get:Rule
-    var mActivityRule = ActivityTestRule(TopupBillsFavoriteNumberActivity::class.java, false, false)
+    var mActivityRule = ActivityTestRule(TopupBillsPersoFavoriteNumberActivity::class.java, false, false)
 
     @Before
     fun stubAllExternalIntents() {
@@ -71,11 +68,12 @@ class TopupBillsFavoriteNumberActivityTest {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         val extras = Bundle()
-        extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
-        extras.putString(EXTRA_CLIENT_NUMBER, CLIENT_NUMBER)
-        extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, DG_CATEGORY_IDS)
-        extras.putString(EXTRA_DG_CATEGORY_NAME, CATEGORY_NAME)
-        extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
+        extras.putString(TopupBillsPersoFavoriteNumberActivity.EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
+        extras.putString(TopupBillsPersoFavoriteNumberActivity.EXTRA_CLIENT_NUMBER, CLIENT_NUMBER)
+        extras.putStringArrayList(TopupBillsPersoFavoriteNumberActivity.EXTRA_DG_CATEGORY_IDS, DG_CATEGORY_IDS)
+        extras.putStringArrayList(TopupBillsPersoFavoriteNumberActivity.EXTRA_DG_OPERATOR_IDS, arrayListOf())
+        extras.putString(TopupBillsPersoFavoriteNumberActivity.EXTRA_LOYALTY_STATUS, "")
+        extras.putString(TopupBillsPersoFavoriteNumberActivity.EXTRA_DG_CATEGORY_NAME, CATEGORY_NAME)
 
         intent = RouteManager.getIntent(targetContext, APPLINK)
         intent?.putExtras(extras)
@@ -297,7 +295,7 @@ class TopupBillsFavoriteNumberActivityTest {
         val viewInteraction =
             onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
+            RecyclerViewActions.actionOnItemAtPosition<PersoFavoriteNumberViewHolder>(
                 position,
                 click()
             )
@@ -308,7 +306,7 @@ class TopupBillsFavoriteNumberActivityTest {
         val viewInteraction =
             onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
+            RecyclerViewActions.actionOnItemAtPosition<PersoFavoriteNumberViewHolder>(
                 position,
                 CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)
             )
@@ -347,12 +345,6 @@ class TopupBillsFavoriteNumberActivityTest {
         const val ANALYTICS_FAVORITE_NUMBER_DETAIL_UNHAPPY =
             "tracker/recharge/recharge_common_topup_bills/favorite_number_detail_negative_flow.json"
 
-        const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
-        const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
-        const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
-        const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
-        const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
-
         const val VALID_CLIENT_NAME = "Tokopedia"
         const val INVALID_CLIENT_NAME_LESS_THAN_MIN = "To"
         const val INVALID_CLIENT_NAME_MORE_THAN_MAX = "TokopediaTokopediaTokopedia"
@@ -361,23 +353,5 @@ class TopupBillsFavoriteNumberActivityTest {
         const val CLIENT_NUMBER = "081212341234"
         const val CATEGORY_NAME = "Pulsa"
         val DG_CATEGORY_IDS = arrayListOf("1", "2", "20")
-        val operatorData = TelcoCatalogPrefixSelect(
-            rechargeCatalogPrefixSelect = RechargeCatalogPrefixSelect(
-                prefixes = listOf(
-                    RechargePrefix(
-                        key = "12",
-                        value = "0812",
-                        operator = TelcoOperator(
-                            id = "12",
-                            attributes = TelcoAttributesOperator(
-                                name = "Telkomsel",
-                                defaultProductId = "70",
-                                imageUrl = ""
-                            )
-                        )
-                    )
-                )
-            )
-        )
     }
 }

@@ -6,12 +6,15 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.mapper.OfficialProductCardMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -36,19 +39,11 @@ class OfficialStoreHomeModule {
 
     @OfficialStoreHomeScope
     @Provides
-    fun provideOfficialHomeMapper(@ApplicationContext context: Context, dispatchers: CoroutineDispatchers) = OfficialHomeMapper(context, dispatchers)
+    fun provideOfficialHomeMapper(@ApplicationContext context: Context, dispatchers: CoroutineDispatchers) = OfficialProductCardMapper(context, dispatchers)
 
     @OfficialStoreHomeScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
-
-    @OfficialStoreHomeScope
-    @Provides
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
-
-    @OfficialStoreHomeScope
-    @Provides
-    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
 
     @OfficialStoreHomeScope
     @Provides
@@ -67,4 +62,15 @@ class OfficialStoreHomeModule {
     fun provideGetTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
         return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig = FirebaseRemoteConfigImpl(context)
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface, topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(), topAdsIrisSession.getSessionId())
+    }
+
 }

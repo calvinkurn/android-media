@@ -1,17 +1,17 @@
 package com.tkpd.atcvariant.view.adapter.variantitem
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tkpd.atcvariant.R
-import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tkpd.atcvariant.view.viewholder.item.ItemContainerViewHolder
+import com.tkpd.atcvariant.view.viewholder.item.ItemContainerChipGroupViewHolder
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 
 /**
  * Created by Yehezkiel on 08/03/20
  */
-class AtcVariantContainerAdapter(val listener: AtcVariantListener) : RecyclerView.Adapter<ItemContainerViewHolder>() {
+class AtcVariantContainerAdapter(val listener: AtcVariantListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var variantContainerData: List<VariantCategory> = listOf()
 
@@ -19,19 +19,19 @@ class AtcVariantContainerAdapter(val listener: AtcVariantListener) : RecyclerVie
         variantContainerData = data
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemContainerViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_atc_variant_container_view_holder, parent, false)
-        return ItemContainerViewHolder(view, listener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (listener.showVariantWithChipGroup()) {
+            ItemContainerChipGroupViewHolder.create(parent, listener)
+        } else {
+            ItemContainerViewHolder.create(parent, listener)
+        }
     }
 
-    override fun onBindViewHolder(holder: ItemContainerViewHolder, position: Int) {
-        holder.bind(variantContainerData[position])
-    }
-
-    override fun onBindViewHolder(holder: ItemContainerViewHolder, position: Int, payloads: MutableList<Any>) {
-        super.onBindViewHolder(holder, position, payloads)
-        holder.bind(variantContainerData[position], true)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is ItemContainerChipGroupViewHolder -> holder.bind(variantContainerData[position])
+            is ItemContainerViewHolder -> holder.bind(variantContainerData[position])
+        }
     }
 
     override fun getItemCount(): Int = variantContainerData.size

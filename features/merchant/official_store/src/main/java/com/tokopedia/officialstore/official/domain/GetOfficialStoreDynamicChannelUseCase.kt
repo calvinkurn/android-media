@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_component.model.DynamicChannelLayout
-import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.mapper.OfficialProductCardMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.di.query.DynamicHomeChannelQuery
@@ -14,8 +14,8 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 
 class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
-        private val officialHomeMapper: OfficialHomeMapper,
-        private val graphqlUseCase: MultiRequestGraphqlUseCase
+    private val officialProductCardMapper: OfficialProductCardMapper,
+    private val graphqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<List<OfficialStoreChannel>>() {
     private val paramChannelType = "type"
     private val paramChannelLocation = "location"
@@ -38,8 +38,8 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
 
         return data.channels.map {
             val includeMapping = it.layout in DYNAMIC_HEIGHT_CHANNEL
-            val list = if(includeMapping) officialHomeMapper.mappingProductCards(it.grids) else listOf()
-            val height = if(includeMapping) officialHomeMapper.getMaxHeightProductCards(list) else -1
+            val list = if(includeMapping) officialProductCardMapper.mappingProductCards(it.grids) else listOf()
+            val height = if(includeMapping) officialProductCardMapper.getMaxHeightProductCards(list) else -1
             OfficialStoreChannel(it, list, height)
         }
     }

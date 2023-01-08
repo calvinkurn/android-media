@@ -26,6 +26,8 @@ data class AddToCartBundleDataResponse(
 )
 
 data class ProductDataResponse(
+        @SerializedName("cart_id")
+        val cartId: String = "",
         @SerializedName("customer_id")
         val customerId: String = "",
         @SerializedName("notes")

@@ -9,7 +9,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -22,18 +23,32 @@ class GetPostDetailUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<DynamicFeedDomainModel>(graphqlRepository){
 
-    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "") : PostDetailViewModel{
+    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "") : PostDetailUiModel {
         try {
-            val dynamicFeedDomainModel =  getDynamicFeedUseCase.execute(cursor, limit, detailId)
-            val postdetailViewModel  = PostDetailViewModel()
-            postdetailViewModel.dynamicPostViewModel = dynamicFeedDomainModel
-            postdetailViewModel.footerModel = convertToPostDetailFooterModel(dynamicFeedDomainModel)
-            return postdetailViewModel
+            val dynamicFeedDomainModel = getDynamicFeedUseCase.execute(cursor, limit, detailId)
+            return PostDetailUiModel(
+                dynamicFeedDomainModel,
+                convertToPostDetailFooterModel(dynamicFeedDomainModel)
+            )
         } catch (e: Throwable) {
             Timber.e(e)
             throw e
         }
     }
+
+    suspend fun executeForCDPRevamp(cursor: String = "", limit: Int = 5, detailId: String = "") : ContentDetailUiModel{
+        try {
+            val feedXData = getDynamicFeedUseCase.executeForCDP(cursor, limit, detailId)
+            return ContentDetailUiModel(
+                postList = feedXData.feedXHome.items,
+                cursor = ""
+            )
+        } catch (e: Throwable) {
+            Timber.e(e)
+            throw e
+        }
+    }
+
 
     private fun convertToPostDetailFooterModel(dynamicFeedDomainModel: DynamicFeedDomainModel):
             PostDetailFooterModel {
@@ -48,7 +63,7 @@ class GetPostDetailUseCase @Inject constructor(
                 footerModel.totalComment = feedXCard.comments.count
                 val text = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
                 val desc = text.replace("%s", feedXCard.author.name)
-                val title = feedXCard.author.name + " `post"
+                val title = feedXCard.author.name + " post"
                 footerModel.shareData = Share(text=text, description = desc, title = title, url = feedXCard.webLink)
             }
         }

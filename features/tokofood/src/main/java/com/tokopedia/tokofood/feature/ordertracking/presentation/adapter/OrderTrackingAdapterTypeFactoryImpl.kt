@@ -40,7 +40,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.Orde
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentAmountViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentDetailViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentHeaderViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentMethodViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentMethodViewHolderPayload
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.RestaurantUserAddressViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ShippingDetailHeaderViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ShippingDetailViewHolder
@@ -115,7 +115,7 @@ class OrderTrackingAdapterTypeFactoryImpl(
     }
 
     override fun type(paymentMethodUiModel: PaymentMethodUiModel): Int {
-        return PaymentMethodViewHolder.LAYOUT
+        return PaymentMethodViewHolderPayload.LAYOUT
     }
 
     override fun type(paymentAmountUiModel: PaymentAmountUiModel): Int {
@@ -165,7 +165,7 @@ class OrderTrackingAdapterTypeFactoryImpl(
             FoodItemViewHolder.LAYOUT -> FoodItemViewHolder(parent, recyclerViewPollerListener)
             InvoiceOrderNumberViewHolder.LAYOUT -> InvoiceOrderNumberViewHolder(parent, orderTrackingListener)
             PaymentDetailViewHolder.LAYOUT -> PaymentDetailViewHolder(parent)
-            PaymentMethodViewHolder.LAYOUT -> PaymentMethodViewHolder(parent)
+            PaymentMethodViewHolderPayload.LAYOUT -> PaymentMethodViewHolderPayload(parent)
             PaymentAmountViewHolder.LAYOUT -> PaymentAmountViewHolder(parent)
             PaymentHeaderViewHolder.LAYOUT -> PaymentHeaderViewHolder(parent)
             TemporaryFinishOrderViewHolder.LAYOUT -> TemporaryFinishOrderViewHolder(

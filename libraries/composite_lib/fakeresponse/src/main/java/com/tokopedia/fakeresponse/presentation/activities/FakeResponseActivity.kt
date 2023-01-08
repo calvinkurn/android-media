@@ -1,5 +1,7 @@
 package com.tokopedia.fakeresponse.presentation.activities
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -9,6 +11,15 @@ import com.tokopedia.fakeresponse.presentation.fragments.FakeResponseFragment
 
 class FakeResponseActivity : BaseActivity() {
 
+    companion object {
+
+        fun newInstance(context: Context): Intent {
+            return Intent(
+                context,
+                FakeResponseActivity::class.java
+            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+    }
 
     lateinit var fm: FrameLayout
     override fun onCreate(savedInstanceState: Bundle?) {

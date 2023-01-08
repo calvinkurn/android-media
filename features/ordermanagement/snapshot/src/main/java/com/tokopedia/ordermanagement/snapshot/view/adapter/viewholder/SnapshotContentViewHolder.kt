@@ -9,14 +9,15 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
-import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.CREATED_TIME
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.KONDISI_BARU
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.KONDISI_BEKAS
@@ -27,13 +28,21 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by fwidjaja on 1/28/21.
  */
 class SnapshotContentViewHolder(itemView: View, private val actionListener: SnapshotAdapter.ActionListener?) : SnapshotAdapter.BaseViewHolder<SnapshotTypeData>(itemView)  {
-    @SuppressLint("SetTextI18n")
+
+    companion object {
+        private const val SLASHED_PRICE_WITHOUT_DISCOUNT_MARGIN_START = 16
+        private const val SLASHED_PRICE_WITH_DISCOUNT_MARGIN_START = 8
+        private const val SLASHED_PRICE_MARGIN_END = 16
+        private const val SLASHED_PRICE_WITHOUT_DISCOUNT_MARGIN_TOP = 4
+        private const val SLASHED_PRICE_WITH_DISCOUNT_MARGIN_TOP = 0
+    }
 
     val ivHeader = itemView.findViewById<ImageView>(R.id.snapshot_main_img)
     val viewPager2 = itemView.findViewById<ViewPager2>(R.id.snapshot_header_view_pager)
@@ -159,6 +168,20 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             hargaCoret.visible()
             hargaCoret.text = dataObject.campaignData.campaign.originalPrice
             hargaCoret.paintFlags = hargaCoret.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            hargaCoret.setMargin(
+                left = if (discPercentage.isEmpty()) {
+                    SLASHED_PRICE_WITHOUT_DISCOUNT_MARGIN_START.toPx()
+                } else {
+                    SLASHED_PRICE_WITH_DISCOUNT_MARGIN_START.toPx()
+                },
+                top = if (discPercentage.isEmpty()) {
+                    SLASHED_PRICE_WITHOUT_DISCOUNT_MARGIN_TOP.toPx()
+                } else {
+                    SLASHED_PRICE_WITH_DISCOUNT_MARGIN_TOP.toPx()
+                },
+                right = SLASHED_PRICE_MARGIN_END.toPx(),
+                bottom = Int.ZERO
+            )
         }
 
         productName.text = MethodChecker.fromHtmlPreserveLineBreak(dataObject.orderDetail.productName)

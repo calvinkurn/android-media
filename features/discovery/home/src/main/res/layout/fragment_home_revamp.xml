@@ -1,112 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.home.widget.ToggleableSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:descendantFocusability="blocksDescendants"
     android:id="@+id/home_swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <FrameLayout
+  <include
       android:id="@+id/root"
-      android:descendantFocusability="blocksDescendants"
+      layout="@layout/layout_home_revamp"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/Unify_N0">
-
-    <FrameLayout
-        android:id="@+id/loader_header_home"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="130dp">
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="1dp"
-            app:loader_type="rect"
-            />
-
-      <ImageView
-          android:contentDescription="@string/content_desc_home_background"
-          android:id="@+id/view_background_header_loading_replacer"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:src="@drawable/ic_header_home_invert"
-          android:tint="@color/Unify_N0"
-          android:scaleType="fitXY"/>
-
-    </FrameLayout>
-
-    <ImageView
-        android:contentDescription="@string/content_desc_home_background"
-        android:id="@+id/view_background_image"
-        android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:src="@drawable/ic_header_home"
-        android:visibility="gone"
-        android:scaleType="fitXY"/>
-
-    <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-        android:id="@+id/home_fragment_recycler_view"
-        android:layout_marginTop="-8dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:descendantFocusability="beforeDescendants"
-        android:tag="home_list" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:orientation="vertical">
-
-      <com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
-          android:id="@+id/sticky_login_text"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:visibility="gone"
-          app:sticky_highlight_color="@color/Unify_G500"
-          app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
-
-    </LinearLayout>
-
-    <com.tokopedia.searchbar.navigation_component.NavToolbar
-        android:id="@+id/navToolbar"
-        android:tag="@string/tag_home_nav_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:minHeight="?actionBarSize"
-        android:visibility="gone"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:toolbarContentType="typeSearchbar"
-        app:toolbarBackButton="none"
-        app:toolbarAlwaysShowShadow="true"
-        app:toolbarPageName="/"
-        app:toolbarInitialFillColor="transparent"
-        app:toolbarInvertSearchBarColor="true"
-        app:toolbarInitialTheme="light"
-        />
-
-    <View
-        android:id="@+id/status_bar_bg"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:layout_gravity="top"
-        android:background="@color/Unify_G500"
-        android:visibility="invisible" />
-
-    <fragment
-        android:id="@+id/floating_egg_fragment"
-        android:name="com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:tag="floating_egg"
-        app:draggable="true"
-        app:margin_bottom="@dimen/new_margin_sm" />
-
-  </FrameLayout>
-
-</com.tokopedia.home.widget.ToggleableSwipeRefreshLayout>
+      android:layout_height="match_parent"/>
+</com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout>

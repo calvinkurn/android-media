@@ -12,7 +12,7 @@ data class VoucherLogisticItemUiModel(
         var code: String = "",
         var couponDesc: String = "",
         var couponAmount: String = "",
-        var cashbackAmount: Int = 0,
-        var discountAmount: Int = 0,
+        var cashbackAmount: Long = 0L,
+        var discountAmount: Long = 0L,
         var message: MessageUiModel = MessageUiModel(),
-        var couponAmountRaw: Int = 0) : Parcelable
+        var couponAmountRaw: Long = 0) : Parcelable

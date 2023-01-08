@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -13,11 +14,9 @@ import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRI
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
-import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData
-import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getAttributesCheckout
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponse
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponseDisableVoucher
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
@@ -40,9 +39,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertNotNull
-import junit.framework.Assert.assertNull
 import kotlinx.coroutines.Dispatchers
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -90,19 +89,22 @@ class DigitalCartViewModelTest {
         digitalCartViewModel = DigitalCartViewModel(
             digitalAnalytics,
             digitalGetCartUseCase,
-            digitalCancelVoucherUseCase, digitalPatchOtpUseCase,
-            digitalCheckoutUseCase, userSession, Dispatchers.Unconfined
+            digitalCancelVoucherUseCase,
+            digitalPatchOtpUseCase,
+            digitalCheckoutUseCase,
+            userSession,
+            Dispatchers.Unconfined
         )
     }
 
     @Test
     fun getCart_onSuccess_NoNeedOtpAndIsNotSubscribed() {
-        //given
+        // given
         val dummyResponse =
             DigitalCartDummyData.getDummyGetCartResponseWithDefaultCrossSellType().copy(
                 isAdminFeeIncluded = true
             )
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(
                 RechargeGetCart.Response(
                     dummyResponse
@@ -111,7 +113,7 @@ class DigitalCartViewModelTest {
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
@@ -142,11 +144,11 @@ class DigitalCartViewModelTest {
         )
         assert(
             mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
-                    == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label
         )
         assert(
             mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
-                    == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value
         )
         assert(mappedCartInfoData.attributes.categoryName == dummyResponse.categoryName)
         assert(mappedCartInfoData.attributes.operatorName == dummyResponse.operatorName)
@@ -184,10 +186,10 @@ class DigitalCartViewModelTest {
 
     @Test
     fun getCart_onSuccess_NeedOtp() {
-        //given
+        // given
         val dummyResponse = DigitalCartDummyData.getDummyGetCartResponseWithRequiredOtp()
             .copy(isAdminFeeIncluded = false)
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(
                 RechargeGetCart.Response(
                     dummyResponse
@@ -197,33 +199,33 @@ class DigitalCartViewModelTest {
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.phoneNumber } returns "number"
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
-        //then
+        // then
         assert(digitalCartViewModel.isNeedOtp.value == userSession.phoneNumber)
     }
 
     @Test
     fun getCart_onSuccess_isNotLogIn() {
-        //given
+        // given
         coEvery { userSession.isLoggedIn } returns false
 
-        //when
+        // when
         val categoryId = "1"
         val userNotLoginMessage = "user not login"
         digitalCartViewModel.getCart(categoryId, userNotLoginMessage, isSpecialProduct = true)
 
-        //then
+        // then
         assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == userNotLoginMessage)
     }
 
     @Test
     fun getCart_onSuccess_NoNeedOtpAndIsSubscribed() {
-        //given
+        // given
         val dummyResponse = getDummyGetCartResponse(true)
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(
                 RechargeGetCart.Response(
                     dummyResponse
@@ -232,7 +234,7 @@ class DigitalCartViewModelTest {
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
@@ -263,11 +265,11 @@ class DigitalCartViewModelTest {
         )
         assert(
             mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
-                    == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label
         )
         assert(
             mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
-                    == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value
         )
         assert(mappedCartInfoData.attributes.categoryName == dummyResponse.categoryName)
         assert(mappedCartInfoData.attributes.operatorName == dummyResponse.operatorName)
@@ -305,9 +307,9 @@ class DigitalCartViewModelTest {
 
     @Test
     fun getCart_onSuccess_NoNeedOtpAndIsSubscribedNotOpenAmount() {
-        //given
+        // given
         val dummyResponse = getDummyGetCartResponse(false)
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(
                 RechargeGetCart.Response(
                     dummyResponse
@@ -316,7 +318,7 @@ class DigitalCartViewModelTest {
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
@@ -347,11 +349,11 @@ class DigitalCartViewModelTest {
         )
         assert(
             mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
-                    == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label
         )
         assert(
             mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
-                    == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value
         )
         assert(mappedCartInfoData.attributes.categoryName == dummyResponse.categoryName)
         assert(mappedCartInfoData.attributes.operatorName == dummyResponse.operatorName)
@@ -390,9 +392,9 @@ class DigitalCartViewModelTest {
 
     @Test
     fun getCart_onSuccessWithCouponActive_NoNeedOtpAndIsSubscribed() {
-        //given
+        // given
         val dummyResponse = DigitalCartDummyData.getDummyGetCartResponseWithCouponActive()
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(
                 RechargeGetCart.Response(
                     dummyResponse
@@ -401,7 +403,7 @@ class DigitalCartViewModelTest {
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
@@ -432,11 +434,11 @@ class DigitalCartViewModelTest {
         )
         assert(
             mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
-                    == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label
         )
         assert(
             mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
-                    == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value
         )
         assert(mappedCartInfoData.attributes.categoryName == dummyResponse.categoryName)
         assert(mappedCartInfoData.attributes.operatorName == dummyResponse.operatorName)
@@ -470,111 +472,110 @@ class DigitalCartViewModelTest {
         assert(digitalCartViewModel.totalPrice.value == dummyResponse.price - dummyResponse.autoApply.discountAmount.toInt())
 
         assert(digitalCartViewModel.promoData.value != null)
-        assert(digitalCartViewModel.promoData.value!!.amount == dummyResponse.autoApply.discountAmount.toInt())
+        assert(digitalCartViewModel.promoData.value!!.amount == dummyResponse.autoApply.discountAmount.toLong())
     }
-
 
     @Test
     fun getCart_onFailed_unknownHostException() {
-        //given
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        // given
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             thirdArg<(Throwable) -> Unit>().invoke(UnknownHostException())
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
-        //then
+        // then
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value!!.throwable is UnknownHostException)
     }
 
     @Test
     fun getCart_onFailed_socketTimeoutException() {
-        //given
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        // given
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             thirdArg<(Throwable) -> Unit>().invoke(SocketTimeoutException())
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
-        //then
+        // then
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value!!.throwable is SocketTimeoutException)
     }
 
     @Test
     fun getCart_onFailed_socketConnectException() {
-        //given
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        // given
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             thirdArg<(Throwable) -> Unit>().invoke(ConnectException())
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
-        //then
+        // then
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value!!.throwable is ConnectException)
     }
 
     @Test
     fun getCart_onFailed_responseErrorException() {
-        //given
+        // given
         val errorMessage = "ini error"
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             thirdArg<(Throwable) -> Unit>().invoke(ResponseErrorException(errorMessage))
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
-        //then
+        // then
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value!!.throwable is ResponseErrorException)
     }
 
     @Test
     fun getCart_onFailed_responseDataNullException() {
-        //given
+        // given
         val errorMessage = "ini error"
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             thirdArg<(Throwable) -> Unit>().invoke(ResponseDataNullException(errorMessage))
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
-        //then
+        // then
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value!!.throwable is ResponseDataNullException)
     }
 
     @Test
     fun getCart_onFailed_httpErrorException() {
-        //given
+        // given
         val exception = HttpErrorException(504)
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             thirdArg<(Throwable) -> Unit>().invoke(exception)
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
-        //then
+        // then
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value!!.throwable is HttpErrorException)
         assert((digitalCartViewModel.errorThrowable.value!!.throwable as HttpErrorException).errorCode == 504)
@@ -582,18 +583,18 @@ class DigitalCartViewModelTest {
 
     @Test
     fun getCart_onFailed_throwable() {
-        //given
+        // given
         val errorMessage = "ini error message"
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             thirdArg<(Throwable) -> Unit>().invoke(Throwable(errorMessage))
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
-        //then
+        // then
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == errorMessage)
     }
@@ -802,48 +803,118 @@ class DigitalCartViewModelTest {
     }
 
     @Test
+    fun onPatchOtp_onFailedResponseError() {
+        // given
+        coEvery { digitalPatchOtpUseCase.executeOnBackground() } throws ResponseErrorException("error")
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // when
+        digitalCartViewModel.processPatchOtpCart(
+            RequestBodyIdentifier(),
+            DigitalCheckoutPassData(),
+            isSpecialProduct = false
+        )
+
+        // then
+        println("error: ${digitalCartViewModel.errorThrowable.value}")
+        assert(!digitalCartViewModel.showLoading.value!!)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is MessageErrorException)
+
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == "error")
+    }
+
+    @Test
     fun onCheckout_onSuccess() {
         // given
-        val dummyResponse = ResponseCheckout(
-            type = "null",
-            id = "123",
-            attributes = getAttributesCheckout()
-        )
-        val dataResponse = DataResponse<ResponseCheckout>()
-        dataResponse.data = dummyResponse
+        val dummyResponse = PaymentPassData()
+        dummyResponse.queryString = "this is query"
+        dummyResponse.redirectUrl = "www.tokopedia.com"
+        dummyResponse.callbackSuccessUrl = "successurl"
+        dummyResponse.callbackFailedUrl = "failedUrl"
+        dummyResponse.transactionId = "transactionId"
 
-        val token = object : TypeToken<DataResponse<ResponseCheckout>>() {}.type
-        val response = RestResponse(dataResponse, 200, false)
-        val responseMap = mapOf<Type, RestResponse>(token to response)
-
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } returns responseMap
+        coEvery {
+            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+        } returns dummyResponse
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
 
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
         assert(paymentPassDataValue != null)
-        assert(paymentPassDataValue!!.callbackFailedUrl == dummyResponse.attributes.callbackUrlFailed)
-        assert(paymentPassDataValue.callbackSuccessUrl == dummyResponse.attributes.callbackUrlSuccess)
-        assert(paymentPassDataValue.redirectUrl == dummyResponse.attributes.redirectUrl)
-        assert(paymentPassDataValue.queryString == dummyResponse.attributes.queryString)
-        assert(paymentPassDataValue.transactionId == dummyResponse.attributes.parameter?.transactionId)
+        assert(paymentPassDataValue!!.callbackFailedUrl == dummyResponse.callbackFailedUrl)
+        assert(paymentPassDataValue.callbackSuccessUrl == dummyResponse.callbackSuccessUrl)
+        assert(paymentPassDataValue.redirectUrl == dummyResponse.redirectUrl)
+        assert(paymentPassDataValue.queryString == dummyResponse.queryString)
+        assert(paymentPassDataValue.transactionId == dummyResponse.transactionId)
+    }
+
+    @Test
+    fun onCheckout_onSuccessWithGql() {
+        // given
+        val dummyResponse = PaymentPassData()
+        dummyResponse.queryString = "this is query"
+        dummyResponse.redirectUrl = "www.tokopedia.com"
+        dummyResponse.callbackSuccessUrl = "successurl"
+        dummyResponse.callbackFailedUrl = "failedUrl"
+        dummyResponse.transactionId = "transactionId"
+
+        coEvery {
+            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+        } returns dummyResponse
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
+            isNeedOtp = false,
+            fintechProducts = hashMapOf(
+                "First" to FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = "dummy icon url"
+                    )
+                ),
+                "Second" to FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = ""
+                    )
+                )
+            )
+        )
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), true)
+
+        // then
+        val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
+        assert(paymentPassDataValue != null)
+        assert(paymentPassDataValue!!.callbackFailedUrl == dummyResponse.callbackFailedUrl)
+        assert(paymentPassDataValue.callbackSuccessUrl == dummyResponse.callbackSuccessUrl)
+        assert(paymentPassDataValue.redirectUrl == dummyResponse.redirectUrl)
+        assert(paymentPassDataValue.queryString == dummyResponse.queryString)
+        assert(paymentPassDataValue.transactionId == dummyResponse.transactionId)
+
+        coEvery { digitalAnalytics.eventProceedCheckoutTebusMurah(any(), any(), any()) }
+        coEvery { digitalAnalytics.eventProceedCheckoutCrossell(any(), any(), any()) }
     }
 
     @Test
     fun onCheckout_onFailed() {
         // given
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
+        coEvery {
+            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+        } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
 
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
@@ -855,14 +926,16 @@ class DigitalCartViewModelTest {
     @Test
     fun onCheckout_onFailedWithPromoCode() {
         // given
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
+        coEvery {
+            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+        } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         onApplyDiscountPromoCode_updateCheckoutSummary()
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
 
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
@@ -874,12 +947,14 @@ class DigitalCartViewModelTest {
     @Test
     fun onCheckout_onPromoCodeEmptyAndCartEmpty_shouldNotCheckout() {
         // given
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
+        coEvery {
+            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+        } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // when
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
 
         // then
         assertNull(digitalCartViewModel.paymentPassData.value)
@@ -911,7 +986,7 @@ class DigitalCartViewModelTest {
                 )
             )
         )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
 
         // then
         assert(digitalCartViewModel.isNeedOtp.value != null)
@@ -941,22 +1016,21 @@ class DigitalCartViewModelTest {
                 )
             )
         )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
 
         // then
         assert(digitalCartViewModel.isNeedOtp.value == null)
     }
 
     @Test
-    fun onCheckout_throwResponseErrorException() {
+    fun onCheckoutGql_withFintechProduct() {
         // given
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
+        digitalCartViewModel.setPromoData(PromoData())
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-        val errorException = ResponseErrorException()
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws errorException
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
@@ -973,7 +1047,41 @@ class DigitalCartViewModelTest {
                 )
             )
         )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), true)
+
+        // then
+        assert(digitalCartViewModel.isNeedOtp.value == null)
+    }
+
+    @Test
+    fun onCheckout_throwResponseErrorException() {
+        // given
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        val errorException = ResponseErrorException()
+        coEvery {
+            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+        } throws errorException
+
+        digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
+            isNeedOtp = false,
+            fintechProducts = hashMapOf(
+                "First" to FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = "dummy icon url"
+                    )
+                ),
+                "Second" to FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = ""
+                    )
+                )
+            )
+        )
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
 
         // then
         assert(digitalCartViewModel.errorThrowable.value is Fail)
@@ -990,7 +1098,9 @@ class DigitalCartViewModelTest {
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         val errorException = Throwable("dummy error")
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws errorException
+        coEvery {
+            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+        } throws errorException
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
@@ -1007,7 +1117,7 @@ class DigitalCartViewModelTest {
                 )
             )
         )
-        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), false)
 
         // then
         assert(digitalCartViewModel.errorThrowable.value is Fail)
@@ -1026,7 +1136,7 @@ class DigitalCartViewModelTest {
 
         // then
         // if amount == 0, then expected if total price not updated and no changes on additional info
-        assert(digitalCartViewModel.promoData.value?.amount == 0)
+        assert(digitalCartViewModel.promoData.value?.amount == 0L)
         assert(digitalCartViewModel.promoData.value?.promoCode == "")
         assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price + getDummyGetCartResponse().adminFee)
     }
@@ -1035,7 +1145,7 @@ class DigitalCartViewModelTest {
     fun onResetVoucherCart_addOnAdditionalInfoAndUpdateTotalPayment() {
         // given
         val promoData = PromoData()
-        promoData.amount = 12000
+        promoData.amount = 12000L
         promoData.promoCode = "dummyPromoCode"
         promoData.state = TickerCheckoutView.State.ACTIVE
 
@@ -1049,12 +1159,11 @@ class DigitalCartViewModelTest {
         assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price)
     }
 
-
     @Test
     fun onApplyDiscountPromoCode_updateCheckoutSummary() {
         // given
         val promoData = PromoData()
-        promoData.amount = 12000
+        promoData.amount = 12000L
         promoData.promoCode = "dummyPromoCode"
         promoData.state = TickerCheckoutView.State.ACTIVE
 
@@ -1076,9 +1185,9 @@ class DigitalCartViewModelTest {
 
     @Test
     fun onApplyDiscountPromoCodeWhenDisabledVoucher_updateCheckoutSummary() {
-        //given
+        // given
         val dummyResponse = getDummyGetCartResponseDisableVoucher()
-        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+        coEvery { digitalGetCartUseCase.onExecute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(
                 RechargeGetCart.Response(
                     dummyResponse
@@ -1087,22 +1196,22 @@ class DigitalCartViewModelTest {
         }
         coEvery { userSession.isLoggedIn } returns true
 
-        //when
+        // when
         val categoryId = "1"
         digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
-        //then
+        // then
         assertNotNull(digitalCartViewModel.promoData.value)
         val promoData = digitalCartViewModel.promoData.value ?: PromoData()
         assert(!promoData.isActive())
         assert(promoData.state == TickerCheckoutView.State.INACTIVE)
         assert(promoData.description == "PROMOO")
-        assert(promoData.amount == 5000)
+        assert(promoData.amount == 5000L)
 
-        //when
+        // when
         digitalCartViewModel.applyPromoData(promoData)
 
-        //then
+        // then
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
             it.title == "PROMOO"
         }
@@ -1113,7 +1222,7 @@ class DigitalCartViewModelTest {
     fun onApplyDiscountPromoCode_withEmptyState_updateCheckoutSummary() {
         // given
         val promoData = PromoData()
-        promoData.amount = 12000
+        promoData.amount = 12000L
         promoData.promoCode = "dummyPromoCode"
         promoData.state = TickerCheckoutView.State.EMPTY
         // when
@@ -1131,7 +1240,7 @@ class DigitalCartViewModelTest {
     fun onApplyDiscountPromoCode_withFailedState_updateCheckoutSummary() {
         // given
         val promoData = PromoData()
-        promoData.amount = 12000
+        promoData.amount = 12000L
         promoData.promoCode = "dummyPromoCode"
         promoData.state = TickerCheckoutView.State.FAILED
 
@@ -1172,7 +1281,7 @@ class DigitalCartViewModelTest {
         // when
         digitalCartViewModel.applyPromoData(promoData)
 
-        //then
+        // then
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
             it.title == STRING_KODE_PROMO
         }
@@ -1200,7 +1309,7 @@ class DigitalCartViewModelTest {
     fun onDiscardPromoCode_updateCheckoutSummary() {
         // given
         val promoData1 = PromoData()
-        promoData1.amount = 12000
+        promoData1.amount = 12000L
         promoData1.promoCode = "dummyPromoCode"
         promoData1.state = TickerCheckoutView.State.ACTIVE
 
@@ -1431,23 +1540,22 @@ class DigitalCartViewModelTest {
             assert(it.userAgent == DeviceUtil.userAgentForApiCall)
             assert(it.isNeedOtp == cartInfoData.isNeedOtp)
         }
-
     }
 
     @Test
     fun getPromoDigitalModel_withUserInputPrice_shouldReturnCorrectData() {
-        //given
+        // given
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "1"
         digitalCheckoutPassData.productId = "2"
         digitalCheckoutPassData.clientNumber = "AAA123"
 
-        //when
+        // when
         getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
         val promoDigitalModel =
             digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, 1000.0)
 
-        //then
+        // then
         assert(promoDigitalModel.categoryId.toString() == digitalCheckoutPassData.categoryId ?: "")
         assert(promoDigitalModel.productId.toString() == digitalCheckoutPassData.productId ?: "")
         assert(promoDigitalModel.clientNumber == digitalCheckoutPassData.clientNumber)
@@ -1458,17 +1566,17 @@ class DigitalCartViewModelTest {
 
     @Test
     fun getPromoDigitalModel_whenCartPassDataEqualsToNull_shouldReturnCorrectData() {
-        //given
+        // given
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = null
         digitalCheckoutPassData.productId = null
         digitalCheckoutPassData.clientNumber = null
 
-        //given
+        // given
         val promoDigitalModel =
             digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, null)
 
-        //then
+        // then
         assert(promoDigitalModel.categoryId == 0)
         assert(promoDigitalModel.productId == 0)
         assert(promoDigitalModel.clientNumber == "")
@@ -1479,17 +1587,17 @@ class DigitalCartViewModelTest {
 
     @Test
     fun getPromoDigitalModel_whenCartPassDataNotValid_shouldReturnCorrectData() {
-        //given
+        // given
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "AAB"
         digitalCheckoutPassData.productId = "AAC"
         digitalCheckoutPassData.clientNumber = null
 
-        //given
+        // given
         val promoDigitalModel =
             digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, null)
 
-        //then
+        // then
         assert(promoDigitalModel.categoryId == 0)
         assert(promoDigitalModel.productId == 0)
         assert(promoDigitalModel.clientNumber == "")
@@ -1500,10 +1608,10 @@ class DigitalCartViewModelTest {
 
     @Test
     fun getPromoDigitalModel_whenCartPassDataEqualsToNull_shouldReturnCorrectData2() {
-        //when
+        // when
         val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(null, null)
 
-        //then
+        // then
         assert(promoDigitalModel.categoryId == 0)
         assert(promoDigitalModel.productId == 0)
         assert(promoDigitalModel.clientNumber == "")
@@ -1512,16 +1620,15 @@ class DigitalCartViewModelTest {
         assert(promoDigitalModel.price == 0L)
     }
 
-
     @Test
     fun getPromoDigitalModel_withoutUserInputPrice_shouldReturnCorrectData() {
-        //given
+        // given
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "1"
         digitalCheckoutPassData.productId = "2"
         digitalCheckoutPassData.clientNumber = "AAA123"
 
-        //when
+        // when
         getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
         val promoDigitalModel =
             digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, null)

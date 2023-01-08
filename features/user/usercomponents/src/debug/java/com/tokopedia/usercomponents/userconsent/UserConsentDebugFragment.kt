@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usercomponents.databinding.FragmentDebugUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionClickListener
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 open class UserConsentDebugFragment: BaseDaggerFragment() {
@@ -47,15 +47,16 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
         val consentParam = ConsentCollectionParam(collectionId,version)
         viewBinding?.sampleUserConsent?.apply {
             actionText = viewBinding?.textActionButton?.editText?.text.toString()
-        }?.load(viewLifecycleOwner, this, consentParam, object : UserConsentActionClickListener {
+        }?.load(viewLifecycleOwner, this, consentParam, object : UserConsentActionListener {
             override fun onCheckedChange(isChecked: Boolean) {
 
             }
 
             @SuppressLint("SetTextI18n")
-            override fun onActionClicked(payload: UserConsentPayload) {
+            override fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean) {
                 viewBinding?.textPayloadData?.apply {
-                    text = "PAYLOAD: \n\n$payload"
+                    text = if (isDefaultTemplate) "this widget use default template"
+                    else "PAYLOAD: \n\n$payload"
                 }?.show()
             }
 

@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
 import com.tokopedia.common.payment.utils.LinkStatusMatcher
@@ -162,7 +163,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
                 domStorageEnabled = true
                 builtInZoomControls = false
                 displayZoomControls = true
-                setAppCacheEnabled(true)
+//                setAppCacheEnabled(true)
             }
             webView.webViewClient = PaymentMethodWebViewClient()
             webSettings?.mediaPlaybackRequiresUserGesture = false
@@ -268,7 +269,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private fun goToLinkAccount(context: Context) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
             putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
             putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
         }

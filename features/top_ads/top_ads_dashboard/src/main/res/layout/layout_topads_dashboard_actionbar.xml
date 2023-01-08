@@ -22,7 +22,8 @@
         android:layout_width="@dimen/topads_dashboard_dp_25"
         android:layout_height="@dimen/topads_dashboard_dp_25"
         android:padding="@dimen/top_ads_common_dp_1"
-        android:src="@drawable/education_icon" />
+        android:src="@drawable/iconunify_education"
+        android:tint="@color/Unify_NN900"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtBuatIklan"

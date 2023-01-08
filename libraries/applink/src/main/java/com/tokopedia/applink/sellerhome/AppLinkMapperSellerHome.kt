@@ -26,28 +26,30 @@ object AppLinkMapperSellerHome {
     const val FILTER_ORDER_TYPE = "filter_order_type"
 
     fun getSomNewOrderAppLink(uri: Uri): String {
-        val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
-            if(searchKeyword.isNotBlank()) {
-                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, param)
-            } else {
-                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER
+            val param = mutableMapOf<String, String>()
+            uri.queryParameterNames.forEach {
+                param[it] = uri.getQueryParameter(it).orEmpty()
             }
+            UriUtil.buildUriAppendParam(
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER,
+                param
+            )
         } else {
             getRegisteredNavigationMainAppSellerNewOrder()
         }
     }
 
     fun getSomReadyToShipAppLink(uri: Uri): String {
-        val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
-            if (searchKeyword.isNotBlank()) {
-                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, param)
-            } else {
-                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP
+            val param = mutableMapOf<String, String>()
+            uri.queryParameterNames.forEach {
+                param[it] = uri.getQueryParameter(it).orEmpty()
             }
+            UriUtil.buildUriAppendParam(
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP,
+                param
+            )
         } else {
             getRegisteredNavigationMainAppSellerReadyToShip()
         }

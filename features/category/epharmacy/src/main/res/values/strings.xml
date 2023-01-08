@@ -1,0 +1,20 @@
+<resources>
+    <string name="epharmacy_ketentuan_foto_resep">Ketentuan foto resep</string>
+    <string name="epharmacy_upload_foto_resep">Upload Foto Resep</string>
+    <string name="epharmacy_foto_resep_dokter">Foto Resep Dokter</string>
+    <string name="epharmacy_upload_title">Upload Foto Resep</string>
+    <string name="epharmacy_upload_instruction_1">Pastikan seluruh bagian kertas terlihat dan dapat terbaca</string>
+    <string name="epharmacy_upload_instruction_2">Upload foto resep sesuai dengan obat yang dibeli</string>
+    <string name="epharmacy_upload_instruction_3">Boleh upload lebih dari 1 resep dari dokter/klinik/kunjungan berbeda</string>
+    <string name="epharmacy_foto_resep">Foto Resep</string>
+    <string name="epharmacy_terms">Dengan klik “Foto Resep” kamu setuju dengan</string>
+    <string name="epharmacy_terms_hyper_text">Syarat dan Ketentuan.</string>
+    <string name="epharmacy_selesai">Selesai</string>
+    <string name="epharmacy_products_title">Obat butuh resep dokter</string>
+    <string name="epharmacy_upload_error">Gagal upload foto resep. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="epharmacy_internet_error">Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="epharmacy_quantity_weight_text">"%s Barang (%s)"</string>
+    <string name="epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
+    <string name="epharmacy_upload_title_view_only">Foto Resep Dokter</string>
+    <string name="epharmacy_toko_ini_adalah_partner_resmi">Toko ini adalah partner resmi</string>
+</resources>

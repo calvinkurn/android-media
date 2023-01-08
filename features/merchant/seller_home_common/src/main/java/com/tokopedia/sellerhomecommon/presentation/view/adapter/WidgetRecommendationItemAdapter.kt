@@ -23,8 +23,6 @@ class WidgetRecommendationItemAdapter(
 ) : RecyclerView.Adapter<WidgetRecommendationItemAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.shc_item_recommendation, parent, false)
         val binding = ShcItemRecommendationBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )

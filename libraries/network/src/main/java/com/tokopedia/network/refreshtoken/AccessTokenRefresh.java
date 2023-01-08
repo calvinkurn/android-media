@@ -62,7 +62,11 @@ public class AccessTokenRefresh {
                 tokenResponseError = response.errorBody().string();
                 networkRouter.logRefreshTokenException(tokenResponseError, "error_refresh_token", path, userSession.getAccessToken());
                 networkRouter.sendRefreshTokenAnalytics(tokenResponseError);
-                checkShowForceLogout(tokenResponseError, networkRouter, path, userSession);
+                if(response.code() == 401) {
+                    return "";
+                } else {
+                    checkShowForceLogout(tokenResponseError, networkRouter, path, userSession);
+                }
             } else if (response.body() != null) {
                 tokenResponse = response.body();
                 networkRouter.sendRefreshTokenAnalytics("");

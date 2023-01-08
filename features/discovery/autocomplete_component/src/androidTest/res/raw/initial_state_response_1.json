@@ -170,13 +170,13 @@
           {
             "id": "2400899",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2017/12/22/2400899/2400899_a1a81e3e-9067-4685-a62f-7be063df8377.png",
+            "image_url": "https://images.tokopedia.net/img/cache/100-square/shops-1/2017/12/22/2400899/2400899_a1a81e3e-9067-4685-a62f-7be063df8377.png",
             "applink": "tokopedia://shop/2400899?source=universe&st=product",
             "url": "/samsung?source=universe&st=product",
             "title": "Samsung Mobile Indonesia",
             "subtitle": "Jakarta",
-            "icon_title": "https://ecs7.tokopedia.net/img/official_store_badge.png",
-            "icon_subtitle": "https://ecs7.tokopedia.net/img/autocomplete/location.png",
+            "icon_title": "https://images.tokopedia.net/img/official_store_badge.png",
+            "icon_subtitle": "https://images.tokopedia.net/img/autocomplete/location.png",
             "label": "Toko",
             "label_type": "",
             "shortcut_image": "",
@@ -193,7 +193,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/12/3dfc823f-7296-4818-b074-378c39aa6a93.jpg",
+            "image_url": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/12/3dfc823f-7296-4818-b074-378c39aa6a93.jpg",
             "applink": "tokopedia://search?q=tablet&source=universe&st=product",
             "url": "/search?q=tablet&source=universe&st=product",
             "title": "Tablet",
@@ -211,7 +211,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/27/63889a9c-25e2-4468-969f-2159a7a9ac4c.jpg",
+            "image_url": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/27/63889a9c-25e2-4468-969f-2159a7a9ac4c.jpg",
             "applink": "tokopedia://search?q=samsung+tab+s7&source=universe&st=product",
             "url": "/search?q=samsung+tab+s7&source=universe&st=product",
             "title": "Samsung Tab S7",
@@ -229,7 +229,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/13/9e0387c4-689a-4494-a490-b2f9ae57d5d5.jpg",
+            "image_url": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/13/9e0387c4-689a-4494-a490-b2f9ae57d5d5.jpg",
             "applink": "tokopedia://search?q=iphone&source=universe&st=product",
             "url": "/search?q=iphone&source=universe&st=product",
             "title": "Iphone",
@@ -255,7 +255,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/4/14/b1063289-e7dc-4265-990c-d907e6ac0836.jpg",
+            "image_url": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/4/14/b1063289-e7dc-4265-990c-d907e6ac0836.jpg",
             "applink": "tokopedia://search?q=redmi+note+10&source=universe&st=product",
             "url": "/search?q=redmi+note+10&source=universe&st=product",
             "title": "Redmi Note 10",
@@ -309,7 +309,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/30/70243c5a-c84e-418a-bab0-8c642ec064d8.jpg",
+            "image_url": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/30/70243c5a-c84e-418a-bab0-8c642ec064d8.jpg",
             "applink": "tokopedia://search?q=rtx+3080&source=universe&st=product",
             "url": "/search?q=rtx+3080&source=universe&st=product",
             "title": "Rtx 3080",
@@ -327,7 +327,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/17/ee98ab48-2500-40e1-a914-1c2e930aadd7.jpg",
+            "image_url": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/17/ee98ab48-2500-40e1-a914-1c2e930aadd7.jpg",
             "applink": "tokopedia://search?q=vivo+y12s&source=universe&st=product",
             "url": "/search?q=vivo+y12s&source=universe&st=product",
             "title": "Vivo Y12s",
@@ -371,7 +371,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/26/1c3867b6-ef1b-4560-8374-6b6ade874a3c.jpg",
+            "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/26/1c3867b6-ef1b-4560-8374-6b6ade874a3c.jpg",
             "applink": "tokopedia://discovery/clp_dapur_983",
             "url": "https://www.tokopedia.com/p/dapur",
             "title": "Dapur",
@@ -389,7 +389,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/26/f05cf6cd-6790-405c-8344-b0a767ec4552.jpg",
+            "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/26/f05cf6cd-6790-405c-8344-b0a767ec4552.jpg",
             "applink": "tokopedia://discovery/clp_makanan-minuman_35",
             "url": "https://www.tokopedia.com/p/makanan-minuman",
             "title": "Makanan & Minuman",
@@ -407,7 +407,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/26/91ca4583-55b3-42a7-86cd-e7ed8690512d.jpg",
+            "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/26/91ca4583-55b3-42a7-86cd-e7ed8690512d.jpg",
             "applink": "tokopedia://discovery/clp_olahraga_62",
             "url": "https://www.tokopedia.com/p/olahraga",
             "title": "Olahraga",
@@ -425,7 +425,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/26/77953969-0311-4150-9ec2-91620f243036.jpg",
+            "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/26/77953969-0311-4150-9ec2-91620f243036.jpg",
             "applink": "tokopedia://discovery/clp_mainan-hobi_55",
             "url": "https://www.tokopedia.com/p/mainan-hobi",
             "title": "Mainan & Hobi",
@@ -443,7 +443,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/26/955c6e57-a7ea-4a1e-92af-1a83b74ff438.jpg",
+            "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/26/955c6e57-a7ea-4a1e-92af-1a83b74ff438.jpg",
             "applink": "tokopedia://discovery/clp_kamera_578",
             "url": "https://www.tokopedia.com/p/kamera",
             "title": "Kamera",
@@ -461,7 +461,7 @@
           {
             "id": "0",
             "template": "list_double_line",
-            "image_url": "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/26/12e02a9b-8c9d-4bf9-9eda-a38a6dfd110f.jpg",
+            "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/26/12e02a9b-8c9d-4bf9-9eda-a38a6dfd110f.jpg",
             "applink": "tokopedia://discovery/clp_handphone-tablet_65",
             "url": "https://www.tokopedia.com/p/handphone-tablet",
             "title": "Handphone & tablet",

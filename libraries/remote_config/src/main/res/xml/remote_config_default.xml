@@ -643,7 +643,15 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_review_form_new_enable</key>
+        <key>android_robust_tester</key>
+        <value></value>
+    </entry>
+    <entry>
+        <key>android_pdp_show_variant_with_chip_group</key>
         <value>true</value>
+    </entry>
+    <entry>
+        <key>android_robust_tester</key>
+        <value></value>
     </entry>
 </defaultsMap>

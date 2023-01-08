@@ -1,17 +1,18 @@
 package com.tokopedia.usercomponents.stickylogin.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
-import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
-import com.tokopedia.usercomponents.stickylogin.domain.usecase.StickyLoginUseCase
-import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
 import androidx.lifecycle.Observer
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
-import junit.framework.Assert.assertEquals
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
+import com.tokopedia.usercomponents.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -28,9 +29,16 @@ class StickyLoginViewModelTest {
 
     lateinit var viewModel: StickyLoginViewModel
 
-    private val mockResponse = StickyLoginTickerDataModel.TickerResponse(StickyLoginTickerDataModel(arrayListOf(
-            StickyLoginTickerDataModel.TickerDetailDataModel(layout = StickyLoginConstant.LAYOUT_FLOATING)
-    )))
+    private val mockResponse = StickyLoginTickerDataModel.TickerResponse(
+        StickyLoginTickerDataModel(
+            arrayListOf(
+                StickyLoginTickerDataModel.TickerDetailDataModel(
+                    message = "",
+                    layout = StickyLoginConstant.LAYOUT_FLOATING
+                )
+            )
+        )
+    )
 
     private val mockThrowable = Throwable("Opps!")
 
@@ -55,7 +63,24 @@ class StickyLoginViewModelTest {
 
         coVerify { observer.onChanged(Success(mockResponse.response)) }
 
-        assertEquals((viewModel.stickyContent.value as Success).data.tickerDataModels[0].layout, StickyLoginConstant.LAYOUT_FLOATING)
+        assert((viewModel.stickyContent.value as Success).data.tickerDataModels.any {
+            it.layout == StickyLoginConstant.LAYOUT_FLOATING
+        })
+    }
+
+    @Test
+    fun `get content - not sticky`() {
+        val page = StickyLoginConstant.Page.HOME
+
+        coEvery { stickyLoginUseCase(any()) } returns mockResponse.apply {
+            response.tickerDataModels.forEach {
+                it.layout = StickyLoginConstant.LAYOUT_DEFAULT
+            }
+        }
+
+        viewModel.getStickyContent(page)
+
+        assert(viewModel.stickyContent.value is Fail)
     }
 
     @Test

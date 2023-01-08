@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
+import com.tokopedia.util.UnitTestFileUtils
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -17,8 +18,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyString
-import java.io.File
 import java.lang.reflect.Type
 
 /**
@@ -75,8 +74,8 @@ class GetShopPageHomeLayoutUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                SHOP_PAGE_GET_LAYOUT_SUCCESS_RESPONSE_JSON_FILE_PATH.getJsonFromFile(),
-                JsonObject::class.java
+            SHOP_PAGE_GET_LAYOUT_SUCCESS_RESPONSE_JSON_FILE_PATH.getJsonFromFile(),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
         val objectType = ShopLayoutWidget.Response::class.java
@@ -89,8 +88,8 @@ class GetShopPageHomeLayoutUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                SHOP_PAGE_GET_LAYOUT_ERROR_RESPONSE_JSON_FILE_PATH.getJsonFromFile(),
-                JsonObject::class.java
+            SHOP_PAGE_GET_LAYOUT_ERROR_RESPONSE_JSON_FILE_PATH.getJsonFromFile(),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
         val objectType = GraphqlError::class.java
@@ -99,11 +98,7 @@ class GetShopPageHomeLayoutUseCaseTest {
         return GraphqlResponse(result, errors, false)
     }
 
-
     private fun String.getJsonFromFile(): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(this)
-        val file = File(uri.path)
-        return String(file.readBytes())
+        return UnitTestFileUtils.getJsonFromAsset(this)
     }
-
 }

@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.os.Environment
 import androidx.fragment.app.Fragment
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
-import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.content.common.types.BundleData
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -27,6 +27,7 @@ object CameraUtil {
         videoMaxDuration:Long,
         selectedFeedAccountId: String,
         requestCode: Int = NO_REQUEST_CODE,
+        isOpenFrom: String,
     ) {
         if(fragment.context!=null){
             val intent = CameraActivity.getIntent(
@@ -34,6 +35,7 @@ object CameraUtil {
                 applinkToNavigateAfterMediaCapture,
                 videoMaxDuration,
                 selectedFeedAccountId,
+                isOpenFrom,
             )
 
             fragment.apply {

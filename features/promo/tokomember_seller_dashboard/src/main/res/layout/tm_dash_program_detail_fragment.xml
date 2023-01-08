@@ -70,7 +70,7 @@
             android:layout_marginTop="@dimen/tm_dash_dp_8"
             android:id="@+id/tvProgramPeriod"
             android:textColor="@color/Unify_NN0"
-            app:typographyType="heading_5" />
+            app:typographyType="display_2" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -88,8 +88,8 @@
                 app:typographyType="display_2"/>
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_width="@dimen/tm_dash_dp_10"
-                android:layout_height="@dimen/tm_dash_dp_10"
+                android:layout_width="@dimen/tm_dash_dp_16"
+                android:layout_height="@dimen/tm_dash_dp_16"
                 app:icon_color_light_enable="@color/Unify_NN0"
                 app:icon_name="INFORMATION"/>
 
@@ -129,7 +129,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tvMemberCount"
                         android:textColor="@color/Unify_NN950"
-                        app:typographyType="heading_6"/>
+                        app:typographyType="heading_4"
+                        />
 
                 </LinearLayout>
 
@@ -162,7 +163,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tvTransactionCount"
                         android:textColor="@color/Unify_NN950"
-                        app:typographyType="heading_6"/>
+                        app:typographyType="heading_4"
+                        />
 
                 </LinearLayout>
 
@@ -195,7 +197,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tvIncome"
                         android:textColor="@color/Unify_NN950"
-                        app:typographyType="heading_6"/>
+                        app:typographyType="heading_4"
+                        />
 
                 </LinearLayout>
 
@@ -243,7 +246,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_8"
                         android:text="@string/tm_premium_level_1"
                         android:textColor="@color/Unify_NN950"
                         app:typographyType="display_3"/>
@@ -267,7 +270,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/tm_min_transaksi"
                             android:textColor="@color/Unify_NN950"
                             app:typographyType="body_3"/>
@@ -277,7 +280,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tvTransactionPremium"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginStart="@dimen/tm_dash_dp_16"
                             android:textColor="@color/Unify_NN950"
                             app:typographyType="heading_6"/>
 
@@ -340,7 +343,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/tm_dash_dp_10"
+                        android:layout_marginStart="@dimen/tm_dash_dp_8"
                         android:text="@string/tm_vip_level_2"
                         android:textColor="@color/Unify_NN950"
                         app:typographyType="display_3"/>
@@ -364,7 +367,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/tm_dash_dp_10"
+                            android:layout_marginStart="@dimen/tm_dash_dp_16"
                             android:text="@string/tm_min_transaksi"
                             android:textColor="@color/Unify_NN950"
                             app:typographyType="body_3"/>
@@ -374,7 +377,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tvTransactionVip"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/tm_dash_dp_10"
+                            android:layout_marginStart="@dimen/tm_dash_dp_16"
                             android:textColor="@color/Unify_NN950"
                             app:typographyType="heading_6"/>
 
@@ -415,30 +418,37 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:layout_marginTop="@dimen/tm_dash_dp_24"
             android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:orientation="horizontal">
+            >
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tm_kupon_tokomember"
                 android:textColor="@color/Unify_NN950"
-                app:typographyType="heading_3"/>
+                app:typographyType="heading_3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/kuponTokomemberHeading"
+                />
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_width="@dimen/tm_dash_dp_10"
-                android:layout_height="@dimen/tm_dash_dp_10"
+                android:layout_width="@dimen/tm_dash_dp_16"
+                android:layout_height="@dimen/tm_dash_dp_16"
+                android:layout_marginTop="4dp"
                 android:layout_marginStart="@dimen/tm_dash_dp_4"
                 app:icon_name="INFORMATION"
                 app:icon_color_light_enable="#2E3137"
+                app:layout_constraintStart_toEndOf="@id/kuponTokomemberHeading"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <FrameLayout
             android:layout_width="match_parent"

@@ -2,10 +2,8 @@ package com.tokopedia.vouchercreation.instrumenttest
 
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -27,12 +25,11 @@ class MerchantVoucherHistoryListErrorPageAnalyticTest {
     @get:Rule
     var activityRule: IntentsTestRule<VoucherListActivity> = IntentsTestRule(VoucherListActivity::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun beforeTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(MerchantVoucherHistoryListErrorMockModelConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         activityRule.launchActivity(Intent().putExtra(IS_ACTIVE, false))
@@ -40,7 +37,6 @@ class MerchantVoucherHistoryListErrorPageAnalyticTest {
 
     @After
     fun afterTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
@@ -52,7 +48,7 @@ class MerchantVoucherHistoryListErrorPageAnalyticTest {
 
     private fun doAnalyticDebuggerTest(fileName: String) {
         MatcherAssert.assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
+                cassavaRule.validate(fileName),
                 hasAllSuccess()
         )
     }

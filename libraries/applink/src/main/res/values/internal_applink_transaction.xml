@@ -8,4 +8,6 @@
     -->
     <string name="path_order_list" translatable="false">/order-list</string>
 
+    <string name="path_collection_detail" translatable="false">/wishlist/collection/.*\\/</string>
+
 </resources>

@@ -20,13 +20,15 @@ class ReserveProductAdapter(
     }
 
     override fun onBindViewHolder(holder: ReserveProductViewHolder, position: Int) {
-        holder.bind(items[position], selectedProduct, inputEnabled)
+        items.getOrNull(position)?.let {
+            holder.bind(it, selectedProduct, inputEnabled)
+        }
     }
 
     override fun getItemCount() = items.size
 
     private fun itemOnClick(position: Int, value: Boolean) {
-        val selectedItem = items[position]
+        val selectedItem = items.getOrNull(position) ?: return
         selectedItem.isSelected = value
         if (value) {
             addToSelectedProduct(selectedItem, false)

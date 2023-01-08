@@ -7,12 +7,22 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/product_bundling_single_image"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:padding="1dp"
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_image_outline"
+        app:layout_constraintBottom_toBottomOf="@id/product_bundling_single_image"
+        app:layout_constraintEnd_toEndOf="@id/product_bundling_single_image"
+        app:layout_constraintStart_toStartOf="@id/product_bundling_single_image"
+        app:layout_constraintTop_toTopOf="@id/product_bundling_single_image" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/product_bundling_single_label"
@@ -44,6 +54,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_single_name"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_single_name"
+        app:typographyType="display_3"
         tools:text="Rp36.000" />
 
     <com.tokopedia.unifycomponents.Label
@@ -53,6 +64,7 @@
         android:layout_marginStart="4dp"
         android:visibility="gone"
         app:labelType="general_light_red"
+        app:layout_constraintBottom_toBottomOf="@id/product_bundling_single_price"
         app:layout_constraintLeft_toRightOf="@id/product_bundling_single_price"
         app:layout_constraintTop_toTopOf="@id/product_bundling_single_price"
         tools:text="10%"
@@ -63,9 +75,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN400"
         app:layout_constraintBottom_toBottomOf="@id/product_bundling_single_discount"
         app:layout_constraintLeft_toRightOf="@id/product_bundling_single_discount"
+        app:layout_constraintTop_toTopOf="@id/product_bundling_single_discount"
         app:typographyType="small"
         tools:text="Rp40.000" />
 

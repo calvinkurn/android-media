@@ -9,6 +9,7 @@ import static com.tokopedia.home_account.account_settings.AccountConstants.Analy
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.SHOP;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOPEDIA_MARKETPLACE;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TRACKER_ID;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.USER_PLATFORM;
 
 import android.content.Context;
@@ -38,7 +39,7 @@ public class AccountAnalytics {
     private UserSessionInterface userSessionInterface;
 
     @Inject
-    public AccountAnalytics (Context context, UserSessionInterface userSessionInterface) {
+    public AccountAnalytics(Context context, UserSessionInterface userSessionInterface) {
         this.context = context;
         this.userSessionInterface = userSessionInterface;
     }
@@ -105,15 +106,12 @@ public class AccountAnalytics {
     }
 
     public void eventClickKycSetting(String projectId) {
-
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_ACCOUNT,
                 String.format("%s %s", ACCOUNT, SETTING),
                 AccountConstants.Analytics.CLICK_KYC_SETTING,
                 "click - " + projectId + " - ckyc"
-        ));
+        ), "2617");
     }
 
     public void eventClickPinSetting() {
@@ -148,5 +146,12 @@ public class AccountAnalytics {
                 AccountConstants.Analytics.EVENT_ACTION_SAMPAI,
                 ""
         ));
+    }
+
+    private void track(Map<String, Object> data, String trackerId) {
+        data.put(BUSINESS_UNIT, USER_PLATFORM);
+        data.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        data.put(TRACKER_ID, trackerId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(data);
     }
 }

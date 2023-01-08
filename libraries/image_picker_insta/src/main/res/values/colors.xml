@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="imagepicker_insta_toolbar_title">#6D7588</color>
-    <color name="imagepicker_insta_menu">#00AA5B</color>
-    <color name="imagepicker_insta_menu_inactive">#AAB4C8</color>
-    <color name="imagepicker_insta_image_bg">#F0F3F7</color>
-    <color name="imagepicker_insta_empty_bg">#E4EBF5</color>
-    <color name="imagepicker_insta_came_overlay">#80000000</color>
-    <color name="imagepicker_insta_title_black">#212121</color>
-    <color name="imagepicker_insta_message_grey">#6D7588</color>
-    <color name="imagepicker_insta_message_divider">#BFC9D9</color>
+    <color name="imagepickerinsta_dms_camera_overlay">#80000000</color>
+    <color name="imagepickerinsta_dms_camera_timer_progress">#7FFF4A</color>
+    <color name="imagepickerinsta_dms_camera_btn_bg">#f5751d</color>
+    <color name="imagepickerinsta_dms_duration_bg">#B22E3137</color>
 </resources>

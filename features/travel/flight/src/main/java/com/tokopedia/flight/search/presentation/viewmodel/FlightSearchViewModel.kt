@@ -14,7 +14,7 @@ import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.promo_chips.data.FlightLowestPriceQuery
+import com.tokopedia.flight.promo_chips.data.QueryFlightLowestPrice
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
 import com.tokopedia.flight.promo_chips.data.model.FlightLowestPriceArgs
@@ -23,8 +23,20 @@ import com.tokopedia.flight.search.data.FlightSearchThrowable
 import com.tokopedia.flight.search.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.search.data.cloud.combine.FlightCombineRouteRequest
 import com.tokopedia.flight.search.data.cloud.single.FlightSearchRequestModel
-import com.tokopedia.flight.search.domain.*
-import com.tokopedia.flight.search.presentation.model.*
+import com.tokopedia.flight.search.domain.FlightSearchCombineUseCase
+import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.search.domain.FlightSearchDeleteReturnDataUseCase
+import com.tokopedia.flight.search.domain.FlightSearchJouneyByIdUseCase
+import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
+import com.tokopedia.flight.search.domain.FlightSearchUseCase
+import com.tokopedia.flight.search.domain.FlightSortAndFilterUseCase
+import com.tokopedia.flight.search.presentation.model.FlightAirportCombineModel
+import com.tokopedia.flight.search.presentation.model.FlightFareModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchSelectedModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.statistics.FlightSearchStatisticModel
 import com.tokopedia.flight.search.presentation.util.FlightSearchCache
@@ -477,7 +489,7 @@ class FlightSearchViewModel @Inject constructor(
                 departureAirport, arrivalAirport, departureDate, returnDate, classId)
 
         launchCatchError(dispatcherProvider.main, {
-            val data = flightLowestPriceUseCase.execute(FlightLowestPriceQuery.flightLowestPriceInput, dataParam)
+            val data = flightLowestPriceUseCase.execute(QueryFlightLowestPrice(), dataParam)
             mutablePromoData.postValue(data)
         }) {
             if (it is FlightSearchThrowable) {

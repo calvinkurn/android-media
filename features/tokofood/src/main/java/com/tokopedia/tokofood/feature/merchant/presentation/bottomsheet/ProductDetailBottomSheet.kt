@@ -146,7 +146,9 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        showNow(fragmentManager, TAG)
+        if (!isVisible) {
+            show(fragmentManager, TAG)
+        }
     }
 
     fun setClickListener(clickListener: OnProductDetailClickListener) {

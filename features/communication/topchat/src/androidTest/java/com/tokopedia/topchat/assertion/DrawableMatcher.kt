@@ -10,6 +10,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
@@ -71,6 +72,10 @@ class DrawableMatcher(private val resourceId: Int) : TypeSafeMatcher<View?>() {
          */
         fun compareDrawable(viewId: Int, resourceId: Int) : ViewInteraction? {
             return onView(withId(viewId)).check(matches(DrawableMatcher(resourceId)))
+        }
+
+        fun compareDrawableWithIndex(viewId: Int, resourceId: Int, index: Int) : ViewInteraction? {
+            return onView(withIndex(withId(viewId), index)).check(matches(DrawableMatcher(resourceId)))
         }
 
         fun compareDrawableOnRecyclerView(

@@ -111,9 +111,9 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    fun loadPmsCounter() {
+    fun loadPmsCounter(shopId: String) {
         launch {
-            _getUohPmsCounterResult.value = getUohPmsCounterUseCase.executeSuspend()
+            _getUohPmsCounterResult.value = getUohPmsCounterUseCase.executeSuspend(shopId)
         }
     }
 

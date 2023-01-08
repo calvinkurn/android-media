@@ -9,7 +9,7 @@ class CategoryNavConstants {
         const val CTG_ID = "ctg_id"
         const val DEVICE = "device"
         const val SOURCE = "source"
-        const val UNIQUE_ID = "unique_id"
+        const val USER_ID = "userId"
         const val ROWS = "rows"
         const val KEY_SAFE_SEARCH = "safe_search"
         const val PMIN = "pmin"
@@ -28,6 +28,9 @@ class CategoryNavConstants {
         const val QUERY = "query"
         const val ST = "st"
         const val FILTER = "filter"
+        const val USER_CITY_ID = "user_cityId"
+        const val USER_DISTRICT_ID = "user_districtId"
+        const val SHOP_TIER = "shop_tier"
     }
 
 

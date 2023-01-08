@@ -69,7 +69,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
-    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.gallery)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
@@ -81,7 +80,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.topAdsDetailSheet)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
@@ -102,10 +100,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.attachcommon)
     implementation projectOrAar(rootProject.ext.features.variantCommon)
-    implementation rootProject.ext.miscDependencies.viewPager2
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.minicart)
+    implementation projectOrAar(rootProject.ext.features.affiliateSDK)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
+    implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.rxAndroid
 
@@ -114,7 +114,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -172,7 +171,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 

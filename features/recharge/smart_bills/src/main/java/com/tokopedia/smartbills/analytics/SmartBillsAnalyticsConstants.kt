@@ -38,6 +38,9 @@ interface SmartBillsAnalyticConstants {
             const val CLICK_EXPAND_ACCORDION = "click expand button pdp"
             const val CLICK_COLLAPSE_ACCORDION = "click collapse button pdp"
             const val CLICK_REFRESH_ACCORDION = "click reload button pdp"
+            const val VIEW_ON_HIGHLIGHT_CATEGORY = "view highlighted product widget"
+            const val CLICK_ON_HIGHLIGHT_CATEGORY = "click on highlighted product widget"
+            const val CLICK_X_ON_HIGHLIGHT_CATEGORY = "click x highlighted product widget"
 
             const val VIEW_PAGE = "view page"
 
@@ -55,6 +58,7 @@ interface SmartBillsAnalyticConstants {
 
     interface Key {
         companion object {
+            const val TRACKER_ID = "trackerId"
             const val USER_ID = "userId"
             const val SCREEN_NAME = "screenName"
             const val CURRENT_SITE = "currentSite"

@@ -54,11 +54,10 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
-import com.tokopedia.unifyprinciples.R as UnifyPrincipleRes
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.QueryHotelPropertySearch
 import com.tokopedia.hotel.databinding.FragmentHotelSearchMapBinding
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
@@ -86,6 +85,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -102,6 +102,7 @@ import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as UnifyPrincipleRes
 
 /**
  * @author by furqan on 01/03/2021
@@ -577,8 +578,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = HotelGqlQuery.PROPERTY_SEARCH
-        hotelSearchMapViewModel.searchProperty(page, searchQuery)
+        hotelSearchMapViewModel.searchProperty(page, QueryHotelPropertySearch())
     }
 
     override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory =
@@ -1619,7 +1619,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         activity?.let {
             permissionCheckerHelper.checkPermission(it,
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
                         permissionCheckerHelper.onPermissionDenied(it, permissionText)
@@ -1631,8 +1631,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
                     override fun onPermissionGranted() {
                         locationDetectorHelper.getLocation(
-                            hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                            hotelSearchMapViewModel.onGetLocation(),
+                            requireActivity(),
                             LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                            RequestLocationType.APPROXIMATE,
                             requireActivity().getString(R.string.hotel_destination_need_permission)
                         )
                     }

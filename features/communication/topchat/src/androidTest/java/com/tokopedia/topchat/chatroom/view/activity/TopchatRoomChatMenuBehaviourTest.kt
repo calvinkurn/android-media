@@ -3,13 +3,15 @@ package com.tokopedia.topchat.chatroom.view.activity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertAttachmentMenuCount
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertSendBtnDisabled
+import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
@@ -101,9 +103,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertChatMenuVisibility(isDisplayed())
-        onView(withId(R.id.ll_sticker_container)).check(
-                matches(isDisplayed())
-        )
+        assertStickerContainer()
         assertChatAttachmentMenuVisibility(not(isDisplayed()))
     }
 
@@ -145,9 +145,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertChatAttachmentMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.ll_sticker_container)).check(
-                matches(isDisplayed())
-        )
+        assertStickerContainer()
     }
 
     @Test
@@ -178,9 +176,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertChatAttachmentMenuVisibility(isDisplayed())
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(withTotalItem(3))
-        )
+        assertAttachmentMenuCount(3)
     }
 
     @Test
@@ -195,9 +191,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertChatAttachmentMenuVisibility(isDisplayed())
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(withTotalItem(4))
-        )
+        assertAttachmentMenuCount(4)
     }
 
     @Test
@@ -212,7 +206,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                 .findViewById<RecyclerView>(R.id.recycler_view_chatroom)
                 .adapter?.itemCount ?: 0
 
-        onView(withId(R.id.new_comment)).perform(typeText("Test"))
+        typeMessage("Test")
         clickSendBtn()
 
         //Then
@@ -222,7 +216,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                 ))
                 .check(matches(withText("Test")))
         onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count + 1)))
-        onView(withId(R.id.new_comment)).check(matches(withText("")))
+        typeMessage("")
     }
 
     @Test
@@ -233,11 +227,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         //When
-        onView(withId(R.id.new_comment)).perform(typeText("Test"))
-        onView(withId(R.id.new_comment)).perform(clearText())
+        typeMessage("Test")
+        onView(withIndex(withId(R.id.new_comment), 0)).perform(clearText())
 
         //Then
-        DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn_disabled)
+        assertSendBtnDisabled()
     }
 
 }

@@ -22,12 +22,11 @@ import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.data.model.ShopTabIconUrlModel
 import com.tokopedia.utils.resources.isDarkMode
-import java.lang.Exception
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
-        private val ctx: Context?,
-        fragment: Fragment
+    private val ctx: Context?,
+    fragment: Fragment
 ) : FragmentStateAdapter(fragment) {
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val ctxRef = WeakReference(ctx)
@@ -35,6 +34,7 @@ internal class ShopPageFragmentPagerAdapter(
     companion object {
         @ColorRes
         private val ICON_COLOR_LIGHT_ENABLE = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+
         @ColorRes
         private val ICON_COLOR_LIGHT = com.tokopedia.unifyprinciples.R.color.Unify_NN900
     }
@@ -46,24 +46,50 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.let {
-            ShopPageTabViewBinding.bind(it).apply {
-                val shopPageTabViewIcon: IconUnify = this.shopPageTabViewIcon
-                setTabIcon(shopPageTabViewIcon, tab.position, isActive)
-            }
+            configTabViewBinding(it, tab, isActive) ?: configDynamicTabViewBinding(it, tab, isActive)
+        }
+    }
+
+    private fun configTabViewBinding(
+        view: View,
+        tab: TabLayout.Tab,
+        isActive: Boolean
+    ): ShopPageTabViewBinding? {
+        return getTabViewBinding(view)?.apply {
+            val shopPageTabViewIcon: IconUnify = this.shopPageTabViewIcon
+            setTabIcon(shopPageTabViewIcon, tab.position, isActive)
+        }
+    }
+
+    private fun getTabViewBinding(view: View): ShopPageTabViewBinding? {
+        return try {
+            ShopPageTabViewBinding.bind(view)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun configDynamicTabViewBinding(
+        view: View,
+        tab: TabLayout.Tab,
+        isActive: Boolean
+    ): ShopPageDynamicTabViewBinding? {
+        return getDynamicTabViewBinding(view)?.apply {
+            setDynamicTabIcon(this, tab.position, isActive)
+        }
+    }
+
+    private fun getDynamicTabViewBinding(view: View): ShopPageDynamicTabViewBinding? {
+        return try {
+            ShopPageDynamicTabViewBinding.bind(view)
+        } catch (_: Exception) {
+            null
         }
     }
 
     fun getDynamicTabView(position: Int, selectedPosition: Int): View = ShopPageDynamicTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
         setDynamicTabIcon(this, position, position == selectedPosition)
     }.root
-
-    fun handleSelectedDynamicTab(tab: TabLayout.Tab, isActive: Boolean) {
-        tab.customView?.let {
-            ShopPageDynamicTabViewBinding.bind(it).apply {
-                setDynamicTabIcon(this, tab.position, isActive)
-            }
-        }
-    }
 
     private fun getTabIconDrawable(position: Int, isActive: Boolean): Int? = ctxRef.get()?.run {
         return if (isActive) {
@@ -159,7 +185,7 @@ internal class ShopPageFragmentPagerAdapter(
         }
     }
 
-    override fun getItemCount(): Int =  listShopPageTabModel.size
+    override fun getItemCount(): Int = listShopPageTabModel.size
 
     override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
@@ -177,7 +203,7 @@ internal class ShopPageFragmentPagerAdapter(
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
         listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
-            if(shopPageTabModel.tabFragment::class.java == classType){
+            if (shopPageTabModel.tabFragment::class.java == classType) {
                 fragmentPosition = index
             }
         }

@@ -11,4 +11,5 @@ data class GeneralSearchTrackingModel(
     val pageSource: String,
     val searchFilter: String,
     val componentId: String,
+    val externalReference: String,
 )

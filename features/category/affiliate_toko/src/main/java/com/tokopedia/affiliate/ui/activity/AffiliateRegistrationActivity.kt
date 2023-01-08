@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.affiliate.AFFILIATE_APP_LINK
 import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -36,7 +37,9 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
-    lateinit var affiliateRegistrationSharedViewModel: AffiliateRegistrationSharedViewModel
+    private var affiliateRegistrationSharedViewModel: AffiliateRegistrationSharedViewModel? = null
+
+    private var productId: String? = null
 
     override fun getViewModelType(): Class<AffiliateRegistrationSharedViewModel> {
         return AffiliateRegistrationSharedViewModel::class.java
@@ -48,6 +51,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        productId = intent.getStringExtra(PRODUCT_ID_KEY)
         setupView(savedInstanceState == null)
     }
 
@@ -62,24 +66,29 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
 
     private fun initObserver() {
-        affiliateRegistrationSharedViewModel.getUserAction().observe(this,
-             {
-            when(it){
+        affiliateRegistrationSharedViewModel?.getUserAction()?.observe(this) {
+            when (it) {
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToPortFolio -> {
-                    openFragment(AffiliatePortfolioFragment.getFragmentInstance(),AffiliatePortfolioFragment.TAG)
+                    openFragment(
+                        AffiliatePortfolioFragment.getFragmentInstance(),
+                        AffiliatePortfolioFragment.TAG
+                    )
                 }
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToTermsAndFragment -> {
-                    openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(),AffiliateTermsAndConditionFragment.TAG)
+                    openFragment(
+                        AffiliateTermsAndConditionFragment.getFragmentInstance(),
+                        AffiliateTermsAndConditionFragment.TAG
+                    )
                 }
                 AffiliateRegistrationSharedViewModel.UserAction.RegistrationSucces -> {
                     showSplashScreen()
                 }
                 else -> {}
             }
-        })
+        }
     }
 
-    var showingSplashScreen = false
+    private var showingSplashScreen = false
     private fun showSplashScreen() {
         showingSplashScreen = true
         findViewById<FrameLayout>(R.id.parent_view)?.hide()
@@ -93,11 +102,17 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
         splashHandler?.postDelayed(splashRunnable, AFFILIATE_SPLASH_TIME)
     }
 
-    var splashHandler: Handler? = null
+    private var splashHandler: Handler? = null
 
     private val splashRunnable = Runnable {
         findViewById<Group>(R.id.splash_group)?.hide()
-        openAffiliate()
+        if (productId == null) {
+            openAffiliate()
+        } else if (productId?.isEmpty() == true) {
+            finish()
+        } else {
+            openPdp()
+        }
     }
 
     override fun onDestroy() {
@@ -106,7 +121,11 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
     }
 
     private fun openAffiliate() {
-        RouteManager.route(this,"tokopedia://affiliate")
+        RouteManager.route(this, AFFILIATE_APP_LINK)
+        finish()
+    }
+    private fun openPdp() {
+        RouteManager.route(this, "tokopedia://product/$productId")
         finish()
     }
 
@@ -136,8 +155,13 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
             .build()
 
     companion object{
-        fun newInstance(context: Context){
-            context.startActivity(Intent(context,AffiliateRegistrationActivity::class.java))
+        private const val PRODUCT_ID_KEY = "productId"
+        fun newInstance(context: Context, productId: String? = null) {
+            context.startActivity(
+                Intent(context, AffiliateRegistrationActivity::class.java).apply {
+                    putExtra(PRODUCT_ID_KEY, productId)
+                }
+            )
         }
     }
 

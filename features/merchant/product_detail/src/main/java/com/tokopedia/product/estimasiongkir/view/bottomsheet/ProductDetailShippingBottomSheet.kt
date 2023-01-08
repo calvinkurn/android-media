@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
@@ -56,7 +57,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var viewModel: RatesEstimationBoeViewModel? = null
-    private var adapter: ProductDetailShippingAdapter? = null
+    private var shippingAdapter: ProductDetailShippingAdapter? = null
     private var rv: RecyclerView? = null
     private var viewContainer: View? = null
     private val sharedViewModel by lazy {
@@ -126,9 +127,9 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
             viewModel?.setRatesRequest(it)
         }
 
-        viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) {
-            it.doSuccessOrFail({
-                adapter?.submitList(it.data)
+        viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) { result ->
+            result.doSuccessOrFail({
+                shippingAdapter?.submitList(it.data)
             }) { throwable ->
                 showError(throwable)
             }
@@ -141,26 +142,37 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         } else {
             GlobalError.SERVER_ERROR
         }
-        adapter?.submitList(listOf(ProductShippingErrorDataModel(errorType = errorType)))
+        shippingAdapter?.submitList(listOf(ProductShippingErrorDataModel(errorType = errorType)))
     }
 
     private fun setupRecyclerView(view: View) {
-        rv = view.findViewById(R.id.rv_product_shipping)
-        if (rv?.itemDecorationCount == 0 && context != null) {
-            rv?.addItemDecoration(ProductSeparatorItemDecoration(requireContext()))
+        rv = view.findViewById<RecyclerView?>(R.id.rv_product_shipping).apply {
+            if (itemDecorationCount == Int.ZERO && context != null) {
+                val decorator = ProductSeparatorItemDecoration(
+                    context = requireContext()
+                )
+                addItemDecoration(decorator)
+            }
+            itemAnimator = null
+
+            val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil()).build()
+
+            shippingAdapter = ProductDetailShippingAdapter(
+                asyncDifferConfig = asyncDiffer,
+                typeFactory = ProductShippingFactoryImpl(
+                    listener = this@ProductDetailShippingBottomSheet,
+                    chooseAddressListener = this@ProductDetailShippingBottomSheet
+                )
+            )
+
+            adapter = shippingAdapter
         }
-        rv?.itemAnimator = null
-        val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil())
-                .build()
 
-        adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl(this, this))
-
-        rv?.adapter = adapter
         showShimmerPage()
     }
 
     private fun showShimmerPage(height: Int = 0) {
-        adapter?.submitList(listOf(ProductShippingShimmerDataModel(height = height)))
+        shippingAdapter?.submitList(listOf(ProductShippingShimmerDataModel(height = height)))
     }
 
     override fun onChooseAddressClicked() {

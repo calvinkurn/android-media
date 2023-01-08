@@ -36,7 +36,9 @@ data class DynamicParameterModel(
     val postFilter: String = "",
     @Expose
     @SerializedName("table_filter")
-    val tableFilter: String = ""
+    val tableFilter: String = "",
+    @SerializedName("sub_page_source")
+    val subPageSource: String = ""
 ) {
 
     fun toJsonString(): String {

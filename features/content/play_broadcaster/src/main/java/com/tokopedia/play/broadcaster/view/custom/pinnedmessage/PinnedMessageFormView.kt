@@ -134,7 +134,8 @@ class PinnedMessageFormView : ConstraintLayout {
 
     override fun setVisibility(visibility: Int) {
         super.setVisibility(visibility)
-        if (visibility == View.VISIBLE) showInputMethod()
+        if (visibility == View.VISIBLE && binding.loaderLoading.visibility == View.GONE)
+            showInputMethod()
     }
 
     private fun showInputMethod() {

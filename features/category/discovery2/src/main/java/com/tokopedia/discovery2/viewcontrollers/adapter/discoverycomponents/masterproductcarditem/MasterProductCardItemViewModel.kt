@@ -44,6 +44,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val showNotifyToast: SingleLiveEvent<Pair<Boolean, String?>> = SingleLiveEvent()
+    private val scrollToSimilarProductComponentID: SingleLiveEvent<String> = SingleLiveEvent()
     private var lastQuantity:Int = 0
 
     @Inject
@@ -169,6 +170,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
     fun notifyMeCurrentStatus(): LiveData<Boolean> = notifyMeCurrentStatus
     fun showNotifyToastMessage(): LiveData<Pair<Boolean, String?>> = showNotifyToast
+    fun getScrollSimilarProductComponentID(): LiveData<String> = scrollToSimilarProductComponentID
 
     fun subscribeUser() {
         if (isUserLoggedIn()) {
@@ -200,7 +202,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     private fun getNotifyRequestBundle(dataItem: DataItem): CampaignNotifyMeRequest {
         val campaignNotifyMeRequest = CampaignNotifyMeRequest()
-        campaignNotifyMeRequest.campaignID = dataItem.campaignId.toIntOrZero()
+        campaignNotifyMeRequest.campaignID = dataItem.campaignId.toLongOrZero()
         campaignNotifyMeRequest.productID = dataItem.productId.toLongOrZero()
         campaignNotifyMeRequest.action = if (dataItem.notifyMe == true) {
             UNREGISTER
@@ -305,6 +307,13 @@ class MasterProductCardItemViewModel(val application: Application, val component
     fun saveProductCardComponent() {
         components.data?.firstOrNull()?.productId?.let { prodId ->
             setComponent(prodId, components.pageEndPoint, components)
+        }
+    }
+
+    fun scrollToTargetSimilarProducts() {
+        components.data?.firstOrNull()?.targetComponentId?.let { targetCompId ->
+            if (targetCompId.isNotEmpty())
+                scrollToSimilarProductComponentID.value = targetCompId
         }
     }
 

@@ -15,7 +15,9 @@ class ProductBundlingCardViewHolder(
     private val adapterListener: AdapterListener,
     private val searchListener: SearchListener,
     private val commonListener: CommonViewHolderListener,
-    private val deferredAttachment: DeferredViewHolderAttachment
+    private val deferredAttachment: DeferredViewHolderAttachment,
+    private val source: ProductBundlingCardAttachmentContainer.BundlingSource? =
+        ProductBundlingCardAttachmentContainer.BundlingSource.PRODUCT_ATTACHMENT
 ) : BaseChatViewHolder<ProductBundlingUiModel>(itemView) {
 
     private val containerBundlingAttachment:
@@ -30,10 +32,11 @@ class ProductBundlingCardViewHolder(
         }
     }
 
-    override fun bind(element: ProductBundlingUiModel) {
+    override fun bind(uiModel: ProductBundlingUiModel) {
         containerBundlingAttachment?.bindData(
-            element, adapterPosition, listener, adapterListener,
-            searchListener, commonListener, deferredAttachment
+            uiModel, adapterPosition, listener, adapterListener,
+            searchListener, commonListener, deferredAttachment,
+            source
         )
     }
 

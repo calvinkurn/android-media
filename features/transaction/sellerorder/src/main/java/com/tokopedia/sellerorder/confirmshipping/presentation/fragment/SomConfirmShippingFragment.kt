@@ -174,7 +174,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private fun setupListeners() {
         // set onclick scan resi
         binding?.tfNoResi?.getFirstIcon()?.setOnClickListener {
-            requestBarcodeScanner(activity as Activity, CaptureActivity::class.java)
+            requestBarcodeScanner()
         }
 
         if (currIsChangeShipping) {
@@ -215,9 +215,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         getComponent(SomConfirmShippingComponent::class.java).inject(this)
     }
 
-    private fun requestBarcodeScanner(activity: Activity, customClass: Class<*>) {
-        val intentIntegrator = IntentIntegrator(activity)
-        intentIntegrator.setCaptureActivity(customClass).initiateScan()
+    private fun requestBarcodeScanner() {
+        val intentIntegrator = IntentIntegrator.forSupportFragment(this)
+        intentIntegrator.setCaptureActivity(CaptureActivity::class.java).initiateScan()
     }
 
     private fun processConfirmShipping(orderId: String, shippingRef: String) {

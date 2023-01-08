@@ -38,7 +38,7 @@ class PaymentFingerprintUseCase @Inject constructor(private val fingerprintRepos
             putString(PUBLIC_KEY, publicKey)
             putString(DATE, date)
             putString(ACCOUNT_SIGNATURE, accountSignature)
-            putInt(USER_ID, userId?.toInt() ?: 0)
+            putInt(USER_ID, userId?.toIntOrNull() ?: 0)
             putString(OS, OS_ANDROID_VALUE)
         }
     }

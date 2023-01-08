@@ -22,9 +22,40 @@ fun createProduct(
     topAds: ProductTopAds? = null,
     isCampaign: Boolean = false,
     campaignTypeList: List<ProductCampaignType>? = emptyList(),
-    suspendLevel:Int = 0
+    suspendLevel: Int = 0,
+    hasStockAlert: Boolean = false,
+    stockAlertActive: Boolean = false,
+    stockAlertCount: Int = 0,
+    haveNotifyMeOOS: Boolean = false,
+    notifyMeOOSCount: String = "0",
+    notifyMeOOSWording: String = "",
+    isEmptyStock: Boolean = false
 ): Product {
-    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign, campaignTypeList,suspendLevel)
+    return Product(
+        id,
+        name,
+        price,
+        stock,
+        hasStockReserved,
+        status,
+        cashback,
+        featured,
+        isVariant,
+        url,
+        sku,
+        pictures,
+        topAds,
+        isCampaign,
+        campaignTypeList,
+        suspendLevel,
+        hasStockAlert,
+        stockAlertCount,
+        stockAlertActive,
+        haveNotifyMeOOS,
+        notifyMeOOSCount,
+        notifyMeOOSWording,
+        isEmptyStock
+    )
 }
 
 fun createProductUiModel(
@@ -47,11 +78,17 @@ fun createProductUiModel(
     isCampaign: Boolean = false,
     campaignTypeList: List<ProductCampaignType>? = emptyList(),
     isProductBundling: Boolean = false,
-    suspendLevel:Int = 0,
-    hasStockAlert:Boolean = false,
+    suspendLevel: Int = 0,
+    hasStockAlert: Boolean = false,
     stockAlertActive: Boolean = false,
-    stockAlertCount:Int = 0,
-    maxStock: Int? = null
+    stockAlertCount: Int = 0,
+    maxStock: Int? = null,
+    isShopModerate: Boolean = false,
+    haveNotifyMeOOS: Boolean = false,
+    notifyMeOOSCount: String = "0",
+    notifyMeOOSWording: String = "",
+    isEmptyStock: Boolean = false,
+    isLabelGuarantee: Boolean = false
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -77,6 +114,12 @@ fun createProductUiModel(
         hasStockAlert,
         stockAlertActive,
         stockAlertCount,
-        maxStock
+        maxStock,
+        isShopModerate,
+        haveNotifyMeOOS,
+        notifyMeOOSCount,
+        notifyMeOOSWording,
+        isEmptyStock,
+        isLabelGuarantee
     )
 }

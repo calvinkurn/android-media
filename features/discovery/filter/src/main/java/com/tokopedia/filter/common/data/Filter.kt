@@ -12,11 +12,11 @@ class Filter(@SerializedName("title")
              @Expose
              var title: String = "",
 
-             @SerializedName("subTitle")
+             @SerializedName("subTitle", alternate = ["subtitle"])
              @Expose
              var subTitle: String = "",
 
-             @SerializedName("template_name")
+             @SerializedName("template_name", alternate = ["templateName"])
              @Expose
              var templateName: String = "",
 
@@ -31,6 +31,10 @@ class Filter(@SerializedName("title")
              @SerializedName("filter_attribute_detail")
              @Expose
              var filterAttributeDetail: String = "",
+
+             @SerializedName("chip_name")
+             @Expose
+             var chipName: String = "",
 
              @SerializedName("options")
              @Expose
@@ -94,6 +98,9 @@ class Filter(@SerializedName("title")
     val isKeywordFilter: Boolean
         get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
 
+    val isPriceRangeCheckboxFilter: Boolean
+        get() = TEMPLATE_PRICING_FOOD.equals(templateName)
+
     fun getFlattenedOptions() : List<Option> {
         return options.flatMap { option ->
             option.levelTwoCategoryList.flatMap { levelTwoCategory ->
@@ -121,5 +128,6 @@ class Filter(@SerializedName("title")
         const val TEMPLATE_NAME_BRAND = "template_brand"
         const val TEMPLATE_NAME_OFFERING = "template_offer"
         const val TEMPLATE_NEGATIVE_KEYWORD = "template_negative_keyword"
+        const val TEMPLATE_PRICING_FOOD = "template_pricing_food"
     }
 }

@@ -17,8 +17,17 @@ data class AdminData(
 
     companion object {
         private const val ACTIVE_STATUS = "1"
+        const val ADMIN_WAITING_CONFIRMATION = "8"
+        const val ADMIN_REJECT = "9"
+        const val ADMIN_EXPIRED = "10"
     }
 
     fun isShopActive(): Boolean = status == ACTIVE_STATUS
+
+    fun isAdminInvitation(): Boolean = status in listOf(
+        ADMIN_WAITING_CONFIRMATION,
+        ADMIN_EXPIRED,
+        ADMIN_REJECT
+    )
 
 }

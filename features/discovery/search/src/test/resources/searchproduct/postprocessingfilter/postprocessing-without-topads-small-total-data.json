@@ -1,0 +1,218 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 24,
+      "totalDataText": "24",
+      "defaultView": 1,
+      "responseCode": 0,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "2",
+      "meta" : {
+        "isPostProcessing" : true
+      }
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "products": [
+        {
+          "id": 868553417,
+          "name": "Samsung Galaxy M11 3/32 RAM 3GB ROM 32GB GARANSI RESMI SEIN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 131646,
+            "name": "Cellular Mas",
+            "city": "Jakarta Pusat",
+            "rating_average": "<b>4.7</b> Rating Toko",
+            "url": "https://www.tokopedia.com/cellularmas",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/5/28/628764/628764_1902394a-1dac-4436-99a7-c0f2f9da3348_839_839",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/5/28/628764/628764_1902394a-1dac-4436-99a7-c0f2f9da3348_839_839",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2020/5/28/628764/628764_1902394a-1dac-4436-99a7-c0f2f9da3348_839_839",
+          "price": "Rp1.699.000",
+          "priceInt": 1699000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "rating": 5,
+          "ratingAverage": "5.0",
+          "countReview": 221,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 20,
+          "url": "https://www.tokopedia.com/cellularmas/samsung-galaxy-m11-3-32-ram-3gb-rom-32gb-garansi-resmi-sein-biru?whid=0",
+          "labelGroups": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 560"
+        },
+        {
+          "id": 1006011767,
+          "name": "Samsung Galaxy J7 Prime Case Autofocus Invisible Iring TPU Soft Case",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 818356,
+            "name": "Tamam Gokil",
+            "city": "Jakarta Selatan",
+            "rating_average": "<b>4.6</b> Rating Toko",
+            "url": "https://www.tokopedia.com/tamamgokil",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/1/16/6916588/6916588_22e27192-03d4-4526-9aa5-9c083bc0b05f_1500_1500.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2019/1/16/6916588/6916588_22e27192-03d4-4526-9aa5-9c083bc0b05f_1500_1500.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/1/16/6916588/6916588_22e27192-03d4-4526-9aa5-9c083bc0b05f_1500_1500.jpg",
+          "price": "Rp30.000",
+          "priceInt": 30000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/aksesoris-handphone/soft-case-handphone",
+          "rating": 5,
+          "ratingAverage": "5.0",
+          "countReview": 127,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 3,
+          "url": "https://www.tokopedia.com/tamamgokil/samsung-galaxy-j7-prime-case-autofocus-invisible-iring-tpu-soft-case-hitam?whid=0",
+          "labelGroups": [
+            {
+              "title": "Gratis Ongkir",
+              "position": "promo",
+              "type": "lightGreen"
+            },
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey"
+            },
+            {
+              "title": "Grosir",
+              "position": "price",
+              "type": "lightGreen"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 274"
+        },
+        {
+          "id": 938399719,
+          "name": "Samsung Galaxy M21 4/64 GB Garansi Resmi SEIN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 342169,
+            "name": "Gudang-HP",
+            "city": "Jakarta Pusat",
+            "rating_average": "<b>4.7</b> Rating Toko",
+            "url": "https://www.tokopedia.com/gudang-hp",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/5/19/2608727/2608727_f519ad24-4e2c-42db-8c87-b86d5e63babf_800_800",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/5/19/2608727/2608727_f519ad24-4e2c-42db-8c87-b86d5e63babf_800_800",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2020/5/19/2608727/2608727_f519ad24-4e2c-42db-8c87-b86d5e63babf_800_800",
+          "price": "Rp2.584.000",
+          "priceInt": 2584000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "rating": 5,
+          "ratingAverage": "4.9",
+          "countReview": 505,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/gudang-hp/samsung-galaxy-m21-4-64-gb-garansi-resmi-sein-hijau?whid=0",
+          "labelGroups": [
+            {
+              "title": "Sisa 8",
+              "position": "gimmick",
+              "type": "textDarkRed"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 1242"
+        }
+      ]
+    }
+  }
+}

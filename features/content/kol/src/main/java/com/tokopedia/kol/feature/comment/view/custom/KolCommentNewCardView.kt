@@ -24,10 +24,9 @@ import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
 import com.tokopedia.feedcomponent.view.span.MentionSpan
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
@@ -127,7 +126,7 @@ class KolCommentNewCardView : LinearLayout {
 
             userId?.let { id ->
                 listener?.onReplyClicked(
-                    MentionableUserViewModel(
+                    MentionableUserModel(
                         id,
                         "",
                         element.name ?: "",
@@ -158,16 +157,16 @@ class KolCommentNewCardView : LinearLayout {
         }
         comment.text = tagConverter.convertToLinkifyHashtag(
             SpannableString(MethodChecker.fromHtml(commentText)), colorLinkHashtag
-        ) { hashtag -> onHashtagClicked(hashtag, element.id ?: "0") }
+        ) { hashtag -> onHashtagClicked(hashtag) }
 
         comment.movementMethod = LinkMovementMethod.getInstance()
     }
 
 
-    private fun onHashtagClicked(hashtag: String, id: String) {
+    private fun onHashtagClicked(hashtag: String) {
         val encodeHashtag = URLEncoder.encode(hashtag)
         RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
-        listener?.onHashtagClicked(hashtag, id)
+        listener?.onHashtagClicked(hashtag)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -192,7 +191,11 @@ class KolCommentNewCardView : LinearLayout {
         )
 
         setOnLongClickListener {
-            listener?.onMenuClicked(element.id, element.canDeleteComment())
+            listener?.onMenuClicked(
+                element.id,
+                element.canDeleteComment(),
+                element.canReportComment()
+            )
             false
         }
 
@@ -213,6 +216,7 @@ class KolCommentNewCardView : LinearLayout {
                     .replace("(\r\n|\n)".toRegex(), "<br />")
             )
     }
+
     private val colorLinkHashtag: Int
         get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
@@ -225,11 +229,11 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     interface Listener {
-        fun onHashtagClicked(hashtag: String, id: String)
+        fun onHashtagClicked(hashtag: String)
         fun onAvatarClicked(profileUrl: String, userId: String?)
         fun onMentionedProfileClicked(authorId: String)
         fun onTokopediaUrlClicked(url: String)
-        fun onReplyClicked(mentionableUser: MentionableUserViewModel)
-        fun onMenuClicked(id: String?, canDeleteComment: Boolean)
+        fun onReplyClicked(mentionableUser: MentionableUserModel)
+        fun onMenuClicked(id: String?, canDeleteComment: Boolean, canReportComment: Boolean)
     }
 }

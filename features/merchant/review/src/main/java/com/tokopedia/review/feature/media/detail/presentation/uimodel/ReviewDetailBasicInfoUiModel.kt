@@ -13,7 +13,8 @@ data class ReviewDetailBasicInfoUiModel(
     val profilePicture: String = "",
     val reviewerName: String = "",
     val reviewerStatsSummary: String = "",
-    val expanded: Boolean = true
+    val reviewerLabel: String = "",
+    val variant: String = ""
 ) {
     fun getInvertedLikeStatus(): Int {
         return if (isLiked) ToggleLikeReviewUseCase.NEUTRAL else ToggleLikeReviewUseCase.LIKED

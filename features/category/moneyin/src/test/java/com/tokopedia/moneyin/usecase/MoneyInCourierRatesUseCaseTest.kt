@@ -57,7 +57,7 @@ class MoneyInCourierRatesUseCaseTest {
         assertEquals(input["destination"], destination)
         assertEquals(input["from"], "client")
         assertEquals(input["type"], "android")
-        assertEquals(input["lang"], "en")
+        assertEquals(input["lang"], "in")
 
     }
 

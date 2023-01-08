@@ -9,14 +9,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
-import com.tokopedia.loginregister.utils.respondWithOk
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.utils.respondWithOk
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -67,10 +66,10 @@ class RegisterNormalCase: RegisterInitialBase() {
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWithOk()
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
             inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
             clickSubmit()
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
@@ -89,7 +88,7 @@ class RegisterNormalCase: RegisterInitialBase() {
     fun showSocialMediaBottomSheet_True() {
         runTest {
             clickSocmedButton()
-            shouldBeDisplayed(R.id.socmed_container)
+            shouldBeDisplayed(R.id.providerName)
         }
     }
 
@@ -129,7 +128,7 @@ class RegisterNormalCase: RegisterInitialBase() {
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWithOk()
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
             inputEmailOrPhone("082242454511")
             clickSubmit()
             isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
@@ -139,7 +138,7 @@ class RegisterNormalCase: RegisterInitialBase() {
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
 
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 

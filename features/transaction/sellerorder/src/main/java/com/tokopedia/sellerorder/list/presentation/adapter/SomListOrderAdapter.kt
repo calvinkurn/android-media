@@ -5,8 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.list.presentation.adapter.diffutilcallbacks.SomListOrderDiffUtilCallback
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
+import com.tokopedia.sellerorder.list.presentation.models.SomListMultiSelectSectionUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 
 class SomListOrderAdapter(
@@ -45,27 +47,52 @@ class SomListOrderAdapter(
 
 
     fun updateOrder(newOrder: SomListOrderUiModel) {
-        val newVisitableList = visitables.map {
+        visitables.map {
             if (it is SomListOrderUiModel && it.orderId == newOrder.orderId) {
                 newOrder
             } else {
                 it
             }
-        }
-        updateOrders(newVisitableList)
+        }.let { updateOrders(it) }
     }
 
     fun removeOrder(orderId: String) {
-        val newVisitableList = visitables.filter {
+        visitables.filter {
             it is SomListOrderUiModel && it.orderId != orderId || it !is SomListOrderUiModel
-        }
-        updateOrders(newVisitableList)
+        }.let { updateOrders(it) }
     }
 
-    fun resetOrderSelectedStatus() {
+    fun updateSomListMultiSelectSectionUiModel(
+        somListMultiSelectSectionUiModel: SomListMultiSelectSectionUiModel
+    ) {
+        val newItems = if (visitables.any { it is SomListMultiSelectSectionUiModel }) {
+            visitables.map {
+                if (it is SomListMultiSelectSectionUiModel) somListMultiSelectSectionUiModel else it
+            }
+        } else {
+            ArrayList(visitables).apply {
+                add(Int.ZERO, somListMultiSelectSectionUiModel)
+            }
+        }
+        updateOrders(newItems)
+    }
+
+    fun hasOrder(): Boolean {
+        return visitables.any { it is SomListOrderUiModel }
+    }
+
+    fun removeMultiSelectSection() {
+        visitables.filter {
+            it !is SomListMultiSelectSectionUiModel
+        }.let { updateOrders(it) }
+    }
+
+    fun resetOrderSelectedStatus(somListMultiSelectSectionUiModel: SomListMultiSelectSectionUiModel) {
         val newVisitableList = visitables.map {
             if (it is SomListOrderUiModel) {
-                it.copy(isChecked = false)
+                it.copy(isChecked = false, multiSelectEnabled = somListMultiSelectSectionUiModel.isEnabled)
+            } else if (it is SomListMultiSelectSectionUiModel) {
+                somListMultiSelectSectionUiModel
             } else {
                 it
             }
@@ -73,21 +100,12 @@ class SomListOrderAdapter(
         updateOrders(newVisitableList)
     }
 
-    fun checkAllOrder() {
+    fun checkAllOrder(somListMultiSelectSectionUiModel: SomListMultiSelectSectionUiModel) {
         val newVisitableList = visitables.map {
             if (it is SomListOrderUiModel) {
-                it.copy(isChecked = true)
-            } else {
-                it
-            }
-        }
-        updateOrders(newVisitableList)
-    }
-
-    fun updateMultiSelect(multiSelectEnabled: Boolean) {
-        val newVisitableList = visitables.map {
-            if (it is SomListOrderUiModel) {
-                it.copy(isChecked = false, multiSelectEnabled = multiSelectEnabled)
+                it.copy(isChecked = !it.isOrderWithCancellationRequest())
+            } else if (it is SomListMultiSelectSectionUiModel) {
+                somListMultiSelectSectionUiModel
             } else {
                 it
             }

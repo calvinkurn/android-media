@@ -15,11 +15,10 @@ import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoU
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
-import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.*
@@ -59,7 +58,6 @@ class RegisterInitialViewModelTest {
     val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
-    val checkHasOvoUseCase = mockk<CheckHasOvoAccUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val rawQueries = mapOf(
@@ -83,7 +81,6 @@ class RegisterInitialViewModelTest {
     private var validateTokenObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPageAfterReloginObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
-    private var hasOvoObserver = mockk<Observer<Result<CheckOvoResponse>>>(relaxed = true)
 
     lateinit var viewModel: RegisterInitialViewModel
 
@@ -109,7 +106,6 @@ class RegisterInitialViewModelTest {
                 getProfileUseCase,
                 tickerInfoUseCase,
                 dynamicBannerUseCase,
-                checkHasOvoUseCase,
                 generatePublicKeyUseCase,
                 userSession,
                 rawQueries,
@@ -132,7 +128,6 @@ class RegisterInitialViewModelTest {
         viewModel.validateToken.observeForever(validateTokenObserver)
         viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
         viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
-        viewModel.checkOvoResponse.observeForever(hasOvoObserver)
 
     }
 
@@ -213,6 +208,21 @@ class RegisterInitialViewModelTest {
 
         /* Then */
         verify { registerRequestObserver.onChanged(Success(responseData)) }
+    }
+
+    @Test
+    fun `on Success Register Request - unknown errors`() {
+        /* When */
+        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "", errors = arrayListOf())
+        val response = RegisterRequestPojo(data = responseData)
+
+        coEvery { registerRequestUseCase.executeOnBackground() } returns response
+
+        viewModel.registerRequest("", "", "", "")
+
+        /* Then */
+        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
+        assertThat((viewModel.registerRequestResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
     }
 
     @Test
@@ -368,7 +378,7 @@ class RegisterInitialViewModelTest {
     @Test
     fun `on Success Activate User has other errors - 2`() {
         /* When */
-        val responseData = ActivateUserData(isSuccess = 1, accessToken = "", refreshToken = "", tokenType = "", message = "")
+        val responseData = ActivateUserData(isSuccess = 0, accessToken = "", refreshToken = "", tokenType = "", message = "")
         val response = ActivateUserPojo(data = responseData)
 
         coEvery { activateUserUseCase.executeOnBackground() } returns response
@@ -377,6 +387,7 @@ class RegisterInitialViewModelTest {
 
         /* Then */
         verify { activateUserObserver.onChanged(any<Fail>()) }
+        assertThat((viewModel.activateUserResponse.value as Fail).throwable, instanceOf(Throwable::class.java))
     }
 
     @Test
@@ -740,31 +751,6 @@ class RegisterInitialViewModelTest {
         verify {
             goToSecurityAfterReloginQuestionObserver.onChanged("")
         }
-    }
-
-    @Test
-    fun `has ovo check`() {
-        val response = CheckOvoResponse()
-        val phone = "082242454511"
-
-        checkHasOvoUseCase.setParams(phone)
-        coEvery { checkHasOvoUseCase.executeOnBackground() } returns response
-
-        viewModel.checkHasOvoAccount(phone)
-
-        verify { hasOvoObserver.onChanged(Success(response)) }
-    }
-
-    @Test
-    fun `ovo check errors`() {
-        val phone = "082242454511"
-
-        checkHasOvoUseCase.setParams(phone)
-        coEvery { checkHasOvoUseCase.executeOnBackground() } throws throwable
-
-        viewModel.checkHasOvoAccount(phone)
-
-        verify { hasOvoObserver.onChanged(Fail(throwable)) }
     }
 
     @Test

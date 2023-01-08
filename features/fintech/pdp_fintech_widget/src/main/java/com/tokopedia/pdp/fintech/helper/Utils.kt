@@ -27,7 +27,7 @@ object Utils {
             cta = chipsData.cta?.type?:0,
             redirectionUrl = chipsData.cta?.androidUrl,
             tenure =  chipsData.tenure?:0,
-            gatewayId = chipsData.gatewayId?:0,
+            gatewayId = chipsData.gatewayId?:"0",
             gatewayCode =  chipsData.productCode,
             widgetBottomSheet = chipsData.cta?.bottomsheet,
             userStatus =  chipsData.userStatus,

@@ -9,11 +9,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetGocicilInstallmentBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemGocicilInstallmentDetailBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -40,7 +36,8 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
     private var getAdminFeeJob: Job? = null
 
     fun show(fragment: OrderSummaryPageFragment, orderCart: OrderCart, orderPayment: OrderPayment,
-             orderCost: OrderCost, userId: String, listener: InstallmentDetailBottomSheetListener) {
+             orderProfile: OrderProfile, orderCost: OrderCost, userId: String,
+             listener: InstallmentDetailBottomSheetListener) {
         val context: Context = fragment.activity ?: return
         fragment.parentFragmentManager.let {
             this.listener = listener
@@ -51,7 +48,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 showHeader = true
                 setTitle(fragment.getString(R.string.occ_gocicil_bottom_sheet_title))
                 binding = BottomSheetGocicilInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
-                setupChild(fragment, orderCart, orderPayment, orderCost, userId)
+                setupChild(fragment, orderCart, orderPayment, orderProfile, orderCost, userId)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -66,12 +63,12 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
     }
 
     private fun setupChild(fragment: OrderSummaryPageFragment, orderCart: OrderCart,
-                           orderPayment: OrderPayment, orderCost: OrderCost, userId: String) {
+                           orderPayment: OrderPayment, orderProfile: OrderProfile, orderCost: OrderCost, userId: String) {
         binding?.tvInstallmentMessage?.gone()
         binding?.loaderInstallment?.visible()
         if (orderPayment.walletData.goCicilData.availableTerms.isEmpty()) {
             getAdminFeeJob = launch {
-                val result = paymentProcessor.getGopayAdminFee(orderPayment, userId, orderCost, orderCart)
+                val result = paymentProcessor.getGopayAdminFee(orderPayment, userId, orderCost, orderCart, orderProfile)
                 if (result != null) {
                     listener.onSelectInstallment(result.first, result.second, isSilent = true)
                     setupInstallments(fragment, orderPayment.walletData.goCicilData.copy(selectedTerm = result.first, availableTerms = result.second))

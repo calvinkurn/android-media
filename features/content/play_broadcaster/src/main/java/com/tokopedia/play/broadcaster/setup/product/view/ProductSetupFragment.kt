@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSumm
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import javax.inject.Inject
@@ -71,6 +72,22 @@ class ProductSetupFragment @Inject constructor(
         }
     }
 
+    private val productPickerUGCListener = object : ProductPickerUGCBottomSheet.Listener {
+        override fun onCancelled(bottomSheet: ProductPickerUGCBottomSheet) {
+            bottomSheet.dismiss()
+
+            when (chooserSource) {
+                ChooserSource.Preparation -> removeFragment()
+                ChooserSource.Summary -> openProductSummary()
+            }
+        }
+
+        override fun onFinished(bottomSheet: ProductPickerUGCBottomSheet) {
+            bottomSheet.dismiss()
+            openProductSummary()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProvider(
@@ -89,6 +106,7 @@ class ProductSetupFragment @Inject constructor(
         when (childFragment) {
             is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
             is ProductSummaryBottomSheet -> childFragment.setListener(productSummaryListener)
+            is ProductPickerUGCBottomSheet -> childFragment.setListener(productPickerUGCListener)
         }
     }
 
@@ -105,9 +123,7 @@ class ProductSetupFragment @Inject constructor(
         ).show(childFragmentManager)
     }
 
-    private fun openProductChooser(chooserSource: ChooserSource) {
-        this.chooserSource = chooserSource
-
+    private fun openShopProductChooser() {
         ProductChooserBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,
@@ -119,6 +135,24 @@ class ProductSetupFragment @Inject constructor(
             childFragmentManager,
             requireActivity().classLoader,
         ).show(childFragmentManager)
+    }
+
+    private fun openUGCProductChooser() {
+        ProductPickerUGCBottomSheet.getOrCreate(
+            childFragmentManager,
+            requireActivity().classLoader,
+        ).showNow(childFragmentManager)
+    }
+
+    private fun openProductChooser(chooserSource: ChooserSource) {
+        this.chooserSource = chooserSource
+
+        val selectedAccount = parentViewModel.uiState.value.selectedContentAccount
+        if (selectedAccount.isShop) {
+            openShopProductChooser()
+        } else {
+            openUGCProductChooser()
+        }
     }
 
     fun setDataSource(dataSource: DataSource?) {
@@ -139,6 +173,7 @@ class ProductSetupFragment @Inject constructor(
                     return productSetupViewModelFactory.create(
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
+                        mDataSource?.isEligibleForPin() ?: true,
                     ) as T
                 }
             }
@@ -154,5 +189,6 @@ class ProductSetupFragment @Inject constructor(
     interface DataSource {
 
         fun getProductSectionList(): List<ProductTagSectionUiModel>
+        fun isEligibleForPin(): Boolean
     }
 }

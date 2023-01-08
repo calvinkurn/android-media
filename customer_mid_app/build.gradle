@@ -29,8 +29,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     packagingOptions {
         exclude 'META-INF/**'
@@ -47,9 +47,9 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
-    implementation projectOrAar(rootProject.ext.features.interestPickCommon)
     implementation projectOrAar(rootProject.ext.features.home)
     implementation projectOrAar(rootProject.ext.features.commonWallet)
     implementation projectOrAar(rootProject.ext.features.variantCommon)
@@ -60,7 +60,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
-    implementation projectOrAar(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.discovery2)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
@@ -68,7 +67,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.nps)
     implementation projectOrAar(rootProject.ext.features.withdraw)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.searchbar)
@@ -78,7 +76,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
     implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
-    implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
     implementation projectOrAar(rootProject.ext.features.gallery)
     implementation projectOrAar(rootProject.ext.features.categoryCommon)
     implementation projectOrAar(rootProject.ext.features.officialStore)
@@ -100,14 +97,15 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
-    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.websocket)
+    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
     implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.autocompleteComponent)
+    implementation projectOrAar(rootProject.ext.features.tokochat_common)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
@@ -157,6 +155,7 @@ dependencies {
 
     //Dependency used for DF module
     implementation projectOrAar(rootProject.ext.features.commonTravel)
+    implementation projectOrAar(rootProject.ext.features.commonEntertainment)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
@@ -245,8 +244,10 @@ dependencies {
     }
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassava
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassavaNoOp
     }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)
@@ -255,6 +256,12 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspector)
     } else {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebugger)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebuggerNoop)
     }
 
     // in~house dependencies
@@ -380,7 +387,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 
-    debugImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 }

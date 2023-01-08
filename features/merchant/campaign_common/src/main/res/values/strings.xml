@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="campaign_common_oke">Oke</string>
+    <string name="campaign_common_please_wait">Tunggu sebentar</string>
+    <string name="campaign_common_discount_amount_placeholder">Harga diskon</string>
+    <string name="campaign_common_prefix_rupiah">Rp</string>
+    <string name="campaign_common_discount_placeholder">Diskon</string>
+    <string name="campaign_common_discount_period">Periode diskon</string>
+    <string name="campaign_common_period_one_year_ahead">1 Tahun ke Depan</string>
+    <string name="campaign_common_period_six_month_ahead">6 Bulan ke Depan</string>
+    <string name="campaign_common_period_one_month_ahead">1 Bulan ke Depan</string>
+    <string name="campaign_common_period_custom_selection">Pilih sendiri</string>
+    <string name="campaign_common_period_start_date">Tanggal mulai</string>
+    <string name="campaign_common_period_end_date">Tanggal berakhir</string>
+    <string name="campaign_common_product_discount">Diskon produk</string>
+    <string name="campaign_common_discount_amount">Harga diskon</string>
+    <string name="campaign_common_discount_percentage">Persentase diskon</string>
+    <string name="campaign_common_rupiah">Rp</string>
+    <string name="campaign_common_percent">%</string>
+    <string name="campaign_common_apply">Terapkan</string>
+    <string name="campaign_common_min_price_error">Min. %1s</string>
+    <string name="campaign_common_max_price_error">Max. %1s</string>
+    <string name="campaign_common_range_format">%1s - %2s</string>
+    <string name="stfs_variant_ineligible_label">Varian ini belum memenuhi kriteria.</string>
+    <string name="stfs_cek_detail_label">Cek Detail</string>
+
+    <!--Bottom Sheet -->
+    <string name="bottom_sheet_apply">Terapkan</string>
+    <string name="stfs_avp_title_multiloc_cta">Atur Diskon Tiap Lokasi</string>
+    <string name="stfs_avp_description_multiloc_cta">Pilih lokasi dulu sebelum Atur Diskon, ya.</string>
+
+    <!-- RBAC Bottom Sheet -->
+    <string name="default_rbac_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
+    <string name="default_rbac_description">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
+    <string name="default_rbac_button_title">Baca Artikel</string>
+
+    <string name="label_cek_detail">Cek Detail</string>
+
+</resources>

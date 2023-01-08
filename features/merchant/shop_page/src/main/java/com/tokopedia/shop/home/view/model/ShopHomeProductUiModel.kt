@@ -4,12 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
+import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 
 /**
  * Created by nathan on 2/6/18.
@@ -17,9 +16,9 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 
 class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder {
 
-    var id: String? = null
-    var name: String? = null
-    var displayedPrice: String? = null
+    var id: String = ""
+    var name: String = ""
+    var displayedPrice: String = ""
     var originalPrice: String? = null
     var discountPercentage: String? = null
     var imageUrl: String? = null
@@ -32,7 +31,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var isPo: Boolean = false
     var isFreeReturn: Boolean = false
     var isWishList: Boolean = false
-    var productUrl: String? = null
+    var productUrl: String = ""
     var isShowWishList: Boolean = false
     var isSoldOut: Boolean = false
     var isShowFreeOngkir: Boolean = false
@@ -58,14 +57,14 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var parentId: String = ""
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
-        return when(typeFactory){
+        return when (typeFactory) {
             is ShopHomeAdapterTypeFactory -> {
                 typeFactory.type(this)
             }
             is ShopCampaignCarouselProductAdapterTypeFactory -> {
                 typeFactory.type(this)
             }
-            else ->  {
+            else -> {
                 -1
             }
         }
@@ -74,18 +73,18 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     constructor() {}
 
     constructor(shopProduct: ShopProduct) {
-        id = shopProduct.productId
-        name = shopProduct.productName
-        displayedPrice = shopProduct.productPrice
+        id = shopProduct.productId.orEmpty()
+        name = shopProduct.productName.orEmpty()
+        displayedPrice = shopProduct.productPrice.orEmpty()
         imageUrl = shopProduct.productImage
         imageUrl300 = shopProduct.productImage300
         imageUrl700 = shopProduct.productImage700
-        productUrl = shopProduct.productUrl
+        productUrl = shopProduct.productUrl.orEmpty()
         rating = shopProduct.rating
         isPo = TextApiUtils.isValueTrue(shopProduct.productPreorder)
         totalReview = shopProduct.productReviewCount
         isWholesale = TextApiUtils.isValueTrue(shopProduct.productWholesale)
-        isFreeReturn = ((shopProduct.badges?.filter { BADGE_FREE_RETURN.equals(it.title, ignoreCase = true) }?.size ?: 0)  > 0)
+        isFreeReturn = ((shopProduct.badges?.filter { BADGE_FREE_RETURN.equals(it.title, ignoreCase = true) }?.size ?: 0) > 0)
         val shopProductLabelList = shopProduct.labels
         if (shopProductLabelList != null) {
             for (shopProductLabel in shopProductLabelList) {
@@ -103,11 +102,11 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     }
 
     constructor(gmFeaturedProduct: GMFeaturedProduct) {
-        id = gmFeaturedProduct.productId
-        name = gmFeaturedProduct.name
-        displayedPrice = gmFeaturedProduct.price?.toString()
+        id = gmFeaturedProduct.productId.orEmpty()
+        name = gmFeaturedProduct.name.orEmpty()
+        displayedPrice = gmFeaturedProduct.price?.toString().orEmpty()
         imageUrl = gmFeaturedProduct.imageUri
-        productUrl = gmFeaturedProduct.uri
+        productUrl = gmFeaturedProduct.uri.orEmpty()
 
         totalReview = gmFeaturedProduct.totalReview
         rating = gmFeaturedProduct.rating
@@ -125,5 +124,4 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         private val LABEL_CASHBACK = "Cashback"
         private val LABEL_PERCENTAGE = "%"
     }
-
 }

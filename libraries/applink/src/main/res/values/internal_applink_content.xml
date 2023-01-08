@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="host_content" translatable="false">content</string>
-    <string name="path_edit_post_affiliate" translatable="false">/affiliate/.*\\/edit</string>
-    <string name="path_edit_post_shop" translatable="false">/content-shop/.*\\/edit</string>
     <string name="path_hashtag_page_landing" translatable="false">/explore-hashtag/.*\\/</string>
-    <string name="path_post_shop_picker" translatable="false">/content-shop/picker</string>
-    <string name="applink_cp_path_create_post" translatable="false">/create_post/.*\</string>
     <string name="applink_cp_path_create_post_v2" translatable="false">/create_post_v2/</string>
-    <string name="applink_cp_path_draft_post" translatable="false">/draft/.*\</string>
     <string name="applink_cp_productpickerfromshop" translatable="false">/productpickerfromshop/.*\</string>
-    <string name="applink_cp_feed_autocomplete" translatable="false">/feed_autocomplete.*\</string>
+    <string name="applink_cp_content_product_tag_autocomplete" translatable="false" tools:ignore="UnusedResources">/product_tag_autocomplete.*\</string>
     <string name="applink_cp_creation_product_search" translatable="false">/creation_product_search.*\</string>
     <string name="applink_cp_creation_shop_search" translatable="false">/creation_shop_search/.*\</string>
 
@@ -24,7 +19,6 @@
     <string name="path_profile_detail" translatable="false">/.*\</string>
 
     <string name="applink_title_on_boarding">Onboarding</string>
-    <string name="applink_title_profile">Profile</string>
 
     <string name="host_affiliate" translatable="false">affiliate</string>
 
@@ -48,5 +42,8 @@
     <string name="applink_ip_title" translatable="false">Pilih Inspirasi Kamu</string>
 
     <string name="applink_af_title_create_post">Create Post</string>
+    <string name="applink_title_people">People</string>
+
+    <string name="applink_content_feature_prevention" translatable="false" tools:ignore="UnusedResources">/content-prevention</string>
 
 </resources>

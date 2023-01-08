@@ -1,15 +1,16 @@
 package com.tokopedia.tokofood.common.presentation.view
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
-import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -29,6 +30,10 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
 
     var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +90,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      */
     fun navigateToNewFragment(fragment: Fragment, isSingleTask: Boolean = false, isFinishCurrent: Boolean = false) {
         val fragmentName = fragment.javaClass.name
+        if (getIsNavigatingToSameFragment(fragmentName)) return
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (isSingleTask && existingFragment != null) {
             popExistedFragment(fragmentName)
@@ -143,16 +149,20 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             val fCount = getFragmentCount()
             if (fCount > 0) {
                 var i = fCount - 1
-                var prevFragment:Fragment
+                var prevFragment: Fragment?
                 var hasChecked = false
                 while (i >= 0) {
-                    prevFragment = supportFragmentManager.fragments[i]
-                    if (!prevFragment.isHidden) {
+                    prevFragment = supportFragmentManager.fragments.getOrNull(i)
+                    if (prevFragment?.isHidden == false && prevFragment.isAdded) {
                         if (isFinishCurrent && !hasChecked) {
                             hasChecked = true
                         } else {
                             ft.hide(prevFragment)
-                            ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
+                            try {
+                                ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
+                            } catch (ex: Exception) {
+                                ex.printStackTrace()
+                            }
                         }
                     }
                     i--
@@ -277,6 +287,11 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             pageLoadTimeMonitoring = TokoFoodHomePageLoadTimeMonitoring()
             pageLoadTimeMonitoring?.initPerformanceMonitoring()
         }
+    }
+
+    private fun getIsNavigatingToSameFragment(destinationFragmentName: String): Boolean {
+        val currentFragmentName = supportFragmentManager.fragments.lastOrNull()?.javaClass?.name
+        return currentFragmentName == destinationFragmentName
     }
 
     companion object {

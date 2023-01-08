@@ -36,16 +36,18 @@ class OrderHistoryViewModelTest : OrderHistoryViewModelTestFixture() {
         verifyOrderHistoryValueEquals(OrderHistoryResult.OrderHistoryFail(expectedResponse))
     }
 
+
+
     private fun onGetOrderHistorySuccess_thenReturn(orderHistoryData: OrderHistoryData) {
-        coEvery { orderHistoryUseCase.executeOnBackground() } returns orderHistoryData
+        coEvery { orderHistoryUseCase.execute() } returns orderHistoryData
     }
 
     private fun onGetOrderHistoryFail_thenReturn(throwable: Throwable) {
-        coEvery { orderHistoryUseCase.executeOnBackground() } throws throwable
+        coEvery { orderHistoryUseCase.execute() } throws throwable
     }
 
     private fun verifyOrderHistoryUseCaseCalled() {
-        coVerify { orderHistoryUseCase.executeOnBackground() }
+        coVerify { orderHistoryUseCase.execute() }
     }
 
     private fun verifyOrderHistoryValueEquals(result: OrderHistoryResult) {

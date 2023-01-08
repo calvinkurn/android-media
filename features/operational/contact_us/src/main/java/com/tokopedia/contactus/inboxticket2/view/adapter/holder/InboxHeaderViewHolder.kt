@@ -51,17 +51,37 @@ class InboxHeaderViewHolder(val view: View) : InboxDetailViewHolder(view) {
     private fun setTitle(ticketTitle: String, ticketStatus: String, utils: Utils): SpannableString? {
         val context = view.context
         return when (ticketStatus) {
-            TICKET_STATUS_IN_PROCESS -> utils.getStatusTitle(ticketTitle + ".   " + context.getString(R.string.on_going),
-                    ContextCompat.getColor(context, R.color.contact_us_y_200),
-                    ContextCompat.getColor(context, R.color.contact_us_orange_500), context.resources.getDimensionPixelSize(R.dimen.sp_11), context)
+            TICKET_STATUS_IN_PROCESS -> utils.getStatusTitle(
+                ticketTitle + ".   " + context.getString(R.string.on_going),
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN600),
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN100),
+                context.resources.getDimensionPixelSize(R.dimen.sp_11),
+                context
+            )
             TICKET_STATUS_NEED_RATING ->
-                utils.getStatusTitle(ticketTitle + ".   " + context.getString(R.string.need_rating),
-                        ContextCompat.getColor(context, R.color.contact_us_r_100),
-                        ContextCompat.getColor(context, R.color.contact_us_r_400), context.resources.getDimensionPixelSize(R.dimen.sp_11), context)
+                utils.getStatusTitle(
+                    ticketTitle + ".   " + context.getString(R.string.need_rating),
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    ),
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN100
+                    ), context.resources.getDimensionPixelSize(R.dimen.sp_11), context
+                )
             TICKET_STATUS_CLOSED ->
-                utils.getStatusTitle(ticketTitle + ".   " + context.getString(R.string.closed),
-                        ContextCompat.getColor(context, R.color.contact_us_grey_200),
-                        ContextCompat.getColor(context, R.color.contact_us_black_38), context.resources.getDimensionPixelSize(R.dimen.sp_11), context)
+                utils.getStatusTitle(
+                    ticketTitle + ".   " + context.getString(R.string.closed),
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    ),
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN100
+                    ), context.resources.getDimensionPixelSize(R.dimen.sp_11), context
+                )
             else -> null
         }
 

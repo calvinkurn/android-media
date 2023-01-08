@@ -81,12 +81,12 @@ class ProductPreviewViewHolder(
 
     override fun bind(model: TopchatProductAttachmentPreviewUiModel) {
         super.bind(model)
-        bindBackground()
         when {
-            model.isLoading -> bindLoadingState(model)
-            model.isError -> bindErrorState(model)
+            model.isLoading -> bindLoadingState()
+            model.isError -> bindErrorState()
             else -> bindSuccessState(model)
         }
+        bindBackground()
     }
 
     private fun bindSuccessState(model: TopchatProductAttachmentPreviewUiModel) {
@@ -98,15 +98,13 @@ class ProductPreviewViewHolder(
         bindProductVariant(model)
     }
 
-    private fun bindLoadingState(model: TopchatProductAttachmentPreviewUiModel) {
-        // TODO: implement based on design
+    private fun bindLoadingState() {
+        resetPreviewState()
         showLoading(true)
         showError(false)
-        hideProductComponents()
     }
 
-    private fun bindErrorState(model: TopchatProductAttachmentPreviewUiModel) {
-        // TODO: implement based on design
+    private fun bindErrorState() {
         showLoading(false)
         showError(true)
         hideProductComponents()
@@ -132,7 +130,7 @@ class ProductPreviewViewHolder(
     private fun setupLoadingAnimation() {
         if (!ViewUtil.areSystemAnimationsEnabled(itemView.context)) {
             loader?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View?) {
+                override fun onViewAttachedToWindow(v: View) {
                     loader.apply {
                         avd?.clearAnimationCallbacks()
                         avd?.stop()
@@ -140,7 +138,7 @@ class ProductPreviewViewHolder(
                     loader.removeOnAttachStateChangeListener(this)
                 }
 
-                override fun onViewDetachedFromWindow(v: View?) {
+                override fun onViewDetachedFromWindow(v: View) {
                     loader.removeOnAttachStateChangeListener(this)
                 }
             })
@@ -185,6 +183,15 @@ class ProductPreviewViewHolder(
 
     private fun bindBackground() {
         container?.background = bg
+    }
+
+    private fun resetPreviewState() {
+        productName?.show()
+        productPrice?.show()
+        productImage?.show()
+        productVariantContainer?.show()
+        productColorVariant?.show()
+        productSizeVariant?.show()
     }
 
     companion object {

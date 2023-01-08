@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/sort_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_common_space_16"
+        android:layout_marginStart="@dimen/content_common_space_16"
+        android:layout_marginEnd="@dimen/content_common_space_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="advanced"
+        android:visibility="gone" />
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/content_common_space_16"
+        android:layout_marginStart="@dimen/content_common_space_16"
+        android:layout_marginEnd="@dimen/content_common_space_16"
+        app:layout_constraintTop_toBottomOf="@id/sort_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_global_search_shop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

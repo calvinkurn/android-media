@@ -12,6 +12,7 @@ import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,18 +24,19 @@ class PlayQuickReplyTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
-    private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val modelBuilder = UiModelBuilder.get()
 
-    val repo: PlayViewerRepository = mockk(relaxed = true)
+    private val repo: PlayViewerRepository = mockk(relaxed = true)
     private val gson = Gson()
 
     @Test
     fun `given empty quick replies, when on init, then it should return empty quick replies`() {
         val emptyQuickReplies = emptyList<String>()
-        val emptyQuickReplyInfo = channelDataBuilder.buildChannelData(
+        val emptyQuickReplyInfo = modelBuilder.buildChannelData(
             quickReplyInfo = modelBuilder.buildQuickReply(
                 quickReplyList = emptyQuickReplies
             )
@@ -56,7 +58,7 @@ class PlayQuickReplyTest {
     @Test
     fun `given some quick replies, when on init, then it should return those same quick replies`() {
         val mockQuickReplies = List(3) { "Halo $it" }
-        val mockQuickReplyInfo = channelDataBuilder.buildChannelData(
+        val mockQuickReplyInfo = modelBuilder.buildChannelData(
             quickReplyInfo = modelBuilder.buildQuickReply(
                 quickReplyList = mockQuickReplies
             )

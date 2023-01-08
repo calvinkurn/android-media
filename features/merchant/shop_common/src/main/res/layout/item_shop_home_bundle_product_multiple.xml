@@ -4,37 +4,62 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="16dp"
-    android:layout_marginStart="14dp"
-    android:layout_marginEnd="14dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_bundle_product_multiple"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_bundle_multiple_image"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="0.7dp"
+        android:background="@drawable/bg_button_white_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:scaleType="centerCrop"
-        app:unify_image_type="rect"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bundle_product_multiple"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:scaleType="centerCrop"
+            app:unify_image_type="rect"
+            />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bundle_product_multiple_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/shop_page_product_bundle_count"
+        app:layout_constraintStart_toStartOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintEnd_toEndOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintTop_toBottomOf="@id/layout_bundle_multiple_image"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="small"
         />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bundle_product_multiple_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/iv_bundle_product_multiple"
-        app:layout_constraintEnd_toEndOf="@id/iv_bundle_product_multiple"
-        app:layout_constraintTop_toBottomOf="@id/iv_bundle_product_multiple"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        tools:text="Rinso Matic Professional ..."
-        app:typographyType="body_3"
+        android:layout_marginTop="4dp"
         android:ellipsize="end"
+        android:gravity="center_horizontal"
         android:maxLines="2"
+        android:minLines="2"
         android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintStart_toStartOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bundle_product_multiple_count"
+        app:typographyType="display_3"
+        tools:text="Rinso Matic Professional ..."
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

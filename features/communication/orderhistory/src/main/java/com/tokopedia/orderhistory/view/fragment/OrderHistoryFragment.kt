@@ -36,16 +36,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
-        OrderHistoryViewHolder.Listener, WishListActionListener, WishlistV2ActionListener {
+        OrderHistoryViewHolder.Listener, WishlistV2ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -162,11 +160,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun onClickAddToWishList(product: Product) {
         context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                viewModel.addToWishListV2(product.productId, session.userId,  this)
-            } else {
-                viewModel.addToWishList(product.productId, session.userId, this)
-            }
+            viewModel.addToWishListV2(product.productId, session.userId,  this)
         }
     }
 
@@ -177,10 +171,6 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun trackSeenProduct(product: Product, position: Int) {
         analytic.eventSeenProductAttachment(product, session, position)
-    }
-
-    private fun goToWishList() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
@@ -231,30 +221,8 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         }
     }
 
-    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-        view?.let {
-            errorMessage?.let { it1 -> Toaster.build(it, it1, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-        }
-    }
-
-    override fun onSuccessAddWishlist(productId: String) {
-        view?.let {
-            val successMessage = it.context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            val ctaText = it.context.getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-            Toaster.build(
-                    it,
-                    successMessage,
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_NORMAL,
-                    ctaText
-            ) { goToWishList() }.show()
-        }
-    }
-
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
     override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
     override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
-    override fun onSuccessRemoveWishlist(productId: String) {}
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {

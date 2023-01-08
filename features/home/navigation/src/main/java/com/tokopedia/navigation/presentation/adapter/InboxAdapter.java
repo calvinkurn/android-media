@@ -76,14 +76,13 @@ public class InboxAdapter extends BaseAdapter<InboxAdapterTypeFactory> {
         return visitables.get(position).type(typeFactory);
     }
 
-    public void updateTopAdsBanner(TopAdsImageViewModel topAdsImageViewModel) {
+    public void updateTopAdsBanner(List<TopAdsImageViewModel> topAdsImageViewModel) {
         int bannerPosition = 4;
         if (bannerPosition >= visitables.size()) return;
         Visitable item = visitables.get(bannerPosition);
         if (item instanceof InboxTopAdsBannerUiModel) {
             InboxTopAdsBannerUiModel banner = (InboxTopAdsBannerUiModel) item;
-            banner.setAd(topAdsImageViewModel);
-            notifyItemChanged(bannerPosition, InboxTopAdsBannerViewHolder.getPAYLOAD_UPDATE_AD());
+            banner.setAds(topAdsImageViewModel);
         }
     }
 }

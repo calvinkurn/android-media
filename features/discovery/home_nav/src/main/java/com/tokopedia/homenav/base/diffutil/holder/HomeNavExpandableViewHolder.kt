@@ -15,6 +15,7 @@ import com.tokopedia.homenav.databinding.HolderHomeNavExpandableBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -23,7 +24,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeNavExpandableViewHolder (
     itemView: View,
     private val mainNavListener: MainNavListener,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val tokopediaPlusListener: TokopediaPlusListener
 ): AbstractViewHolder<HomeNavExpandableDataModel>(itemView) {
     private var binding: HolderHomeNavExpandableBinding? by viewBinding()
     lateinit var accordionData : AccordionDataUnify
@@ -45,7 +47,7 @@ class HomeNavExpandableViewHolder (
     }
 
     private fun initAdapter(recyclerView: RecyclerView) {
-        val typeFactory = MainNavTypeFactoryImpl(mainNavListener, userSession)
+        val typeFactory = MainNavTypeFactoryImpl(mainNavListener, userSession, tokopediaPlusListener)
         adapter = HomeNavExpandableAdapter(typeFactory)
         recyclerView.layoutManager = NpaLayoutManager(itemView.context)
         recyclerView.adapter = adapter

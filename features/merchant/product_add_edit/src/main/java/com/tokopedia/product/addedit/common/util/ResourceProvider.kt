@@ -58,6 +58,14 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_zero_wholesale_quantity)
     }
 
+    fun getWholeSaleMaxErrorMessage(max: Int): String {
+        return try {
+            context?.getString(R.string.error_zero_wholesale_max_quantity, max)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }.orEmpty()
+    }
+
     fun getMinLimitWholeSaleQuantityErrorMessage(): String? {
         return getString(R.string.error_wholesale_quantity_less_min_order)
     }

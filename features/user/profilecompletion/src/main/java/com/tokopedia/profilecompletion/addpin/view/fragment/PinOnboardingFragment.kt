@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.profilecompletion.R
@@ -131,7 +132,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun goToChangePin() {
-        RouteManager.route(activity, ApplinkConstInternalGlobal.CHANGE_PIN)
+        RouteManager.route(activity, ApplinkConstInternalUserPlatform.CHANGE_PIN)
         activity?.finish()
     }
 
@@ -143,12 +144,12 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun goToAddPhone() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE)
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToAddPin() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, isSkipOtp)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
@@ -199,7 +200,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ADD_PHONE = 100
 
         const val ONBOARD_PICT_URL =
-            "https://ecs7.tokopedia.net/android/user/high_onboard_create_pin.png"
+            "https://images.tokopedia.net/android/user/high_onboard_create_pin.png"
 
         fun createInstance(bundle: Bundle): PinOnboardingFragment {
             val fragment = PinOnboardingFragment()

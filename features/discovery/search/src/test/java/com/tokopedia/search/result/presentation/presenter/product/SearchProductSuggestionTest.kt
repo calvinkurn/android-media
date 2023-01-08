@@ -6,7 +6,8 @@ import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
@@ -45,7 +46,8 @@ internal class SearchProductSuggestionTest: ProductListPresenterTestFixtures() {
             visitableList.getSuggestionDataView(),
             searchProductModel.searchProduct.data.suggestion,
             typoKeyword,
-            Dimension90Utils.getDimension90(searchParameter)
+            Dimension90Utils.getDimension90(searchParameter),
+            VerticalSeparator.None
         )
     }
 
@@ -81,6 +83,7 @@ internal class SearchProductSuggestionTest: ProductListPresenterTestFixtures() {
         expectedSuggestionModel: SearchProductModel.Suggestion,
         expectedKeyword: String,
         expectedDimension90: String,
+        expectedVerticalSeparator: VerticalSeparator,
     ) {
         assertThat(suggestionDataView.suggestedQuery, `is`(expectedSuggestionModel.query))
         assertThat(suggestionDataView.suggestion, `is`(expectedSuggestionModel.suggestion))
@@ -89,6 +92,7 @@ internal class SearchProductSuggestionTest: ProductListPresenterTestFixtures() {
         assertThat(suggestionDataView.trackingOption, `is`(expectedSuggestionModel.trackingOption))
         assertThat(suggestionDataView.keyword, `is`(expectedKeyword))
         assertThat(suggestionDataView.dimension90, `is`(expectedDimension90))
+        assertThat(suggestionDataView.verticalSeparator, `is`(expectedVerticalSeparator))
     }
 
     @Test

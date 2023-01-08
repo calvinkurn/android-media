@@ -10,15 +10,31 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 
 data class MembershipDataUiModel(
     val shopScore: Int = Int.ZERO,
-    val totalOrder: Long = Int.ZERO.toLong(),
-    val netIncome: Long = Int.ZERO.toLong(),
     val orderThreshold: Long = Int.ZERO.toLong(),
     val netIncomeThreshold: Long = Int.ZERO.toLong(),
     val netIncomeThresholdFmt: String = String.EMPTY,
-    val gradeBenefit: PMGradeWithBenefitsUiModel
+    val gradeBenefit: PMGradeWithBenefitsUiModel,
+    private val totalOrder: Long = Int.ZERO.toLong(),
+    private val netIncome: Long = Int.ZERO.toLong()
 ) {
 
     fun isEligibleIncome(): Boolean = netIncome >= netIncomeThreshold
 
     fun isEligibleOrder(): Boolean = totalOrder >= orderThreshold
+
+    fun getTotalOrderValue(): Long {
+        return if (totalOrder < Int.ZERO.toLong()) {
+            Int.ZERO.toLong()
+        } else {
+            totalOrder
+        }
+    }
+
+    fun getNetIncomeValue(): Long {
+        return if (netIncome < Int.ZERO.toLong()) {
+            Int.ZERO.toLong()
+        } else {
+            netIncome
+        }
+    }
 }

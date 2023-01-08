@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_bro_shop_icon"
+        android:id="@+id/iv_bro_author_icon"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"
@@ -40,7 +40,7 @@
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@id/ic_bro_end_stream"
         app:layout_constraintEnd_toStartOf="@id/ic_bro_switch_camera"
-        app:layout_constraintStart_toEndOf="@id/iv_bro_shop_icon"
+        app:layout_constraintStart_toEndOf="@id/iv_bro_author_icon"
         app:layout_constraintTop_toTopOf="@id/ic_bro_end_stream"
         app:typographyType="body_1"
         app:typographyWeight="bold"

@@ -28,7 +28,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="20dp"
         app:loader_corner_radius="0dp"
         app:loader_type="rect"
@@ -44,7 +44,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="20dp"
         app:loader_corner_radius="0dp"
         app:loader_type="rect"
@@ -60,7 +60,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider3"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="20dp"
         app:loader_corner_radius="0dp"
         app:loader_type="rect"
@@ -76,7 +76,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider4"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="20dp"
         app:loader_corner_radius="0dp"
         app:loader_type="rect"
@@ -92,7 +92,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider5"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="20dp"
         app:loader_corner_radius="0dp"
         app:loader_type="rect"

@@ -6,6 +6,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
 import org.junit.Test
@@ -128,6 +129,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     @Test
     fun `check power merchant subscribe appLink then should return tokopedia internal power merchant subscribe in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/power-merchant-subscribe"
+        every {
+            PowerMerchantDeepLinkMapper.isEnablePMSwitchToWebView(context)
+        } returns false
+        every {
+            PowerMerchantDeepLinkMapper.isLoginAndHasShop(context)
+        } returns true
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE, expectedDeepLink)
     }
 
@@ -190,12 +197,6 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/feed"
         val appLink = UriUtil.buildUri(ApplinkConst.SellerApp.SHOP_FEED,  "1479278")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check content create post appLink then should return tokopedia internal content create post in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://content/create_post/"
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CONTENT_CREATE_POST, expectedDeepLink)
     }
 
     @Test

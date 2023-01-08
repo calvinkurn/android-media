@@ -17,7 +17,6 @@ import dagger.Component
 @ActivityScope
 @Component(modules = [
     LoginModule::class,
-    LoginQueryModule::class,
     LoginUseCaseModule::class,
     LoginViewModelModule::class,
 ], dependencies = [BaseAppComponent::class])

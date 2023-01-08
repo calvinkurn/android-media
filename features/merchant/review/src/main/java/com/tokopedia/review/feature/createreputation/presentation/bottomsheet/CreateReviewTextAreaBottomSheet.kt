@@ -8,29 +8,30 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.R
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.BottomsheetCreateReviewTextAreaBinding
 import com.tokopedia.review.feature.createreputation.di.CreateReviewDaggerInstance
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
-import com.tokopedia.review.feature.createreputation.presentation.widget.BaseCreateReviewCustomView
+import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.suspendCoroutine
 
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
 
     companion object {
+        private const val TEXT_AREA_MAX_MIN_LINE = 4
         const val TAG = "CreateReviewTextAreaBottomSheet"
     }
 
@@ -78,27 +79,26 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
         savedInstanceState: Bundle?
     ): View? {
         binding = BottomsheetCreateReviewTextAreaBinding.inflate(inflater).also {
+            it.textAreaExpandedCreateReviewBottomSheet.setMinLine(TEXT_AREA_MAX_MIN_LINE)
             it.textAreaExpandedCreateReviewBottomSheet.setMaxLine(Int.MAX_VALUE)
             setChild(it.root)
         }
-        uiStateHandler.collectUiStates()
+        uiStateHandler.initUiStateCollectors()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViews()
         setupListeners()
+    }
+
+    private fun setupViews() {
+        binding?.reviewTemplateExpandedCreateReviewBottomSheet?.makeWrapContent()
+        binding?.reviewTemplateExpandedCreateReviewBottomSheet?.setMargins(
+            bottom = 8.toPx()
+        )
         binding?.textAreaExpandedCreateReviewBottomSheet?.removeBorder()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        uiStateHandler.collectUiStates()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        uiStateHandler.cancelUiStateCollectors()
     }
 
     private fun setupListeners() {
@@ -127,47 +127,48 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
     }
 
     private inner class UiStateHandler {
-        private var textAreaUiStateCollectorJob: Job? = null
-        private var reviewTemplateUiStateCollectorJob: Job? = null
-        private var textAreaTitleUiStateCollectorJob: Job? = null
-
         private fun collectTextAreaUiState() {
-            textAreaUiStateCollectorJob = textAreaUiStateCollectorJob ?: launch {
-                viewModel.textAreaUiState.collectLatest {
-                    binding?.textAreaExpandedCreateReviewBottomSheet?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_EXPANDED_TEXT_AREA)
+            collectLatestWhenResumed(viewModel.textAreaUiState) {
+                suspendCoroutine { continuation ->
+                    binding?.textAreaExpandedCreateReviewBottomSheet?.updateUi(
+                        it,
+                        CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_EXPANDED_TEXT_AREA,
+                        continuation
+                    )
                     binding?.helperTextAreaExpandedCreateReviewBottomSheet?.updateUi(it)
                 }
             }
         }
 
         private fun collectReviewTemplateUiState() {
-            reviewTemplateUiStateCollectorJob = reviewTemplateUiStateCollectorJob ?: launch {
-                viewModel.templateUiState.collectLatest {
-                    binding?.reviewTemplateExpandedCreateReviewBottomSheet?.updateUi(it)
+            collectLatestWhenResumed(viewModel.templateUiState) {
+                suspendCoroutine { continuation ->
+                    binding?.reviewTemplateExpandedCreateReviewBottomSheet?.updateUi(it, continuation)
+                }
+            }
+        }
+
+        private fun collectTopicsUiState() {
+            collectLatestWhenResumed(viewModel.topicsUiState) {
+                suspendCoroutine { continuation ->
+                    binding?.topicsExpandedCreateReviewBottomSheet?.updateUI(it, continuation)
                 }
             }
         }
 
         private fun collectTextAreaTitleUiState() {
-            textAreaTitleUiStateCollectorJob = textAreaTitleUiStateCollectorJob ?: launch {
-                viewModel.textAreaTitleUiState
-                    .filterIsInstance<CreateReviewTextAreaTitleUiState.Showing>()
-                    .collectLatest {
-                        context?.let { context -> setTitle(it.textRes.getStringValue(context)) }
-                    }
+            collectLatestWhenResumed(
+                viewModel.textAreaTitleUiState.filterIsInstance<CreateReviewTextAreaTitleUiState.Showing>()
+            ) {
+                context?.let { context -> setTitle(it.textRes.getStringValue(context)) }
             }
         }
 
-        fun collectUiStates() {
+        fun initUiStateCollectors() {
             collectTextAreaUiState()
             collectReviewTemplateUiState()
+            collectTopicsUiState()
             collectTextAreaTitleUiState()
-        }
-
-        fun cancelUiStateCollectors() {
-            textAreaUiStateCollectorJob?.cancel()
-            reviewTemplateUiStateCollectorJob?.cancel()
-            textAreaTitleUiStateCollectorJob?.cancel()
         }
     }
 
@@ -199,7 +200,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
         }
     }
 
-    private inner class BaseCreateReviewCustomViewListener: BaseCreateReviewCustomView.Listener {
+    private inner class BaseCreateReviewCustomViewListener: BaseReviewCustomView.Listener {
         override fun onRequestClearTextAreaFocus() {
             viewModel.updateTextAreaHasFocus(hasFocus = false)
         }

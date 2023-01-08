@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/layout_lvl7"
-    android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingRight="@dimen/layout_lvl2"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="16dp"
     android:background="@color/Unify_Background"
+    android:minHeight="64dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -16,13 +14,13 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
+        android:layout_marginTop="26dp"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintWidth_default="wrap"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_variant_name"
         tools:text="Merah | S"/>
 
@@ -30,6 +28,7 @@
         android:id="@+id/tv_product_manage_variant_stock_count_variant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_G500"
         android:gravity="center_vertical"
         android:visibility="gone"
@@ -39,11 +38,28 @@
         tools:text="3 promosi"
         tools:visibility="visible"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_icon_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N300"
+        android:drawablePadding="4dp"
+        android:layout_marginTop="4dp"
+        tools:drawableStart="@drawable/ic_notify_me_buyer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_product_manage_variant_stock_reminder"
+        tools:text="Ada 1.223 calon pembeli yang menunggu varian ini."
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelInactive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
         android:visibility="gone"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toTopOf="@id/textProductName"
@@ -68,12 +84,19 @@
         app:layout_constraintGuide_percent="0.25"
         android:orientation="vertical"/>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_product_manage_variant_stock_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="quantityEditorStock, tv_product_manage_variant_stock_count_variant"/>
+
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/quantityEditorStock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textProductName"
+        app:layout_constraintBottom_toBottomOf="@id/textProductName"
         app:layout_constraintStart_toEndOf="@id/guideline_variant"
         app:layout_constraintEnd_toStartOf="@id/switchStatus"/>
 
@@ -81,9 +104,9 @@
         android:id="@+id/textStock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="@id/textProductName"
+        app:layout_constraintBottom_toBottomOf="@id/textProductName"
         app:layout_constraintStart_toEndOf="@id/guideline_variant_name"
         app:layout_constraintEnd_toStartOf="@id/switchStatus"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/textProductName"
+        app:layout_constraintBottom_toBottomOf="@id/textProductName"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

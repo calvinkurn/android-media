@@ -5,13 +5,16 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
@@ -32,7 +35,9 @@ import dagger.Component
         PlayBroadcastDataStoreModule::class,
         PlayBroadcastRepositoryModule::class,
         PlayBroadcastBindModule::class,
-        PlayBroadcastModule::class
+        PlayBroadcastModule::class,
+        ContentCreationProductTagBindModule::class,
+        UGCOnboardingModule::class
     ]
 )
 @ActivityRetainedScope
@@ -67,7 +72,9 @@ abstract class ActivityRetainedComponent : ViewModel() {
      */
     abstract fun navBarDialogCustomizer(): PlayBroadcastDialogCustomizer
 
-    abstract fun pusherMediator(): PusherMediator
+    abstract fun broadcaster(): Broadcaster
+
+    abstract fun broadcastTimer(): PlayBroadcastTimer
 
     abstract fun playWebSocket(): PlayWebSocket
 

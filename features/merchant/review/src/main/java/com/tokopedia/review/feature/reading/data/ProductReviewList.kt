@@ -93,6 +93,9 @@ data class ProductReviewUser(
     @SerializedName("url")
     @Expose
     val url: String = "",
+    @SerializedName("label")
+    @Expose
+    val label: String = "",
 )
 
 data class ProductReviewImageAttachments(

@@ -41,11 +41,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
-            android:label="@string/kol_title_post_detail"
+            android:name=".feature.postdetail.view.activity.ContentDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

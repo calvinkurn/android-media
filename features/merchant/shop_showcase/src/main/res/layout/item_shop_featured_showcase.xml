@@ -16,8 +16,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivShowcaseImg"
-            android:layout_width="@dimen/dp_140"
-            android:layout_height="@dimen/dp_140"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             app:unify_image_type="rect"
             app:unify_image_corner_radius="0"
             />

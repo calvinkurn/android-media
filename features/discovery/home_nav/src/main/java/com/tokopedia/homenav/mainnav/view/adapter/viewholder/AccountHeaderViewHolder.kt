@@ -24,6 +24,7 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
+import com.tokopedia.homenav.mainnav.view.datamodel.account.TokopediaPlusDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -32,12 +33,15 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
+import com.tokopedia.usercomponents.tokopediaplus.ui.TokopediaPlusWidget
 import kotlinx.coroutines.*
 import java.util.*
 
 class AccountHeaderViewHolder(itemView: View,
                               private val mainNavListener: MainNavListener,
-                              private val userSession: UserSessionInterface
+                              private val userSession: UserSessionInterface,
+                              private val tokopediaPlusListener: TokopediaPlusListener
 ): AbstractViewHolder<AccountHeaderDataModel>(itemView), CoroutineScope {
 
 
@@ -48,6 +52,9 @@ class AccountHeaderViewHolder(itemView: View,
     private lateinit var layoutLoginHeader: ConstraintLayout
     private lateinit var layoutLogin: ConstraintLayout
     private var adapter: SellerAdapter? = null
+
+    private val tokopediaPlusWidget by lazy { layoutLogin.findViewById<TokopediaPlusWidget>(R.id.tokopedia_plus_widget) }
+
 
     companion object {
         @LayoutRes
@@ -77,6 +84,10 @@ class AccountHeaderViewHolder(itemView: View,
     }
 
     override fun bind(element: AccountHeaderDataModel) {
+        bindViews(element)
+    }
+
+    private fun bindViews(element: AccountHeaderDataModel){
         initViewHolder()
 
         val sectionShimmering: View = itemView.findViewById(R.id.section_shimmering_profile)
@@ -305,6 +316,11 @@ class AccountHeaderViewHolder(itemView: View,
          * Handling seller and affiliate info value
          */
         setSellerAndAffiliate(element, recyclerSeller)
+
+        /**
+         * Handling tokopedia plus
+         */
+        setTokopediaPlus(element.tokopediaPlusDataModel)
     }
 
     private fun valuateRecyclerViewDecoration(recyclerSeller: RecyclerView) {
@@ -335,6 +351,21 @@ class AccountHeaderViewHolder(itemView: View,
         val typeFactoryImpl = SellerTypeFactoryImpl(mainNavListener)
         adapter = SellerAdapter(listSellers, typeFactoryImpl)
         recyclerSeller.adapter = adapter
+    }
+
+    private fun setTokopediaPlus(tokopediaPlusDataModel: TokopediaPlusDataModel){
+        tokopediaPlusWidget.listener = tokopediaPlusListener
+        tokopediaPlusDataModel.let {
+            if(it.isGetTokopediaPlusLoading){
+                tokopediaPlusWidget.showLoading()
+            } else {
+                it.tokopediaPlusError?.let { error ->
+                    tokopediaPlusWidget.onError(error)
+                } ?: it.tokopediaPlusParam?.let { param ->
+                    tokopediaPlusWidget.setContent(param)
+                }
+            }
+        }
     }
 
     private fun renderNonLoginState() {

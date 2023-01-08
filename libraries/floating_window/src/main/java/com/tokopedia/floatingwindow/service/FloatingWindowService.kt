@@ -51,9 +51,15 @@ internal class FloatingWindowService : Service() {
             putExtra(INTENT_COMMAND, INTENT_COMMAND_EXIT)
         }
 
-        val exitPendingIntent = PendingIntent.getService(
+        val exitPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getService(
+                    this, CODE_EXIT_INTENT, exitIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        } else {
+            PendingIntent.getService(
                 this, CODE_EXIT_INTENT, exitIntent, 0
-        )
+            )
+        }
 
         // From Android O, it's necessary to create a notification channel first.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

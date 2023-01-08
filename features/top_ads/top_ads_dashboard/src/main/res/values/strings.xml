@@ -480,6 +480,10 @@
     <string name="topads_credit_otomatis_title_2">Pengeluaran tetap terkontrol</string>
     <string name="topads_credit_otomatis_desc_2">TopAds akan menggunakan saldo penghasilanmu untuk fitur ini, selama saldo penghasilanmu mencukupi.</string>
     <string name="topads_credit_otomatis_title_3">Ada bonus Kredit TopAds!</string>
-    <string name="topads_credit_otomatis_desc_3">Dapatkan bonus 9,5% Kredit TopAds tiap kali kreditmu ditambah otomatis!</string>
+    <string name="topads_credit_otomatis_desc_3">Dapatkan bonus hingga 9,5% Kredit TopAds tiap kali kreditmu ditambah otomatis!</string>
+    <string name="topads_credit_status_berhasil">Berhasil</string>
+    <string name="topads_credit_status_digunakan">Digunakan</string>
+    <string name="topads_credit_status_menunggu">Menunggu</string>
+    <string name="topads_credit_status_kedaluwarsa">Kedaluwarsa</string>
 </resources>
 

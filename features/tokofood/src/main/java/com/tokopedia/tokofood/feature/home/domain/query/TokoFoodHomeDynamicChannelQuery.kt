@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.feature.home.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodParamMapper.mapLocation
+import com.tokopedia.tokofood.common.domain.param.TokoFoodLocationParamMapper.mapLocation
 
 object TokoFoodHomeDynamicChannelQuery: GqlQueryInterface {
 

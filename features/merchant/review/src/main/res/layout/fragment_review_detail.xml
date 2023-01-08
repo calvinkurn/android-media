@@ -16,7 +16,7 @@
     <ScrollView
         android:id="@+id/reviewDetailScrollView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailHeader">
 
@@ -52,8 +52,8 @@
                 android:id="@+id/reviewDetailProductCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginEnd="@dimen/layout_lvl1"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 app:card_type="border"
                 app:layout_constraintTop_toBottomOf="@id/barrierReviewDetailEditDisclaimer">
 
@@ -64,8 +64,8 @@
 
                     <ImageView
                         android:id="@+id/reviewDetailProductImage"
-                        android:layout_width="@dimen/dp_56"
-                        android:layout_height="@dimen/dp_56"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="12dp"
                         android:layout_marginBottom="12dp"
@@ -75,10 +75,10 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="@dimen/layout_lvl0"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:layout_marginEnd="@dimen/layout_lvl2"
+                        android:layout_marginEnd="16dp"
                         app:layout_constraintBottom_toBottomOf="@id/reviewDetailProductImage"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/reviewDetailProductImage"
@@ -100,7 +100,7 @@
                             android:id="@+id/reviewDetailProductVariant"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_lvl1"
+                            android:layout_marginTop="2dp"
                             android:textColor="@color/Unify_N700_68"
                             android:visibility="gone"
                             app:layout_constraintStart_toStartOf="@id/reviewDetailProductName"
@@ -119,8 +119,8 @@
                 android:id="@+id/reviewDetailStars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailProductCard"
                 tools:src="@drawable/review_ic_rating_star_four" />
@@ -129,7 +129,7 @@
                 android:id="@+id/reviewDetailName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginTop="4dp"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintStart_toStartOf="@id/reviewDetailStars"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailStars"
@@ -140,7 +140,7 @@
                 android:id="@+id/reviewDetailDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginStart="4dp"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toEndOf="@id/reviewDetailName"
                 app:layout_constraintTop_toTopOf="@id/reviewDetailName"
@@ -151,9 +151,9 @@
                 android:id="@+id/reviewDetailContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailName"
                 app:typographyType="body_2"
@@ -193,7 +193,7 @@
                 android:id="@+id/reviewDetailResponse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="16dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/review_detail_bad_rating_disclaimer_widget" />
 
@@ -202,14 +202,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:barrierMargin="@dimen/layout_lvl2"
+                app:barrierMargin="16dp"
                 app:constraint_referenced_ids="reviewDetailAttachedMedia, reviewDetailResponse, reviewDetailContent, review_detail_bad_rating_reason"
                 tools:viewBindingIgnore="true" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/review_history_detail_divider"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl1"
+                android:layout_height="8dp"
                 app:layout_constraintTop_toBottomOf="@id/review_history_detail_barrier"
                 tools:viewBindingIgnore="true"  />
 
@@ -228,7 +228,7 @@
         android:id="@+id/reviewDetailConnectionError"
         layout="@layout/partial_review_connection_error"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailHeader" />
@@ -237,7 +237,7 @@
         android:id="@+id/reviewDetailShimmer"
         layout="@layout/partial_review_details_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailHeader" />

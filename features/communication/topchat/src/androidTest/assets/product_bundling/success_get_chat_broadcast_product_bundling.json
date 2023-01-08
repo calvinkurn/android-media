@@ -1,0 +1,145 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1593320444778",
+    "maxReplyTime": "1593320444778",
+    "block": {
+      "blockedUntil": "",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "replyIDsAttachment": "8367013661",
+    "attachmentIDs": "1507930100,1507930101,1507930102,1507930103",
+    "contacts": [
+      {
+        "role": "User",
+        "userId": 7977933,
+        "shopId": 5665147,
+        "interlocutor": false,
+        "name": "Seller Testing",
+        "tag": "Penjual",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/7977933/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 29240564,
+        "shopId": 5665147,
+        "interlocutor": true,
+        "name": "Buyer Testing",
+        "tag": "Pengguna",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5665147/shop_xs_thumbnail/desktop",
+        "domain": "lorealparis",
+        "isOfficial": true,
+        "isGold": true,
+        "badge": "https://images.tokopedia.net/chat/tc_os_icon.png",
+        "status": {
+          "timestamp": 1607337686,
+          "timestampStr": "1607337686",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "28 Jun 2020",
+        "chats": [
+          {
+            "time": "12:00",
+            "replies": [
+              {
+                "msgId": 932022280,
+                "replyId": "8367013655",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778964000",
+                "status": 1,
+                "attachmentID": 439318912,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 439318912,
+                  "type": 1,
+                  "attributes": "{\"url\":\"https://chat.tokopedia.com/tc/v1/redirect/763cc64b928702b648782e9c10adde1668157b29644421981cb0ca7ef78c6ec30f6ba2fcd1e36c50d174dbc1174a1d511967da4b9d168caaffb0e0cb0b1fa2c7717ab5516c7a3545bb9d34d5f8240f4a1dbb9233137c7dc116751e8c5e8aa5ac59fd379080fb7c58ed0a2e2e8fe2ea2395652eea3b1956444fcdb12ac39ff27c64ddb5cb4376a48034affe393cc5819ceb796600d952777eaa04ec7d7156c42c0cf3ec8eed479b0ca726d9739c75ec4bb3b39fe0a0b9c3770bb99e1fee686d5e1e5eb36271311d445e8e68c565fa268eb93ae9309d385d9d5acc9391\",\"image_url\":\"https://images.tokopedia.net/img/LUZQDL/2020/6/28/dcd23df7-75b5-4bdf-ad5d-82df18cf6ba8.jpg\",\"url_2\":\"https://chat.tokopedia.com/tc/v1/redirect/1a4a061f1d9492eedeec021c0ea4147e23b1cb8891b66fcfbfebc4f3f94d231cb6d87038ce6ec5b71d5663462f0230cb9ebbc6b343a680b2fb050124fe8b4a1109dfeb89d127b18f0a1decc2c1c9cba01aeb6295dde646b58cbca7697febb7356784ace0d5ce2ea8ff73efdd20e4717fab1a77ccfc60ce3e5e64d6ddfcdb91424114be2675c8f185a4e63c03e3cb5d9916ee07d0062aa1be017a2db8bf44c749a94db72dd35863ef680ee0dfd12b33bef5a253c912e25d54d9ad3df2d81ac415a147768c9f788441609dd1436790952f66508b41a7ad8de0d0b8ef94b4398b37\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/cache/100-square/LUZQDL/2020/6/28/dcd23df7-75b5-4bdf-ad5d-82df18cf6ba8.jpg\"}",
+                  "fallback": {
+                    "message": "Tokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.",
+                    "html": "\u003cdiv\u003eTokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.\u003c/div\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013661",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "\u003ca rel\u003d\"nofollow\" target\u003d\"_blank\" href\u003d\"https://chat.tokopedia.com/tc/v1/redirect/bdb060d864c90e8922236f68b39384da769008c51017ca72206d0fa4b410029609e063ce24c22539d2c86288acb3dc01cf456b237e1cd0a7e92863b828dd828a021786ca45eb6f91286f8b74919f81aefe8d3e1ce5775967b633e56133027af6ae67a49094980626763ec81cd6cf9b79ed5dbf08e6b2e90456409b6e9e4820806ddfd11747f88fefbbd93fcb582393a34d6888fa0346b2b1957915660ec7767c96e15b9b4d7c14d21d4e53f9bffd0fdd9d8effa4e2a405a2fc28e02499dcdfae107cd7f87889a485427393886f57af43c4295431e868525ee646e975567c871b52d121f84cb60410bc186e05d9844ca6bc9c014ff29e2cb279d6f397877bf5881b32652e72fff1b38cbd84272177376a8653e62a08efe482ccb9c13c091d75600c6004a4bc217ebf0c80852667ed2b26a1ae7c8dcfabd0a40a407831dff8ca886232340b6b90c52a117612b06ee494b8e09efe3446616e8df50bb885e950990a5a54559a89a0971fd06ee9d6744ef38b081d126287f72ec71f18ac58a94d72cc5508bbb9896a38278ad751dc8d7de2ef26fe4e2f2bc9a39e6cd7075752325640941f426b3688469888f4be3f4bf5d1e44426ce663a19dd5a5dadc9505b4feeff2ae4126c1bf36483c15d845d6142841aeb7952948c2de33c11ca56ce8a5ee5b497ceb43ef833ba37ade0b7e4531e510ab45837b2a18566d5cd021103d9fded01883c5feb8b1f2338d56d456090137740c0f23c744dda9ee08ebe4fd5d7af09d43e866d57199ae92c7739181e407aa7cf6458c57779804f28443d5e398c730bd95d09d934bc9b53c7c7ca9e90ef7bf6b14bbb326ab052f5d76b3ce49aa83e84b899a29343ac65f4989dbef4fce851196b70f1656acb555aedad33c31239c55efe3f75854470dc95cdd0c15ee4d708eeffcd975fc41c89524db79877121e2e66f2697984e0e946e8e0cadff753e737637dcd34464c3b6b8d7ca11cee30dacf349678ea611db1c5bdd63b747909433b7225d4d073ad958662866648f0a4f24210d230e53a44ab64f8fc56fce70ca4acde7e573683fe4f17d2ad32a9f1802806a1d03345b4440da5cbd6f8bc39ecd74b019aa0c3d9dcb59b6ad07a2834bcd70b9923f9be96b25989256586cf3f48f7b8fb267cef52c38f6958f3fa016b7e046f0c54e2dfd0d77a0cc7deaece34b0c3e5b8e28aceb648\"\u003ehttps://chat.tokopedia.com/tc/v1/redirect/86dddd558816455513e99953058627cd2aed0b73b26d23caa1ea32d5e47aa9af8c9c9ce516dc524ca9e5fe629c2834e1581aab8c1f37d4144cdb5207eae45aee11ec1680dddad8fe3c5d0ac8176cee96cc5c6acc8b146d16b4e62051ac2c76ce68249d2dd5cbbcf2d0de35967e2aa53ddb6062d4a36cb80defa59acc0f480ec1921ed45453bc526631ad646cb2aa7549ca9b58f40adb59dabc2576e18443f3a95a7ab8a25652666acce13f26276025d5f14ab9fe2d7ffb521a0dac8359e4a24677ed1197617239f1a40b5a1d63f1027e83f9f47f69c489bbced4f93c04701359e422cfe6\u003c/a\u003e",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778968000",
+                "status": 1,
+                "attachmentID": 1507930102,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment":{
+                  "id": 1507930102,
+                  "type": 32,
+                  "attributes":"{\"product_bundling\":[{\"bundle_id\":\"43\",\"bundle_type\":1,\"bundle_title\":\"Home Care Ramadhan\",\"bundle_status\":-1,\"original_price\":\"Rp28.000\",\"original_price_float\":\"28000.0\",\"bundle_price\":\"Rp26.000\",\"bundle_price_float\":\"26000.0\",\"total_discount\":\"Rp2.000\",\"total_discount_float\":\"2000.0\",\"cta_bundling\":{\"android_link\":\"tokopedia://product-bundle/2148348897?source=cart&bundleId=32175&selectedProductIds=2148348892,2148348896,2148348901\",\"button_shown\":true,\"cta_text\":\"Paket Habis\",\"desktop_link\":\"\",\"ios_link\":\"tokopedia://product-bundle/2148348897?source=cart&bundleId=32175&selectedProductIds=2148348892,2148348896,2148348901\",\"is_disabled\":true,\"mobile_link\":\"\"},\"bundle_item\": [{\"product_id\":\"2147811665\",\"name\":\"Test OOS Product\",\"image_url\":\"https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/20/083a171e-3282-45d9-a8ca-8b30ffb27695.jpg\",\"status\":\"1\",\"quantity\":\"1\",\"original_price\":\"Rp14.000\",\"original_price_float\":\"14000.0\",\"bundle_price\":\"Rp13.000\",\"bundle_price_float\":\"13000.0\"}]}]}",
+                  "fallback": {
+                    "message": "",
+                    "html": "https://www.tokopedia.com/vip-list/piyama-baju-tidur"
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013662",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "Lorem ipsum test broadcast text",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778969000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

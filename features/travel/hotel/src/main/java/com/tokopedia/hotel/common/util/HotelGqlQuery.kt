@@ -1,7 +1,25 @@
 package com.tokopedia.hotel.common.util
 
-object HotelGqlQuery {
-    val PROPERTY_REVIEW = """
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.hotel.common.util.HotelCancelVoucherQuery.HOTEL_CANCEL_VOUCHER
+import com.tokopedia.hotel.common.util.HotelDestinationSearchQuery.DESTINATION_SEARCH
+import com.tokopedia.hotel.common.util.HotelGetCancellationQuery.GET_CANCELLATION
+import com.tokopedia.hotel.common.util.HotelGetCartQuery.GET_CART
+import com.tokopedia.hotel.common.util.HotelGetPopularPropertyQuery.GET_POPULAR_PROPERTY_QUERY
+import com.tokopedia.hotel.common.util.HotelGetRecentSearchQuery.GET_HOTEL_RECENT_SEARCH_QUERY
+import com.tokopedia.hotel.common.util.HotelHomepageDefaultParameterQuery.DEFAULT_HOMEPAGE_PARAMETER
+import com.tokopedia.hotel.common.util.HotelNearbyLandmarksQuery.HOTEL_NEARBY_LANDMARKS
+import com.tokopedia.hotel.common.util.HotelOrderDetailQuery.ORDER_DETAILS
+import com.tokopedia.hotel.common.util.HotelPropertyDetailQuery.PROPERTY_DETAIL
+import com.tokopedia.hotel.common.util.HotelPropertyReviewQuery.PROPERTY_REVIEW
+import com.tokopedia.hotel.common.util.HotelPropertyRoomListQuery.PROPERTY_ROOM_LIST
+import com.tokopedia.hotel.common.util.HotelPropertySearchQuery.PROPERTY_SEARCH
+import com.tokopedia.hotel.common.util.HotelRecentSearchDataQuery.RECENT_SEARCH_DATA
+import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
+
+@GqlQuery("QueryHotelPropertyReview", PROPERTY_REVIEW)
+internal object HotelPropertyReviewQuery{
+    const val PROPERTY_REVIEW = """
         query propertyReview(${'$'}data:PropertyReviewRequest!){
           propertyReview(input:${'$'}data){
             item{
@@ -23,9 +41,12 @@ object HotelGqlQuery {
             headline
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val PROPERTY_SEARCH = """
+@GqlQuery("QueryHotelPropertySearch", PROPERTY_SEARCH)
+internal object HotelPropertySearchQuery{
+    const val PROPERTY_SEARCH = """
         query PropertySearch(${'$'}data:PropertySearchRequest!) {
         propertySearch(input: ${'$'}data){
         propertyList {
@@ -134,9 +155,12 @@ object HotelGqlQuery {
         }
     }
     }
-    """.trimIndent()
+    """
+}
 
-    val DESTINATION_SEARCH = """
+@GqlQuery("QueryHotelDestinationSearch", DESTINATION_SEARCH)
+internal object HotelDestinationSearchQuery{
+    const val DESTINATION_SEARCH = """
         query suggestion(${'$'}data: PropertySuggestionSearchParam!) {
           propertySearchSuggestion(input:${'$'}data) {
             data {
@@ -158,9 +182,12 @@ object HotelGqlQuery {
             }
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val GET_CART = """
+@GqlQuery("QueryHotelGetCart", GET_CART)
+internal object HotelGetCartQuery{
+    const val GET_CART = """
         query PropertyCart(${'$'}data: PropertyGetCartRequest!) {
           status
           propertyGetCart(input:${'$'}data) {
@@ -258,9 +285,12 @@ object HotelGqlQuery {
             }
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val DEFAULT_HOMEPAGE_PARAMETER = """
+@GqlQuery("QueryHotelHomepageDefaultParameter", DEFAULT_HOMEPAGE_PARAMETER)
+internal object HotelHomepageDefaultParameterQuery{
+    const val DEFAULT_HOMEPAGE_PARAMETER = """
         query propertyDefaultHome{
             propertyDefaultHome{
                 data {
@@ -277,23 +307,12 @@ object HotelGqlQuery {
                 }
             }
         }
-    """.trimIndent()
+    """
+}
 
-    val HOME_PROMO = """
-        query getBanner {
-         travelBanner(languageID: 0, countryID: "ID", deviceID: 4, instanceID: 4) {
-           id
-           attributes {
-             description
-             linkURL
-             imageURL
-             promoCode
-           }
-         }
-        }
-    """.trimIndent()
-
-    val PROPERTY_DETAIL = """
+@GqlQuery("QueryHotelPropertyDetail", PROPERTY_DETAIL)
+internal object HotelPropertyDetailQuery{
+    const val PROPERTY_DETAIL = """
         query propertyDetail(${'$'}data:PropertyDetailRequest!){
         propertyDetail(input:${'$'}data){
           property {
@@ -388,9 +407,12 @@ object HotelGqlQuery {
           }
         }
         }
-    """.trimIndent()
+    """
+}
 
-    val ORDER_DETAILS = """
+@GqlQuery("QueryHotelOrderDetail", ORDER_DETAILS)
+internal object HotelOrderDetailQuery{
+    const val ORDER_DETAILS = """
         query OrderDetailsQuery(${'$'}orderCategoryStr: String,${'$'}orderId: String) {
           status
           orderDetails(orderCategoryStr:${'$'}orderCategoryStr, orderId:${'$'}orderId) {
@@ -529,10 +551,13 @@ object HotelGqlQuery {
             }
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val RECENT_SEARCH_DATA = """
-        query{
+@GqlQuery("QueryHotelRecentSearchData", RECENT_SEARCH_DATA)
+internal object HotelRecentSearchDataQuery{
+    const val RECENT_SEARCH_DATA = """
+        query TravelCollectiveRecentSearches() {
           TravelCollectiveRecentSearches(product:HOTEL, platform: HOTELPAGE){
             items {
               product
@@ -552,9 +577,12 @@ object HotelGqlQuery {
             }
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val PROPERTY_ROOM_LIST = """
+@GqlQuery("QueryHotelPropertyRoomList", PROPERTY_ROOM_LIST)
+internal object HotelPropertyRoomListQuery{
+    const val PROPERTY_ROOM_LIST = """
         query PropertySearchRoom(${'$'}data:PropertySearchRoomRequest!){
           propertySearchRoom(input:${'$'}data){
             propertyID
@@ -666,19 +694,12 @@ object HotelGqlQuery {
             }
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val TOKOPOINTS_SUM_COUPON = """
-        query {
-          tokopointsSumCoupon (categoryID: 51) {
-            sumCoupon
-            sumCouponStr
-            sumCouponUnitOpt
-          }
-        }
-    """.trimIndent()
-
-    val HOTEL_NEARBY_LANDMARKS = """
+@GqlQuery("QueryHotelNearbyLandmarks", HOTEL_NEARBY_LANDMARKS)
+internal object HotelNearbyLandmarksQuery{
+    const val HOTEL_NEARBY_LANDMARKS = """
         query propertySearchPlace(${'$'}data :PropertySearchPlaceRequest!){
           propertySearchPlace(input:${'$'}data){
             result{
@@ -698,9 +719,12 @@ object HotelGqlQuery {
             information
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val GET_POPULAR_PROPERTY_QUERY = """
+@GqlQuery("QueryHotelGetPopularProperty", GET_POPULAR_PROPERTY_QUERY)
+internal object HotelGetPopularPropertyQuery{
+    const val GET_POPULAR_PROPERTY_QUERY = """
         query {
           propertyPopular {
             name
@@ -712,8 +736,11 @@ object HotelGqlQuery {
             searchID
           }
         }
-    """.trimIndent()
+    """
+}
 
+@GqlQuery("QueryHotelGetRecentSearch", GET_HOTEL_RECENT_SEARCH_QUERY)
+internal object HotelGetRecentSearchQuery{
     const val GET_HOTEL_RECENT_SEARCH_QUERY = """
         query propertyRecentSearch(${'$'}id: Int!){
          status
@@ -743,4 +770,123 @@ object HotelGqlQuery {
          }
         }
     """
+}
+
+@GqlQuery("QueryHotelGetCancellation", GET_CANCELLATION)
+internal object HotelGetCancellationQuery{
+    const val GET_CANCELLATION = """
+        query getCancellation(${'$'}data: PropertyGetCancellationRequest!){
+          propertyGetCancellation(input: ${'$'}data        ){
+            data {
+                cancelCartID
+                cancelCartExpiry
+                property {
+                    propertyID
+                    name
+                    type
+                    address
+                    propertyImage {
+                        urlSquare60
+                        urlOriginal
+                        urlMax300
+                    }
+                    star
+                    paymentNote
+                    checkInOut{
+                        title
+                        checkInOut {
+                          day
+                          date
+                          time
+                        }
+                    }
+                    stayLength
+                    isDirectPayment
+                    room {
+                        isBreakFastIncluded
+                        maxOccupancy
+                        roomName
+                        roomContent
+                        isRefundAble
+                        isCCRequired
+                    }
+                }
+                cancelPolicy {
+                    title
+                    policy {
+                        title
+                        desc
+                        active
+                        feeInLocalCurrency {
+                            amountStr
+                            amount
+                            currency
+                        }
+                        fee {
+                            amountStr
+                            amount
+                            currency
+                        }
+                        styling
+                    }
+                }
+                cancelInfo {
+                    desc
+                    isClickable
+                    longDesc {
+                        title
+                        desc
+                    }
+                }
+                payment {
+                    title
+                    detail {
+                        title
+                        amount
+                    }
+                    summary {
+                        title
+                        amount
+                    }
+                    footer {
+                        desc
+                        links
+                    }
+                }
+                reasons {
+                    id
+                    title
+                    freeText
+                }
+                footer{
+                    desc
+                    links
+                }
+                confirmationButton {
+                    title
+                    desc
+                }
+          }
+            meta{
+              invoiceID
+            }
+            content {
+              success
+              title
+              desc
+                actionButton {
+                   label
+                   buttonType
+                   URI
+                   URIWeb
+                }
+            }
+          }
+        }
+    """
+}
+
+@GqlQuery("QueryHotelCancelVoucher", HOTEL_CANCEL_VOUCHER)
+internal object HotelCancelVoucherQuery{
+    const val HOTEL_CANCEL_VOUCHER = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 }

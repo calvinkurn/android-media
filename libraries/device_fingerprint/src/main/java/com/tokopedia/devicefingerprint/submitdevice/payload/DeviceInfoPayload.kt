@@ -16,7 +16,7 @@ data class DeviceInfoPayload(
         @SerializedName("app_version") val appVersion: String,
         @SerializedName("is_from_playstore") val isFromPlayStore: Boolean = true,
         @SerializedName("uuid") val uuid: String,
-        @SerializedName("user_id") val userId: Int,
+        @SerializedName("user_id") val userId: Long,
         @SerializedName("dvmod") val deviceModel: String,
         @SerializedName("dvmanu") val deviceManufacturer: String,
         @SerializedName("tzone") val timezone: String,

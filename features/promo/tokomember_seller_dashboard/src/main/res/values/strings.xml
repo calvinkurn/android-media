@@ -65,6 +65,24 @@
     <string name="tm_kupon_title_single">Tampilan Kupon</string>
     <string name="tm_kupon_single_ticker">Biar mudah cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!</string>
     <string name="tm_home_title">Bagian ini lagi disiapin, ya</string>
+    <string name="tm_no_internet_dashboard">Ke Dashboard Tokomember</string>
     <string name="tm_home_desc">Toped lagi rapi-rapi halaman statistik versi mobile, nih. Kamu masih bisa cek statistik lengkap di versi desktop.</string>
+    <string name="tm_member_list_header_title">TokoMember (%1$s)</string>
+    <string name="tm_program_status_value">Program %1$s</string>
 
+    <string name="tm_vip_kupon">VIP</string>
+    <string name="tm_premium_kupon">Premium</string>
+    <string name="tm_share_bottomsheet_title">Bagikan ke pembeli kamu</string>
+    <string name="tm_share_bottomsheet_img_options_title">Mau kasih lihat yang mana?</string>
+    <string name="tm_share_coupon_string">%1$s. Yuk, pakai kuponnya di aplikasi Tokopedia, sekarang!  %2$s</string>
+    <string name="tm_coupon_cashback_idr">Rupiah (Rp)</string>
+    <string name="tm_coupon_cashback_percent">Persentase </string>
+    <string name="tm_currency">Rp%1$s</string>
+    <string name="tm_ubah_kupon">Ubah Kupon</string>
+    <string name="tm_share_text">Bagikan</string>
+    <string name="tm_coupon_informasi_text">Informasi Kupon</string>
+    <string name="tm_quota_progress_text">Kupon terpakai</string>
+    <string name="tm_current_release_text_1">"Pengeluaran saat ini"</string>
+    <string name="tm_current_release_text_2">Dipotong dari transaksi selesai</string>
+    <string name="tm_vip_coupon_ticker_text">Biar mudah &amp; cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!</string>
 </resources>

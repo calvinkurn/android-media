@@ -11,10 +11,15 @@ import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.state.KebabMenuType
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -44,6 +49,16 @@ class PlayBottomInsetsTest2 {
     )
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(CoroutineTestDispatchers.coroutineDispatcher)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun `given channel is live, when show keyboard, keyboard insets should be shown`() {
@@ -95,9 +110,7 @@ class PlayBottomInsetsTest2 {
         createPlayViewModelRobot {
             //when
             viewModel.onShowVariantSheet(
-                estimatedProductSheetHeight = 100,
-                action = ProductAction.Buy,
-                product = productTagBuilder.buildProductLine()
+                estimatedProductSheetHeight = 100
             )
 
             //then
@@ -182,9 +195,7 @@ class PlayBottomInsetsTest2 {
         createPlayViewModelRobot {
             //when
             viewModel.onShowVariantSheet(
-                estimatedProductSheetHeight = 100,
-                action = ProductAction.Buy,
-                product = productTagBuilder.buildProductLine()
+                estimatedProductSheetHeight = 100
             )
 
             //then
@@ -278,9 +289,7 @@ class PlayBottomInsetsTest2 {
         createPlayViewModelRobot {
             createPage(mockLiveChannelData)
             viewModel.onShowVariantSheet(
-                estimatedProductSheetHeight = 100,
-                action = ProductAction.Buy,
-                product = productTagBuilder.buildProductLine()
+                estimatedProductSheetHeight = 100
             )
 
             viewModel.observableBottomInsetsState

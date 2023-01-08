@@ -1,13 +1,15 @@
 package com.tokopedia.play.model.tagitem
 
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.utils.date.DateUtil
+import java.util.*
 
 interface TagItemBuilder {
 
@@ -25,7 +27,7 @@ interface TagItemBuilder {
     ): ProductUiModel
 
     fun buildVoucherModel(
-        voucherList: List<MerchantVoucherUiModel> = emptyList()
+        voucherList: List<PlayVoucherUiModel.Merchant> = emptyList()
     ): VoucherUiModel
 
     fun buildProduct(
@@ -40,11 +42,14 @@ interface TagItemBuilder {
         isFreeShipping: Boolean = false,
         appLink: String = "",
         isTokoNow: Boolean = false,
+        isPinned: Boolean = false,
+        isRilisanSpesial: Boolean = false,
+        buttons: List<ProductButtonUiModel> = emptyList(),
     ): PlayProductUiModel.Product
 
     fun buildMerchantVoucher(
         id: String = "",
-        type: MerchantVoucherType = MerchantVoucherType.Private,
+        type: MerchantVoucherType = MerchantVoucherType.Discount,
         title: String = "",
         description: String = "",
         code: String = "",
@@ -52,26 +57,33 @@ interface TagItemBuilder {
         highlighted: Boolean = false,
         voucherStock: Int = 1,
         expiredDate: String = "",
-    ): MerchantVoucherUiModel
+        isPrivate: Boolean = false,
+    ): PlayVoucherUiModel.Merchant
 
     fun buildProductSection(
         productList: List<PlayProductUiModel.Product> = emptyList(),
-        config: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel(
-            type = ProductSectionType.Unknown,
-            title = "", timerInfo = "", serverTime = "", startTime = "", endTime = "",
-            background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
-            reminder = PlayUpcomingBellStatus.On(DEFAULT_CAMPAIGN_ID)
-        ),
+        config: ProductSectionUiModel.Section.ConfigUiModel = buildSectionConfig(),
         id: String = "",
     ): ProductSectionUiModel.Section
 
-    fun buildSectionConfig(type: ProductSectionType = ProductSectionType.Unknown,
-                           title: String = "", timerInfo: String = "", serverTime: String = "",
-                           startTime: String = "", endTime: String = "",
-                           background: ProductSectionUiModel.Section.BackgroundUiModel =
-                               ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
-                           reminderStatus: PlayUpcomingBellStatus
+    fun buildSectionConfig(
+        type: ProductSectionType = ProductSectionType.Unknown,
+        title: String = "",
+        timerInfo: String = "",
+        controlTime: Date = DateUtil.getCurrentDate(),
+        serverTime: Date? = null,
+        startTime: Date? = null,
+        endTime: Date? = null,
+        background: ProductSectionUiModel.Section.BackgroundUiModel =
+            ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
+        reminderStatus: PlayUpcomingBellStatus = PlayUpcomingBellStatus.Unknown,
     ): ProductSectionUiModel.Section.ConfigUiModel
+
+    fun buildButton(
+        text: String = "",
+        color: ProductButtonColor = ProductButtonColor.PRIMARY_BUTTON,
+        type: ProductButtonType = ProductButtonType.ATC,
+    ) : ProductButtonUiModel
 
     companion object {
         private const val DEFAULT_CAMPAIGN_ID = 3L

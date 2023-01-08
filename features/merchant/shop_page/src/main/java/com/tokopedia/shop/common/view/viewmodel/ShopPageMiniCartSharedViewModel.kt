@@ -11,7 +11,7 @@ class ShopPageMiniCartSharedViewModel : ViewModel() {
         get() = _miniCartSimplifiedData
     private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
 
-    fun updateSharedMiniCartData(miniCartSimplifiedData: MiniCartSimplifiedData){
+    fun updateSharedMiniCartData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         _miniCartSimplifiedData.postValue(miniCartSimplifiedData)
     }
 }

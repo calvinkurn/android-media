@@ -16,6 +16,11 @@ fun mediaToUiModel(mediaList: List<Media>): List<MediaUiModel> {
     }
 }
 
+fun MediaUiModel.toModel() = Media(
+    id = id,
+    file = file!!
+)
+
 fun Album.toUiModel() = AlbumUiModel(
     id = id,
     name = name,

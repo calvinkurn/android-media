@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
@@ -72,11 +73,18 @@ class ReviewPendingCredibilityCarouselViewHolder(
         items: List<ReviewPendingCredibilityUiModel>
     ) {
         val itemWidth = calculateItemViewWidth(items.size == 1)
-        items.forEachIndexed { index, item ->
+        items.mapIndexed { index, item ->
             createItemView(context, itemWidth).apply {
                 bindItem(this, item, index)
-            }.run {
-                addItem(this)
+                measureItem(this, itemWidth)
+            }
+        }.run {
+            val maxHeight = maxOf { it.measuredHeight }
+            onEach {
+                val layoutParamsCopy = it.layoutParams
+                layoutParamsCopy.height = maxHeight
+                it.layoutParams = layoutParamsCopy
+                addItem(it)
             }
         }
     }
@@ -104,5 +112,12 @@ class ReviewPendingCredibilityCarouselViewHolder(
             val viewHolder = ReviewPendingCredibilityViewHolder(view, reviewPendingItemListener)
             viewHolder.bind(data, index)
         }
+    }
+
+    private fun measureItem(view: View, itemWidth: Int) {
+        view.measure(
+            View.MeasureSpec.makeMeasureSpec(itemWidth, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(Int.ZERO, View.MeasureSpec.UNSPECIFIED)
+        )
     }
 }

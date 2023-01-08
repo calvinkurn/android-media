@@ -93,9 +93,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoginStatus() {
-        if(userSession.isLoggedIn) {
-            val identity = if(userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            loginButton?.text = "Logged in as:\n${identity}"
+        if (userSession.isLoggedIn) {
+            val identity = if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
+            loginButton?.text = "Logged in as:\n$identity"
             logoutButton.visibility = View.VISIBLE
         } else {
             loginButton?.text = "Login"
@@ -117,14 +117,10 @@ class MainActivity : AppCompatActivity() {
          * */
         val appLink = etAppLink.text.toString()
         if (appLink.isNotBlank()) {
-            when (appLink) {
-                "1" -> startActivity(Intent(this, FoldableActivity::class.java))
-                "2" -> startActivity(Intent(this, FoldableFragmentsActivity::class.java))
-                "3" -> startActivity(Intent(this, ExoPlayerSampleActivity::class.java))
-                else -> RouteManager.route(this, appLink)
-            }
+            RouteManager.route(this, appLink)
+        } else {
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
         }
-        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {

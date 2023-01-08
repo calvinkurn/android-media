@@ -68,7 +68,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
 
         // Then
         assertComposedTextValue(" Hi barang ini ready gk? ")
-        DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn)
+        DrawableMatcher.compareDrawableWithIndex(R.id.send_but, R.drawable.bg_topchat_send_btn, 0)
     }
 
     @Test

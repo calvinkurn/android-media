@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -17,10 +18,10 @@
         android:id="@+id/img_options_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
+        app:typographyType="paragraph_2"
         android:layout_marginStart="16dp"
         android:text="@string/img_options_heading"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
     <androidx.recyclerview.widget.RecyclerView
@@ -59,27 +60,27 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/thumb_nail_title"
         android:layout_marginStart="16dp"
-        android:layout_width="@dimen/dp_250"
+        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_19"
         android:text="@string/tn_title"
-        android:textColor="@color/Unify_N700"
-        android:textSize="14sp"
+        android:textColor="@color/Unify_NN950"
         android:ellipsize="end"
         android:lines="1"
         android:maxLines="1"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="@id/thumb_nail_image"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@+id/affilate_commision"
-        app:layout_constraintLeft_toRightOf="@id/thumb_nail_image"/>
+        app:layout_constraintLeft_toRightOf="@id/thumb_nail_image"
+        app:layout_constraintRight_toRightOf="parent"/>
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/affilate_commision"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_19"
-        android:textColor="@color/Unify_N700"
-        android:textSize="14sp"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="display_3"
         android:visibility="gone"
         android:layout_marginStart="16dp"
         app:layout_constraintVertical_chainStyle="packed"
@@ -89,11 +90,11 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokopedia_link"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_19"
+        android:layout_height="16dp"
         android:text="@string/tokopedia_link"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:textSize="14sp"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         android:layout_marginStart="16dp"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintTop_toBottomOf="@id/affilate_commision"
@@ -105,9 +106,106 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_ticker"
+        android:background="@color/Unify_NN50" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_register_affiliate"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/rv_social_media_list"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/unify_space_16"
+            android:paddingVertical="@dimen/unify_space_8">
+
+            <ImageView
+                android:id="@+id/iv_affiliate"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="@dimen/unify_space_24"
+                android:layout_height="@dimen/unify_space_24"
+                android:contentDescription="@string/content_description_icon_affiliate"
+                app:layout_constraintEnd_toStartOf="@id/tv_title_affiliate"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title_affiliate"
+                app:layout_constraintTop_toTopOf="@id/iv_affiliate"
+                app:layout_constraintBottom_toBottomOf="@id/iv_affiliate"
+                app:layout_constraintStart_toEndOf="@id/iv_affiliate"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_N700"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Tokopedia Affiliate"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/tv_title_affiliate"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
+                app:typographyType="small"
+                android:textColor="@color/Unify_Static_White"
+                android:paddingHorizontal="@dimen/unify_space_4"
+                android:paddingVertical="@dimen/unify_space_2"
+                android:background="@drawable/background_ticker_new"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:layout_constraintBottom_toBottomOf="@id/tv_title_affiliate"
+                app:layout_constraintTop_toTopOf="@id/tv_title_affiliate"
+                android:text="@string/ticker_new"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_description_affiliate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_affiliate"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_right_arrow"
+                android:layout_marginTop="@dimen/unify_space_4"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:typographyType="body_2"
+                android:ellipsize="end"
+                tools:text="Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini."/>
+
+            <ImageView
+                android:id="@+id/iv_right_arrow"
+                app:layout_constraintTop_toTopOf="@id/tv_title_affiliate"
+                app:layout_constraintBottom_toBottomOf="@id/tv_description_affiliate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_description_affiliate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_right"
+                android:contentDescription="@string/content_description_icon_redirection"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ticker"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/item_ticker"
+        tools:itemCount="1"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintTop_toBottomOf="@id/thumb_nail_image"
-        android:background="@color/Unify_N75"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/separator"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="16dp"
@@ -119,9 +217,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator" />
+        app:layout_constraintTop_toBottomOf="@id/card_register_affiliate" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/copy_link_img"
         android:scaleType="center"
         android:layout_marginTop="16dp"
@@ -130,20 +228,21 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:elevation="@dimen/dp_1"
-        android:src="@drawable/universal_sharing_ic_link"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintTop_toBottomOf="@+id/rv_social_media_list"
         android:contentDescription="@string/desc_img_copy_link"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/sms_img"/>
+        app:layout_constraintRight_toLeftOf="@+id/sms_img"
+        app:icon_name="LINK"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/copy_link_txtv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/sp_12"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="paragraph_3"
         android:elevation="@dimen/dp_1"
         android:text="@string/label_bhasha_copy_link"
         android:layout_marginTop="4dp"
@@ -151,12 +250,11 @@
         app:layout_constraintLeft_toLeftOf="@+id/copy_link_img"
         app:layout_constraintRight_toRightOf="@+id/copy_link_img" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/sms_img"
         android:layout_marginTop="16dp"
         android:scaleType="center"
         android:visibility="gone"
-        android:src="@drawable/universal_sharing_ic_chat"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="10dp"
@@ -165,16 +263,18 @@
         android:contentDescription="@string/desc_img_sms"
         app:layout_constraintTop_toBottomOf="@+id/rv_social_media_list"
         app:layout_constraintLeft_toRightOf="@+id/copy_link_img"
-        app:layout_constraintRight_toLeftOf="@id/email_img"/>
+        app:layout_constraintRight_toLeftOf="@id/email_img"
+        app:icon_name="CHAT"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/sms_link_txtv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
         android:visibility="gone"
-        android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/sp_12"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="paragraph_3"
         android:elevation="@dimen/dp_1"
         android:text="@string/share_sms"
         android:layout_marginTop="4dp"
@@ -182,11 +282,10 @@
         app:layout_constraintLeft_toLeftOf="@+id/sms_img"
         app:layout_constraintRight_toRightOf="@+id/sms_img" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/email_img"
         android:layout_marginTop="16dp"
         android:scaleType="center"
-        android:src="@drawable/universal_sharing_ic_message"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="10dp"
@@ -195,15 +294,17 @@
         android:contentDescription="@string/desc_img_email"
         app:layout_constraintTop_toBottomOf="@+id/rv_social_media_list"
         app:layout_constraintLeft_toRightOf="@+id/sms_img"
-        app:layout_constraintRight_toLeftOf="@+id/others_img"/>
+        app:layout_constraintRight_toLeftOf="@+id/others_img"
+        app:icon_name="MESSAGE"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/email_link_txtv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/sp_12"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="paragraph_3"
         android:elevation="@dimen/dp_1"
         android:text="@string/share_email"
         android:layout_marginTop="4dp"
@@ -211,11 +312,10 @@
         app:layout_constraintLeft_toLeftOf="@+id/email_img"
         app:layout_constraintRight_toRightOf="@+id/email_img" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/others_img"
         android:scaleType="center"
         android:layout_marginTop="16dp"
-        android:src="@drawable/universal_sharing_ic_menu_kebab_horizontal"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_width="48dp"
@@ -224,15 +324,17 @@
         android:contentDescription="@string/desc_img_others"
         app:layout_constraintTop_toBottomOf="@+id/rv_social_media_list"
         app:layout_constraintLeft_toRightOf="@+id/email_img"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:icon_name="MENU_KEBAB_HORIZONTAL"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/others_link_txtv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/sp_12"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="paragraph_3"
         android:elevation="@dimen/dp_1"
         android:text="@string/label_action_more"
         android:layout_marginTop="4dp"
@@ -249,15 +351,6 @@
         android:background="@color/transparent"
         />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/background_image"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/universal_share_bottomsheet_image_bg"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator"
-        app:layout_constraintBottom_toBottomOf="parent"/>
     <androidx.constraintlayout.widget.Group
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

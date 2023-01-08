@@ -33,9 +33,8 @@ class CameraControllerComponent(
     private val activityContract: PickerActivityContract?,
     private val controllerListener: Listener,
     parent: ViewGroup,
-) : UiComponent(parent, R.id.uc_camera_controller)
-    , ViewTreeObserver.OnScrollChangedListener
-    , CameraSliderAdapter.Listener {
+) : UiComponent(parent, R.id.uc_camera_controller), ViewTreeObserver.OnScrollChangedListener,
+    CameraSliderAdapter.Listener {
 
     private val adapterData = CameraSelectionUiModel.create()
 
@@ -144,7 +143,9 @@ class CameraControllerComponent(
 
     fun setThumbnailPreview(model: MediaUiModel) {
         if (!param.isMultipleSelectionType()) return
-        imgThumbnail.smallThumbnail(model)
+        imgThumbnail.smallThumbnail(model) {
+            controllerListener.onThumbnailLoaded()
+        }
         imgThumbnail.setOnClickListener {
             controllerListener.onCameraThumbnailClicked()
         }
@@ -225,7 +226,8 @@ class CameraControllerComponent(
         try {
             videoDurationTimer?.cancel()
             videoDurationTimer = null
-        } catch (t: Throwable) {}
+        } catch (t: Throwable) {
+        }
     }
 
     private fun onTakeCamera() {
@@ -280,7 +282,7 @@ class CameraControllerComponent(
         updateCameraModeRecyclerItem(cameraModeIndex, true)
     }
 
-    private fun updateCameraModeRecyclerItem(index: Int, recyclerItemState: Boolean){
+    private fun updateCameraModeRecyclerItem(index: Int, recyclerItemState: Boolean) {
         adapterData[index].isSelected = recyclerItemState
         adapter.notifyItemChanged(index)
     }
@@ -302,6 +304,7 @@ class CameraControllerComponent(
         fun onTakeMediaClicked()
         fun onFlashClicked()
         fun onFlipClicked()
+        fun onThumbnailLoaded()
     }
 
     companion object {

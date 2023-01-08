@@ -19,11 +19,12 @@ class GetRatesUseCase @Inject constructor(
     private var gql: GraphqlUseCase? = null
 
     fun execute(param: RatesParam): Observable<ShippingRecommendationData> {
-        val query = ratesQuery(QUERY_RATESV3)
+        val query = ratesQuery()
         val gqlRequest = GraphqlRequest(query, RatesGqlResponse::class.java, mapOf(
-                "param" to param.toMap())
+                "param" to param.toMap(),
+                "metadata" to param.toMetadata()
         )
-
+        )
         // Need to init usecase here to prevent request cleared since this usecase will be called multiple time in a very tight interval of each call.
         // Will consider this as tech debt until find a proper solution
         val gql = GraphqlUseCase()

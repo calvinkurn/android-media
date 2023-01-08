@@ -11,11 +11,11 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
+import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
@@ -233,7 +233,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
     private fun `Then verify view added broad match`(searchProductModel: SearchProductModel) {
         verify {
-            productListView.addProductList(capture(visitableListSlot))
+            viewUpdater.appendItems(capture(visitableListSlot))
         }
 
         val visitableList = visitableListSlot.captured

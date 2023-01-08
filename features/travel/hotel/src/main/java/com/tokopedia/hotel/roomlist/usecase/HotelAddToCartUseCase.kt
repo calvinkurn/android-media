@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.common.data.HotelErrorException
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(rawQuery: String, hotelAddCartParam: HotelAddCartParam): Result<HotelAddCartData.Response> {
+    suspend fun execute(rawQuery: GqlQueryInterface, hotelAddCartParam: HotelAddCartParam): Result<HotelAddCartData.Response> {
 
         if (hotelAddCartParam.rooms.isNotEmpty())
             hotelAddCartParam.idempotencyKey = generateIdEmpotency(hotelAddCartParam.rooms.first().roomId)

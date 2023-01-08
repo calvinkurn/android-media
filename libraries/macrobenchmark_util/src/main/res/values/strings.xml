@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Test Setup Options-->
+    <string name="host_session_setting" translatable="false">session-setting</string>
+    <string name="path_home_dev_opt" translatable="false">/opt</string>
+
+    <string name="host_mock_setting" translatable="false">mock-setting</string>
+
+</resources>

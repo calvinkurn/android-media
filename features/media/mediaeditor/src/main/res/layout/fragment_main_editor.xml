@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main_editor_fragment_layout"
+    android:orientation="vertical">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:background="@drawable/editor_round_undo_shadow"
+        app:icon_name="UNDO"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        android:elevation="2dp"
+        android:id="@+id/btn_undo"
+        app:layout_constraintRight_toLeftOf="@id/btn_redo"
+        app:layout_constraintBottom_toBottomOf="@id/view_pager"
+        android:visibility="gone"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:visibility="gone"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        app:icon_name="REDO"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        android:background="@drawable/editor_round_undo_shadow"
+        android:elevation="2dp"
+        android:id="@+id/btn_redo"
+        app:layout_constraintLeft_toRightOf="@id/btn_undo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/view_pager"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/undo_redo_toast"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toTopOf="@id/view_pager"
+        app:layout_constraintLeft_toLeftOf="@id/view_pager"
+        app:layout_constraintRight_toRightOf="@id/view_pager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:elevation="2dp"
+        android:background="@drawable/bg_undo_redo_toast"
+        android:textColor="@color/Unify_Static_White"
+        tools:text="Undo / Redo Toast"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.media.editor.ui.widget.EditorViewPager
+        android:elevation="1dp"
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/uc_editor_tool_container"/>
+
+    <include
+        layout="@layout/ui_component_tools_editor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/uc_drawer_thumbnail"/>
+
+    <include
+        layout="@layout/ui_component_thumbnail_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

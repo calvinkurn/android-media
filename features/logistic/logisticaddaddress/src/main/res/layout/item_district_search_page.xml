@@ -8,8 +8,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_location"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_22"
+        android:layout_width="18dp"
+        android:layout_height="22dp"
         android:layout_marginStart="@dimen/unify_space_16"
         app:icon_name="LOCATION"
         android:layout_alignParentTop="true"
@@ -21,7 +21,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginEnd="@dimen/dp_18"
+        android:layout_marginEnd="18dp"
         android:layout_marginStart="14dp"
         android:layout_toEndOf="@id/ic_location"
         android:orientation="vertical">

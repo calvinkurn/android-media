@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.data
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
-import com.tokopedia.discovery2.data.mycoupon.TokopointsCouponListStack
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.common.data.Filter
@@ -63,6 +62,7 @@ data class ComponentsItem(
         var componentsPerPage: Int = 20,
         var pageEndPoint: String = "",
         var pagePath: String = "",
+        var pageType: String = "",
         var parentComponentId: String = "",
         var parentComponentName: String? = null,
         var parentComponentPosition: Int = 0,
@@ -102,6 +102,8 @@ data class ComponentsItem(
         var userAddressData: LocalCacheModel? = null,
         var nextPageKey:String? = "",
         var horizontalProductFailState: Boolean = false,
+        var isSelectedFiltersFromQueryApplied: Boolean = false,
+        var isExplicitWidgetHidden: Boolean = false,
         var myCouponList: List<MyCoupon>? = null) {
 
     private var componentsItem: List<ComponentsItem>? = null

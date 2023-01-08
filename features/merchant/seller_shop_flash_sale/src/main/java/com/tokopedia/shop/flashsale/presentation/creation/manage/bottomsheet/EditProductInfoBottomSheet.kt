@@ -16,6 +16,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetEditProductInfoBinding
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.common.util.DiscountUtil
@@ -23,32 +24,41 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductInputValidationResult
+import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.EditProductInfoViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class EditProductInfoBottomSheet: BottomSheetUnify() {
+class EditProductInfoBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val KEY_PRODUCTS = "PRODUCTS"
+        private const val DELAY = 1000L
         private const val TAG = "EditProductInfoBottomSheet"
         private const val PRODUCT_REMAINING_VISIBILITY_THRESHOLD = 1
         private const val MAX_LENGTH_NUMBER_INPUT = 11
         private const val MAX_LENGTH_PERCENT_INPUT = 2
         private const val EMPTY_INITIAL_VALUE = ""
-        private const val BUTTON_SAVE_WIDTH_PERCENT = 0.38F
-        private const val BUTTON_SAVE_WIDTH_WIDE_PERCENT = 0.99F
+        private const val BUTTON_SAVE_WIDTH_PERCENT = 0.37F
+        private const val BUTTON_SAVE_WIDTH_WIDE_PERCENT = 0.82F
+        private const val BUTTON_DELETE_WIDTH_PERCENT = 0.12F
 
-        fun newInstance(productList: List<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
+        fun newInstance(
+            campaignId: Long,
+            productList: List<SellerCampaignProductList.Product>
+        ): EditProductInfoBottomSheet {
             val fragment = EditProductInfoBottomSheet()
             fragment.arguments = Bundle().apply {
+                putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                 putParcelableArrayList(KEY_PRODUCTS, ArrayList(productList))
             }
             return fragment
@@ -57,6 +67,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: EditProductInfoViewModel
+
     @Inject
     lateinit var sharedPreference: SharedPreferenceDataStore
     private var binding by autoClearedNullable<SsfsBottomsheetEditProductInfoBinding>()
@@ -65,6 +76,11 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private var isDataFirstLoaded = true
     private var shouldLoadNextData = false
     private var onEditProductSuccessListener: () -> Unit = {}
+    private var onDeleteProductSuccessListener: () -> Unit = {}
+
+    private val campaignId: Long by lazy {
+        arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero()
+    }
 
     private val productList: ArrayList<SellerCampaignProductList.Product>? by lazy {
         arguments?.getParcelableArrayList(KEY_PRODUCTS)
@@ -98,6 +114,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         setupEditProductResultObserver()
         setupCampaignIsValidObserver()
         setupCampaignPriceInputObserver()
+        setupRemoveProductStatusObserver()
         handleCoachMark()
         loadNextData()
     }
@@ -157,7 +174,20 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
                 typographyOriginalPrice.text = it.formattedPrice
                 updateProductEditCounter()
                 updateProductNextButtonVisibility()
+                setupDeleteButton(it)
                 isDataFirstLoaded = true
+            }
+        }
+    }
+
+    private fun setupRemoveProductStatusObserver() {
+        viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
+            doOnDelayFinished(DELAY) {
+                if (it is Success) {
+                    onDeleteDataSuccess()
+                } else if (it is Fail) {
+                    it.throwable.localizedMessage?.let { it -> displayError(it) }
+                }
             }
         }
     }
@@ -185,12 +215,36 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
                 viewModel.setInputWarehouseId(selectedWarehouse.id)
                 viewModel.setInputOriginalStock(selectedWarehouse.stock)
                 binding?.spinnerShopLocation?.text = selectedWarehouse.name
-                binding?.tfStock?.setMessage(getString(R.string.editproduct_stock_total_text, selectedWarehouse.stock))
+                binding?.tfStock?.setMessage(
+                    getString(
+                        R.string.editproduct_stock_total_text,
+                        selectedWarehouse.stock
+                    )
+                )
             }
 
             warehouseBottomSheet = WarehouseBottomSheet.newInstance(warehouseList).apply {
                 setOnSubmitListener(::onSubmitWarehouse)
             }
+        }
+    }
+
+    private fun setupDeleteButton(product: SellerCampaignProductList.Product) {
+        binding?.run {
+            btnDelete.setOnClickListener {
+                deleteProduct(product)
+            }
+        }
+    }
+
+    private fun deleteProduct(product: SellerCampaignProductList.Product) {
+        ProductDeleteDialog().apply {
+            setOnPrimaryActionClick {
+                productIndex++
+                shouldLoadNextData = productIndex < productList?.size.orZero()
+                viewModel.removeProducts(campaignId, listOf(product))
+            }
+            show(context ?: return)
         }
     }
 
@@ -276,7 +330,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     private fun displayValidationResult(validationResult: ProductInputValidationResult) {
         validationResult.errorList.forEach { errorType ->
-            when(errorType) {
+            when (errorType) {
                 ManageProductErrorType.EMPTY_PRICE -> {
                     displayPriceEmpty()
                 }
@@ -346,12 +400,16 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
         if (usingPercentInput) {
             priceField = binding?.tfCampaignPricePercent?.textField
-            maxErrorValue = getString(R.string.editproduct_min_percent_text, validationResult.minPricePercent)
-            minErrorValue = getString(R.string.editproduct_max_percent_text, validationResult.maxPricePercent)
+            maxErrorValue =
+                getString(R.string.editproduct_min_percent_text, validationResult.minPricePercent)
+            minErrorValue =
+                getString(R.string.editproduct_max_percent_text, validationResult.maxPricePercent)
         } else {
             priceField = binding?.tfCampaignPrice?.textField
-            maxErrorValue = getString(R.string.editproduct_max_prefix) + validationResult.maxPrice.getCurrencyFormatted()
-            minErrorValue = getString(R.string.editproduct_min_prefix) + validationResult.minPrice.getCurrencyFormatted()
+            maxErrorValue =
+                getString(R.string.editproduct_max_prefix) + validationResult.maxPrice.getCurrencyFormatted()
+            minErrorValue =
+                getString(R.string.editproduct_min_prefix) + validationResult.minPrice.getCurrencyFormatted()
         }
 
         priceField?.isInputError = true
@@ -392,7 +450,12 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
             tfMaxSold.isInputError = false
             tfCampaignPrice.textField?.setMessage("")
             tfCampaignPricePercent.textField?.setMessage("")
-            tfStock.setMessage(getString(R.string.editproduct_stock_total_text, viewModel.productInputData.originalStock))
+            tfStock.setMessage(
+                getString(
+                    R.string.editproduct_stock_total_text,
+                    viewModel.productInputData.originalStock
+                )
+            )
             tfMaxSold.setMessage(getString(R.string.editproduct_input_max_transaction_message))
         }
     }
@@ -400,16 +463,19 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     private fun resetInputData() {
         val productInput = viewModel.productInputData
         val originalPrice = productInput.productMapData.originalPrice.toInt()
-        val discountedPrice = productInput.price.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+        val discountedPrice =
+            productInput.price.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
         val discountedPricePercent = productInput.price?.let {
             DiscountUtil.getDiscountPercentThresholded(it, originalPrice)
         }
         val customStock = productInput.stock.orZero().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
-        val maxOrder = productInput.maxOrder.orZero().toLong().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
+        val maxOrder =
+            productInput.maxOrder.orZero().toLong().toStringOrInitialValue(EMPTY_INITIAL_VALUE)
 
         viewModel.setCampaignPrice(discountedPrice)
         viewModel.setCampaignStock(customStock)
         viewModel.setCampaignMaxOrder(maxOrder)
+        viewModel.setDeleteStatus(false)
         binding?.apply {
             tfCampaignPrice.text = discountedPrice
             tfCampaignPricePercent.text = discountedPricePercent?.toString() ?: EMPTY_INITIAL_VALUE
@@ -433,6 +499,16 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         } else {
             dismiss()
             onEditProductSuccessListener()
+        }
+    }
+
+    private fun onDeleteDataSuccess() {
+        viewModel.setDeleteStatus(true)
+        if (shouldLoadNextData) {
+            loadNextData()
+        } else {
+            dismiss()
+            onDeleteProductSuccessListener()
         }
     }
 
@@ -507,7 +583,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
     }
 
     private fun setNextButtonVisibility(isVisible: Boolean) {
-        val widthPercent = if (isVisible) BUTTON_SAVE_WIDTH_PERCENT else BUTTON_SAVE_WIDTH_WIDE_PERCENT
+        val widthPercent =
+            if (isVisible) BUTTON_SAVE_WIDTH_PERCENT else BUTTON_SAVE_WIDTH_WIDE_PERCENT
         val buttonVariant = if (isVisible) UnifyButton.Variant.GHOST else UnifyButton.Variant.FILLED
         binding?.run {
             (btnSave.layoutParams as? ConstraintLayout.LayoutParams)
@@ -524,5 +601,9 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
 
     fun setOnEditProductSuccessListener(listener: () -> Unit) {
         onEditProductSuccessListener = listener
+    }
+
+    fun setOnDeleteProductSuccessListener(listener: () -> Unit) {
+        onDeleteProductSuccessListener = listener
     }
 }

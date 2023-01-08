@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
@@ -21,6 +22,7 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -54,6 +56,15 @@ class ProductSummaryBottomSheet @Inject constructor(
         viewModel.submitAction(ProductSetupAction.DeleteSelectedProduct(product))
     }
 
+    override fun onPinClicked(product: ProductUiModel) {
+        analytic.onClickPinProductBottomSheet(product.id)
+        viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
+    }
+
+    override fun onImpressPinnedProduct(product: ProductUiModel) {
+        analytic.onImpressPinProductBottomSheet(product.id)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
@@ -69,6 +80,10 @@ class ProductSummaryBottomSheet @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mListener = null
     }
 
@@ -86,7 +101,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.85f).toInt()
+            height = (getScreenHeight() * SCREEN_HEIGHT_DIVIDER).toInt()
         }
         setTitle(getString(R.string.play_bro_product_summary_title))
         setAction(getString(R.string.play_bro_product_add_more)) {
@@ -119,7 +134,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.globalError.visibility = View.GONE
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
-                        productSummaryListView.setProductList(state.productTagSectionList)
+                        productSummaryListView.setProductList(state.productTagSectionList, viewModel.isEligibleForPin)
 
                         if(state.productTagSectionList.isEmpty()) {
                             binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
@@ -142,7 +157,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                             actionListener = { event.action?.invoke() },
                         )
 
-                        productSummaryListView.setProductList(emptyList())
+                        productSummaryListView.setProductList(emptyList(), viewModel.isEligibleForPin)
                         showLoading(false)
                     }
                     is PlayBroProductChooserEvent.DeleteProductSuccess -> {
@@ -159,6 +174,22 @@ class ProductSummaryBottomSheet @Inject constructor(
                         )
 
                         showLoading(false)
+                    }
+                    is PlayBroProductChooserEvent.FailPinUnPinProduct -> {
+                        if (event.isPinned) analytic.onImpressFailUnPinProductBottomSheet()
+                        else analytic.onImpressFailPinProductBottomSheet()
+
+                        if(event.throwable is PinnedProductException){
+                            analytic.onImpressColdDownPinProductSecondEvent(false)
+                            toaster.showToaster(
+                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
+                                type = Toaster.TYPE_ERROR
+                            )
+                        }else {
+                            toaster.showError(
+                                err = event.throwable
+                            )
+                        }
                     }
                 }
             }
@@ -198,6 +229,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "ProductSummaryBottomSheet"
+        private const val SCREEN_HEIGHT_DIVIDER = 0.85f
 
         fun getFragment(
             fragmentManager: FragmentManager,

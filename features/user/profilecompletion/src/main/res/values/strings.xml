@@ -12,31 +12,50 @@
     <string name="change_name_note">Pakai nama asli untuk memudahkan verifikasi. Nama ini akan tampil di beberapa halaman.</string>
     <string name="change_name_fullname">Nama</string>
     <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
-    <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
-    <string name="change_name_success_v2">Yay! Nama kamu berhasil diubah.</string>
     <string name="title_change_name">Ubah Nama</string>
 
     <!-- PROFILE COMPLETION -->
     <string name="title_profile_completion">Lengkapi Profil</string>
-    <string name="user_id_label">User ID: %1$s</string>
 
-    <!-- SETTING PROFILE -->
-    <string name="title_setting_profile">Data Diri</string>
+    <!-- PROFILE INFO -->
     <string name="title_profile_info">Ubah Profil</string>
-    <string name="add_setting_profile">Tambah</string>
-    <string name="change_setting_profile">Ubah</string>
-    <string name="subtitle_name_setting_profile">Nama</string>
-    <string name="subtitle_bod_setting_profile">Pilih Tanggal Lahir</string>
-    <string name="subtitle_gender_setting_profile">Jenis Kelamin</string>
-    <string name="subtitle_email_setting_profile">Email</string>
-    <string name="subtitle_phone_setting_profile">Nomor HP</string>
-    <string name="hint_bod_setting_profile">Pilih Tanggal</string>
-    <string name="hint_gender_setting_profile">Pilih Jenis Kelamin</string>
-    <string name="hint_email_setting_profile">Masukkan Email</string>
-    <string name="hint_phone_setting_profile">Masukkan Nomor HP</string>
-    <string name="message_email_setting_profile">Jaga akun kamu tetap aman dengan menambahkan email</string>
-    <string name="message_phone_setting_profile">Jaga akun kamu tetap aman dengan menambahkan nomor HP</string>
-    <string name="label_cancel">Batal</string>
+    <string name="profile_info_label_cancel">Batal</string>
+    <string name="profile_info_success_change_profile_picture">Foto profil berhasil diubah!</string>
+    <string name="profile_info_success_change_name">Yay! Nama kamu berhasil diubah.</string>
+    <string name="profile_info_success_add_bod">Yay! Tanggal lahirmu berhasil disimpan.</string>
+    <string name="profile_info_success_change_bod">Yay! Tanggal lahirmu berhasil diubah.</string>
+    <string name="profile_info_success_change_phone_number">Yay! Nomor HP kamu berhasil diubah.</string>
+    <string name="profile_info_success_add_email">Yay! E-mail kamu berhasil disimpan</string>
+    <string name="profile_info_success_add_phone">Yay! Nomor HP kamu berhasil diubah.</string>
+    <string name="profile_info_success_verify_phone">Yay! Nomor HP kamu berhasil diverifikasi.</string>
+    <string name="profile_info_success_add_gender">Yay! Jenis kelamin berhasil disimpan.</string>
+    <string name="profile_info_success_change_email_change">Yay! E-mail kamu berhasil diubah.</string>
+    <string name="profile_info_title">Info Profil</string>
+    <string name="profile_info_title_item_name">Nama</string>
+    <string name="profile_info_title_username">Username</string>
+    <string name="profile_info_placeholder_username">Buat username yang unik</string>
+    <string name="profile_info_title_bio">Bio</string>
+    <string name="profile_info_placeholder_bio">Tulis bio tentangmu</string>
+    <string name="profile_info_title_personal_info">Info Pribadi</string>
+    <string name="profile_info_title_user_id">User ID</string>
+    <string name="profile_info_title_email">E-mail</string>
+    <string name="profile_info_placeholder_email">Tambah E-mail</string>
+    <string name="profile_info_title_phone">Nomor HP</string>
+    <string name="profile_info_placeholder_phone">Tambah Nomor HP</string>
+    <string name="profile_info_title_gender">Jenis Kelamin</string>
+    <string name="profile_info_placeholder_gender">Pilih Jenis Kelamin</string>
+    <string name="profile_info_title_dob">Tanggal Lahir</string>
+    <string name="profile_info_placeholder_dob">Pilih Tanggal Lahir</string>
+    <string name="profile_info_failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
+    <string name="profile_info_success_copy_userid">User ID berhasil disalin!</string>
+    <string name="profile_info_add_and_verify_phone">Tambah nomor HP dulu, yuk!</string>
+    <string name="profile_info_add_and_verify_phone_detail">Proses verifikasi buat akses akun jadi lebih gampang kalau ada nomor HP. Keamanan akunmu makin terjamin, deh!</string>
+    <string name="profile_info_title_add_phone">Tambah Nomor HP</string>
+    <string name="profile_info_change_email_and_unverified_phone">Verifikasi nomor HP dulu, yuk!</string>
+    <string name="profile_info_description_verify_phone">Biar akunmu tetap aman, kamu harus verifikasi nomor HP sebelum ubah e-mail.</string>
+    <string name="profile_info_title_add_bod">Tambah Tanggal Lahir</string>
+    <string name="profile_info_title_change_bod">Ubah Tanggal Lahir</string>
+    <string name="profile_info_title_verify_phone">Verifikasi Nomor HP</string>
 
     <!-- CHANGE GENDER -->
     <string name="title_change_gender">Jenis Kelamin</string>
@@ -53,8 +72,6 @@
     <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
-    <string name="success_add_gender">Jenis kelamin berhasil ditambah</string>
-    <string name="success_add_gender_v2">Yay! Jenis kelamin berhasil disimpan.</string>
 
     <!-- ADD EMAIL -->
     <string name="title_add_email">Tambah Email</string>
@@ -63,51 +80,36 @@
     <string name="we_will_send_email_verification_code">Kami akan mengirimkan kode verifikasi melalui email</string>
     <string name="error_field_required">Harus diisi</string>
     <string name="wrong_email_format">Pastikan format e-mail kamu sudah benar.</string>
-    <string name="success_add_email">Email berhasil ditambah</string>
-    <string name="success_add_email_v2">Yay! E-mail kamu berhasil disimpan</string>
-    <string name="change_email_change_success">Email berhasil diubah</string>
-    <string name="change_email_change_success_v2">Yay! E-mail kamu berhasil diubah.</string>
-    <string name="add_and_verify_phone">Tambah nomor HP dulu, yuk!</string>
-    <string name="change_email_and_unverified_phone">Verifikasi nomor HP dulu, yuk!</string>
-    <string name="description_verify_phone">Biar akunmu tetap aman, kamu harus verifikasi nomor HP sebelum ubah e-mail.</string>
-    <string name="add_and_verify_phone_detail">Proses verifikasi buat akses akun jadi lebih gampang kalau ada nomor HP. Keamanan akunmu makin terjamin, deh!</string>
-  
-  <!-- ADD PHONE -->
-    <string name="title_add_phone">Tambah Nomor HP</string>
-    <string name="title_verify_phone">Verifikasi Nomor HP</string>
-    <string name="warning_add_phone">Biar akunmu aman, pastikan nomor HP-mu aktif.</string>
-    <string name="title_phone">Nomor HP</string>
-    <string name="sample_phone">Contoh: 08xxxxxxxxxx</string>
-    <string name="wrong_phone_format">Format nomor HP salah</string>
-    <string name="success_add_phone">Nomor telepon berhasil ditambah</string>
-    <string name="success_add_phone_v2">Yay! Nomor HP kamu berhasil diubah.</string>
-    <string name="button_next">Selanjutnya</string>
-    <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
 
-    <!-- CHANGE PHONE -->
-    <string name="success_change_phone_number">Nomor telepon berhasil diubah</string>
-    <string name="success_change_phone_number_v2">Yay! Nomor HP kamu berhasil diubah.</string>
+    <!-- ADD PHONE -->
+    <string name="add_phone_title_add_phone">Tambah Nomor HP</string>
+    <string name="add_phone_warning_add_phone">Biar akunmu aman, pastikan nomor HP-mu aktif.</string>
+    <string name="add_phone_title_phone">Nomor HP</string>
+    <string name="add_phone_sample_phone">Contoh: 08xxxxxxxxxx</string>
+    <string name="add_phone_wrong_phone_format">Format nomor HP salah</string>
+    <string name="add_phone_button_next">Selanjutnya</string>
+    <string name="add_phone_success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
+    <string name="add_phone_subtitle_phone_setting_profile">Nomor HP</string>
+
+    <!-- NEW ADD PHONE-->
+    <string name="new_add_phone_title">Tambah nomor HP biar akunmu makin aman, yuk!</string>
+    <string name="new_add_phone_subtitle">Akunmu akan jadi lebih aman karena dilindungi kata sandi dan nomor HP.</string>
+    <string name="new_add_phone_label_filed">Nomor HP</string>
+    <string name="new_add_phone_label_button">Tambah Nomor HP</string>
+    <string name="new_add_phone_must_be_filled">Wajib diisi.</string>
+    <string name="new_add_phone_min_length_error">Min. 9 digit.</string>
+    <string name="new_add_phone_max_length_error">Maks. 15 angka</string>
 
     <!-- CHANGE PIN -->
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
 
-    <!-- CHANGE EMAIL -->
-
-    <!-- UPLOAD AVATAR -->
-    <string name="failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
-    <string name="success_change_profile_picture">Foto profil berhasil diubah!</string>
-    <string name="ticker_phone_verification">Jaga akun kamu tetap aman dengan &lt;font color=\'#42b549\'&gt;&lt;a href=\'tokopedia-android-internal://global/setting-profile-phone-verification\'&gt;Verifikasi Nomor HP&lt;/a&gt;&lt;/font&gt;.</string>
-
     <!-- ADD BOD -->
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
-    <string name="title_change_bod">Ubah Tanggal Lahir</string>
     <string name="page_description">Pastikan tanggal lahirmu diisi dengan benar, ya.</string>
-    <string name="success_add_bod">Tanggal lahir berhasil ditambah</string>
-    <string name="success_change_bod">Tanggal lahir berhasil diubah</string>
-    <string name="success_add_bod_v2">Yay! Tanggal lahirmu berhasil disimpan.</string>
-    <string name="success_change_bod_v2">Yay! Tanggal lahirmu berhasil diubah.</string>
     <string name="failed_add_bod">Tanggal lahir gagal ditambah</string>
     <string name="failed_change_bod">Tanggal lahir gagal diubah</string>
+    <string name="subtitle_bod_setting_profile">Pilih Tanggal Lahir</string>
+    <string name="hint_bod_setting_profile">Pilih Tanggal</string>
 
     <!--ADD PIN-->
     <string name="create_pin">Buat PIN Tokopedia</string>
@@ -157,40 +159,25 @@
     <string name="key_error_biography">Biography</string>
     <string name="body_personal_info">Tenang, informasi ini rahasia. Hanya kamu yang dapat melihatnya dan tidak dibagiin ke siapa pun.</string>
     <string name="body_profile_info">Informasi ini publik dan bisa dilihat oleh pengguna lain di Halaman Profil.</string>
-    <string name="title_personal_info">Info Pribadi</string>
     <string name="title_bottomsheet_profile_info">Info profil</string>
     <string name="see_page">Lihat Halaman</string>
     <string name="change_username_success">Username berhasil diubah</string>
     <string name="change_biography_success">Bio berhasil diubah</string>
     <string name="btn_ok">Oke</string>
-    <string name="placeholder_dob">Pilih Tanggal Lahir</string>
-    <string name="placeholder_gender">Pilih Jenis Kelamin</string>
-    <string name="placeholder_email">Tambah E-mail</string>
-    <string name="placeholder_phone">Tambah Nomor HP</string>
-    <string name="placeholder_username">Buat username yang unik</string>
-    <string name="title_username">Username</string>
-    <string name="title_bio">Bio</string>
-    <string name="placeholder_bio">Tulis bio tentangmu</string>
-    <string name="profile_info_title">Info Profil</string>
-    <string name="title_item_name">Nama</string>
     <string name="key_error_username">Username</string>
     <string name="error_min_char">Minimum %1$d karakter.</string>
-    <string name="success_edit_profile_info">Info profil berhasil diubah.</string>
     <string name="success_edit_username">Yay! Username kamu berhasil diubah.</string>
     <string name="success_add_username">"Yay! Username berhasil ditambah.</string>
     <string name="success_edit_bio">Yay! Bio kamu berhasil diubah.</string>
-    <string name="success_add_bio">"Yay! Bio berhasil ditambah.</string>    <string name="error_cant_empty">Wajib diisi.</string>
-    <string name="title_gender">Jenis Kelamin</string>
-    <string name="title_user_id">User ID</string>
-    <string name="success_copy_userid">User ID berhasil disalin!</string>
+    <string name="success_add_bio">"Yay! Bio berhasil ditambah.</string>
+    <string name="error_cant_empty">Wajib diisi.</string>
     <string name="title_toolbar_edit_username">Ubah Username</string>
     <string name="title_toolbar_add_username">Tambah Username</string>
     <string name="title_toolbar_edit_bio">Ubah Bio</string>
     <string name="title_toolbar_add_bio">Tambah Bio</string>
     <string name="no_verified">Belum Diverifikasi</string>
-    <string name="success_verify_phone">Yay! Nomor HP kamu berhasil diverifikasi.</string>
 
-    <!--CLOSE ACCOUNT-->
+    <!--[Inside Profile Info] CLOSE ACCOUNT-->
     <string name="close_account">Tutup Akun</string>
     <string name="close_account_title">Kamu belum memenuhi syarat untuk tutup akun 🙏🏼</string>
     <string name="close_account_sub_title">Syarat tutup akun:</string>
@@ -204,3 +191,4 @@
     <string name="close_account_oke">Oke</string>
     <string name="close_account_failed">Yaah, lagi ada gangguan. Tunggu sebentar &amp; coba lagi, ya.</string>
 </resources>
+

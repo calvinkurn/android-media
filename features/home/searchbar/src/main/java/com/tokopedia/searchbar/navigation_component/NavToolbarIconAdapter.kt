@@ -144,6 +144,16 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
+    fun getShareIconPosition(): Int? {
+        val model = iconConfig.iconList.find { it.id == IconList.ID_SHARE }
+        model?.let { return iconConfig.iconList.indexOf(model) }
+        return null
+    }
+    fun getNoteBookPosition(): Int? {
+        val model = iconConfig.iconList.find { it.id == IconList.ID_NOTEBOOK }
+        model?.let { return iconConfig.iconList.indexOf(model) }
+        return null
+    }
 }
 
 internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -171,14 +181,14 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             unwrappedDrawable?.let {
                 val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
                 if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                    if (iconToolbar.imageRes != IconList.ID_INBOX) {
+                    if (iconToolbar.imageRes != IconList.ID_INBOX && iconToolbar.imageRes != IconList.ID_SHARE_AB_TEST) {
                         DrawableCompat.setTint(wrappedDrawable, getDarkIconColor())
                     } else {
                         val unifyColor = getDarkIconColor()
                         unwrappedDrawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
                     }
                 } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                    if (iconToolbar.imageRes != IconList.ID_INBOX) {
+                    if (iconToolbar.imageRes != IconList.ID_INBOX && iconToolbar.imageRes != IconList.ID_SHARE_AB_TEST) {
                         DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, getLightIconColor()))
                     } else {
                         val unifyColor = getLightIconColor()
@@ -346,7 +356,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             val drawable = getIconUnifyDrawable(
                     context = context,
                     iconId = iconToolbar.id,
-                    assetColor = ContextCompat.getColor(context, R.color.Unify_N0)
+                    assetColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             )
             iconImage.imageDrawable = drawable
         } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {

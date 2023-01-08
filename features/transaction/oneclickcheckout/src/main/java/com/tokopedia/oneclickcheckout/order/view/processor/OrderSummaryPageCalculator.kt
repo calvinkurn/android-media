@@ -221,11 +221,17 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val (cost, _) = calculateOrderCostWithoutPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel, orderPayment)
             var subtotal = cost.totalPrice
             var payment = orderPayment
+            val totalPaymentFee = payment.getTotalPaymentFee()
             if (!orderPayment.creditCard.isAfpb) {
-                payment = calculateInstallmentDetails(payment, cost.totalPriceWithoutDiscountsAndPaymentFees, if (orderCart.shop.isOfficial == 1) cost.totalPriceWithoutPaymentFees else 0.0, cost.totalDiscounts)
+                val subTotalWithPaymentFees = cost.totalPriceWithoutDiscountsAndPaymentFees + totalPaymentFee
+                val subsidizeWithPaymentFees = if (orderCart.shop.isOfficial == 1) cost.totalPriceWithoutPaymentFees + totalPaymentFee else 0.0
+                payment = calculateInstallmentDetails(payment, subTotalWithPaymentFees, subsidizeWithPaymentFees, cost.totalDiscounts)
             }
             val fee = payment.getRealFee()
             subtotal += fee
+            if (payment.isInstallment()) {
+                subtotal += totalPaymentFee
+            }
             var installmentData: OrderCostInstallmentData? = null
             val selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
             if (orderPayment.walletData.isGoCicil && selectedTerm != null && orderPayment.walletData.goCicilData.hasValidTerm &&
@@ -258,6 +264,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     totalItemPriceAndShippingFee = cost.totalItemPriceAndShippingFee,
                     totalAdditionalFee = cost.totalAdditionalFee,
                     totalDiscounts = cost.totalDiscounts,
+                    orderPaymentFees = payment.paymentFees,
+                    isInstallment = payment.isInstallment()
             )
             return@withContext orderCost to payment
         }
@@ -294,7 +302,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     }
                     if (product.wholesalePriceList.isNotEmpty()) {
                         var finalPrice = product.productPrice
-                        product.wholesalePrice = 0
+                        product.wholesalePrice = 0.0
                         for (price in product.wholesalePriceList) {
                             if (itemQty >= price.qtyMin) {
                                 finalPrice = price.prdPrc
@@ -306,14 +314,14 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             updatedProductIndex.add(productIndex)
                         }
                         if (!mapParentWholesalePrice.containsKey(product.parentId)) {
-                            val totalPrice = itemQty * product.finalPrice.toDouble()
+                            val totalPrice = itemQty * product.finalPrice
                             totalProductWholesalePrice += totalPrice
                             mapParentWholesalePrice[product.parentId] = totalPrice
                         }
                     } else {
-                        product.wholesalePrice = 0
+                        product.wholesalePrice = 0.0
                         product.finalPrice = product.productPrice
-                        totalProductPrice += itemQty * product.finalPrice.toDouble()
+                        totalProductPrice += itemQty * product.finalPrice
                     }
                     var purchaseProtectionPriceMultiplier = product.orderQuantity
                     if (product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {

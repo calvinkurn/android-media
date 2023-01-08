@@ -1,6 +1,7 @@
 package com.tokopedia.home.analytics.v2
 
 import android.os.Bundle
+import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DEFAULT_BANNER_ID
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -22,6 +23,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val TRACKER_ID_IMPRESSION = "32076"
             const val DEFAULT_VALUE = ""
             const val DEFAULT_PRICE = "0"
+            const val DEFAULT_BANNER_ID = "0"
             const val ITEM_ID_FORMAT = "%s_%s_%s_%s"
             const val DYNAMIC_CHANNEL_MISSION_WIDGET = "dynamic channel mission widget"
             const val BANNER = "banner"
@@ -42,14 +44,14 @@ object MissionWidgetTracking : BaseTrackerConst() {
         bundle.putString(
             Label.KEY,
             CustomAction.EVENT_LABEL_FORMAT.format(
-                element.channel.id,
-                element.channel.channelHeader.name
+                element.id,
+                element.title
             )
         )
         bundle.putString(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_CLICKED)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CampaignCode.KEY, element.channel.trackingAttributionModel.campaignCode)
-        bundle.putString(Label.CHANNEL_LABEL, element.channel.id)
+        bundle.putString(Label.CHANNEL_LABEL, element.id.toString())
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(UserId.KEY, userId)
         val promotion = Bundle()
@@ -58,8 +60,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
         promotion.putString(
             Promotion.ITEM_ID,
             CustomAction.ITEM_ID_FORMAT.format(
-                element.channel.id,
                 element.id,
+                DEFAULT_BANNER_ID,
                 element.channel.trackingAttributionModel.persoType,
                 element.channel.trackingAttributionModel.categoryId
             )
@@ -70,11 +72,11 @@ object MissionWidgetTracking : BaseTrackerConst() {
                 element.verticalPosition,
                 CustomAction.DYNAMIC_CHANNEL_MISSION_WIDGET,
                 CustomAction.BANNER,
-                element.channel.channelHeader.name
+                element.title
             )
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Ecommerce.PROMO_CLICK, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(com.tokopedia.analytic_constant.Event.SELECT_CONTENT, bundle)
     }
 
     fun getMissionWidgetView(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String) : Map<String, Any> {
@@ -82,8 +84,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
         val creativeName = CustomAction.DEFAULT_VALUE
         val creativeSlot = (horizontalPosition + 1).toString()
         val itemId = CustomAction.ITEM_ID_FORMAT.format(
-            element.channel.id,
             element.id,
+            DEFAULT_BANNER_ID,
             element.channel.trackingAttributionModel.persoType,
             element.channel.trackingAttributionModel.categoryId
         )
@@ -91,7 +93,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             element.verticalPosition,
             CustomAction.DYNAMIC_CHANNEL_MISSION_WIDGET,
             CustomAction.BANNER,
-            element.channel.channelHeader.name
+            element.title
         )
         val listPromotions = arrayListOf(
             Promotion(
@@ -123,8 +125,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
         bundle.putString(
             Label.KEY,
             CustomAction.EVENT_LABEL_FORMAT.format(
-                element.channel.id,
-                element.channel.channelHeader.name
+                element.id,
+                element.title
             )
         )
         bundle.putString(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_CLICKED_PDP)
@@ -150,8 +152,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
             element.recommendationType,
             element.pageName,
             element.buType,
-            element.channel.channelHeader.name
+            element.title
         ))
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Ecommerce.PRODUCT_CLICK, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(com.tokopedia.analytic_constant.Event.SELECT_CONTENT, bundle)
     }
 }

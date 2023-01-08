@@ -1,10 +1,14 @@
 package com.tokopedia.autocompletecomponent.searchbar
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.speech.RecognizerIntent
@@ -23,6 +27,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.AutocompleteSearchBarViewBinding
@@ -33,6 +39,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import rx.Observable
 import rx.Subscriber
@@ -41,7 +48,10 @@ import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 
-class SearchBarView constructor(private val mContext: Context, attrs: AttributeSet) : ConstraintLayout(mContext, attrs) {
+class SearchBarView constructor(
+    private val mContext: Context,
+    attrs: AttributeSet,
+) : ConstraintLayout(mContext, attrs) {
 
     companion object {
         const val REQUEST_VOICE = 9999
@@ -72,6 +82,9 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private var isTyping = false
     private var binding: AutocompleteSearchBarViewBinding? = null
 
+    private var isMPSEnabled: Boolean = false
+    private var isMPSAnimationEnabled: Boolean = false
+
     private val searchNavigationOnClickListener = OnClickListener { v ->
         val binding = binding ?: return@OnClickListener
         when {
@@ -83,6 +96,10 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
                 onVoiceClicked()
             }
             v === binding.autocompleteClearButton -> {
+                binding.searchTextView.text?.clear()
+            }
+            v === binding.autocompleteAddButton -> {
+                // TODO(*): handle the add new keyword
                 binding.searchTextView.text?.clear()
             }
         }
@@ -98,7 +115,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     init {
 
-        initiateView()
+        initiateView(attrs)
 
         initCompositeSubscriber()
 
@@ -114,7 +131,8 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         }
     }
 
-    private fun initiateView() {
+    private fun initiateView(attrs: AttributeSet) {
+        initAttribute(attrs)
         val view = LayoutInflater.from(mContext).inflate(R.layout.autocomplete_search_bar_view, this, true)
         binding = AutocompleteSearchBarViewBinding.bind(view)
 
@@ -128,6 +146,21 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         showVoiceButton(true)
 
         initSearchView()
+    }
+
+    private fun initAttribute(attrs: AttributeSet) {
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.SearchBarView,
+            0, 0
+        ).apply {
+            try {
+                isMPSEnabled = getBoolean(R.styleable.SearchBarView_enable_mps, false)
+                isMPSAnimationEnabled = getBoolean(R.styleable.SearchBarView_enable_mps_animation, false)
+            } finally {
+                recycle()
+            }
+        }
     }
 
     private fun configureSearchNavigationLayout() {
@@ -145,6 +178,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         binding.autocompleteVoiceButton.visibility = View.VISIBLE
         binding.autocompleteClearButton.visibility = View.VISIBLE
         binding.autocompleteSearchIcon.visibility = View.VISIBLE
+        if(isMPSEnabled) binding.autocompleteAddButtonGroup.visibility = View.VISIBLE
     }
 
     private fun configureSearchNavigationSearchTextView() {
@@ -163,6 +197,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         binding.autocompleteActionUpButton.setOnClickListener(searchNavigationOnClickListener)
         binding.autocompleteVoiceButton.setOnClickListener(searchNavigationOnClickListener)
         binding.autocompleteClearButton.setOnClickListener(searchNavigationOnClickListener)
+        if(isMPSEnabled) binding.autocompleteAddButton.setOnClickListener(searchNavigationOnClickListener)
     }
 
     private fun showVoiceButton(show: Boolean) {
@@ -296,15 +331,24 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun onTextChanged(newText: CharSequence?) {
-        val text = binding?.searchTextView?.text
+        val binding = binding ?: return
+        val text = binding.searchTextView.text
         mUserQuery = text
         val hasText = !TextUtils.isEmpty(text)
         if (hasText) {
-            binding?.autocompleteClearButton?.visibility = View.VISIBLE
+            binding.autocompleteClearButton.visibility = View.VISIBLE
+            if(isMPSEnabled) {
+                binding.autocompleteAddButtonGroup.visibility = View.VISIBLE
+                binding.autocompleteAddButton.startAnimationDrawable()
+            }
 
             showVoiceButton(false)
         } else {
-            binding?.autocompleteClearButton?.visibility = View.GONE
+            binding.autocompleteClearButton.visibility = View.GONE
+            if(isMPSEnabled) {
+                binding.autocompleteAddButtonGroup.visibility = View.GONE
+                binding.autocompleteAddButton.stopAnimationDrawable()
+            }
 
             showVoiceButton(true)
         }
@@ -314,6 +358,48 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         }
 
         mOldQueryText = newText.toString()
+    }
+
+    private fun ImageUnify.startAnimationDrawable() {
+        if(!isMPSAnimationEnabled) return
+        when(val drawable = drawable) {
+            is AnimatedVectorDrawable -> drawable.startLoopAnimation()
+            is AnimatedVectorDrawableCompat -> drawable.startLoopAnimation()
+        }
+    }
+
+    private fun ImageUnify.stopAnimationDrawable() {
+        when(val drawable = drawable) {
+            is AnimatedVectorDrawable -> drawable.stop()
+            is AnimatedVectorDrawableCompat -> drawable.stop()
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private fun AnimatedVectorDrawable.startLoopAnimation() {
+        registerAnimationCallback(object: Animatable2.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                start()
+            }
+        })
+        start()
+    }
+
+    private fun AnimatedVectorDrawableCompat.startLoopAnimation() {
+        registerAnimationCallback(object: Animatable2Compat.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                start()
+            }
+        })
+        start()
+    }
+
+    fun setMPSEnabled(isMPSEnabled: Boolean) {
+        this.isMPSEnabled = isMPSEnabled
+    }
+
+    fun setMPSAnimationEnabled(isMPSAnimationEnabled: Boolean) {
+        this.isMPSAnimationEnabled = isMPSAnimationEnabled
     }
 
     fun setActivity(activity: AppCompatActivity) {

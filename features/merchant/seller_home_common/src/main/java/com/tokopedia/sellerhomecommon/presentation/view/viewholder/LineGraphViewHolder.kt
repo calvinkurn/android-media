@@ -8,16 +8,31 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
-import com.tokopedia.charts.model.*
+import com.tokopedia.charts.model.AxisLabel
+import com.tokopedia.charts.model.LineChartConfigModel
+import com.tokopedia.charts.model.LineChartData
+import com.tokopedia.charts.model.LineChartEntry
+import com.tokopedia.charts.model.LineChartEntryConfigModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcLineGraphWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
-import com.tokopedia.sellerhomecommon.utils.*
+import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
+import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -41,7 +56,6 @@ class LineGraphViewHolder(
 
     private val binding by lazy { ShcLineGraphWidgetBinding.bind(itemView) }
     private val emptyStateBinding by lazy { binding.shcLineGraphEmptyState }
-    private val errorStateBinding by lazy { binding.shcLineGraphErrorState }
     private val loadingStateBinding by lazy { binding.shcLineGraphLoadingState }
 
     private var showAnimation: ValueAnimator? = null
@@ -86,12 +100,12 @@ class LineGraphViewHolder(
             data.error.isNotBlank() -> {
                 onStateLoading(false)
                 showViewComponent(false, element)
-                onStateError(true)
+                onStateError(element, true)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> {
                 onStateLoading(false)
-                onStateError(false)
+                onStateError(element, false)
                 showViewComponent(true, element)
             }
         }
@@ -99,7 +113,7 @@ class LineGraphViewHolder(
 
     private fun showLoadingState(element: LineGraphWidgetUiModel) {
         showViewComponent(false, element)
-        onStateError(false)
+        onStateError(element, false)
         onStateLoading(true)
     }
 
@@ -118,16 +132,20 @@ class LineGraphViewHolder(
     }
 
     private fun onStateLoading(isShown: Boolean) {
-        loadingStateBinding.shimmerWidgetCommon
-            .visibility = if (isShown) View.VISIBLE else View.GONE
+        loadingStateBinding.shimmerWidgetCommon.isVisible = isShown
+        if (isShown) {
+            emptyStateBinding.root.gone()
+        }
     }
 
-    private fun onStateError(isShown: Boolean) = with(itemView) {
-        errorStateBinding.imgWidgetOnError.loadImage(
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
-        errorStateBinding.commonWidgetErrorState
-            .visibility = if (isShown) View.VISIBLE else View.GONE
+    private fun onStateError(element: LineGraphWidgetUiModel, isShown: Boolean) {
+        binding.shcLineGraphErrorState.isVisible = isShown
+        if (isShown) {
+            binding.shcLineGraphErrorState.setOnReloadClicked {
+                listener.onReloadWidget(element)
+            }
+            emptyStateBinding.root.gone()
+        }
     }
 
     private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) {
@@ -247,6 +265,7 @@ class LineGraphViewHolder(
 
     private fun showEmptyState(element: LineGraphWidgetUiModel) {
         with(element.emptyState) {
+            emptyStateBinding.root.visible()
             emptyStateBinding.tvLineGraphEmptyStateTitle.text = title
             emptyStateBinding.tvLineGraphEmptyStateDescription.text = description
             emptyStateBinding.tvShcMultiLineEmptyStateCta.text = ctaText
@@ -349,18 +368,18 @@ class LineGraphViewHolder(
         if (showAnimation?.isRunning == true) showAnimation?.end()
         hideAnimation = emptyStateBinding.multiLineEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 emptyStateBinding.multiLineEmptyState.gone()
                 hideAnimation?.removeListener(this)
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 hideAnimation?.removeListener(this)
             }
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 

@@ -31,7 +31,9 @@
           "index": ".*",
           "attribution": "none / other",
           "dimension40": "/search - broad match - .*",
-          "dimension90": ".*"
+          "dimension90": ".*",
+          "dimension115": ".*",
+          "dimension131": ".*"
         }
       ]
     },
@@ -55,7 +57,9 @@
           "item_variant": "none / other",
           "item_category": "none / other",
           "dimension40": "/search - broad match - .*",
-          "dimension90": ".*"
+          "dimension90": ".*",
+          "dimension115": ".*",
+          "dimension131": ".*"
         }
       ]
     }

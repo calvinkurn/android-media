@@ -4,30 +4,33 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.domain.GetConsentCollectionUseCase
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.SubmitConsentUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class UserConsentViewModel @Inject constructor(
     private val getUserConsentCollection: GetConsentCollectionUseCase,
+    private val submitConsentUseCase: SubmitConsentUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _consentCollection = SingleLiveEvent<UserConsentStateResult<UserConsentCollectionDataModel>>()
-    val consentCollection: LiveData<UserConsentStateResult<UserConsentCollectionDataModel>>
+    private val _consentCollection = SingleLiveEvent<UserComponentsStateResult<UserConsentCollectionDataModel>>()
+    val consentCollection: LiveData<UserComponentsStateResult<UserConsentCollectionDataModel>>
         get() = _consentCollection
 
     fun getConsentCollection(consentCollectionParam: ConsentCollectionParam) {
         launchCatchError(coroutineContext, {
-            _consentCollection.value = UserConsentStateResult.Loading()
+            _consentCollection.value = UserComponentsStateResult.Loading()
 
             val response = getUserConsentCollection(consentCollectionParam)
 
-            if (response.data.success && response.data.collectionPoints.isNotEmpty()) {
-                _consentCollection.value = UserConsentStateResult.Success(response.data)
+            _consentCollection.value = if (response.data.collectionPoints.isNotEmpty()) {
+                UserComponentsStateResult.Success(response.data)
             } else {
                 val message = if (response.data.errorMessages.isNotEmpty()) {
                     response.data.errorMessages.first()
@@ -35,11 +38,17 @@ class UserConsentViewModel @Inject constructor(
                     GENERAL_ERROR
                 }
 
-                _consentCollection.value = UserConsentStateResult.Fail(Throwable(message))
+                UserComponentsStateResult.Fail(Throwable(message))
             }
         }, {
-            _consentCollection.value = UserConsentStateResult.Fail(it)
+            _consentCollection.value = UserComponentsStateResult.Fail(it)
         })
+    }
+
+    fun submitConsent(param: ConsentSubmissionParam) {
+        launchCatchError(block =  {
+            submitConsentUseCase(param)
+        }, onError = {})
     }
 
     companion object {

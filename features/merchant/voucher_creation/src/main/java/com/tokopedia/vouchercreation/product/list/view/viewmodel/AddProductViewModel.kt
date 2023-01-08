@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,8 +18,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.list.domain.model.request.GoodsSortInput
 import com.tokopedia.vouchercreation.product.list.domain.model.response.*
-import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductListMetaResponse.Category
-import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductListMetaResponse.Sort
+import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductListMetaResponse.*
 import com.tokopedia.vouchercreation.product.list.domain.usecase.*
 import com.tokopedia.vouchercreation.product.list.view.model.*
 import kotlinx.coroutines.withContext
@@ -46,10 +46,14 @@ class AddProductViewModel @Inject constructor(
         const val COUPON_TYPE_CASHBACK = "cashback"
         const val COUPON_TYPE_SHIPPING = "shipping"
         const val SORT_DEFAULT = "DEFAULT"
+        const val ACTIVE = "ACTIVE"
         private const val PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY = 1
     }
 
     private var productUiModels: List<ProductUiModel> = listOf()
+
+    var productCounter: Int = 0
+    var totalActiveProductCount: Int = 0
 
     // VOUCHER VALIDATION PROPERTIES
     private var maxProductLimit = 0
@@ -537,5 +541,15 @@ class AddProductViewModel @Inject constructor(
 
     fun isLocationSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
         return origin != warehouseSelection
+    }
+
+    fun getTotalActiveProductCount(tabs: List<Tab>): Int {
+        return tabs.firstOrNull { tab ->
+            tab.id == ACTIVE
+        }?.value.orZero()
+    }
+
+    fun isLoadMoreAvailable(productListSize: Int, totalActiveProductCount: Int): Boolean {
+        return productListSize < totalActiveProductCount
     }
 }

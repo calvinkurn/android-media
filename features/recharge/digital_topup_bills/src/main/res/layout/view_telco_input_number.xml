@@ -28,7 +28,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:unify_text_field_clearable="true"
             app:unify_text_field_input_type="phone"
-            app:unify_text_field_label="@string/digital_client_label"
+            app:unify_text_field_label="@string/digital_client_label_telco"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

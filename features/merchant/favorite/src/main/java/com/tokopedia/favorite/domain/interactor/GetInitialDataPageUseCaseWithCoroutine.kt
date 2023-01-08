@@ -5,20 +5,19 @@ import com.tokopedia.favorite.domain.model.DataFavorite
 import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.TopAdsShop
 import com.tokopedia.topads.sdk.utils.CacheHandler
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
-import rx.Observable
 import java.util.*
 
 class GetInitialDataPageUseCaseWithCoroutine constructor(
         context: Context,
         private val getFavoriteShopUsecase: GetFavoriteShopUseCaseWithCoroutine,
-        private val getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine
+        private val getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine,
+        private val topAdsAddressHelper: TopAdsAddressHelper
 ): UseCase<DataFavorite>() {
 
     private val cacheHandler: CacheHandler = CacheHandler(context, CacheHandler.TOP_ADS_CACHE)
@@ -54,7 +53,7 @@ class GetInitialDataPageUseCaseWithCoroutine constructor(
     }
 
     private suspend fun getTopAdsShop(): TopAdsShop {
-        val requestParams = GetTopAdsShopUseCase.defaultParams()
+        val requestParams = GetTopAdsShopUseCase.defaultParams(topAdsAddressHelper.getAddressData())
         requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false)
         requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, userSession.userId)
         val preferredCacheList = cacheHandler.getArrayListInteger(CacheHandler.KEY_PREFERRED_CATEGORY)

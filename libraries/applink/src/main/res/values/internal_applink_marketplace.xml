@@ -44,7 +44,6 @@
     <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*</string>
     <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
-    <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
     <string name="path_edit_review" translatable="false">/product-review/edit/.*\\/.*\\/</string>
     <string name="path_review_credibility" translatable="false">/review/credibility/.*\\/.*\\/</string>
@@ -112,6 +111,8 @@
     <string name="path_notification">/notification</string>
     <string name="path_notification_buyer_info" translatable="false">/notif-center</string>
     <string name="path_notification_buyer_info_id" translatable="false">/notif-center/.*\\/</string>
+
+    <string name="path_product_ar">/productar/.*\\/</string>
 
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
     <string name="path_user_attach_invoice" translatable="false">/user-attach-invoice</string>

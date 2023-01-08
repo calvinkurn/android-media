@@ -1,0 +1,19 @@
+{
+  "readme": "Universal Search Tracking",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickSearch",
+      "eventCategory": "search component",
+      "eventAction": "click",
+      "pageDestination": "tokopedia:\\/\\/.*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "pageSource": "none.none.global_search.none",
+      "eventLabel": "keyword:.* \\| value_id:.* \\| value_name:.*",
+      "component": ".*",
+      "campaignCode": "none"
+    }
+  ]
+}

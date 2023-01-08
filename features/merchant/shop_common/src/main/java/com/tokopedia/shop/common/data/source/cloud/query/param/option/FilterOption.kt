@@ -15,6 +15,9 @@ sealed class FilterOption(val id: String) {
         object FeaturedOnly: FilterByCondition(FEATURED_ONLY)
         object CampaignOnly: FilterByCondition(CAMPAIGN_ONLY)
         object StockAlertOnly: FilterByCondition(STOCK_ALERT_ONLY)
+        object NotifyMeOnly: FilterByCondition(NOTIFY_ME_ONLY)
+        object StockAvailableOnly: FilterByCondition(STOCK_AVAILABLE_ONLY)
+
     }
 
     data class FilterByMenu(val menuIds: List<String>): FilterOption(MENU)
@@ -40,5 +43,8 @@ sealed class FilterOption(val id: String) {
         private const val FEATURED_ONLY = "isFeaturedOnly"
         private const val CAMPAIGN_ONLY = "isCampaignOnly"
         private const val STOCK_ALERT_ONLY = "hasStockAlertOnly"
+        const val NOTIFY_ME_ONLY = "haveNotifyMeOOS"
+        private const val STOCK_AVAILABLE_ONLY = "isStockGuaranteed"
+
     }
 }

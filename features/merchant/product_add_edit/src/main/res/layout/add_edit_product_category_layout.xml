@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/add_product_category_header"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,28 +24,57 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_additional_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/label_additional_info"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_category_header"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_cta_information"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/lvu_product_category_rec"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lvu_product_category_rec"
+        app:srcCompat="@drawable/ic_aep_information" />
+
     <com.tokopedia.unifycomponents.list.ListUnify
         android:id="@+id/lvu_product_category_rec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/TextDarkMode"
         android:layout_marginStart="-16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="-16dp"
         android:choiceMode="singleChoice"
+        android:theme="@style/TextDarkMode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_category_header"/>
+        app:layout_constraintTop_toBottomOf="@id/tpg_additional_info" />
+
+    <com.tokopedia.unifycomponents.TipsUnify
+        android:id="@+id/tu_commission_info_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lvu_product_category_rec" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_category_picker_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/action_choose_other_category"
         android:textColor="@color/Unify_G500"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lvu_product_category_rec"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 

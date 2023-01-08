@@ -24,6 +24,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Pr
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,7 +46,8 @@ import kotlin.math.ceil
 class SharedReviewMediaGalleryViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val getDetailedReviewMediaUseCase: GetDetailedReviewMediaUseCase,
-    private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase
+    private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -509,5 +511,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun updateVideoDurationMillis(totalDuration: Long) {
         _videoDurationMillis.value = totalDuration
+    }
+
+    fun getUserID(): String {
+        return userSession.userId
     }
 }

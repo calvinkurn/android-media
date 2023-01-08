@@ -10,7 +10,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -18,6 +18,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -216,6 +217,24 @@ class EmoneyPdpViewModelTest {
     }
 
     @Test
+    fun setDigitalCheckoutPassData_shouldUpdateDigitalCheckoutPassData() {
+        //given
+        val categoryId = "34"
+        val productId = "1222"
+        val clientNumber = "1234566789"
+        //when
+        emoneyPdpViewModel.digitalCheckoutPassData = DigitalCheckoutPassData().apply {
+            this.clientNumber = clientNumber
+            this.productId = productId
+            this.categoryId = categoryId
+        }
+
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.clientNumber.equals(clientNumber))
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.productId.equals(productId))
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.categoryId.equals(categoryId))
+    }
+
+    @Test
     fun generateCheckoutPassData_withProductCatalogId_shouldGenerateAndUpdateCorrectPassData() {
         //given
         val copiedPromo = "QATOPED"
@@ -223,10 +242,11 @@ class EmoneyPdpViewModelTest {
         val productId = "1222"
         val operatorId = "14141414"
         val userId = "12345"
+        val categoryId = "34"
         coEvery { userSession.userId } coAnswers { userId }
 
         //when
-        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber, productId, operatorId)
+        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber, productId, operatorId, categoryId)
 
         //then
         assert(emoneyPdpViewModel.digitalCheckoutPassData.idemPotencyKey?.isNotEmpty() ?: false)
@@ -234,6 +254,7 @@ class EmoneyPdpViewModelTest {
         assert(emoneyPdpViewModel.digitalCheckoutPassData.clientNumber.equals(clientNumber))
         assert(emoneyPdpViewModel.digitalCheckoutPassData.productId.equals(productId))
         assert(emoneyPdpViewModel.digitalCheckoutPassData.operatorId.equals(operatorId))
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.categoryId.equals(categoryId))
         assert(emoneyPdpViewModel.digitalCheckoutPassData.isFromPDP)
     }
 
@@ -243,12 +264,13 @@ class EmoneyPdpViewModelTest {
         val copiedPromo = "QATOPED"
         val clientNumber = "1234566789"
         val userId = "12345"
+        val categoryId = "34"
         coEvery { userSession.userId } coAnswers { userId }
         getSelectedOperator_onInputNumberValid_shouldUpdateSelectedOperator()
         setSelectedProduct_shouldUpdateSelectedProduct()
 
         //when
-        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber)
+        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber, categoryIdFromPDP = categoryId)
 
         //then
         assert(emoneyPdpViewModel.digitalCheckoutPassData.idemPotencyKey?.isNotEmpty() ?: false)
@@ -256,6 +278,29 @@ class EmoneyPdpViewModelTest {
         assert(emoneyPdpViewModel.digitalCheckoutPassData.clientNumber.equals(clientNumber))
         assert(emoneyPdpViewModel.digitalCheckoutPassData.productId.equals("12344"))
         assert(emoneyPdpViewModel.digitalCheckoutPassData.operatorId.equals("2"))
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.categoryId.equals(categoryId))
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.isFromPDP)
+    }
+
+    @Test
+    fun generateCheckoutPassData_nullSelectProduct_shouldGenerateWrongPassData() {
+        //given
+        val copiedPromo = "QATOPED"
+        val clientNumber = "1234566789"
+        val userId = "12345"
+        val categoryId = "34"
+        coEvery { userSession.userId } coAnswers { userId }
+
+        //when
+        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber, categoryIdFromPDP = categoryId)
+
+        //then
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.idemPotencyKey?.isNotEmpty() ?: false)
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.voucherCodeCopied.equals(copiedPromo))
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.clientNumber.equals(clientNumber))
+        assertNull(emoneyPdpViewModel.digitalCheckoutPassData.productId)
+        assertNull(emoneyPdpViewModel.digitalCheckoutPassData.operatorId)
+        assert(emoneyPdpViewModel.digitalCheckoutPassData.categoryId.equals(categoryId))
         assert(emoneyPdpViewModel.digitalCheckoutPassData.isFromPDP)
     }
 

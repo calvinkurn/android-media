@@ -2,6 +2,7 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.parcelize.Parcelize
@@ -44,6 +45,7 @@ data class Product(
         var tradeInInfoData: TradeInInfoData = TradeInInfoData(),
         var isFreeShipping: Boolean = false,
         var isFreeShippingExtra: Boolean = false,
+        var freeShippingName: String = "",
         var isShowTicker: Boolean = false,
         var tickerMessage: String = "",
         var variant: String = "",
@@ -62,5 +64,6 @@ data class Product(
         var bundleOriginalPrice: Long = 0L,
         var bundleQuantity: Int = 0,
         var bundleIconUrl: String = "",
-        var addOnProduct: AddOnsDataModel = AddOnsDataModel()
+        var addOnProduct: AddOnsDataModel = AddOnsDataModel(),
+        var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel()
 ) : Parcelable

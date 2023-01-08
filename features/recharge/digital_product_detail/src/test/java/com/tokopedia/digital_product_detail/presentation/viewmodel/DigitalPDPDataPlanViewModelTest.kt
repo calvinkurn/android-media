@@ -1,25 +1,26 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
-import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
-import kotlinx.coroutines.CancellationException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Test
 import kotlinx.coroutines.Job
+import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() {
+class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture() {
 
     private val dataFactory = DataPlanDataFactory()
     private val mapperFactory = DigitalDenomMapper()
@@ -61,26 +62,29 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `when getting recommendation should run and give success result`() = testCoroutineRule.runBlockingTest {
-        val response = dataFactory.getRecommendationData()
-        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
-        onGetRecommendation_thenReturn(mappedResponse)
+    fun `when getting recommendation should run and give success result`() =
+        testCoroutineRule.runBlockingTest {
+            val response = dataFactory.getRecommendationData()
+            val mappedResponse =
+                mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+            onGetRecommendation_thenReturn(mappedResponse)
 
-        viewModel.getRecommendations(listOf(), listOf())
-        skipRecommendationDelay()
-        verifyGetRecommendationsRepoGetCalled()
-        verifyGetRecommendationSuccess(mappedResponse)
-    }
+            viewModel.getRecommendations(listOf(), listOf())
+            skipRecommendationDelay()
+            verifyGetRecommendationsRepoGetCalled()
+            verifyGetRecommendationSuccess(mappedResponse)
+        }
 
     @Test
-    fun `when getting recommendation should run and give fail result`() = testCoroutineRule.runBlockingTest {
-        onGetRecommendation_thenReturn(NullPointerException())
+    fun `when getting recommendation should run and give fail result`() =
+        testCoroutineRule.runBlockingTest {
+            onGetRecommendation_thenReturn(NullPointerException())
 
-        viewModel.getRecommendations(listOf(), listOf())
-        skipRecommendationDelay()
-        verifyGetRecommendationsRepoGetCalled()
-        verifyGetRecommendationFail()
-    }
+            viewModel.getRecommendations(listOf(), listOf())
+            skipRecommendationDelay()
+            verifyGetRecommendationsRepoGetCalled()
+            verifyGetRecommendationFail()
+        }
 
     @Test
     fun `given favoriteNumber loading state then should get loading state`() {
@@ -281,33 +285,35 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `when getting catalogInputMultitab should run and give success result and updated data filter`() = testCoroutineRule.runBlockingTest {
-        val response = dataFactory.getCatalogInputMultiTabData()
-        val isRefreshedFilter = true
-        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
-        val filterResponse = mappedResponse.filterTagComponents
-        onGetCatalogInputMultitab_thenReturn(mappedResponse)
+    fun `when getting catalogInputMultitab should run and give success result and updated data filter`() =
+        testCoroutineRule.runBlockingTest {
+            val response = dataFactory.getCatalogInputMultiTabData()
+            val isRefreshedFilter = true
+            val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+            val filterResponse = mappedResponse.filterTagComponents
+            onGetCatalogInputMultitab_thenReturn(mappedResponse)
 
-        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
-        skipMultitabDelay()
-        verifyGetProductInputMultiTabRepoGetCalled()
-        verifyGetCatalogInputMultitabSuccess(mappedResponse)
-        verifyGetFilterTagComponentSuccess(filterResponse)
-    }
+            viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+            skipMultitabDelay()
+            verifyGetProductInputMultiTabRepoGetCalled()
+            verifyGetCatalogInputMultitabSuccess(mappedResponse)
+            verifyGetFilterTagComponentSuccess(filterResponse)
+        }
 
     @Test
-    fun `when getting catalogInputMultitab should run and give success result and empty data filter`() = testCoroutineRule.runBlockingTest {
-        val response = dataFactory.getCatalogInputMultiTabData()
-        val isRefreshedFilter = false
-        val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
-        onGetCatalogInputMultitabisFiltered_thenReturn(mappedResponse)
+    fun `when getting catalogInputMultitab should run and give success result and empty data filter`() =
+        testCoroutineRule.runBlockingTest {
+            val response = dataFactory.getCatalogInputMultiTabData()
+            val isRefreshedFilter = false
+            val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
+            onGetCatalogInputMultitabisFiltered_thenReturn(mappedResponse)
 
-        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "", isRefreshedFilter)
-        skipMultitabDelay()
-        verifyGetProductInputMultiTabRepoIsRefreshedGetCalled()
-        verifyGetCatalogInputMultitabSuccess(mappedResponse)
-        verifyGetFilterTagComponentEmpty()
-    }
+            viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "", isRefreshedFilter)
+            skipMultitabDelay()
+            verifyGetProductInputMultiTabRepoIsRefreshedGetCalled()
+            verifyGetCatalogInputMultitabSuccess(mappedResponse)
+            verifyGetFilterTagComponentEmpty()
+        }
 
     @Test
     fun `given selectedFullProduct non-empty when onResetSelectedProduct should reset product`() {
@@ -434,9 +440,29 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
+    }
+
+    @Test
+    fun `when getting addToCart should run and return notNull error from gql`(){
+        val error = dataFactory.getErrorAtcFromGql()
+        onGetAddToCart_thenReturn(error)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", true)
+        verifyAddToCartRepoGetCalled()
+        verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
+    }
+
+    @Test
+    fun `when getting addToCart should run and return DigitalAtcErrorException when get Error atc`(){
+        val error = DigitalAtcErrorException(dataFactory.errorAtcResponse)
+        onGetAddToCart_thenReturn(error)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        verifyAddToCartRepoGetCalled()
+        verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
 
     @Test
@@ -446,7 +472,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -458,7 +484,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -468,7 +494,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         val errorMessageException = MessageErrorException()
         onGetAddToCart_thenReturn(errorMessageException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }
@@ -490,15 +516,16 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `when getting catalogInputMultitab should run and give error result`() = testCoroutineRule.runBlockingTest {
-        val errorResponse = MessageErrorException("")
-        onGetCatalogInputMultitab_thenReturn(errorResponse)
+    fun `when getting catalogInputMultitab should run and give error result`() =
+        testCoroutineRule.runBlockingTest {
+            val errorResponse = MessageErrorException("")
+            onGetCatalogInputMultitab_thenReturn(errorResponse)
 
-        viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
-        skipMultitabDelay()
-        verifyGetProductInputMultiTabRepoGetCalled()
-        verifyGetCatalogInputMultitabError(errorResponse)
-    }
+            viewModel.getRechargeCatalogInputMultiTab(MENU_ID, "", "")
+            skipMultitabDelay()
+            verifyGetProductInputMultiTabRepoGetCalled()
+            verifyGetCatalogInputMultitabError(errorResponse)
+        }
 
     @Test
     fun `given CancellationException to catalogInputMultitab and should return empty result`() {
@@ -528,7 +555,8 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     @Test
     fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
         val response = dataFactory.getRecommendationData()
-        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        val mappedResponse =
+            mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
         viewModel.getRecommendations(listOf(), listOf())
@@ -551,8 +579,9 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `given filterData with some isSelected and should updated filterDataParams` () {
-        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+    fun `given filterData with some isSelected and should updated filterDataParams`() {
+        val initialFilter =
+            dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
         viewModel.updateFilterData(initialFilter)
         verifyGetFilterTagComponentSuccess(initialFilter)
         verifyGetFilterParamEmpty(dataFactory.getFilterParamsEmpty())
@@ -565,10 +594,11 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
     @Test
     fun `given filterData and should return that same filterData`() {
-       val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
-       viewModel.filterData = initialFilter
+        val initialFilter =
+            dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        viewModel.filterData = initialFilter
 
-       verifyGetFilterTagComponentSuccess(initialFilter)
+        verifyGetFilterTagComponentSuccess(initialFilter)
     }
 
     @Test
@@ -580,11 +610,12 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun  `when given list denom and productId should run and successfully get selected denom`() {
+    fun `when given list denom and productId should run and successfully get selected denom`() {
         val response = dataFactory.getCatalogInputMultiTabData()
         val isRefreshedFilter = true
         val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
-        val selectedDenom = dataFactory.getSelectedData(mappedResponse.denomFull.listDenomData.get(0))
+        val selectedDenom =
+            dataFactory.getSelectedData(mappedResponse.denomFull.listDenomData.get(0))
         val idDenom = "10930"
 
         onGetCatalogInputMultitab_thenReturn(mappedResponse)
@@ -596,7 +627,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun  `when given list denom and productId should failed and failed get selected denom`() {
+    fun `when given list denom and productId should failed and failed get selected denom`() {
         val response = dataFactory.getCatalogInputMultiTabData()
         val isRefreshedFilter = true
         val mappedResponse = mapperFactory.mapMultiTabFullDenom(response, isRefreshedFilter)
@@ -634,10 +665,10 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     @Test
     fun `given clientNumberThrottleJob running when calling another job should not create new job instance`() =
         testCoroutineRule.runBlockingTest {
-            viewModel.runThrottleJob {  }
+            viewModel.runThrottleJob { }
             val jobA = viewModel.clientNumberThrottleJob
 
-            viewModel.runThrottleJob {  }
+            viewModel.runThrottleJob { }
             val jobB = viewModel.clientNumberThrottleJob
 
             verifyClientNumberThrottleJobSame(jobA, jobB)
@@ -703,7 +734,8 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
     @Test
     fun `when resetFilter is used, filterData must be reseted`() {
-        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        val initialFilter =
+            dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
         viewModel.updateFilterData(initialFilter)
         verifyGetFilterTagComponentSuccess(initialFilter)
         verifyGetFilterParamEmpty(dataFactory.getFilterParamsEmpty())
@@ -713,8 +745,9 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `when filter not changed not return changed status` () {
-        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+    fun `when filter not changed not return changed status`() {
+        val initialFilter =
+            dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
         viewModel.updateFilterData(initialFilter)
 
         val result = viewModel.isFilterChanged(initialFilter)
@@ -722,9 +755,11 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `when filter changed return changed status` () {
-        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
-        val changedFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.toMutableList()
+    fun `when filter changed return changed status`() {
+        val initialFilter =
+            dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        val changedFilter =
+            dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.toMutableList()
         changedFilter[0].filterTagDataCollections[0].isSelected = true
         viewModel.updateFilterData(initialFilter)
 
@@ -733,9 +768,13 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
-    fun `when filter changed size return changed status` () {
-        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
-        val changedFilter = listOf(dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.toMutableList().removeAt(1))
+    fun `when filter changed size return changed status`() {
+        val initialFilter =
+            dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        val changedFilter = listOf(
+            dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.toMutableList()
+                .removeAt(1)
+        )
         viewModel.updateFilterData(initialFilter)
 
         val result = viewModel.isFilterChanged(changedFilter)

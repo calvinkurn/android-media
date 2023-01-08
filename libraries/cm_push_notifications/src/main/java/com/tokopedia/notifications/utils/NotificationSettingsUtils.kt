@@ -5,12 +5,17 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 
 class NotificationSettingsUtils(private val context: Context) {
 
     private var notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    private val userSession: UserSessionInterface = UserSession(context)
 
     fun checkNotificationsModeForSpecificChannel(channel: String?): NotificationMode {
         return if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
@@ -30,6 +35,16 @@ class NotificationSettingsUtils(private val context: Context) {
             }
         } else {
             NotificationMode.DISABLED
+        }
+    }
+
+    fun sendNotificationPromptEvent() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            try {
+                NotificationSettingsGtmEvents(userSession, context).updateFrequency()
+                NotificationSettingsGtmEvents(userSession, context).sendPromptImpressionEvent(context)
+            } catch (_: Exception) {
+            }
         }
     }
 

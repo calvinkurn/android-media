@@ -4,20 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="16dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="12dp">
+    android:padding="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_title_strike"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_goneMarginEnd="2dp"
         app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:text="Ongkir cuma Rp10.000" />
@@ -27,7 +28,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="@color/Unify_NN300"
+        android:layout_marginEnd="2dp"
+        android:textColor="@color/Unify_NN400"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_icon"
@@ -37,7 +39,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_shipment_icon"
         android:layout_width="wrap_content"
-        android:layout_height="16dp"
+        android:layout_height="20dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toRightOf="parent"
@@ -50,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_title"
         app:typographyType="display_3"
         tools:text="Min. belanja Rp50.000" />
@@ -61,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:text="@string/pdp_shipping_dilayani_label"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_subtitle"
         app:typographyType="display_3" />
@@ -83,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:text="@string/pdp_tokocabang_label"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_tc_label"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_tc_icon"
         app:typographyType="display_3" />
@@ -93,7 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_tc_label"
         tools:visibility="visible" />
 
@@ -102,7 +104,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_line"
         app:typographyType="display_3"
@@ -113,9 +115,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_destination"
+        app:layout_goneMarginTop="16dp"
         app:typographyType="display_3"
         tools:text="Estimasi tiba 20 - 21 Nov" />
 
@@ -123,7 +126,8 @@
         android:id="@+id/pdp_shipment_courier_label_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_estimation"
         app:typographyType="display_3"
@@ -175,7 +179,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_1"
         app:typographyType="display_3"
         app:typographyWeight="bold"
@@ -186,7 +190,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN900"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_2"
         app:typographyType="display_3"
         tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Caring barang lain atau Ganti Alamat." />

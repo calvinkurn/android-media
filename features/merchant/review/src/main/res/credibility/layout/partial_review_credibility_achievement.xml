@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_review_credibility_achievement"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="1dp"
+        app:card_type="clear"
+        app:layout_constraintDimensionRatio="96:103"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_guideline_center_avatar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_review_credibility_achievement_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="103dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
+            tools:background="@color/Unify_BN400">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_review_credibility_achievement_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_Static_White"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                tools:text="Makanan &amp; Minuman" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_review_credibility_achievement_avatar_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintEnd_toEndOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintStart_toStartOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintTop_toTopOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:srcCompat="@drawable/bg_review_credibility_achievement_avatar"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_review_credibility_achievement_avatar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintStart_toStartOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintTop_toTopOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintWidth_percent="0.32"
+        app:unify_image_corner_radius="0" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_review_credibility_achievement_avatar_border"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5"
+        app:srcCompat="@drawable/border_review_credibility_achievement_avatar"
+        app:unify_image_type="circle" />
+
+    <View
+        android:id="@+id/view_guideline_center_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintTop_toTopOf="@id/iv_review_credibility_achievement_avatar_border" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

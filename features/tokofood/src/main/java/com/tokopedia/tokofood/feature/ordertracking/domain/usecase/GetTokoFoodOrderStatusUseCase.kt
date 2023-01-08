@@ -25,7 +25,7 @@ class GetTokoFoodOrderStatusUseCase @Inject constructor(
         return try {
             mapper.mapToOrderStatusLiveTrackingUiModel(useCase.executeOnBackground().tokofoodOrderDetail)
         } catch (e: Exception) {
-            throw MessageErrorException(ORDER_STATUS_POOL_STATE, e.localizedMessage)
+            throw MessageErrorException("${ORDER_STATUS_POOL_STATE}: ${e.localizedMessage}")
         }
     }
 
@@ -37,6 +37,6 @@ class GetTokoFoodOrderStatusUseCase @Inject constructor(
 
     companion object {
         private const val ORDER_ID_KEY = "orderID"
-        const val ORDER_STATUS_POOL_STATE = "orderStatusPoolState"
+        private const val ORDER_STATUS_POOL_STATE = "orderStatusPoolState"
     }
 }

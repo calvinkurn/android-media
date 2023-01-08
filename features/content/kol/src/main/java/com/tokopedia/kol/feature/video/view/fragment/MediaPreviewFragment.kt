@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.video.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -28,18 +29,25 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kolcommon.util.TimeConverter
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -49,13 +57,11 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_media_preview.*
+import java.util.*
 import javax.inject.Inject
 
-class MediaPreviewFragment: BaseDaggerFragment() {
+class MediaPreviewFragment : BaseDaggerFragment() {
     var selectedIndex = 0
 
     var buttonTagAction: UnifyButton? = null
@@ -64,32 +70,41 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var feedAnalyticTracker: FeedAnalyticTracker
 
     private lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
-    private val tagsAdapter by lazy { MediaTagAdapter(mutableListOf(), {
-        mediaPreviewViewModel.isMyShop(it)
-    }, this::toggleWishlist){
-        postTagItem, isMyShop ->
+    private val tagsAdapter by lazy {
+        MediaTagAdapter(mutableListOf(), {
+            mediaPreviewViewModel.isMyShop(it)
+        }, this::toggleWishlist) { postTagItem, isMyShop ->
             feedAnalyticTracker.eventMediaDetailClickBuy(
-                    postAuthor,
-                    postTagItem.id,
-                    postTagItem.text,
-                    postTagItem.price,
-                    1,
-                    postTagItem.shop[0].shopId.toIntOrZero(),
-                    "")
+                postAuthor,
+                postTagItem.id,
+                postTagItem.text,
+                postTagItem.price,
+                1,
+                postTagItem.shop[0].shopId,
+                "",
+                ""
+            )
             if (isMyShop) onGoToLink(postTagItem.applink)
             else checkAddToCart(postTagItem)
-    } }
+        }
+    }
     private val tagsBottomSheet: CloseableBottomSheetDialog? by lazy {
         context?.let {
             val closeBottomSheet = CloseableBottomSheetDialog.createInstance(it)
-            val childView = LayoutInflater.from(it).inflate(R.layout.bottomsheet_content_tag_list, null)
+            val childView =
+                LayoutInflater.from(it).inflate(R.layout.bottomsheet_content_tag_list, null)
             val tagListView = childView.findViewById<VerticalRecyclerView>(R.id.recycler_view)
             tagListView.adapter = tagsAdapter
-            closeBottomSheet.setCustomContentView(childView, getString(R.string.kol_lets_shop), true)
+            closeBottomSheet.setCustomContentView(
+                childView,
+                getString(R.string.kol_lets_shop),
+                true
+            )
             closeBottomSheet
         }
     }
@@ -103,7 +118,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mediaPreviewViewModel.postDetailLive.observe(viewLifecycleOwner, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetDetail(it.data)
                 is Fail -> onErrorGetDetail(it.throwable)
             }
@@ -122,13 +137,18 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            mediaPreviewViewModel = ViewModelProviders.of(this, viewModelFactory)[FeedMediaPreviewViewModel::class.java]
+            mediaPreviewViewModel =
+                ViewModelProviders.of(this, viewModelFactory)[FeedMediaPreviewViewModel::class.java]
             mediaPreviewViewModel.postId = arguments?.getString(ARG_POST_ID, "0") ?: "0"
             selectedIndex = arguments?.getInt(ARG_MEDIA_INDEX, 0) ?: 0
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_media_preview, container, false)
     }
 
@@ -155,12 +175,12 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         super.onDestroyView()
     }
 
-    private fun onSuccessGetDetail(data: PostDetailViewModel) {
-        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
+    private fun onSuccessGetDetail(data: PostDetailUiModel) {
+        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel
         dynamicPost?.let {
             bindToolbar(it)
-            val mediaGrid = it.contentList.filterIsInstance<MultimediaGridViewModel>().firstOrNull()
-            if (mediaGrid != null){
+            val mediaGrid = it.contentList.filterIsInstance<MultimediaGridModel>().firstOrNull()
+            if (mediaGrid != null) {
                 bindMedia(mediaGrid.mediaItemList)
             }
         }
@@ -168,7 +188,8 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun bindMedia(mediaItems: List<MediaItem>) {
         val adapter = MediaPagerAdapter(mediaItems.toMutableList(), childFragmentManager)
-        pager_indicator.text = getString(R.string.af_indicator_media, selectedIndex+1, adapter.count)
+        pager_indicator.text =
+            getString(R.string.af_indicator_media, selectedIndex + 1, adapter.count)
         media_pager.adapter = adapter
         updateDirectionMedia(0, adapter.count)
         media_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -178,7 +199,8 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
 
             override fun onPageSelected(position: Int) {
-                pager_indicator.text = getString(R.string.af_indicator_media, position+1, adapter.count)
+                pager_indicator.text =
+                    getString(R.string.af_indicator_media, position + 1, adapter.count)
                 (adapter.getRegisteredFragment(lastPosition) as? MediaHolderFragment)?.fragmentHiding()
                 (adapter.getRegisteredFragment(position) as? MediaHolderFragment)?.fragmentShowing()
                 lastPosition = position
@@ -190,14 +212,14 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
         action_prev.setOnClickListener {
             val currentIndex = media_pager.currentItem
-            if (currentIndex > 0){
+            if (currentIndex > 0) {
                 media_pager.currentItem = currentIndex - 1
             }
         }
 
         action_next.setOnClickListener {
             val currentIndex = media_pager.currentItem
-            if (currentIndex < adapter.count - 1){
+            if (currentIndex < adapter.count - 1) {
                 media_pager.currentItem = currentIndex + 1
             }
         }
@@ -205,7 +227,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun updateDirectionMedia(pos: Int, count: Int, forceToHide: Boolean = false) {
         action_prev.showWithCondition(!forceToHide && pos > 0 && count > 1)
-        action_next.showWithCondition(!forceToHide && pos < count-1 && count > 1)
+        action_next.showWithCondition(!forceToHide && pos < count - 1 && count > 1)
     }
 
     private fun bindTags(tags: PostTag) {
@@ -217,14 +239,16 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 tag_picture.gone()
                 val minRate = tags.items.filter { it.rating > 0 }.map { it.rating }.minOrNull() ?: 0
 
-                tag_rating.shouldShowWithAction(minRate > 0){
+                tag_rating.shouldShowWithAction(minRate > 0) {
                     tag_rating.rating = minRate.toFloat()
                 }
 
                 val minPrice = tags.items.map { CurrencyFormatHelper.convertRupiahToInt(it.price) }
                     .minOrNull() ?: 0
-                tag_title.text = getString(R.string.kol_template_start_price,
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true))
+                tag_title.text = getString(
+                    R.string.kol_template_start_price,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true)
+                )
 
                 buttonTagAction?.text = getString(R.string.kol_see_product)
                 buttonTagAction?.buttonType = UnifyButton.Type.MAIN
@@ -240,43 +264,51 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             tags.totalItems == 1 -> {
                 val tagItem = tags.items[0]
                 tag_count.gone()
-                tag_rating.shouldShowWithAction(tagItem.rating > 0){
+                tag_rating.shouldShowWithAction(tagItem.rating > 0) {
                     tag_rating.rating = tagItem.rating.toFloat()
                 }
 
                 tag_title.text = tagItem.price
                 val shop = tagItem.shop.firstOrNull()
                 val ctaBtn = tagItem.buttonCTA.firstOrNull()
-                if (shop == null || mediaPreviewViewModel.isMyShop(shop.shopId)){
+                if (shop == null || mediaPreviewViewModel.isMyShop(shop.shopId)) {
                     buttonTagAction?.text = getString(R.string.kol_see_product)
                     action_favorite.gone()
                     buttonTagAction?.buttonType = UnifyButton.Type.MAIN
                     buttonTagAction?.setOnClickListener { onGoToLink(tagItem.applink) }
                 } else {
                     buttonTagAction?.buttonType = UnifyButton.Type.TRANSACTION
-                    if (ctaBtn == null || ctaBtn.text.isBlank()){
+                    if (ctaBtn == null || ctaBtn.text.isBlank()) {
                         buttonTagAction?.isEnabled = false
-                        buttonTagAction?.text = getString(com.tokopedia.feedcomponent.R.string.empty_product)
+                        buttonTagAction?.text =
+                            getString(com.tokopedia.feedcomponent.R.string.empty_product)
                     } else {
                         buttonTagAction?.isEnabled = true
-                        buttonTagAction?.text = getString(com.tokopedia.feedcomponent.R.string.string_posttag_buy)
+                        buttonTagAction?.text =
+                            getString(com.tokopedia.feedcomponent.R.string.string_posttag_buy)
                     }
                     buttonTagAction?.setOnClickListener {
                         feedAnalyticTracker.eventMediaDetailClickBuy(
-                                postAuthor,
-                                tagItem.id,
-                                tagItem.text,
-                                tagItem.price,
-                                1,
-                                tagItem.shop[0].shopId.toIntOrZero(),
-                                "")
+                            postAuthor,
+                            tagItem.id,
+                            tagItem.text,
+                            tagItem.price,
+                            1,
+                            tagItem.shop[0].shopId,
+                            "",
+                            ""
+                        )
                         checkAddToCart(tagItem)
                     }
                     action_favorite.visible()
                     context?.let {
-                        action_favorite.setImageDrawable(ContextCompat.getDrawable(it,
+                        action_favorite.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                it,
                                 if (tags.items[0].isWishlisted) com.tokopedia.design.R.drawable.ic_wishlist_checked
-                                else com.tokopedia.design.R.drawable.ic_wishlist_unchecked))
+                                else com.tokopedia.design.R.drawable.ic_wishlist_unchecked
+                            )
+                        )
                     }
                     action_favorite.setOnClickListener {
                         val product = tags.items[0]
@@ -299,8 +331,15 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun checkAddToCart(tagItem: PostTagItem) {
         mediaPreviewViewModel.addToCart(tagItem,
-                { context?.let { RouteManager.route(context, ApplinkConstInternalMarketplace.CART) }}){
-                _ , postTagItem -> onGoToLink(postTagItem.applink)
+            {
+                context?.let {
+                    RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.CART
+                    )
+                }
+            }) { _, postTagItem ->
+            onGoToLink(postTagItem.applink)
         }
     }
 
@@ -310,21 +349,26 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 RouteManager.route(activity, link)
             } else {
                 RouteManager.route(
-                        activity,
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                    activity,
+                    String.format(Locale.US, "%s?url=%s", ApplinkConst.WEBVIEW, link)
                 )
             }
         }
     }
 
-    private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int){
-        if (mediaPreviewViewModel.isSessionActive){
+    private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int) {
+        if (mediaPreviewViewModel.isSessionActive) {
             context?.let {
-                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                    mediaPreviewViewModel.toggleWishlistV2(isWishListAction, productId, pos, object: WishlistV2ActionListener {
+                mediaPreviewViewModel.toggleWishlistV2(
+                    isWishListAction,
+                    productId,
+                    pos,
+                    object : WishlistV2ActionListener {
                         override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                            Toaster.build(requireView(), ErrorHandler.getErrorMessage(context, throwable),
-                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                            Toaster.build(
+                                requireView(), ErrorHandler.getErrorMessage(context, throwable),
+                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR
+                            ).show()
                         }
 
                         override fun onSuccessAddWishlist(
@@ -333,7 +377,11 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         ) {
                             context?.let { context ->
                                 view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                                        result,
+                                        context,
+                                        v
+                                    )
                                 }
                             }
                         }
@@ -354,68 +402,70 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         ) {
                             context?.let { context ->
                                 view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
+                                        result,
+                                        context,
+                                        v
+                                    )
                                 }
                             }
                         }
-                    }, it)
-                } else {
-                    mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist, it) }
-                }
-
+                    },
+                    it
+                )
+            }
         } else {
-            context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
+            context?.let {
+                startActivityForResult(
+                    RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                    REQ_CODE_LOGIN
+                )
+            }
         }
     }
 
-    private fun onErrorToggleWishlist(message: String) {
-        showToastError(message)
-    }
-
-    private fun onErrorToggleWishlistV2(message: String, ctaText: String, ctaAction: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
-                if (ctaAction == OPEN_WISHLIST) goToWishList()
-            }.show()
-        }
-    }
-
-    private fun goToWishList() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
-    }
-
-    private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
+    private fun bindToolbar(dynamicPost: DynamicPostModel) {
         val templateHeader = dynamicPost.template.cardpost.header
         val header = dynamicPost.header
         postAuthor = header.followCta.authorType
-        authorImage.shouldShowWithAction(templateHeader.avatar && header.avatar.isNotBlank()){
+        authorImage.shouldShowWithAction(templateHeader.avatar && header.avatar.isNotBlank()) {
             authorImage.loadImageCircle(header.avatar)
-            authorImage.setOnClickListener{onHeaderClicked(header)}
+            authorImage.setOnClickListener { onHeaderClicked(header) }
         }
-        authorBadge.shouldShowWithAction(templateHeader.avatarBadge && header.avatarBadgeImage.isNotBlank()){
-            authorBadge.loadImage(header.avatarBadgeImage, com.tokopedia.design.R.drawable.error_drawable)
+        authorBadge.shouldShowWithAction(templateHeader.avatarBadge && header.avatarBadgeImage.isNotBlank()) {
+            authorBadge.loadImage(
+                header.avatarBadgeImage,
+                com.tokopedia.design.R.drawable.error_drawable
+            )
         }
-        authorTitle.shouldShowWithAction(templateHeader.avatarTitle && header.avatarTitle.isNotBlank()){
+        authorTitle.shouldShowWithAction(templateHeader.avatarTitle && header.avatarTitle.isNotBlank()) {
             authorTitle.text = header.avatarTitle
-            authorTitle.setOnClickListener{onHeaderClicked(header)}
+            authorTitle.setOnClickListener { onHeaderClicked(header) }
         }
-        authorSubtitile.shouldShowWithAction(templateHeader.avatarDate && header.avatarDate.isNotBlank()){
+        authorSubtitile.shouldShowWithAction(templateHeader.avatarDate && header.avatarDate.isNotBlank()) {
             authorSubtitile.text = TimeConverter.generateTime(context, header.avatarDate)
         }
     }
 
     private fun onHeaderClicked(header: Header) {
         feedAnalyticTracker.eventMediaDetailClickAvatar(mediaPreviewViewModel.postId)
-        feedAnalyticTracker.eventClickMediaPreviewAvatar(mediaPreviewViewModel.postId, header.followCta.authorType)
+        feedAnalyticTracker.eventClickMediaPreviewAvatar(
+            mediaPreviewViewModel.postId,
+            header.followCta.authorType
+        )
         RouteManager.route(activity, header.avatarApplink)
     }
 
     private fun bindFooter(footer: PostDetailFooterModel, template: TemplateFooter?) {
-        groupLike.shouldShowWithAction(template?.like == true){
+        groupLike.shouldShowWithAction(template?.like == true) {
             label_like.text = if (footer.totalLike > 0) footer.totalLike.toString()
-                else getString(com.tokopedia.feedcomponent.R.string.kol_action_like)
-            val color = context?.let { ContextCompat.getColor(it,
-                    if (footer.isLiked) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N0 ) }
+            else getString(com.tokopedia.feedcomponent.R.string.kol_action_like)
+            val color = context?.let {
+                ContextCompat.getColor(
+                    it,
+                    if (footer.isLiked) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            }
             color?.let {
                 icon_thumb.setColorFilter(it, PorterDuff.Mode.MULTIPLY)
                 label_like.setTextColor(it)
@@ -426,9 +476,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         icon_thumb.setOnClickListener { doLikePost(!footer.isLiked) }
         label_like.setOnClickListener { doLikePost(!footer.isLiked) }
 
-        groupComment.shouldShowWithAction(template?.comment == true){
+        groupComment.shouldShowWithAction(template?.comment == true) {
             label_comment.text = if (footer.totalComment > 0) footer.totalComment.toString()
-                else getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
+            else getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
         }
 
         icon_comment.setOnClickListener { doComment() }
@@ -436,11 +486,27 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
         groupShare.showWithCondition(template?.share == true)
 
-        icon_share.setOnClickListener { doShare(String.format("%s %s", footer.shareData.description, footer.shareData.url)
-                , footer.shareData.title) }
+        icon_share.setOnClickListener {
+            doShare(
+                String.format(
+                    Locale.US,
+                    "%s %s",
+                    footer.shareData.description,
+                    footer.shareData.url
+                ),
+                footer.shareData.title
+            )
+        }
         label_share.setOnClickListener {
-            doShare(String.format("%s %s", footer.shareData.description, footer.shareData.url)
-                    , footer.shareData.title)
+            doShare(
+                String.format(
+                    Locale.US,
+                    "%s %s",
+                    footer.shareData.description,
+                    footer.shareData.url
+                ),
+                footer.shareData.title
+            )
         }
     }
 
@@ -449,15 +515,29 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             mediaPreviewViewModel.doLikePost(isLikeAction, this::onErrorLikePost)
         } else {
             activity?.let {
-                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN)
+                startActivityForResult(
+                    RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                    REQ_CODE_LOGIN
+                )
             }
         }
     }
 
+    @SuppressLint("Method Call Prohibited")
     private fun doComment() {
+        val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
+        val postType = arguments?.getString(PARAM_POST_TYPE)
+        val isFollowed = arguments?.getBoolean(PARAM_IS_POST_FOLLOWED, true)
         activity?.let {
             val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)
-                KolCommentActivity.getCallingIntent(it, mediaPreviewViewModel.postId.toInt(), 0) to REQ_CODE_COMMENT
+                KolCommentNewActivity.getCallingIntent(
+                    it,
+                    mediaPreviewViewModel.postId.toInt(),
+                    0,
+                    authorId,
+                    isFollowed,
+                    postType
+                ) to REQ_CODE_COMMENT
             else RouteManager.getIntent(it, ApplinkConst.LOGIN) to REQ_CODE_LOGIN
 
             startActivityForResult(intent, reqCode)
@@ -469,7 +549,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
         startActivity(
-                Intent.createChooser(sharingIntent, title)
+            Intent.createChooser(sharingIntent, title)
         )
     }
 
@@ -481,16 +561,21 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         context?.let { showToastError(ErrorHandler.getErrorMessage(it, throwable)) }
     }
 
-    private fun showToastError(message: String){
-        view?.let { v ->  Toaster.showErrorWithAction(v, message,
-                Snackbar.LENGTH_LONG, getString(com.tokopedia.abstraction.R.string.title_ok), View.OnClickListener {  })}
+    private fun showToastError(message: String) {
+        view?.let { v ->
+            Toaster.showErrorWithAction(v,
+                message,
+                Snackbar.LENGTH_LONG,
+                getString(com.tokopedia.abstraction.R.string.title_ok),
+                View.OnClickListener { })
+        }
     }
 
     fun showDetail(visible: Boolean) {
         media_pager.adapter?.let {
             updateDirectionMedia(media_pager.currentItem, it.count, !visible)
         }
-        if (visible){
+        if (visible) {
             overlay_tags.visible()
             overlay_toolbar.visible()
         } else {
@@ -499,7 +584,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    companion object{
+    companion object {
         const val ARG_POST_ID = "post_id"
         const val ARG_MEDIA_INDEX = "media_index"
         private const val REQ_CODE_LOGIN = 0x01

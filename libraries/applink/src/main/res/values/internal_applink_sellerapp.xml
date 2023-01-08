@@ -39,7 +39,10 @@
     <string name="path_review_reminder" translatable="false">/review-reminder</string>
     <string name="path_admin_restriction" translatable="false">/admin-restriction</string>
     <string name="path_tokomember" translatable="false">/tokomember</string>
+    <string name="path_tokomember_member_list" translatable="false">/tokomember/member-list</string>
     <string name="path_seller_shop_flash_sale" translatable="false">/shop-flash-sale/.*\\/</string>
+    <string name="path_seller_tokopedia_flash_sale" translatable="false">/tokopedia-flash-sale/.*\\/</string>
+    <string name="path_seller_tokopedia_flash_sale_campaign_detail" translatable="false">/tokopedia-flash-sale/campaign-detail/.*\\/</string>
     <string name="path_shop_discount" translatable="false">/shop-discount</string>
     <string name="path_shop_discount_manage_discount" translatable="false">/shop-discount/manage-discount</string>
     <string name="path_shop_discount_manage_product_discount" translatable="false">/shop-discount/manage-discount/product</string>

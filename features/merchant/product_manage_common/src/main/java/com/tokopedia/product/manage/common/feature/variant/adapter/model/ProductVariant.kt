@@ -8,21 +8,29 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignTy
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class ProductVariant(
-        val id: String,
-        val name: String,
-        val status: ProductStatus,
-        val combination: List<Int>,
-        val isPrimary: Boolean,
-        val isCampaign: Boolean,
-        val price: Double,
-        val sku: String,
-        val stock: Int,
-        val pictures: List<Picture>,
-        val isAllStockEmpty: Boolean = false,
-        val access: ProductManageAccess,
-        val campaignTypeList: List<CampaignType>?,
-        val maxStock: Int?
-): Visitable<ProductVariantAdapterFactory> {
+    val id: String,
+    val name: String,
+    val status: ProductStatus,
+    val combination: List<Int>,
+    val isPrimary: Boolean,
+    val isCampaign: Boolean,
+    val price: Double,
+    val sku: String,
+    val stock: Int,
+    val pictures: List<Picture>,
+    val isAllStockEmpty: Boolean = false,
+    val access: ProductManageAccess,
+    val campaignTypeList: List<CampaignType>?,
+    val maxStock: Int?,
+    val notifymeCount: Int,
+    val stockAlertStatus: Int,
+    val stockAlertCount: Int,
+    val isBelowStockAlert: Boolean
+) : Visitable<ProductVariantAdapterFactory> {
+
+    companion object {
+        private const val HAVE_STOCK_ALERT = 2
+    }
 
     override fun type(typeFactory: ProductVariantAdapterFactory): Int {
         return typeFactory.type(this)
@@ -38,5 +46,13 @@ data class ProductVariant(
 
     fun isEmpty(): Boolean {
         return stock == 0
+    }
+
+    fun haveNotifyMe(): Boolean {
+        return notifymeCount > 0
+    }
+
+    fun haveStockAlertActive(): Boolean {
+        return stockAlertStatus == HAVE_STOCK_ALERT
     }
 }

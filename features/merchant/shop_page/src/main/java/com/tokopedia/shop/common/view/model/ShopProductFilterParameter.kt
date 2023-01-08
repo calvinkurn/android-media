@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.*
 
@@ -15,7 +16,6 @@ class ShopProductFilterParameter() : Parcelable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeMap(mapParameter as Map<*, *>?)
-
     }
 
     override fun describeContents(): Int {
@@ -42,6 +42,10 @@ class ShopProductFilterParameter() : Parcelable {
         mapParameter[SORT_PARAM_KEY] = sortId
     }
 
+    fun getIsFulfillment(): String {
+        return mapParameter[IS_FULFILLMENT_KEY].orEmpty()
+    }
+
     fun getRating(): String {
         return mapParameter[RATING_PARAM_KEY].orEmpty()
     }
@@ -60,8 +64,14 @@ class ShopProductFilterParameter() : Parcelable {
 
     fun getMapDataWithDefaultSortId(): Map<String, String> {
         return mapOf(
-                SORT_PARAM_KEY to DEFAULT_SORT_ID
+            SORT_PARAM_KEY to DEFAULT_SORT_ID
         )
+    }
+
+    fun getExtraParam(): String {
+        return "$IS_FULFILLMENT_KEY=${getIsFulfillment()}".takeIf {
+            getIsFulfillment().isNotEmpty()
+        } ?: String.EMPTY
     }
 
     companion object CREATOR : Parcelable.Creator<ShopProductFilterParameter> {
@@ -73,5 +83,4 @@ class ShopProductFilterParameter() : Parcelable {
             return arrayOfNulls(size)
         }
     }
-
 }

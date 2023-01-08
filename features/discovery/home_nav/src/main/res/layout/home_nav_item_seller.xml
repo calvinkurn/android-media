@@ -101,8 +101,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/image_arrow_right"
-            android:layout_width="17dp"
-            android:layout_height="17dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="@string/account_header_store_title"
             android:visibility="gone"
             android:layout_marginEnd="8dp"

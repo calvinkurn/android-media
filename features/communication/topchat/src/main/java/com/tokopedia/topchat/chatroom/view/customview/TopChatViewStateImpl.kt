@@ -13,6 +13,7 @@ import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
@@ -31,6 +32,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayout
+import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
@@ -41,6 +44,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_ALLOW_PROMO
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_CHAT
@@ -53,23 +57,28 @@ import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNBLOCK_CH
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNFOLLOW
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import java.util.Locale
 
 /**
  * @author : Steven 29/11/18
  */
 
 open class TopChatViewStateImpl constructor(
-        @NonNull override val view: View,
-        private val typingListener: TypingListener,
-        protected val sendListener: SendButtonListener,
-        private val templateListener: ChatTemplateListener,
-        private val imagePickerListener: ImagePickerListener,
-        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
-        private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
-        private val headerMenuListener: HeaderMenuListener,
-        toolbar: Toolbar,
-        val analytics: TopChatAnalytics
+    @NonNull override val view: View,
+    private val typingListener: TypingListener,
+    protected val sendListener: SendButtonListener,
+    private val templateListener: ChatTemplateListener,
+    private val imagePickerListener: ImagePickerListener,
+    private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+    private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
+    private val headerMenuListener: HeaderMenuListener,
+    private val chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
+    toolbar: Toolbar,
+    val analytics: TopChatAnalytics,
+    private val userSession: UserSessionInterface,
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener),
         TopChatViewState,
         AttachmentPreviewAdapter.AttachmentPreviewListener {
@@ -92,6 +101,22 @@ open class TopChatViewStateImpl constructor(
 
     var isShopFollowed: Boolean = false
     var blockStatus: BlockedStatus = BlockedStatus()
+
+
+    var chatTextAreaTabLayout: ChatTextAreaTabLayout? = null
+    private var chatTextAreaShimmer: LoaderUnify? = null
+
+    var isAbleToReply: Boolean? = null
+        set(value) {
+            field = value
+            showReplyBox()
+        }
+
+    var shouldShowSrw: Boolean? = null
+        set(value) {
+            field = value
+            showReplyBox()
+        }
 
     var roomMenu = LongClickMenu()
 
@@ -145,6 +170,10 @@ open class TopChatViewStateImpl constructor(
         initProductPreviewLayout()
         initHeaderLayout()
         setupChatStickerMenu()
+
+        chatTextAreaTabLayout = view.findViewById(R.id.layout_chat_text_area)
+        chatTextAreaTabLayout?.setupListener(chatTextAreaTabLayoutListener)
+        chatTextAreaShimmer = view.findViewById(R.id.chat_area_shimmer)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -155,6 +184,9 @@ open class TopChatViewStateImpl constructor(
     override fun setupChatMenu() {
         chatMenu?.setupAttachmentMenu(attachmentMenuListener)
         chatMenuButton.setOnClickListener {
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickAddAttachmentFromBubble(userSession.shopId)
+            }
             chatMenu?.toggleAttachmentMenu()
         }
     }
@@ -167,18 +199,30 @@ open class TopChatViewStateImpl constructor(
     }
 
     override fun onStickerOpened() {
-        chatStickerMenuButton?.setImage(IconUnify.KEYBOARD)
-        chatStickerMenuButton?.setOnClickListener {
-            replyEditText.requestFocus()
-            chatMenu?.showKeyboard(replyEditText)
+        if (isChatTabVisible()) {
+            chatTextAreaTabLayout?.onStickerOpened()
+        } else {
+            chatStickerMenuButton?.setImage(IconUnify.KEYBOARD)
+            chatStickerMenuButton?.setOnClickListener {
+                replyEditText.requestFocus()
+                chatMenu?.showKeyboard(replyEditText)
+            }
         }
     }
 
     override fun onStickerClosed() {
-        chatStickerMenuButton?.setImage(IconUnify.STICKER)
-        chatStickerMenuButton?.setOnClickListener {
-            chatMenu?.toggleStickerMenu()
+        if (isChatTabVisible()) {
+            chatTextAreaTabLayout?.onStickerClosed()
+        } else {
+            chatStickerMenuButton?.setImage(IconUnify.STICKER)
+            chatStickerMenuButton?.setOnClickListener {
+                chatMenu?.toggleStickerMenu()
+            }
         }
+    }
+
+    fun isChatTabVisible(): Boolean {
+        return chatTextAreaTabLayout?.visibility == View.VISIBLE
     }
 
     override fun setChatBlockStatus(isBlocked: Boolean) {
@@ -196,6 +240,14 @@ open class TopChatViewStateImpl constructor(
             hideChatMenu()
             fragmentView?.collapseSrw()
         }
+
+        /**
+         * Keyboard Handler for new SRW & Tab Design menu
+         */
+        if (chatTextAreaTabLayout?.chatMenu?.isKeyboardOpened == false) {
+            chatTextAreaTabLayout?.chatMenu?.isKeyboardOpened = true
+            chatTextAreaTabLayout?.chatMenu?.hideMenu()
+        }
     }
 
     override fun onKeyboardClosed() {
@@ -204,6 +256,19 @@ open class TopChatViewStateImpl constructor(
             fragmentView?.expandSrw()
             showChatMenu()
         }
+
+        /**
+         * Keyboard Handler for new SRW & Tab Design menu
+         */
+        if (chatTextAreaTabLayout?.chatMenu?.isKeyboardOpened == true) {
+            chatTextAreaTabLayout?.chatMenu?.isKeyboardOpened = false
+            chatTextAreaTabLayout?.chatMenu?.showMenuDelayed()
+        }
+    }
+
+    override fun clearEditText() {
+        super.clearEditText()
+        chatTextAreaTabLayout?.replyEditText?.setText("")
     }
 
     override fun isKeyboardOpen(): Boolean {
@@ -292,7 +357,7 @@ open class TopChatViewStateImpl constructor(
         updateHeader(viewModel, onToolbarClicked)
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener)
-        showReplyBox(viewModel.replyable)
+        isAbleToReply = viewModel.replyable
         initListPadding(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
     }
@@ -367,6 +432,7 @@ open class TopChatViewStateImpl constructor(
             showHeaderMenuBottomSheet(
                     chatRoomViewModel, headerMenuListener
             )
+            headerMenuListener.onClickHeaderMenu()
         }
     }
 
@@ -375,6 +441,9 @@ open class TopChatViewStateImpl constructor(
             headerMenuListener: HeaderMenuListener
     ) {
         if (roomMenu.isAdded) return
+        if (isFromBubble) {
+            KeyboardHandler.DropKeyboard(view.context, view)
+        }
         roomMenu.apply {
             setItemMenuList(createRoomMenu(chatroomViewModel))
             setOnItemMenuClickListener { itemMenus, _ ->
@@ -506,6 +575,8 @@ open class TopChatViewStateImpl constructor(
             ID_REPORT_USER -> headerMenuListener.onGoToReportUser()
             ID_CHAT_SETTING -> headerMenuListener.onGoToChatSetting()
         }
+
+        headerMenuListener.onClickHeaderMenuItem(itemMenus.title)
     }
 
     override fun showConfirmationBlockChat() {
@@ -560,14 +631,17 @@ open class TopChatViewStateImpl constructor(
     ) {
 
         val isBlocked = when {
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL)
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL)
             -> {
                 blockedStatus.isPromoBlocked
             }
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) -> {
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) -> {
                 blockedStatus.isBlocked
             }
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) -> {
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) -> {
                 blockedStatus.isBlocked
             }
             else -> {
@@ -585,7 +659,9 @@ open class TopChatViewStateImpl constructor(
     private fun showChatBlocked(it: BlockedStatus, opponentRole: String, opponentName: String) {
         updateChatroomBlockedStatus(it)
 
-        showReplyBox(false)
+        if (isAbleToReply == null || isAbleToReply == true) {
+            isAbleToReply = false
+        }
         templateRecyclerView.visibility = View.GONE
         chatBlockLayout.visibility = View.VISIBLE
 
@@ -608,10 +684,13 @@ open class TopChatViewStateImpl constructor(
 
         val blockText = chatBlockLayout.findViewById<TextView>(R.id.blocked_text)
         val category = when {
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) ->
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) ->
                 CHAT_BOTH
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) ->
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) ->
                 CHAT_PERSONAL
             else -> {
                 ""
@@ -621,10 +700,12 @@ open class TopChatViewStateImpl constructor(
         blockText.text = blockString
     }
 
-    fun removeChatBlocked(it: BlockedStatus) {
+    private fun removeChatBlocked(it: BlockedStatus) {
         updateChatroomBlockedStatus(it)
 
-        showReplyBox(chatRoomViewModel.replyable)
+        if (isAbleToReply == null || isAbleToReply != chatRoomViewModel.replyable) {
+            isAbleToReply = chatRoomViewModel.replyable
+        }
         templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
         chatBlockLayout.visibility = View.GONE
     }
@@ -793,5 +874,59 @@ open class TopChatViewStateImpl constructor(
         typingImage?.let {
             ImageUtil.stopAVDTypingAnimation(it)
         }
+    }
+
+    private fun showReplyBox() {
+        /**
+         * Check if GetExistingChat & SRW finished
+         */
+        if (isAbleToReply != null && shouldShowSrw != null) {
+            when {
+                (isAbleToReply == true) && (shouldShowSrw == true)  -> {
+                    //Hide Shimmer, show comment area, hide reply box, show tab
+                    chatTextAreaShimmer?.hide()
+                    actionBox.show()
+                    replyBox.hide()
+                    //Render SRW only when success get the questions & active tab is SRW
+                    if (chatTextAreaTabLayout?.srwLayout?.isSuccessState() == true
+                        && chatTextAreaTabLayout?.tabState ==
+                        ChatTextAreaTabLayout.TabLayoutActiveStatus.SRW
+                    ) {
+                        chatTextAreaTabLayout?.srwLayout?.renderSrwState()
+                    }
+                    chatTextAreaTabLayout?.show()
+                    hideKeyboard()
+                }
+                (isAbleToReply == true) && (shouldShowSrw == false) -> {
+                    //Hide Shimmer, show comment area, show reply box, hide tab
+                    chatTextAreaShimmer?.hide()
+                    actionBox.show()
+                    replyBox.show()
+                    chatTextAreaTabLayout?.hide()
+                }
+                (isAbleToReply == false) -> {
+                    //Hide Shimmer, hide comment area, hide reply box, hide tab
+                    chatTextAreaShimmer?.hide()
+                    actionBox.hide()
+                    replyBox.hide()
+                    chatTextAreaTabLayout?.hide()
+                }
+                else -> {
+                    //Show Shimmer, hide comment area, hide reply box, hide tab
+                    showChatAreaShimmer()
+                }
+            }
+        }
+    }
+
+    fun showChatAreaShimmer() {
+        chatTextAreaShimmer?.show()
+        actionBox.hide()
+        replyBox.hide()
+        chatTextAreaTabLayout?.hide()
+    }
+
+    fun getChatAreaShimmer(): LoaderUnify? {
+        return chatTextAreaShimmer
     }
 }

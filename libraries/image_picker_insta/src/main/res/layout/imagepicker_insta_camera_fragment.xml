@@ -28,7 +28,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/imagepicker_insta_came_overlay"
+        android:background="@color/imagepickerinsta_dms_camera_overlay"
         app:layout_constraintBottom_toTopOf="@+id/capture_region"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/imagepicker_insta_came_overlay"
+        android:background="@color/imagepickerinsta_dms_camera_overlay"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

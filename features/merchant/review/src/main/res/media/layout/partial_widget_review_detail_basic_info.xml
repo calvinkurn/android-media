@@ -14,10 +14,9 @@
         android:id="@+id/review_detail_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/ic_review_detail_toggle_expand_button"
+        app:layout_constraintBottom_toBottomOf="@id/barrier_bottom_like_dislike_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/ic_review_detail_toggle_expand_button" />
+        app:layout_constraintTop_toTopOf="@id/barrier_top_like_dislike_button" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_review_detail_create_time"
@@ -37,12 +36,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:minWidth="12dp"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="@id/ic_review_detail_toggle_expand_button"
+        app:layout_constraintBottom_toBottomOf="@id/barrier_bottom_like_dislike_button"
         app:layout_constraintEnd_toStartOf="@id/barrier_start_like_dislike_button"
-        app:layout_constraintTop_toTopOf="@id/ic_review_detail_toggle_expand_button"
-        app:typographyType="body_3" />
+        app:layout_constraintTop_toTopOf="@id/barrier_top_like_dislike_button"
+        app:typographyType="body_3"
+        tools:text="1" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_start_like_dislike_button"
@@ -75,9 +74,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_review_detail_like_button"
-        android:layout_width="32dp"
-        android:layout_height="40dp"
-        android:paddingVertical="10dp"
+        android:layout_width="36dp"
+        android:layout_height="24dp"
         android:paddingStart="0dp"
         android:paddingEnd="12dp"
         app:icon_color_light_disabled="@color/Unify_Static_White"
@@ -85,14 +83,13 @@
         app:icon_color_night_disabled="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="THUMB"
-        app:layout_constraintEnd_toStartOf="@id/ic_review_detail_toggle_expand_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_review_detail_liked_button"
-        android:layout_width="32dp"
-        android:layout_height="40dp"
-        android:paddingVertical="10dp"
+        android:layout_width="36dp"
+        android:layout_height="24dp"
         android:paddingStart="0dp"
         android:paddingEnd="12dp"
         app:icon_color_light_disabled="@color/Unify_Static_White"
@@ -100,7 +97,7 @@
         app:icon_color_night_disabled="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="THUMB_FILLED"
-        app:layout_constraintEnd_toStartOf="@id/ic_review_detail_toggle_expand_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
@@ -108,40 +105,25 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:hapticFeedbackEnabled="true"
-        app:layout_constraintBottom_toTopOf="@id/barrier_bottom_like_dislike_button"
-        app:layout_constraintEnd_toStartOf="@id/ic_review_detail_toggle_expand_button"
-        app:layout_constraintStart_toStartOf="@id/tv_review_detail_like_count"
-        app:layout_constraintTop_toBottomOf="@id/barrier_top_like_dislike_button" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_review_detail_toggle_expand_button"
-        android:layout_width="48dp"
-        android:layout_height="40dp"
-        android:paddingVertical="8dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="16dp"
-        app:icon_color_light_disabled="@color/Unify_Static_White"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_disabled="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@id/barrier_bottom_like_dislike_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@id/tv_review_detail_like_count"
+        app:layout_constraintTop_toTopOf="@id/barrier_top_like_dislike_button" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_first_row_bottom"
         android:layout_width="1dp"
         android:layout_height="1dp"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="review_detail_rating,tv_review_detail_create_time,tv_review_detail_like_count,ic_review_detail_like_button,ic_review_detail_toggle_expand_button"
-        tools:layout_constraintTop_toBottomOf="@id/ic_review_detail_toggle_expand_button"
+        app:constraint_referenced_ids="review_detail_rating,tv_review_detail_create_time,tv_review_detail_like_count,barrier_bottom_like_dislike_button"
+        tools:layout_constraintTop_toBottomOf="@id/ic_review_detail_liked_button"
         tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_review_detail_reviewer_profile_picture"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_first_row_bottom"
         app:unify_image_type="circle" />
@@ -178,5 +160,16 @@
         app:layout_constraintEnd_toEndOf="@id/tv_review_detail_reviewer_stats_summary"
         app:layout_constraintStart_toStartOf="@id/iv_review_detail_reviewer_profile_picture"
         app:layout_constraintTop_toTopOf="@id/iv_review_detail_reviewer_profile_picture" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_detail_product_variant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:paddingHorizontal="2dp"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintTop_toBottomOf="@id/iv_review_detail_reviewer_profile_picture"
+        app:typographyType="body_3"
+        tools:text="Varian: Green" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

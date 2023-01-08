@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
+import com.tokopedia.attachproduct.analytics.AttachProductAnalytics.trackSendButtonClicked
 import com.tokopedia.attachproduct.databinding.FragmentAttachProductBinding
 import com.tokopedia.attachproduct.di.AttachProductModule
 import com.tokopedia.attachproduct.di.DaggerAttachProductComponent
@@ -61,7 +62,7 @@ class AttachProductFragment :
     }
 
     private var activityContract: AttachProductContract.Activity? = null
-    protected val adapter by lazy { AttachProductListAdapter(adapterTypeFactory) }
+    private val adapter by lazy { AttachProductListAdapter(adapterTypeFactory) }
     private var isSeller = false
     private var source = ""
     private var shopId = ""
@@ -209,7 +210,7 @@ class AttachProductFragment :
     }
 
     private fun initObserver() {
-        viewModel.products.observe(viewLifecycleOwner, { result ->
+        viewModel.products.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     hideAllLoadingIndicator()
@@ -220,19 +221,16 @@ class AttachProductFragment :
                         listData.removeAt(result.data.size - 1)
                     }
                     addProductToList(listData, hasNext)
-                    if (result.data.isNotEmpty()) {
-                        setShopName(listData.first().shopName)
-                    }
                 }
                 is Fail -> {
                     showErrorMessage(result.throwable)
                 }
             }
-        })
+        }
 
-        viewModel.checkedList.observe(viewLifecycleOwner, { result ->
+        viewModel.checkedList.observe(viewLifecycleOwner) { result ->
             updateButtonBasedOnChecked(result.size)
-        })
+        }
     }
 
     override fun onItemClicked(attachProductItemUiModel: AttachProductItemUiModel) {}
@@ -343,6 +341,7 @@ class AttachProductFragment :
         } ?: listOf()
         val resultProduct = arrayListOf<ResultProduct>()
         resultProduct.addAll(products)
+        trackSendButtonClicked(resultProduct)
         activityContract?.finishActivityWithResult(resultProduct)
     }
 
@@ -408,10 +407,6 @@ class AttachProductFragment :
                 AttachProductAnalytics.eventCheckProduct.event
             )
         }
-    }
-
-    override fun setShopName(shopName: String) {
-        activityContract?.setShopName(shopName)
     }
 
     override fun onDestroyView() {

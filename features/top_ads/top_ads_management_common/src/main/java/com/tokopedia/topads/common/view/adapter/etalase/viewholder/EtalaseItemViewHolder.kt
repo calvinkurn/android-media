@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.topads.common.R
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -12,7 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
  * Author errysuprayogi on 11,November,2019
  */
 class EtalaseItemViewHolder(val view: View, var actionClick: ((pos: Int) -> Unit)?) :
-    EtalaseViewHolder<EtalaseItemViewModel>(view) {
+    EtalaseViewHolder<EtalaseItemUiModel>(view) {
 
     val title: Typography? = view.findViewById(R.id.title)
     val check: ImageUnify? = view.findViewById(R.id.check)
@@ -28,7 +28,7 @@ class EtalaseItemViewHolder(val view: View, var actionClick: ((pos: Int) -> Unit
         }
     }
 
-    override fun bind(item: EtalaseItemViewModel) {
+    override fun bind(item: EtalaseItemUiModel) {
         item.let {
             title?.text = it.result.name
             check?.setImageDrawable(AppCompatResources.getDrawable(view.context,

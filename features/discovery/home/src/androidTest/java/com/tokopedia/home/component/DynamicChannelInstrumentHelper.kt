@@ -1,4 +1,5 @@
 package com.tokopedia.home.component
+
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
@@ -14,11 +15,19 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
+import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
-import com.tokopedia.home.beranda.presentation.view.helper.*
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK_INBOX
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_TOKONOW_COACHMARK
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_WALLETAPP2_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_WALLETAPP_COACHMARK_BALANCE
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -26,9 +35,9 @@ import com.tokopedia.recharge_component.presentation.adapter.viewholder.Recharge
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.core.AllOf
 
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER = "tracker/home/hpb.json"
@@ -59,6 +68,10 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY = "tracker/home
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET = "tracker/home/campaign_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_4_PRODUCT = "tracker/home/lego_4_product.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED = "tracker/home/balance_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED = "tracker/home/balance_widget_gopay_not_linked.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON = "tracker/home/home_icon.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -67,8 +80,7 @@ private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
  * Created by yfsx on 2/9/21.
  */
 
-fun disableCoachMark(context: Context){
-    disableHomeAnimation()
+fun disableCoachMark(context: Context) {
     disableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
@@ -77,10 +89,11 @@ fun disableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_TOKONOW_COACHMARK, true)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE, true)
+    setHomeTokonowCoachmarkSharedPrefValue(context, true)
 }
 
-fun enableCoachMark(context: Context){
-    disableHomeAnimation()
+fun enableCoachMark(context: Context) {
     enableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, false)
@@ -90,12 +103,8 @@ fun enableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE, false)
     setHomeTokonowCoachmarkSharedPrefValue(context, false)
-}
-
-fun disableHomeAnimation() {
-    BalanceWidgetView.disableAnimation = true
-    BalanceAdapter.disableAnimation = true
 }
 
 fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
@@ -105,20 +114,26 @@ fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
 
 fun setHomeTokonowCoachmarkSharedPrefValue(context: Context, value: Boolean) {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
-            PREF_KEY_HOME_TOKONOW_COACHMARK, Context.MODE_PRIVATE)
+        PREF_KEY_HOME_TOKONOW_COACHMARK,
+        Context.MODE_PRIVATE
+    )
     sharedPrefs.edit().putBoolean(PREF_KEY_HOME_TOKONOW_COACHMARK, value).apply()
 }
 
 fun disableChooseAddressCoachmark(context: Context) {
     val sharedPrefs = context.getSharedPreferences(CHOOSE_ADDRESS_PREFERENCE_NAME, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(
-            CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, false).apply()
+        CHOOSE_ADDRESS_EXTRA_IS_COACHMARK,
+        false
+    ).apply()
 }
 
 fun enableChooseAddressCoachmark(context: Context) {
     val sharedPrefs = context.getSharedPreferences(CHOOSE_ADDRESS_PREFERENCE_NAME, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(
-        CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, true).apply()
+        CHOOSE_ADDRESS_EXTRA_IS_COACHMARK,
+        true
+    ).apply()
 }
 
 fun waitForData() {
@@ -138,13 +153,12 @@ fun addDebugEnd() {
 
 fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (loggedIn) "-login" else "-nonlogin") + (if (darkMode) "-dark" else "-light")
 
-
-//==================================== item action =============================================
+// ==================================== item action =============================================
 
 fun clickOnProductHighlightItem() {
     try {
         Espresso.onView(firstView(ViewMatchers.withId(R.id.master_product_card_deals)))
-                .perform(ViewActions.click())
+            .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -209,24 +223,24 @@ fun clickHomeRecommendationItem(): ViewAction? {
     }
 }
 
-fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){
+fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView) {
     waitForData()
     val adapter = (homeRecyclerView.adapter as HomeRecycleAdapter)
     val reminderWidgetModel = adapter.currentList.get(itemPosition)
     val reminderModel = reminderWidgetModel as ReminderWidgetModel
-    if(reminderModel.source.equals(ReminderEnum.SALAM)) {
+    if (reminderModel.source.equals(ReminderEnum.SALAM)) {
         clickClosedReminderWidgetSalam()
     } else {
         clickClosedReminderWidgetRecharge()
     }
 }
 
-fun clickOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){
+fun clickOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView) {
     waitForData()
     val adapter = (homeRecyclerView.adapter as HomeRecycleAdapter)
     val reminderWidgetModel = adapter.currentList.get(itemPosition)
     val reminderModel = reminderWidgetModel as ReminderWidgetModel
-    if(reminderModel.source.equals(ReminderEnum.SALAM)) {
+    if (reminderModel.source.equals(ReminderEnum.SALAM)) {
         clickReminderWidgetSalam()
     } else {
         clickReminderWidgetRecharge(itemPosition)
@@ -273,10 +287,15 @@ fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_mission_widget_rcv, 0)
 }
 
+fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition, -200)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
+}
+
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
     val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
 
-    var childItemCountExcludeViewAllCard = (childRecyclerView.adapter?.itemCount?: 0) - 1
+    var childItemCountExcludeViewAllCard = (childRecyclerView.adapter?.itemCount ?: 0) - 1
     if (fixedItemPositionLimit > 0) {
         childItemCountExcludeViewAllCard = fixedItemPositionLimit
     }
@@ -305,7 +324,7 @@ fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, 
         )
 }
 
-fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int){
+fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickEmptyBannerRechargeBUWidget()
     impressionRechargeBUWidget()
     clickProductRechargeBUWidget()
@@ -316,14 +335,14 @@ fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int
 private fun impressionRechargeBUWidget() {
     waitForData()
     try {
-    Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
+        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
             .perform(RecyclerViewActions.scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-private fun clickProductRechargeBUWidget(){
+private fun clickProductRechargeBUWidget() {
     waitForData()
     try {
         Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
@@ -343,32 +362,36 @@ fun actionOnCampaignWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: In
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycler_view, 0)
 }
 
-private fun clickAllProductCardRechargeBUWidget(){
+private fun clickAllProductCardRechargeBUWidget() {
     waitForData()
     try {
         Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product)).perform(scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
         Espresso.onView(ViewMatchers.withId(R.id.card_see_more_banner_mix))
-            .perform(ViewActions.click());
+            .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-private fun clickEmptyBannerRechargeBUWidget(){
+private fun clickEmptyBannerRechargeBUWidget() {
     waitForData()
     try {
         Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<CarouselEmptyCardViewHolder>(0, ViewActions.click()))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<CarouselEmptyCardViewHolder>(0, ViewActions.click()))
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-private fun clickSeeAllRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int){
+private fun clickSeeAllRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     waitForData()
     try {
-        Espresso.onView(allOf(ViewMatchers.withId(R.id.see_all_button),
-                ViewMatchers.hasSibling(ViewMatchers.withText("Produk digital khusus kamu")))).perform(ViewActions.click())
+        Espresso.onView(
+            allOf(
+                ViewMatchers.withId(R.id.see_all_button),
+                ViewMatchers.hasSibling(ViewMatchers.withText("Produk digital khusus kamu"))
+            )
+        ).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -382,13 +405,25 @@ private fun clickRecommendationFeedTab() {
     }
 }
 
+fun clickAllRecommendationFeedTabs(view: View) {
+    try {
+        val tabLayout: CollapsingTabLayout = view.findViewById(R.id.tab_layout_home_feeds)
+        val count = tabLayout.tabCount
+        for (i in 0 until count) {
+            Espresso.onView(ViewMatchers.withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(i))
+        }
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+}
+
 private fun clickOnMixTopCTA(view: View) {
     val childView = view
     val bannerButton = childView.findViewById<View>(R.id.banner_button)
     if (bannerButton.visibility == View.VISIBLE) {
         try {
             Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
-                    .perform(ViewActions.click())
+                .perform(ViewActions.click())
         } catch (e: PerformException) {
             e.printStackTrace()
         }
@@ -398,7 +433,7 @@ private fun clickOnMixTopCTA(view: View) {
 private fun clickLihatSemuaPopularKeyword() {
     try {
         Espresso.onView(firstView(ViewMatchers.withId(R.id.tv_reload)))
-                .perform(ViewActions.click())
+            .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -421,7 +456,7 @@ private fun clickTickerItem(view: View) {
 
     try {
         Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
-                .perform(ViewActions.click())
+            .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -432,34 +467,34 @@ private fun clickHomeBannerItemAndViewAll(viewHolder: RecyclerView.ViewHolder) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_more_label)
 
-    //banner item click
+    // banner item click
     val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
     val itemCount = bannerViewPager.getViewPager().adapter?.itemCount ?: 0
     bannerViewPager.pauseAutoScroll()
     try {
         Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
-                .perform(ViewActions.click())
+            .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
-    //see all promo button click
+    // see all promo button click
     if (seeAllButton.visibility == View.VISIBLE) {
         try {
             Espresso.onView(firstView(ViewMatchers.withId(R.id.see_more_label)))
-                    .perform(ViewActions.click())
+                .perform(ViewActions.click())
         } catch (e: PerformException) {
             e.printStackTrace()
         }
     }
 }
 
-private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int) {
+private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVerticalBy: Int = 0) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
     if (seeAllButton.visibility == View.VISIBLE) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button, scrollVerticalBy)))
         } catch (e: PerformException) {
             e.printStackTrace()
         }
@@ -469,87 +504,88 @@ private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int) {
 private fun clickSingleItemOnRecyclerView(recyclerViewId: Int) {
     try {
         Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, ViewActions.click()))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, ViewActions.click()))
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-private fun clickClosedReminderWidgetSalam(){
+private fun clickClosedReminderWidgetSalam() {
     try {
-        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(AllOf.allOf(ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
-                ViewMatchers.isDisplayed()),0)).perform(ViewActions.click())
+        Espresso.onView(
+            CommonMatcher.getElementFromMatchAtPosition(
+                AllOf.allOf(
+                    ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
+                    ViewMatchers.isDisplayed()
+                ),
+                0
+            )
+        ).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-private fun clickClosedReminderWidgetRecharge(){
+private fun clickClosedReminderWidgetRecharge() {
     try {
-        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(AllOf.allOf(ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
-                ViewMatchers.isDisplayed()),0)).perform(ViewActions.click())
+        Espresso.onView(
+            CommonMatcher.getElementFromMatchAtPosition(
+                AllOf.allOf(
+                    ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
+                    ViewMatchers.isDisplayed()
+                ),
+                0
+            )
+        ).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-private fun clickReminderWidgetSalam(){
+private fun clickReminderWidgetSalam() {
     try {
-        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), ViewMatchers.isDisplayed(),
-                ViewMatchers.withText("Berbagi Sekarang"))).perform(ViewActions.click())
+        Espresso.onView(
+            AllOf.allOf(
+                ViewMatchers.withId(R.id.btn_reminder_recommendation),
+                ViewMatchers.isDisplayed(),
+                ViewMatchers.withText("Berbagi Sekarang")
+            )
+        ).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-private fun clickReminderWidgetRecharge(i:Int){
+private fun clickReminderWidgetRecharge(i: Int) {
     try {
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i-1))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i - 1))
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i))
-        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(AllOf.allOf(ViewMatchers.withId(R.id.btn_reminder_recommendation), ViewMatchers.isDisplayed(),
-                ViewMatchers.withText("Bayar Sekarang")),0)).perform(ViewActions.click())
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i))
+        Espresso.onView(
+            CommonMatcher.getElementFromMatchAtPosition(
+                AllOf.allOf(
+                    ViewMatchers.withId(R.id.btn_reminder_recommendation),
+                    ViewMatchers.isDisplayed(),
+                    ViewMatchers.withText("Bayar Sekarang")
+                ),
+                0
+            )
+        ).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-//==================================== end of item action ======================================
+fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_balance_widget_data, 0)
+}
 
+fun actionOnDynamicIcon(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dynamic_icon_recycler_view, 0)
+}
 
-//==================================== cassava validator =======================================
-
-//
-//fun getAssertBUWiddet(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET),
-//            hasAllSuccess())
-////    -> impression tab intermitten missing
-//}
-//
-//fun getAssertHPB(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
-//            hasAllSuccess())
-////    -> impression missing
-//}
-//
-//fun getAssertListCarousel(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL),
-//            hasAllSuccess())
-////    -> cant mock occ response
-//}
-//
-//fun getAssertRecommendationIcon(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON),
-//            hasAllSuccess())
-////    -> missing click
-//}
-//
-//fun getAssertRecommendationFeedTab(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB),
-//            hasAllSuccess())
-//}
-//==================================== end of cassava validator ================================
+// ==================================== end of item action ======================================
 
 private fun <T> firstView(matcher: Matcher<T>): Matcher<T>? {
     return object : BaseMatcher<T>() {
@@ -568,13 +604,17 @@ private fun <T> firstView(matcher: Matcher<T>): Matcher<T>? {
     }
 }
 
-private fun clickOnViewChild(viewId: Int) = object: ViewAction {
-    override fun getDescription(): String  = ""
+private fun clickOnViewChild(viewId: Int, scrollVerticalBy: Int = 0) = object : ViewAction {
+    override fun getDescription(): String = ""
 
     override fun getConstraints() = null
 
-    override fun perform(uiController: UiController, view: View)
-            = ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
+    override fun perform(uiController: UiController, view: View) {
+        if (scrollVerticalBy != 0) {
+            view.scrollBy(0, scrollVerticalBy)
+        }
+        ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
+    }
 }
 
 private fun selectTabAtPosition(tabIndex: Int): ViewAction {
@@ -586,9 +626,9 @@ private fun selectTabAtPosition(tabIndex: Int): ViewAction {
         override fun perform(uiController: UiController, view: View) {
             val tabLayout = view as TabLayout
             val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex)
-                    ?: throw PerformException.Builder()
-                            .withCause(Throwable("No tab at index $tabIndex"))
-                            .build()
+                ?: throw PerformException.Builder()
+                    .withCause(Throwable("No tab at index $tabIndex"))
+                    .build()
 
             tabAtIndex.select()
         }

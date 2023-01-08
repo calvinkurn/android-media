@@ -115,16 +115,14 @@ object MvcLockedToProductMapper {
         productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data,
         isSellerView: Boolean
     ): ProductCardModel {
-        return if(!MvcLockedToProductUtil.isMvcPhase2()){
-            createProductCardModelPhase1(productResponse)
-        } else {
+
             val model = createBaseProductCartModelPhase2(productResponse)
             if (productResponse.isVariant() || isSellerView) {
-                createProductCardWithDefaultAtcModel(model)
+                return createProductCardWithDefaultAtcModel(model)
             } else {
-                createProductCardWithQuantityAtcModel(productResponse, model)
+                return createProductCardWithQuantityAtcModel(productResponse, model)
             }
-        }
+
     }
 
     private fun createBaseProductCartModelPhase2(

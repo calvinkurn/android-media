@@ -12,15 +12,13 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.mock.HotelBookingMockResponseConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,14 +29,12 @@ import org.junit.Test
 class HotelBookingActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     var activityRule: IntentsTestRule<HotelBookingActivity> = object : IntentsTestRule<HotelBookingActivity>(HotelBookingActivity::class.java) {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(HotelBookingMockResponseConfig())
             login()
         }
@@ -47,6 +43,9 @@ class HotelBookingActivityTest {
             return HotelBookingActivity.getCallingIntent(context, "123")
         }
     }
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun setUp() {
@@ -63,7 +62,7 @@ class HotelBookingActivityTest {
         Espresso.onView(withId(R.id.booking_button)).perform(click())
 
         Thread.sleep(2000)
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_BOOKING_PAGE),
+        ViewMatchers.assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_HOTEL_BOOKING_PAGE),
                 hasAllSuccess())
     }
 
@@ -81,11 +80,6 @@ class HotelBookingActivityTest {
                 userSession.isGoldMerchant,
                 userSession.phoneNumber
         )
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     companion object {

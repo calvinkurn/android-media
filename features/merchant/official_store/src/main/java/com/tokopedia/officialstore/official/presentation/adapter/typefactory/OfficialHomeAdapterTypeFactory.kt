@@ -15,6 +15,7 @@ import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
@@ -33,7 +34,8 @@ class OfficialHomeAdapterTypeFactory(
         private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
         private val specialReleaseComponentListener: SpecialReleaseComponentListener,
-        private val onTopAdsHeadlineClicked: (applink: String) -> Unit
+        private val onTopAdsHeadlineClicked: (applink: String) -> Unit,
+        private val recommendationListener: RecommendationListener,
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
     override fun type(officialLoadingDataModel: OfficialLoadingDataModel): Int {
@@ -152,6 +154,10 @@ class OfficialHomeAdapterTypeFactory(
         return SpecialReleaseViewHolder.LAYOUT
     }
 
+    override fun type(officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel): Int {
+        return OfficialTopAdsBannerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             MerchantVoucherViewHolder.LAYOUT -> MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
@@ -162,16 +168,16 @@ class OfficialHomeAdapterTypeFactory(
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(view, dcEventHandler)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(view)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(view, featuredShopListener)
-            DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(view, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(view, dcEventHandler)
             MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(view, mixLeftComponentListener, homeComponentListener, recycledViewPool)
             MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(view, homeComponentListener, mixTopComponentListener)
             OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(view)
-            OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(view)
+            OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(view, recommendationListener)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
             FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopDCListener, homeComponentListener)
             HideViewHolder.LAYOUT -> HideViewHolder(view)
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(view, legoBannerListener, homeComponentListener)
+            OfficialTopAdsBannerViewHolder.LAYOUT -> OfficialTopAdsBannerViewHolder(view)
             FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(
                     itemView = view,
                     homeComponentListener = homeComponentListener,

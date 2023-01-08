@@ -26,5 +26,6 @@ data class SomDetailShipping (
         val awb: String = "",
         val awbTextColor: String = "",
         val isShippingPrinted: Boolean = false,
+        val shipmentLogo: String = "",
         val logisticInfo: SomDetailOrder.Data.GetSomDetail.LogisticInfo = SomDetailOrder.Data.GetSomDetail.LogisticInfo()
 )

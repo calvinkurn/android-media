@@ -7,6 +7,7 @@ import com.tokopedia.updateinactivephone.stub.features.inputoldphonenumber.Input
 import org.junit.Rule
 
 abstract class BaseInputOldPhoneNumberTest : BaseInactivePhoneTest() {
+
     @get:Rule
     var activityInputOldPhoneNumberRule = IntentsTestRule(
         InputOldPhoneNumberActivityStub::class.java, false, false

@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.domain.usecase
 
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
-import com.tokopedia.chatbot.domain.gqlqueries.GQL_INBOX_LIST
+import com.tokopedia.chatbot.domain.gqlqueries.queries.GQL_INBOX_LIST
 import com.tokopedia.chatbot.domain.gqlqueries.InboxTicketListQuery
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

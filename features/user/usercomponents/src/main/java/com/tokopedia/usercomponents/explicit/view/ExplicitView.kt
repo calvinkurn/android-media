@@ -10,16 +10,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usercomponents.R
@@ -27,84 +25,45 @@ import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitFailedBindin
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
 import com.tokopedia.usercomponents.explicit.analytics.ExplicitAnalytics
-import com.tokopedia.usercomponents.explicit.di.DaggerExplicitComponent
+import com.tokopedia.usercomponents.explicit.domain.model.OptionsItem
 import com.tokopedia.usercomponents.explicit.domain.model.Property
-import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
-import javax.inject.Inject
+import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
 
-class ExplicitView : CardUnify2, ExplicitAction {
+class ExplicitView constructor(
+    context: Context,
+    attrs: AttributeSet? = null
+) : CardUnify(context, attrs), ExplicitAction {
 
-    @Inject
-    lateinit var explicitAnalytics: ExplicitAnalytics
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var viewModel: ExplicitViewModel? = null
+    private var explicitViewContract: ExplicitViewContract? = null
 
     private var bindingQuestion: LayoutWidgetExplicitQuestionBinding? = null
     private var bindingSuccess: LayoutWidgetExplicitSuccessBinding? = null
     private var bindingFailed: LayoutWidgetExplicitFailedBinding? = null
 
-    private var templateName = ""
-    private var pageName = ""
-    private var pagePath = ""
-    private var pageType = ""
+    private var explicitData = ExplicitData()
     private var preferenceAnswer: Boolean? = null
 
-    private var onWidgetDismissListener: (() -> Unit)? = null
-    private var onWidgetFinishListener: (() -> Unit)? = null
+    private var onWidgetDismissListener: () -> Unit = {}
+    private var onWidgetFinishListener: () -> Unit = {}
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        checkAttribute(attrs)
+    override fun setupView(explicitViewContract: ExplicitViewContract, data: ExplicitData) {
+        this.explicitViewContract = explicitViewContract
+
+        explicitData = data
+
         initView()
     }
 
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        templateName: String,
-        pageName: String,
-        pagePath: String,
-        pageType: String
-    ) : super(
-        context,
-        attrs
-    ) {
-        this.templateName = templateName
-        this.pageName = pageName
-        this.pagePath = pagePath
-        this.pageType = pageType
-        initView()
-    }
-
-    private fun checkAttribute(attrs: AttributeSet?) {
-
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.ExplicitView,
-            0, 0
-        ).apply {
-
-            try {
-                //you must set template name!
-                templateName = getString(R.styleable.ExplicitView_template_name) ?: ""
-                pageName = getString(R.styleable.ExplicitView_page_name) ?: ""
-                pagePath = getString(R.styleable.ExplicitView_page_path) ?: ""
-                pageType = getString(R.styleable.ExplicitView_page_type) ?: ""
-            } finally {
-                recycle()
-            }
-
-            val isEmptyRequireAttribute = templateName.isEmpty() || pageName.isEmpty() || pagePath.isEmpty() || pageType.isEmpty()
-            if (GlobalConfig.DEBUG && isEmptyRequireAttribute)
-                throw IllegalArgumentException(context.getString(R.string.explicit_error_attribute))
-        }
-    }
+    override fun isViewAttached() = explicitViewContract != null
 
     private fun initView() {
         initBinding()
-        initInjector()
-        initListener()
+        if (explicitViewContract?.isLoggedIn() == true) {
+            initObserver()
+            initListener()
+        } else {
+            onDismiss()
+        }
     }
 
     private fun initBinding() {
@@ -113,27 +72,13 @@ class ExplicitView : CardUnify2, ExplicitAction {
         bindingFailed = LayoutWidgetExplicitFailedBinding.inflate(LayoutInflater.from(context), this, false)
     }
 
-    private fun initInjector() {
-        context?.let {
-            val component = DaggerExplicitComponent.builder()
-                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-            component.inject(this)
-
-            if (it is ComponentActivity) {
-                viewModel = ViewModelProvider(it, viewModelFactory).get(ExplicitViewModel::class.java)
-
-                initObserver()
-            }
-        }
-    }
-
     private fun initObserver() {
-        viewModel?.getExplicitContent(templateName)
+        onLoading()
+        explicitViewContract?.getExplicitContent(explicitData.templateName)
 
         val lifecycleOwner = context as LifecycleOwner
 
-        viewModel?.explicitContent?.observe(lifecycleOwner) {
+        explicitViewContract?.explicitContent?.observe(lifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.first) {
@@ -149,21 +94,15 @@ class ExplicitView : CardUnify2, ExplicitAction {
             }
         }
 
-        viewModel?.statusSaveAnswer?.observe(lifecycleOwner) {
+        explicitViewContract?.statusSaveAnswer?.observe(lifecycleOwner) {
             when (it) {
-                is Success -> onSubmitSuccessShow()
+                is Success -> onSubmitSuccessShow(it.data.first)
                 is Fail -> onFailed()
             }
         }
 
-        viewModel?.isQuestionLoading?.observe(lifecycleOwner) {
-            if (it) {
-                onLoading()
-            }
-        }
-
-        viewModel?.statusUpdateState?.observeOnce(lifecycleOwner) {
-            onWidgetFinishListener?.invoke()
+        explicitViewContract?.statusUpdateState?.observeOnce(lifecycleOwner) {
+            onWidgetFinishListener.invoke()
         }
     }
 
@@ -172,34 +111,37 @@ class ExplicitView : CardUnify2, ExplicitAction {
             txtTitle.text = data?.title
             txtDescription.text = data?.subtitle
             imgIcon.urlSrc = data?.image ?: ""
-            btnPositifAction.text = data?.options?.get(0)?.caption
-            btnNegatifAction.text = data?.options?.get(1)?.caption
+            btnPositiveAction.text = data?.options?.get(0)?.caption
+            btnNegativeAction.text = data?.options?.get(1)?.caption
         }
     }
 
     private fun initListener() {
 
         bindingQuestion?.imgDismiss?.setOnClickListener {
-            explicitAnalytics.trackClickDismissButton(pageName, templateName, pagePath, pageType)
-            viewModel?.updateState()
+            ExplicitAnalytics.trackClickDismissButton(explicitData)
+            explicitViewContract?.updateState()
             onDismiss()
         }
 
-        bindingSuccess?.imgSuccessDismiss?.setOnClickListener { onDismiss() }
+        bindingSuccess?.imgSuccessDismiss?.setOnClickListener {
+            onDismiss()
+            onWidgetFinishListener.invoke()
+        }
 
-        bindingQuestion?.btnPositifAction?.setOnClickListener {
+        bindingQuestion?.btnPositiveAction?.setOnClickListener {
             onButtonPositiveClicked()
         }
 
-        bindingQuestion?.btnNegatifAction?.setOnClickListener {
+        bindingQuestion?.btnNegativeAction?.setOnClickListener {
             onButtonNegativeClicked()
         }
 
         bindingFailed?.containerLocalLoad?.refreshBtn?.setOnClickListener {
-            if (preferenceAnswer == null)
-                viewModel?.getExplicitContent(templateName)
-            else {
-                onLoading()
+            onLoading()
+            if (preferenceAnswer == null) {
+                explicitViewContract?.getExplicitContent(explicitData.templateName)
+            } else {
                 saveAnswer()
             }
         }
@@ -207,7 +149,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     private fun saveAnswer() {
         if (preferenceAnswer != null) {
-            viewModel?.sendAnswer(preferenceAnswer)
+            explicitViewContract?.sendAnswer(preferenceAnswer)
         }
     }
 
@@ -220,8 +162,8 @@ class ExplicitView : CardUnify2, ExplicitAction {
             imgDismiss.invisible()
             txtTitle.invisible()
             txtDescription.invisible()
-            btnPositifAction.invisible()
-            btnNegatifAction.invisible()
+            btnPositiveAction.invisible()
+            btnNegativeAction.invisible()
         }
         replaceView(bindingQuestion?.root)
     }
@@ -229,57 +171,61 @@ class ExplicitView : CardUnify2, ExplicitAction {
     override fun onQuestionShow() {
         showShadow(true)
         bindingQuestion?.apply {
-            imgShimmer.gone()
+            imgShimmer.hide()
             imgBackground.visible()
             imgIcon.visible()
             imgDismiss.visible()
             txtTitle.visible()
             txtDescription.visible()
-            btnPositifAction.apply {
+            btnPositiveAction.apply {
                 visible()
                 isLoading = false
                 isEnabled = true
             }
-            btnNegatifAction.apply {
+            btnNegativeAction.apply {
                 visible()
                 isLoading = false
                 isEnabled = true
             }
         }
         replaceView(bindingQuestion?.root)
-        explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
+        ExplicitAnalytics.trackQuestionShow(explicitData)
     }
 
     override fun onButtonPositiveClicked() {
-        explicitAnalytics.trackClickPositifButton(pageName, templateName, pagePath, pageType)
+        ExplicitAnalytics.trackClickPositiveButton(explicitData)
         bindingQuestion?.apply {
-            btnPositifAction.isLoading = true
-            btnNegatifAction.isEnabled = false
+            btnPositiveAction.isLoading = true
+            btnNegativeAction.isEnabled = false
         }
         preferenceAnswer = true
         saveAnswer()
     }
 
     override fun onButtonNegativeClicked() {
-        explicitAnalytics.trackClickNegatifButton(pageName, templateName, pagePath, pageType)
+        ExplicitAnalytics.trackClickNegativeButton(explicitData)
         bindingQuestion?.apply {
-            btnNegatifAction.isLoading = true
-            btnPositifAction.isEnabled = false
+            btnNegativeAction.isLoading = true
+            btnPositiveAction.isEnabled = false
         }
         preferenceAnswer = false
         saveAnswer()
     }
 
-    override fun onSubmitSuccessShow() {
+    override fun onSubmitSuccessShow(data: OptionsItem?) {
         showShadow(true)
-        initSuccessMessageText()
+        initSuccessMessageText(
+            data?.message.orEmpty(),
+            data?.textApplink.orEmpty(),
+            data?.applink.orEmpty()
+        )
         replaceView(bindingSuccess?.root)
     }
 
     override fun onDismiss() {
         this.hide()
         onCleared()
-        onWidgetDismissListener?.invoke()
+        onWidgetDismissListener.invoke()
     }
 
     override fun onFailed() {
@@ -300,13 +246,20 @@ class ExplicitView : CardUnify2, ExplicitAction {
         }
     }
 
-    private fun initSuccessMessageText() {
-        val message = context.getString(R.string.explicit_succes_message)
+    private fun initSuccessMessageText(
+        messageSuccess: String,
+        textApplink: String,
+        applink: String
+    ) {
+        val message = "$messageSuccess $textApplink"
+        val indexStar = messageSuccess.length + 1
+        val indexEnd = indexStar + textApplink.length
+
         val spannable = SpannableString(message)
         spannable.setSpan(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
-                    goToExplicitProfilePreference()
+                    goToExplicitProfilePreference(applink)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -317,18 +270,18 @@ class ExplicitView : CardUnify2, ExplicitAction {
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             },
-            message.indexOf(context.getString(R.string.explicit_succes_message_action)),
-            message.indexOf(context.getString(R.string.explicit_succes_message_action)) + context.getString(
-                R.string.explicit_succes_message_action
-            ).length,
+            indexStar,
+            indexEnd,
             0
         )
-        bindingSuccess?.txtSuccessTitle?.movementMethod = LinkMovementMethod.getInstance()
-        bindingSuccess?.txtSuccessTitle?.setText(spannable, TextView.BufferType.SPANNABLE)
+        bindingSuccess?.txtSuccessTitle?.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            setText(spannable, TextView.BufferType.SPANNABLE)
+        }
     }
 
-    private fun goToExplicitProfilePreference() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE)
+    private fun goToExplicitProfilePreference(applink: String) {
+        val intent = RouteManager.getIntent(context, applink)
         context.startActivity(intent)
     }
 
@@ -336,20 +289,16 @@ class ExplicitView : CardUnify2, ExplicitAction {
         this.cardType = if (isShow) TYPE_SHADOW else TYPE_CLEAR
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        onCleared()
-    }
-
     override fun onCleared() {
         val lifecycleOwner = context as LifecycleOwner
-        viewModel?.explicitContent?.removeObservers(lifecycleOwner)
-        viewModel?.statusSaveAnswer?.removeObservers(lifecycleOwner)
-        viewModel?.isQuestionLoading?.removeObservers(lifecycleOwner)
+        explicitViewContract?.explicitContent?.removeObservers(lifecycleOwner)
+        explicitViewContract?.statusSaveAnswer?.removeObservers(lifecycleOwner)
+        explicitViewContract?.statusUpdateState?.removeObservers(lifecycleOwner)
         removeAllViews()
         bindingFailed = null
         bindingQuestion = null
         bindingSuccess = null
+        explicitViewContract = null
     }
 
     fun setOnWidgetDismissListener(listener: () -> Unit) {
@@ -359,4 +308,5 @@ class ExplicitView : CardUnify2, ExplicitAction {
     fun setOnWidgetFinishListener(listener: () -> Unit) {
         onWidgetFinishListener = listener
     }
+
 }

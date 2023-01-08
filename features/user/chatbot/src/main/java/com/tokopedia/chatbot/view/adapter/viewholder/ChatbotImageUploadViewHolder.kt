@@ -31,6 +31,7 @@ import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,18 +54,18 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-        chatBalloon,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_chatbot_2,
-        R.dimen.dp_chatbot_1,
-        Gravity.CENTER,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
-        getStrokeWidthSenderDimenRes()
+            chatBalloon,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_chatbot_2,
+            R.dimen.dp_chatbot_1,
+            Gravity.CENTER,
+            R.color.chatbot_dms_stroke,
+            getStrokeWidthSenderDimenRes()
     )
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
@@ -83,10 +84,6 @@ class ChatbotImageUploadViewHolder(itemView: View?,
 
     private val attachmentUnify get() = attachment as? ImageUnify
 
-    private val imageRadius =
-        itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-            ?: 0f
-
     override fun bind(element: ImageUploadUiModel) {
         super.bind(element)
         chatStatus?.let { bindChatReadStatus(element, it) }
@@ -100,6 +97,17 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             chatBalloon?.background = bgSender
         else
             chatBalloon?.background = bgOpposite
+    }
+
+    override fun bindClickListener(element: ImageUploadUiModel) {
+        chatBalloon?.setOnClickListener { view ->
+            val imageUrl = element.imageUrl.toEmptyStringIfNull()
+            val replyTime = element.replyTime.toEmptyStringIfNull()
+            if (imageUrl.isNotEmpty() && replyTime.isNotEmpty()) {
+                listener.onImageUploadClicked(
+                    imageUrl, replyTime, false)
+            }
+        }
     }
 
     override fun bindImageAttachment(element: ImageUploadUiModel) {
@@ -127,7 +135,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         }
     }
 
-    fun getStrokeWidthSenderDimenRes(): Int {
+    private fun getStrokeWidthSenderDimenRes(): Int {
         return R.dimen.dp_chatbot_3
     }
 

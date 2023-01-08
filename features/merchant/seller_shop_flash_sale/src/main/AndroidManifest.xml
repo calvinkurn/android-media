@@ -3,42 +3,39 @@
     package="com.tokopedia.seller_shop_flash_sale">
 
     <application>
-
+        <activity
+            android:name="com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringActivity"
+            android:exported="false" />
         <activity
             android:name="com.tokopedia.shop.flashsale.presentation.detail.CampaignDetailActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name="com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name="com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name="com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name="com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name="com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity"
             android:configChanges="orientation"
@@ -58,7 +55,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity"
             android:configChanges="orientation"
@@ -66,7 +62,6 @@
             android:label="@string/sfs_your_shop_flash_sale"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
     </application>
 
 </manifest>

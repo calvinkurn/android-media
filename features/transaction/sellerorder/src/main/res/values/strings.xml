@@ -66,6 +66,7 @@
     <string name="sale_from_top_ads">Penjualan dari TopAds</string>
     <string name="sale_from_broadcast_chat">Penjualan dari Broadcast Chat</string>
     <string name="som_detail_product_note_format"><![CDATA[<i>%1$s</i>]]></string>
+    <string name="som_response_deadline">Batas respons</string>
 
     <string name="chat">Chat</string>
 
@@ -231,14 +232,10 @@
     <string name="som_list_bulk_accept_order_product_amount">%1$s Barang</string>
     <string name="som_list_failed_accept_order">Gagal terima pesanan.</string>
     <string name="som_list_order_cannot_be_selected">Oops, pesanan tidak dapat dipilih</string>
-    <string name="som_list_coachmark_new_order_card_title">Cepat cek dan terima pesanan</string>
-    <string name="som_list_coachmark_new_order_card_description">Sekarang kamu bisa cek info kurir dan kota tujuan. Klik tombol untuk langsung terima pesanan.</string>
-    <string name="som_list_coachmark_sort_filter_title">Gampang cari pesanan dengan filter</string>
-    <string name="som_list_coachmark_sort_filter_description">Cukup geser untuk cari pesanan berdasarkan status dan sentuh tombol untuk lihat info detail.</string>
-    <string name="som_list_coachmark_waiting_payment_title">Fokus tunggu pembayaran pembeli</string>
-    <string name="som_list_coachmark_waiting_payment_description">Selain menunggu dan cek pesanan terbayar, pesanan gagal bayar atau terbayar saat stok habis nggak akan ditampilkan.</string>
-    <string name="som_list_coachmark_multi_select_title">Bisa atur pesanan sekaligus banyak</string>
-    <string name="som_list_coachmark_multi_select_description">Klik tombol Pilih Sekaligus untuk terima pesanan, cetak label, atau request pick-up beberapa order.</string>
+    <string name="som_list_coachmark_order_card_title">Cek ringkasan pesanan</string>
+    <string name="som_list_coachmark_order_card_description">Perhatikan tipe pesanan, tipe kurir, dan batas respons. Utamakan pesanan PLUS untuk kamu proses, ya.</string>
+    <string name="som_list_coachmark_sort_filter_title">Gunakan filter pesanan</string>
+    <string name="som_list_coachmark_sort_filter_description">Temukan tipe pesanan yang ingin kamu layani duluan dan tipe kurir yang sering kamu gunakan.</string>
     <string name="som_list_empty_state_not_found_title">Oops, pesanan yang kamu cari nggak ditemukan.</string>
     <string name="som_list_button_ok">OK</string>
     <string name="som_list_pre_order_flag">(PO)</string>
@@ -359,10 +356,16 @@
     <string name="som_detail_add_on_see_more_description"><![CDATA[<a href="#">Lihat Selengkapnya</a>.]]></string>
     <string name="som_detail_add_on_description_copyable_format"><![CDATA[Ke\t\t\t: %1$s<br/>Dari\t: %2$s<br/>%3$s]]></string>
     <string name="som_detail_add_on_description_copied_message">Pesan berhasil disalin</string>
+    <string name="som_detail_shipment_name_chevron_right"><![CDATA[>]]></string>
 
   <!--wording cancellation dialog-->
     <string name="som_request_cancellation_title_continue_send_order_dialog">Lanjut kirim pesanan ini?</string>
     <string name="som_request_cancellation_desc_continue_send_order_dialog">Untuk menghindari komplain, pastikan pengiriman pesanan sudah dapat persetujuan dari pembeli.</string>
     <string name="som_request_cancellation_btn_primary_continue_send_order_dialog">Lanjut Kirim</string>
     <string name="som_request_cancellation_desc_confirm_cancellation_order_dialog">Pastikan pesanan belum diserahkan ke kurir sebelum membatalkan. Skor Performa Toko tidak dikurangi.</string>
+
+<!--   invoice-->
+    <string name="click_to_copy_icon_content_description">Tombol salin nomor invoice</string>
+    <string name="success_invoice_copied">Nomor invoice berhasil tersalin</string>
+
 </resources>

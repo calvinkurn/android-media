@@ -16,6 +16,7 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
     val uploadBatchNumber: Int
     val finishUploadTimestamp: Long
     val state: State
+    val message: String
 
     fun areItemsTheSame(other: Any?): Boolean
     fun areContentsTheSame(other: Any?): Boolean
@@ -35,6 +36,7 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
         override val uploadBatchNumber: Int,
         override val finishUploadTimestamp: Long = 0L,
         override val state: State,
+        override val message: String = "",
     ) : CreateReviewMediaUiModel {
         override fun areItemsTheSame(other: Any?): Boolean {
             return other is Image && uri == other.uri
@@ -64,6 +66,7 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
         override val uploadBatchNumber: Int,
         override val finishUploadTimestamp: Long = 0L,
         override val state: State,
+        override val message: String = "",
         val remoteUrl: String = ""
     ) : CreateReviewMediaUiModel {
         override fun areItemsTheSame(other: Any?): Boolean {
@@ -71,7 +74,7 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
         }
 
         override fun areContentsTheSame(other: Any?): Boolean {
-            return other is Image && state == other.state
+            return other is Video && state == other.state
         }
 
         override fun getChangePayload(other: Any?): Bundle {
@@ -94,6 +97,7 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
         override val uploadBatchNumber: Int = 0,
         override val finishUploadTimestamp: Long = 0L,
         override val state: State = State.UPLOADED,
+        override val message: String = "",
         val enabled: Boolean
     ) : CreateReviewMediaUiModel {
         override fun areItemsTheSame(other: Any?): Boolean {
@@ -129,13 +133,15 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
             get() = 0L
         override val state: State
             get() = State.UPLOADED
+        override val message: String
+            get() = ""
 
         override fun areItemsTheSame(other: Any?): Boolean {
             return other is AddLarge
         }
 
         override fun areContentsTheSame(other: Any?): Boolean {
-            return other is AddLarge
+            return this == other
         }
 
         override fun getChangePayload(other: Any?): Bundle {

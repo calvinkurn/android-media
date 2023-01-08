@@ -47,7 +47,7 @@ data class ProductsItem(
         var imageURL: String = "",
 
         @field:SerializedName("id")
-        var id: Int? = null,
+        var id: String? = null,
 
         @field:SerializedName("categoryBreadcrumb")
         val categoryBreadcrumb: String? = null,

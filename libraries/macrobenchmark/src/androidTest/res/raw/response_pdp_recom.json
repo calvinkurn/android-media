@@ -1,0 +1,496 @@
+[
+  {
+    "data": {
+      "productRecommendationWidget": {
+        "data": [
+          {
+            "tID": "4A9UjeTvKOV2mghiBRHmw492r5E=",
+            "source": "custom",
+            "title": "Produk sponsor terkait",
+            "subtitle": "",
+            "foreignTitle": "You might also like",
+            "widgetUrl": "",
+            "pageName": "pdp_2",
+            "seeMoreAppLink": "tokopedia://rekomendasi/6961809872/d/?ref=pdp_2\u0026product_ids=6961809872",
+            "layoutType": "Carousel",
+            "pagination": {
+              "currentPage": 1,
+              "nextPage": 2,
+              "prevPage": -1,
+              "hasNext": false
+            },
+            "campaign": {
+              "appLandingPageLink": "",
+              "landingPageLink": "",
+              "thematicID": 0,
+              "assets": {
+                "banner": {
+                  "apps": ""
+                }
+              }
+            },
+            "recommendation": [
+              {
+                "id": 2773329778,
+                "name": "Ezy Calm Device - Rich Gold",
+                "categoryBreadcrumbs": "Fashion Wanita/Atasan Wanita/Kaos Wanita",
+                "url": "https://www.tokopedia.com/kinglabstore/ezy-calm-device-rich-gold?src=topads",
+                "appUrl": "tokopedia://product/2773329778?src=topads",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_eao_1fosJNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUstaH_1Fbm-xgVYpyfYagZUEHpUfbsnNHpypHsraHpHpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Ou81Oke_CvzV-0_VzjqjdaZ9z6zczD_OHhqJOk1MxHuJuR3jPcqjOJ39xg8Mzk33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1ja_Ozg8JYJe_uvzcoNZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32o81N2oIPvuJ7a_92-H7Ok_92o8Mo2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_jzSP1Nk19x68B17_92o8JNJe_zo81tNUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1dbAJRosKDH_rf6u7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsth6_yN6ZFirI-2yfuwyMBjUstaH_1Fbm-SQfVD9fBjUstpwe?dv=android-3.150\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026page=1\u0026ob=0\u0026management_type=1\u0026src=recom_widget_pdp_2\u0026t=android\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fkinglabstore%2Fezy-calm-device-rich-gold%3Fsrc%3Dtopads",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_eao_1fosJNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUstaH_1Fbm-xgVYpyfYagZUEHpUfbsnNHpypHsraHpHpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Ou81Oke_CvzV-0_VzjqjdaZ9z6zczD_OHhqJOk1MxHuJuR3jPcqjOJ39xg8Mzk33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1ja_Ozg8JYJe_uvzcoNZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32o81N2oIPvuJ7a_92-H7Ok_92o8Mo2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_jzSP1Nk19x68B17_92o8JNJe_zo81tNUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1dbAJRosKDH_rf6u7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsth6_yN6ZFirI-2yfuwyMBjUstaH_1Fbm-SQfVD9fBjUstpwe?t=android\u0026uid=0\u0026ob=0\u0026dv=android-3.150\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026product_id=2773329778\u0026management_type=1\u0026src=recom_widget_pdp_2\u0026page=1\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fkinglabstore%2Fezy-calm-device-rich-gold%3Fsrc%3Dtopads",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJ7Hs1Oosyh6ZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sJDUSz2Q31i6sJfosK7H_URopjDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHi4hbpUFbpxsHpHaoArOb3Hdo3JWoAep6ZOx6cHNb_eFopBiHsyNosVi6ZNkrcribm-xgVYpyfYagZUEHpUfbsnNHpypHsraHpHpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Ou81Oke_CvzV-0_VzjqjdaZ9z6zczD_OHhqJOk1MxHuJuR3jPcqjOJ39xg8Mzk33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1ja_Ozg8JYJe_uvzcoNZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32o81N2oIPvuJ7a_92-H7Ok_92o8Mo2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_jzSP1Nk19x68B17_92o8JNJe_zo81tNUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJNosjNbm-FrMBsguYiq3ei6sUho_nDUMP5y3hwq3ei6soY?ob=0\u0026management_type=1\u0026src=recom_widget_pdp_2\u0026page=1\u0026dv=android-3.150\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026t=android",
+                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/1/20/8c332475-c85a-4439-a8c9-4079b26961b9.jpg",
+                "price": "Rp150.000",
+                "priceInt": 150000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "maxOrder": 0,
+                "shop": {
+                  "id": 9544897,
+                  "name": "Kinglab Store",
+                  "city": "Jakarta Selatan",
+                  "isGold": false,
+                  "isOfficial": false
+                },
+                "departmentId": 1769,
+                "labels": [],
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 5",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "position": "eta",
+                    "title": "Tiba 16 - 18 Nov",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro",
+                    "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "rating": 5,
+                "countReview": 2,
+                "ratingAverage": "5.0",
+                "recommendationType": "graph_embeddingv7",
+                "stock": 35,
+                "isTopads": true,
+                "specificationLabels": [],
+                "parentID": 0
+              },
+              {
+                "id": 3286955482,
+                "name": "YS* WOC 22cm in Black Grain de Poudre GHW",
+                "categoryBreadcrumbs": "Fashion Wanita/Tas Wanita/Shoulder Bag Wanita",
+                "url": "https://www.tokopedia.com/colettedeluxeid/ys-woc-22cm-in-black-grain-de-poudre-ghw?src=topads",
+                "appUrl": "tokopedia://product/3286955482?src=topads",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_edHAJd6A1Obm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUsthopnFbm-xgVYpyfYagZUEHpUabsHposUN6_Hpo_KpHp1pbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuuN_32CHJYJ1MWHuczk_s--PJNJgchv1pVt_32ZqJh1z9Pqz7gk_1zg8VBEgc2gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z_-vuVBd_7zCo1YJyRB-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjON_3j78jOE39BvucWE_92uoJOE__Vo81BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qj7F_1H7P7OEe_C6qBuR_M2uH7Nkgpz-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1dbAJNH_yDH_jaHV7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstfHAHRbm-FrMBsguYiq3ei6sJRHAnDUMP5y3hwq3ei6soY?t=android\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026ob=0\u0026management_type=1\u0026src=recom_widget_pdp_2\u0026page=1\u0026dv=android-3.150\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fcolettedeluxeid%2Fys-woc-22cm-in-black-grain-de-poudre-ghw%3Fsrc%3Dtopads",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_edHAJd6A1Obm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUsthopnFbm-xgVYpyfYagZUEHpUabsHposUN6_Hpo_KpHp1pbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuuN_32CHJYJ1MWHuczk_s--PJNJgchv1pVt_32ZqJh1z9Pqz7gk_1zg8VBEgc2gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z_-vuVBd_7zCo1YJyRB-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjON_3j78jOE39BvucWE_92uoJOE__Vo81BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qj7F_1H7P7OEe_C6qBuR_M2uH7Nkgpz-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1dbAJNH_yDH_jaHV7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstfHAHRbm-FrMBsguYiq3ei6sJRHAnDUMP5y3hwq3ei6soY?dv=android-3.150\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fcolettedeluxeid%2Fys-woc-22cm-in-black-grain-de-poudre-ghw%3Fsrc%3Dtopads\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026uid=0\u0026ob=0\u0026t=android\u0026product_id=3286955482\u0026page=1\u0026management_type=1\u0026src=recom_widget_pdp_2",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJ76Anh6AKOoZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sUDUSz2Q31i6sJfosK7H_URopjDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHi4pbpUhbfuiHseRy3-sb_1fgsKWoAxMomOiH_PBb3HNypnhocJfH3yRHaNkrcribm-xgVYpyfYagZUEHpUabsHposUN6_Hpo_KpHp1pbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuuN_32CHJYJ1MWHuczk_s--PJNJgchv1pVt_32ZqJh1z9Pqz7gk_1zg8VBEgc2gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z_-vuVBd_7zCo1YJyRB-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjON_3j78jOE39BvucWE_92uoJOE__Vo81BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qj7F_1H7P7OEe_C6qBuR_M2uH7Nkgpz-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6syFHprDUSCaq3oB9f-2gmUEH_rFHmFigfYxQVY2gmUEHR7?dv=android-3.150\u0026page=1\u0026ob=0\u0026t=android\u0026src=recom_widget_pdp_2\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026management_type=1",
+                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/3/21/eb247abc-56f8-48f4-b17e-c9c014a61f73.jpg",
+                "price": "Rp3.800.000",
+                "priceInt": 3800000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "maxOrder": 0,
+                "shop": {
+                  "id": 11871230,
+                  "name": "Colettedeluxe_id",
+                  "city": "Tangerang",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 1920,
+                "labels": [
+                  {
+                    "title": "PO",
+                    "color": "#ffffff"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "offers",
+                    "title": "PO",
+                    "type": "lightGrey",
+                    "url": ""
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 6",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "position": "status",
+                    "title": "Preorder",
+                    "type": "transparentBlack",
+                    "url": ""
+                  },
+                  {
+                    "position": "eta",
+                    "title": "Tiba 11 - 13 Dec",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://images.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "rating": 5,
+                "countReview": 2,
+                "ratingAverage": "5.0",
+                "recommendationType": "graph_embeddingv7",
+                "stock": 1,
+                "isTopads": true,
+                "specificationLabels": [],
+                "parentID": 0
+              },
+              {
+                "id": 3286967020,
+                "name": "YS* WOC 22cm in Red Grain de Poudre GHW",
+                "categoryBreadcrumbs": "Fashion Wanita/Tas Wanita/Shoulder Bag Wanita",
+                "url": "https://www.tokopedia.com/colettedeluxeid/ys-woc-22cm-in-red-grain-de-poudre-ghw?src=topads",
+                "appUrl": "tokopedia://product/3286967020?src=topads",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_edHAJd6AKhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUsthopnFbm-xgVYpyfYagZUEHpnFbsea6AnNHsJFosHFHpjObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuuN_32CHJYJ1MWHuczk_s--PJNJgchv1pVt_32ZqJh1z9Pqz7gk_1zg8VBEgc2gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z_-vuVBd_7zCo1YJyRB-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjOR_1H7HJOkgRPvuJBd_1zg8jOJ__u617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOR_Sj7P7OEZ9B6qBJ7_OzCHjN139x-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1dbAJNH_yDH_jaHV7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstfHAHRbm-FrMBsguYiq3ei6sJRHAnDUMP5y3hwq3ei6soY?ob=0\u0026management_type=1\u0026t=android\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fcolettedeluxeid%2Fys-woc-22cm-in-red-grain-de-poudre-ghw%3Fsrc%3Dtopads\u0026page=1\u0026src=recom_widget_pdp_2\u0026dv=android-3.150\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_edHAJd6AKhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUsthopnFbm-xgVYpyfYagZUEHpnFbsea6AnNHsJFosHFHpjObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuuN_32CHJYJ1MWHuczk_s--PJNJgchv1pVt_32ZqJh1z9Pqz7gk_1zg8VBEgc2gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z_-vuVBd_7zCo1YJyRB-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjOR_1H7HJOkgRPvuJBd_1zg8jOJ__u617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOR_Sj7P7OEZ9B6qBJ7_OzCHjN139x-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1dbAJNH_yDH_jaHV7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstfHAHRbm-FrMBsguYiq3ei6sJRHAnDUMP5y3hwq3ei6soY?t=android\u0026uid=0\u0026ob=0\u0026dv=android-3.150\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026src=recom_widget_pdp_2\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fcolettedeluxeid%2Fys-woc-22cm-in-red-grain-de-poudre-ghw%3Fsrc%3Dtopads\u0026product_id=3286967020\u0026page=1\u0026management_type=1",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJ76Anh6AKdHZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sHDUSz2Q31i6sJfosK7H_URopjDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHi4RbpUObpoiHMyay3zib_jdoAJWoAUfHa7Ng3eFb3U7ocoxgAoxypnfoiNkrcribm-xgVYpyfYagZUEHpnFbsea6AnNHsJFosHFHpjObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuuN_32CHJYJ1MWHuczk_s--PJNJgchv1pVt_32ZqJh1z9Pqz7gk_1zg8VBEgc2gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z_-vuVBd_7zCo1YJyRB-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjOR_1H7HJOkgRPvuJBd_1zg8jOJ__u617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOR_Sj7P7OEZ9B6qBJ7_OzCHjN139x-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6syFHprDUSCaq3oB9f-2gmUEH_rFHmFigfYxQVY2gmUEHR7?management_type=1\u0026ob=0\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026page=1\u0026src=recom_widget_pdp_2\u0026dv=android-3.150\u0026t=android",
+                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/25/3b2f2adb-9841-4263-9ed0-b44cad3ac066.jpg",
+                "price": "Rp3.800.000",
+                "priceInt": 3800000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "maxOrder": 0,
+                "shop": {
+                  "id": 11871230,
+                  "name": "Colettedeluxe_id",
+                  "city": "Tangerang",
+                  "isGold": true,
+                  "isOfficial": false
+                },
+                "departmentId": 1920,
+                "labels": [],
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 2",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "position": "eta",
+                    "title": "Tiba 16 - 18 Nov",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant",
+                    "imageUrl": "https://images.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "rating": 5,
+                "countReview": 2,
+                "ratingAverage": "5.0",
+                "recommendationType": "graph_embeddingv7",
+                "stock": 1,
+                "isTopads": true,
+                "specificationLabels": [],
+                "parentID": 0
+              },
+              {
+                "id": 6225153355,
+                "name": "SLABMAGS Graded Card Protection For PSA or BGS Regular Slabs",
+                "categoryBreadcrumbs": "Mainan \u0026 Hobi/Permainan Kartu/Trading Card Game (TCG \u0026 CCG)",
+                "url": "https://www.tokopedia.com/hmviii/slabmags-graded-card-protection-for-psa-or-bgs-regular-slabs-psa-red?src=topads",
+                "appUrl": "tokopedia://product/6225153355?src=topads",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_yRoAHfo_1Rbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUstOHAnDUMVj9RosQR-BUsta6AHXoAUFH_na6AHFo_UOHs1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_Mj7P7Nke_-ozVBR_M2CHjOJ39P6qjJaZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu21Z9BozVJ7_jPzPJda__ogq_nF_s-uo1h9z9B6z7u7_uzmqOB9_9P6qjgk_s-6q1B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32go1Nkz_zozcD7_S2-q1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkgR2HqBVN_1zVP7OkgR2ozVuN_Bz-H1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OEu_uHqj1F_OzuHjOkqpCvzcoE_1zu8jBXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sPjzIQc2WyO-ueOyOHOHO_Bxy8jBM6jVee_jhyjy7Zjgy_fWgq3uyojt78JWRHpr7qRrduACezMhXz1YmgJJOg1Ok_1Na6uY9QJNH8BJF3soaZcNq1_xqgpPcHfoAzRgZgMtfy9-HgsVtQ1zW17YCr7Yp8IeWHczxeuV7q_CiyuuyZfdNP_P01pga8Sr7HOgNHfDfuJ-u1ByOqszkoMPEz1xUUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsribm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3p1ObAHhoAHDHpJNoO7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstp6_eObm-FrMBsguYiq3ei6s1FHmFigfYxQVY2gmUEHR7?r=https%3A%2F%2Fwww.tokopedia.com%2Fhmviii%2Fslabmags-graded-card-protection-for-psa-or-bgs-regular-slabs-psa-red%3Fsrc%3Dtopads\u0026page=1\u0026src=recom_widget_pdp_2\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026management_type=1\u0026ob=0\u0026t=android\u0026dv=android-3.150",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_yRoAHfo_1Rbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUstOHAnDUMVj9RosQR-BUsta6AHXoAUFH_na6AHFo_UOHs1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_Mj7P7Nke_-ozVBR_M2CHjOJ39P6qjJaZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu21Z9BozVJ7_jPzPJda__ogq_nF_s-uo1h9z9B6z7u7_uzmqOB9_9P6qjgk_s-6q1B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32go1Nkz_zozcD7_S2-q1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkgR2HqBVN_1zVP7OkgR2ozVuN_Bz-H1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OEu_uHqj1F_OzuHjOkqpCvzcoE_1zu8jBXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sPjzIQc2WyO-ueOyOHOHO_Bxy8jBM6jVee_jhyjy7Zjgy_fWgq3uyojt78JWRHpr7qRrduACezMhXz1YmgJJOg1Ok_1Na6uY9QJNH8BJF3soaZcNq1_xqgpPcHfoAzRgZgMtfy9-HgsVtQ1zW17YCr7Yp8IeWHczxeuV7q_CiyuuyZfdNP_P01pga8Sr7HOgNHfDfuJ-u1ByOqszkoMPEz1xUUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsribm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3p1ObAHhoAHDHpJNoO7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstp6_eObm-FrMBsguYiq3ei6s1FHmFigfYxQVY2gmUEHR7?dv=android-3.150\u0026page=1\u0026ob=0\u0026src=recom_widget_pdp_2\u0026product_id=6225153355\u0026management_type=1\u0026uid=0\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fhmviii%2Fslabmags-graded-card-protection-for-psa-or-bgs-regular-slabs-psa-red%3Fsrc%3Dtopads\u0026t=android\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJfopepos1OoaFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6seDUSz2Q31i6sJfosK7H_URopjDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHi4NbpJRbpuxyfURH3oib_nfocUWoAVioZOxHAypb_KhoAyd6_-jHcJOHZNkrcribm-xgVYpyfYagZUEHsKpbseaHAJFHsKpHA1ao_UObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1N2oIP6qjJa_1zgP7Nke_-ozVBR_M2CHjB2PfBgHO-N3Ao6QVByZM2xe7jfZ32Cq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBquJBN_1zzoJNI19z6Hj7p33jFHJdau_uHu7uN_jPVPJO1eMWgu7OR_M2cqjda_MB-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBk3_u6qj17_1z0oJNEZ3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMPE_c2z81OJz9PoqMPE_1zu81N1Z_V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8B1O_c2VHJY1u_-oqMDF_7zs8jOJu92-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHNoA1DUSCaq3oB9f-2gmUEo_nFbm-SQfVD9fBjUstpwe?page=1\u0026t=android\u0026dv=android-3.150\u0026src=recom_widget_pdp_2\u0026ob=0\u0026management_type=1\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH",
+                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/9/17/5acb71cb-064b-41b5-a063-8146892d0a51.jpg",
+                "price": "Rp349.900",
+                "priceInt": 349900,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "maxOrder": 0,
+                "shop": {
+                  "id": 1082100,
+                  "name": "HMVIII_Store",
+                  "city": "Jakarta Barat",
+                  "isGold": false,
+                  "isOfficial": false
+                },
+                "departmentId": 3197,
+                "labels": [
+                  {
+                    "title": "Cashback",
+                    "color": "#42b549"
+                  },
+                  {
+                    "title": "Grosir",
+                    "color": "#ffffff"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "url": ""
+                  },
+                  {
+                    "position": "offers",
+                    "title": "Grosir",
+                    "type": "lightGrey",
+                    "url": ""
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 63",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "position": "price",
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "url": ""
+                  },
+                  {
+                    "position": "eta",
+                    "title": "Tiba 16 - 18 Nov",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro",
+                    "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+                  }
+                ],
+                "wholesalePrice": [
+                  {
+                    "price": 344900,
+                    "quantityMax": 2,
+                    "quantityMin": 2,
+                    "priceString": "Rp344.900"
+                  },
+                  {
+                    "price": 339900,
+                    "quantityMax": 3,
+                    "quantityMin": 3,
+                    "priceString": "Rp339.900"
+                  },
+                  {
+                    "price": 334900,
+                    "quantityMax": 4,
+                    "quantityMin": 4,
+                    "priceString": "Rp334.900"
+                  },
+                  {
+                    "price": 329900,
+                    "quantityMax": 10000,
+                    "quantityMin": 5,
+                    "priceString": "Rp329.900"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "rating": 5,
+                "countReview": 16,
+                "ratingAverage": "5.0",
+                "recommendationType": "graph_embeddingv7",
+                "stock": 10,
+                "isTopads": true,
+                "specificationLabels": [],
+                "parentID": 0
+              },
+              {
+                "id": 1714394743,
+                "name": "Pick Up di Toko (Cihampelas, Bandung)",
+                "categoryBreadcrumbs": "Makanan \u0026 Minuman/Daging/Daging Sapi Giling",
+                "url": "https://www.tokopedia.com/healthywagyu/pick-up-di-toko-cihampelas-bandung?src=topads",
+                "appUrl": "tokopedia://product/1714394743?src=topads",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nF6Aya6_jabm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUsthH_nFbm-xgVYpyfYagZUEHsKhbsJFHAJOoAyOHAHOH_UDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu9BoqjJF_7zZq7h1gc26HjB7_jzjQJY_H3xoqB-t_VzVPO2IzM2ozVBd392jqBB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-HjY139xvzJJO_7zs81B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_zo1pzd_1zC8JN11_-6uJVE_BzV81B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypoHqB1h_M2S8JOE__-ozcWR_92zH1BXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sPjzIQc2WyO-ueOyOHOHO_Bxy8jBM6jVee_jhyjy7Zjgy_fWgq3uyojt78JWRHpr7qRrduACezMhXz1YmgJJOg1Ok_1Na6uY9QJNH8BJF3soaZcNq1_xqgpPcHfoAzRgZgMtfy9-HgsVtQ1zW17YCr7Yp8IeWHczxeuV7q_CiyuuyZfdNP_P01pga8Sr7HOgNHfDfuJ-u1ByOqszkoMPEz1xUUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsribm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pHObA1aHsnDHsrFoO7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthosnhomFirI-2yfuwyMBjUsthH_nFbm-SQfVD9fBjUstpwe?dv=android-3.150\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026ob=0\u0026management_type=2\u0026t=android\u0026page=1\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fhealthywagyu%2Fpick-up-di-toko-cihampelas-bandung%3Fsrc%3Dtopads\u0026src=recom_widget_pdp_2",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_nF6Aya6_jabm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUsthH_nFbm-xgVYpyfYagZUEHsKhbsJFHAJOoAyOHAHOH_UDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu9BoqjJF_7zZq7h1gc26HjB7_jzjQJY_H3xoqB-t_VzVPO2IzM2ozVBd392jqBB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-HjY139xvzJJO_7zs81B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_zo1pzd_1zC8JN11_-6uJVE_BzV81B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypoHqB1h_M2S8JOE__-ozcWR_92zH1BXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sPjzIQc2WyO-ueOyOHOHO_Bxy8jBM6jVee_jhyjy7Zjgy_fWgq3uyojt78JWRHpr7qRrduACezMhXz1YmgJJOg1Ok_1Na6uY9QJNH8BJF3soaZcNq1_xqgpPcHfoAzRgZgMtfy9-HgsVtQ1zW17YCr7Yp8IeWHczxeuV7q_CiyuuyZfdNP_P01pga8Sr7HOgNHfDfuJ-u1ByOqszkoMPEz1xUUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsribm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pHObA1aHsnDHsrFoO7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthosnhomFirI-2yfuwyMBjUsthH_nFbm-SQfVD9fBjUstpwe?sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026management_type=2\u0026page=1\u0026ob=0\u0026product_id=1714394743\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Fhealthywagyu%2Fpick-up-di-toko-cihampelas-bandung%3Fsrc%3Dtopads\u0026src=recom_widget_pdp_2\u0026t=android\u0026dv=android-3.150\u0026uid=0",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFHAKfHsjNHiFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6s1DUSz2Q31i6sJfosK7H_URopjDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHZ4pbpUNbpgMHsgMHpKOb_e7HsJWocoxyZOxHceab_ndHsyaofHFofJRomNkrcribm-xgVYpyfYagZUEHsKhbsJFHAJOoAyOHAHOH_UDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu9BoqjJF_7zZq7h1gc26HjB7_jzjQJY_H3xoqB-t_VzVPO2IzM2ozVBd392jqBB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-HjY139xvzJJO_7zs81B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_zo1pzd_1zC8JN11_-6uJVE_BzV81B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypoHqB1h_M2S8JOE__-ozcWR_92zH1BXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sPjzIQc2WyO-ueOyOHOHO_Bxy8jBM6jVee_jhyjy7Zjgy_fWgq3uyojt78JWRHpr7qRrduACezMhXz1YmgJJOg1Ok_1Na6uY9QJNH8BJF3soaZcNq1_xqgpPcHfoAzRgZgMtfy9-HgsVtQ1zW17YCr7Yp8IeWHczxeuV7q_CiyuuyZfdNP_P01pga8Sr7HOgNHfDfuJ-u1ByOqszkoMPEz1xUUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsribm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUstfoZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_yFH_eDUSCaq3oB9f-2gmUEH_JFHmFigfYxQVY2gmUEHR7?management_type=2\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026page=1\u0026t=android\u0026dv=android-3.150\u0026src=recom_widget_pdp_2\u0026ob=0",
+                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/29/6f26f385-4421-4caa-a0d2-082627c07a74.jpg",
+                "price": "Rp100",
+                "priceInt": 100,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "maxOrder": 0,
+                "shop": {
+                  "id": 1755670,
+                  "name": "Healthywagyu",
+                  "city": "Bandung",
+                  "isGold": false,
+                  "isOfficial": false
+                },
+                "departmentId": 2707,
+                "labels": [
+                  {
+                    "title": "Cashback",
+                    "color": "#42b549"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "url": ""
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 5",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "position": "price",
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "url": ""
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro",
+                    "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "rating": 5,
+                "countReview": 3,
+                "ratingAverage": "5.0",
+                "recommendationType": "graph_embeddingv7",
+                "stock": 995,
+                "isTopads": true,
+                "specificationLabels": [],
+                "parentID": 0
+              },
+              {
+                "id": 2411466576,
+                "name": "Levi's Yd Collegiate Str Cmb Blu/Pk 2P (87620-0003)",
+                "categoryBreadcrumbs": "Fashion Pria/Pakaian Dalam Pria/Boxer Pria",
+                "url": "https://www.tokopedia.com/levis-official/levi-s-yd-collegiate-str-cmb-blu-pk-2p-87620-0003-s?src=topads",
+                "appUrl": "tokopedia://product/2411466576?src=topads",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_ehHArNH_jNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUsthHAnFbm-xgVYpyfYagZUEHsrRbsKdHAr76AJNoAjd6_1fbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuuN_32CHJYJ1MWHuczk_s--PJNJgchv1pVt_32ZqJh1z9Pqz7gk_1zg8VBEgc2gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z_-vuVBd_7zCo1YJyRB-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_Sj7oJYJe_o6zcPd_Ozzo1YJqpV6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_Sj7o1N1__ooucPN_32S81YJyRB-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1NbAJR6_jDH_K7HB7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstOHAKf6ZFirI-2yfuwyMBjUsthHAnFbm-SQfVD9fBjUstpwe?page=1\u0026dv=android-3.150\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026ob=0\u0026t=android\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Flevis-official%2Flevi-s-yd-collegiate-str-cmb-blu-pk-2p-87620-0003-s%3Fsrc%3Dtopads\u0026src=recom_widget_pdp_2\u0026management_type=1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_ehHArNH_jNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yf6AehHsrR6ZFiyRCsUsthHAnFbm-xgVYpyfYagZUEHsrRbsKdHAr76AJNoAjd6_1fbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuuN_32CHJYJ1MWHuczk_s--PJNJgchv1pVt_32ZqJh1z9Pqz7gk_1zg8VBEgc2gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z_-vuVBd_7zCo1YJyRB-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_Sj7oJYJe_o6zcPd_Ozzo1YJqpV6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_Sj7o1N1__ooucPN_32S81YJyRB-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyRgJzfhkQ3oZu1o3o_o_o1Ny3I2-gs2C1JJNH3-coJ2c3JY033BB3AgGoIxbPpHRocWR6VeF1JgDQjuveMzCo3uoqjO6rsBwufh6_I2zHVtprjxX3BJd3MrRzsose7Pf1MgkoMVa_cyhqcOJQuove9ovrRx7b_Cjy1VzPcjFyMVu3JWX691RqOHfrS2RoAo38_o0oBzmuu-3o3t7qsgS8juUZmUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyRUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1NbAJR6_jDH_K7HB7DUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstOHAKf6ZFirI-2yfuwyMBjUsthHAnFbm-SQfVD9fBjUstpwe?page=1\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026src=recom_widget_pdp_2\u0026r=https%3A%2F%2Fwww.tokopedia.com%2Flevis-official%2Flevi-s-yd-collegiate-str-cmb-blu-pk-2p-87620-0003-s%3Fsrc%3Dtopads\u0026management_type=1\u0026product_id=2411466576\u0026ob=0\u0026t=android\u0026dv=android-3.150\u0026uid=0",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJ7H_nR6_JN6ZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6syDUSz2Q31i6sJfosK7H_URopjDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZYtzc2WqOJ5HsnaHZ4hHZ4hHa4foMeRH_npoaOxyfoBb_zMo_JW63eOoi7NHfuio3Jayfgxg_1XqSCSUiFiy3zwrfo5rM1i6sURoadd6AnRoAKh6_eN6AjOoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Ou81Oke_CvzV-0_VzjqjdaZ9z6zczD_OHhqJOk1MxHuJuR3jPcqjOJ39xg8Mzk33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1ja_Ozg8JYJe_uvzcoNZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7NNoAzvzJJp_jzS8JY11_uvzcDh_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjNNoAu6uJ7p_uzS81OkgRBvzcoNZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMofzJPDqMOs1BuAus1p1pu63VxEZ3yEeuCC6_VizszGzBxvqOB2guKfZszdZRrpopz0Ppx1HVCcQcNV_7-je_uB_32o_SUN9OPD_jhE1_CqHR-UQB2z6V2So7ypy7oIPB-MqsgxrjhMH3xWzcO__7Vp_RodPm7FgcVC19z2Hc-xuuxbQsBOofW_oS-EPpepuSjpqpg1eBuZusukoctfgR2VZJKibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoaUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6syObm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstOHAKf6ZFirI-2yfuwyMBjUsthHAnFbm-SQfVD9fBjUstpwe?t=android\u0026page=1\u0026sid=cvDGljmcRUCV53S5NXXzIf%3AAPA91bF4JFXOkYieX6J4xKw374kw8T0PFlnEOBdA5eMjMNr9_WlNLzQ0Z3rHnZQ8Zg7F3cCGvRfj6arLf1hmDmSOAsOsxt-0daAQti0baUXKn9u7kS6rzw43Vy3k6TBURV5j4j6gzEHH\u0026src=recom_widget_pdp_2\u0026ob=0\u0026management_type=1\u0026dv=android-3.150",
+                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/11/13/66d71037-acce-4f51-9d56-93eb5a2cfae5.jpg",
+                "price": "Rp139.950",
+                "priceInt": 139950,
+                "discountPercentage": 50,
+                "slashedPrice": "Rp279.900",
+                "slashedPriceInt": 279900,
+                "isWishlist": false,
+                "minOrder": 0,
+                "maxOrder": 0,
+                "shop": {
+                  "id": 5345633,
+                  "name": "Levi's Official",
+                  "city": "Tangerang Selatan",
+                  "isGold": false,
+                  "isOfficial": true
+                },
+                "departmentId": 1842,
+                "labels": [
+                  {
+                    "title": "Cashback",
+                    "color": "#42b549"
+                  }
+                ],
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen",
+                    "url": ""
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 12",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "position": "eta",
+                    "title": "Tiba 16 - 18 Nov",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                  }
+                ],
+                "wholesalePrice": [],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "rating": 4,
+                "countReview": 6,
+                "ratingAverage": "4.3",
+                "recommendationType": "graph_embeddingv7",
+                "stock": 2,
+                "isTopads": true,
+                "specificationLabels": [],
+                "parentID": 0
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

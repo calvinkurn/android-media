@@ -23,4 +23,22 @@ object ProductBundlingRobot {
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
         )
     }
+
+    fun clickOnImageMultipleItemBundling() {
+        onView(CommonMatcher.firstView(withId(R.id.iv_product_bundling_thumbnail)))
+            .perform(click())
+    }
+
+    fun clickOnImageSingleItemBundling() {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(0, R.id.iv_single_product_thumbnail)
+        ).perform(click())
+    }
+
+    fun doScrollProductBundlingToPositionInBroadcast(position: Int) {
+        onView(CommonMatcher.firstView(withId(R.id.rv_product_bundle_card_broadcast))).perform(
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
+    }
 }

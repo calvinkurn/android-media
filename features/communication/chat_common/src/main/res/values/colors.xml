@@ -42,5 +42,6 @@
     <color name="chatcommon_dms_orange_icon">#82EF95</color>
     <color name="chatcommon_dms_bg_purple_icon">#BB4DE8</color>
     <color name="chatcommon_dms_purple_icon">#52EFC6FF</color>
+    <color name="chatcommon_read_receipt_color">#00AA5B</color>
 
 </resources>

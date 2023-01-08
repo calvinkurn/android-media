@@ -16,9 +16,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
@@ -49,8 +48,6 @@ import org.junit.Test
 
 class TelcoPostpaidLoginInstrumentTest {
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -59,11 +56,13 @@ class TelcoPostpaidLoginInstrumentTest {
     @get:Rule
     var mActivityRule = ActivityTestRule(TelcoPostpaidActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_MENU_DETAIL_LOGIN),
                     MockModelConfig.FIND_BY_CONTAINS)
@@ -99,8 +98,7 @@ class TelcoPostpaidLoginInstrumentTest {
         click_on_tab_menu_login()
         click_item_recent_widget_login()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
-                hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_LOGIN), hasAllSuccess())
     }
 
 

@@ -18,12 +18,14 @@ object BuyerOrderDetailTrackerValidationConstant {
     const val clickPrimaryActionButtonSeeComplaintQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_action_button_see_complaint.json"
     const val clickPrimaryActionButtonHelpQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_help.json"
     const val clickPrimaryActionButtonFinishOrderQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_finish_order.json"
+    const val clickPrimaryActionButtonReUploadPrescriptionQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_reupload_prescription.json"
     const val clickSecondaryActionButtonHelpQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_help.json"
     const val clickSecondaryActionButtonSeePoDQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_see_pod.json"
     const val clickSecondaryActionButtonRequestCancelQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_request_cancel.json"
     const val clickSecondaryActionButtonRequestComplaintQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_request_complaint.json"
     const val clickSecondaryActionButtonFinishOrderQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_finish_order.json"
     const val clickSecondaryActionButtonTrackQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_track.json"
+    const val clickSecondaryActionButtonCheckPrescriptionQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_check_prescription.json"
     const val clickFinishOrderOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_confirm_finish.json"
     const val clickRequestComplaintOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_request_complaint.json"
 
@@ -41,4 +43,5 @@ object BuyerOrderDetailTrackerValidationConstant {
     const val ACTION_BUTTON_FINISH_ORDER_TEXT = "Selesai"
     const val ACTION_BUTTON_TRACK_TEXT = "Lacak"
     const val ACTION_BUTTON_SEE_POD = "Lihat Bukti Pengiriman"
+    const val ACTION_BUTTON_CHECK_PRESCRIPTION = "Cek Resep"
 }

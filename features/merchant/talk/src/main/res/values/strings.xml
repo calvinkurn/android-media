@@ -65,6 +65,7 @@
     <string name="delete_answer_bottom_sheet">Hapus Jawaban</string>
     <string name="edit_product_bottom_sheet">Ubah Deskripsi Produk</string>
     <string name="report_bottom_sheet_text">Laporkan</string>
+    <string name="block_bottom_sheet_text">Blokir pengguna dari diskusi ini</string>
     <string name="reply_header_follow_button">Follow</string>
     <string name="reply_header_following_button">Following</string>
     <string name="reply_empty_title_own_question">Tunggu ya…</string>
@@ -173,4 +174,10 @@
     <string name="template_list_add_edit_template_limit">Template diskusi melebihi batas maks. karakter.</string>
 
     <string name="menu_talk_inbox_setting_content_description">Pengaturan diskusi</string>
+    <string name="talk_block_dialog_title">Pengguna ini melanggar syarat &amp; ketentuan?</string>
+    <string name="talk_block_dialog_description">Jika diblokir, pengguna tidak bisa membalas diskusi ini. Tapi pengguna tetap bisa membuat diskusi baru di produk ini.</string>
+    <string name="talk_block_dialog_primary_cta_text">Ya, Blokir</string>
+    <string name="talk_block_dialog_secondary_cta_text">Batal</string>
+    <string name="talk_block_toaster_success_text">Permintaan blokir berhasil dikirim dan akan segera ditindaklanjuti.</string>
+    <string name="talk_block_toaster_fail_text">Permintaan blokir gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 </resources>

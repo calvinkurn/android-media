@@ -11,13 +11,17 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
+import com.tokopedia.topchat.chatroom.view.activity.base.changeCtaBroadcast
 import com.tokopedia.topchat.chatroom.view.activity.base.hideBanner
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastCtaLabel
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastCtaText
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastShown
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastSpamHandler
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastRobot.clickCtaBroadcast
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithExtra
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -118,19 +122,76 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
         onView(withId(R.id.iv_banner)).check(matches(not(isDisplayed())))
     }
 
-    private fun assertBroadcastSpamHandlerIsVisible() {
-        onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(0, BroadcastSpamHandlerUiModel::class.java)
+    @Test
+    fun show_broadcast_with_flexible_cta() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadCastChatWithFlexibleCta
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        launchChatRoomActivity()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+
+        // When
+        clickCtaBroadcast()
+
+        // Then
+        assertBroadcastCtaText("Lihat Keranjang")
+        assertBroadcastCtaLabel(false)
+        openPageWithExtra("url", "https://chat.tokopedia.com/tc/v1/redirect/broadcast_url/")
+    }
+
+    @Test
+    fun show_broadcast_with_flexible_cta_but_null() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadCastChatWithFlexibleCta
+            .changeCtaBroadcast(null, null, null)
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        launchChatRoomActivity()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+
+        // When
+        clickCtaBroadcast()
+
+        // Then
+        assertBroadcastCtaText("Lihat Selengkapnya")
+        assertBroadcastCtaLabel(false)
+        openPageWithExtra("url", "https://chat.tokopedia.com/tc/v1/redirect/original_url/")
+    }
+
+    @Test
+    fun show_broadcast_with_flexible_cta_but_empty() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadCastChatWithFlexibleCta
+            .changeCtaBroadcast(null, "", "")
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        launchChatRoomActivity()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+
+        // When
+        clickCtaBroadcast()
+
+        // Then
+        assertBroadcastCtaText("Lihat Selengkapnya")
+        assertBroadcastCtaLabel(false)
+    }
+
+    private fun assertBroadcastSpamHandlerIsVisible() {
+        assertBroadcastSpamHandler()
         onView(withId(R.id.title_bc_handle)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_stop_promo)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_follow_shop)).check(matches(isDisplayed()))
     }
 
     private fun assertBroadcastSpamHandlerIsHidden() {
-        onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(0, BroadCastUiModel::class.java)
-        )
+        assertBroadcastShown()
         onView(withId(R.id.title_bc_handle)).check(doesNotExist())
         onView(withId(R.id.btn_stop_promo)).check(doesNotExist())
         onView(withId(R.id.btn_follow_shop)).check(doesNotExist())

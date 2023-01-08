@@ -1,7 +1,11 @@
 package com.tokopedia.travel.passenger.util
 
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery.CONTACT_LIST
+
+@GqlQuery("QueryGetContactList", CONTACT_LIST)
 object TravelPassengerGqlQuery {
-    val CONTACT_LIST = """
+    const val CONTACT_LIST = """
         query travelGetContact (${'$'}product: String!,${'$'}filterType: String!) {
           travelGetContact(product:${'$'}product, filterType:${'$'}filterType) {
             contacts{
@@ -29,5 +33,5 @@ object TravelPassengerGqlQuery {
             }
           }
         }
-    """.trimIndent()
+    """
 }

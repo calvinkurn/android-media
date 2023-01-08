@@ -5,8 +5,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shopadmin.common.constants.Constants
 
@@ -24,15 +24,6 @@ class InvitationConfirmationNavigator(
         RouteManager.route(fragment.context, appLink)
     }
 
-    fun goToShopAccount() {
-        val appLink = if (GlobalConfig.isSellerApp()) {
-            ApplinkConstInternalSellerapp.SELLER_HOME
-        } else {
-            ApplinkConstInternalSellerapp.SELLER_MENU
-        }
-        RouteManager.route(fragment.context, appLink)
-    }
-
     fun goToButtonOrToolbarActionPage() {
         val appLink = if (GlobalConfig.isSellerApp()) {
             ApplinkConst.LOGIN
@@ -44,7 +35,7 @@ class InvitationConfirmationNavigator(
 
     fun goToOtp(email: String, phoneNumber: String) {
         val intent =
-            RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.COTP).apply {
+            RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.COTP).apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
                 putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_EMAIL)
                 putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_EMAIL)

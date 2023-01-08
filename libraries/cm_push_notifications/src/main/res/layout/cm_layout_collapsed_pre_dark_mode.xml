@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/collapseMainView"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_45"
+    android:layout_height="45dp"
     android:tag="base">
 
     <LinearLayout
@@ -22,7 +22,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textColor="#de000000"
+            android:textColor="@color/dms_cm_collapsed_title"
             android:textSize="15sp" />
 
         <TextView
@@ -32,7 +32,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textColor="@color/secondary_text_default_material_light"
+            android:textColor="@color/dms_secondary_text_default_material_light"
             android:textSize="@dimen/cm_sp_13" />
 
     </LinearLayout>

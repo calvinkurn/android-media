@@ -68,6 +68,32 @@ class MainParentPresenterTest {
     }
 
     @Test
+    fun `given failed start loading when get notification data then not get data notification`() {
+        val notificationEntity = NotificationEntity()
+
+        every {
+            userSession.isLoggedIn
+        } returns true
+
+        every {
+            mainParentView.onStartLoading()
+        } throws NullPointerException()
+
+        every {
+            getBottomNavNotificationUseCase.execute(any(), any())
+        } answers {
+            secondArg<NotificationSubscriber>().onStart()
+            secondArg<NotificationSubscriber>().onCompleted()
+            secondArg<NotificationSubscriber>().onError(Throwable())
+            secondArg<NotificationSubscriber>().onNext(notificationEntity)
+        }
+
+        mainParenPresenter.getNotificationData()
+
+        verify(exactly = 0) { getBottomNavNotificationUseCase.execute(any(), any()) }
+    }
+
+    @Test
     fun `on resume`() {
         val notificationEntity = NotificationEntity()
 

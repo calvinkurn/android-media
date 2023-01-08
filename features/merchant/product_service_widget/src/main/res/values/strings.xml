@@ -30,7 +30,6 @@
     <!-- id -->
     <item name="product_bundle_master_tag" type="id" />
     <item name="product_bundle_detail_tag" type="id" />
-    <item name="product_variant_tag" type="id" />
 
     <!-- actions -->
     <string name="action_back">Kembali</string>
@@ -39,12 +38,13 @@
     <string name="action_oke">Oke</string>
     <string name="action_reload">Muat ulang</string>
     <string name="action_back_to_recent_page">Ke Halaman Sebelumnya</string>
-    <string name="action_choose_package">Pilih Paket</string>
+    <string name="action_choose_package">Beli Paket</string>
     <string name="action_package_chosen">Paket Terpilih</string>
 
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PO %1s</string>
     <string name="preorder_time_unit_day">hari</string>
+    <string name="preorder_time_unit_week">minggu</string>
     <string name="preorder_time_unit_month">bulan</string>
     <string name="bundle_item_title_prefix">Paket isi %1d</string>
 
@@ -71,5 +71,20 @@
     <string name="error_bundle_out_of_stock_dialog_description">Coba pilih paket lain atau kembali ke halaman produk, ya.</string>
     <string name="error_bundle_variant_not_selected">Oops, pilih varian dulu, ya.</string>
     <string name="error_bundle_desc">Kamu bisa kembali ke halaman sebelumnya untuk mulai cari produk lain.</string>
+
+    <!--bundlewidget-->
+    <string name="bundlewidget_action_button_text">Lihat Paket</string>
+    <string name="bundlewidget_min_order_format">Isi %s</string>
+    <string name="bundlewidget_saving_amount_format">Hemat %s</string>
+    <string name="bundlewidget_product_title_format"><![CDATA[<b>%dx&nbsp</b>]]>%s</string>
+    <string name="bundlewidget_preorder_format">PreOrder %s %s</string>
+    <string name="shop_page_product_bundle_atc_button_text">+ Keranjang</string>
+    <string name="shop_page_product_bundle_preorder_button_text">PreOrder</string>
+    <string name="shop_page_product_single_bundle_package_text">Paket:</string>
+    <string name="shop_page_product_bundle_count">1 Barang</string>
+    <string name="product_bundle_action_button_text">Lihat Paket</string>
+    <string name="product_bundle_bundle_sold">Terjual %s</string>
+    <string name="bundlewidget_other_product_text">produk lainnya</string>
+    <string name="bundlewidget_other_product_count_format">+%d</string>
 
 </resources>

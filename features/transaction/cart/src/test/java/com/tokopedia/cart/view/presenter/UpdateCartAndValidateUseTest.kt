@@ -73,7 +73,7 @@ class UpdateCartAndValidateUseTest : BaseCartTest() {
 
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
         every { updateCartAndValidateUseUseCase.createObservable(any()) } returns Observable.error(exception)
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
         // WHEN

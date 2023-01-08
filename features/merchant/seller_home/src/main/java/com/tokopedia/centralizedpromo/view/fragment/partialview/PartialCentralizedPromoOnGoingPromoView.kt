@@ -1,6 +1,8 @@
 package com.tokopedia.centralizedpromo.view.fragment.partialview
 
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.centralizedpromo.view.LoadingType
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
@@ -36,14 +38,12 @@ class PartialCentralizedPromoOnGoingPromoView(
     override fun renderError(cause: Throwable) {
         with(ongoingPromoBinding) {
             root.show()
-            layoutOnGoingPromoSuccess.layoutCentralizedPromoOnGoingPromoSuccess.hide()
+            rvCentralizedPromoOnGoingPromo.hide()
             layoutOnGoingPromoShimmer.layoutCentralizedPromoOnGoingPromoShimmering.hide()
             layoutOnGoingPromoError.layoutCentralizedPromoOnGoingPromoError.show()
             onGoingPromoLayoutDivider.show()
 
             layoutOnGoingPromoError.localLoadOnGoingPromo.progressState = false
-            layoutOnGoingPromoError.tvCentralizedPromoOnGoingTitleError.text =
-                root.context.getString(R.string.sah_label_promo_and_ads)
             layoutOnGoingPromoError.localLoadOnGoingPromo.description?.text =
                 root.context.getString(R.string.sah_label_on_going_promotion_retry)
             layoutOnGoingPromoError.localLoadOnGoingPromo.refreshBtn?.setOnClickListener {
@@ -63,29 +63,26 @@ class PartialCentralizedPromoOnGoingPromoView(
         super.renderError(cause)
     }
 
-    override fun renderLoading() = with(ongoingPromoBinding) {
-        root.show()
-        layoutOnGoingPromoSuccess.layoutCentralizedPromoOnGoingPromoSuccess.hide()
+    override fun renderLoading(loadingType: LoadingType) = with(ongoingPromoBinding) {
+        rvCentralizedPromoOnGoingPromo.hide()
         layoutOnGoingPromoError.layoutCentralizedPromoOnGoingPromoError.hide()
         layoutOnGoingPromoShimmer.layoutCentralizedPromoOnGoingPromoShimmering.show()
         onGoingPromoLayoutDivider.show()
     }
 
-    override fun bindSuccessData(data: OnGoingPromoListUiModel) = with(ongoingPromoBinding) {
-        layoutOnGoingPromoSuccess.tvOnGoingPromo.text =
-            root.context.getString(R.string.sah_label_promo_and_ads)
-    }
+    override fun bindSuccessData(data: OnGoingPromoListUiModel) {}
 
     override fun onRecyclerViewItemEmpty() = with(ongoingPromoBinding) {
-        layoutOnGoingPromoSuccess.layoutCentralizedPromoOnGoingPromoSuccess.hide()
+        rvCentralizedPromoOnGoingPromo.hide()
         layoutOnGoingPromoShimmer.layoutCentralizedPromoOnGoingPromoShimmering.hide()
         layoutOnGoingPromoError.layoutCentralizedPromoOnGoingPromoError.hide()
         onGoingPromoLayoutDivider.hide()
         layoutOnGoingPromoError.localLoadOnGoingPromo.progressState = false
+        tvOnGoingPromo.hide()
     }
 
     override fun onRecyclerViewResultDispatched() = with(ongoingPromoBinding) {
-        layoutOnGoingPromoSuccess.layoutCentralizedPromoOnGoingPromoSuccess.show()
+        rvCentralizedPromoOnGoingPromo.show()
         onGoingPromoLayoutDivider.show()
         layoutOnGoingPromoShimmer.layoutCentralizedPromoOnGoingPromoShimmering.hide()
         layoutOnGoingPromoError.layoutCentralizedPromoOnGoingPromoError.hide()
@@ -93,23 +90,24 @@ class PartialCentralizedPromoOnGoingPromoView(
     }
 
     override fun shouldShowCoachMark(): Boolean =
-        showCoachMark && ongoingPromoBinding.layoutOnGoingPromoSuccess.layoutCentralizedPromoOnGoingPromoSuccess.isShown
+        showCoachMark && ongoingPromoBinding.rvCentralizedPromoOnGoingPromo.isShown
 
     override fun getCoachMarkItem() = with(ongoingPromoBinding) {
-        layoutOnGoingPromoSuccess.layoutCentralizedPromoOnGoingPromoSuccess.setBackgroundColor(
+        rvCentralizedPromoOnGoingPromo.setBackgroundColor(
             root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         )
         CoachMarkItem(
-            layoutOnGoingPromoSuccess.layoutCentralizedPromoOnGoingPromoSuccess,
+            rvCentralizedPromoOnGoingPromo,
             root.context.getString(R.string.sh_coachmark_title_on_going_promo),
             root.context.getString(R.string.sh_coachmark_desc_on_going_promo)
         )
     }
 
     private fun setupOnGoingPromo() = with(ongoingPromoBinding) {
-        layoutOnGoingPromoSuccess.rvCentralizedPromoOnGoingPromo.apply {
+        rvCentralizedPromoOnGoingPromo.apply {
+            layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             adapter =
-                this@PartialCentralizedPromoOnGoingPromoView.adapter.apply { setHasStableIds(true) }
+                this@PartialCentralizedPromoOnGoingPromoView.adapter
             addItemDecoration(
                 OnGoingPromoViewHolder.ItemDecoration(
                     resources.getDimension(R.dimen.sah_dimen_10dp).toInt()

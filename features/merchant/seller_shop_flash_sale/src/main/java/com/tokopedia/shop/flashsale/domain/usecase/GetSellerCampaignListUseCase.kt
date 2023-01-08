@@ -90,6 +90,10 @@ class GetSellerCampaignListUseCase @Inject constructor(
                     status_str
                     thematic_name
                   }
+                  package_info {
+                    package_id
+                    package_name
+                  }
                 }
                 total_campaign
                 total_campaign_active

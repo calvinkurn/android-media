@@ -89,11 +89,11 @@ class AddEditProductShipmentViewModel @Inject constructor(
         })
     }
 
-    fun getCPLList(shopId: Long, productId: String) {
+    fun getCPLList(shopId: Long, productId: String, shipmentServicesIds: List<Long>?) {
         viewModelScope.launch {
             try {
                 val cplList = customProductLogisticRepository.getCPLList(shopId, productId)
-                _cplList.value = Success(customProductLogisticMapper.mapCPLData(cplList.response.data))
+                _cplList.value = Success(customProductLogisticMapper.mapCPLData(cplList.response.data, productId, shipmentServicesIds))
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
             }

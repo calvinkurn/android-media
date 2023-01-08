@@ -35,7 +35,7 @@ data class WithdrawalInfoData(
     val transferredAmount: Double?,
         @SerializedName("FinalTransferredFormatted")
     val transferredAmountFormatted: String?,
-        @SerializedName("CreatedAtFormatted")
+        @SerializedName("CreatedAt")
     val createdTime: String?,
         @SerializedName("BankName")
     val bankName: String?,

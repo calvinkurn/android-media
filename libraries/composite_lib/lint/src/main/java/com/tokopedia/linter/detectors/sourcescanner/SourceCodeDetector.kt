@@ -10,10 +10,7 @@ import com.tokopedia.linter.detectors.sourcescanner.constructor.ConstructorDetec
 import com.tokopedia.linter.detectors.sourcescanner.constructor.ConstructorDetector.applicableConstructorList
 import com.tokopedia.linter.detectors.sourcescanner.elements.ElementDetector
 import com.tokopedia.linter.detectors.sourcescanner.method.MethodCallDetector
-import org.jetbrains.uast.UAnnotation
-import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.UElement
-import org.jetbrains.uast.UImportStatement
+import org.jetbrains.uast.*
 
 @Suppress("UnstableApiUsage")
 class SourceCodeDetector : Detector(), Detector.UastScanner {
@@ -26,7 +23,7 @@ class SourceCodeDetector : Detector(), Detector.UastScanner {
 
 
     override fun getApplicableUastTypes(): List<Class<out UElement>>? {
-        return listOf(UImportStatement::class.java, UAnnotation::class.java)
+        return listOf(UImportStatement::class.java, UAnnotation::class.java, USimpleNameReferenceExpression::class.java)
     }
 
 
@@ -46,7 +43,7 @@ class SourceCodeDetector : Detector(), Detector.UastScanner {
         ConstructorDetector.checkConstructor(context, node, constructor)
     }
 
-    override fun getApplicableMethodNames(): List<String>? = MethodCallDetector.applicableMethodNames
+    override fun getApplicableMethodNames(): List<String> = MethodCallDetector.applicableMethodNames
 
     override fun visitMethodCall(
             context: JavaContext,

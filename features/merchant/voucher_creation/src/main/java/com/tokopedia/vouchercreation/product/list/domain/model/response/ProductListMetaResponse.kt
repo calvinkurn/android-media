@@ -33,11 +33,26 @@ data class ProductListMetaResponse(
 
     data class Data(
             @Expose
+            @SerializedName("tab")
+            val tab: List<Tab>,
+            @Expose
             @SerializedName("sort")
             val sort: List<Sort>,
             @Expose
             @SerializedName("shopCategories")
             val category: List<Category>
+    )
+    
+    data class Tab(
+        @Expose
+        @SerializedName("id")
+        val id: String,
+        @Expose
+        @SerializedName("value")
+        val value: Int,
+        @Expose
+        @SerializedName("name")
+        val name: String
     )
 
     data class Sort(

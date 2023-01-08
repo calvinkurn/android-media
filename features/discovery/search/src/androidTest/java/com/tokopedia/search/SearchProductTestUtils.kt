@@ -16,20 +16,18 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.suggestion.SuggestionListener
+import com.tokopedia.search.result.product.cpm.BannerAdsListener
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -37,7 +35,6 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
 
@@ -78,6 +75,7 @@ internal fun createProductItemListener(): ProductListener {
         override fun onThreeDotsClick(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onItemClicked(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onProductImpressed(itemData: ProductItemDataView?, adapterPosition: Int) {}
+        override fun onAddToCartClick(item: ProductItemDataView) {}
         override val productCardLifecycleObserver: ProductCardLifecycleObserver?
             get() = null
     }
@@ -86,26 +84,6 @@ internal fun createProductItemListener(): ProductListener {
 internal fun createInspirationCardListener(): InspirationCardListener {
     return object: InspirationCardListener {
         override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {}
-    }
-}
-
-internal fun createInspirationCarouselListener(): InspirationCarouselListener {
-    return object: InspirationCarouselListener {
-        override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
-            get() = null
-        override fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselChipsClicked(inspirationCarouselAdapterPosition: Int, inspirationCarouselViewModel: InspirationCarouselDataView, inspirationCarouselOption: InspirationCarouselDataView.Option) {}
-
     }
 }
 
@@ -118,8 +96,6 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
 
-        override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
-            get() = null
         override val productCardLifecycleObserver: ProductCardLifecycleObserver?
             get() = null
     }
@@ -164,7 +140,6 @@ internal fun createRecommendationListener(): RecommendationListener {
     return object: RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
-        override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
         override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
     }
 }

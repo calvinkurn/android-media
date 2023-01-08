@@ -47,6 +47,13 @@ internal object GetProductList {
                 hasStockAlert
                 stockAlertActive
                 stockAlertCount
+                haveNotifyMeOOS
+                notifyMeOOSCount
+                notifyMeOOSWording
+                isEmptyStock
+                manageProductData {
+                   isStockGuaranteed
+                }
             }
         }
     }

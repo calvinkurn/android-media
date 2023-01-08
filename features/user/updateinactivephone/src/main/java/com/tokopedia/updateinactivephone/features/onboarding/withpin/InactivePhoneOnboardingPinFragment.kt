@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
@@ -97,9 +98,11 @@ class InactivePhoneOnboardingPinFragment : BaseInactivePhoneOnboardingFragment()
     }
 
     private fun goToVerification(otpType: Int, otpMode: String = "", isShowOtherMethod: Boolean = false): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, inactivePhoneUserDataModel?.userIdEnc.orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, inactivePhoneUserDataModel?.validateToken.orEmpty())
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty())
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, inactivePhoneUserDataModel?.email.orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_INACTIVE_PHONE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, isShowOtherMethod)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)

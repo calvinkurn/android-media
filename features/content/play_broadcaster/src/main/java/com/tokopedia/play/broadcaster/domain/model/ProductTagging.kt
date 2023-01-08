@@ -44,6 +44,6 @@ data class ProductTagging(
             val priceFormatted: String = "",
 
             @SerializedName("discount")
-            val discount: Int = 0,
+            val discount: Long = 0L,
     )
 }

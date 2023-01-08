@@ -5,25 +5,6 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-        <activity
-            android:name=".settingprofile.view.activity.SettingProfileActivity"
-            android:label="@string/title_setting_profile"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_user"
-                    android:pathPattern="@string/path_setting_profile"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".profileinfo.view.activity.ProfileInfoActivity"
@@ -40,7 +21,7 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:pathPattern="@string/applink_new_profile_info"
+                    android:pathPattern="@string/path_profile_info"
                     android:scheme="@string/internal_scheme" />
 
             </intent-filter>
@@ -60,12 +41,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_name_register"
-                    android:scheme="@string/internal_scheme" />
-                <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_add_name_register_clean_view"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -89,7 +66,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_change_gender"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -108,14 +85,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_email"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
             android:name=".addphone.view.activity.AddPhoneActivity"
-            android:label="@string/title_add_phone"
+            android:label="@string/add_phone_title_add_phone"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
@@ -127,8 +104,27 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_phone"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".addphone.view.activity.NewAddPhoneActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_new_add_phone"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -145,7 +141,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_change_pin"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -164,7 +160,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_bod"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -201,7 +197,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_pin"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -219,7 +215,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_pin_from_2fa"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -257,13 +253,13 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_change_name"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.profilecompletion.newprofilecompletion.view.activity.ProfileCompletionActivity"
+            android:name="com.tokopedia.profilecompletion.profilecompletion.view.activity.ProfileCompletionActivity"
             android:label="@string/profile_completion_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -276,7 +272,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_profile_completion"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>

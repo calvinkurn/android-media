@@ -12,6 +12,7 @@ import com.tokopedia.topchat.common.websocket.DefaultWebSocketParser
 import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.view.uimodel.base.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.WebSocketViewModel
+import com.tokopedia.topchat.common.websocket.DefaultWebSocketStateHandler
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,7 +33,7 @@ class WebSocketViewModelTest {
     private val topchatWebSocket: DefaultTopChatWebSocket = mockk(relaxed = true)
     private val webSocket: WebSocket = mockk(relaxed = true)
     private val dispatchers = CoroutineTestDispatchersProvider
-    private val webSocketStateHandler: WebSocketStateHandler = mockk(relaxed = true)
+    private val webSocketStateHandler: WebSocketStateHandler = spyk(DefaultWebSocketStateHandler())
     private val viewModel = WebSocketViewModel(
             topchatWebSocket, DefaultWebSocketParser(), webSocketStateHandler, dispatchers
     )
@@ -215,6 +216,30 @@ class WebSocketViewModelTest {
     }
 
     @Test
+    fun should_reconnect_ws_when_onClose_code_is_other_than_1000_but_error_when_reconnect() {
+        // Given
+        val expectedThrowable = Throwable("Oops!")
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onClosed(
+                webSocket, 1001, ""
+            )
+        }
+
+       coEvery {
+            webSocketStateHandler.scheduleForRetry(any())
+        } throws expectedThrowable
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        coVerify(exactly = 1) {
+            webSocketStateHandler.scheduleForRetry(any())
+        }
+    }
+
+    @Test
     fun should_not_reconnect_ws_when_onClose_code_is_1000() {
         // Given
         val webSocketListener = slot<WebSocketListener>()
@@ -246,6 +271,23 @@ class WebSocketViewModelTest {
 
         // Then
         verify(exactly = 1) { topchatWebSocket.close() }
+    }
+
+    @Test
+    fun should_do_nothing_when_onClosing_called() {
+        // Given
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onClosing(
+                webSocket, CODE_NORMAL_CLOSURE, ""
+            )
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertTrue(viewModel.itemChat.value == null)
     }
 
     companion object {

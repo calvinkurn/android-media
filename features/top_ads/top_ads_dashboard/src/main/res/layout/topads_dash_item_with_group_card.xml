@@ -71,15 +71,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/topads_common_ads_active"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_GN500"
             app:layout_constraintStart_toStartOf="@id/img"
             app:layout_constraintTop_toBottomOf="@id/group_title"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_total"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_marginStart="@dimen/dp_11"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toEndOf="@id/label"
@@ -100,8 +100,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_key"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_marginStart="@dimen/dp_11"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toEndOf="@id/total_item"
@@ -152,7 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="@color/topads_dash_cardview_color"
+            app:cardBackgroundColor="@color/Unify_N50_44"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
             app:card_type="shadow_disabled"
@@ -286,7 +286,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/topads_dash_group_item_progress_text"
-                android:textColor="@color/topads_clr_7031353b"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small" />
@@ -309,7 +309,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="4dp"
                 android:text="@string/topads_dash_group_item_progress_status"
-                android:textColor="@color/topads_light_shadow"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toEndOf="@id/progress_status1"
                 app:layout_constraintTop_toBottomOf="@id/progress_title"
                 app:typographyType="small"

@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -34,10 +36,12 @@ import com.tokopedia.explore.view.listener.ContentExploreContract
 import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.explore.view.uimodel.ExploreViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 
 /**
  * @author by milhamj on 19/07/18.
@@ -46,18 +50,22 @@ import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 class ContentExploreFragment :
         BaseDaggerFragment(),
         ContentExploreContract.View,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        FeedPlusTabParentFragment {
 
     companion object {
 
         const val PARAM_CATEGORY_ID = "category_id"
-        private const val DEFAULT_CATEGORY = "0"
+        private const val DEFAULT_CATEGORY: Long = 0
+        private const val DEFAULT_CATEGORY_STRING = "0"
+        private const val ENTRY_POINT = "entry_point"
         private const val PEFORMANCE_EXPLORE = "mp_explore"
         private const val CATEGORY_POSITION_NONE = -1
 
         private const val IMAGE_SPAN_COUNT = 3
         private const val IMAGE_SPAN_SINGLE = 1
         private const val LOAD_MORE_THRESHOLD = 2
+        private const val EXPLORE_TAB = "explore_tab"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentExploreFragment {
@@ -93,11 +101,13 @@ class ContentExploreFragment :
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var coachMark: CoachMark
 
-    private var categoryId: Int = 0
+    private var categoryId: Long = 0
     private var canLoadMore: Boolean = false
     private var hasLoadedOnce: Boolean = false
     private var isTraceStopped: Boolean = false
     private var coachMarkItemList: MutableList<CoachMarkItem> = arrayListOf()
+
+    private var mContainerListener: FeedPlusContainerListener? = null
 
     override fun getScreenName(): String {
         return ContentExloreEventTracking.Screen.SCREEN_CONTENT_STREAM
@@ -181,9 +191,9 @@ class ContentExploreFragment :
 
     private fun initVar() {
         if (arguments != null) {
-            categoryId = Integer.valueOf(requireArguments().getString(
+            categoryId = (requireArguments().getString(
                     PARAM_CATEGORY_ID,
-                    DEFAULT_CATEGORY)
+                    DEFAULT_CATEGORY_STRING).toLong()
             )
             presenter.updateCategoryId(categoryId)
         }
@@ -237,7 +247,7 @@ class ContentExploreFragment :
                 break
             }
         }
-        if (!isCategoryExist && categoryId != Integer.valueOf(DEFAULT_CATEGORY)) {
+        if (!isCategoryExist && categoryId != (DEFAULT_CATEGORY)) {
             onCategoryReset()
         }
     }
@@ -256,7 +266,7 @@ class ContentExploreFragment :
         presenter.updateCursor(cursor)
     }
 
-    override fun updateCategoryId(categoryId: Int) {
+    override fun updateCategoryId(categoryId: Long) {
         this.categoryId = categoryId
         presenter.updateCategoryId(categoryId)
     }
@@ -269,7 +279,7 @@ class ContentExploreFragment :
         imageAdapter.clearData()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: Int, categoryName: String, view: View) {
+    override fun onCategoryClicked(position: Int, categoryId: Long, categoryName: String, view: View) {
         NetworkErrorHelper.removeEmptyState(view)
         clearSearch()
         resetDataParam()
@@ -310,7 +320,7 @@ class ContentExploreFragment :
     }
 
     override fun onCategoryReset() {
-        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "", View(activity))
+        onCategoryClicked(CATEGORY_POSITION_NONE, (DEFAULT_CATEGORY), "", View(activity))
     }
 
     override fun showRefreshing() {
@@ -336,12 +346,14 @@ class ContentExploreFragment :
         imageAdapter.showEmpty()
     }
 
-    override fun goToKolPostDetail(postId: Int, name: String, recomId: Int) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConst.CONTENT_DETAIL,
-                postId.toString()
-        )
+    override fun goToKolPostDetail(postId: String, name: String, recomId: Long) {
+        val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId)
+        val finaAppLink = Uri.parse(contentAppLink)
+                .buildUpon()
+                .appendQueryParameter(ENTRY_POINT, EXPLORE_TAB)
+                .build().toString()
+
+        RouteManager.route(requireContext(), finaAppLink)
         analytics.eventTrackExploreItem(name, postId, recomId)
     }
 
@@ -378,6 +390,8 @@ class ContentExploreFragment :
         presenter.onPullToRefreshTriggered()
         presenter.updateCursor("")
         presenter.getExploreData(true)
+
+        mContainerListener?.onChildRefresh()
     }
 
     override fun dropKeyboard() {
@@ -396,7 +410,7 @@ class ContentExploreFragment :
         updateCategoryId(0)
     }
 
-    override fun getExploreCategory(): Int {
+    override fun getExploreCategory(): Long {
         return categoryId
     }
 
@@ -407,7 +421,7 @@ class ContentExploreFragment :
         }
     }
 
-    override fun onAffiliateTrack(trackingList: List<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrack(trackingList: List<TrackingModel>, isClick: Boolean) {
         if (isClick) {
             for (tracking in trackingList) {
                 presenter.trackAffiliate(tracking.clickURL)
@@ -464,5 +478,9 @@ class ContentExploreFragment :
             }
         }
         return scrollListener
+    }
+
+    override fun setContainerListener(listener: FeedPlusContainerListener) {
+        this.mContainerListener = listener
     }
 }

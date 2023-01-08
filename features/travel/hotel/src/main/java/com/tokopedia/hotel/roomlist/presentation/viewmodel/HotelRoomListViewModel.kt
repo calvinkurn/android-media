@@ -3,6 +3,7 @@ package com.tokopedia.hotel.roomlist.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
@@ -32,10 +33,10 @@ class HotelRoomListViewModel @Inject constructor(
     var filterFreeCancelable = false
     var isFilter = false
 
-    fun getRoomList(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel, fromCloud: Boolean = true) {
+    fun getRoomList(rawQuery: GqlQueryInterface, hotelRoomListPageModel: HotelRoomListPageModel, fromCloud: Boolean = true) {
         launch {
             isFilter = false
-            var result = useCase.execute(rawQuery, hotelRoomListPageModel, fromCloud)
+            val result = useCase.execute(rawQuery, hotelRoomListPageModel, fromCloud)
             roomListResult.postValue(result)
             if (result is Success) roomList = result.data
             doFilter()
@@ -64,7 +65,7 @@ class HotelRoomListViewModel @Inject constructor(
         }
     }
 
-    fun addToCart(rawQuery: String, hotelAddCartParam: HotelAddCartParam) {
+    fun addToCart(rawQuery: GqlQueryInterface, hotelAddCartParam: HotelAddCartParam) {
         launch {
             addCartResponseResult.postValue(addToCartUsecase.execute(rawQuery, hotelAddCartParam))
         }

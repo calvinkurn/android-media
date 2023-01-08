@@ -28,4 +28,7 @@ object ProductShareConstant {
     const val KEY_CURRENT_SITE_SHARING = "currentSite"
     const val KEY_PRODUCT_ID_SHARING = "productId"
     const val KEY_USER_ID_SHARING = "userId"
+
+    const val TRACKER_ID = "trackerId"
+    const val TRACKER_ID_CLICK_SHARING_CHANNEL = "10367"
 }

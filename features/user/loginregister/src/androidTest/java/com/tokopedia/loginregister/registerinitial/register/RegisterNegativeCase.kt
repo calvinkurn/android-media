@@ -5,12 +5,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
-import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.test.application.annotations.UiTest
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 
 @UiTest
@@ -55,7 +55,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
-            isDisplayingSubGivenText(R.id.tv_error, errorMsg)
+            isDisplayingSubGivenText(errorMsg)
         }
     }
 

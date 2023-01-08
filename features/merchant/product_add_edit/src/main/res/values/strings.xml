@@ -69,6 +69,13 @@
     <string name="message_change_category">Spesifikasi produkmu akan hilang jika kamu mengubah kategori produk ini.</string>
     <string name="action_change_category_positive">Ya, Lanjutkan</string>
     <string name="action_change_category_negative">Batal</string>
+    <string name="label_service_fee">Biaya layanan</string>
+    <string name="label_category_change">Perubahan kategori</string>
+    <string name="content_service_fee_bs">Biaya layanan per produk tergantung pada kategori yang kamu pilih. Jika pemilihan kategori kurang sesuai, maka kategori akan diubah oleh Tokopedia.</string>
+    <string name="content_category_change_bs">Kategori yang kamu pilih sebelumnya telah diubah secara otomatis oleh Tokopedia dan tidak bisa diubah lagi. Pelajari Selengkapnya</string>
+    <string name="label_additional_info">Pilih kategori yang sesuai karena biaya layanan akan tergantung pada kategori.</string>
+    <string name="text_service_fee_per_sold_product"><![CDATA[Biaya layanan per produk terjual: <b>%s&#37;</b>.\n<a href=link_place_holder>Selengkapnya</a>]]></string>
+    <string name="label_no_service_fee"><![CDATA[Bebas biaya layanan untuk 100 transaksi pertama.\n<a href=link_place_holder>Selengkapnya</a>]]></string>
 
     <!-- add edit product catalog -->
     <string name="add_product_catalog_header">Katalog</string>
@@ -83,6 +90,26 @@
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
 
+    <!-- add edit product price suggestion -->
+    <string name="label_price_suggestion_range">Kisaran rekomendasi</string>
+    <string name="label_price_range">Kisaran harga:</string>
+    <string name="price_suggestion_range">%1s - %2s</string>
+    <string name="label_check_detail">Lihat Detail</string>
+    <string name="label_is_competitive">Sudah kompetitif</string>
+    <string name="label_competitive_product_size">%s produk terkompetitif</string>
+    <string name="label_best_recommendation">Rekomendasi terbaik:</string>
+    <string name="label_price_recommendation">Rekomendasi Harga</string>
+    <string name="label_about_price_recommendation">Tentang rekomendasi harga</string>
+    <string name="action_apply_price_recommendation">Terapkan</string>
+    <string name="label_range_and_recommendation">Kisaran dan Rekomendasi</string>
+    <string name="content_range_and_recommendation">Rekomendasi berdasarkan kategori produk dan harga paling kompetitif 1 minggu terakhir.</string>
+    <string name="label_most_competitive_product">Produk Terkompetitif</string>
+    <string name="content_most_competitive_product">Info harga, ulasan, dan jumlah terjual diperoleh sesuai lamanya produk berikut ini dijual.</string>
+    <string name="label_learn_more">Pelajari Selengkapnya</string>
+    <string name="label_or">atau</string>
+    <string name="label_feedback">Beri Masukan</string>
+    <string name="label_sold_product">Terjual %s</string>
+
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
     <string name="title_price_recommendation_applied">Rekomendasi harga sudah diterapkan</string>
@@ -91,7 +118,7 @@
     <string name="label_price_recommendation_price_description">Rekomendasi ini untuk &lt;b>“%1s”&lt;/b> </string>
     <string name="label_price_recommendation_apply">Terapkan</string>
     <string name="label_price_recommendation_next">Pelajari Selengkapnya</string>
-    <string name="text_has_variant_price_ticker">Harga, stok, dan SKU bisa kamu atur di <![CDATA[<b><font color=\'#42b549\'>halaman varian</font></b>]]> karena produk ini punya varian.</string>
+    <string name="text_has_variant_price_ticker">Harga, stok, dan SKU bisa kamu atur di <![CDATA[<b><font color=\'#42b549\'><a href=”###”>halaman varian</a></font></b>]]> karena produk ini punya varian.</string>
     <string name="text_has_variant_price_ticker_mainapp">Download aplikasi Tokopedia Seller untuk mengatur harga, stok, dan SKU varian produk.</string>
     <string-array name="array_price_recommendation_content_titles">
         <item>Didapat dari analisis sistem Tokopedia pada produk serupa di Tokopedia</item>
@@ -114,6 +141,7 @@
     <string name="action_add_new_wholesale_price">Tambah grosir</string>
     <string name="error_empty_wholesale_quantity">Jumlah minimal tidak boleh kosong</string>
     <string name="error_zero_wholesale_quantity">Minimum pemesanan tidak boleh 0</string>
+    <string name="error_zero_wholesale_max_quantity">Maks. %d</string>
     <string name="error_wholesale_quantity_less_min_order">Jumlah harus lebih > dari min. pemesanan</string>
     <string name="error_wholesale_quantity_must_bigger_than_previous_input">Jumlah harus lebih > dari sebelumnya</string>
     <string name="error_empty_wholesale_price">Harga grosir tidak boleh kosong</string>
@@ -223,7 +251,7 @@
     <string name="label_shipment_description">Pastikan berat produk dan pengiriman sesuai</string>
     <string name="label_shipment_required">Kamu <b>mewajibkan</b> pembeli untuk mengaktifkan asuransi pengiriman</string>
     <string name="label_shipment_optional">Kamu <b>memberikan opsi</b> kepada pembeli untuk mengaktifkan asuransi pengiriman</string>
-    <string name="label_shipment_ticker">Penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir. <![CDATA[<font color=\'#42b549\'>Selengkapnya</font>.]]></string>
+    <string name="label_shipment_ticker">Penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir. <![CDATA[<font color=\'#42b549\'><a href=”###”>Selengkapnya</a></font>.]]></string>
     <string name="label_shipment_weight_ticker">Perhatikan dengan baik berat produk agar tidak terjadi selisih data dengan pihak kurir.</string>
     <string name="label_shipment_bottom_sheet">Jika terjadi kerusakan / kehilangan saat pengiriman, penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir, hanya kompensasi senilai <b>maks. 10x ongkir.</b></string>
     <string name="label_weight">Berat</string>
@@ -270,10 +298,6 @@
     <string name="label_draft_product_empty">Draft Produk Anda kosong</string>
     <string name="label_draft_product_add_product">Tambah Produk</string>
     <string name="label_draft_has_not_have_product_name_yet">Belum ada nama produk</string>
-
-    <!-- set cash back -->
-    <string name="product_edit_set_cashback_success">Pengaturan Cashback untuk produk ini berhasil</string>
-    <string name="product_edit_set_cashback_error">Gagal mengatur cashback untuk produk ini. Coba lagi, ya.</string>
 
     <!--network errors-->
     <string name="error_gql_failed">Terjadi kesalahan koneksi</string>
@@ -399,12 +423,12 @@
     <string name="label_product_specification">Spesifikasi</string>
     <string name="label_product_specification_tips">Tambah keterangan secara rinci supaya produkmu makin mudah dikenali pembeli.</string>
     <string name="label_refresh_specification">Data tidak berhasil ditampilkan,\nklik <b>Muat Ulang</b> untuk coba lagi</string>
-    <string name="label_info_specification">Pelajari tentang Spesifikasi <![CDATA[<font color=\'#42b549\'><b>di sini</b></font>.]]></string>
+    <string name="label_info_specification">Pelajari tentang Spesifikasi <![CDATA[<font color=\'#42b549\'><a href=”###”><b>di sini</b></a></font>.]]></string>
     <string name="label_specification_subtitle">Spesifikasi yang lengkap dapat bantu pembeli memilih produk sesuai kebutuhannya.</string>
     <string name="label_specification_info_title_points">Mengapa perlu tambah Spesifikasi?</string>
     <string name="label_specification_info_point1">Semakin besar kemungkinan produkmu muncul dalam hasil pencarian.</string>
     <string name="label_specification_info_point2">Produk dengan Spesifikasi yang lengkap akan lebih disukai pembeli.</string>
-    <string name="label_specification_item_imei_required">Isi status sinyal sesuai kondisi saat ini. Pengisian yang tidak sesuai bisa menimbulkan kendala bagi pembeli. <![CDATA[<font color=\'#42b549\'><b>Pelajari Selengkapnya</b></font>.]]></string>
+    <string name="label_specification_item_imei_required">Isi status sinyal sesuai kondisi saat ini. Pengisian yang tidak sesuai bisa menimbulkan kendala bagi pembeli. <![CDATA[<font color=\'#42b549\'><a href=”###”><b>Pelajari Selengkapnya</b></a></font>.]]></string>
     <string name="label_specification_signal_status_required">Isi status sinyal pada spesifikasi produkmu, ya.</string>
     <string name="label_specification_signal_status_bottomsheet">Apa saja status sinyal?</string>
     <string name="label_specification_signal_status_tips1"><![CDATA[<b>Sinyal Aktif</b><br/>]]>Perangkat elektronik yang bisa terhubung ke jaringan operator di Indonesia. <![CDATA[<b>Jika terjadi kendala</b>]]>, pembelimu bisa mengajukan refund atau retur melalui Tokopedia Care.</string>
@@ -435,8 +459,8 @@
     <string name="title_product_limitation_item_usepromotion">Pasang iklan dan promosi untuk tingkatkan penjualan</string>
     <string name="label_product_limitation_item_usepromotion">Semakin banyak produk yang terjual, semakin banyak kuota produk untuk tokomu!</string>
     <string name="title_product_limitation_bottomsheet_ticker">Kamu bisa upload hingga %1$d produk</string>
-    <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
-    <string name="label_product_limitation_bottomsheet_ticker_exceed">Jumlah produk di tokomu sudah mencapai maks. kuota sebanyak %1$d produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><a href=”###”><b>Selengkapnya</b></a></font>.]]></string>
+    <string name="label_product_limitation_bottomsheet_ticker_exceed">Jumlah produk di tokomu sudah mencapai maks. kuota sebanyak %1$d produk. <![CDATA[<font color=\'#42b549\'><a href=”###”><b>Selengkapnya</b></a></font>.]]></string>
     <string name="title_product_limitation_bottomsheet_info">Bagaimana cara menambahkan lebih banyak produk?</string>
     <string name="label_product_limitation_bottomsheet_button">Kembali ke Daftar Produk</string>
     <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
@@ -516,4 +540,9 @@
     <string name="error_minimum_weight">Min.%d g</string>
     <string name="error_max_weight">Maks. %s g</string>
 
+    <string name="label_ineligble_access_warning">Oops, fitur ini belum \ndapat diakses</string>
+    <string name="label_body_ineligble_access_warning">Ini karena tokomu sedang ditangguhkan</string>
+    <string name="label_back_to_list_product">Kembali ke Daftar Produk</string>
+    <string name="label_learn_about_moderation">Pelajari Tentang Penangguhan</string>
+    <string name="format_web_page">%s?url=%s</string>
 </resources>

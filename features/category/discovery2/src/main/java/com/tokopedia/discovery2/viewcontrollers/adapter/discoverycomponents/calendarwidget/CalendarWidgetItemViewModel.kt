@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,9 +45,9 @@ class CalendarWidgetItemViewModel(
         return UserSession(application).userId
     }
 
-    fun subscribeUserForPushNotification(campaignId: Int) {
+    fun subscribeUserForPushNotification(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(campaignId)
+            val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(campaignId.toLongOrZero())
             if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
                 pushBannerStatus.value =
                     Pair(true, application.getString(R.string.discovery_calendar_push_subscribe))
@@ -57,9 +58,9 @@ class CalendarWidgetItemViewModel(
         })
     }
 
-    fun unSubscribeUserForPushNotification(campaignId: Int) {
+    fun unSubscribeUserForPushNotification(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = subScribeToUseCase.unSubscribeToPush(campaignId)
+            val pushSubscriptionResponse = subScribeToUseCase.unSubscribeToPush(campaignId.toLongOrZero())
             if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
                 pushBannerStatus.value =
                     Pair(false, application.getString(R.string.discovery_calendar_push_unsubscribe))
@@ -71,9 +72,9 @@ class CalendarWidgetItemViewModel(
     }
 
 
-    fun checkUserPushStatus(campaignId: Int) {
+    fun checkUserPushStatus(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(campaignId)
+            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(campaignId.toLongOrZero())
             pushBannerSubscription.value =
                 pushSubscriptionResponse.notifierCheckReminder?.status == 1
         }, onError = {

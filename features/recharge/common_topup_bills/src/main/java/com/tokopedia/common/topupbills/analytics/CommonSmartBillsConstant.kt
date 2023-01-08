@@ -1,6 +1,8 @@
 package com.tokopedia.common.topupbills.analytics
 
 import android.os.Bundle
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralDigitalView
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addListBottomSheet
 import com.tokopedia.track.TrackAppUtils
 
 object CommonSmartBillsConstant {
@@ -45,12 +47,30 @@ object CommonSmartBillsConstant {
         return this
     }
 
+    fun Bundle.addGeneralDigitalView(): Bundle {
+        this.putString(TrackAppUtils.EVENT,VIEW_DIGITAL_IRIS)
+        this.putString(TrackAppUtils.EVENT_CATEGORY,CATEGORY_SMART_BILLS)
+        this.putString(CURRENT_SITE,CURRENT_SITE_VALUE)
+        this.putString(BUSINESS_UNIT,BUSINESS_UNIT_VALUE)
+        return this
+    }
+
+    fun Bundle.addGeneralDigitalClick(): Bundle {
+        this.putString(TrackAppUtils.EVENT,CLICK_DIGITAl)
+        this.putString(TrackAppUtils.EVENT_CATEGORY,CATEGORY_SMART_BILLS)
+        this.putString(CURRENT_SITE,CURRENT_SITE_VALUE)
+        this.putString(BUSINESS_UNIT,BUSINESS_UNIT_VALUE)
+        return this
+    }
+
     const val CURRENT_SITE = "currentSite"
     const val BUSINESS_UNIT = "businessUnit"
     const val USER_ID = "userId"
 
     const val CLICK_SMART_BILLS = "clickSmartBill"
+    const val CLICK_DIGITAl = "clickDigital"
     const val VIEW_SMART_BILLS_IRIS = "viewSmartBillIris"
+    const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
     const val CATEGORY_SMART_BILLS = "digital - smart bill management"
     const val CATEGORY_SMART_BILLS_ADD_BILLS = "digital - smart bill management - add bills"
 

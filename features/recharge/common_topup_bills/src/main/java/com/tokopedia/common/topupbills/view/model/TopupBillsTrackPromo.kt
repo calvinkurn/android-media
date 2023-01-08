@@ -2,6 +2,7 @@ package com.tokopedia.common.topupbills.view.model
 
 import android.os.Parcelable
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -15,7 +16,7 @@ class TopupBillsTrackPromo constructor(
     }
 
     override fun hashCode(): Int {
-        return 31 * this.promoItem.id.toInt()
+        return 31 * this.promoItem.id.toIntSafely()
     }
 
 }

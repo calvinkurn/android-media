@@ -7,7 +7,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
 import org.junit.Before
@@ -26,19 +25,17 @@ class CheckWhiteListViewModelTest {
     private val fetchFailedErrorMessage = "Fetch Failed"
 
 
-
     @Before
-    fun setUp()
-    {
+    fun setUp() {
         viewModel = CheckWhiteListViewModel(
-           checkWhiteListUsecase,dispatcher
+            checkWhiteListUsecase,
+            dispatcher
         )
     }
 
 
     @Test
-    fun successWhiteListTest()
-    {
+    fun successWhiteListTest() {
         val boolean = mockk<Boolean>(relaxed = true)
         coEvery {
             checkWhiteListUsecase.getThankPageData(any(), any())
@@ -51,21 +48,20 @@ class CheckWhiteListViewModelTest {
     }
 
     @Test
-    fun failWhiteListTest()
-    {
-         val mockThrowable = Throwable(message = fetchFailedErrorMessage)
+    fun failWhiteListTest() {
+        val mockThrowable = Throwable(message = fetchFailedErrorMessage)
         coEvery {
             checkWhiteListUsecase.getThankPageData(any(), any())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
         viewModel.registerForSingleAuth()
-        Assert.assertEquals((viewModel.whiteListResultLiveData.value as Fail).throwable, mockThrowable)
+        Assert.assertEquals(
+            (viewModel.whiteListResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
 
     }
-
-
-
 
 
 }

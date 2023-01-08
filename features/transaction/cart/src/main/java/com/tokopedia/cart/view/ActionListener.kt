@@ -98,4 +98,5 @@ interface ActionListener {
 
     fun addOnImpression(productId: String)
 
+    fun onViewFreeShippingPlusBadge()
 }

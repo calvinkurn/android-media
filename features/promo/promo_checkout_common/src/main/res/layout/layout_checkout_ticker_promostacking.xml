@@ -19,8 +19,8 @@
 
             <ImageView
                 android:id="@+id/ic_button_coupon"
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerInParent="true"
@@ -69,10 +69,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingStart="@dimen/dp_3"
-                    android:paddingLeft="@dimen/dp_3"
-                    android:paddingEnd="@dimen/dp_3"
-                    android:paddingRight="@dimen/dp_3"
+                    android:paddingStart="3dp"
+                    android:paddingLeft="3dp"
+                    android:paddingEnd="3dp"
+                    android:paddingRight="3dp"
                     android:textColor="@color/Unify_N0"
                     app:typographyType="small"
                     tools:text="1" />
@@ -148,8 +148,8 @@
 
                     <ImageView
                         android:id="@+id/imageCloseGlobal"
-                        android:layout_width="@dimen/dp_35"
-                        android:layout_height="@dimen/dp_35"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
@@ -180,20 +180,20 @@
                             android:ellipsize="end"
                             android:maxLines="2"
                             android:textColor="@color/Unify_N700_96"
-                            android:textSize="@dimen/sp_13"
+                            android:textSize="13sp"
                             tools:text="Kupon Gratis Ongkir JT Rp 50000" />
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/descCouponGlobal"
                             style="@style/TextView.Micro11.FontMedium.BlackDisabled"
-                            android:layout_marginTop="@dimen/dp_3"
+                            android:layout_marginTop="3dp"
                             android:layout_marginEnd="5dp"
                             android:layout_marginRight="5dp"
-                            android:layout_marginBottom="@dimen/dp_3"
+                            android:layout_marginBottom="3dp"
                             android:lineSpacingExtra="2sp"
                             android:maxLines="2"
                             android:textColor="@color/Unify_N700_68"
-                            android:textSize="@dimen/sp_13"
+                            android:textSize="13sp"
                             android:visibility="gone"
                             tools:text="Pilih Kurir terlebih dahulu untuk memastikan benefit yang akan didapat" />
 

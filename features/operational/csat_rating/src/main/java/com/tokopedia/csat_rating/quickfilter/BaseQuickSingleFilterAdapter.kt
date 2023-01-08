@@ -2,7 +2,6 @@ package com.tokopedia.csat_rating.quickfilter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 
 
 abstract class BaseQuickSingleFilterAdapter<T : BaseItemFilterViewHolder?> : RecyclerView.Adapter<T>() {

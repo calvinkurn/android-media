@@ -1,8 +1,10 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.CampaignDetail
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
@@ -18,6 +20,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3U
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.MockKSettings.relaxed
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.invoke
@@ -161,6 +164,32 @@ class PayLaterViewModelTest {
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
 
+
+    @Test
+    fun successPayLaterOptionsDataEmpty()
+    {
+        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
+        val list = arrayListOf(SimulationUiModel(
+            1,
+            "",
+            "",
+            true,
+            arrayListOf(SupervisorUiModel)))
+        mockMapperResponse(list)
+        coVerify(exactly = 0) {
+            payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
+        coEvery {
+            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+        } coAnswers {
+            firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
+        }
+
+        viewModel.getPayLaterAvailableDetail(10.0, "0")
+        coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
+        Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
+    }
+
+
     @Test
     fun `successPayLaterOptions With Default Selected`()
     {
@@ -219,9 +248,29 @@ class PayLaterViewModelTest {
         }
         viewModel.shopId = ""
         viewModel.addProductToCart(detail,"")
-        verify {
-            addToCartUseCase.execute(any(), any())
+        Assert.assertEquals(
+            (viewModel.addToCartLiveData.value as Success).data,
+            addToCartMultiDataModel
+        )
+    }
+
+    @Test
+    fun successAddToCartWithErrorTrue() {
+        val addToCartMultiDataModel = AddToCartOccMultiDataModel(emptyList(),"ERROR", mockk(relaxed = true))
+
+        val detail = mockk<Detail>(relaxed = true)
+        coEvery {
+            addToCartUseCase.execute(captureLambda(), any())
+        } coAnswers {
+            val onSuccess = lambda<(AddToCartOccMultiDataModel) -> Unit>()
+            onSuccess.invoke(addToCartMultiDataModel)
         }
+        viewModel.shopId = ""
+        viewModel.addProductToCart(detail,"")
+        Assert.assertEquals(
+            (viewModel.addToCartLiveData.value as Fail).throwable.message,
+           ShowToasterException("").message
+        )
     }
 
     @Test
@@ -235,9 +284,10 @@ class PayLaterViewModelTest {
         }
         viewModel.shopId = ""
         viewModel.addProductToCart(detail,"")
-        verify {
-            addToCartUseCase.execute(any(), any())
-        }
+        Assert.assertEquals(
+            (viewModel.addToCartLiveData.value as Fail).throwable,
+            mockThrowable
+        )
     }
 
 }

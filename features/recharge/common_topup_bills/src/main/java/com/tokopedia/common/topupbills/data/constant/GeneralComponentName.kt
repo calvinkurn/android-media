@@ -6,5 +6,6 @@ class GeneralComponentName {
         const val OPERATOR_TOKEN_LISTRIK = "Token Listrik"
         const val OPERATOR_TAGLIS = "Tagihan Listrik"
         const val OPERATOR_NON_TAGLIS = "PLN Non-Taglis"
+        const val CATEGORY_SIGNAL = "Signal"
     }
 }

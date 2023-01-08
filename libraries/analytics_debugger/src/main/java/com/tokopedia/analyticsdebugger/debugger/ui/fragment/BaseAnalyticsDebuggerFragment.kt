@@ -131,12 +131,12 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_analytics_debugger, menu)
+        inflater.inflate(R.menu.menu_applink_debugger, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_menu_delete) {
+        if (item.itemId == R.id.applink_action_menu_delete) {
             presenter!!.deleteAll()
             return true
         }

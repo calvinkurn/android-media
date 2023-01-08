@@ -130,7 +130,7 @@ object CampaignStockMapper {
         return DateFormatUtils.getFormattedDate(timeInSecond, RESERVED_INFO_DATE_FORMAT)
     }
 
-    private fun getPeriodStatus(startTimeNanosString: String): ReservedEventInfoUiModel.PeriodStatus {
+    private fun getPeriodStatus(startTimeNanosString: String): String {
         val currentTime = getCurrentTimeInNanos()
         val startTimeMillis = startTimeNanosString.toLongOrZero()
 

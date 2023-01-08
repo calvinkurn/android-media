@@ -27,96 +27,96 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 //
 
 class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
-    override fun getNewFragment(): Fragment {
-	val bundle = Bundle()
-	if (intent.extras != null) {
-	    bundle.putAll(intent.extras)
-	}
-	return if (intent.extras?.getBoolean(
-		ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN,
-		false
-	    ) == true
-	) {
-	    ResetPinFragment.createInstance(bundle)
-	} else {
-	    ChangePinFragment.createInstance(bundle)
-	}
-    }
-
-    override fun getComponent(): ProfileCompletionSettingComponent {
-	return DaggerProfileCompletionSettingComponent.builder()
-	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-	    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-	    .build()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-	super.onCreate(savedInstanceState)
-	KeyboardHandler.hideSoftKeyboard(this)
-    }
-
-    override fun setupLayout(savedInstanceState: Bundle?) {
-	setContentView(layoutRes)
-	toolbar = findViewById(toolbarResourceID)
-	setSupportActionBar(toolbar)
-	supportActionBar?.apply {
-	    setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
-	    setDisplayShowTitleEnabled(false)
-	    setDisplayHomeAsUpEnabled(true)
-	    elevation = 0f
-	    setBackgroundDrawable(
-		ColorDrawable(
-		    MethodChecker.getColor(
-			this@ChangePinActivity,
-			com.tokopedia.unifyprinciples.R.color.Unify_Background
-		    )
-		)
-	    )
-	}
-    }
-
-    @SuppressLint("InlinedApi")
-    override fun setupStatusBar() {
-	if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.LOLLIPOP) {
-	    setWindowFlag(true)
+	override fun getNewFragment(): Fragment {
+		val bundle = Bundle()
+		if (intent.extras != null) {
+			bundle.putAll(intent.extras)
+		}
+		return if (intent.extras?.getBoolean(
+				ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN,
+				false
+			) == true
+		) {
+			ResetPinFragment.createInstance(bundle)
+		} else {
+			ChangePinFragment.createInstance(bundle)
+		}
 	}
 
-	window.decorView.systemUiVisibility =
-	    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-
-	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-	    setWindowFlag(false)
-	    window.statusBarColor =
-		MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+	override fun getComponent(): ProfileCompletionSettingComponent {
+		return DaggerProfileCompletionSettingComponent.builder()
+			.baseAppComponent((application as BaseMainApplication).baseAppComponent)
+			.profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+			.build()
 	}
 
-	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-	    val decor = window.decorView
-	    decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		KeyboardHandler.hideSoftKeyboard(this)
 	}
-    }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun setWindowFlag(on: Boolean) {
-	val winParams = window.attributes
-	if (on) {
-	    winParams.flags = winParams.flags or WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-	} else {
-	    winParams.flags =
-		winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
+	override fun setupLayout(savedInstanceState: Bundle?) {
+		setContentView(layoutRes)
+		toolbar = findViewById(toolbarResourceID)
+		setSupportActionBar(toolbar)
+		supportActionBar?.apply {
+			setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
+			setDisplayShowTitleEnabled(false)
+			setDisplayHomeAsUpEnabled(true)
+			elevation = 0f
+			setBackgroundDrawable(
+				ColorDrawable(
+					MethodChecker.getColor(
+						this@ChangePinActivity,
+						com.tokopedia.unifyprinciples.R.color.Unify_Background
+					)
+				)
+			)
+		}
 	}
-	window.attributes = winParams
-    }
 
-    private fun addFragment(containerViewId: Int, fragment: Fragment) {
-	val fragmentTransaction = this.supportFragmentManager.beginTransaction()
-	fragmentTransaction.replace(containerViewId, fragment)
-	fragmentTransaction.commit()
-    }
+	@SuppressLint("InlinedApi")
+	override fun setupStatusBar() {
+		if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.LOLLIPOP) {
+			setWindowFlag(true)
+		}
 
-    fun goToForgotPin(bundle: Bundle) {
-	val fragment = ForgotPinFragment.createInstance(bundle)
-	addFragment(parentViewResourceID, fragment)
-    }
+		window.decorView.systemUiVisibility =
+			View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			setWindowFlag(false)
+			window.statusBarColor =
+				MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			val decor = window.decorView
+			decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+		}
+	}
+
+	@TargetApi(Build.VERSION_CODES.KITKAT)
+	private fun setWindowFlag(on: Boolean) {
+		val winParams = window.attributes
+		if (on) {
+			winParams.flags = winParams.flags or WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+		} else {
+			winParams.flags =
+				winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
+		}
+		window.attributes = winParams
+	}
+
+	private fun addFragment(containerViewId: Int, fragment: Fragment) {
+		val fragmentTransaction = this.supportFragmentManager.beginTransaction()
+		fragmentTransaction.replace(containerViewId, fragment)
+		fragmentTransaction.commit()
+	}
+
+	fun goToForgotPin(bundle: Bundle) {
+		val fragment = ForgotPinFragment.createInstance(bundle)
+		addFragment(parentViewResourceID, fragment)
+	}
 
 }

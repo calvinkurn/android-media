@@ -152,7 +152,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else {
                     val secureResultString = NFCUtils.toHex(secureResult)
-                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(secureResultString, 4, 10)))
+                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(secureResultString, positionRandomPurseBalanceStart, positionRandomPurseBalanceEnd)))
                 }
             } catch (e: IOException) {
                 isoDep.close()
@@ -172,7 +172,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     private fun writeBalanceRequest(cryptogram: String, terminalRandomNumber: ByteArray): ByteArray {
         val command = COMMAND_WRITE_BALANCE.plus(0x03.toByte()).plus(0x14.toByte()).plus(0x02.toByte()).plus(0x14.toByte()).plus(0x03.toByte()). //fixed value
         plus(terminalRandomNumber). //Terminal Random Number
-        plus(stringToByteArrayRadix(getStringFromNormalPosition(cryptogram, 32, 64))). // Cryptogram
+        plus(stringToByteArrayRadix(getStringFromNormalPosition(cryptogram, cryptogramPositionStart, cryptogramPositionEnd))). // Cryptogram
         plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()). // fixed value
         plus(0x18.toByte()) //LE field
 
@@ -213,21 +213,21 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 && cardRandomNumber.isNotEmpty()
                 && cardRandomNumber.length == MAX_CHALLAGE_LENGTH) {
             val result = FIX_VALUE +
-                    getStringFromPosition(securePurse, 9, 16) + // CAN
-                    getStringFromPosition(securePurse, 17, 24) + //CSN
+                    getStringFromPosition(securePurse, positionCANStart, positionCANEnd) + // CAN
+                    getStringFromPosition(securePurse, positionCSNStart, positionCSNEnd) + //CSN
                     terminalRandomNumber +
-                    cardRandomNumber.substring(0, 16) +
+                    cardRandomNumber.substring(positionCardRandomStart, positionCardRandomEnd) +
                     FIX_VALUE_6TH_ROW +
-                    getStringFromPosition(securePurse, 2, 2) + // Purse Status
-                    getStringFromPosition(securePurse, 3, 5) + // Purse Balance
-                    getStringFromPosition(securePurse, 29, 32) + // Last Credit TRP
-                    getStringFromPosition(securePurse, 33, 40) + // Last Credit Header
-                    getStringFromPosition(securePurse, 43, 46) + // Last TRX TRP
-                    getStringFromPosition(securePurse, 47, 62) + // Last TRX Record
-                    getStringFromPosition(securePurse, 64, 64) + // Bad Bebt Counter
-                    getStringFromPosition(securePurse, 95, 95) + // Last Trx Debit Option Byte
-                    getStringFromPosition(securePurse, 96, 103) + // 1st 8 byte eData
-                    getStringFromPosition(securePurse, 104, 111) // last counter
+                    getStringFromPosition(securePurse, positionPurseStatus, positionPurseStatus) + // Purse Status
+                    getStringFromPosition(securePurse, positionPurseBalanceStart, positionPurseBalanceEnd) + // Purse Balance
+                    getStringFromPosition(securePurse, positionLastCreditTRPStart, positionLastCreditTRPEnd) + // Last Credit TRP
+                    getStringFromPosition(securePurse, positionLastCreditHeaderStart, positionLastCreditHeaderEnd) + // Last Credit Header
+                    getStringFromPosition(securePurse, positionLastTRXTRPStart, positionLastTRXTRPEnd) + // Last TRX TRP
+                    getStringFromPosition(securePurse, positionLastTRXRecordStart, positionLastTRXRecordEnd) + // Last TRX Record
+                    getStringFromPosition(securePurse, positionBadCounter, positionBadCounter) + // Bad Bebt Counter
+                    getStringFromPosition(securePurse, positionLastTRXOptionByte, positionLastTRXOptionByte) + // Last Trx Debit Option Byte
+                    getStringFromPosition(securePurse, positionFirstEightByteStart, positionFirstEightByteEnd) + // 1st 8 byte eData
+                    getStringFromPosition(securePurse, positionLastCounterStart, positionLastCounterEnd) // last counter
             return result
         } else return ""
     }
@@ -237,7 +237,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
      */
     fun getRandomString(): String {
         val allowedChars = ('A'..'F') + ('0'..'9')
-        return (1..16)
+        return (positionRandomStringStart..positionRandomStringEnd)
                 .map { allowedChars.random() }
                 .joinToString("")
     }
@@ -270,7 +270,6 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         return string.substring(indexBegin, indexEnd)
     }
 
-
     companion object {
 
         const val CARD_DATA = "cardData"
@@ -283,6 +282,52 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
         private const val FIX_VALUE = "0001"
         private const val FIX_VALUE_6TH_ROW = "00000000"
+
+        //CAN
+        private const val positionCANStart = 9
+        private const val positionCANEnd = 16
+        //CSN
+        private const val positionCSNStart = 17
+        private const val positionCSNEnd = 24
+        //Card Random
+        private const val positionCardRandomStart = 0
+        private const val positionCardRandomEnd = 16
+        //Purse Status
+        private const val positionPurseStatus = 2
+        //Purse Balance
+        private const val positionPurseBalanceStart = 3
+        private const val positionPurseBalanceEnd = 5
+        //Last Credit TRP
+        private const val positionLastCreditTRPStart = 29
+        private const val positionLastCreditTRPEnd = 32
+        //Last Credit Header
+        private const val positionLastCreditHeaderStart = 33
+        private const val positionLastCreditHeaderEnd = 40
+        //Last TRX TRP
+        private const val positionLastTRXTRPStart = 43
+        private const val positionLastTRXTRPEnd = 46
+        //Last TRX Record
+        private const val positionLastTRXRecordStart = 47
+        private const val positionLastTRXRecordEnd = 62
+        //Bad Debt Counter
+        private const val positionBadCounter = 64
+        //Last TRX Option
+        private const val positionLastTRXOptionByte = 95
+        //First Eight Byte
+        private const val positionFirstEightByteStart = 96
+        private const val positionFirstEightByteEnd = 103
+        //Last Counter
+        private const val positionLastCounterStart = 104
+        private const val positionLastCounterEnd = 111
+
+        private const val cryptogramPositionStart = 32
+        private const val cryptogramPositionEnd = 64
+
+        private const val positionRandomStringStart = 1
+        private const val positionRandomStringEnd = 16
+
+        private const val positionRandomPurseBalanceStart = 4
+        private const val positionRandomPurseBalanceEnd = 10
 
         val COMMAND_GET_CHALLENGE = byteArrayOf(
                 0x00.toByte(),  // CLA Class

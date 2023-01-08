@@ -16,7 +16,6 @@ import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
-import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.domain.usecases.GetProfileDataUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetNavNotification
@@ -42,10 +41,13 @@ import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusResponseDataModel
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 
 fun createViewModel (
         getProfileDataUseCase: GetProfileDataUseCase? = null,
@@ -61,7 +63,8 @@ fun createViewModel (
         getAffiliateUserUseCase: GetAffiliateUserUseCase? = null,
         getFavoriteShopsNavUseCase: GetFavoriteShopsNavUseCase? = null,
         getWishlistNavUseCase: GetWishlistNavUseCase? = null,
-        getReviewProductUseCase: GetReviewProductUseCase? = null
+        getReviewProductUseCase: GetReviewProductUseCase? = null,
+        getTokopediaPlusUseCase: TokopediaPlusUseCase? = null
 ): MainNavViewModel {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -114,7 +117,11 @@ fun createViewModel (
         coEvery { it.executeOnBackground() }.answers { listOf() }
     }
 
-    return MainNavViewModel(
+    val getTokopediaPlusUseCaseMock = getOrUseDefault(getTokopediaPlusUseCase) {
+        coEvery { it.invoke(any()) }.answers { TokopediaPlusResponseDataModel() }
+    }
+
+    return spyk(MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
             clientMenuGenerator = clientMenuGeneratorMock,
             userSession = userSessionMock,
@@ -128,8 +135,9 @@ fun createViewModel (
             getAffiliateUserUseCase = getAffiliateUserUseCaseMock,
             getFavoriteShopsNavUseCase = getFavoriteShopUseCaseMock,
             getWishlistNavUseCase = getWishlistUseCaseMock,
-            getReviewProductUseCase = getReviewProductUseCaseMock
-    )
+            getReviewProductUseCase = getReviewProductUseCaseMock,
+            getTokopediaPlusUseCase = getTokopediaPlusUseCaseMock
+    ), recordPrivateCalls = true)
 }
 
 fun createProfileDataUseCase (
@@ -141,7 +149,8 @@ fun createProfileDataUseCase (
     getShopInfoUseCase: GetShopInfoUseCase? = null,
     getWalletEligibilityUseCase: GetWalletEligibilityUseCase? = null,
     getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase? = null,
-    getAffiliateUserUseCase: GetAffiliateUserUseCase? = null
+    getAffiliateUserUseCase: GetAffiliateUserUseCase? = null,
+    getTokopediaPlusUseCase: TokopediaPlusUseCase? = null
 ): UseCase<AccountHeaderDataModel> {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -173,6 +182,9 @@ fun createProfileDataUseCase (
     val getAffiliateUserUseCaseMock = getOrUseDefault(getAffiliateUserUseCase) {
         coEvery { it.executeOnBackground() }.answers { Success(AffiliateUserDetailData()) }
     }
+    val getTokopediaPlusUseCaseMock = getOrUseDefault(getTokopediaPlusUseCase) {
+        coEvery { it.invoke(any()) }.answers{ TokopediaPlusResponseDataModel() }
+    }
 
     return GetProfileDataUseCase(
         accountHeaderMapper = accountHeaderMapper,
@@ -183,7 +195,8 @@ fun createProfileDataUseCase (
         getShopInfoUseCase = getShopInfoUseCaseMock.get(),
         getWalletAppBalanceUseCase = getWalletAppBalanceMock.get(),
         getWalletEligibilityUseCase = getWalletEligibilityUseCaseMock.get(),
-        getAffiliateUserUseCase = getAffiliateUserUseCaseMock.get()
+        getAffiliateUserUseCase = getAffiliateUserUseCaseMock.get(),
+        getTokopediaPlusUseCase = getTokopediaPlusUseCaseMock.get()
     )
 }
 

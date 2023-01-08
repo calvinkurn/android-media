@@ -21,7 +21,7 @@ class BankTransferViewHolder(
 
 
     fun bind(item: BankTransferPaymentModel) {
-        bindTransactionTimeData(item.expiryDate, item.expiryTime)
+        bindTransactionTimeData(item)
         bindPaymentGatewayData(item)
         bindBankData(item)
         bindTransactionAmountData(item.amount)
@@ -68,12 +68,12 @@ class BankTransferViewHolder(
         }
     }
 
-    private fun bindTransactionTimeData(expiryDate: String, expiryTime: Long) {
+    private fun bindTransactionTimeData(item: BankTransferPaymentModel) {
         view.apply {
-            cardIcon.urlSrc = CARD_ICON_URL
-            tvPaymentTransactionDate.text = expiryDate
+            cardIcon.urlSrc = if(item.productImage != "") item.productImage else CARD_ICON_URL
+            tvPaymentTransactionDate.text = item.expiryDate
             tvTransactionExpireTime.text =
-                DateFormatUtils.getFormattedDateSeconds(expiryTime, "dd MMM, HH:mm")
+                DateFormatUtils.getFormattedDateSeconds(item.expiryTime, "dd MMM, HH:mm")
         }
     }
 
@@ -88,7 +88,7 @@ class BankTransferViewHolder(
 
     companion object {
         private val LAYOUT_ID = R.layout.bank_transfer_payment_list_item
-        private const val CARD_ICON_URL = "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png"
+        private const val CARD_ICON_URL = "https://images.tokopedia.net/img/toppay/product/marketplace.png"
 
         fun getViewHolder(
             inflater: LayoutInflater,

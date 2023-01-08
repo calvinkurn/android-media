@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -28,7 +29,6 @@ import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.activity.ProductReportFormActivity
 import com.tokopedia.report.view.activity.ReportInputDetailActivity
 import com.tokopedia.report.view.adapter.ReportFormAdapter
-import com.tokopedia.report.view.customview.UnifyDialog
 import com.tokopedia.report.view.viewmodel.ProductReportSubmitViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -41,7 +41,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     private lateinit var adapter: ReportFormAdapter
     private var photoTypeSelected: String? = null
     override fun getScreenName(): String? = null
-    private var dialogSubmit: UnifyDialog? = null
+    private var dialogSubmit: DialogUnify? = null
     private var productId: String = "0"
     private val tracking by lazy { MerchantReportTracking() }
     private var binding by autoCleared<FragmentProductReportBinding>()
@@ -83,12 +83,12 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         reason?.let {reasonItem ->
             val popupField = reasonItem.additionalFields.firstOrNull { additionalField -> additionalField.type == "popup" }
             if (popupField != null && activity != null){
-                dialogSubmit = UnifyDialog(requireActivity(), UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER).apply {
+                dialogSubmit = DialogUnify(requireActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                     setTitle(popupField.value)
                     setDescription(popupField.detail)
-                    setOk(getString(R.string.label_report))
-                    setSecondary(getString(R.string.report_cancel))
-                    setOkOnClickListner(View.OnClickListener {
+                    setPrimaryCTAText(getString(R.string.label_report))
+                    setSecondaryCTAText(getString(R.string.report_cancel))
+                    setPrimaryCTAClickListener{
                         dismiss()
                         binding.loadingView.visible()
                         viewModel.submitReport(
@@ -96,11 +96,11 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                             reasonItem.categoryId.toIntOrZero(),
                             adapter.inputs
                         )
-                    })
-                    setSecondaryOnClickListner(View.OnClickListener {
+                    }
+                    setSecondaryCTAClickListener {
                         tracking.eventReportCancelDisclaimer(reasonItem.value.toLowerCase())
                         dismiss()
-                    })
+                    }
                 }
             }
 

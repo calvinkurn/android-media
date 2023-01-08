@@ -1,10 +1,14 @@
 package com.tokopedia.common.travel.data
 
+import com.tokopedia.common.travel.data.TravelTickerGQLQuery.TRAVEL_TICKER
+import com.tokopedia.gql_query_annotation.GqlQuery
+
 /**
  * @author by furqan on 03/09/2020
  */
+@GqlQuery("QueryTravelTicker", TRAVEL_TICKER)
 object TravelTickerGQLQuery {
-    val TRAVEL_TICKER = """
+    const val TRAVEL_TICKER = """
         query TravelGetTicker(${'$'}tickerRequest: TravelTickerRequest!) {
           TravelGetTicker(input: ${'$'}tickerRequest)  {
            title
@@ -20,5 +24,5 @@ object TravelTickerGQLQuery {
             IsPeriod
           }
         }
-    """.trimIndent()
+    """
 }

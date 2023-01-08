@@ -9,7 +9,7 @@ import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.CapturingSlot
 import io.mockk.MockKVerificationScope
@@ -84,7 +84,6 @@ fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductList
 }
 
 fun MockKVerificationScope.verifyIsVisible(productListView: ProductListSectionContract.View) {
-    productListView.setupSearchNavigation()
     productListView.trackScreenAuthenticated()
 }
 
@@ -152,6 +151,9 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
         actualProduct.componentId shouldBe expectedProduct.componentId
         actualProduct.inspirationCarouselTitle shouldBe inspirationCarouselTitle
         actualProduct.dimension90 shouldBe expectedDimension90
+        actualProduct.parentId shouldBe expectedProduct.parentId
+        actualProduct.minOrder shouldBe expectedProduct.minOrder
+        actualProduct.shopId shouldBe expectedProduct.shop.id
         productPosition++
     }
 }

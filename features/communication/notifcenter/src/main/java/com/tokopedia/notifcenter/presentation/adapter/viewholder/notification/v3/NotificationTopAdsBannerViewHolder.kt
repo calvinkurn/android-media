@@ -5,57 +5,24 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.topads.sdk.utils.TdnHelper
+import com.tokopedia.topads.sdk.widget.TdnBannerView
 import com.tokopedia.unifycomponents.toPx
 
 class NotificationTopAdsBannerViewHolder constructor(
-        itemView: View?
+    itemView: View?
 ) : AbstractViewHolder<NotificationTopAdsBannerUiModel>(itemView) {
 
-    private val adView: TopAdsImageView? = itemView?.findViewById(R.id.notifcenter_topads_banner)
+    private val adView: TdnBannerView? = itemView?.findViewById(R.id.notifcenter_topads_banner)
 
     override fun bind(element: NotificationTopAdsBannerUiModel) {
-        bindAd(element)
-        bindClick()
-        bindImpression(element)
-    }
 
-    private fun bindClick() {
-        adView?.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
-            override fun onTopAdsImageViewClicked(applink: String?) {
-                if (applink == null) return
-                RouteManager.route(adView.context, applink)
-            }
-        })
-    }
+        val tdnBannerList = TdnHelper.categoriesTdnBanners(element.ads)
 
-    private fun bindImpression(element: NotificationTopAdsBannerUiModel) {
-        adView?.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(viewUrl: String) {
-                if (!element.impressHolder.isInvoke) {
-                    hitTopAdsImpression(viewUrl)
-                    element.impressHolder.invoke()
-                }
-            }
-        })
-    }
-
-    private fun bindAd(element: NotificationTopAdsBannerUiModel) {
-        adView?.loadImage(element.ad, 8.toPx())
-    }
-
-    private fun hitTopAdsImpression(viewUrl: String) {
-        itemView.context.let {
-            TopAdsUrlHitter(it).hitImpressionUrl(
-                    this::class.java.simpleName,
-                    viewUrl,
-                    "",
-                    "",
-                    ""
-            )
+        if (!tdnBannerList.isNullOrEmpty()) {
+            adView?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
+                if (it.isNotEmpty()) RouteManager.route(adView.context, it)
+            })
         }
     }
 

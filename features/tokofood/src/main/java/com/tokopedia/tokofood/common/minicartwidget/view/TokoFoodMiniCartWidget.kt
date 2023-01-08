@@ -1,12 +1,14 @@
 package com.tokopedia.tokofood.common.minicartwidget.view
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
@@ -36,10 +38,14 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     private var totalQuantity: Int = Int.ZERO
     set(value) {
         val ctaText =
-            if (value <= Int.ZERO) {
-                context?.getString(com.tokopedia.tokofood.R.string.minicart_order_empty).orEmpty()
-            } else {
-                context?.getString(com.tokopedia.tokofood.R.string.minicart_order, value).orEmpty()
+            try {
+                if (value <= Int.ZERO) {
+                    context?.getString(com.tokopedia.tokofood.R.string.minicart_order_empty).orEmpty()
+                } else {
+                    context?.getString(com.tokopedia.tokofood.R.string.minicart_order, value).orEmpty()
+                }
+            } catch (ex: Resources.NotFoundException) {
+                String.EMPTY
             }
         viewBinding?.totalAmountMiniCart?.setCtaText(ctaText)
     }
@@ -89,8 +95,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
             }
             setLabelTitle(miniCartUiModel.shopName)
             val totalPrice =
-                miniCartUiModel.totalPriceFmt.takeIf { it.isNotBlank() }
-                    ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_dash).orEmpty()
+                miniCartUiModel.totalPriceFmt.takeIf { it.isNotBlank() } ?: getDashString()
             setAmount(totalPrice)
             totalQuantity = miniCartUiModel.totalProductQuantity
             amountCtaView.visible()
@@ -122,6 +127,14 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
                 isTotalAmountLoading = false
             }
             isTotalAmountDisabled = true
+        }
+    }
+
+    private fun getDashString(): String {
+        return try {
+            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_dash).orEmpty()
+        } catch (ex: Resources.NotFoundException) {
+            String.EMPTY
         }
     }
 

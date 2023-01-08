@@ -1,48 +1,51 @@
 package com.tokopedia.people.domains
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.people.model.UserProfileIsFollow
 import javax.inject.Inject
 
-const val THEY_FOLLOW = """
-    query ProfileIsFollowing(\${'$'}userIds: [String!]!) {
-                feedXProfileIsFollowing(followingUserIDs: \${'$'}userIds) {
+@GqlQuery(ProfileTheyFollowedUseCase.QUERY_NAME, ProfileTheyFollowedUseCase.QUERY)
+class ProfileTheyFollowedUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+) : GraphqlUseCase<UserProfileIsFollow>(graphqlRepository) {
+
+    init {
+        setGraphqlQuery(ProfileTheyFollowedUseCaseQuery())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(UserProfileIsFollow::class.java)
+    }
+
+    suspend fun executeOnBackground(profileIds: List<String>): UserProfileIsFollow {
+        val request = mapOf(
+            KEY_USER_IDS to profileIds,
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
+    companion object {
+        private const val KEY_USER_IDS = "followingUserIDs"
+
+        const val QUERY_NAME = "ProfileTheyFollowedUseCaseQuery"
+        const val QUERY = """
+            query ProfileIsFollowing(
+                ${"$$KEY_USER_IDS"}: [String!]!
+            ) {
+                feedXProfileIsFollowing(
+                    $KEY_USER_IDS: ${"$$KEY_USER_IDS"}
+                ) {
                   isUserFollowing {
                     userID
                     encryptedUserID
                     status
                   }
                 }
-                }
-"""
-
-@GqlQuery("TheyFollow", THEY_FOLLOW)
-class ProfileTheyFollowedUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
-
-    suspend fun profileIsFollowing(profileIds: MutableList<String>) : UserProfileIsFollow {
-            val request = GraphqlRequest(TheyFollow.GQL_QUERY,
-                UserProfileIsFollow::class.java,
-                getRequestParams(profileIds))
-
-        useCase.clearRequest()
-            useCase.addRequest(request)
-            val response = useCase.executeOnBackground()
-            return response.getData(UserProfileIsFollow::class.java)
-    }
-
-    private fun getRequestParams(profileIds: MutableList<String>): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[KEY_USERIDS] = profileIds
-        return requestMap
-    }
-
-    companion object {
-        const val KEY_USERIDS = "userIds"
-    }
-
-     private fun getQuery(): String {
-        return ""
+            }
+        """
     }
 }

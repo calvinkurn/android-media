@@ -1,102 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_info_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/top_separator"
+    <ViewStub
+        android:id="@+id/vs_custom_info"
+        android:layout="@layout/item_dynamic_info_content"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:layout_height="wrap_content" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
-
-        <ImageView
-            android:id="@+id/custom_image"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_power_merchant"
-            tools:visibility="visible"
-            android:contentDescription="custom_image" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/custom_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:textColor="@color/Unify_N700_96"
-            android:visibility="gone"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@+id/custom_label_check"
-            app:layout_constraintStart_toEndOf="@+id/custom_image"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginStart="0dp"
-            app:typographyType="display_1"
-            app:typographyWeight="bold"
-            tools:text="Bangga Buatan Indonesia"
-            tools:visibility="visible" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/title_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="custom_title,custom_image" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/custom_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_barrier"
-            app:typographyType="display_2"
-            tools:text="Buktikan kamu bangga beli produk dalam negeri.Bacass SK untuk dapat cashback."
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/custom_label_check"
-            android:layout_width="wrap_content"
-            app:typographyType="display_3"
-            android:text="@string/lihat_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/custom_title"
-            app:layout_constraintBottom_toBottomOf="@id/custom_title"
-            app:typographyWeight="bold"
-            android:textColor="@color/Unify_GN500"
-            android:layout_height="wrap_content"/>
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/label_custom_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            app:labelType="general_light_green"
-            app:layout_constraintTop_toBottomOf="@+id/custom_desc"
-            tools:text="Promo Bingkisan"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/bottom_separator"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:visibility="gone"
-        tools:visibility="visible" />
-</LinearLayout>
+</FrameLayout>

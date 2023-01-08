@@ -27,6 +27,8 @@ import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import javax.inject.Inject
 
 /**
@@ -113,6 +115,11 @@ class TwoFactorFragment: BaseDaggerFragment() {
     }
 
     private fun renderPhoneView(){
+        if (isImprove2FA()) {
+            goToNewAddPhone()
+            return
+        }
+
         context?.run {
             activePageListener?.currentPage(ADD_PHONE_NUMBER_PAGE)
 
@@ -151,7 +158,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     private fun goToAddPin(validateToken: String){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN_FROM_2FA)
+            val i = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.ADD_PIN_FROM_2FA)
             i.putExtras(Bundle().apply {
                 putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
                 putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
@@ -162,11 +169,18 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     private fun goToAddPhone(){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PHONE)
+            val i = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.ADD_PHONE)
             i.putExtras(Bundle().apply {
                 putBoolean(IS_FROM_2FA, arguments?.getBoolean(IS_FROM_2FA, false) ?: false)
             })
             startActivityForResult(i, ADD_PHONE_REQ_CODE)
+        }
+    }
+
+    private fun goToNewAddPhone() {
+        context?.run {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.NEW_ADD_PHONE)
+            startActivityForResult(intent, ADD_PHONE_REQ_CODE)
         }
     }
 
@@ -175,6 +189,8 @@ class TwoFactorFragment: BaseDaggerFragment() {
             ADD_PIN_REQ_CODE -> {
                 if(resultCode == Activity.RESULT_OK) {
                     renderSuccessPin()
+                } else {
+                    renderPinView()
                 }
             }
             ADD_PHONE_REQ_CODE -> {
@@ -184,9 +200,17 @@ class TwoFactorFragment: BaseDaggerFragment() {
                     }
                     validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
                     goToAddPin(validateToken)
+                } else {
+                    if (isImprove2FA()) {
+                        activity?.finish()
+                    }
                 }
             }
         }
+    }
+
+    private fun isImprove2FA(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_IMPROVE_2FA).isNotEmpty()
     }
 
     override fun onDestroyView() {
@@ -195,12 +219,13 @@ class TwoFactorFragment: BaseDaggerFragment() {
     }
 
     companion object {
+        private const val ROLLENCE_IMPROVE_2FA = "2fa_phone_improve_2"
         const val RESULT_POJO_KEY = "modelKey"
         const val IS_FROM_2FA = "is_from_2fa_checker"
 
-        private const val PIN_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_two_factor.png"
-        private const val PHONE_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_phone_two_factor.png"
-        private const val PIN_SUCCESS_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_success_two_factor.png"
+        private const val PIN_ONBOARDING_IMG = "https://images.tokopedia.net/android/user/image_pin_two_factor.png"
+        private const val PHONE_ONBOARDING_IMG = "https://images.tokopedia.net/android/user/image_phone_two_factor.png"
+        private const val PIN_SUCCESS_IMG = "https://images.tokopedia.net/android/user/image_pin_success_two_factor.png"
 
         fun newInstance(bundle: Bundle?): Fragment{
             return TwoFactorFragment().apply {

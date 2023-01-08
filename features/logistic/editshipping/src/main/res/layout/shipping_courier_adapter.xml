@@ -16,10 +16,10 @@
         <ImageView
             android:id="@+id/img_courier"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_35"
+            android:layout_height="35dp"
             app:srcCompat="@drawable/ic_14_google"
             android:layout_weight="0.1"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="4dp"
             android:layout_gravity="left"
             android:contentDescription="null"/>
 
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginLeft="3dp"
                 android:text="@string/shop_shipping_additional_option"
                 android:textSize="16dp"
                 android:textColor="@color/Unify_G700"/>

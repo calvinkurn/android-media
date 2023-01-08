@@ -1,7 +1,6 @@
 package com.tokopedia.managename.view.activity
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -19,7 +18,11 @@ import com.tokopedia.managename.view.fragment.AddNameFragment
 
 class AddNameActivity : BaseSimpleActivity(), HasComponent<ManageNameComponent> {
 
-    override fun getNewFragment(): Fragment? = AddNameFragment.newInstance(Bundle())
+    override fun getNewFragment(): Fragment? {
+        return intent?.extras?.let {
+            AddNameFragment.newInstance(it)
+        }
+    }
 
     companion object {
         fun newInstance(context: android.content.Context?): Intent {

@@ -13,7 +13,7 @@
         android:id="@+id/image_first_line"
         android:layout_width="14dp"
         android:layout_height="14dp"
-        android:layout_marginRight="@dimen/dp_3"
+        android:layout_marginRight="3dp"
         app:layout_constraintVertical_bias="0.25"
         app:layout_constraintBottom_toBottomOf="@id/text_first_line"
         app:layout_constraintHorizontal_chainStyle="packed"

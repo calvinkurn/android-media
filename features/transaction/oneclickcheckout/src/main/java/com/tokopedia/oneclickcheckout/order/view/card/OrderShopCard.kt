@@ -77,13 +77,16 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                     it.setImageUrl(shop.freeOngkirImg)
                     it.visible()
                 }
-                val contentDescriptionStringResource = if (shop.isFreeOngkirExtra) {
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                val contentDescriptionStringResource = if (shop.isFreeOngkirPlus) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
                 }
                 iuFreeShipping.contentDescription = binding.root.context.getString(contentDescriptionStringResource)
                 separatorFreeShipping.visible()
+                if (shop.isFreeOngkirPlus) {
+                    orderSummaryAnalytics.eventViewGoToPlusBadge()
+                }
             } else {
                 iuFreeShipping.gone()
                 separatorFreeShipping.gone()
@@ -99,7 +102,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 tickerOrderShop.visible()
                 occCustomTickerError.gone()
                 if (!shop.hasTriggerViewErrorOrderLevelTicker) {
-                    orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId.toString(), shop.errors.first())
+                    orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId, shop.errors.first())
                     shop.hasTriggerViewErrorOrderLevelTicker = true
                 }
                 shop.hasTriggerViewOverweightTicker = false
@@ -110,7 +113,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 tickerOrderShop.visible()
                 occCustomTickerError.gone()
                 if (!shop.hasTriggerViewOverweightTicker) {
-                    orderSummaryAnalytics.eventViewOverweightTicker(shop.shopId.toString())
+                    orderSummaryAnalytics.eventViewOverweightTicker(shop.shopId)
                     shop.hasTriggerViewOverweightTicker = true
                 }
                 shop.hasTriggerViewErrorOrderLevelTicker = false
@@ -122,7 +125,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 tickerOrderShop.gone()
                 occCustomTickerError.visible()
                 if (!shop.hasTriggerViewErrorOrderLevelTicker) {
-                    orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId.toString(), shop.unblockingErrorMessage)
+                    orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId, shop.unblockingErrorMessage)
                     shop.hasTriggerViewErrorOrderLevelTicker = true
                 }
                 shop.hasTriggerViewOverweightTicker = false

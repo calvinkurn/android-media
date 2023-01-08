@@ -15,13 +15,12 @@
     <!--  USER CONSENT  -->
     <declare-styleable name="UserConsentWidget">
         <attr name="actionText" format="string" />
-    </declare-styleable>
-
-    <!--EXPLICIT PROFILE-->
-    <declare-styleable name="ExplicitView">
-        <attr name="template_name" format="string"/>
-        <attr name="page_name" format="string"/>
-        <attr name="page_path" format="string"/>
-        <attr name="page_type" format="string"/>
+        <attr name="defaultTemplate" format="enum">
+            <enum name="NONE" value="-1"/>
+            <enum name="TNC_MANDATORY" value="0"/>
+            <enum name="TNC_PRIVACY_MANDATORY" value="1"/>
+            <enum name="TNC_OPTIONAL" value="2"/>
+            <enum name="TNC_PRIVACY_OPTIONAL" value="3"/>
+        </attr>
     </declare-styleable>
 </resources>

@@ -1,35 +1,17 @@
 package com.tokopedia.sellerhome.testcase.cassava
 
-import android.content.Context
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
-import com.tokopedia.sellerhome.domain.model.GetShopInfoResponse
 import com.tokopedia.sellerhome.stub.features.home.presentation.SellerHomeActivityStub
 import com.tokopedia.sellerhome.stub.gql.GraphqlRepositoryStub
-import com.tokopedia.sellerhomecommon.domain.model.GetCardDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.GetCarouselDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
-import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.GetTickerResponse
-import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.domain.model.*
+import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.test.application.TestRepeatRule
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import org.junit.After
 import org.junit.Before
@@ -62,14 +44,11 @@ class SellerHomeTrackerValidationTest {
     var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     private lateinit var graphqlRepositoryStub: GraphqlRepositoryStub
 
     @Before
     fun init() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-
         getGraphqlRepositoryStub()
 
         createMockResponse()
@@ -123,8 +102,7 @@ class SellerHomeTrackerValidationTest {
             waitForTrackerSent()
 
             validate(
-                context,
-                gtmLogDBSource,
+                cassavaTestRule,
                 cardWidget.first,
                 descriptionWidget.first,
                 lineGraphWidget.first,
@@ -154,7 +132,7 @@ class SellerHomeTrackerValidationTest {
 
             waitForTrackerSent()
 
-            validate(context, gtmLogDBSource, clickCount)
+            validate(cassavaTestRule, clickCount)
         }
     }
 
@@ -178,7 +156,7 @@ class SellerHomeTrackerValidationTest {
 
             waitForTrackerSent()
 
-            validate(context, gtmLogDBSource, clickCount)
+            validate(cassavaTestRule, clickCount)
         }
     }
 
@@ -201,7 +179,7 @@ class SellerHomeTrackerValidationTest {
 
             waitForTrackerSent()
 
-            validate(context, gtmLogDBSource, clickCount)
+            validate(cassavaTestRule, clickCount)
         }
     }
 
@@ -224,7 +202,7 @@ class SellerHomeTrackerValidationTest {
 
             waitForTrackerSent()
 
-            validate(context, gtmLogDBSource, clickCount)
+            validate(cassavaTestRule, clickCount)
         }
     }
 
@@ -247,7 +225,7 @@ class SellerHomeTrackerValidationTest {
 
             waitForTrackerSent()
 
-            validate(context, gtmLogDBSource, clickCount)
+            validate(cassavaTestRule, clickCount)
         }
     }
 
@@ -266,7 +244,7 @@ class SellerHomeTrackerValidationTest {
 
             waitForTrackerSent()
 
-            validate(context, gtmLogDBSource, cardWidgetClickCount)
+            validate(cassavaTestRule, cardWidgetClickCount)
         }
     }
 
@@ -285,7 +263,7 @@ class SellerHomeTrackerValidationTest {
                 com.tokopedia.sellerhomecommon.R.id.rvShcPostList
             )
 
-            validate(context, gtmLogDBSource, postWidgetItemClickCount)
+            validate(cassavaTestRule, postWidgetItemClickCount)
         }
     }
 
@@ -308,7 +286,7 @@ class SellerHomeTrackerValidationTest {
 
             waitForTrackerSent()
 
-            validate(context, gtmLogDBSource, carouselWidgetItemClickCount)
+            validate(cassavaTestRule, carouselWidgetItemClickCount)
         }
     }
 

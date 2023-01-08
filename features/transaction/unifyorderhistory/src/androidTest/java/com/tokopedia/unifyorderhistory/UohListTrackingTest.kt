@@ -2,13 +2,14 @@ package com.tokopedia.unifyorderhistory
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.util.Log
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -20,10 +21,13 @@ import com.tokopedia.unifyorderhistory.test.R
 import com.tokopedia.unifyorderhistory.util.UohIdlingResource
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Created by fwidjaja on 06/11/20.
@@ -82,19 +86,22 @@ class UohListTrackingTest {
             doSearch("product 17")
             clickFilterStatus()
             selectFilterStatus()
-            doApplyFilter()
             clickFilterCategory()
             selectFilterCategory()
-            doApplyFilter()
             clickFilterDate()
             selectFilterDate()
             doApplyFilter()
             // Force TrackingQueue to send trackers
-            sendTrack(GlobalScope, TrackRepository(context)) {
-                /* no-op */
+            runBlocking {
+                suspendCoroutine<Any?> {
+                    sendTrack(GlobalScope, TrackRepository(context)) {
+                        Log.i("UohListTracking", "finish send track")
+                        it.resume(null)
+                    }
+                }
             }
             // Wait for TrackingQueue to finish
-            Thread.sleep(5_000)
+            Thread.sleep(1_000)
         } submit {
             hasPassedAnalytics(cassavaTestRule, query)
         }

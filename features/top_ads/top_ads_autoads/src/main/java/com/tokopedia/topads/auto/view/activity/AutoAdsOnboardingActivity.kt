@@ -96,11 +96,11 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
         setButton(position)
         when (position) {
             0 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
-                R.color.topads_autoads_onboarding_color1))
+                R.color.top_ads_autoads_dms_onboarding_color1))
             2 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
-                R.color.topads_autoads_onboarding_color1))
+                R.color.top_ads_autoads_dms_onboarding_color1))
             1 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
-                R.color.topads_autoads_onboarding_color2))
+                R.color.top_ads_autoads_dms_onboarding_color2))
         }
     }
 
@@ -125,10 +125,10 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
             }
             if (position == 0 || position == 2)
                 window.statusBarColor =
-                    ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color1)
+                    ContextCompat.getColor(this, R.color.top_ads_autoads_dms_onboarding_color1)
             else
                 window.statusBarColor =
-                    ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color2)
+                    ContextCompat.getColor(this, R.color.top_ads_autoads_dms_onboarding_color2)
         }
     }
 

@@ -62,9 +62,10 @@ data class MetaDataResponse(
         @SerializedName("quantity")
         @Expose
         val quantity: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0
+        val totalPrice: Long = 0
 
 ) : Parcelable
 
@@ -81,13 +82,14 @@ data class ItemMapResponse(
         val childCategoryIds:String = "",
         @SerializedName("commission")
         @Expose
-        val commission: Int = 0,
+        val commission: Long = 0,
         @SerializedName("commission_type")
         @Expose
         val commissionType:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("currency_price")
         @Expose
-        val currencyPrice: Int = 0,
+        val currencyPrice: Long = 0,
         @SerializedName("description")
         @Expose
         val description:String = "",
@@ -142,7 +144,7 @@ data class ItemMapResponse(
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        val price: Int = 0,
+        val price: Long = 0,
         @SerializedName("product_app_url")
         @Expose
         val productAppUrl:String = "",
@@ -182,9 +184,10 @@ data class ItemMapResponse(
         @SerializedName("start_time")
         @Expose
         val startTime:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0,
+        val totalPrice: Long = 0,
         @SerializedName("web_app_url")
         @Expose
         val webAppUrl:String = "",

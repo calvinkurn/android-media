@@ -12,6 +12,7 @@ public interface CMConstant {
         String KEY_CM_PUSH_END_TIME_INTERVAL = "app_cm_push_end_time_interval";
         String KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED = "sellerapp_cm_add_token_enabled";
         String NOTIFICATION_DELETION_INTERVAL_KEY = "cm_notification_deletion_interval";
+        String KEY_GENERAL_PROMPT_TIME_INTERVAL = "android_cm_general_prompt_gap_time_interval";
     }
 
 
@@ -133,6 +134,7 @@ public interface CMConstant {
         String WEBHOOK_PARAM = "webhook_params";
         String NOTIFCENTER_NOTIFICATION_ID = "nc_notif_id";
         String NOTIFCENTER_NOTIFICATION_TYPE = "nc_type_of_notif";
+        String NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY = "nc_template_key";
 
         String NOTIFICATION_PRODUCT_TYPE = "notificationProductType";
         String FREE_DELIVERY = "bebasOngkir";
@@ -254,6 +256,40 @@ public interface CMConstant {
         String THREE_STAR = "3";
         String FOUR_STAR = "4";
         String FIVE_STAR = "5";
+    }
+
+    interface GtmTrackerEvents {
+        String KEY_USER_ID = "userId";
+        String KEY_CURRENT_SITE = "currentSite";
+        String KEY_BUSINESS_UNIT = "businessUnit";
+        String KEY_TRACKER_ID = "trackerId";
+        String KEY_DEVICE_ID = "deviceId";
+        String KEY_PAGE_PATH = "pagePath";
+        String VALUE_BUSINESS_UNIT = "cm";
+        String VALUE_TRACKER_ID_VIEW = "35363";
+        String VALUE_TRACKER_ID_NOT_ALLOW = "35365";
+        String VALUE_TRACKER_ID_ALLOW = "35364";
+        String VALUE_TRACKER_ID_VIEW_SA = "37113";
+        String VALUE_TRACKER_ID_NOT_ALLOW_SA = "37115";
+        String VALUE_TRACKER_ID_ALLOW_SA = "37114";
+        String VALUE_TRACKER_ID_VIEW_GEN_MA = "37792";
+        String VALUE_TRACKER_ID_VIEW_GEN_SA = "37795";
+        String VALUE_TRACKER_ID_CLICK_CLOSE_GEN_SA = "37796";
+        String VALUE_TRACKER_ID_CLICK_CLOSE_GEN_MA = "37793";
+        String VALUE_TRACKER_ID_CLICK_CTA_GEN_SA = "37797";
+        String VALUE_TRACKER_ID_CLICK_CTA_GEN_MA = "37794";
+        String VALUE_CURRENT_SITE = "tokopediamarketplace";
+        String VALUE_EVENT_CLICK_CONTENT = "clickContent";
+        String VALUE_EVENT_VIEW_CONTENT = "viewContentIris";
+        String VALUE_CATEGORY = "native android push prompt";
+        String VALUE_CATEGORY_SA = "native android seller push prompt";
+        String VALUE_GEN_CATEGORY = "general android push prompt";
+        String VALUE_GEN_CATEGORY_SA = "general android seller push prompt";
+        String VALUE_ACTION_IMPRESSION = "impression";
+        String VALUE_ACTION_NOT_ALLOW = "click not allow";
+        String VALUE_ACTION_ALLOW = "click allow";
+        String VALUE_ACTION_CLICK_CLOSE = "click close";
+        String VALUE_ACTION_CLICK_CTA = "click cta";
     }
 
 }

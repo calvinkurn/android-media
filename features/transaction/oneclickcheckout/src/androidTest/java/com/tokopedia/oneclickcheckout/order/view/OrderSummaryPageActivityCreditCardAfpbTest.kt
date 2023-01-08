@@ -10,10 +10,12 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.CREDIT_CARD_TENOR_LIST_ALL_ENABLED_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_PAYMENT_FEE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
@@ -70,7 +72,16 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                         productPrice = "Rp500.000",
                         shippingPrice = "Rp16.000",
                         insurancePrice = "Rp0",
-                        totalPrice = "Rp516.000"
+                        totalPrice = "Rp516.000",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 0.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -107,8 +118,16 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                         productPrice = "Rp500.000",
                         shippingPrice = "Rp16.000",
                         insurancePrice = "Rp0",
-                        paymentFee = "Rp1.899",
-                        totalPrice = "Rp517.899"
+                        totalPrice = "Rp517.899",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1899.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -148,8 +167,16 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                         productPrice = "Rp1.000.000",
                         shippingPrice = "Rp16.000",
                         insurancePrice = "Rp0",
-                        paymentFee = "Rp4.599",
-                        totalPrice = "Rp1.020.599"
+                        totalPrice = "Rp1.020.599",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 4599.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -195,8 +222,16 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                         productPrice = "Rp1.000.000",
                         shippingPrice = "Rp16.000",
                         insurancePrice = "Rp0",
-                        paymentFee = "Rp4.599",
-                        totalPrice = "Rp1.020.599"
+                        totalPrice = "Rp1.020.599",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 4599.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }

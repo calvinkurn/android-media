@@ -39,7 +39,7 @@ const val KEY_FILTER_EVENT = "filterEvent"
 class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         EmptyViewHolderListener, TransactionInvoiceViewHolderListener {
 
-    private var messageId: Int = 0
+    private var messageId: Long = 0
     private var filterEvent: String = ""
     private var listener: TransactionInvoiceListFragmentListener? = null
     private var isError: Boolean = false
@@ -54,7 +54,7 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.run {
-            messageId = getInt(KEY_MESSAGE_ID)
+            messageId = getLong(KEY_MESSAGE_ID)
             filterEvent = getString(KEY_FILTER_EVENT, "")
         }
     }
@@ -151,10 +151,10 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
     companion object {
 
         @JvmStatic
-        fun newInstance(messageId: Int, filterEvent: String, listener: TransactionInvoiceListFragmentListener): TransactionInvoiceListFragment {
+        fun newInstance(messageId: Long, filterEvent: String, listener: TransactionInvoiceListFragmentListener): TransactionInvoiceListFragment {
             return TransactionInvoiceListFragment().apply {
                 val args = Bundle()
-                args.putInt(KEY_MESSAGE_ID, messageId)
+                args.putLong(KEY_MESSAGE_ID, messageId)
                 args.putString(KEY_FILTER_EVENT, filterEvent)
                 this.arguments = args
                 this.listener = listener

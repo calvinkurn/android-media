@@ -15,9 +15,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.presentation.adapter.FlightBookingPassengerAdapter
@@ -42,13 +41,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FlightBookingActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     var activityRule: IntentsTestRule<FlightBookingActivity> = object : IntentsTestRule<FlightBookingActivity>(FlightBookingActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(FlightBookingMockResponse())
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
             val userSession = UserSession(context)
@@ -115,6 +112,9 @@ class FlightBookingActivityTest {
                 )
     }
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun setup() {
     }
@@ -126,8 +126,7 @@ class FlightBookingActivityTest {
         goToPayment()
 
         Thread.sleep(2000)
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
-                hasAllSuccess())
+        ViewMatchers.assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_P1), hasAllSuccess())
     }
 
     private fun changePassengerData() {

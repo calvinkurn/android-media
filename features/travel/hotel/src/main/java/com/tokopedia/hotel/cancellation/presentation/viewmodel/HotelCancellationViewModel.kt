@@ -11,8 +11,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.cancellation.data.*
-import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
+import com.tokopedia.hotel.cancellation.data.HotelCancellationParam
+import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
+import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitParam
+import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitResponse
+import com.tokopedia.hotel.common.util.MutationHotelSubmitCancellation
+import com.tokopedia.hotel.common.util.QueryHotelGetCancellation
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -43,7 +48,7 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
         launchCatchError(block = {
             graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (fromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
             graphqlUseCase.clearRequest()
-            val graphqlRequest = GraphqlRequest(HotelGqlMutation.getCancellationQuery(), HotelCancellationModel.Response::class.java, params)
+            val graphqlRequest = GraphqlRequest(QueryHotelGetCancellation(), HotelCancellationModel.Response::class.java, params)
             graphqlUseCase.addRequest(graphqlRequest)
 
             val graphqlResponse = graphqlUseCase.executeOnBackground()
@@ -64,7 +69,7 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
 
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
-                val graphqlRequest = GraphqlRequest(HotelGqlMutation.getSubmitCancellationQuery(), HotelCancellationSubmitResponse::class.java, params)
+                val graphqlRequest = GraphqlRequest(MutationHotelSubmitCancellation(), HotelCancellationSubmitResponse::class.java, params)
                 graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelCancellationSubmitResponse>()
             mutableCancellationSubmitData.postValue(Success(data.response.data))

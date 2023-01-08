@@ -5,9 +5,6 @@
 
     <application>
         <activity
-            android:theme="@style/Theme.White"
-            android:name=".external_register.base.activity.ExternalRegisterWebViewActivity" />
-        <activity
             android:name=".login.view.activity.LoginActivity"
             android:label="@string/login"
             android:screenOrientation="portrait"
@@ -22,8 +19,8 @@
 
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_user_login" />
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_login" />
             </intent-filter>
         </activity>
         <activity
@@ -41,8 +38,27 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_init_register"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_init_register"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tokopedia.loginregister.redefineregisteremail.view.RedefineRegisterEmailActivity"
+            android:label="@string/register_email_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_redefine_register_email"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -61,8 +77,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_email_register"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_email_register"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -80,8 +96,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_landing_shop_creation"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_landing_shop_creation"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -99,8 +115,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_phone_shop_creation"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_phone_shop_creation"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -118,8 +134,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_name_shop_creation"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_name_shop_creation"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -156,76 +172,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:path="@string/path_seller_seamless_login"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".external_register.ovo.view.activity.OvoAddNameActivity"
-            android:label="@string/title_external_register"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_global"
-                    android:path="@string/path_ovo_add_name"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".external_register.ovo.view.activity.OvoRegisterInitialActivity"
-            android:label="@string/title_external_register"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_global"
-                    android:path="@string/path_ovo_regis_init"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_global"
-                    android:path="@string/path_ovo_regis_init"
-                    android:scheme="tokopedia" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".external_register.ovo.view.activity.OvoFinalPageActivity"
-            android:label="@string/title_external_register"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_global"
-                    android:path="@string/path_ovo_final_page"
+                    android:host="@string/host_user"
+                    android:path="@string/applink_login_seamless"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -243,8 +191,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_term_privacy"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_term_privacy"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

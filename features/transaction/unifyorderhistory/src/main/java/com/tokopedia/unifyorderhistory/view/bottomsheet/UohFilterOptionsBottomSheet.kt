@@ -26,11 +26,13 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
     companion object {
         private const val TAG: String = "UohFilterOptionsBottomSheet"
         private const val TITLE_BOTTOMSHEET = "title_bottomsheet"
+        private const val IS_BUTTON_APPLY_SHOW = "is_button_apply_show"
 
         @JvmStatic
-        fun newInstance(title: String): UohFilterOptionsBottomSheet { return UohFilterOptionsBottomSheet().apply {
+        fun newInstance(title: String, isButtonApplyShow: Boolean): UohFilterOptionsBottomSheet { return UohFilterOptionsBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(TITLE_BOTTOMSHEET, title)
+                bundle.putBoolean(IS_BUTTON_APPLY_SHOW, isButtonApplyShow)
                 arguments = bundle
             }
         }
@@ -45,7 +47,13 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = adapterOptionBottomSheet
             }
-            btnApply.setOnClickListener { listener?.onClickApply() }
+            val isButtonVisible = arguments?.getBoolean(IS_BUTTON_APPLY_SHOW) ?: false
+            if (isButtonVisible) {
+                btnApply.visible()
+                btnApply.setOnClickListener { listener?.onClickApply() }
+            } else {
+                btnApply.gone()
+            }
         }
         showCloseIcon = true
         showHeader = true

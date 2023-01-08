@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerBinding
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
@@ -69,8 +69,6 @@ class QuizFormView : ConstraintLayout {
                 field = value
 
                 binding.viewGameHeader.maxLength = value.maxTitleLength
-                binding.viewQuizGift.maxLength = value.maxRewardLength
-                binding.viewQuizGift.isShowCoachmark = value.showPrizeCoachMark
                 timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
             }
         }
@@ -95,25 +93,13 @@ class QuizFormView : ConstraintLayout {
             eventBus.emit(Event.TitleChanged(it))
         }
 
-        binding.viewQuizGift.setOnTextChangeListener {
-            eventBus.emit(Event.GiftChanged(it))
-        }
-
-        binding.viewQuizGift.setOnClickListener {
-            eventBus.emit(Event.GiftClicked)
-        }
-
-        binding.viewQuizGift.setOnCloseGiftClickListener{
-            eventBus.emit(Event.GiftClosed)
-        }
-
         timePickerBinding.ivSheetClose.setOnClickListener {
             eventBus.emit(Event.BackSelectDuration)
             eventBus.emit(Event.Back)
         }
 
         timePickerBinding.puTimer.onValueChanged = { _, index ->
-            val selectedDuration = quizConfig.availableStartTimeInMs[index]
+            val selectedDuration = quizConfig.availableStartTimeInMs.getOrNull(index) ?: DEFAULT_DURATION
             eventBus.emit(Event.SelectDuration(selectedDuration))
         }
 
@@ -169,9 +155,6 @@ class QuizFormView : ConstraintLayout {
                 bindOptionData(optionView, option)
             }
 
-            /** Update Gift */
-            binding.viewQuizGift.gift = quizFormData.gift
-
             /** Update Quiz Duration */
             val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.durationInMs)
             if(timePickerBinding.puTimer.activeIndex != idx) {
@@ -195,30 +178,15 @@ class QuizFormView : ConstraintLayout {
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
         when(quizFormState) {
-            QuizFormStateUiModel.Nothing -> {
-                binding.viewQuizGift.hideCoackmark()
-            }
             QuizFormStateUiModel.Preparation -> {
                 binding.groupActionBar.visibility = View.VISIBLE
                 binding.viewGameHeader.isEditable = true
-                binding.viewQuizGift.isEditable = true
-                binding.viewQuizGift.layoutParams = binding.viewQuizGift.layoutParams.apply {
-                    width = LayoutParams.MATCH_CONSTRAINT
-                }
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
             }
             is QuizFormStateUiModel.SetDuration -> {
                 binding.groupActionBar.visibility = View.GONE
                 binding.viewGameHeader.isEditable = false
-                binding.viewQuizGift.apply {
-                    isEditable = false
-                    hideGiftTextFieldIfEmpty()
-                    hideCoackmark()
-                }
-                binding.viewQuizGift.layoutParams = binding.viewQuizGift.layoutParams.apply {
-                    width = WRAP_CONTENT
-                }
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
 
@@ -279,7 +247,9 @@ class QuizFormView : ConstraintLayout {
 
     private fun bindOptionData(optionView: QuizOptionView, option: QuizFormDataUiModel.Option): QuizOptionView {
         return optionView.apply {
-            isEditable = option.isEditable
+            /** Open editable to rebind data */
+            isEditable = true
+
             order = option.order
             text = option.text
             textChoice = option.getTextChoice()
@@ -292,6 +262,8 @@ class QuizFormView : ConstraintLayout {
             setFocus(option.isFocus)
 
             showCoachmark(option.isShowCoachmark)
+
+            isEditable = option.isEditable
         }
     }
 
@@ -301,11 +273,8 @@ class QuizFormView : ConstraintLayout {
         data class TitleChanged(val title: String): Event
         data class OptionChanged(val order: Int, val text: String): Event
         data class SelectQuizOption(val order: Int): Event
-        data class GiftChanged(val gift: String): Event
         data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event
         data class SelectDuration(val duration: Long): Event
-        object GiftClicked : Event
-        object GiftClosed : Event
         object Submit: Event
         object Close : Event
         object BackSelectDuration : Event
@@ -315,5 +284,6 @@ class QuizFormView : ConstraintLayout {
         private const val SHOW_KEYBOARD_DELAY = 500L
         private const val CONTINUE_DISABLED_ALPHA = 0.5f
         private const val CONTINUE_ENABLED_ALPHA = 1f
+        private const val DEFAULT_DURATION = 180000L
     }
 }

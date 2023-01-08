@@ -1,29 +1,24 @@
 package com.tokopedia.flight.airport.di
 
-import com.tokopedia.flight.airport.data.FlightAirportQuery
-import com.tokopedia.flight.airport.domain.FlightAirportPopularCityUseCase
-import com.tokopedia.flight.airport.domain.FlightAirportSuggestionUseCase
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.flight.airport.domain.FlightAirportMapper
+import com.tokopedia.flight.R.string as flightString
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
 /**
- * Created by zulfikarrahman on 10/24/17.
+ * created by @bayazidnasir on 14/11/2022
  */
 
 @Module
 class FlightAirportModule {
 
     @Provides
-    @FlightAirportScope
-    @Named(FlightAirportPopularCityUseCase.NAMED_FLIGHT_AIRPORT_POPULAR_CITY_QUERY)
-    fun provideFlightAirportPopularCityQuery() =
-            FlightAirportQuery.QUERY_AIRPORT_POPULAR_CITY
-
-    @Provides
-    @FlightAirportScope
-    @Named(FlightAirportSuggestionUseCase.NAMED_FLIGHT_AIRPORT_SUGGESTION_QUERY)
-    fun provideFlightAirportSuggestionQuery() =
-            FlightAirportQuery.QUERY_AIRPORT_SUGGESTION
+    @Named(FlightAirportMapper.NAMED_POPULAR_AIRPORT)
+    fun providePopularAirportName(@ApplicationContext context: Context): String {
+        return context.getString(flightString.flight_popular_airport_label)
+    }
 
 }

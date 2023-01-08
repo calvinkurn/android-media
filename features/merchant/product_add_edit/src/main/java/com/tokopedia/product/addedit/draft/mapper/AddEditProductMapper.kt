@@ -135,7 +135,8 @@ object AddEditProductMapper {
             isActive = productDraft.detailInputModel.preorder.isActive
         }
         productInputModel.detailInputModel.wholesaleList = productDraft.detailInputModel.wholesaleList.map { wholeSale ->
-            WholeSaleInputModel(wholeSale.price, wholeSale.quantity)
+            val decrementedQuantity = wholeSale.quantity.toLong().dec().toString() // decremented because BE need value+1 at last submit trial
+            WholeSaleInputModel(wholeSale.price, decrementedQuantity)
         }
         productInputModel.detailInputModel.productShowCases = productDraft.detailInputModel.productShowCases.map { showCase ->
             ShowcaseItemPicker(showcaseId = showCase.showcaseId, showcaseName = showCase.showcaseName)

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.youtube.player.YouTubeBaseActivity
@@ -12,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.databinding.ActivityProductYoutubePlayerBinding
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
+import timber.log.Timber
 
 class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
     YouTubePlayer.PlayerStateChangeListener{
@@ -50,6 +52,14 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
         binding?.youtubePlayerMain?.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
     }
 
+    override fun onSaveInstanceState(p0: Bundle) {
+        /**
+         * this is comment refer to https://issuetracker.google.com/issues/35172585#comment32
+         * when onCreate, KEY_PLAYER_VIEW_STATE start from scratch
+         */
+        // super.onSaveInstanceState(p0)
+    }
+
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
         player?.let {
             youtubePlayerScreen = it
@@ -74,7 +84,15 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
         }
     }
 
-    override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {}
+    override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.youtube.com/watch?v=" + videoUrls[selectedIndex])))
+            finish()
+        } catch (e: Throwable) {
+            Timber.d(e)
+        }
+    }
 
     override fun onBackPressed() {
         super.onBackPressed()

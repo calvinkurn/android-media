@@ -31,6 +31,11 @@ class TippingValueAdapter(private var actionListener: ActionListener) : Recycler
         }
     }
 
+    fun replaceSelectedChip() {
+        notifyItemChanged(lastIndex)
+        lastIndex = -1
+    }
+
     override fun getItemCount(): Int {
         return tippingValueList.size
     }

@@ -60,8 +60,8 @@ class TokoNowCategoryGridViewHolder(
         listener?.onAllCategoryClicked()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: String) {
-        listener?.onCategoryClicked(position, categoryId)
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) {
+        listener?.onCategoryClicked(position, categoryId, headerName, categoryName)
     }
 
     private fun initView() {
@@ -125,7 +125,7 @@ class TokoNowCategoryGridViewHolder(
     interface TokoNowCategoryGridListener {
         fun onCategoryRetried()
         fun onAllCategoryClicked()
-        fun onCategoryClicked(position: Int, categoryId: String)
+        fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String)
         fun onCategoryImpression(data: TokoNowCategoryGridUiModel)
     }
 }

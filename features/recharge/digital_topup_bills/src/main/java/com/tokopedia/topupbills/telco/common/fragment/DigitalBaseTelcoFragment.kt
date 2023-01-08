@@ -15,35 +15,29 @@ import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil.Companion.isSeamlessFavoriteNumber
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil.Companion.isFavoriteNumberRevamp
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_CATALOG_PREFIX_SELECT
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_CLIENT_NUMBER_TYPE
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_DG_CATEGORY_IDS
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_DG_CATEGORY_NAME
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_NUMBER_LIST
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -52,6 +46,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
+import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
@@ -89,6 +84,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             categoryName = topupAnalytics.getCategoryName(value)
         }
 
+    protected var favNumberList = listOf<TopupBillsSearchNumberDataModel>()
+    protected var seamlessFavNumberList = listOf<TopupBillsSeamlessFavNumberItem>()
+
     protected var actionTypeTrackingJob: Job? = null
 
     @Inject
@@ -99,6 +97,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
+
+    protected var loyaltyStatus = ""
 
     override fun initInjector() {
         getComponent(DigitalTelcoComponent::class.java).inject(this)
@@ -164,7 +164,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected fun navigateContact(
         clientNumber: String,
-        favNumberList: MutableList<TopupBillsFavNumberItem>,
         dgCategoryIds: ArrayList<String>,
         categoryName: String,
         isSwitchChecked: Boolean
@@ -176,8 +175,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        navigateSavedNumber(
-                            clientNumber, favNumberList, dgCategoryIds, categoryName)
+                        navigateSavedNumber(clientNumber, dgCategoryIds, categoryName)
                         localCacheHandler.run {
                             putBoolean(TELCO_PERMISSION_CHECKER_IS_DENIED, true)
                             applyEditor()
@@ -190,66 +188,45 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
                     override fun onPermissionGranted() {
                         navigateSavedNumber(
-                            clientNumber, favNumberList,
-                            dgCategoryIds, categoryName, isSwitchChecked)
+                            clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
                     }
                 })
         } else {
             navigateSavedNumber(
-                clientNumber, favNumberList,
-                dgCategoryIds, categoryName, isSwitchChecked)
+                clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
         }
     }
 
     private fun navigateSavedNumber(
         clientNumber: String,
-        favNumberList: MutableList<TopupBillsFavNumberItem>,
         dgCategoryIds: ArrayList<String>,
         categoryName: String,
         isSwitchChecked: Boolean = false
     ) {
         context?.let {
-            val intent = TopupBillsSavedNumberActivity.createInstance(
-                it, clientNumber, favNumberList,
-                dgCategoryIds, categoryName, operatorData, isSwitchChecked
-            )
+            val intent = if (isFavoriteNumberRevamp(requireContext())) {
+                TopupBillsPersoSavedNumberActivity.createInstance(
+                    it,
+                    clientNumber,
+                    dgCategoryIds,
+                    arrayListOf(),
+                    categoryName,
+                    isSwitchChecked,
+                    loyaltyStatus,
+                    FavoriteNumberPageConfig.TELCO,
+                )
+            } else {
+                val favoriteNumbers = FavoriteNumberDataMapper
+                    .mapSeamlessFavNumberItemToSearchDataView(seamlessFavNumberList)
+                DigitalSearchNumberActivity.newInstance(
+                    it,
+                    ClientNumberType.TYPE_INPUT_TEL.value,
+                    clientNumber,
+                    favoriteNumbers
+                )
+            }
 
-            val requestCode = if (isSeamlessFavoriteNumber(requireContext()))
-                REQUEST_CODE_DIGITAL_SAVED_NUMBER else REQUEST_CODE_DIGITAL_SEARCH_NUMBER
-
-            startActivityForResult(intent, requestCode)
-        }
-    }
-
-    /**
-     * Param:
-     * -) EXTRA_NUMBER_LIST: old favorite number param
-     * */
-    protected fun navigateFavoriteNumberPage(
-        clientNumber: String,
-        favNumberList: MutableList<TopupBillsFavNumberItem>,
-        dgCategoryIds: ArrayList<String>,
-        categoryName: String
-    ) {
-        context?.let {
-            val intent =
-                RouteManager.getIntent(it, CommonTopupBillsUtil.getApplinkFavoriteNumber(it))
-            val extras = Bundle()
-            extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
-            extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
-            extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
-            extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
-            extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
-
-            /* EXTRA_NUMBER_LIST */
-            extras.putParcelableArrayList(
-                EXTRA_NUMBER_LIST,
-                favNumberList as java.util.ArrayList<out Parcelable>
-            )
-
-            intent.putExtras(extras)
-
-            val requestCode = if (isSeamlessFavoriteNumber(requireContext()))
+            val requestCode = if (isFavoriteNumberRevamp(requireContext()))
                 REQUEST_CODE_DIGITAL_SAVED_NUMBER else REQUEST_CODE_DIGITAL_SEARCH_NUMBER
 
             startActivityForResult(intent, requestCode)
@@ -307,7 +284,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     val inputNumberActionType =
                         data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
                     val orderClientNumber =
-                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSearchNumberDataModel
                     handleCallbackAnySearchNumber(
                         "",
                         orderClientNumber.clientNumber,
@@ -419,10 +396,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
-
+        (activity as? BaseSimpleActivity)?.updateTitle(data.menuLabel)
         renderTicker(data.tickers)
         sendOpenScreenTracking()
         initiateMenuTelco(data.recommendations, data.promos)
+        loyaltyStatus = data.userPerso.loyaltyStatus
     }
 
     private fun initiateMenuTelco(
@@ -469,7 +447,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>) {
-        // do nothing, already moved to seamless/retention favorite numbers, will be updated later
+        favNumberList = data
     }
 
     override fun processSeamlessFavoriteNumbers(
@@ -500,19 +478,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         errorSetFavNumbers()
     }
 
-    /**
-     * oldCategoryId: Parameter sent to old favorite number query
-     * */
     fun getFavoriteNumber(
         categoryIds: List<String>,
-        oldCategoryId: Int,
         shouldRefreshInputNumber: Boolean = true
     ) {
-        if (isSeamlessFavoriteNumber(requireContext())) {
-            getSeamlessFavoriteNumbers(categoryIds, shouldRefreshInputNumber)
-        } else {
-            getFavoriteNumbers(oldCategoryId)
-        }
+        getSeamlessFavoriteNumbers(categoryIds, shouldRefreshInputNumber)
     }
 
     override fun onCheckVoucherError(error: Throwable) {
@@ -637,8 +607,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun showErrorCartDigital(message: String)
 
-    protected abstract fun setFavNumbers(data: TopupBillsFavNumber)
-
     protected abstract fun setSeamlessFavNumbers(
         data: TopupBillsSeamlessFavNumber,
         shouldRefreshInputNumber: Boolean
@@ -670,10 +638,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     companion object {
-        const val MINIMUM_OPERATOR_PREFIX = 4
-        const val MINIMUM_VALID_NUMBER_LENGTH = 10
-        const val MAXIMUM_VALID_NUMBER_LENGTH = 14
-
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 76
         const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
         const val REQUEST_CODE_CONTACT_PICKER = 78

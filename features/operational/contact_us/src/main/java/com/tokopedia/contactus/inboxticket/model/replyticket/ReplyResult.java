@@ -17,7 +17,7 @@ public class ReplyResult {
     private int isSuccess;
     @SerializedName("ticket_detail_id")
     @Expose
-    private int ticketDetailId;
+    private long ticketDetailId;
 
     /**
      * 
@@ -93,7 +93,7 @@ public class ReplyResult {
      * @return
      *     The ticketDetailId
      */
-    public int getTicketDetailId() {
+    public long getTicketDetailId() {
         return ticketDetailId;
     }
 
@@ -102,7 +102,7 @@ public class ReplyResult {
      * @param ticketDetailId
      *     The ticket_detail_id
      */
-    public void setTicketDetailId(int ticketDetailId) {
+    public void setTicketDetailId(long ticketDetailId) {
         this.ticketDetailId = ticketDetailId;
     }
 

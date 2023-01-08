@@ -23,18 +23,6 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
             .build()
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
-    }
-
-    private fun setSecureWindowFlag() {
-        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
-        }
-    }
-
-
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {

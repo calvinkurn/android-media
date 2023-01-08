@@ -178,7 +178,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
     companion object {
         // Do not inflate if gatway id is 0
-        const val GATEWAY_ID_SEE_MORE = 0
+        const val GATEWAY_ID_SEE_MORE = "0"
     }
 
 }

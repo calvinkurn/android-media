@@ -8,10 +8,15 @@ import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.booking.data.model.*
+import com.tokopedia.hotel.booking.data.model.CartDataParam
+import com.tokopedia.hotel.booking.data.model.HotelCart
+import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
+import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.booking.data.model.TokopointsSumCoupon
 import com.tokopedia.hotel.common.util.HotelMapper
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -33,11 +38,13 @@ import javax.inject.Inject
  * @author by resakemal on 13/05/19
  */
 
-class HotelBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                private val getContactListUseCase: GetContactListUseCase,
-                                                private val upsertContactListUseCase: UpsertContactListUseCase,
-                                                private val travelTickerUseCase: TravelTickerCoroutineUseCase,
-                                                val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
+class HotelBookingViewModel @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val getContactListUseCase: GetContactListUseCase,
+    private val upsertContactListUseCase: UpsertContactListUseCase,
+    private val travelTickerUseCase: TravelTickerCoroutineUseCase,
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
@@ -60,9 +67,9 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun getContactList(query: String) {
+    fun getContactList(query: GqlQueryInterface) {
         launch {
-            var contacts = getContactListUseCase.execute(query = query,
+            val contacts = getContactListUseCase.execute(query = query,
                     product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
             contactListResult.postValue(contacts.map {
                 if (it.fullName.isBlank()) {
@@ -73,7 +80,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun updateContactList(query: String,
+    fun updateContactList(query: GqlQueryInterface,
                           updatedContact: TravelUpsertContactModel.Contact) {
         launch {
             upsertContactListUseCase.execute(query,
@@ -82,7 +89,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun getCartData(rawQuery: String, cartId: String) {
+    fun getCartData(rawQuery: GqlQueryInterface, cartId: String) {
         val requestParams = CartDataParam(cartId)
         val params = mapOf(PARAM_CART_PROPERTY to requestParams)
         launchCatchError(block = {
@@ -97,7 +104,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun checkoutCart(rawQuery: String, hotelCheckoutParam: HotelCheckoutParam) {
+    fun checkoutCart(rawQuery: GqlQueryInterface, hotelCheckoutParam: HotelCheckoutParam) {
 
         hotelCheckoutParam.idempotencyKey = generateIdEmpotency(hotelCheckoutParam.cartId)
         val params = mapOf(PARAM_CART_PROPERTY to hotelCheckoutParam)
@@ -113,7 +120,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun getTokopointsSumCoupon(rawQuery: String) {
+    fun getTokopointsSumCoupon(rawQuery: GqlQueryInterface) {
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TokopointsSumCoupon.Response::class.java)
@@ -125,7 +132,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun onCancelAppliedVoucher(rawQuery: String) {
+    fun onCancelAppliedVoucher(rawQuery: GqlQueryInterface) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)

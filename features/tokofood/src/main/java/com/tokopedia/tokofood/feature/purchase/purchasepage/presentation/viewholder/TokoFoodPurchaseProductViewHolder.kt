@@ -2,10 +2,12 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewho
 
 import android.graphics.Paint
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -14,9 +16,10 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseAddOnBinding
 import com.tokopedia.tokofood.feature.purchase.DISABLED_ALPHA
@@ -209,7 +212,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    val quantity = p0.toString().toIntOrZero()
+                    val quantity = qtyEditorProduct.getValue().orZero()
                     if (quantity != element.quantity && quantity >= Int.ONE) {
                         element.quantity = quantity
                         element.isQuantityChanged = true
@@ -221,18 +224,8 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
                 }
             }
-            qtyEditorProduct.editText.addTextChangedListener(textWatcher)
-            qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-            qtyEditorProduct.editText.setOnEditorActionListener { v, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    qtyEditorProduct.editText.context?.let {
-                        KeyboardHandler.DropKeyboard(it, v)
-                    }
-                    qtyEditorProduct.editText.clearFocus()
-                    true
-                } else false
-            }
-            qtyEditorProduct.editText.clearFocus()
+
+            qtyEditorProduct.editText.adjustLengthAndAction()
 
             qtyEditorProduct.renderAlphaProductItem(element)
         }
@@ -252,6 +245,23 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
             deleteProductButton.renderAlphaProductItem(element)
         }
+    }
+
+    private fun EditText.adjustLengthAndAction() {
+        addTextChangedListener(textWatcher)
+        val maxLength = InputFilter.LengthFilter(TokofoodExt.MAXIMUM_QUANTITY_LENGTH)
+        filters = arrayOf(maxLength)
+        imeOptions = EditorInfo.IME_ACTION_DONE
+        setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                context?.let {
+                    KeyboardHandler.DropKeyboard(it, v)
+                }
+                clearFocus()
+                true
+            } else false
+        }
+        clearFocus()
     }
 
     companion object {

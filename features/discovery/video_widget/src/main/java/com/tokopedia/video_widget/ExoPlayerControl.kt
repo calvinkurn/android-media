@@ -10,5 +10,4 @@ interface ExoPlayerControl {
     fun releasePlayer()
     fun playerPause()
     fun isPlayerPlaying(): Boolean
-    fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener?)
 }

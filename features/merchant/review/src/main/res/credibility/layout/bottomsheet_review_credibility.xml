@@ -1,106 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/review_credibility_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="26dp"
-    tools:viewBindingIgnore="true">
+    android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="26dp">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/review_credibility_reviewer_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="3dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/review_credibility_join_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/Unify_N700_68"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_credibility_reviewer_name"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticBoxWidget
-            android:id="@+id/review_credibility_statistics_box"
+        <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityHeaderWidget
+            android:id="@+id/widget_review_credibility_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/review_credibility_join_date" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/review_credibility_footer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="29dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="29dp"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_credibility_statistics_box"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/review_credibility_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:minWidth="176dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_credibility_footer"
-            app:unifyButtonSize="medium" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/review_credibility_learn_more"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="8dp"
-            android:padding="8dp"
-            android:text="@string/review_credibility_learn_more"
-            android:textColor="@color/Unify_G500"
-            android:gravity="center"
-            app:layout_constraintEnd_toEndOf="@id/review_credibility_button"
-            app:layout_constraintStart_toStartOf="@id/review_credibility_button"
-            app:layout_constraintTop_toBottomOf="@id/review_credibility_button"
-            app:typographyType="body_2"
-            app:typographyWeight="bold" />
-
-        <include
-            android:id="@+id/review_credibility_loading"
-            layout="@layout/partial_review_credibility_loading"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/review_credibility_error"
+        <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityAchievementBoxWidget
+            android:id="@+id/widget_review_credibility_achievement_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
-            android:gravity="center"
-            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/widget_review_credibility_header" />
+
+        <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticBoxWidget
+            android:id="@+id/widget_review_credibility_statistic_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/widget_review_credibility_achievement_box" />
+
+        <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityFooterWidget
+            android:id="@+id/widget_review_credibility_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/widget_review_credibility_statistic_box" />
+
+        <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityGlobalErrorWidget
+            android:id="@+id/global_error_review_credibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</ScrollView>

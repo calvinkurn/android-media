@@ -50,6 +50,7 @@
   "quick_filter": {
     "filter": [
       {
+        "chip_name": "Gratis Ongkir Chip Name",
         "options": [
           {
             "name": "Gratis Ongkir",
@@ -67,6 +68,7 @@
         ]
       },
       {
+        "chip_name": "Tukar Tambah Chip Name",
         "options": [
           {
             "name": "Tukar Tambah",
@@ -84,11 +86,12 @@
         ]
       },
       {
+        "chip_name": "Official Store Chip Name",
         "options": [
           {
             "name": "Official Store",
             "key": "official",
-            "icon": "https://ecs7.tokopedia.net/img/official_store/badge/OS-Badge-40.png",
+            "icon": "https://images.tokopedia.net/img/official_store/badge/OS-Badge-40.png",
             "value": "true",
             "is_new": false,
             "input_type": "checkbox",
@@ -101,6 +104,7 @@
         ]
       },
       {
+        "chip_name": "Kurir Instan Chip Name",
         "options": [
           {
             "name": "Kurir Instan",
@@ -120,6 +124,7 @@
       {
         "options": [
           {
+            "chip_name": "Dilayani Tokopedia Chip Name",
             "name": "Dilayani Tokopedia",
             "key": "is_fulfillment",
             "icon": "",
@@ -135,11 +140,12 @@
         ]
       },
       {
+        "chip_name": "Power Merchant Chip Name",
         "options": [
           {
             "name": "Power Merchant",
             "key": "goldmerchant",
-            "icon": "https://ecs7.tokopedia.net/img/power-badge/power-badge-192.png",
+            "icon": "https://images.tokopedia.net/img/power-badge/power-badge-192.png",
             "value": "true",
             "is_new": false,
             "input_type": "checkbox",

@@ -73,6 +73,10 @@ data class SomConfirmReqPickup (
                     @Expose
                     val title: String = "",
 
+                    @SerializedName("invoice")
+                    @Expose
+                    val invoice: String = "",
+
                     @SerializedName("shippers")
                     @Expose
                     val listShippers: List<Shipper> = listOf(),

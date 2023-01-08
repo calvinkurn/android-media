@@ -1,11 +1,9 @@
 package com.tokopedia.topads.tracker.topup
 
-import com.tokopedia.topads.common.analytics.*
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.util.BaseTrackerConst
 
-const val KEY_TRACKER_ID = "trackerId"
-
-object TopadsTopupTracker {
+object TopadsTopupTracker : BaseTrackerConst(){
 
     fun clickCobaSekarang() {
         sendClickEventFromCreditHistoryPage(
@@ -217,13 +215,13 @@ object TopadsTopupTracker {
         currentSite: String = TopadsToupTrackerConstants.DEFAULT_CURRENT_SITE,
     ) {
         val analyticsBundle = mapOf(
-            KEY_EVENT to event,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_CATEGORY to eventCategory,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_TRACKER_ID to trackerId,
-            KEY_BUSINESS_UNIT_EVENT to businessUnit,
-            KEY_CURRENT_SITE_EVENT to currentSite,
+            Event.KEY to event,
+            Action.KEY to eventAction,
+            Category.KEY to eventCategory,
+            Label.KEY to eventLabel,
+            TrackerId.KEY to trackerId,
+            BusinessUnit.KEY to businessUnit,
+            CurrentSite.KEY to currentSite,
         )
         TrackApp.getInstance().gtm.apply {
             sendGeneralEvent(analyticsBundle)

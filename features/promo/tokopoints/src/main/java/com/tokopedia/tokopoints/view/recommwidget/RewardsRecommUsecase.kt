@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.recommwidget
 import android.content.Context
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +24,7 @@ class RewardsRecommUsecase @Inject constructor(context: Context,
         rp.putString(SHOP_ID, "")
         rp.putString(X_SOURCE, "rewards")
         if (userSession.isLoggedIn) {
-            rp.putInt(USER_ID, userSession.userId.toInt())
+            rp.putInt(USER_ID, userSession.userId.toIntOrZero())
         } else {
             rp.putInt(USER_ID, 0)
         }

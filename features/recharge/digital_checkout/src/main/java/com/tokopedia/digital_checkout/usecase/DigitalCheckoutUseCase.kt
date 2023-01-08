@@ -1,62 +1,51 @@
 package com.tokopedia.digital_checkout.usecase
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common_digital.common.constant.DigitalUrl
-import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
+import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
-import com.tokopedia.digital_checkout.di.DigitalCartCheckoutQualifier
+import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.usecase.RequestParams
-import java.lang.reflect.Type
+import com.tokopedia.network.exception.ResponseErrorException
 import javax.inject.Inject
 
-class DigitalCheckoutUseCase @Inject constructor(@DigitalCartCheckoutQualifier val repository: RestRepository)
-    : RestRequestUseCase(repository) {
 
-    private val url = DigitalUrl.CHECKOUT
-    var requestParams = RequestParams()
+/**
+ * @author Created By : Muhammad Furqan on Aug 5, 2022
+ */
+class DigitalCheckoutUseCase @Inject constructor(
+    private val restUseCase: DigitalCheckoutRestUseCase,
+    private val gqlUseCase: DigitalCheckoutGqlUseCase
+) {
+    suspend fun execute(
+        requestCheckoutParams: DigitalCheckoutDataParameter,
+        digitalIdentifierParams: RequestBodyIdentifier,
+        fintechProduct: FintechProduct?,
+        isUseGql: Boolean
+    ): PaymentPassData =
+        if (isUseGql) {
+            gqlUseCase.setParams(requestCheckoutParams, digitalIdentifierParams)
+            val result = gqlUseCase.executeOnBackground().rechargeCheckoutV3
 
-    override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
-        val token = object : TypeToken<DataResponse<ResponseCheckout>>() {}.type
+            if (result.errors.isNotEmpty()) {
+                throw ResponseErrorException(result.errors.first().title)
+            }
 
-        val requestBodyOtpSuccess = requestParams.getObject(PARAM_REQUEST_CHECKOUT) as RequestBodyCheckout
-        val jsonElement = JsonParser().parse(Gson().toJson(requestBodyOtpSuccess))
-        val requestBody = JsonObject()
-        requestBody.add(PARAM_DATA, jsonElement)
+            DigitalCheckoutMapper.mapToPaymentPassData(result)
+        } else {
+            restUseCase.setRequestParams(
+                DigitalCheckoutMapper.getRequestBodyCheckout(
+                    requestCheckoutParams, digitalIdentifierParams, fintechProduct
+                )
+            )
+            val result = restUseCase.executeOnBackground()
+            val token = object : TypeToken<DataResponse<ResponseCheckout>>() {}.type
+            val restResponse = result[token]
+            val data = restResponse!!.getData<DataResponse<*>>()
+            val responseCheckoutData = data.data as ResponseCheckout
 
-        val mapHeader = mutableMapOf<String, String>()
-        mapHeader[KEY_CONTENT_TYPE] = VALUE_CONTENT_TYPE
-
-        val restRequest = RestRequest.Builder(url, token)
-                .setRequestType(RequestType.POST)
-                .setBody(requestBody)
-                .setHeaders(mapHeader)
-                .build()
-
-        restRequestList.clear()
-        restRequestList.add(restRequest)
-        return repository.getResponses(restRequestList)
-    }
-
-    fun setRequestParams(requestBodyCheckout: RequestBodyCheckout) {
-        requestParams = RequestParams.create()
-        requestParams.putObject(PARAM_REQUEST_CHECKOUT, requestBodyCheckout)
-        requestParams
-    }
-
-    companion object {
-        const val PARAM_REQUEST_CHECKOUT = "PARAM_REQUEST_CHECKOUT"
-
-        private const val KEY_CONTENT_TYPE = "Content-Type"
-        private const val VALUE_CONTENT_TYPE = "application/json"
-        private const val PARAM_DATA = "data"
-    }
+            DigitalCheckoutMapper.mapToPaymentPassData(responseCheckoutData)
+        }
 }

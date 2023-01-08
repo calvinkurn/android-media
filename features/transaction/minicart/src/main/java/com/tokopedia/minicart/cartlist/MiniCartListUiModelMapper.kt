@@ -1,10 +1,13 @@
 package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.ProductDataModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
@@ -23,12 +26,17 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformation
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
+import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomAtcItemTracker
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -50,11 +58,84 @@ class MiniCartListUiModelMapper @Inject constructor() {
             title = miniCartData.data.headerTitle
             miniCartWidgetUiModel = mapMiniCartWidgetData(miniCartData, totalProductAvailable, totalProductUnavailable)
             miniCartSummaryTransactionUiModel = mapMiniCartSummaryTransactionUiModel(miniCartData, totalProductAvailable)
-            visitables = mapVisitables(miniCartData, totalProductAvailable, totalProductUnavailable)
+            val visitableListModel = mapVisitables(miniCartData, totalProductAvailable, totalProductUnavailable)
+            visitables = visitableListModel.constructVisitableOrder
+            availableProductIds = visitableListModel.availableProductIds
+            availableBundleIds = visitableListModel.availableBundleIds
+
             if (miniCartData.data.availableSection.availableGroup.isNotEmpty()) {
                 maximumShippingWeight = miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight
                 maximumShippingWeightErrorMessage = miniCartData.data.availableSection.availableGroup[0].shop.maximumWeightWording
             }
+        }
+    }
+
+    fun mapToProductBundleUiModel(
+        widgetResponse: ProductBundleRecomResponse
+    ) = MiniCartProductBundleRecomUiModel(
+        title = widgetResponse.tokonowBundleWidget.data.widgetName,
+        productBundleList = mapToProductBundleListItemUiModel(widgetResponse.tokonowBundleWidget.data.widgetData)
+    )
+
+    private fun mapToProductBundleListItemUiModel(
+        widgetData: List<ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>
+    ): List<ShopHomeProductBundleItemUiModel> {
+        return widgetData.map {
+            ShopHomeProductBundleItemUiModel().apply {
+                warehouseId = it.warehouseID
+                shopId = it.shopID
+                bundleGroupId = it.bundleGroupID
+                bundleType = it.bundleType
+                bundleName = it.bundleName
+                bundleDetails = it.bundleDetails.map { bundleDetail ->
+                    ShopHomeProductBundleDetailUiModel().apply {
+                        bundleId = bundleDetail.bundleID
+                        originalPrice = bundleDetail.originalPrice
+                        displayPrice = bundleDetail.displayPrice
+                        displayPriceRaw = bundleDetail.displayPriceRaw
+                        discountPercentage = bundleDetail.discountPercentage
+                        isPreOrder = bundleDetail.isPO
+                        isProductsHaveVariant = bundleDetail.isProductsHaveVariant
+                        preOrderInfo = bundleDetail.preorderInfo
+                        savingAmountWording = bundleDetail.savingAmountWording
+                        minOrder = bundleDetail.minOrder
+                        minOrderWording = bundleDetail.minOrderWording
+                    }
+                }
+                bundleProducts = it.bundleProducts.map { bundleProduct ->
+                    ShopHomeBundleProductUiModel().apply {
+                        productId = bundleProduct.productID
+                        productName = bundleProduct.productName
+                        productImageUrl = bundleProduct.imageUrl
+                        productAppLink = bundleProduct.appLink
+                    }
+                }
+            }
+        }
+    }
+
+    fun mapToProductBundlRecomAtcItemTracker(
+        productList :List<ProductDataModel>,
+        productDetails: List<ShopHomeBundleProductUiModel>
+    ): List<ProductBundleRecomAtcItemTracker> {
+        return productList.map {  product ->
+            ProductBundleRecomAtcItemTracker(
+                id = product.productId,
+                name = productDetails.firstOrNull { it.productId == product.productId }?.productName.orEmpty(),
+                cartId = product.cartId,
+                quantity = product.quantity
+            )
+        }
+    }
+
+    fun mapToAddToCartBundleProductDetailParam(productDetails: List<ShopHomeBundleProductUiModel>, quantity: Int, shopId: String, userId: String): List<ProductDetail> {
+        return productDetails.map {
+            ProductDetail(
+                productId = it.productId,
+                quantity = quantity,
+                shopId = shopId,
+                customerId = userId
+            )
         }
     }
 
@@ -106,13 +187,14 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapVisitables(miniCartData: MiniCartData, totalProductAvailable: Int, totalProductUnavailable: Int): MutableList<Visitable<*>> {
+    private fun mapVisitables(miniCartData: MiniCartData, totalProductAvailable: Int, totalProductUnavailable: Int): VisitableListModel {
         var miniCartTickerErrorUiModel: MiniCartTickerErrorUiModel? = null
         val miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel? = null
         var miniCartShopUiModel: MiniCartShopUiModel? = null
         val miniCartAvailableSectionUiModels: MutableList<MiniCartProductUiModel> = mutableListOf()
         val miniCartUnavailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
-
+        val productIds: ArrayList<String> = arrayListOf()
+        val bundleIds: ArrayList<String> = arrayListOf()
         // Add error ticker
         if (totalProductUnavailable > 0 && totalProductAvailable > 0) {
             miniCartTickerErrorUiModel = mapTickerErrorUiModel(totalProductUnavailable, totalProductAvailable)
@@ -147,6 +229,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             lastGroupItem = lastGroupItem
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
+                        if (miniCartProductUiModel.isBundlingItem) {
+                            bundleIds.add(miniCartProductUiModel.bundleId)
+                        } else {
+                            productIds.add(miniCartProductUiModel.productId)
+                        }
                     }
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -216,12 +303,16 @@ class MiniCartListUiModelMapper @Inject constructor() {
             miniCartUnavailableSectionUiModels.add(miniCartAccordionUiModel)
         }
 
-        return constructVisitableOrder(
+        return VisitableListModel(
+            availableProductIds = productIds,
+            availableBundleIds = bundleIds,
+            constructVisitableOrder = constructVisitableOrder(
                 miniCartTickerErrorUiModel,
                 miniCartTickerWarningUiModel,
                 miniCartShopUiModel,
                 miniCartAvailableSectionUiModels,
                 miniCartUnavailableSectionUiModels
+            )
         )
     }
 
@@ -289,7 +380,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")
             productSlashPriceLabel = product.slashPriceLabel
             productOriginalPrice = product.productOriginalPrice
-            productWholeSalePrice = 0
+            productWholeSalePrice = 0.0
             productInitialPriceBeforeDrop = product.initialPrice
             productPrice = product.productPrice
             productInformation = product.productInformation
@@ -319,10 +410,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             shopId = shop.shopId
             shopName = shop.shopName
             shopType = shop.shopTypeInfo.titleFmt
-            freeShippingType =
-                    if (shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
-                    else if (shipmentInformation.freeShipping.eligible) "bebas ongkir"
-                    else ""
+            freeShippingType = product.freeShippingGeneral.boName
             errorType = unavailableReason
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
@@ -537,4 +625,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
         val containsOnlyUnavailableItems = isShowMiniCartWidget && !hasAvailableItem
         return Triple(miniCartItems, containsOnlyUnavailableItems, unavailableItemCount)
     }
+
+    class VisitableListModel(
+        val availableProductIds: ArrayList<String>,
+        val availableBundleIds: ArrayList<String>,
+        val constructVisitableOrder: MutableList<Visitable<*>>,
+    )
 }

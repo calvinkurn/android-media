@@ -1,0 +1,115 @@
+{
+    "TokonowBundleWidget": {
+            "header": {
+              "process_time": 0.081348235,
+              "reason": "",
+              "error_code": "0"
+            },
+            "data": {
+              "widgetName": "Lebih hemat dengan Paket Bundling",
+              "widgetData": [
+                {
+                  "bundleGroupID": "41614",
+                  "bundleName": "test bundling5all",
+                  "bundleType": "multiple_bundling",
+                  "shopID": "480552",
+                  "warehouseID": "342184",
+                  "bundleDetails": [
+                    {
+                      "bundleID": "41614",
+                      "originalPrice": "Rp22.000",
+                      "originalPriceRaw": 22000,
+                      "displayPrice": "Rp16.500",
+                      "displayPriceRaw": 16500,
+                      "discountPercentage": 25,
+                      "isPO": false,
+                      "preorderInfo": "",
+                      "savingAmountWording": "Hemat Rp5.500",
+                      "minOrder": 1,
+                      "minOrderWording": "Isi 1",
+                      "isProductsHaveVariant": false
+                    }
+                  ],
+                  "bundleProducts": [
+                    {
+                      "productID": "2150355156",
+                      "productName": "Pisang_Nugget",
+                      "imageUrl": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2022/6/13/5cb6c1da-ff6b-4274-8892-e90295f10a2f.jpg",
+                      "appLink": "tokopedia://product/2150355156",
+                      "webLink": ""
+                    },
+                    {
+                      "productID": "2150355153",
+                      "productName": "Donat_Kentang",
+                      "imageUrl": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2022/6/13/539e3dd5-ae1a-4664-9083-dd26be2311cd.jpg",
+                      "appLink": "tokopedia://product/2150355153",
+                      "webLink": ""
+                    }
+                  ]
+                },
+                {
+                  "bundleGroupID": "45522",
+                  "bundleName": "paket ham",
+                  "bundleType": "single_bundling",
+                  "shopID": "480552",
+                  "warehouseID": "342184",
+                  "bundleDetails": [
+                    {
+                      "bundleID": "45522",
+                      "originalPrice": "Rp20.000",
+                      "originalPriceRaw": 20000,
+                      "displayPrice": "Rp19.600",
+                      "displayPriceRaw": 19600,
+                      "discountPercentage": 2,
+                      "isPO": false,
+                      "preorderInfo": "",
+                      "savingAmountWording": "Hemat Rp400",
+                      "minOrder": 5,
+                      "minOrderWording": "Isi 5",
+                      "isProductsHaveVariant": false
+                    },
+                    {
+                      "bundleID": "45523",
+                      "originalPrice": "Rp40.000",
+                      "originalPriceRaw": 40000,
+                      "displayPrice": "Rp38.400",
+                      "displayPriceRaw": 38400,
+                      "discountPercentage": 4,
+                      "isPO": false,
+                      "preorderInfo": "",
+                      "savingAmountWording": "Hemat Rp1.600",
+                      "minOrder": 10,
+                      "minOrderWording": "Isi 10",
+                      "isProductsHaveVariant": false
+                    },
+                    {
+                      "bundleID": "45524",
+                      "originalPrice": "Rp60.000",
+                      "originalPriceRaw": 60000,
+                      "displayPrice": "Rp55.200",
+                      "displayPriceRaw": 55200,
+                      "discountPercentage": 8,
+                      "isPO": false,
+                      "preorderInfo": "",
+                      "savingAmountWording": "Hemat Rp4.800",
+                      "minOrder": 15,
+                      "minOrderWording": "Isi 15",
+                      "isProductsHaveVariant": false
+                    }
+                  ],
+                  "bundleProducts": [
+                    {
+                      "productID": "2150470628",
+                      "productName": "single_ham_phase_2",
+                      "imageUrl": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2022/8/1/81b5ae71-5a5b-4dbb-9a1e-94ccb3fe6e92.jpg",
+                      "appLink": "tokopedia://product/2150470628",
+                      "webLink": ""
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+}
+
+

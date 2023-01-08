@@ -12,25 +12,21 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_category.presentation.activity.BrandlistActivity
-import com.tokopedia.brandlist.brandlist_category.presentation.adapter.BrandlistContainerAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
-import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
-import org.junit.After
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -49,19 +45,13 @@ class BrandListPageCassava {
     @get:Rule
     var activityRule = ActivityTestRule(BrandlistActivity::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse(BrandListPageMockResponse())
         activityRule.launchActivity(Intent(InstrumentationRegistry.getInstrumentation().targetContext, BrandlistActivity::class.java))
-    }
-
-    @After
-    fun dispose(){
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     @Test
@@ -88,10 +78,10 @@ class BrandListPageCassava {
         }
         doActivityTestByModelClass(dataModelClass = AllBrandGroupHeaderUiModel::class) { holder, position ->
             logTestMessage("Captured is AllBrandGroupHeaderViewHolder")
-//            Espresso.onView(firstView(withId(R.id.chip_alphabet_header))).perform(click())
-            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_groups_chip, 4)
+            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_groups_chip, 3)
         }
-        doActivityTestByModelClass(dataModelClass = AllBrandUiModel::class) { holder, position ->
+        waitForData()
+        doActivityTestByModelClass(delayBeforeRender = 5000, dataModelClass = AllBrandUiModel::class) { holder, position ->
             logTestMessage("Captured is AllBrandViewHolder")
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 holder.itemView.performClick()
@@ -165,8 +155,7 @@ class BrandListPageCassava {
     private fun doBrandlistCassavaTest() {
         waitForData()
         //worked
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
-                hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
     }
 
     private fun scrollRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {

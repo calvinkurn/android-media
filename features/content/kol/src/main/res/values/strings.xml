@@ -32,7 +32,7 @@
     <string name="title_create_post">Create Post</string>
 
     <!--Kol Post Detail-->
-    <string name="kol_title_post_detail">Post Detail</string>
+    <string name="kol_title_post_detail">Postingan</string>
     <string name="add_your_comment">Masukan komen kamu</string>
     <string name="see_all_comment">Lihat Semua Comments (%d)</string>
     <string name="post_detail_follow_success_toast">Cek Feeds mu sekarang untuk melihat update TopProfile ini</string>
@@ -55,9 +55,12 @@
 
     <!--Kol Media Preview-->
     <string name="kol_title_media_preview">Media Preview</string>
+    <string name="kol_invalid_protocol_format">TkpdVideoPlayer: invalid source media format.</string>
+    <string name="kol_invalid_protocol_type">TkpdVideoPlayer: Only supported http, https, rtmp, and file format.</string>
 
     <!--Kol Video Detail-->
     <string name="kol_title_video_detail">Video Detail</string>
+    <string name="kol_error_unknown">Kesalahan tidak diketahui</string>
 
     <!--Kol Post Youtube-->
     <string name="kol_title_post_youtube">Post Youtube</string>
@@ -91,5 +94,33 @@
     <string name="kol_empty_state_content_desc">Empty Page Image</string>
     <string name="kol_next_image_content_desc">Action Next Image</string>
     <string name="kol_prev_image_content_desc">Action Previous Image</string>
+
+    <!-- Like -->
+    <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
+    <!-- Unfollow -->
+    <string name="feed_unfollow_error_message">Oops, tidak bisa unfollow toko</string>
+    <string name="feed_follow_error_message">Oops, gagal mem-follow.</string>
+    <!-- Comment -->
+    <string name="cta_refresh_feed">Refresh</string>
+    <!-- Share -->
+    <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
+    <string name="feed_vod_share_weblink">https://www.tokopedia.com/play/channel/%s</string>
+    <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
+    <string name="feed_share_title">%s post</string>
+    <string name="feed_share_desc_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+
+    <!--Delete Post -->
+    <string name="feed_delete_post">Ingin hapus postingan ini?</string>
+    <string name="feed_after_delete_cant">Postingan yang dihapus akan hilang
+dari Feed.</string>
+    <string name="feed_delete">Hapus</string>
+    <!--Add to wishlst-->
+    <string name="wishlist_default_error">Terjadi kesalahan koneksi. Silakan coba lagi.</string>
+    <!--Add to cart-->
+    <string name="feed_added_to_cart">Barang berhasil ditambahkan.</string>
+    <string name="feed_go_to_cart">Lihat Keranjang</string>
+    <string name="feed_post_deleted">Post Kamu Berhasil di Hapus</string>
+    <!--Follower-->
+    <string name="feed_header_follow_count_text">%s Followers</string>
 
 </resources>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg_play_pin_product"
+    android:translationZ="@dimen/play_dp_1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:visibility="visible">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:layout_goneMarginStart="@dimen/play_dp_18"
+        android:text="@string/play_bro_pin"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_pin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/iv_pin"
+        app:layout_constraintTop_toTopOf="@+id/iv_pin"
+        app:typographyType="small"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/iv_loader_pin"
+        android:layout_width="@dimen/play_dp_12"
+        android:layout_height="@dimen/play_dp_12"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular_white"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_pin"
+        android:layout_width="@dimen/play_dp_12"
+        android:layout_height="@dimen/play_dp_12"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        app:icon_name="PUSH_PIN"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

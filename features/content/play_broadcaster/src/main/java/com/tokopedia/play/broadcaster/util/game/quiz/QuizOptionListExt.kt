@@ -25,7 +25,7 @@ object QuizOptionListExt {
         return Pair(newOptions, isAutoSelect || isAutoAdd)
     }
 
-    fun List<QuizFormDataUiModel.Option>.updateQuizOption(
+    private fun List<QuizFormDataUiModel.Option>.updateQuizOption(
         order: Int,
         newText: String,
         isFirstSelectQuizOption: Boolean = false,
@@ -39,7 +39,7 @@ object QuizOptionListExt {
         }
     }
 
-    fun List<QuizFormDataUiModel.Option>.setupAutoSelectField(
+    private fun List<QuizFormDataUiModel.Option>.setupAutoSelectField(
         order: Int,
         newText: String,
     ) : Pair<List<QuizFormDataUiModel.Option>, Boolean> {
@@ -81,5 +81,9 @@ object QuizOptionListExt {
 
     fun List<QuizFormDataUiModel.Option>.removeUnusedField(): List<QuizFormDataUiModel.Option> {
         return filterNot { !it.isMandatory && it.text.isEmpty() }
+    }
+
+    fun List<QuizFormDataUiModel.Option>.trim(): List<QuizFormDataUiModel.Option> {
+        return map { it.copy(text = it.text.trim()) }
     }
 }

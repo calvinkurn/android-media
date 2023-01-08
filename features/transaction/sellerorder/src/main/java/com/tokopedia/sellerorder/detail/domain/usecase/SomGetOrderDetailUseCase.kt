@@ -31,7 +31,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
         return mapOf(VAR_PARAM_ORDERID to orderId, VAR_PARAM_LANG to PARAM_LANG_ID)
     }
 
-    suspend fun execute(orderId: String): Result<GetSomDetailResponse> {
+    suspend fun execute(orderId: String): GetSomDetailResponse {
         val getSomDetailResponse = GetSomDetailResponse()
         val somDynamicPriceParams = createParamDynamicPrice(orderId)
         val somDetailRequestParam = createParamGetOrderDetail(orderId)
@@ -45,10 +45,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
             val gqlResponse = graphQlRepository.response(multipleRequest)
             getSomDetailResponse.getSomDetail = requireNotNull(gqlResponse.getData<SomDetailOrder.Data>(SomDetailOrder.Data::class.java).getSomDetail)
             getSomDetailResponse.somDynamicPriceResponse = requireNotNull(gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice)
-            Success(getSomDetailResponse)
+            getSomDetailResponse
         } catch (e: Throwable) {
-            if (e is CancellationException) throw e
-            Fail(e)
+            throw e
         }
     }
 
@@ -58,6 +57,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
               get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang) {
                 order_id
                 status
+                has_reso_status
                 status_text
                 status_text_color
                 status_indicator_color
@@ -164,6 +164,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   is_tokocabang
                   is_shipping_printed
                   is_broadcast_chat
+                  shipment_logo
                 }
                 label_info {
                   flag_name

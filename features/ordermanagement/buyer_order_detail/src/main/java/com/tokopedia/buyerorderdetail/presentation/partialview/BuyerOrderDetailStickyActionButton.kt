@@ -13,13 +13,13 @@ import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
-import com.tokopedia.usecase.coroutines.Success
 
 class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
     context: Context,
@@ -52,14 +52,14 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
 
     private fun createPrimaryActionButtonClickListener(): OnClickListener {
         return OnClickListener {
-            viewModel?.buyerOrderDetailResult?.value?.let {
-                if (it is Success) {
+            viewModel?.buyerOrderDetailUiState?.value?.let { uiState ->
+                if (uiState is BuyerOrderDetailUiState.HasData) {
                     startPrimaryActionButtonLoading()
                     stickyActionButtonHandler?.onActionButtonClicked(
                         true,
-                        it.data.actionButtonsUiModel.primaryActionButton
+                        uiState.actionButtonsUiState.data.primaryActionButton
                     )
-                    if (shouldFinishPrimaryActionButtonImmediately(it.data.actionButtonsUiModel.primaryActionButton.key)) {
+                    if (shouldFinishPrimaryActionButtonImmediately(uiState.actionButtonsUiState.data.primaryActionButton.key)) {
                         finishPrimaryActionButtonLoading()
                     }
                 }

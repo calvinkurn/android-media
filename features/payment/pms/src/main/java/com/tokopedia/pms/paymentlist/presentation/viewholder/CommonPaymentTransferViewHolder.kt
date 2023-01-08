@@ -30,7 +30,7 @@ class CommonPaymentTransferViewHolder(
 
     private fun bindVA(item: VirtualAccountPaymentModel) {
         val cardTitle = getCardTitle(item.transactionList)
-        bindTransactionHeaderData(cardTitle, item.expiryDate, item.expiryTime)
+        bindTransactionHeaderData(cardTitle, item.expiryDate, item.expiryTime,item.productImage)
         bindPaymentGatewayData(item)
         bindVATransactionAmountData(item)
         setCommonClickRedirections(item)
@@ -52,7 +52,7 @@ class CommonPaymentTransferViewHolder(
     }
 
     private fun bindKlicBCA(item: KlicBCAPaymentModel) {
-        bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime)
+        bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime,item.productImage)
         bindPaymentGatewayData(item)
         bindTransactionAmountData(item.amount)
         bindTotalAmountHeading()
@@ -63,7 +63,7 @@ class CommonPaymentTransferViewHolder(
     }
 
     fun bindStore(item: StorePaymentModel) {
-        bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime)
+        bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime,item.productImage)
         bindPaymentGatewayData(item)
         bindTransactionAmountData(item.amount)
         bindTotalAmountHeading()
@@ -86,11 +86,12 @@ class CommonPaymentTransferViewHolder(
     private fun bindTransactionHeaderData(
         cardHeading: String,
         expiryDate: String,
-        expiryTime: Long
+        expiryTime: Long,
+        productImage: String
     ) {
         view.apply {
             cardTitle.text = cardHeading
-            cardIcon.urlSrc = CARD_ICON_URL
+            cardIcon.urlSrc = if(productImage != "") productImage else CARD_ICON_URL
             tvPaymentTransactionDate.text = expiryDate
             tvTransactionExpireTime.text =
                 DateFormatUtils.getFormattedDateSeconds(expiryTime, "dd MMM, HH:mm")
@@ -132,7 +133,7 @@ class CommonPaymentTransferViewHolder(
     companion object {
         private val LAYOUT_ID = R.layout.common_transfer_payment_list_item
         private const val CARD_ICON_URL =
-            "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png"
+            "https://images.tokopedia.net/img/toppay/product/marketplace.png"
 
         fun getViewHolder(
             inflater: LayoutInflater,

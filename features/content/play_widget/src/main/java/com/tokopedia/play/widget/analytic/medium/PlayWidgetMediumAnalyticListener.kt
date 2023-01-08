@@ -72,6 +72,7 @@ interface PlayWidgetMediumAnalyticListener {
 
     /**
      * Channel
+     * channelPositionInList value start with 1 not 0
      */
     fun onImpressChannelCard(
         view: PlayWidgetMediumView,

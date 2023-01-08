@@ -1,0 +1,10 @@
+<vector
+    android:height="@dimen/unify_space_24"
+    android:viewportHeight="32"
+    android:viewportWidth="32"
+    android:width="@dimen/unify_space_24"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+  <path android:fillColor="@color/Unify_GN500"
+      android:fillType="evenOdd"
+      android:pathData="M22.667 6.667h4c1.466 0 2.666 1.2 2.666 2.666v16c0 1.467-1.2 2.667-2.666 2.667H5.333c-1.466 0-2.666-1.2-2.666-2.667v-16c0-1.466 1.2-2.666 2.666-2.666h4l1.64-1.8C11.48 4.32 12.2 4 12.947 4h6.106c0.747 0 1.467 0.32 1.96 0.867l1.654 1.8zM9.333 17.333C9.333 21.016 12.317 24 16 24s6.667-2.984 6.667-6.667c0-3.681-2.984-6.666-6.667-6.666s-6.667 2.985-6.667 6.666zm6.667 4c2.21 0 4-1.79 4-4 0-2.209-1.79-4-4-4s-4 1.791-4 4c0 2.21 1.79 4 4 4z"/>
+</vector>

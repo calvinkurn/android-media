@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/unify_space_12"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/consentLoader"/>
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_margin="@dimen/layout_lvl2"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/consentError"/>
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_margin="@dimen/layout_lvl2"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/singleConsent"/>

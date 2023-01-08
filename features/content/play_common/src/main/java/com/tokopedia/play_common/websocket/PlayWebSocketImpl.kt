@@ -2,11 +2,13 @@ package com.tokopedia.play_common.websocket
 
 import android.content.Context
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
@@ -21,7 +23,7 @@ class PlayWebSocketImpl(
         clientBuilder: OkHttpClient.Builder,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers,
-        private val context: Context,
+        @ApplicationContext private val context: Context,
         private val localCacheHandler: LocalCacheHandler,
 ) : PlayWebSocket {
 
@@ -29,7 +31,15 @@ class PlayWebSocketImpl(
 
     init {
         clientBuilder.pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
-        client = clientBuilder.build()
+        client = clientBuilder
+            .addInterceptor {
+                val request = it.request().newBuilder()
+                    .addHeader(HEADER_USER_AGENT, AuthHelper.getUserAgent())
+                    .addHeader(HEADER_ACCEPT, HEADER_VALUE_CONTENT_TYPE_JSON)
+                    .build()
+                it.proceed(request)
+            }
+            .build()
     }
 
     private val gson: Gson = Gson()
@@ -128,5 +138,10 @@ class PlayWebSocketImpl(
         private const val PLAY_WEB_SOCKET_GROUP_CHAT_WH = "&warehouse_id="
 
         private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
+
+        private const val HEADER_USER_AGENT = "User-Agent"
+        private const val HEADER_ACCEPT = "Accept"
+
+        private const val HEADER_VALUE_CONTENT_TYPE_JSON = "application/json"
     }
 }

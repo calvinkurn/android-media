@@ -1,5 +1,6 @@
 package com.tokopedia.brizzi.mapper
 
+import android.annotation.SuppressLint
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
@@ -14,12 +15,13 @@ class BrizziCardObjectMapper @Inject constructor() {
         const val BUTTON_TEXT = "Top-up Sekarang"
     }
 
+    @SuppressLint("Method Call Prohibited")
     fun mapperBrizzi(brizziCardObject: BrizziCardObject, error: EmoneyInquiryError): EmoneyInquiry {
         return EmoneyInquiry(
                 attributesEmoneyInquiry = AttributesEmoneyInquiry(
                         BUTTON_TEXT,
                         brizziCardObject.cardNumber,
-                        "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
+                        "https://images.tokopedia.net/img/recharge/operator/brizzi.png",
                         brizziCardObject.balance.toInt(),
                         "",
                         1,

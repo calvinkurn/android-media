@@ -15,9 +15,16 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
 kapt {
     correctErrorTypes = true
     generateStubs = false
+}
+def isEnableMacrobenchmarkUtil() {
+    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+        return "true";
+    }
+    return "false";
 }
 android {
     packagingOptions {
@@ -42,12 +49,14 @@ android {
             zipAlignEnabled false
             testCoverageEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
+            buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
             ext.enableHansel = false
             ext.enableCrashlytics = false
         }
         release {
             minifyEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
+            buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
             signingConfig signingConfigs.debug
         }
     }
@@ -68,8 +77,8 @@ android {
         buildConfig true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 dependencies {
@@ -96,6 +105,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassava
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.network)
@@ -127,6 +137,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.exoPlayerUi
+
+    /*
+        Do not remove this dependency, because we use it in Abstraction
+     */
+    implementation project(rootProject.ext.features.tokochat_config_common)
 
     //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented

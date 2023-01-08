@@ -5,50 +5,51 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
-import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
-import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
-import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
-import com.tokopedia.shop.product.domain.interactor.ClaimBenefitMembershipUseCase
-import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
-import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
-import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.product.data.model.ShopProduct
-import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import com.tokopedia.shop.common.util.ShopPageExceptionHandler
-import com.tokopedia.shop.common.util.ShopPageMapper
-import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
+import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
+import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
+import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
+import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
+import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler
+import com.tokopedia.shop.common.util.ShopPageMapper
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.util.ShopUtil.setElement
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
-import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
+import com.tokopedia.shop.product.domain.interactor.ClaimBenefitMembershipUseCase
+import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -110,14 +111,14 @@ class ShopPageProductListViewModel @Inject constructor(
 
     val miniCartRemove: LiveData<Result<Pair<String, String>>>
         get() = _miniCartRemove
-    private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
+    private val _miniCartRemove = MutableLiveData<Result<Pair<String, String>>>()
     val isLogin: Boolean
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
     private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase>()
     private var shopSortList = mutableListOf<ShopProductSortModel>()
-    private var miniCartData : MiniCartSimplifiedData? = null
+    private var miniCartData: MiniCartSimplifiedData? = null
 
     val updatedShopProductListQuantityData: LiveData<MutableList<Visitable<*>>>
         get() = _updatedShopProductListQuantityData
@@ -127,91 +128,100 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
+    val createAffiliateCookieAtcProduct: LiveData<AffiliateAtcProductModel>
+        get() = _createAffiliateCookieAtcProduct
+    private val _createAffiliateCookieAtcProduct = MutableLiveData<AffiliateAtcProductModel>()
+
     fun getBuyerViewContentData(
-            shopId: String,
-            etalaseList: List<ShopEtalaseItemDataModel>,
-            isShopWidgetAlreadyShown: Boolean,
-            widgetUserAddressLocalData: LocalCacheModel,
-            context: Context?,
-            isEnableDirectPurchase: Boolean
+        shopId: String,
+        etalaseList: List<ShopEtalaseItemDataModel>,
+        isShopWidgetAlreadyShown: Boolean,
+        widgetUserAddressLocalData: LocalCacheModel,
+        context: Context?,
+        isEnableDirectPurchase: Boolean
     ) {
-        launchCatchError(coroutineContext, {
-            coroutineScope {
-                val membershipStampProgressDataAsync = async(dispatcherProvider.io) {
-                    try {
-                        getMembershipData(shopId)
-                    } catch (error: Exception) {
-                        null
+        launchCatchError(
+            coroutineContext,
+            {
+                coroutineScope {
+                    val membershipStampProgressDataAsync = async(dispatcherProvider.io) {
+                        try {
+                            getMembershipData(shopId)
+                        } catch (error: Exception) {
+                            null
+                        }
+                    }
+                    val shopMerchantVoucherDataAsync = async(dispatcherProvider.io) {
+                        if (isShopWidgetAlreadyShown) null
+                        else getMerchantVoucherCoupon(shopId, context)
+                    }
+                    val shopProductFeaturedDataAsync = async(dispatcherProvider.io) {
+                        if (isShopWidgetAlreadyShown) null
+                        else getFeaturedProductData(shopId, userId, widgetUserAddressLocalData)
+                    }
+                    val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io) {
+                        if (isShopWidgetAlreadyShown) null
+                        else getShopProductEtalaseHighlightData(shopId, etalaseList, widgetUserAddressLocalData, isEnableDirectPurchase)
+                    }
+                    membershipStampProgressDataAsync.await()?.let {
+                        membershipData.postValue(Success(it))
+                    }
+                    shopMerchantVoucherDataAsync.await()?.let {
+                        merchantVoucherData.postValue(Success(it))
+                    }
+                    shopProductFeaturedDataAsync.await()?.let {
+                        shopProductFeaturedData.postValue(Success(it))
+                    }
+                    shopProductEtalaseHighlightDataAsync.await()?.let {
+                        shopProductEtalaseHighlightData.postValue(Success(it))
                     }
                 }
-                val shopMerchantVoucherDataAsync = async(dispatcherProvider.io) {
-                    if (isShopWidgetAlreadyShown) null
-                    else getMerchantVoucherCoupon(shopId, context)
-                }
-                val shopProductFeaturedDataAsync = async(dispatcherProvider.io) {
-                    if (isShopWidgetAlreadyShown) null
-                    else getFeaturedProductData(shopId, userId, widgetUserAddressLocalData)
-                }
-                val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io) {
-                    if (isShopWidgetAlreadyShown) null
-                    else getShopProductEtalaseHighlightData(shopId, etalaseList,widgetUserAddressLocalData, isEnableDirectPurchase)
-                }
-                membershipStampProgressDataAsync.await()?.let {
-                    membershipData.postValue(Success(it))
-                }
-                shopMerchantVoucherDataAsync.await()?.let {
-                    merchantVoucherData.postValue(Success(it))
-                }
-                shopProductFeaturedDataAsync.await()?.let {
-                    shopProductFeaturedData.postValue(Success(it))
-                }
-                shopProductEtalaseHighlightDataAsync.await()?.let {
-                    shopProductEtalaseHighlightData.postValue(Success(it))
-                }
+            },
+            {
+                productListData.postValue(Fail(it))
             }
-        },
-                {
-                    productListData.postValue(Fail(it))
-                })
+        )
     }
 
     private suspend fun getShopProductEtalaseHighlightData(
-            shopId: String,
-            etalaseList: List<ShopEtalaseItemDataModel>,
-            widgetUserAddressLocalData: LocalCacheModel,
-            isEnableDirectPurchase: Boolean
+        shopId: String,
+        etalaseList: List<ShopEtalaseItemDataModel>,
+        widgetUserAddressLocalData: LocalCacheModel,
+        isEnableDirectPurchase: Boolean
     ): ShopProductEtalaseHighlightUiModel? {
         try {
             val listEtalaseHighlight = etalaseList
-                    .filter { it.highlighted }
+                .filter { it.highlighted }
             val listProductEtalaseHighlightResponse = listEtalaseHighlight.map {
                 async(dispatcherProvider.io) {
                     val getShopHighlightProductUseCase = getShopHighlightProductUseCase.get()
                     listGetShopHighlightProductUseCase.add(getShopHighlightProductUseCase)
                     getProductList(
-                            getShopHighlightProductUseCase,
-                            shopId,
-                            START_PAGE,
-                            ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
-                            it.etalaseId,
-                            "",
-                            getSort(it.etalaseId),
-                            widgetUserAddressLocalData,
-                            isEnableDirectPurchase = isEnableDirectPurchase
+                        getShopHighlightProductUseCase,
+                        shopId,
+                        START_PAGE,
+                        ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
+                        it.etalaseId,
+                        "",
+                        getSort(it.etalaseId),
+                        widgetUserAddressLocalData,
+                        isEnableDirectPurchase = isEnableDirectPurchase
                     ).listShopProductUiModel
                 }
             }.awaitAll()
             val listEtalaseHighlightCarouselViewModel = mutableListOf<EtalaseHighlightCarouselUiModel>()
             listProductEtalaseHighlightResponse.forEachIndexed { index, shopProductResponse ->
                 if (shopProductResponse.isNotEmpty()) {
-                    listEtalaseHighlightCarouselViewModel.add(EtalaseHighlightCarouselUiModel(
+                    listEtalaseHighlightCarouselViewModel.add(
+                        EtalaseHighlightCarouselUiModel(
                             shopProductResponse,
                             listEtalaseHighlight[index]
-                    ))
+                        )
+                    )
                 }
             }
             return ShopProductEtalaseHighlightUiModel(
-                    listEtalaseHighlightCarouselViewModel
+                listEtalaseHighlightCarouselViewModel
             )
         } catch (error: Exception) {
             return null
@@ -236,16 +246,16 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private suspend fun getMerchantVoucherCoupon(shopId: String, context: Context?): ShopMerchantVoucherUiModel? {
         return try {
-            val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
+            val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
             val code = response.data?.resultStatus?.code
             if (code != CODE_STATUS_SUCCESS) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
                 ShopPageExceptionHandler.logExceptionToCrashlytics(
-                        ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
-                        Throwable(errorMessage)
+                    ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
+                    Throwable(errorMessage)
                 )
             }
-            if (response.data?.isShown == true){
+            if (response.data?.isShown == true) {
                 ShopMerchantVoucherUiModel(ShopPageMapper.mapToVoucherCouponUiModel(response.data, shopId))
             } else {
                 null
@@ -256,29 +266,29 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     private suspend fun getFeaturedProductData(
-            shopId: String,
-            userId: String,
-            widgetUserAddressLocalData: LocalCacheModel
+        shopId: String,
+        userId: String,
+        widgetUserAddressLocalData: LocalCacheModel
     ): ShopProductFeaturedUiModel? {
         try {
             getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
-                    ShopFeaturedProductParams(
-                            shopId,
-                            userId,
-                            widgetUserAddressLocalData.district_id,
-                            widgetUserAddressLocalData.city_id,
-                            widgetUserAddressLocalData.lat,
-                            widgetUserAddressLocalData.long
-                    )
+                ShopFeaturedProductParams(
+                    shopId,
+                    userId,
+                    widgetUserAddressLocalData.district_id,
+                    widgetUserAddressLocalData.city_id,
+                    widgetUserAddressLocalData.lat,
+                    widgetUserAddressLocalData.long
+                )
             )
             val featuredProductResponse = getShopFeaturedProductUseCase.executeOnBackground()
             return ShopProductFeaturedUiModel(
-                    featuredProductResponse.map { shopFeaturedProduct ->
-                        ShopPageProductListMapper.mapShopFeaturedProductToProductViewModel(
-                                shopFeaturedProduct,
-                                isMyShop(shopId)
-                        )
-                    }
+                featuredProductResponse.map { shopFeaturedProduct ->
+                    ShopPageProductListMapper.mapShopFeaturedProductToProductViewModel(
+                        shopFeaturedProduct,
+                        isMyShop(shopId)
+                    )
+                }
             )
         } catch (error: Exception) {
             return null
@@ -297,21 +307,24 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     private suspend fun getProductList(
-            useCase: GqlGetShopProductUseCase,
-            shopId: String,
-            page: Int,
-            perPage: Int,
-            etalaseId: String,
-            keyword: String,
-            sortId: Int,
-            widgetUserAddressLocalData: LocalCacheModel,
-            rating: String = "",
-            pmax: Int = 0,
-            pmin: Int = 0,
-            fcategory: Int? = null,
-            isEnableDirectPurchase: Boolean
+        useCase: GqlGetShopProductUseCase,
+        shopId: String,
+        page: Int,
+        perPage: Int,
+        etalaseId: String,
+        keyword: String,
+        sortId: Int,
+        widgetUserAddressLocalData: LocalCacheModel,
+        rating: String = "",
+        pmax: Int = 0,
+        pmin: Int = 0,
+        fcategory: Int? = null,
+        extraParam: String = "",
+        isEnableDirectPurchase: Boolean
     ): GetShopProductUiModel {
-        useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
+        useCase.params = GqlGetShopProductUseCase.createParams(
+            shopId,
+            ShopProductFilterInput(
                 page = page,
                 perPage = perPage,
                 searchKeyword = keyword,
@@ -324,22 +337,27 @@ class ShopPageProductListViewModel @Inject constructor(
                 userDistrictId = widgetUserAddressLocalData.district_id,
                 userCityId = widgetUserAddressLocalData.city_id,
                 userLat = widgetUserAddressLocalData.lat,
-                userLong = widgetUserAddressLocalData.long
-        ))
+                userLong = widgetUserAddressLocalData.long,
+                extraParam = extraParam
+            )
+        )
         val productListResponse = useCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(page, perPage, productListResponse.totalData)
         val totalProductData = productListResponse.totalData
         return GetShopProductUiModel(
-                isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(
+            isHasNextPage,
+            productListResponse.data.map {
+                ShopPageProductListMapper.mapShopProductToProductViewModel(
                     it,
                     isMyShop(shopId),
                     etalaseId,
                     isEnableDirectPurchase = isEnableDirectPurchase
-                )},
-                totalProductData
+                )
+            },
+            totalProductData,
+            page
         ).apply {
-            updateProductCardQuantity(miniCartData, listShopProductUiModel.toMutableList())
+            updateProductCardQuantity(listShopProductUiModel.toMutableList())
         }
     }
 
@@ -355,30 +373,31 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun getProductListData(
-            shopId: String,
-            page: Int,
-            productPerPage: Int,
-            selectedEtalaseId: String,
-            shopProductFilterParameter: ShopProductFilterParameter,
-            widgetUserAddressLocalData: LocalCacheModel,
-            isEnableDirectPurchase: Boolean
+        shopId: String,
+        page: Int,
+        productPerPage: Int,
+        selectedEtalaseId: String,
+        shopProductFilterParameter: ShopProductFilterParameter,
+        widgetUserAddressLocalData: LocalCacheModel,
+        isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(block = {
             val listShopProduct = withContext(dispatcherProvider.io) {
                 getProductList(
-                        getShopProductUseCase,
-                        shopId,
-                        page,
-                        productPerPage,
-                        selectedEtalaseId,
-                        "",
-                        shopProductFilterParameter.getSortId().toIntOrZero(),
-                        widgetUserAddressLocalData,
-                        shopProductFilterParameter.getRating(),
-                        shopProductFilterParameter.getPmax(),
-                        shopProductFilterParameter.getPmin(),
-                        shopProductFilterParameter.getCategory(),
-                        isEnableDirectPurchase
+                    getShopProductUseCase,
+                    shopId,
+                    page,
+                    productPerPage,
+                    selectedEtalaseId,
+                    "",
+                    shopProductFilterParameter.getSortId().toIntOrZero(),
+                    widgetUserAddressLocalData,
+                    shopProductFilterParameter.getRating(),
+                    shopProductFilterParameter.getPmax(),
+                    shopProductFilterParameter.getPmin(),
+                    shopProductFilterParameter.getCategory(),
+                    shopProductFilterParameter.getExtraParam(),
+                    isEnableDirectPurchase
                 )
             }
             productListData.postValue(Success(listShopProduct))
@@ -422,27 +441,27 @@ class ShopPageProductListViewModel @Inject constructor(
     fun getShopFilterData(shopId: String) {
         launchCatchError(block = {
             val etalaseResponse = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = {
-                        getShopEtalaseData(shopId)
-                    },
-                    onError = {
-                        shopSortFilterData.postValue(Fail(it))
-                        null
-                    }
+                dispatcherProvider.io,
+                block = {
+                    getShopEtalaseData(shopId)
+                },
+                onError = {
+                    shopSortFilterData.postValue(Fail(it))
+                    null
+                }
             )
-            val sortResponse  = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = {
-                        getSortListData()
-                    },
-                    onError = {
-                        shopSortFilterData.postValue(Fail(it))
-                        null
-                    }
+            val sortResponse = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    getSortListData()
+                },
+                onError = {
+                    shopSortFilterData.postValue(Fail(it))
+                    null
+                }
             )
             etalaseResponse.await()?.let { etalase ->
-                sortResponse.await()?.let{sort ->
+                sortResponse.await()?.let { sort ->
                     shopSortList = sort
                     shopSortFilterData.postValue(Success(ShopStickySortFilter(etalase, sort)))
                 }
@@ -457,31 +476,34 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun setInitialProductList(
-            shopId: String,
-            productPerPage: Int,
-            initialProductListData: ShopProduct.GetShopProduct,
-            isEnableDirectPurchase: Boolean
+        shopId: String,
+        productPerPage: Int,
+        initialProductListData: ShopProduct.GetShopProduct,
+        isEnableDirectPurchase: Boolean
     ) {
-        productListData.postValue(Success(
+        productListData.postValue(
+            Success(
                 GetShopProductUiModel(
-                        ShopUtil.isHasNextPage(
-                                START_PAGE,
-                                productPerPage,
-                                initialProductListData.totalData
-                        ),
-                        initialProductListData.data.map {
-                            ShopPageProductListMapper.mapShopProductToProductViewModel(
-                                it,
-                                isMyShop(shopId),
-                                "",
-                                isEnableDirectPurchase = isEnableDirectPurchase
-                            )
-                        },
+                    ShopUtil.isHasNextPage(
+                        START_PAGE,
+                        productPerPage,
                         initialProductListData.totalData
+                    ),
+                    initialProductListData.data.map {
+                        ShopPageProductListMapper.mapShopProductToProductViewModel(
+                            it,
+                            isMyShop(shopId),
+                            "",
+                            isEnableDirectPurchase = isEnableDirectPurchase
+                        )
+                    },
+                    initialProductListData.totalData,
+                    START_PAGE // current page is 1 since its initial product list
                 ).apply {
-                    updateProductCardQuantity(miniCartData, listShopProductUiModel.toMutableList())
+                    updateProductCardQuantity(listShopProductUiModel.toMutableList())
                 }
-        ))
+            )
+        )
     }
 
     fun getBottomSheetFilterData(shopId: String = "") {
@@ -497,15 +519,14 @@ class ShopPageProductListViewModel @Inject constructor(
             }
             bottomSheetFilterLiveData.postValue(Success(filterBottomSheetData))
         }) {
-
         }
     }
 
     fun getFilterResultCount(
-            shopId: String,
-            productPerPage: Int,
-            tempShopProductFilterParameter: ShopProductFilterParameter,
-            widgetUserAddressLocalData: LocalCacheModel
+        shopId: String,
+        productPerPage: Int,
+        tempShopProductFilterParameter: ShopProductFilterParameter,
+        widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
@@ -516,29 +537,30 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     private suspend fun getFilterResultCountData(
-            shopId: String,
-            productPerPage: Int,
-            tempShopProductFilterParameter: ShopProductFilterParameter,
-            widgetUserAddressLocalData: LocalCacheModel
+        shopId: String,
+        productPerPage: Int,
+        tempShopProductFilterParameter: ShopProductFilterParameter,
+        widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
-                START_PAGE,
-                productPerPage,
-                "",
-                "",
-                tempShopProductFilterParameter.getSortId().toIntOrZero(),
-                tempShopProductFilterParameter.getRating(),
-                tempShopProductFilterParameter.getPmax(),
-                tempShopProductFilterParameter.getPmin(),
-                tempShopProductFilterParameter.getCategory(),
-                widgetUserAddressLocalData.district_id,
-                widgetUserAddressLocalData.city_id,
-                widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+            START_PAGE,
+            productPerPage,
+            "",
+            "",
+            tempShopProductFilterParameter.getSortId().toIntOrZero(),
+            tempShopProductFilterParameter.getRating(),
+            tempShopProductFilterParameter.getPmax(),
+            tempShopProductFilterParameter.getPmin(),
+            tempShopProductFilterParameter.getCategory(),
+            widgetUserAddressLocalData.district_id,
+            widgetUserAddressLocalData.city_id,
+            widgetUserAddressLocalData.lat,
+            widgetUserAddressLocalData.long,
+            tempShopProductFilterParameter.getExtraParam()
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
-                shopId,
-                filter
+            shopId,
+            filter
         )
         return getShopFilterProductCountUseCase.executeOnBackground()
     }
@@ -550,15 +572,14 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun handleAtcFlow(
-        productId: String,
         quantity: Int,
         shopId: String,
         componentName: String,
         shopProductUiModel: ShopProductUiModel
     ) {
-        val miniCartItem = getMiniCartItem(miniCartData, productId)
+        val miniCartItem = getMiniCartItem(miniCartData, shopProductUiModel.id)
         when {
-            miniCartItem == null -> addItemToCart(productId, shopId, quantity, componentName, shopProductUiModel)
+            miniCartItem == null -> addItemToCart(shopProductUiModel.id, shopId, quantity, componentName, shopProductUiModel)
             quantity.isZero() -> removeItemCart(miniCartItem, componentName, shopProductUiModel)
             else -> updateItemCart(miniCartItem, quantity, componentName, shopProductUiModel)
         }
@@ -575,20 +596,23 @@ class ShopPageProductListViewModel @Inject constructor(
             AddToCartUseCase.getMinimumParams(
                 productId = productId,
                 shopId = shopId,
-                quantity = quantity
+                quantity = quantity,
+                atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
             )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            val atcType = ShopPageAtcTracker.AtcType.ADD
             trackAddToCart(
                 it.data.cartId,
                 it.data.productId.toString(),
-                shopProductUiModel.name.orEmpty(),
-                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
                 shopProductUiModel.isVariant,
                 it.data.quantity,
-                ShopPageAtcTracker.AtcType.ADD,
+                atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopProductUiModel)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -611,10 +635,10 @@ class ShopPageProductListViewModel @Inject constructor(
         )
         updateCartUseCase.setParams(
             updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({
-            val atcType = if(quantity < existingQuantity){
+            val atcType = if (quantity < existingQuantity) {
                 ShopPageAtcTracker.AtcType.UPDATE_REMOVE
             } else {
                 ShopPageAtcTracker.AtcType.UPDATE_ADD
@@ -622,17 +646,36 @@ class ShopPageProductListViewModel @Inject constructor(
             trackAddToCart(
                 miniCartItem.cartId,
                 miniCartItem.productId,
-                shopProductUiModel.name.orEmpty(),
-                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
                 shopProductUiModel.isVariant,
                 miniCartItem.quantity,
                 atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopProductUiModel)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
+    }
+
+    private fun checkShouldCreateAffiliateCookieAtcProduct(
+        atcType: ShopPageAtcTracker.AtcType,
+        shopProductUiModel: ShopProductUiModel
+    ) {
+        when (atcType) {
+            ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
+                _createAffiliateCookieAtcProduct.postValue(
+                    AffiliateAtcProductModel(
+                        shopProductUiModel.id,
+                        shopProductUiModel.isVariant,
+                        shopProductUiModel.stock.toInt()
+                    )
+                )
+            }
+            else -> {}
+        }
     }
 
     private fun removeItemCart(
@@ -649,8 +692,8 @@ class ShopPageProductListViewModel @Inject constructor(
             trackAddToCart(
                 miniCartItem.cartId,
                 miniCartItem.productId,
-                shopProductUiModel.name.orEmpty(),
-                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
                 shopProductUiModel.isVariant,
                 miniCartItem.quantity,
                 ShopPageAtcTracker.AtcType.REMOVE,
@@ -674,22 +717,16 @@ class ShopPageProductListViewModel @Inject constructor(
         miniCartData = miniCartSimplifiedData
     }
 
-    fun getShopProductDataWithUpdatedQuantity(
-        miniCartSimplifiedData: MiniCartSimplifiedData?,
-        listProductTabWidget: MutableList<Visitable<*>>
-    ) {
-        updateProductCardQuantity(miniCartSimplifiedData, listProductTabWidget)
+    fun getShopProductDataWithUpdatedQuantity(listProductTabWidget: MutableList<Visitable<*>>) {
+        updateProductCardQuantity(listProductTabWidget)
         _updatedShopProductListQuantityData.postValue(listProductTabWidget)
     }
 
-    private fun updateProductCardQuantity(
-        miniCartSimplifiedData: MiniCartSimplifiedData?,
-        listProductTabWidget: MutableList<Visitable<*>>
-    ) {
+    private fun updateProductCardQuantity(listProductTabWidget: MutableList<Visitable<*>>) {
         listProductTabWidget.forEachIndexed { index, productTabWidget ->
-            when(productTabWidget){
+            when (productTabWidget) {
                 is ShopProductUiModel -> {
-                    updateShopProductUiModelQuantity(productTabWidget, miniCartSimplifiedData).let {
+                    updateShopProductUiModelQuantity(productTabWidget).let {
                         listProductTabWidget.setElement(index, it)
                     }
                 }
@@ -697,26 +734,20 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    private fun updateShopProductUiModelQuantity(
-        productModel: ShopProductUiModel,
-        miniCartSimplifiedData: MiniCartSimplifiedData?
-    ): ShopProductUiModel {
-        val matchedMiniCartItem = getMatchedMiniCartItem(
-            productModel,
-            miniCartSimplifiedData
-        )
-        if (matchedMiniCartItem != null && !matchedMiniCartItem.all { it?.isError == true } && matchedMiniCartItem.isNotEmpty()) {
+    private fun updateShopProductUiModelQuantity(productModel: ShopProductUiModel): ShopProductUiModel {
+        val matchedMiniCartItem = getMatchedMiniCartItem(productModel)
+        if (matchedMiniCartItem.isNotEmpty()) {
             val cartQuantity = matchedMiniCartItem.sumOf {
-                it?.quantity.orZero()
+                it.quantity.orZero()
             }
-            if(cartQuantity != productModel.productInCart) {
+            if (cartQuantity != productModel.productInCart) {
                 productModel.productInCart = cartQuantity
                 productModel.isNewData = true
             } else {
                 productModel.isNewData = false
             }
         } else {
-            if(!productModel.productInCart.isZero()) {
+            if (!productModel.productInCart.isZero()) {
                 productModel.productInCart = 0
                 productModel.isNewData = true
             } else {
@@ -728,30 +759,21 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     private fun getMatchedMiniCartItem(
-        shopProductUiModel: ShopProductUiModel,
-        miniCartData: MiniCartSimplifiedData?
-    ): List<MiniCartItem.MiniCartItemProduct?>? {
-        val isVariant = shopProductUiModel.isVariant
-        return if (isVariant) {
-            return miniCartData?.miniCartItems?.values?.filter {
-                it is MiniCartItem.MiniCartItemProduct && (it.productParentId == shopProductUiModel.parentId)
-            }?.map {
-                it as? MiniCartItem.MiniCartItemProduct
+        shopProductUiModel: ShopProductUiModel
+    ): List<MiniCartItem.MiniCartItemProduct> {
+        return miniCartData?.let { miniCartSimplifiedData ->
+            val isVariant = shopProductUiModel.isVariant
+            val listMatchedMiniCartItemProduct = if (isVariant) {
+                miniCartSimplifiedData.miniCartItems.values.filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+                    .filter { it.productParentId == shopProductUiModel.parentId }
+            } else {
+                val childProductId = shopProductUiModel.id
+                miniCartSimplifiedData.miniCartItems.getMiniCartItemProduct(childProductId)?.let {
+                    listOf(it)
+                }.orEmpty()
             }
-        } else {
-            val childProductId = shopProductUiModel.id.orEmpty()
-            listOf(miniCartData?.miniCartItems?.getMiniCartItemProduct(childProductId))
-        }
-    }
-
-    private fun getParentProductOnMiniCart(
-        childProductId: String,
-        miniCartData: MiniCartSimplifiedData?
-    ): String {
-        val miniCartItemValues = miniCartData?.miniCartItems?.values
-        return miniCartItemValues?.filterIsInstance<MiniCartItem.MiniCartItemProduct>()?.firstOrNull {
-            it.productId == childProductId
-        }?.productParentId.orEmpty()
+            listMatchedMiniCartItemProduct.filter { !it.isError }
+        }.orEmpty()
     }
 
     private fun trackAddToCart(

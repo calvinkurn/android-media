@@ -134,6 +134,11 @@ const val CART_REVAMP_V3_QUERY =
                       eligible
                       badge_url
                     }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
+                      badge_url
+                    }
                     preorder {
                       is_preorder
                       duration
@@ -337,12 +342,22 @@ const val CART_REVAMP_V3_QUERY =
                       is_parent
                       is_campaign_error
                       is_blacklisted
+                      ethical_drug {
+                        need_prescription
+                        icon_url
+                        text
+                      }
                       free_shipping {
                         eligible
                         badge_url
                       }
                       free_shipping_extra {
                         eligible
+                        badge_url
+                      }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
                         badge_url
                       }
                       booking_stock
@@ -416,6 +431,11 @@ const val CART_REVAMP_V3_QUERY =
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -595,6 +615,11 @@ const val CART_REVAMP_V3_QUERY =
                         eligible
                         badge_url
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -650,11 +675,18 @@ const val CART_REVAMP_V3_QUERY =
               global_checkbox_state
               tickers {
                 id
+                title
                 message
                 page
               }
               hashed_email
               promo {
+                show_choose_promo_widget
+                ticker {
+                    enable
+                    text
+                    icon_url
+                }
                 last_apply {
                   data {
                     global_success
@@ -702,6 +734,13 @@ const val CART_REVAMP_V3_QUERY =
                       success
                       cart_id
                       unique_id
+                      shipping_id
+                      sp_id
+                      shipping_subsidy
+                      shipping_price
+                      benefit_class
+                      bo_campaign_id
+                      eta_txt
                       order_id
                       shop_id
                       is_po

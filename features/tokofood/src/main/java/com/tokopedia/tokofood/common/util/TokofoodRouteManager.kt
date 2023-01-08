@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
-import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
@@ -14,6 +13,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoo
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
+import com.tokopedia.tokofood.feature.search.container.presentation.fragment.SearchContainerFragment
 
 object TokofoodRouteManager {
 
@@ -22,6 +22,7 @@ object TokofoodRouteManager {
     private const val PATH_MERCHANT = "/merchant"
     private const val PATH_PURCHASE = "/purchase"
     private const val PATH_CATEGORY = "/category"
+    private const val PATH_SEARCH = "/search"
 
     fun mapUriToFragment(uri: Uri): Fragment? {
         // tokopedia://food
@@ -33,6 +34,7 @@ object TokofoodRouteManager {
                         uriPath.startsWith(PATH_MERCHANT) -> MerchantPageFragment.createInstance() // tokopedia://food/merchant
                         uriPath.startsWith(PATH_PURCHASE) -> TokoFoodPurchaseFragment.createInstance() // tokopedia://food/purchase
                         uriPath.startsWith(PATH_CATEGORY) -> TokoFoodCategoryFragment.createInstance() // tokopedia://food/category
+                        uriPath.startsWith(PATH_SEARCH) -> SearchContainerFragment.createInstance() // tokopedia://food/search
                         else -> null
                     }
                 }
@@ -68,7 +70,7 @@ object TokofoodRouteManager {
                 RouteManager.route(activity, mappedUriString)
             } else {
                 // If the fragment could take new params, we should replace the existed same class fragment with the new one
-                if (f is MerchantPageFragment || f is OrderCustomizationFragment || f is TokoFoodCategoryFragment) {
+                if (f is MerchantPageFragment || f is OrderCustomizationFragment || f is TokoFoodCategoryFragment || f is SearchContainerFragment) {
                     (activity as? BaseTokofoodActivity)?.navigateToNewFragment(f, true, isFinishCurrent)
                 } else {
                     activity.navigateToNewFragment(f)

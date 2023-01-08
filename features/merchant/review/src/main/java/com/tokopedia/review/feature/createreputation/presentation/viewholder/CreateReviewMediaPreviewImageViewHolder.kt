@@ -27,9 +27,7 @@ class CreateReviewMediaPreviewImageViewHolder(
     private val transitionHandler = TransitionHandler()
 
     init {
-        binding.root.setOnClickListener {
-            listener.onAddMediaClicked()
-        }
+        attachAddMoreClickListener()
     }
 
     override fun bind(element: CreateReviewMediaUiModel.Image) {
@@ -73,6 +71,10 @@ class CreateReviewMediaPreviewImageViewHolder(
                 setupImageState(it)
             }
         }
+    }
+
+    private fun attachAddMoreClickListener() {
+        binding.root.setOnClickListener { listener.onAddMediaClicked(true) }
     }
 
     private inner class TransitionHandler {

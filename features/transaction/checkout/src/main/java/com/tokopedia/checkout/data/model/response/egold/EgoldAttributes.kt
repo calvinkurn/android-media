@@ -14,5 +14,7 @@ data class EgoldAttributes(
     @SerializedName("message")
     var egoldMessage: EgoldMessage = EgoldMessage(),
     @SerializedName("tier_data")
-    var egoldTieringDataArrayList: List<EgoldTieringData> = emptyList()
+    var egoldTieringDataArrayList: List<EgoldTieringData> = emptyList(),
+    @SerializedName("hyperlink_text")
+    var hyperlinkText: EgoldHyperlinkText = EgoldHyperlinkText()
 )

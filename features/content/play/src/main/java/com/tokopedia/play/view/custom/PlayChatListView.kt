@@ -40,11 +40,6 @@ class PlayChatListView : ConstraintLayout {
 
     private val chatAdapter = ChatAdapter()
 
-    private val path = Path()
-    private var maskHeight: Float? = null
-
-    private var maskAnimator: ValueAnimator? = null
-
     private val chatListOnLayoutChangeListener: View.OnLayoutChangeListener
 
     private val itemDecoration = ChatListItemDecoration(context)
@@ -120,33 +115,6 @@ class PlayChatListView : ConstraintLayout {
 
     fun setChatList(chatList: List<PlayChatUiModel>) {
         chatAdapter.submitList(chatList)
-    }
-
-    fun setTopMask(height: Float, animate: Boolean) {
-        maskAnimator?.cancel()
-
-        val valueAnimator = ValueAnimator.ofFloat(maskHeight.orZero(), height)
-        valueAnimator.addUpdateListener {
-            val value = it.animatedValue as Float
-            maskHeight = value
-            postInvalidateOnAnimation()
-        }
-        valueAnimator.duration = if (animate) MASK_DURATION_IN_MS else 0
-        valueAnimator.start()
-
-        maskAnimator = valueAnimator
-    }
-
-    override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
-        val maskHeight = this.maskHeight
-        if (maskHeight != null) {
-            path.apply {
-                reset()
-                addRect(MASK_START_POS, height.toFloat(), width.toFloat(), maskHeight, Path.Direction.CW)
-            }
-            canvas.clipPath(path)
-        }
-        return super.drawChild(canvas, child, drawingTime)
     }
 
     private fun setupView(view: View) {

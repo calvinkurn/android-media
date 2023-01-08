@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:id="@+id/rl_wishlist_collection_detail_manage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/ll_total_barang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            tools:visibility="gone">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/wishlist_collection_detail_count_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="bold"
+                app:typographyType="body_2"
+                tools:text="10"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/wishlist_barang_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_atur_dan_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal"
+            android:layout_marginEnd="16dp">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_gear_collection_detail"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="6dp"
+                app:icon_name="SETTING"
+                android:visibility="gone"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/wishlist_collection_select_item_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wishlist_select_item_option_label"
+                android:textColor="@color/Unify_G500"
+                android:visibility="gone"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                android:layout_marginEnd="6dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/wishlist_collection_detail_manage_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wishlist_manage_label"
+                android:textColor="@color/Unify_G500"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                android:layout_marginEnd="6dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <View
+                android:id="@+id/wishlist_divider"
+                android:layout_width="1dp"
+                android:layout_height="24dp"
+                android:background="@color/Unify_N75"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/wishlist_collection_detail_type_layout_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_name="VIEW_LIST"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/sticky_progress_deletion_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        layout="@layout/wishlist_deletion_progress_item" />
+
+</RelativeLayout>

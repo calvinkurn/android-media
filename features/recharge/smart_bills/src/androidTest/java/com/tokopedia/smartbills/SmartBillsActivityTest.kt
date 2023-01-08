@@ -13,10 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -38,7 +36,6 @@ import org.junit.Test
 class SmartBillsActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -52,7 +49,6 @@ class SmartBillsActivityTest {
     fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_STATEMENT_MONTHS,
@@ -73,7 +69,13 @@ class SmartBillsActivityTest {
                     KEY_DELETE_PRODUCT,
                     ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
                     MockModelConfig.FIND_BY_CONTAINS)
+
+            addMockResponse(
+                    KEY_HIGHLIGHT_CATEGORY,
+                    ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
+                    MockModelConfig.FIND_BY_CONTAINS)
         }
+
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_PREF).also {
@@ -96,12 +98,23 @@ class SmartBillsActivityTest {
         validate_click_bayar()
         validate_tooltip()
         validate_refresh_action()
-        click_add_bills()
-        click_delete_cancel()
-        click_delete_success()
 
         MatcherAssert.assertThat(
             cassavaTestRule.validate(SMART_BILLS_VALIDATOR_QUERY),
+            hasAllSuccess()
+        )
+    }
+
+    @Test
+    fun validateSmartBillsAddBills() {
+        click_add_bills()
+        click_delete_cancel()
+        click_delete_success()
+        click_highlight_widget()
+        close_highlight_widget()
+
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(SMART_BILLS_ADD_BILLS_VALIDATOR_QUERY),
             hasAllSuccess()
         )
     }
@@ -221,6 +234,17 @@ class SmartBillsActivityTest {
         onView(withId(R.id.dialog_btn_primary)).perform(click())
     }
 
+    private fun click_highlight_widget() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(3000)
+        onView(withId(R.id.highlight_category)).perform(click())
+    }
+
+    private fun close_highlight_widget() {
+        Thread.sleep(3000)
+        onView(withId(R.id.icon_highlighted_category_close)).perform(click())
+    }
+
     @After
     fun cleanUp() {
         Intents.release()
@@ -232,12 +256,15 @@ class SmartBillsActivityTest {
         private const val KEY_STATEMENT_BILLS = "rechargeSBMList"
         private const val KEY_CATALOG_MENU = "rechargeCatalogMenu"
         private const val KEY_DELETE_PRODUCT = "rechargeSBMDeleteBill"
+        private const val KEY_HIGHLIGHT_CATEGORY = "rechargeRecommendation"
 
         private const val PATH_STATEMENT_MONTHS = "statement_months.json"
         private const val PATH_STATEMENT_BILLS = "statement_bills.json"
         private const val PATH_CATALOG_BILLS = "catalog_bills.json"
         private const val PATH_DELELTE_BILLS = "delete_bills.json"
+        private const val PATH_HIGHLIGHT_CATEGORY = "highlight_category.json"
 
         private const val SMART_BILLS_VALIDATOR_QUERY = "tracker/recharge/smart_bills_management_test.json"
+        private const val SMART_BILLS_ADD_BILLS_VALIDATOR_QUERY = "tracker/recharge/smart_bills_management_add_bills_test.json"
     }
 }

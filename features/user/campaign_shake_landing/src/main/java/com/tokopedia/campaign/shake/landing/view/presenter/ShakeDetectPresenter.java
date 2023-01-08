@@ -14,6 +14,7 @@ import com.tokopedia.campaign.shake.landing.view.subscriber.SecondShakeSubscribe
 import com.tokopedia.campaign.shake.landing.view.subscriber.ShakeCampaignSubscriber;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.locationmanager.RequestLocationType;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -139,6 +140,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 activity.getApplicationContext());
         locationDetectorHelper.getLocation(onGetLocation(), activity,
                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                RequestLocationType.APPROXIMATE_OR_PRECISE,
                 activity.getString(R.string.shake_landing_rationale_need_location_for_promotion));
 
     }

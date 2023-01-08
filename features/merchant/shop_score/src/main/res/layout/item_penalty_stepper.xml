@@ -18,7 +18,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_stepper_penalty"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="2dp"
         app:layout_constraintBottom_toBottomOf="@id/ic_dot_stepper"
         app:layout_constraintStart_toEndOf="@id/ic_dot_stepper"
         app:layout_constraintTop_toTopOf="@id/ic_dot_stepper" />
@@ -27,8 +27,8 @@
         android:id="@+id/tv_title_status_stepper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        app:typographyType="body_3"
+        android:layout_marginTop="4dp"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@id/ic_dot_stepper"

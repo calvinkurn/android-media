@@ -185,7 +185,12 @@ class TalkReplyViewHolder(view: View,
         if (allowReport || allowDelete) {
             binding.replyKebab.apply {
                 setOnClickListener {
-                    onKebabClickedListener.onKebabClicked(commentId, allowReport, allowDelete)
+                    onKebabClickedListener.onKebabClicked(
+                        commentId = commentId,
+                        allowReport = allowReport,
+                        allowDelete = allowDelete,
+                        allowBlock = false
+                    )
                 }
                 show()
             }

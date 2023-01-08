@@ -8,18 +8,18 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSellerFeature"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_plus_add" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSellerFeatureTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:lineSpacingExtra="@dimen/spacing_lvl1"
+        android:layout_marginStart="8dp"
+        android:lineSpacingExtra="2dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivSellerFeature"
@@ -29,7 +29,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSellerFeatureDescription"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_N700_68"

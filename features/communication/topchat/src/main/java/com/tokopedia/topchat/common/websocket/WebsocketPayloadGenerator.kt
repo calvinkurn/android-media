@@ -64,4 +64,6 @@ interface WebsocketPayloadGenerator {
         imageUploadUiModel: ImageUploadUiModel
     ): String
 
+    fun generateLocalId(): String
+
 }

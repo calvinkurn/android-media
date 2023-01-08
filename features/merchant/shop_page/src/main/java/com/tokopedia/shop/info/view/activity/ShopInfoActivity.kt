@@ -17,14 +17,20 @@ import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
  * Navigate to ShopInfoActivity
  * use [com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_INFO]
  */
-class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
+class ShopInfoActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupLayout(savedInstanceState)
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-        toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        setupToolbar()
         inflateFragment()
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(toolbar)
+        toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -63,9 +69,9 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     companion object {
         fun createIntent(
-                context: Context,
-                shopId: String? = null,
-                shopInfo: ShopInfoData? = null
+            context: Context,
+            shopId: String? = null,
+            shopInfo: ShopInfoData? = null
         ): Intent {
             return Intent(context, ShopInfoActivity::class.java).apply {
                 putExtra(SHOP_ID, shopId)

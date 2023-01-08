@@ -7,10 +7,10 @@
         android:supportsRtl="true">
         <activity
             android:name="com.tokopedia.checkout.ShipmentActivity"
+            android:exported="false"
             android:label="@string/checkout_module_title_activity_checkout"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            android:exported="false">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -25,6 +25,10 @@
         </activity>
         <activity
             android:name=".webview.CheckoutWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".webview.UpsellWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
     </application>

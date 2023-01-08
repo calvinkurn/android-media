@@ -9,7 +9,7 @@ import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
  */
 interface PlayLog {
     fun logTimeToFirstByte(
-        timeToFirstByte: Int
+        timeToFirstByte: Long
     )
 
     fun logDownloadSpeed(

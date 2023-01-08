@@ -286,7 +286,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 userId = userSession.userId
         )
         publicVoucherTipsAndTrickBottomSheet.run {
-            setTitle(this@ReviewVoucherFragment.resources.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
+            setTitle(context?.resources?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
             show(this@ReviewVoucherFragment.childFragmentManager, VoucherDisplayBottomSheetFragment.TAG)
         }
     }

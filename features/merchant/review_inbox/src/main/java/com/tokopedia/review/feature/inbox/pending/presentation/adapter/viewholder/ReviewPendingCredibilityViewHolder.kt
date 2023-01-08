@@ -22,7 +22,6 @@ class ReviewPendingCredibilityViewHolder(
         private const val MINIMUM_WIDTH_PERCENT_TO_HIT_IMPRESS_TRACKER = 40
     }
 
-    private var parentLayout: View? = null
     private var credibilityImage: ImageUnify? = null
     private var credibilityTitle: Typography? = null
     private var credibilitySubtitle: Typography? = null
@@ -56,7 +55,6 @@ class ReviewPendingCredibilityViewHolder(
     }
 
     private fun bindViews() {
-        parentLayout = itemView.findViewById(R.id.review_credibility_card)
         credibilityImage = itemView.findViewById(R.id.review_pending_credibility_image)
         credibilityTitle = itemView.findViewById(R.id.review_pending_credibility_title)
         credibilitySubtitle = itemView.findViewById(R.id.review_pending_credibility_subtitle)

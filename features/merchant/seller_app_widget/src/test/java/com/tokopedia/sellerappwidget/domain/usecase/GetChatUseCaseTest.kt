@@ -38,6 +38,7 @@ class GetChatUseCaseTest {
     lateinit var mapper: ChatMapper
 
     private lateinit var getChatUseCase: GetChatUseCase
+    private val testShopId = "123"
 
     @Before
     fun setup() {
@@ -48,7 +49,7 @@ class GetChatUseCaseTest {
 
     @Test
     fun `should success get chat list`() = runBlocking {
-        getChatUseCase.params = GetChatUseCase.creteParams()
+        getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
         val successResponse: GraphqlResponse = TestHelper.createSuccessResponse<GetChatResponse>(SUCCESS_RESPONSE)
 
@@ -75,7 +76,7 @@ class GetChatUseCaseTest {
 
     @Test
     fun `when failed get chat list then throw RuntimeException`() = runBlocking {
-        getChatUseCase.params = GetChatUseCase.creteParams()
+        getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
         val errorResponse = TestHelper.createErrorResponse<GetChatResponse>()
 

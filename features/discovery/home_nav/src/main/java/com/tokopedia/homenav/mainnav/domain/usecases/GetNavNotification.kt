@@ -6,19 +6,27 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.homenav.mainnav.data.pojo.notif.NavNotificationPojo
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
+import com.tokopedia.homenav.mainnav.domain.usecases.query.NavNotificationQuery
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.searchbar.navigation_component.data.notification.Param
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetNavNotification @Inject constructor(
-        val graphqlUseCase: GraphqlRepository)
-    : UseCase<NavNotificationModel>() {
+        val graphqlUseCase: GraphqlRepository,
+        val userSession: UserSessionInterface
+) : UseCase<NavNotificationModel>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
+    init {
+        params.parameters[PARAM_INPUT] = Param(userSession.shopId)
+    }
+
     override suspend fun executeOnBackground(): NavNotificationModel {
-        val gqlRequest = GraphqlRequest(query, NavNotificationPojo::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(NavNotificationQuery(), NavNotificationPojo::class.java, params.parameters)
         val gqlResponse = graphqlUseCase.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
@@ -36,19 +44,6 @@ class GetNavNotification @Inject constructor(
     }
 
     companion object {
-        private val query = getQuery()
-        private fun getQuery(): String {
-            return """{
-                        notifications(){
-                            resolutionAs {
-                                buyer
-                            }
-                            inbox {
-                                inbox_ticket
-                                inbox_review
-                            }
-                    }
-                }""".trimIndent()
-        }
+        private const val PARAM_INPUT = "input"
     }
 }

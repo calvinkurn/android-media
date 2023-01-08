@@ -57,7 +57,7 @@ abstract class AddEditProductVariantViewModelTestFixture {
     }
 
     val variantDetailTest1 = VariantDetail(
-            variantID=1,
+            variantID=1.toBigInteger(),
             identifier="",
             name="Ukuran Kemasan",
             status=1,
@@ -111,7 +111,7 @@ abstract class AddEditProductVariantViewModelTestFixture {
     )
 
     val variantDetailTest2 = VariantDetail(
-            variantID=29,
+            variantID=29.toBigInteger(),
             identifier="size",
             name="Ukuran",
             status=1,

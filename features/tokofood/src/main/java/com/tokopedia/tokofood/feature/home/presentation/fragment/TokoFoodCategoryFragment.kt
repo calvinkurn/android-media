@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +27,6 @@ import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.OPTION_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.PAGE_TITLE_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.SORT_BY_PARAM
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,6 +38,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -50,12 +52,12 @@ import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalytics
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayoutManager
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapter
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapterTypeFactory
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiffer
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
@@ -72,7 +74,8 @@ import javax.inject.Inject
 class TokoFoodCategoryFragment: BaseDaggerFragment(),
     IBaseMultiFragment,
     TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
-    TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener {
+    TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
+    TokofoodScrollChangedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -97,7 +100,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         TokoFoodCategoryAdapter(
             typeFactory = TokoFoodCategoryAdapterTypeFactory(
                 merchantListListener = this,
-                errorStateListener = this
+                errorStateListener = this,
+                tokofoodScrollChangedListener = this
             ),
             differ = TokoFoodListDiffer()
         )
@@ -127,6 +131,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var localCacheModel: LocalCacheModel? = null
     private var isShowMiniCart = false
+    private var onScrollChangedListenerList = mutableListOf<ViewTreeObserver.OnScrollChangedListener>()
     private val spaceZero: Int
         get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
 
@@ -153,6 +158,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackgroundColor()
         setupUi()
         setupNavToolbar()
         setupRecycleView()
@@ -181,6 +187,11 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     override fun onStop() {
         collectJob?.cancel()
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeScrollChangedListener()
     }
 
     override fun getFragmentTitle(): String {
@@ -213,6 +224,14 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         loadLayout()
     }
 
+    private fun setupBackgroundColor() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            )
+        }
+    }
+
     private fun setupSwipeRefreshLayout() {
         context?.let {
             swipeLayout?.setMargin(
@@ -237,6 +256,10 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         trackingQueue.putEETracking(
             TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
             localCacheModel?.district_id, merchant, horizontalPosition, isHome = false) as HashMap<String, Any>)
+    }
+
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        onScrollChangedListenerList.add(onScrollChangedListener)
     }
 
     private fun onRefreshLayout() {
@@ -275,37 +298,37 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.layoutList) {
-            removeScrollListeners()
-            when (it) {
-                is Success -> onSuccessGetCategoryLayout(it.data)
-                is Fail -> {
-                    logExceptionTokoFoodCategory(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
-                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
-                    )
-                    onErrorGetCategoryLayout(it.throwable)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowLayoutList.collect {
+                it.first
+                removeScrollListeners()
+                when (it.first) {
+                    is Success -> onSuccessGetCategoryLayout((it.first as Success).data)
+                    is Fail ->  errorHandling((it.first as Fail).throwable, it.second)
+                }
+
+                addScrollListeners()
+                if (it.second) {
+                    resetSwipeLayout()
                 }
             }
-
-            addScrollListeners()
-            resetSwipeLayout()
         }
+    }
 
-        viewLifecycleOwner.observe(viewModel.loadMore) {
-            removeScrollListeners()
-            when (it) {
-                is Success -> showCategoryLayout(it.data)
-                is Fail -> {
-                    logExceptionTokoFoodCategory(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
-                        TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
-                    )
-                }
-            }
-            addScrollListeners()
+    private fun errorHandling(throwable: Throwable, isFirstTimeCall: Boolean) {
+        if (isFirstTimeCall) {
+            logExceptionTokoFoodCategory(
+                throwable,
+                TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+            )
+            onErrorGetCategoryLayout(throwable)
+        } else {
+            logExceptionTokoFoodCategory(
+                throwable,
+                TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
+                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
+            )
         }
     }
 
@@ -341,6 +364,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 toolbar.showShadow(true)
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(pageTitle)
+                toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
             }
         }
     }
@@ -361,7 +385,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun onErrorGetCategoryLayout(throwable: Throwable) {
-        viewModel.showErrorState(throwable)
+        viewModel.setErrorState(throwable)
     }
 
     private fun onShowCategoryLayout(data: TokoFoodListUiModel) {
@@ -374,7 +398,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun onLoadingCategorylayout(data: TokoFoodListUiModel) {
         showCategoryLayout(data)
-        getCategoryLayout()
     }
 
     private fun showCategoryLayout(data: TokoFoodListUiModel) {
@@ -382,8 +405,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         adapter.submitList(data.items)
     }
 
+
     private fun loadLayout() {
-        viewModel.showLoadingState()
+        getCategoryLayout()
     }
 
     private fun onRenderCategoryPage() {
@@ -402,7 +426,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun getCategoryLayout() {
         localCacheModel?.let {
-            viewModel.getCategoryLayout(
+            viewModel.setCategoryLayout(
                 localCacheModel = it,
                 option = option,
                 sortBy = sortBy,
@@ -423,6 +447,12 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun addScrollListeners() {
         rvCategory?.addOnScrollListener(loadMoreListener)
+    }
+
+    private fun removeScrollChangedListener() {
+        onScrollChangedListenerList.forEach {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
     }
 
     private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
@@ -488,6 +518,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun setRvPadding(isShowMiniCart: Boolean) {
+
         rvCategory?.let {
             if (isShowMiniCart){
                 it.setPadding(0,0, 0, context?.resources?.

@@ -22,6 +22,11 @@ class GetSomOrderFilterUseCase @Inject constructor(repository: GraphqlRepository
         val QUERY = """
             query OrderFilterSom {
               orderFilterSom {
+                order_types {
+                  id
+                  key
+                  name
+                }
                 status_list { 
                   order_status_id
                   key
@@ -48,11 +53,6 @@ class GetSomOrderFilterUseCase @Inject constructor(repository: GraphqlRepository
                   text
                   value
                 }
-              }
-              orderTypeList {
-                id
-                key
-                name
               }
             }
         """.trimIndent()

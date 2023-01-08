@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.provider.ContactsContract
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -16,9 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -31,12 +28,12 @@ import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
 import com.tokopedia.topupbills.utils.CommonTelcoActions.bottomSheet_close
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickContactBook
-import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_clickCopyButton
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
-import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_validateContents
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_click
+import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_validateContents
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_click
+import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_clickCopyButton
 import com.tokopedia.topupbills.utils.CommonTelcoActions.stubAccessingSavedNumber
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
@@ -48,8 +45,6 @@ import org.junit.Test
 
 class TelcoPostpaidInstrumentTest {
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -58,11 +53,13 @@ class TelcoPostpaidInstrumentTest {
     @get:Rule
     var mActivityRule = ActivityTestRule(TelcoPostpaidActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_MENU_DETAIL),
                 MockModelConfig.FIND_BY_CONTAINS)
@@ -95,8 +92,7 @@ class TelcoPostpaidInstrumentTest {
         validate_interaction_promo()
         validate_interaction_saved_number()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
-            hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_NON_LOGIN), hasAllSuccess())
     }
 
     fun validate_pdp_client_number_widget_interaction() {

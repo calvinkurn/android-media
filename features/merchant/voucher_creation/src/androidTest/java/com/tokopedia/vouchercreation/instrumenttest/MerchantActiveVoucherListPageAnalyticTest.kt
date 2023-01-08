@@ -7,10 +7,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
@@ -35,12 +33,11 @@ class MerchantActiveVoucherListPageAnalyticTest {
     @get:Rule
     var activityRule: IntentsTestRule<VoucherListActivity> = IntentsTestRule(VoucherListActivity::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun beforeTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(MerchantActiveVoucherListMockModelConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         activityRule.launchActivity(Intent())
@@ -48,7 +45,6 @@ class MerchantActiveVoucherListPageAnalyticTest {
 
     @After
     fun afterTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
@@ -75,7 +71,7 @@ class MerchantActiveVoucherListPageAnalyticTest {
 
     private fun doAnalyticDebuggerTest(fileName: String) {
         MatcherAssert.assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
+                cassavaRule.validate(fileName),
                 hasAllSuccess()
         )
     }

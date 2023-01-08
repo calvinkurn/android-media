@@ -31,6 +31,7 @@ import com.tokopedia.flight.cancellation_navigation.presentation.fragment.Flight
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.databinding.FragmentFlightCancellationRefundableStepTwoBinding
 import com.tokopedia.imagepicker.common.*
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -216,7 +217,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
             binding?.tilSavedPassenger?.textFieldInput?.setText(it.title)
             deleteAllAttachments()
             if (it.formattedRequiredDocs.size > 0) {
-                cancellationReasonViewModel.buildViewAttachmentList(it.formattedRequiredDocs[0].id.toInt())
+                cancellationReasonViewModel.buildViewAttachmentList(it.formattedRequiredDocs[0].id.toIntSafely())
             } else {
                 cancellationReasonViewModel.buildViewAttachmentList(0)
             }

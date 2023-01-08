@@ -46,7 +46,9 @@ class Payment(
         @SerializedName("specific_gateway_campaign_only_type")
         val specificGatewayCampaignOnlyType: Int = 0,
         @SerializedName("wallet_additional_data")
-        val walletAdditionalData: WalletAdditionalData = WalletAdditionalData()
+        val walletAdditionalData: WalletAdditionalData = WalletAdditionalData(),
+        @SerializedName("payment_fee_detail")
+        val paymentFeeDetail: List<PaymentFeeDetailResponse> = emptyList(),
 )
 
 class PaymentErrorMessage(
@@ -189,4 +191,21 @@ class GoCicilData(
         val errorMessageUnavailableTenures: String = "",
         @SerializedName("selected_tenure")
         val selectedTenure: Int = 0,
+)
+
+class PaymentFeeDetailResponse(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("fee")
+        val fee: Double = 0.0,
+        @SerializedName("show_slashed")
+        val showSlashed: Boolean = false,
+        @SerializedName("show_tooltip")
+        val showTooltip: Boolean = false,
+        @SerializedName("slashed_fee")
+        val slashedFee: Int = 0,
+        @SerializedName("tooltip_info")
+        val tooltipInfo: String = "",
+        @SerializedName("type")
+        val type: Int = 0,
 )
