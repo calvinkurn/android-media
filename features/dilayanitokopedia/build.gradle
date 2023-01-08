@@ -80,10 +80,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.dateFilter
 
-//    implementation rootProject.ext.tkpdInternalLibDependencies.url
-//    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-//    implementation projectOrAar(rootProject.ext.libraries.network)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
@@ -91,21 +88,14 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
 
-//    implementation rootProject.ext.miscDependencies.chips
-//    implementation rootProject.ext.miscDependencies.viewModelKtx
-//    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dagger
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    implementation project(path: ':libraries:smart_recycler_diffutil_helper')
+    implementation projectOrAar(rootProject.ext.libraries.diffUtilRecycler)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
 
-//    implementation rootProject.ext.networkDependencies.glide
-//
-//    implementation rootProject.ext.playServicesDependencies.analytics
-//
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
 
@@ -114,9 +104,7 @@ dependencies {
     //--------------------- Testing Library Section ---------------------//
     //-------------------------------------------------------------------//
 
-//    testImplementation rootProject.ext.testDependencies.mockk
-//    testImplementation rootProject.ext.testDependencies.archCoreTesting
-//    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
 
     //-------------------------------------------------------------------//
 }
