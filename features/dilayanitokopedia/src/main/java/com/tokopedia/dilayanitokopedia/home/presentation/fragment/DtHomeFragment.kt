@@ -155,33 +155,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         )
     }
 
-    private fun createRecommendationCallback(): DtHomeCategoryListener {
-        return object : DtHomeCategoryListener {
-            override val windowHeight: Int
-                get() = if (activity != null) {
-                    root?.height ?: 0
-                } else {
-                    0
-                }
-            override val homeMainToolbarHeight: Int
-                get() {
-                    var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                    context?.let { context ->
-                        navToolbar?.let {
-                            height = navToolbar?.height
-                                ?: context.resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                            height += 8f.toDpInt()
-                        }
-                    }
-                    return height
-                }
-            override val homeMainAnchorTabHeight: Int
-                get() {
-                    return binding?.headerCompHolder?.height ?: 0
-                }
-        }
-    }
-
     private var anchorTabAdapter: DtAnchorTabAdapter? = null
 
     override fun onAttach(context: Context) {
@@ -205,23 +178,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initUiVariable()
         initNavToolbar()
         initRecyclerView()
         initAnchorTabMenu()
         initRecyclerScrollListener()
         initRefreshLayout()
+        initScreenSootListener()
+        initChooseAddressWidget()
+        initStatusBar()
 
-        context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
-                context = it,
-                screenShotListener = this,
-                fragment = this,
-                permissionListener = this
-            )
-        }
-        setupChooseAddressWidget()
-        setupStatusBar()
         updateCurrentPageLocalCacheModelData()
 
         observeLiveData()
@@ -230,7 +197,18 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         loadLayout()
     }
 
-    private fun setupChooseAddressWidget() {
+    private fun initScreenSootListener() {
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                context = it,
+                screenShotListener = this,
+                fragment = this,
+                permissionListener = this
+            )
+        }
+    }
+
+    private fun initChooseAddressWidget() {
         chooseAddressWidget = binding?.chooseAddressWidget
         bindChooseAddressWidget()
         showCoachMark()
@@ -261,7 +239,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun setupStatusBar() {
+    private fun initStatusBar() {
         /*
             this status bar background only shows for android Kitkat below
             In that version, status bar can't be forced to dark mode
@@ -341,8 +319,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 },
                 searchbarClickCallback = { onSearchBarClick() },
                 searchbarImpressionCallback = {}
-//                durationAutoTransition = durationAutoTransition,
-//                shouldShowTransition = shouldShowTransition()
             )
         }
     }
@@ -359,32 +335,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         )
 
         shareClicked(shareHome)
-
-//        val dummyPageinfo = PageInfo(
-//            path = "discovery / dilayani - tokopedia",
-//            name = "Dilayani Tokopedia",
-//            type = "general",
-//            searchApplink = "tokopedia://search-autocomplete?hint=Cari%20di%20Dilayani%20Tokopedia&navsource=tokocabang&srp_page_id=45021&srp_page_title=Dilayani%20Tokopedia",
-//            identifier = "dilayani - tokopedia",
-//            id = 45021,
-// //            share = Share(
-// //                enabled = true,
-// //                title = "Dilayani Tokopedia | Tokopedia",
-// //                image = "https://images.tokopedia.net/img/QBrNqa/2022/10/12/facd6ee4-849f-4309-a3c9-69261238929a.png",
-// //                url = "https://www.tokopedia.com/discovery/dilayani-tokopedia, description=Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
-// //            ),
-//            campaignCode = "tca00031148_dilayani tokopedia_18march22 -18 march24",
-//            searchTitle = "Cari di Dilayani Tokopedia",
-//            showChooseAddress = true,
-//            tokonowMiniCartActive = false,
-// //            additionalInfo = AdditionalInfo(category = null, categoryData = null),
-//            redirectionUrl = null,
-//            isAdult = 0,
-//            origin = 0
-//        )
-//
-//
-//        showUniversalShareBottomSheet(dummyPageinfo)
     }
 
     private fun updateShareHomeData(
@@ -1079,5 +1029,32 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     override fun permissionAction(action: String, label: String) {
+    }
+
+    private fun createRecommendationCallback(): DtHomeCategoryListener {
+        return object : DtHomeCategoryListener {
+            override val windowHeight: Int
+                get() = if (activity != null) {
+                    root?.height ?: 0
+                } else {
+                    0
+                }
+            override val homeMainToolbarHeight: Int
+                get() {
+                    var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                    context?.let { context ->
+                        navToolbar?.let {
+                            height = navToolbar?.height
+                                ?: context.resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                            height += 8f.toDpInt()
+                        }
+                    }
+                    return height
+                }
+            override val homeMainAnchorTabHeight: Int
+                get() {
+                    return binding?.headerCompHolder?.height ?: 0
+                }
+        }
     }
 }
