@@ -12,15 +12,15 @@ class DtTopCarouselCallback {
     fun createTopCarouselCallback(onActionLinkClicked: (String) -> Unit): MixTopComponentListener? {
         return object : MixTopComponentListener {
             override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
-                //no-op
+                // no-op
             }
 
-            override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
+            override fun onSeeAllHeaderClicked(channel: ChannelModel, applink: String) {
                 onActionLinkClicked(channel.channelHeader.applink)
             }
 
             override fun onMixtopButtonClicked(channel: ChannelModel) {
-                //no-op
+                // no-op
             }
 
             override fun onSectionItemClicked(applink: String) {
@@ -37,7 +37,7 @@ class DtTopCarouselCallback {
                 adapterPosition: Int,
                 position: Int
             ) {
-                //no-op
+                // no-op
             }
 
             override fun onProductCardClicked(
@@ -53,8 +53,6 @@ class DtTopCarouselCallback {
             override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
                 onActionLinkClicked(applink)
             }
-
         }
     }
-
 }
