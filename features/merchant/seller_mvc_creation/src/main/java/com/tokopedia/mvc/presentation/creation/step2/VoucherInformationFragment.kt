@@ -175,7 +175,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             state.endDateErrorMsg
         )
         renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
-        renderAvailableRecurringPeriod(state.voucherConfiguration, state.validationDate)
+        renderAvailableRecurringPeriod(state.validationDate)
         renderButtonValidation(state.isInputValid())
     }
 
@@ -525,10 +525,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderAvailableRecurringPeriod(
-        voucherConfiguration: VoucherConfiguration,
-        validationDate: List<VoucherValidationResult.ValidationDate>
-    ) {
+    private fun renderAvailableRecurringPeriod(validationDate: List<VoucherValidationResult.ValidationDate>) {
         voucherPeriodSectionBinding?.run {
             val availableDate = validationDate.filter { it.available }
             val unAvailableDate = validationDate.filter { !it.available }
@@ -536,7 +533,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 recurringPeriodView.run {
                     type = RecurringDateScheduleCustomView.TYPE_NORMAL
                     title = getString(R.string.smvc_voucher_active_label)
-                    isVisible = voucherConfiguration.isPeriod
+                    isVisible = true
 
                     val firstPeriodStartDate = DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
@@ -584,7 +581,69 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                     btnSeeOtherSchedule?.setOnClickListener {
                         onClickSeeOtherRecurringPeriod(
                             getString(R.string.smvc_voucher_active_label),
-                            validationDate
+                            availableDate
+                        )
+                    }
+                }
+            }
+
+            if (unAvailableDate.isNotEmpty()) {
+                unavailableRecurringPeriodView.run {
+                    type = RecurringDateScheduleCustomView.TYPE_ERROR
+                    title = when(unAvailableDate.first().type) {
+                        1 -> getString(R.string.smvc_recurring_date_error_type_1_title)
+                        2 -> getString(R.string.smvc_recurring_date_error_type_2_title)
+                        else -> getString(R.string.smvc_recurring_date_error_type_3_title)
+                    }
+                    isVisible = true
+
+                    val firstPeriodStartDate = DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        unAvailableDate.first().dateStart
+                    )
+                    val firstPeriodStartHour = unAvailableDate.first().hourStart
+                    val firstPeriodEndDate = DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        unAvailableDate.first().dateEnd
+                    )
+                    val firstPeriodEndHour = unAvailableDate.first().hourEnd
+                    firstSchedule = getString(
+                        R.string.smvc_recurring_date_palceholder_value,
+                        firstPeriodStartDate,
+                        firstPeriodStartHour,
+                        firstPeriodEndDate,
+                        firstPeriodEndHour
+                    )
+
+                    val secondPeriodStartDate = DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        unAvailableDate[Int.ONE].dateStart
+                    )
+                    val secondPeriodStartHour = unAvailableDate[Int.ONE].hourStart
+                    val secondPeriodEndDate = DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        unAvailableDate[Int.ONE].dateEnd
+                    )
+                    val secondPeriodEndHour = unAvailableDate[Int.ONE].hourEnd
+                    secondSchedule = getString(
+                        R.string.smvc_recurring_date_palceholder_value,
+                        secondPeriodStartDate,
+                        secondPeriodStartHour,
+                        secondPeriodEndDate,
+                        secondPeriodEndHour
+                    )
+
+                    isShowOtherScheduleButton =
+                        unAvailableDate.size > minimumActivePeriodCountToShowFullSchedule
+
+                    btnSeeOtherSchedule?.setOnClickListener {
+                        onClickSeeOtherRecurringPeriod(
+                            getString(R.string.smvc_voucher_unavailable_label),
+                            unAvailableDate
                         )
                     }
                 }

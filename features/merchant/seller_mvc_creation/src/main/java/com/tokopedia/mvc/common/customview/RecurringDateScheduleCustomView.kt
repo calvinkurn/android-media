@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -55,6 +58,7 @@ class RecurringDateScheduleCustomView : BaseCustomView {
     var tpgFirstSchedule: Typography? = null
     var tpgSecondSchedule: Typography? = null
     var iconTooltip: ImageView? = null
+    var iconBlock: IconUnify? = null
     var btnSeeOtherSchedule: Typography? = null
     var cardParent: CardUnify2? = null
 
@@ -87,6 +91,7 @@ class RecurringDateScheduleCustomView : BaseCustomView {
         tpgFirstSchedule = view.findViewById(R.id.tpg_date_1)
         tpgSecondSchedule = view.findViewById(R.id.tpg_date_2)
         iconTooltip = view.findViewById(R.id.ic_tooltip)
+        iconBlock = view.findViewById(R.id.ic_block)
         btnSeeOtherSchedule = view.findViewById(R.id.btn_see_other_schedule)
         cardParent = view.findViewById(R.id.card_parent)
     }
@@ -134,6 +139,7 @@ class RecurringDateScheduleCustomView : BaseCustomView {
                     )
                 )
             }
+            iconBlock?.gone()
             iconTooltip?.visible()
         } else {
             cardParent?.apply {
@@ -143,6 +149,11 @@ class RecurringDateScheduleCustomView : BaseCustomView {
                         com.tokopedia.unifyprinciples.R.color.Unify_RN50
                     )
                 )
+            }
+            iconBlock?.apply {
+                visible()
+                val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                applyIconUnifyColor(drawable, color)
             }
             iconTooltip?.gone()
         }
