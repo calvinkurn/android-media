@@ -20,13 +20,13 @@ class ChipsViewHolder  {
                 listener.onChipsClicked(item)
             }
             binding.root.addImpressionListener(item.impressHolder) {
-                listener.onChipsImpressed(item)
+                listener.onChipsImpressed(item, adapterPosition)
             }
         }
 
         interface Listener {
             fun onChipsClicked(item: ChipWidgetUiModel)
-            fun onChipsImpressed(item: ChipWidgetUiModel)
+            fun onChipsImpressed(item: ChipWidgetUiModel, position: Int)
         }
     }
 

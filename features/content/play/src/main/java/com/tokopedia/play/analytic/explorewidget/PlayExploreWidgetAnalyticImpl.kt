@@ -1,16 +1,13 @@
 package com.tokopedia.play.analytic.explorewidget
 
+import android.os.Bundle
 import com.tokopedia.play.analytic.*
-import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
-import com.tokopedia.play.analytic.KEY_TRACK_CLICK_CONTENT
-import com.tokopedia.play.analytic.KEY_TRACK_CURRENT_SITE
-import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
-import com.tokopedia.play.analytic.KEY_TRACK_TRACKER_ID
+import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -22,7 +19,6 @@ import dagger.assisted.AssistedInject
  */
 class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     @Assisted private val channelInfo: PlayChannelInfoUiModel,
-    @Assisted private val trackingQueue: TrackingQueue,
     private val userSession: UserSessionInterface,
 ) : PlayExploreWidgetAnalytic {
 
@@ -30,7 +26,6 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     interface Factory : PlayExploreWidgetAnalytic.Factory {
         override fun create(
             channelInfo: PlayChannelInfoUiModel,
-            trackingQueue: TrackingQueue,
         ): PlayExploreWidgetAnalyticImpl
     }
 
@@ -76,8 +71,28 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun impressExploreTab(categoryName: String) {
-        //use tracking queue
+    override fun impressExploreTab(categoryName: String, channels: List<ChipWidgetUiModel>, position: Int) {
+        val items = arrayListOf<Bundle>().apply {
+            channels.forEach {
+                add(itemToBundle(it, position))
+            }
+        }
+
+        val dataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, "promoView")
+            putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
+            putString(KEY_EVENT_ACTION, "impression - category tab")
+            putString(KEY_EVENT_LABEL, "$categoryName - $channelId $channelType")
+            putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
+            putString(KEY_SESSION_IRIS, sessionIris)
+            putString(KEY_USER_ID, userId)
+            putString(KEY_BUSINESS_UNIT, KEY_TRACK_BUSINESS_UNIT)
+            putParcelableArrayList("items", items)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            "promotions", dataLayer
+        )
     }
 
     override fun clickExploreTab(categoryName: String) {
@@ -95,7 +110,12 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun clickContentCard(selectedChannel: PlayWidgetChannelUiModel, position: Int, categoryName: String) {
+    override fun clickContentCard(
+        selectedChannel: PlayWidgetChannelUiModel,
+        position: Int,
+        categoryName: String,
+        isAutoplay: Boolean
+    ) {
         /**
          * {channel_id live room} - {live/vod live room} - {channel_id clicked} - {card_type} - {position} -
          * {is_autoplay} - {category name} - {promo/no promo} - {recommendation_type}
@@ -104,7 +124,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - channel card")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - $position - is autoplay - $categoryName - ${selectedChannel.hasPromo} - ${selectedChannel.recommendationType}")
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - $position - $isAutoplay - $categoryName - ${selectedChannel.hasPromo} - ${selectedChannel.recommendationType}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39860")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -189,7 +209,8 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
             .setUserId(userId)
             .build()
-            .send()    }
+            .send()
+    }
 
     override fun clickRetryToaster() {
         Tracker.Builder()
@@ -205,4 +226,15 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .build()
             .send()
     }
+
+    private fun itemToBundle(
+        chip: ChipWidgetUiModel,
+        position: Int,
+    ): Bundle =
+        Bundle().apply {
+            putString("creative_name", chip.text)
+            putInt("creative_slot", position)
+            putString("item_id", chip.sourceId)
+            putString("item_name", chip.text)
+        }
 }

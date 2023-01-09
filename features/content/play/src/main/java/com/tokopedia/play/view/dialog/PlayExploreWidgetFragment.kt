@@ -249,20 +249,19 @@ class PlayExploreWidgetFragment @Inject constructor(
         analytic?.clickExploreTab(item.text)
     }
 
-    override fun onChipsImpressed(item: ChipWidgetUiModel) {
-        analytic?.impressExploreTab(item.text)
+    override fun onChipsImpressed(item: ChipWidgetUiModel, position: Int) {
+        analytic?.impressExploreTab(categoryName = item.text, chips = arrayListOf(item), position = position)
     }
 
     /**
      * Card Widget
      */
     override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
-        analytic?.clickContentCard(item, position, viewModel.selectedChips)
+        analytic?.clickContentCard(item, position, viewModel.selectedChips, viewModel.exploreWidgetConfig.autoPlay)
         router.route(requireContext(), item.appLink)
     }
 
-    override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {
-    }
+    override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {}
 
     override fun onMenuActionButtonClicked(
         view: View,

@@ -35,7 +35,7 @@ class PlayAnalytic2 @AssistedInject constructor(
     PlayShareExperienceAnalytic by shareExperienceAnalytic,
     PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo),
     PlayKebabAnalytic by kebabAnalytic.create(channelInfo),
-    PlayExploreWidgetAnalytic by exploreWidgetAnalytic.create(channelInfo, trackingQueue){
+    PlayExploreWidgetAnalytic by exploreWidgetAnalytic.create(channelInfo){
 
     @AssistedFactory
     interface Factory {
