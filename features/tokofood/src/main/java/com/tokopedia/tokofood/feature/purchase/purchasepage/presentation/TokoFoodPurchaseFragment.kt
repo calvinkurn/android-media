@@ -974,8 +974,14 @@ class TokoFoodPurchaseFragment :
             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
             val intent = RouteManager.getIntent(context, paymentCheckoutString)
             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+            intent.putPaymentTimestampExtra()
             startActivityForResult(intent, REQUEST_CODE_PAYMENT)
         }
+    }
+
+    private fun Intent.putPaymentTimestampExtra() {
+        val currentTimestamp = System.currentTimeMillis()
+        putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, currentTimestamp)
     }
 
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
