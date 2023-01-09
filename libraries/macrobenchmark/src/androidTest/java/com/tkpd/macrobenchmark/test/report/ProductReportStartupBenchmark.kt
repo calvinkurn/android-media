@@ -19,7 +19,7 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class ProductReportStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+class ProductReportStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
     override fun setupMock() {
     }
 
@@ -31,6 +31,6 @@ class ProductReportStartupBenchmark(startupMode: StartupMode): BaseStartupBenchm
     override fun traceName() = ""
 
     override fun waitUntil() {
-        MacroInteration.waitForComposeContent(MacroIntent.ProductReport.COLUMN_TAG)
+        MacroInteration.waitForComposableWidgetVisible(MacroIntent.ProductReport.COLUMN_TAG)
     }
 }
