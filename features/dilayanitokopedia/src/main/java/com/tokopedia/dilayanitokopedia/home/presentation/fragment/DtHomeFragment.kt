@@ -64,7 +64,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData
@@ -192,8 +191,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         updateCurrentPageLocalCacheModelData()
 
         observeLiveData()
-        switchServiceOrLoadLayout()
-
         loadLayout()
     }
 
@@ -568,17 +565,16 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun onRefreshLayout() {
         rvLayoutManager?.setScrollEnabled(true)
         anchorTabAdapter?.resetToFirst()
-        loadLayout()
+        switchService()
     }
 
     private fun loadLayout() {
-        viewModelDtHome.getLoadingState()
+        viewModelDtHome.loadLayout()
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         loadHeaderBackgroundLoading()
-        checkAddressDataAndServiceArea()
         showLayout()
         visibilityChooseAddress(false)
         visibilityAnchorTab(false)
@@ -618,34 +614,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun getAutoCompleteApplinkPattern() =
         ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE + "&" + getParamDtSRP()
 
-    private fun switchServiceOrLoadLayout() {
+    private fun switchService() {
         localCacheModel?.apply {
-            viewModelDtHome.switchServiceOrLoadLayout()
+            viewModelDtHome.switchService()
         }
-    }
-
-    private fun checkAddressDataAndServiceArea() {
-        checkIfChooseAddressWidgetDataUpdated()
-        val shopId = localCacheModel?.shop_id.toLongOrZero()
-        val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
-        checkStateNotInServiceArea(shopId, warehouseId)
-    }
-
-    private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
-//        context?.let {
-//            when {
-//                shopId == 0L -> {
-//                    viewModelDtHome.getChooseAddress(SOURCE)
-//                }
-//                warehouseId == 0L -> {
-// //                    showEmptyStateNoAddress()
-//                }
-//                else -> {
-        showLayout()
-// //                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
-//                }
-//            }
-//        }
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -689,9 +661,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
-        checkStateNotInServiceArea(
-            warehouseId = data.tokonow.warehouseId
-        )
     }
 
     private fun showEmptyStateNoAddress() {

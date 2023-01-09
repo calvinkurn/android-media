@@ -109,11 +109,15 @@ class DtHomeViewModel @Inject constructor(
         return AnchorTabData.getListAnchorTab()
     }
 
-    fun switchServiceOrLoadLayout() {
+    fun switchService() {
         getLoadingState()
     }
 
-    fun getLoadingState() {
+    fun loadLayout() {
+        getLoadingState()
+    }
+
+    private fun getLoadingState() {
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
         val data = HomeLayoutListUiModel(
