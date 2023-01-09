@@ -17,7 +17,7 @@
 //import androidx.test.espresso.matcher.ViewMatchers.withId
 //import androidx.test.espresso.matcher.ViewMatchers.withText
 //import androidx.test.platform.app.InstrumentationRegistry
-//import com.tokopedia.cassavatest.hasAllSuccess
+//import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 //import com.tokopedia.product.addedit.R
 //import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig
 //import com.tokopedia.product.addedit.stub.AddEditProductDraftActivityStub
