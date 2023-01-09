@@ -170,7 +170,9 @@ class MvcListFragment :
             is MoreMenuUiModel.Broadcast -> {
                 SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
             }
+            // TODO change this , using for testing
             is MoreMenuUiModel.Download -> {
+                showDisplayVoucherBottomSheet(voucher)
             }
             is MoreMenuUiModel.Clear -> {
             }
