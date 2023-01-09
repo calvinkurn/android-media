@@ -233,9 +233,4 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         }
         return ids
     }
-
-    override fun onCleared() {
-        ePharmacyPrepareProductsGroupUseCase.cancelJobs()
-        super.onCleared()
-    }
 }

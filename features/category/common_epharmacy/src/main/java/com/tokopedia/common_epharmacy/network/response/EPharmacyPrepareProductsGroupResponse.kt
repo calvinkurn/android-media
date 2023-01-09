@@ -197,7 +197,7 @@ data class EPharmacyPrepareProductsGroupResponse(
     @Parcelize
     data class EPharmacyToaster(
         @SerializedName("type")
-        val type: String?,
+        var type: String?,
         @SerializedName("message")
         val message: String?
     ) : Parcelable
