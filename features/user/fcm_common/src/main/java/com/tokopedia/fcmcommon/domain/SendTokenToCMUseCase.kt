@@ -39,7 +39,7 @@ class SendTokenToCMUseCase @Inject constructor(
         get() = Dispatchers.IO
 
     private var token: String? = null
-    private lateinit var graphQlUseCase: GraphqlUseCase
+    private val graphQlUseCase by lazy { GraphqlUseCase() }
     private val fcmRemoteConfigUtils by lazy {
         FcmRemoteConfigUtils(mContext)
     }
@@ -180,7 +180,6 @@ class SendTokenToCMUseCase @Inject constructor(
                 )
             ) {
                 val requestParams = getRequestParams(token, appVersionName, applicationName)
-                graphQlUseCase = GraphqlUseCase()
 
                 val request = GraphqlRequest(
                     GraphqlHelper.loadRawString(
