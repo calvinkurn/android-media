@@ -334,6 +334,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.coreKtx
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation(rootProject.ext.debugToolsDependencies.timber) {
