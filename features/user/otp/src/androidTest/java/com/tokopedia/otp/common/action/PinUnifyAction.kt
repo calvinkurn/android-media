@@ -7,8 +7,8 @@ import androidx.test.espresso.action.ViewActions.actionWithAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.pin.PinUnify
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
 
 object PinUnifyAction {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.userconsent.domain
+package com.tokopedia.usercomponents.userconsent.domain.collection
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers

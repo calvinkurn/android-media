@@ -302,7 +302,6 @@
 /libraries/base_list/							        @tokopedia/android-core-dev
 /libraries/base_list_seller/							@tokopedia/android-core-dev
 /libraries/bottom_sheet_builder/						@tokopedia/android-core-dev
-/libraries/cassavatest/						            @tokopedia/android-core-dev
 /libraries/cache_api/									@tokopedia/android-core-dev
 /libraries/cameraview/									@tokopedia/android-core-dev
 /libraries/charts/				    		            @tokopedia/android-core-dev
@@ -371,7 +370,6 @@
 /libraries/imagepreviewslider                           @tokopedia/android-core-dev
 /libraries/blockcanary                                  @tokopedia/android-core-dev
 /libraries/annotation_proc_central                      @tokopedia/android-core-dev
-/libraries/cassavatest                                  @tokopedia/android-core-dev
 /libraries/screen_recorder                              @tokopedia/android-core-dev
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/telemetry                                    @tokopedia/android-core-dev
