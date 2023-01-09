@@ -27,13 +27,13 @@ data class BundleDetail(
         val bundleName: String = "",
         @Expose
         @SerializedName("bundle_original_price")
-        val bundleOriginalPrice: Long = 0,
+        val bundleOriginalPrice: Double = 0.0,
         @Expose
         @SerializedName("bundle_original_price_fmt")
         val bundleOriginalPriceFmt: String = "",
         @Expose
         @SerializedName("bundle_price")
-        val bundlePrice: Long = 0,
+        val bundlePrice: Double = 0.0,
         @Expose
         @SerializedName("bundle_price_fmt")
         val bundlePriceFmt: String = "",

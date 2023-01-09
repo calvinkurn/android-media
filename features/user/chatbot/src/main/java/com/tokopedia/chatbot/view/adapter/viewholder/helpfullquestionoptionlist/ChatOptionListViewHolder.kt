@@ -1,10 +1,8 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist
 
-import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListUiModel
 import com.tokopedia.chatbot.databinding.ItemChatHelpfullBinding
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,11 +29,11 @@ class ChatOptionListViewHolder(itemView: ItemChatHelpfullBinding, private val on
     private fun setChatRating(value: Int) {
         chatRaing.show()
         when (value) {
-            1 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.rating_active_1))
-            2 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.rating_active_2))
-            3 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.rating_active_3))
-            4 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.rating_active_4))
-            5 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.rating_active_5))
+            1 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_1))
+            2 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_2))
+            3 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_3))
+            4 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_4))
+            5 -> chatRaing.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.csat_rating.R.drawable.emoji_active_5))
         }
     }
 }

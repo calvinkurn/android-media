@@ -132,5 +132,6 @@
     <string name="label_function_id">Function ID:</string>
     <string name="label_function_name">Function Name:</string>
     <string name="label_counter">Counter:</string>
+    <string name="enable_strict_mode_leak_publisher">Enable Strict Mode Leak Publihser</string>
 
 </resources>

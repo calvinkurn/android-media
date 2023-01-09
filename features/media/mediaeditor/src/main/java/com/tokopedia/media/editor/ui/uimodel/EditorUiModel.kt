@@ -39,7 +39,18 @@ class EditorUiModel(
         if (backValue >= UNDO_MAX_LIMIT) return false
 
         return !isVideo && ((editList.size - backValue) > if (isAutoCropped) {
-            UNDO_LIMIT_AUTO_CROP
+            if (editList.isNotEmpty()) {
+                // if auto crop is enable, check if image is cropped / already have target ratio
+                // if image already have target ratio, then limit is same as no crop
+                val editStateData = editList.first()
+                if (editStateData.originalRatio == editStateData.cropRotateValue.getRatio()) {
+                    UNDO_LIMIT_NON_CROP
+                } else {
+                    UNDO_LIMIT_AUTO_CROP
+                }
+            } else {
+                UNDO_LIMIT_AUTO_CROP
+            }
         } else {
             UNDO_LIMIT_NON_CROP
         })
