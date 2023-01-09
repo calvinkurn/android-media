@@ -31,20 +31,20 @@ class DtGetRecommendationForYouUseCase @Inject constructor(
         setTypeClass(GetDtHomeRecommendationResponse::class.java)
     }
 
-
     /**
      * https://tokopedia.slack.com/archives/C03VBG627FG/p1672885579202169?thread_ts=1669610989.489449&cid=C03VBG627FG
      *
      */
     suspend fun execute(
-        locationParamString: String?
+        locationParamString: String,
+        page: Int
     ): GetHomeRecommendationProductV2 {
         setRequestParams(
             RequestParams.create()
                 .apply {
                     putString(PARAM_PAGE, "dt")
                     putString(PARAM_TYPE, "banner,position,banner_ads")
-                    putInt(PARAM_PRODUCT_PAGE, 1)
+                    putInt(PARAM_PRODUCT_PAGE, page)
                     putString(PARAM_LOCATION, locationParamString)
                 }.parameters
         )

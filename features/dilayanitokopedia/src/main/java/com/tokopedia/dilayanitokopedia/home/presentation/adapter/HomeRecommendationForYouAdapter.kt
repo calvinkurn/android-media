@@ -6,6 +6,7 @@ import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendatio
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationError
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoadMore
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoading
 import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendationTypeFactory
 import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendationTypeFactoryImpl
@@ -15,7 +16,6 @@ import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.smart_recycler_helper.SmartRecyclerAdapter
 import com.tokopedia.smart_recycler_helper.SmartVisitable
-import timber.log.Timber
 
 class HomeRecommendationForYouAdapter(
     smartExecutors: SmartExecutors,
@@ -60,6 +60,7 @@ class HomeRecommendationForYouAdapter(
         when (item) {
             is HomeRecommendationLoading -> layout.isFullSpan = true
             is HomeRecommendationError -> layout.isFullSpan = true
+            is HomeRecommendationLoadMore -> layout.isFullSpan = true
             else -> layout.isFullSpan = false
         }
     }

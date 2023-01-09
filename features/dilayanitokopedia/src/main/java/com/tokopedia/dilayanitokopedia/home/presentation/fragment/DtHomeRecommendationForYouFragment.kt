@@ -44,12 +44,9 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         private const val REQUEST_FROM_PDP = 349
         private const val MAX_RECYCLED_VIEWS = 20
 
-
         fun newInstance(): DtHomeRecommendationForYouFragment {
             return DtHomeRecommendationForYouFragment()
         }
-
-
     }
 
     @Inject
@@ -73,7 +70,6 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
     }
 
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,12 +95,8 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        loadLoading()
-        /**
-         * Temporary
-         */
-        tabName = "dt"
 
+        loadLoading()
         loadFirstPageData()
         initListeners()
         observeLiveData()
@@ -117,6 +109,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
     private fun observeLiveData() {
         viewModel.homeRecommendationLiveData.observe(viewLifecycleOwner) { data ->
             updateAdapter(data)
+            updateScrollEndlessListener(data.isHasNextPage)
         }
     }
 
@@ -135,6 +128,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             MAX_RECYCLED_VIEWS
         )
         recyclerView?.setRecycledViewPool(parentPool)
+        createEndlessRecyclerViewListener()
         endlessRecyclerViewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
     }
 
@@ -246,8 +240,22 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         )
     }
 
-
     private fun getLocationParamString(): String {
         return ChooseAddressUtils.getLocalizingAddressData(requireContext()).convertToLocationParams() ?: ""
+    }
+
+    private fun updateScrollEndlessListener(hasNextPage: Boolean) {
+        // load next page data if adapter data less than minimum scrollable data
+        // when the list has next page and auto load next page is enabled
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
+    }
+
+    private fun createEndlessRecyclerViewListener() {
+        endlessRecyclerViewScrollListener = object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.loadNextData(page, getLocationParamString())
+            }
+        }
     }
 }
