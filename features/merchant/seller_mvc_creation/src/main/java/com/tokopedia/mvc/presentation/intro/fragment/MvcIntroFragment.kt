@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.intro.fragment
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +21,8 @@ import com.tokopedia.mvc.presentation.intro.uimodel.IntroVoucherUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
-import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroRecyclerViewScrollListener
+import com.tokopedia.mvc.util.constant.FIRST_INDEX
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MvcIntroFragment :
@@ -107,98 +108,113 @@ class MvcIntroFragment :
     private fun getContentList(): List<Visitable<*>> {
         return context?.resources?.let {
             listOf(
-                IntroVoucherUiModel(
-                    it.getString(R.string.smvc_intro_make_coupons_faster),
-                    it.getString(R.string.smvc_intro_coupon_subtitle),
-                    list = listOf(
-                        VoucherIntroTypeData(
-                            it.getString(R.string.smvc_intro_voucher_card_1_title),
-                            it.getString(R.string.smvc_intro_voucher_card_1_subtitle),
-                            it.getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon)
-                        ),
-                        VoucherIntroTypeData(
-                            it.getString(R.string.smvc_intro_voucher_card_2_title),
-                            it.getString(R.string.smvc_intro_voucher_card_2_subtitle),
-                            it.getString(R.string.smvc_intro_voucher_icon_beragam_pilihan_promo)
-                        ),
-                        VoucherIntroTypeData(
-                            it.getString(R.string.smvc_intro_voucher_card_3_title),
-                            it.getString(R.string.smvc_intro_voucher_card_3_subtitle),
-                            it.getString(R.string.smvc_intro_voucher_icon_bebas_tentukan_target)
-                        )
-
-                    )
-                ),
-                VoucherTypeUiModel(
-                    title = it.getString(R.string.smvc_intro_voucher_type_card_title),
-                    list = listOf(
-                        VoucherIntroTypeData(
-                            it.getString(R.string.smvc_intro_voucher_type_card_1_title),
-                            it.getString(R.string.smvc_intro_voucher_type_card_1_subtitle),
-                            it.getString(R.string.smvc_intro_voucher_icon_kupon_toko)
-                        ),
-                        VoucherIntroTypeData(
-                            it.getString(R.string.smvc_intro_voucher_type_card_2_title),
-                            it.getString(R.string.smvc_intro_voucher_type_card_2_subtitle),
-                            it.getString(R.string.smvc_intro_voucher_icon_kupon_produk)
-                        )
-                    )
-                ),
-                VoucherIntroCarouselUiModel(
-                    headerTitle = it.getString(R.string.smvc_intro_voucher_view_pager_header),
-                    description = it.getString(
-                        R.string.smvc_intro_voucher_view_pager_tab_description
-                    ),
-                    tabsList = listOf(
-                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
-                            it.getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
-                            listOf(
-                                it.getString(R.string.smvc_intro_voucher_carousel_cashback_1),
-                                it.getString(R.string.smvc_intro_voucher_carousel_cashback_2)
-                                )
-                        ),
-                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
-                            it.getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
-                            listOf(
-                                it.getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
-                                it.getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
-                            )
-                        ),
-                        VoucherIntroCarouselUiModel.VoucherIntroTabsData(
-                            it.getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
-                            listOf(
-                                it.getString(R.string.smvc_intro_voucher_carousel_diskon_1),
-                                it.getString(R.string.smvc_intro_voucher_carousel_diskon_2)
-                            )
-                        )
-                    )
-                ),
-                ChoiceOfVoucherUiModel(
-                    it.getString(R.string.smvc_intro_voucher_type_choice_of_target),
-                    list = listOf(
-                        VoucherIntroTypeData(
-                            it.getString(
-                                R.string.smvc_intro_voucher_type_choice_of_target_card_1_title
-                            ),
-                            it.getString(
-                                R.string.smvc_intro_voucher_type_choice_of_target_card_1_subtitle
-                            ),
-                            it.getString(R.string.smvc_intro_voucher_icon_semua_pembeli)
-                        ),
-                        VoucherIntroTypeData(
-                            it.getString(
-                                R.string.smvc_intro_voucher_type_choice_of_target_card_2_title
-                            ),
-                            it.getString(
-                                R.string.smvc_intro_voucher_type_choice_of_target_card_2_subtitle
-                            ),
-                            it.getString(R.string.smvc_intro_voucher_icon_follower_baru)
-                        )
-                    )
-                )
+                it.getIntroVoucher(),
+                it.getIntroTypeData(),
+                it.getIntroCarouselData(),
+                it.getChoiceOfVoucherData()
 
             )
         } ?: emptyList()
+    }
+
+    private fun Resources.getIntroVoucher(): IntroVoucherUiModel {
+        return IntroVoucherUiModel(
+            getString(R.string.smvc_intro_make_coupons_faster),
+            getString(R.string.smvc_intro_coupon_subtitle),
+            list = listOf(
+                VoucherIntroTypeData(
+                    getString(R.string.smvc_intro_voucher_card_1_title),
+                    getString(R.string.smvc_intro_voucher_card_1_subtitle),
+                    getString(R.string.smvc_intro_voucher_icon_fleksibel_buat_kupon)
+                ),
+                VoucherIntroTypeData(
+                    getString(R.string.smvc_intro_voucher_card_2_title),
+                    getString(R.string.smvc_intro_voucher_card_2_subtitle),
+                    getString(R.string.smvc_intro_voucher_icon_beragam_pilihan_promo)
+                ),
+                VoucherIntroTypeData(
+                    getString(R.string.smvc_intro_voucher_card_3_title),
+                    getString(R.string.smvc_intro_voucher_card_3_subtitle),
+                    getString(R.string.smvc_intro_voucher_icon_bebas_tentukan_target)
+                )
+            )
+        )
+    }
+
+    private fun Resources.getIntroTypeData(): VoucherTypeUiModel {
+        return VoucherTypeUiModel(
+            title = getString(R.string.smvc_intro_voucher_type_card_title),
+            list = listOf(
+                VoucherIntroTypeData(
+                    getString(R.string.smvc_intro_voucher_type_card_1_title),
+                    getString(R.string.smvc_intro_voucher_type_card_1_subtitle),
+                    getString(R.string.smvc_intro_voucher_icon_kupon_toko)
+                ),
+                VoucherIntroTypeData(
+                    getString(R.string.smvc_intro_voucher_type_card_2_title),
+                    getString(R.string.smvc_intro_voucher_type_card_2_subtitle),
+                    getString(R.string.smvc_intro_voucher_icon_kupon_produk)
+                )
+            )
+        )
+    }
+
+    private fun Resources.getIntroCarouselData(): VoucherIntroCarouselUiModel {
+        return VoucherIntroCarouselUiModel(
+            headerTitle = getString(R.string.smvc_intro_voucher_view_pager_header),
+            description = getString(
+                R.string.smvc_intro_voucher_view_pager_tab_description
+            ),
+            tabsList = listOf(
+                VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                    getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
+                    listOf(
+                        getString(R.string.smvc_intro_voucher_carousel_cashback_1),
+                        getString(R.string.smvc_intro_voucher_carousel_cashback_2)
+                    )
+                ),
+                VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                    getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
+                    listOf(
+                        getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
+                        getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
+                    )
+                ),
+                VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                    getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
+                    listOf(
+                        getString(R.string.smvc_intro_voucher_carousel_diskon_1),
+                        getString(R.string.smvc_intro_voucher_carousel_diskon_2)
+                    )
+                )
+            )
+        )
+    }
+
+    private fun Resources.getChoiceOfVoucherData(): ChoiceOfVoucherUiModel {
+        return ChoiceOfVoucherUiModel(
+            getString(R.string.smvc_intro_voucher_type_choice_of_target),
+            list = listOf(
+                VoucherIntroTypeData(
+                    getString(
+                        R.string.smvc_intro_voucher_type_choice_of_target_card_1_title
+                    ),
+                    getString(
+                        R.string.smvc_intro_voucher_type_choice_of_target_card_1_subtitle
+                    ),
+                    getString(R.string.smvc_intro_voucher_icon_semua_pembeli)
+                ),
+                VoucherIntroTypeData(
+                    getString(
+                        R.string.smvc_intro_voucher_type_choice_of_target_card_2_title
+                    ),
+                    getString(
+                        R.string.smvc_intro_voucher_type_choice_of_target_card_2_subtitle
+                    ),
+                    getString(R.string.smvc_intro_voucher_icon_follower_baru)
+                )
+            )
+        )
     }
 
     override fun getScreenName(): String {

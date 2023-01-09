@@ -7,9 +7,9 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVoucherViewholderBinding
 import com.tokopedia.mvc.presentation.intro.uimodel.IntroVoucherUiModel
-import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
-import com.tokopedia.mvc.presentation.intro.util.SECOND_INDEX
-import com.tokopedia.mvc.presentation.intro.util.ZEROTH_INDEX
+import com.tokopedia.mvc.util.constant.FIRST_INDEX
+import com.tokopedia.mvc.util.constant.SECOND_INDEX
+import com.tokopedia.mvc.util.constant.ZEROTH_INDEX
 import com.tokopedia.utils.view.binding.viewBinding
 
 class IntroVoucherViewHolder(itemView: View?) : AbstractViewHolder<IntroVoucherUiModel>(itemView) {

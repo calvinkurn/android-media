@@ -9,9 +9,9 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcIntroVouchersPagerViewholderBinding
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
-import com.tokopedia.mvc.presentation.intro.util.FIRST_INDEX
-import com.tokopedia.mvc.presentation.intro.util.SECOND_INDEX
-import com.tokopedia.mvc.presentation.intro.util.ZEROTH_INDEX
+import com.tokopedia.mvc.util.constant.FIRST_INDEX
+import com.tokopedia.mvc.util.constant.SECOND_INDEX
+import com.tokopedia.mvc.util.constant.ZEROTH_INDEX
 import com.tokopedia.utils.view.binding.viewBinding
 
 class VoucherIntroCarouselViewHolder(itemView: View?) :
