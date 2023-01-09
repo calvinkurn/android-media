@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.viewholder.components.*
-import com.tokopedia.catalog_library.viewholder.containers.CatalogLandingPageListContainerViewHolder
 
-class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: CatalogLibraryListener): BaseAdapterTypeFactory(),
+class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: CatalogLibraryListener) :
+    BaseAdapterTypeFactory(),
     CatalogHomepageAdapterFactory {
     override fun type(data: CatalogSpecialDataModel): Int {
         return CatalogSpecialItemViewHolder.LAYOUT
@@ -38,10 +38,6 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
         return CatalogMostViralItemViewHolder.LAYOUT
     }
 
-    override fun type(data: CatalogLandingListDataModel): Int {
-        return CatalogLandingPageListContainerViewHolder.LAYOUT
-    }
-
     override fun type(data: CatalogShimmerDataModel): Int {
         return CatalogShimmerViewHolder.LAYOUT
     }
@@ -52,13 +48,24 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            CatalogTopFiveItemViewHolder.LAYOUT -> CatalogTopFiveItemViewHolder(view,catalogLibraryListener)
-            CatalogMostViralItemViewHolder.LAYOUT -> CatalogMostViralItemViewHolder(view,catalogLibraryListener)
-            CatalogSpecialItemViewHolder.LAYOUT -> CatalogSpecialItemViewHolder(view,catalogLibraryListener)
-            CatalogRelevantItemViewHolder.LAYOUT -> CatalogRelevantItemViewHolder(view, catalogLibraryListener)
+            CatalogTopFiveItemViewHolder.LAYOUT -> CatalogTopFiveItemViewHolder(
+                view,
+                catalogLibraryListener
+            )
+            CatalogMostViralItemViewHolder.LAYOUT -> CatalogMostViralItemViewHolder(
+                view,
+                catalogLibraryListener
+            )
+            CatalogSpecialItemViewHolder.LAYOUT -> CatalogSpecialItemViewHolder(
+                view,
+                catalogLibraryListener
+            )
+            CatalogRelevantItemViewHolder.LAYOUT -> CatalogRelevantItemViewHolder(
+                view,
+                catalogLibraryListener
+            )
             CatalogLihatViewHolder.LAYOUT -> CatalogLihatViewHolder(view, catalogLibraryListener)
-            CatalogLihatItemViewHolder.LAYOUT -> CatalogLihatItemViewHolder(view, catalogLibraryListener)
-            CatalogLandingPageListContainerViewHolder.LAYOUT -> CatalogLandingPageListContainerViewHolder(
+            CatalogLihatItemViewHolder.LAYOUT -> CatalogLihatItemViewHolder(
                 view,
                 catalogLibraryListener
             )
