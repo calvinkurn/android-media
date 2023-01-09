@@ -120,6 +120,8 @@ class AddEditProductShipmentFragment :
     // private var productInputModel: ProductInputModel? = null
     private var isFragmentVisible = false
 
+    private var whitelabelCoachmark: CoachMark2? = null
+
     private lateinit var shopId: String
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -287,6 +289,13 @@ class AddEditProductShipmentFragment :
     override fun onDestroy() {
         super.onDestroy()
         isFragmentVisible = false
+    }
+
+    override fun onPause() {
+        whitelabelCoachmark?.dismissCoachMark()
+        whitelabelCoachmark = null
+
+        super.onPause()
     }
 
     override fun startPerformanceMonitoring() {
@@ -484,7 +493,7 @@ class AddEditProductShipmentFragment :
     private fun showOnBoardingCoachmark() {
         context?.let {
             val coachMarkItem = generateOnBoardingCoachmark()
-            CoachMark2(it).apply {
+            whitelabelCoachmark = CoachMark2(it).apply {
                 setOnBoardingListener()
                 showCoachMark(coachMarkItem)
             }

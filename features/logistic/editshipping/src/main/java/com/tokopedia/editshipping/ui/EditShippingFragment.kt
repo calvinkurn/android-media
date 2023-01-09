@@ -86,6 +86,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     private var mapMode = 0
     private var cacheManager: SaveInstanceCacheManager? = null
 
+    private var whitelabelCoachmark: CoachMark2? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -128,6 +130,9 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun onPause() {
+        whitelabelCoachmark?.dismissCoachMark()
+        whitelabelCoachmark = null
+
         super.onPause()
         if (bottomSheetValidation?.isVisible == true) {
             bottomSheetValidation?.dismiss()
@@ -536,7 +541,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
                         val coachMarkItems =
                             generateOnBoardingCoachMark(normalServiceView, whitelabelView)
-                        CoachMark2(it).apply {
+                        whitelabelCoachmark = CoachMark2(it).apply {
                             setOnBoardingListener(coachMarkItems)
                             setStateAfterOnBoardingShown(coachMarkItems, sharedPref)
                             manualScroll(coachMarkItems)
