@@ -23,8 +23,8 @@ import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubl
 import com.tokopedia.autocompletecomponent.suggestion.productline.SuggestionProductLineViewHolder
 import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineViewHolder
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetViewHolder
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
