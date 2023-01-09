@@ -665,10 +665,6 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showDescriptionTips() {
-        if (descriptionViewModel.isAddMode) {
-            ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
-        }
-
         val tooltipBottomSheet = TooltipBottomSheet()
         val tips: ArrayList<NumericTooltipModel> = ArrayList()
         val tooltipTitle = getString(R.string.title_tooltip_description_tips)
@@ -697,9 +693,10 @@ class AddEditProductDescriptionFragment:
     private fun showVariantTips() {
         if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickHelpVariant(shopId)
-        } else {
-            ProductAddDescriptionTracking.clickHelpVariant(shopId)
         }
+//        } else {
+//            ProductAddDescriptionTracking.clickHelpVariant(shopId)
+//        }
 
         val tooltipBottomSheet = TooltipBottomSheet()
         val tips: ArrayList<NumericTooltipModel> = ArrayList()

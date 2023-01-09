@@ -540,9 +540,6 @@ class AddEditProductPreviewFragment :
             }
         }
         addProductPhotoTipsLayout?.setOnClickListener {
-            if (!isEditing()) {
-                ProductAddStepperTracking.trackHelpProductQuality(shopId)
-            }
             showPhotoTips()
         }
     }

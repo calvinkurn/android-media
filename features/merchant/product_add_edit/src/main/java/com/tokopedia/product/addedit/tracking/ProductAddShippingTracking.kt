@@ -24,12 +24,6 @@ object ProductAddShippingTracking {
         sendAddProductClick(SCREEN, shopId, "click cancel change weight")
     }
 
-    fun clickFinish(shopId: String, isSuccess: Boolean, errorName: String = "", errorMessage: String = "") {
-        if (!isSuccess) {
-            sendAddProductClickWithoutScreen(shopId, "click finish error", "$errorMessage - $errorName")
-        }
-    }
-
     fun uploadImageFailed(userId: String, errorName: String) {
         sendAddProductImpression(userId, "impression add product error", "validation error - (Upload Image) $errorName")
     }
