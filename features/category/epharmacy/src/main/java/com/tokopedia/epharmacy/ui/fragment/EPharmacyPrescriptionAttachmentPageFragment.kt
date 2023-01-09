@@ -159,21 +159,24 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun observerPrescriptionError() {
         ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
-            if (error is EPharmacyMiniConsultationToaster) showToast(
-                if (error.showErrorToast) {
-                    EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
-                        FAILED,
-                                error.message
-                    )
-                    TYPE_ERROR
-                } else {
-                    EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
-                        SUCCESS,error.message
-                    )
-                    Toaster.TYPE_NORMAL
-                },
-                error.message
-            )
+            if (error is EPharmacyMiniConsultationToaster) {
+                showToast(
+                    if (error.showErrorToast) {
+                        EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
+                            FAILED,
+                            error.message
+                        )
+                        TYPE_ERROR
+                    } else {
+                        EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
+                            SUCCESS,
+                            error.message
+                        )
+                        Toaster.TYPE_NORMAL
+                    },
+                    error.message
+                )
+            }
         }
     }
 
@@ -247,6 +250,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         } else if (consultationResponse.getInitiateConsultation?.initiateConsultationData != null &&
             !consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink.isNullOrBlank()
         ) {
+            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(
+                userSession.isLoggedIn,
+                userSession.userId,
+                consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.enablerName ?: "",
+                consultationResponse.epharmacyGroupId ?: "",
+                consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString()
+            )
             activity?.let { safeContext ->
                 startActivityForResult(
                     RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
@@ -361,7 +371,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             return
         }
 
-        EPharmacyMiniConsultationAnalytics.clickCTAButton("${ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.toaster?.message}", ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString())
+        EPharmacyMiniConsultationAnalytics.clickLanjutButton("${ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.toaster?.message}", ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString())
         if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
             activity?.setResult(
                 EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
@@ -513,13 +523,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun startMiniConsultation(enablerName: String?, groupId: String?, consultationSourceId: Long?) {
         if (!groupId.isNullOrBlank()) {
-            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(
-                userSession.isLoggedIn,
-                userSession.userId,
-                enablerName ?: "",
-                groupId,
-                consultationSourceId.toString()
-            )
             ePharmacyPrescriptionAttachmentViewModel.initiateConsultation(
                 InitiateConsultationParam(
                     InitiateConsultationParam.InitiateConsultationParamInput(groupId)

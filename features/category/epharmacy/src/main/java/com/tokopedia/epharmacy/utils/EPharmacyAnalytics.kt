@@ -9,6 +9,7 @@ interface EventKeys {
         const val CLICK_CONTENT = "clickContent"
         const val CLICK_PG = "clickPG"
         const val VIEW_PG_IRIS = "viewPGIris"
+        const val VIEW_GROCERIES_IRIS = "viewGroceriesIris"
         const val TRACKER_ID = "trackerId"
         const val PAGE_PATH = "pagePath"
 
@@ -34,6 +35,7 @@ interface ActionKeys {
 
         const val CLICK_ATTACH_PRESCRIPTION_BUTTON = "click attach prescription button"
         const val VIEW_ATTACH_PRESCRIPTION_RESULT = "view attach prescription result"
+        const val VIEW_CONSULTATION_WEB_VIEW_URL_GENERATED = "consultation webview url generated"
         const val VIEW_ATTACH_PRESCRIPTION_OPTION_PAGE = "view attach option page"
         const val CLICK_UPLOAD_RESEP_DOKTER = "click upload resep dokter"
         const val CLICK_CHAT_DOKTER = "click chat dokter"
@@ -70,5 +72,6 @@ interface TrackerId {
         const val CLICK_CHAT_DOKTER = "37745"
         const val VIEW_NO_DOCTOR = "37747"
         const val CLICK_INGATKAN_SAYA = "37748"
+        const val LANJUT_BUTTON_CLICK = "38051"
     }
 }

@@ -46,24 +46,25 @@ object EPharmacyMiniConsultationAnalytics {
         consultationId: String
     ) {
         Tracker.Builder()
-            .setEvent(EventKeys.OPEN_SCREEN)
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
+            .setEventAction(ActionKeys.VIEW_CONSULTATION_WEB_VIEW_URL_GENERATED)
+            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
+            .setEventLabel("$enablerName - $ePharmacyGroupId - $consultationId")
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.VIEW_MINI_CONSULTATION)
+            .setCustomProperty(EventKeys.IS_LOGGED_IN, isLoggedIn.toString())
+            .setUserId(userId)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty(EventKeys.IS_LOGGED_IN, isLoggedIn.toString())
-            .setCustomProperty(EventKeys.PAGE_PATH, "")
-            .setCustomProperty(EventKeys.SCREEN_NAME, "request to open webview - $enablerName - $ePharmacyGroupId - $consultationId")
-            .setUserId(userId)
             .build()
             .send()
     }
 
     fun viewAttachPrescriptionResult(
         successFailed: String,
-        approvalReason: String,
+        approvalReason: String
     ) {
         Tracker.Builder()
-            .setEvent(EventKeys.VIEW_PG_IRIS)
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction(ActionKeys.VIEW_ATTACH_PRESCRIPTION_RESULT)
             .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
             .setEventLabel("$successFailed - $approvalReason")
@@ -113,16 +114,16 @@ object EPharmacyMiniConsultationAnalytics {
             .send()
     }
 
-    fun clickCTAButton(
+    fun clickLanjutButton(
         approvalReason: String,
-        ePharmacyGroupId: String,
+        ePharmacyGroupId: String
     ) {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_PG)
             .setEventAction(ActionKeys.CLICK_LANJUT_KE_PENGIRIMAN)
             .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
             .setEventLabel("$approvalReason - $ePharmacyGroupId")
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.ATTACH_PRESCRIPTION_BUTTON)
+            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.LANJUT_BUTTON_CLICK)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
