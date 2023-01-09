@@ -204,6 +204,8 @@ import com.tokopedia.product.detail.tracking.GeneralInfoTracking
 import com.tokopedia.product.detail.tracking.OneLinersTracking
 import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
+import com.tokopedia.product.detail.tracking.ProductArTrackerData
+import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
@@ -213,8 +215,6 @@ import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_N
 import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
-import com.tokopedia.product.detail.tracking.ProductArTrackerData
-import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -263,7 +263,6 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
-import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -297,8 +296,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -539,10 +537,6 @@ open class DynamicProductDetailFragment :
                 toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANGES,
                 navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                     override fun onAlphaChanged(offsetAlpha: Float) {
-                        // seller app have not search bar
-                        if (!GlobalConfig.isSellerApp()) {
-                            navToolbar?.setSearchBarAlpha(alpha = offsetAlpha)
-                        }
                     }
 
                     override fun onSwitchToDarkToolbar() {
@@ -2549,8 +2543,10 @@ open class DynamicProductDetailFragment :
             )
         }
 
-        pdpUiUpdater?.updateArData(productId ?: "",
-                viewModel.p2Data.value?.arInfo ?: ProductArInfo())
+        pdpUiUpdater?.updateArData(
+            productId ?: "",
+            viewModel.p2Data.value?.arInfo ?: ProductArInfo()
+        )
 
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
@@ -2561,7 +2557,7 @@ open class DynamicProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -2573,7 +2569,7 @@ open class DynamicProductDetailFragment :
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
                 cartTypeData?.availableButtons?.firstOrNull()
-                    ?.isCartTypeDisabledOrRemindMe() == false &&
+                ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -3022,7 +3018,7 @@ open class DynamicProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getDynamicProductInfoP1?.parentProductId.orEmpty()
+                        viewModel.getDynamicProductInfoP1?.parentProductId.orEmpty()
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -3079,20 +3075,6 @@ open class DynamicProductDetailFragment :
             )
         }
         renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
-        val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-            String.format(
-                getString(R.string.pdp_search_hint_tokonow),
-                productInfo.basic.category.name
-            )
-        } else {
-            String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
-        }
-        navAbTestCondition(
-            { setNavToolbarSearchHint(hint) },
-            {
-                // no op
-            }
-        )
 
         pdpUiUpdater?.updateDataP1(productInfo, true)
         pdpUiUpdater?.updateInitialMedia(productInfo.data.media, productInfo.data.containerType)
@@ -4116,6 +4098,9 @@ open class DynamicProductDetailFragment :
 
             setIcon(
                 IconBuilder()
+                    .addIcon(IconList.ID_SEARCH) {
+                        goToApplink(getLocalSearchApplink())
+                    }
                     .addIcon(getShareIcon()) {
                         onClickShareProduct()
                     }
@@ -4123,8 +4108,8 @@ open class DynamicProductDetailFragment :
                     .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
 
-            setNavToolbarSearchHint(getString(R.string.pdp_search_hint, ""))
             setToolbarPageName(ProductTrackingConstant.Category.PDP)
+            setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
             show()
         }
     }
@@ -4134,8 +4119,11 @@ open class DynamicProductDetailFragment :
             RollenceKey.PDP_SHOW_SHARE_AFFILIATE
         ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
 
-        if (isAbTestEnabled) return IconList.ID_SHARE_AB_TEST
-        else return IconList.ID_SHARE
+        if (isAbTestEnabled) {
+            return IconList.ID_SHARE_AB_TEST
+        } else {
+            return IconList.ID_SHARE
+        }
     }
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
@@ -4270,10 +4258,6 @@ open class DynamicProductDetailFragment :
             ""
         }
         return applink
-    }
-
-    private fun setNavToolbarSearchHint(hint: String) {
-        navToolbar?.setupSearchbar(listOf(HintData(hint)), applink = getLocalSearchApplink())
     }
 
     private fun initStickyLogin(view: View) {
@@ -4846,7 +4830,7 @@ open class DynamicProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-                ?.restrictionShopFollowersType() == false
+            ?.restrictionShopFollowersType() == false
         ) {
             return
         }
