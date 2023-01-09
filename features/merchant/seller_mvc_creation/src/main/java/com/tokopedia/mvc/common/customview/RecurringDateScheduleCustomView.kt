@@ -16,6 +16,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
+import timber.log.Timber
 
 class RecurringDateScheduleCustomView : BaseCustomView {
 
@@ -119,6 +120,8 @@ class RecurringDateScheduleCustomView : BaseCustomView {
                         R.styleable.VoucherRecurringPeriodView_is_show_button,
                         false
                     )
+            } catch (t: Throwable) {
+                Timber.d(t.localizedMessage)
             } finally {
                 styledAttributes.recycle()
             }
