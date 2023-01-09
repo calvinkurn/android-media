@@ -1,11 +1,8 @@
 package com.tokopedia.dilayanitokopedia.home.domain.mapper.recommendationforyou
 
-
-import com.tokopedia.dilayanitokopedia.home.domain.model.Banner
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeRecommendationProductV2
 import com.tokopedia.dilayanitokopedia.home.domain.model.Product
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.BannerRecommendationDataModel
-import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeRecommendationVisitable
@@ -17,7 +14,6 @@ object HomeRecommendationMapper {
     private const val TYPE_BANNER = "banner"
     private const val TYPE_BANNER_ADS = "banner_ads"
 
-
     fun mapToHomeRecommendationDataModel(
         graphqlResponse: GetHomeRecommendationProductV2,
         tabName: String,
@@ -25,7 +21,7 @@ object HomeRecommendationMapper {
     ): HomeRecommendationDataModel {
         val visitables = mutableListOf<HomeRecommendationVisitable>()
         val productStack = Stack<HomeRecommendationItemDataModel>()
-        //reverse stack because to get the first in
+        // reverse stack because to get the first in
         Collections.reverse(productStack)
         productStack.addAll(
             convertToHomeProductFeedModel(
@@ -37,10 +33,8 @@ object HomeRecommendationMapper {
         )
 
         val bannerStack = Stack<BannerRecommendationDataModel>()
-        //reverse stack because to get the first in
+        // reverse stack because to get the first in
         Collections.reverse(productStack)
-
-        visitables.addAll(productStack)
 
         graphqlResponse.positions.forEachIndexed { index, layoutType ->
             when (layoutType.type) {
@@ -52,7 +46,6 @@ object HomeRecommendationMapper {
 
         return HomeRecommendationDataModel(visitables, graphqlResponse.hasNextPage)
     }
-
 
     private fun convertToHomeProductFeedModel(
         products: List<Product>,
@@ -75,5 +68,4 @@ object HomeRecommendationMapper {
         }
         return homeFeedViewModels
     }
-    
 }
