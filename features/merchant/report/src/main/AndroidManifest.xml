@@ -7,7 +7,7 @@
             android:label="@string/product_report"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
