@@ -49,8 +49,6 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -534,15 +532,9 @@ class TokoFoodHomeFragment :
         )
     }
 
+    // Act as toggle
     private fun isGoToSearchPage(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_GOFOOD_SEARCH,
-                ""
-            ) == RollenceKey.KEY_GOFOOD_SEARCH
-        } catch (e: Exception) {
-            true
-        }
+        return true
     }
 
     private fun onSearchBarClick() {
