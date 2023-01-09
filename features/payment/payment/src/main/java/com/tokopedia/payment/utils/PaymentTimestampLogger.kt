@@ -13,7 +13,7 @@ class PaymentTimestampLogger(val remoteConfig: RemoteConfig) {
     var paymentFinishLoadTimestamp: Long = 0
 
     companion object {
-        const val TAG = "BUYER_FLOW_PAYMENT"
+        const val TAG = "DEBUG_CHECKOUT_GENERAL_PAYMENT"
         const val KEY_TYPE = "type"
         const val KEY_CHECKOUT_TIMESTAMP = "checkout_timestamp"
         const val KEY_PAYMENT_START_LOAD_TIMESTAMP = "payment_start_load_timestamp"
