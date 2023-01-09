@@ -4,8 +4,10 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +20,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.DateHelper
+import com.tokopedia.shop.home.view.adapter.HeightMeasureListener
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -54,6 +58,7 @@ class ShopHomeFlashSaleViewHolder(
     private val productCarouselView: RecyclerView? = itemView.findViewById(R.id.rv_flash_sale_product_carousel)
     private val productCarouselAdapter: ShopCampaignFlashSaleProductCarouselAdapter = ShopCampaignFlashSaleProductCarouselAdapter(listener)
     private val handler = Handler()
+    private val flashSaleContainer: ConstraintLayout? = itemView.findViewById(R.id.flash_sale_container)
 
     companion object {
         @LayoutRes
@@ -67,6 +72,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val VALUE_INT_HUNDREDS = 100
         private const val DELAY_IN_THREE_SECONDS = 3000L
         private const val NOTIFY_ME_WRAPPER_BORDER_RADIUS = 16f
+        private const val BOTTOM_MARGIN = 8f
     }
 
     init {
@@ -78,7 +84,7 @@ class ShopHomeFlashSaleViewHolder(
     override fun bind(element: ShopHomeFlashSaleUiModel) {
         this.uiModel = element
         val flashSaleItem = element.data?.firstOrNull()
-        val productSize = flashSaleItem?.productList?.size ?: 0
+        val productSize = flashSaleItem?.totalProduct.orZero()
         setupHeader(element.header.title ?: "")
         setupCtaSeeAll(productSize, element.data?.firstOrNull()?.statusCampaign)
         setupFlashSaleBackgroundView(
@@ -137,7 +143,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupCtaSeeAll(productSize: Int, statusCampaign: String?) {
         val isUpcoming = isStatusCampaignUpcoming(statusCampaign.orEmpty())
-        if (productSize == SINGLE || isUpcoming) ctaSeeAllView?.hide()
+        if (productSize <= MAX_PRODUCT_CARD_SIZE || isUpcoming) ctaSeeAllView?.hide()
         else ctaSeeAllView?.show()
     }
 
@@ -157,10 +163,31 @@ class ShopHomeFlashSaleViewHolder(
         multipleBackGroundView?.hide()
         // show different background based on products size
         when (productList.size) {
-            SINGLE -> { singleBackGroundView?.show() }
-            DOUBLE -> { doubleBackGroundView?.show() }
-            else -> { multipleBackGroundView?.show() }
+            SINGLE -> {
+                setBottomMarginOnMainContainer()
+                singleBackGroundView?.show()
+            }
+            DOUBLE -> { setBackgroundViewHeightAndVisible(doubleBackGroundView) }
+            else -> { setBackgroundViewHeightAndVisible(multipleBackGroundView) }
         }
+    }
+
+    private fun setBackgroundViewHeightAndVisible(view: View?){
+        productCarouselAdapter.setHeightMeasureListener( object : HeightMeasureListener {
+            override fun setHeightListener(height: Int) {
+                view?.show()
+                val layoutRv = productCarouselView?.layoutParams as? ViewGroup.MarginLayoutParams
+                val layout = view?.layoutParams
+                layout?.height = height + layoutRv?.topMargin.orZero()
+                view?.layoutParams = layout
+            }
+        })
+    }
+
+    private fun setBottomMarginOnMainContainer() {
+        val paramsMargin = flashSaleContainer?.layoutParams as? ViewGroup.MarginLayoutParams
+        paramsMargin?.bottomMargin = BOTTOM_MARGIN.dpToPx().toInt()
+        flashSaleContainer?.requestLayout()
     }
 
     private fun setupFlashSaleCountDownTimer(model: ShopHomeFlashSaleUiModel) {

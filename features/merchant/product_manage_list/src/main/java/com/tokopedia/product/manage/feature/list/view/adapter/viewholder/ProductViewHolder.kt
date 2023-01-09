@@ -75,16 +75,14 @@ class ProductViewHolder(
 
     private fun showProductTicker(product: ProductUiModel) {
         binding?.tickerProductManageViolation?.showWithCondition(
-            product.isPending()
-                || product.isSuspendLevelTwoUntilFour()
+            product.isPending() ||
+                product.isSuspendLevelTwoUntilFour()
         )
         if (product.isPending()) {
             binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_violation_ticker_message))
         } else {
             binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_suspend_ticker_message))
-
         }
-
     }
 
     private fun showProductStock(product: ProductUiModel) {
@@ -134,8 +132,8 @@ class ProductViewHolder(
         } else {
             binding?.btnContactCS?.run {
                 showWithCondition(
-                    product.isViolation() || product.isPending()
-                        || product.isSuspendLevelTwoUntilFour()
+                    product.isViolation() || product.isPending() ||
+                        product.isSuspendLevelTwoUntilFour()
                 )
                 when {
                     product.isViolation() -> {
@@ -149,16 +147,9 @@ class ProductViewHolder(
             binding?.btnEditPrice?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
-
         }
-
-        if (product.isShopModerate) {
-            binding?.btnEditPrice?.isEnabled = false
-            binding?.btnEditStock?.isEnabled = false
-        } else {
-            binding?.btnEditPrice?.isEnabled = true
-            binding?.btnEditStock?.isEnabled = true
-        }
+        binding?.btnEditStock?.isEnabled = !product.isShopModerate
+        binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
     }
 
     private fun setupButtonStyle(product: ProductUiModel) {
@@ -167,8 +158,13 @@ class ProductViewHolder(
                 buttonType = UnifyButton.Type.ALTERNATE
                 buttonVariant = UnifyButton.Variant.GHOST
             } else {
-                buttonType = UnifyButton.Type.MAIN
-                buttonVariant = UnifyButton.Variant.FILLED
+                if (!product.isShopModerate) {
+                    buttonType = UnifyButton.Type.MAIN
+                    buttonVariant = UnifyButton.Variant.FILLED
+                } else {
+                    buttonType = UnifyButton.Type.ALTERNATE
+                    buttonVariant = UnifyButton.Variant.GHOST
+                }
             }
         }
     }
@@ -208,33 +204,33 @@ class ProductViewHolder(
     private fun showStockAlertImage(product: ProductUiModel) {
         binding?.imageStockReminder
             ?.showWithCondition(
-                product.hasStockAlert && !product.stockAlertActive
-                    && !binding?.imageStockInformation?.isVisible.orTrue()
-                    && !product.haveNotifyMeOOS
+                product.hasStockAlert && !product.stockAlertActive &&
+                    !binding?.imageStockInformation?.isVisible.orTrue() &&
+                    !product.haveNotifyMeOOS
             )
         binding?.clImage
             ?.showWithCondition(
-                binding?.imageStockInformation?.isVisible.orFalse()
-                    || binding?.imageStockReminder?.isVisible.orFalse()
-                    || binding?.imageStockAlertActive?.isVisible.orFalse()
-                    || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+                binding?.imageStockInformation?.isVisible.orFalse() ||
+                    binding?.imageStockReminder?.isVisible.orFalse() ||
+                    binding?.imageStockAlertActive?.isVisible.orFalse() ||
+                    binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
     private fun showStockAlertActiveImage(product: ProductUiModel) {
         binding?.imageStockAlertActive
             ?.showWithCondition(
-                product.stockAlertActive
-                    && !binding?.imageStockInformation?.isVisible.orTrue()
-                    && !product.haveNotifyMeOOS
+                product.stockAlertActive &&
+                    !binding?.imageStockInformation?.isVisible.orTrue() &&
+                    !product.haveNotifyMeOOS
 
             )
         binding?.clImage
             ?.showWithCondition(
-                binding?.imageStockInformation?.isVisible.orFalse()
-                    || binding?.imageStockReminder?.isVisible.orFalse()
-                    || binding?.imageStockAlertActive?.isVisible.orFalse()
-                    || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+                binding?.imageStockInformation?.isVisible.orFalse() ||
+                    binding?.imageStockReminder?.isVisible.orFalse() ||
+                    binding?.imageStockAlertActive?.isVisible.orFalse() ||
+                    binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 

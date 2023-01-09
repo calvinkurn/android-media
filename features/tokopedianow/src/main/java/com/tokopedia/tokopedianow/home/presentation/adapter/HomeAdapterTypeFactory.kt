@@ -40,6 +40,7 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
@@ -47,6 +48,7 @@ import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
@@ -57,6 +59,9 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
@@ -100,6 +105,7 @@ class HomeAdapterTypeFactory(
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
+    private val homeProductRecomOocListener: TokoNowRecommendationCarouselListener? = null,
     private val homeProductRecomListener: HomeProductRecomListener? = null,
     private val tokoNowProductCardListener: TokoNowProductCardListener? = null,
     private val homeSharingEducationListener: HomeSharingListener? = null,
@@ -113,7 +119,8 @@ class HomeAdapterTypeFactory(
     private val homeLeftCarouselListener: MixLeftComponentListener? = null,
     private val playWidgetCoordinator: PlayWidgetCoordinator? = null,
     private val rtrListener: RealTimeRecommendationListener? = null,
-    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null,
+    private val productRecommendationBindOocListener: TokonowRecomBindPageNameListener? = null,
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -121,7 +128,9 @@ class HomeAdapterTypeFactory(
     TokoNowRepurchaseTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
-    TokoNowServerErrorTypeFactory {
+    TokoNowServerErrorTypeFactory,
+    TokoNowProductRecommendationOocTypeFactory
+{
 
     // region Common TokoNow Component
     override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
@@ -129,6 +138,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowProductRecommendationOocUiModel): Int = TokoNowProductRecommendationOocViewHolder.LAYOUT
     // endregion
 
     // region TokoNow Home Component
@@ -173,11 +183,12 @@ class HomeAdapterTypeFactory(
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowView, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
+            TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(view, homeProductRecomOocListener, productRecommendationBindOocListener)
             // endregion
 
             // region TokoNow Home Component
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
-            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener, rtrListener, rtrAnalytics)
+            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, homeProductRecomListener, rtrListener, rtrAnalytics)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
             HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
@@ -188,7 +199,7 @@ class HomeAdapterTypeFactory(
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
-            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, tokoNowView, rtrListener, rtrAnalytics)
+            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, rtrListener, rtrAnalytics)
             HomePlayWidgetViewHolder.LAYOUT -> HomePlayWidgetViewHolder(createPlayWidgetViewHolder(view))
             // endregion
 

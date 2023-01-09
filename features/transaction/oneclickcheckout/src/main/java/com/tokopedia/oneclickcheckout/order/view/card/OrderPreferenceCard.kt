@@ -272,13 +272,20 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingCourier.setWeight(Typography.BOLD)
             tvShippingDuration.gone()
             btnChangeDuration.gone()
-            tvShippingCourierNotes.gone()
             tvShippingPrice.gone()
             if (shipping.serviceEta != null) {
                 tvShippingCourierEta.text = shipping.serviceEta
                 tvShippingCourierEta.visible()
             } else {
                 tvShippingCourierEta.gone()
+            }
+            val description = shipment.whitelabelDescription
+            if (description?.isNotEmpty() == true) {
+                tvShippingCourierNotes.text = description
+                tvShippingCourierNotes.weightType = Typography.DISPLAY_3
+                tvShippingCourierNotes.visible()
+            } else {
+                tvShippingCourierNotes.gone()
             }
             setMultiViewsOnClickListener(
                 tvShippingCourier,
@@ -446,7 +453,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             }
             setMultiViewsOnClickListener(iconReloadShipping, btnReloadShipping) {
                 if (profile.enable) {
-                    listener.reloadShipping(shop.shopId.toString())
+                    listener.reloadShipping(shop.shopId)
                 }
             }
             btnReloadShipping.visible()
@@ -895,7 +902,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
             setMultiViewsOnClickListener(tvAddressName, tvAddressDetail, btnChangeAddress) {
                 if (profile.enable) {
-                    listener.chooseAddress(addressModel.addressId.toString())
+                    listener.chooseAddress(addressModel.addressId)
                 }
             }
         }
