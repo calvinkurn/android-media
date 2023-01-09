@@ -70,6 +70,7 @@ object UohAnalytics {
     private const val DIMENSION87 = "dimension87"
     private const val DIMENSION88 = "dimension88"
     private const val ORDER_MANAGEMENT = "order management"
+    private const val PURCHASE_PLATFORM = "purchase platform"
     private const val BUSINESS_UNIT_PAYMENT = "payment"
     private const val CLICK_ORDER_LIST = "clickOrderList"
     private const val PRODUCT_VIEW = "productView"
@@ -129,7 +130,7 @@ object UohAnalytics {
 
     private fun uohTrackerBuilder(): Tracker.Builder {
         return Tracker.Builder()
-            .setBusinessUnit(ORDER_MANAGEMENT)
+            .setBusinessUnit(PURCHASE_PLATFORM)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE)
     }
 
@@ -708,7 +709,7 @@ object UohAnalytics {
             putString(TRACKER_ID, CLICK_BELI_LAGI_BUTTON_TRACKER_ID)
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
-            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            putString(BUSINESS_UNIT, PURCHASE_PLATFORM)
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART_V5, bundle)
@@ -747,7 +748,7 @@ object UohAnalytics {
             putString(TRACKER_ID, CLICK_BELI_LAGI_BUTTON_TRACKER_ID)
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
-            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            putString(BUSINESS_UNIT, PURCHASE_PLATFORM)
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART_V5, bundle)
