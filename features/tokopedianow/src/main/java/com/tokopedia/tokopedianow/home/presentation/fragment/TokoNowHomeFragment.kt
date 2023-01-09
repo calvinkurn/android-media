@@ -41,7 +41,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_HOME
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
-import com.tokopedia.linker.model.LinkerData.WEBVIEW_TYPE
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -60,7 +59,6 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetRouterListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -86,10 +84,8 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
-import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
@@ -146,7 +142,6 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBan
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
@@ -157,11 +152,12 @@ import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
@@ -184,7 +180,6 @@ class TokoNowHomeFragment : Fragment(),
     HomeTickerViewHolder.HomeTickerListener,
     TokoNowCategoryGridListener,
     MiniCartWidgetListener,
-    HomeProductRecomListener,
     TokoNowProductCardListener,
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -202,9 +197,9 @@ class TokoNowHomeFragment : Fragment(),
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_PLAY_WIDGET = 100
         private const val ITEM_VIEW_CACHE_SIZE = 20
-
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val WHILE_SCROLLING_VERTICALLY = 1
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -251,7 +246,8 @@ class TokoNowHomeFragment : Fragment(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = createSlideBannerCallback(),
-                homeProductRecomListener = this,
+                homeProductRecomOocListener = createProductRecomOocCallback(),
+                homeProductRecomListener = createProductRecomCallback(),
                 tokoNowProductCardListener = this,
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
@@ -264,7 +260,8 @@ class TokoNowHomeFragment : Fragment(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
                 playWidgetCoordinator = createPlayWidgetCoordinator(),
                 rtrListener = createRealTimeRecommendationListener(),
-                rtrAnalytics = rtrAnalytics
+                rtrAnalytics = rtrAnalytics,
+                productRecommendationBindOocListener = createProductRecomOocCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -282,14 +279,12 @@ class TokoNowHomeFragment : Fragment(),
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
-    private var movingPosition = 0
     private var isOpenMiniCartList = false
     private var externalServiceType = ""
     private var shareHomeTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
-    private var carouselParallaxState = mutableMapOf<String, Float>()
     private var hasEducationalInformationAppeared = false
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
@@ -459,83 +454,12 @@ class TokoNowHomeFragment : Fragment(),
         analytics.trackCategoryImpression(data, warehouseId)
     }
 
-    override fun onRecomProductCardClicked(
-        recomItem: RecommendationItem,
-        channelId: String,
-        headerName: String,
-        position: String,
-        isOoc: Boolean,
-        applink: String
-    ) {
-        RouteManager.route(context, applink)
-
-        analytics.onClickProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            recommendationItem = recomItem,
-            position = position,
-            isOoc = isOoc
-        )
-    }
-
-    override fun onRecomProductCardImpressed(
-        recomItem: RecommendationItem,
-        channelId: String,
-        headerName: String,
-        pageName: String,
-        isOoc: Boolean
-    ) {
-        analytics.onImpressProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            recomItem = recomItem,
-            isOoc = isOoc
-        )
-    }
-
-    override fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean, applink: String) {
-        RouteManager.route(context, applink)
-        analytics.onClickAllProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            isOoc = isOoc
-        )
-    }
-
-    override fun onProductRecomNonVariantClick(
-        recomItem: RecommendationItem,
-        quantity: Int,
-        headerName: String,
-        channelId: String,
-        position: String
-    ) {
-        if (userSession.isLoggedIn) {
-            viewModelTokoNow.addProductToCart(
-                channelId,
-                recomItem.productId.toString(),
-                quantity,
-                recomItem.shopId.toString(),
-                TokoNowLayoutType.PRODUCT_RECOM
-            )
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
     override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
         carouselScrollState[adapterPosition] = scrollState
     }
 
-    override fun saveParallaxState(mapParallaxState: Map<String, Float>) {
-        carouselParallaxState = mapParallaxState.toMutableMap()
-    }
-
     override fun getScrollState(adapterPosition: Int): Parcelable? {
         return carouselScrollState[adapterPosition]
-    }
-
-    override fun getParallaxState(): Map<String, Float> {
-        return carouselParallaxState
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
@@ -839,8 +763,15 @@ class TokoNowHomeFragment : Fragment(),
     }
 
     private fun loadHeaderBackground() {
-        ivHeaderBackground?.show()
-        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background_shimmering)
+        context?.resources?.apply {
+            val background = VectorDrawableCompat.create(
+                this,
+                R.drawable.tokopedianow_ic_header_background_shimmering,
+                context?.theme
+            )
+            ivHeaderBackground?.setImageDrawable(background)
+            ivHeaderBackground?.show()
+        }
     }
 
     private fun showHeaderBackground() {
@@ -870,12 +801,10 @@ class TokoNowHomeFragment : Fragment(),
 
     private fun onRefreshLayout() {
         refreshMiniCart()
-        resetMovingPosition()
         removeAllScrollListener()
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollState.clear()
-        carouselParallaxState.clear()
         bannerComponentCallback?.resetImpression()
         loadLayout()
     }
@@ -972,15 +901,9 @@ class TokoNowHomeFragment : Fragment(),
         shareHomeTokonow?.sharingUrl = url
     }
 
-    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
-        movingPosition += dy
-        ivHeaderBackground?.y = if (movingPosition >= 0) {
-            -(movingPosition.toFloat())
-        } else {
-            resetMovingPosition()
-            movingPosition.toFloat()
-        }
-        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
+    private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
+        ivHeaderBackground?.translationY =  viewModelTokoNow.getTranslationYHeaderBackground(dy)
+        if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = true)
         } else {
             navToolbar?.hideShadow(lineShadow = true)
@@ -1083,7 +1006,7 @@ class TokoNowHomeFragment : Fragment(),
                     getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
-                        actionText = getString(R.string.tokopedianow_lihat),
+                        actionText = getString(R.string.tokopedianow_toaster_see),
                         onClickActionBtn = {
                             showMiniCartBottomSheet()
                         },
@@ -1120,6 +1043,7 @@ class TokoNowHomeFragment : Fragment(),
                     getMiniCart()
                     showToaster(
                         message = it.data.second,
+                        actionText = getString(R.string.tokopedianow_toaster_ok),
                         type = TYPE_NORMAL
                     )
                 }
@@ -1264,10 +1188,10 @@ class TokoNowHomeFragment : Fragment(),
     private fun trackProductRecomAddToCart(quantity: Int, position: Int, cartId: String, productRecomModel: HomeProductRecomUiModel) {
         analytics.onClickProductRecomAddToCart(
             channelId = productRecomModel.id,
-            headerName = productRecomModel.recomWidget.title,
+            headerName = productRecomModel.title,
             quantity = quantity.toString(),
-            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position - ADDITIONAL_POSITION],
-            position = position.toString(),
+            recommendationItem = productRecomModel.productList[position],
+            position = position,
             cartId = cartId
         )
     }
@@ -1275,10 +1199,10 @@ class TokoNowHomeFragment : Fragment(),
     private fun trackProductRecomRemoveFromCart(quantity: Int, position: Int, productRecomModel: HomeProductRecomUiModel) {
         analytics.onClickProductRecomRemoveFromCart(
             channelId = productRecomModel.id,
-            headerName = productRecomModel.recomWidget.title,
+            headerName = productRecomModel.title,
             quantity = quantity.toString(),
-            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position - ADDITIONAL_POSITION],
-            position = position.toString()
+            recommendationItem = productRecomModel.productList[position],
+            position = position
         )
     }
 
@@ -1405,10 +1329,6 @@ class TokoNowHomeFragment : Fragment(),
     private fun resetSwipeLayout() {
         swipeLayout?.isEnabled = true
         swipeLayout?.isRefreshing = false
-    }
-
-    private fun resetMovingPosition() {
-        movingPosition = 0
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
@@ -1840,7 +1760,7 @@ class TokoNowHomeFragment : Fragment(),
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                evaluateHomeComponentOnScroll(recyclerView, dy)
+                evaluateHeaderBackgroundOnScroll(recyclerView, dy)
             }
         }
     }
@@ -1932,9 +1852,27 @@ class TokoNowHomeFragment : Fragment(),
         return HomeSwitcherListener(requireContext(), viewModelTokoNow)
     }
 
+    private fun createProductRecomOocCallback(): HomeProductRecomOocCallback {
+        return HomeProductRecomOocCallback(
+            context = context,
+            analytics = analytics,
+            lifecycle = viewLifecycleOwner.lifecycle
+        )
+    }
+
+    private fun createProductRecomCallback(): HomeProductRecomCallback {
+        return HomeProductRecomCallback(
+            context = context,
+            userSession = userSession,
+            viewModel = viewModelTokoNow,
+            analytics = analytics,
+            startActivityForResult = this::startActivityForResult
+        )
+    }
+
     private fun createLeftCarouselAtcCallback(): HomeLeftCarouselAtcCallback {
         return HomeLeftCarouselAtcCallback(
-            context = requireContext(),
+            context = context,
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,

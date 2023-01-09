@@ -1,8 +1,8 @@
 package com.tokopedia.createpost.common.domain.usecase
 
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
+import com.tokopedia.createpost.common.domain.entity.request.MediaTag
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.createpost.common.TYPE_CONTENT_SHOP
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel

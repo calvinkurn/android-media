@@ -148,6 +148,8 @@ import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
@@ -220,6 +222,7 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
+import kotlinx.coroutines.FlowPreview
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -231,6 +234,8 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 12/14/17.
  */
+
+@OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment :
     BaseDaggerFragment(),
@@ -349,7 +354,8 @@ open class HomeRevampFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
     private lateinit var root: FrameLayout
-    private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
+    private var refreshLayout: ParentIconSwipeRefreshLayout? = null
+    private var refreshLayoutOld: ToggleableSwipeRefreshLayout? = null
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -371,6 +377,7 @@ open class HomeRevampFragment :
     private var mShowTokopointNative = false
     private var showSeeAllCard = true
     private var isShowFirstInstallSearch = false
+    private var isUsingNewPullRefresh = true
     private var scrollToRecommendList = false
     private var isFeedLoaded = false
     private var startToTransitionOffset = 0
@@ -523,6 +530,9 @@ open class HomeRevampFragment :
         return DaggerBerandaComponent.builder().baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
     }
 
+    private fun isUseNewPullRefresh(): Boolean =
+        getRemoteConfig().getBoolean(RemoteConfigKey.HOME_USE_NEW_PULL_REFRESH, true)
+
     private fun fetchRemoteConfig() {
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
@@ -543,7 +553,12 @@ open class HomeRevampFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
-        val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
+        isUsingNewPullRefresh = isUseNewPullRefresh()
+        val view = inflater.inflate(
+            if (isUsingNewPullRefresh) R.layout.fragment_home_revamp else R.layout.fragment_home_revamp_old_refresh,
+            container,
+            false
+        )
         BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
             PAGE_NAME_FPI_HOME,
@@ -603,7 +618,11 @@ open class HomeRevampFragment :
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
 
-        refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
+        if (isUsingNewPullRefresh) {
+            refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
+        } else {
+            refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
+        }
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
@@ -842,9 +861,11 @@ open class HomeRevampFragment :
 // and makes refresh layout think we can't scroll up (which actually can! we only disable
 // scroll so that feed recommendation section can scroll its content)
         if (recyclerView.computeVerticalScrollOffset() == VERTICAL_SCROLL_FULL_BOTTOM_OFFSET) {
-            refreshLayout.setCanChildScrollUp(false)
+            refreshLayout?.setCanChildScrollUp(false)
+            refreshLayoutOld?.setCanChildScrollUp(false)
         } else {
-            refreshLayout.setCanChildScrollUp(true)
+            refreshLayout?.setCanChildScrollUp(true)
+            refreshLayoutOld?.setCanChildScrollUp(true)
         }
         if (recyclerView.canScrollVertically(RV_DIRECTION_TOP)) {
             navToolbar?.showShadow(lineShadow = true)
@@ -1029,13 +1050,21 @@ open class HomeRevampFragment :
     }
 
     private fun initRefreshLayout() {
-        refreshLayout.post {
+        refreshLayout?.post {
             /*
              * set notification gimmick
              */
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
-        refreshLayout.setOnRefreshListener(this)
+        refreshLayout?.setOnRefreshListener { onRefresh() }
+
+        refreshLayoutOld?.post {
+            /*
+             * set notification gimmick
+             */
+            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
+        }
+        refreshLayoutOld?.setOnRefreshListener { onRefresh() }
     }
 
     private fun subscribeHome() {
@@ -1146,6 +1175,12 @@ open class HomeRevampFragment :
                         showLoading()
                     }
                 }
+            }
+        )
+        getHomeViewModel().hideShowLoading.observe(
+            viewLifecycleOwner,
+            Observer {
+                hideLoading()
             }
         )
     }
@@ -1521,9 +1556,8 @@ open class HomeRevampFragment :
     }
 
     override fun onPageDragStateChanged(isDragged: Boolean) {
-        if (this::refreshLayout.isInitialized) {
-            refreshLayout.isEnabled = !isDragged
-        }
+        refreshLayout?.isEnabled = !isDragged
+        refreshLayoutOld?.isEnabled = !isDragged
     }
 
     override fun onPromoClick(position: Int, slidesModel: BannerSlidesModel) { // tracking handler
@@ -1670,6 +1704,8 @@ open class HomeRevampFragment :
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
             getHomeViewModel().refreshHomeData()
+        } else {
+            hideLoading()
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
@@ -1734,11 +1770,13 @@ open class HomeRevampFragment :
     }
 
     private fun showLoading() {
-        refreshLayout.isRefreshing = true
+        refreshLayout?.isRefreshing = true
+        refreshLayoutOld?.isRefreshing = true
     }
 
     private fun hideLoading() {
-        refreshLayout.isRefreshing = false
+        refreshLayout?.isRefreshing = false
+        refreshLayoutOld?.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
 
@@ -2314,11 +2352,13 @@ open class HomeRevampFragment :
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.setOnDragListener(object : FloatingEggButtonFragment.OnDragListener {
             override fun onDragStart() {
-                refreshLayout.setCanChildScrollUp(true)
+                refreshLayout?.setCanChildScrollUp(true)
+                refreshLayoutOld?.setCanChildScrollUp(true)
             }
 
             override fun onDragEnd() {
-                refreshLayout.setCanChildScrollUp(false)
+                refreshLayout?.setCanChildScrollUp(false)
+                refreshLayoutOld?.setCanChildScrollUp(false)
             }
         })
     }
@@ -2713,5 +2753,11 @@ open class HomeRevampFragment :
             coachmarkSubscription?.hideCoachMark()
         }
         showCoachMark(balanceSubscriptionCoachmark)
+    }
+
+    override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?) {
+        view?.let {
+            refreshLayout?.setContentChildViewPullRefresh(it)
+        }
     }
 }

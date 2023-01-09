@@ -41,4 +41,7 @@ class ImageAnnouncementPojo {
 
     @SerializedName("broadcast_cta_text")
     var broadcastCtaText: String? = null
+
+    @SerializedName("broadcast_cta_label")
+    var broadcastCtaLabel: String? = ""
 }

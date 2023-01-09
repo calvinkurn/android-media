@@ -40,6 +40,7 @@
     <color name="chatbot_dms_compose_msg_hint">#31353B66</color>
     <color name="chatbot_dms_transparent">#00000000</color>
     <color name="chatbot_dms_compose_bg">#F3F5F8</color>
+    <color name="chatbot_dms_optional_text">#AD31353B</color>
 
 
 

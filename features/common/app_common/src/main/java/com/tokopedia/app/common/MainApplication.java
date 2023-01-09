@@ -5,8 +5,6 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics;
-import com.tokopedia.app.common.di.CommonAppComponent;
-import com.tokopedia.app.common.di.DaggerCommonAppComponent;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -31,8 +29,6 @@ import java.io.File;
 
 public abstract class MainApplication extends CoreNetworkApplication {
 
-    private DaggerCommonAppComponent.Builder daggerBuilder;
-    private CommonAppComponent appComponent;
     protected UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
@@ -74,10 +70,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
         userSession = new UserSession(this);
         initCrashlytics();
         initAnalyticUserId();
-
-        daggerBuilder = DaggerCommonAppComponent.builder()
-                .baseAppComponent((MainApplication.this).getBaseAppComponent());
-        getApplicationComponent().inject(this);
 
         initBranch();
         NotificationUtils.setNotificationChannel(this);
@@ -141,17 +133,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
             }
         };
         Weaver.Companion.executeWeaveCoRoutineNow(crashlyticsAnalyticsUserIdWeave);
-    }
-
-    public CommonAppComponent getApplicationComponent() {
-        return getAppComponent();
-    }
-
-    public CommonAppComponent getAppComponent() {
-        if (appComponent == null) {
-            appComponent = daggerBuilder.build();
-        }
-        return appComponent;
     }
 
     //this method needs to be called from here in case of migration get it tested from CM team

@@ -46,7 +46,7 @@ class FeedPlusTopAdsShopTestCase {
                 likeKolPostUseCase = mockk(),
                 addToCartUseCase = mockk(),
                 trackAffiliateClickUseCase = trackAffiliateClickUseCase,
-                deletePostUseCase = mockk(),
+                submitActionContentUseCase = mockk(),
                 sendTopAdsUseCase = sendTopAdsUseCase,
                 playWidgetTools = mockk(),
                 getDynamicFeedNewUseCase = mockk(),

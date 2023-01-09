@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedia.feedplus.view
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -19,6 +18,7 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
+import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -37,9 +37,9 @@ import org.spekframework.spek2.style.gherkin.FeatureBody
 fun TestBody.createFeedViewModel(): FeedViewModel{
     val userSession by memoized<UserSessionInterface>()
     val likeKolPostUseCase by memoized<LikeKolPostUseCase>()
+    val submitActionContentUseCase by memoized<SubmitActionContentUseCase>()
     val atcUseCase by memoized<com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase>()
     val trackAffiliateClickUseCase by memoized<TrackAffiliateClickUseCase>()
-    val deletePostUseCase by memoized<DeletePostUseCase>()
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
     val playWidgetTools by memoized<PlayWidgetTools>()
     val getDynamicFeedNewUseCase by memoized<GetDynamicFeedNewUseCase>()
@@ -61,9 +61,9 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
         baseDispatcher = CoroutineTestDispatchersProvider,
         userSession = userSession,
         likeKolPostUseCase = likeKolPostUseCase,
+        submitActionContentUseCase = submitActionContentUseCase,
         addToCartUseCase = atcUseCase,
         trackAffiliateClickUseCase = trackAffiliateClickUseCase,
-        deletePostUseCase = deletePostUseCase,
         sendReportUseCase = sendReportUseCase,
         playWidgetTools = playWidgetTools,
         trackVisitChannelBroadcasterUseCase = feedBroadcastTrackerUseCase,
@@ -112,10 +112,6 @@ fun FeatureBody.createFeedTestInstance() {
 
     val trackAffiliateClickUseCase by memoized {
         mockk<TrackAffiliateClickUseCase>(relaxed = true)
-    }
-
-    val deletePostUseCase by memoized {
-        mockk<DeletePostUseCase>(relaxed = true)
     }
 
     val sendTopAdsUseCase by memoized {
