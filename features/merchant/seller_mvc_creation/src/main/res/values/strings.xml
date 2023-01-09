@@ -369,4 +369,45 @@
     <string name="smvc_success_upload_via_broadcast_desc">Tingkatkan penggunaan voucher 3x lipat.</string>
     <string name="smvc_success_upload_free_label_text">Gratis</string>
 
+    <!--Intro page-->
+    <string name="smvc_intro_make_coupons_faster">Buat kupon jadi lebih cepat</string>
+    <string name="smvc_intro_coupon_subtitle">dengan klik di satu tempat.</string>
+    <string name="smvc_intro_voucher_card_1_title">Fleksibel buat kupon</string>
+    <string name="smvc_intro_voucher_card_1_subtitle">Buat kupon untuk semua produk atau produk-produk  pilihanmu saja </string>
+    <string name="smvc_intro_voucher_card_2_title">Beragam pilihan promo untuk kuponmu</string>
+    <string name="smvc_intro_voucher_card_2_subtitle">Kelola tipe promo, potongan harga, dan minimum pembelian sesuai kebutuhan penjualanmu. </string>
+    <string name="smvc_intro_voucher_card_3_title">Bebas tentukan target pembeli</string>
+    <string name="smvc_intro_voucher_card_3_subtitle">Strategi penjualan lebih efektif dengan penggunaan kupon sesuai target pembeli.</string>
+    <string name="smvc_intro_voucher_type_card_title">Jenis Kupon apa sajayang bisa dibuat?</string>
+    <string name="smvc_intro_voucher_type_card_1_title">Kupon Toko</string>
+    <string name="smvc_intro_voucher_type_card_1_subtitle">Kupon dapat dipasang ke semua produk yang ada di tokomu.</string>
+    <string name="smvc_intro_voucher_type_card_2_title">Kupon Produk</string>
+    <string name="smvc_intro_voucher_type_card_2_subtitle">Kupon dapat dipasang ke produk-produk tertentu yang kamu pilih.</string>
+    <string name="smvc_intro_voucher_type_choice_of_target">Pilihan target pembeli yang bisa menggunakan kuponmu</string>
+    <string name="smvc_intro_voucher_type_choice_of_target_card_1_title">Semua Pembeli</string>
+    <string name="smvc_intro_voucher_type_choice_of_target_card_1_subtitle"><![CDATA[Kupon yang kamu buat bisa digunakan oleh <b>semua pembeli</b> untuk belanja di tokomu.]]></string>
+    <string name="smvc_intro_voucher_type_choice_of_target_card_2_title">Follower Baru</string>
+    <string name="smvc_intro_voucher_type_choice_of_target_card_2_subtitle"><![CDATA[Kupon yang kamu buat hanya bisa digunakan oleh <b>follower baru</b> untuk belanja di tokomu.]]></string>
+    <string name="smvc_intro_create_voucher">Buat Kupon</string>
+    <string name="smvc_intro_voucher_view_pager_header">Tipe kupon sesuai kebutuhan</string>
+    <string name="smvc_intro_voucher_view_pager_tab_1_title">Cashback</string>
+    <string name="smvc_intro_voucher_view_pager_tab_2_title">Gratis Ongkir</string>
+    <string name="smvc_intro_voucher_view_pager_tab_3_title">Diskon</string>
+    <string name="smvc_intro_voucher_view_pager_tab_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
+    <string name="smvc_intro_voucher_view_more">Lihat Selengkapnya</string>
+    <string name="smvc_intro_voucher_toolbar_text">Keuntungan Kupon Toko Saya</string>
+    <string name="smvc_intro_voucher_icon_semua_pembeli">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/semua_pembeli.png</string>
+    <string name="smvc_intro_voucher_icon_kupon_toko">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/kupon_toko.png</string>
+    <string name="smvc_intro_voucher_icon_kupon_produk">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/kupon_produk.png</string>
+    <string name="smvc_intro_voucher_icon_follower_baru">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/follower_baru.png</string>
+    <string name="smvc_intro_voucher_icon_fleksibel_buat_kupon">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/fleksibel_buat_kupon.png</string>
+    <string name="smvc_intro_voucher_icon_beragam_pilihan_promo">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/beragam_pilihan_promo.png</string>
+    <string name="smvc_intro_voucher_icon_bebas_tentukan_target">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/bebas_tentukan_target.png</string>
+    <string name="smvc_intro_voucher_carousel_gratis_ongkir_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_gratis_ongkir_1.png</string>
+    <string name="smvc_intro_voucher_carousel_gratis_ongkir_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_gratis_ongkir_2.png</string>
+    <string name="smvc_intro_voucher_carousel_diskon_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_diskon_1.png</string>
+    <string name="smvc_intro_voucher_carousel_diskon_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_diskon_2.png</string>
+    <string name="smvc_intro_voucher_carousel_cashback_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_1.png</string>
+    <string name="smvc_intro_voucher_carousel_cashback_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_2.png</string>
+
 </resources>

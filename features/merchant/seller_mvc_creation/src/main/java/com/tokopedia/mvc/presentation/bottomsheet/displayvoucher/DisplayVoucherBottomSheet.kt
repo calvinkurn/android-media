@@ -8,12 +8,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetCouponDisplayBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.DisplayVoucherViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -33,6 +34,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
     }
 
     private var voucher: Voucher? = null
+    private var voucherConfiguration: VoucherConfiguration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +43,9 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = SmvcBottomsheetCouponDisplayBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
-        setTitle(context?.resources?.getString(R.string.voucher_bs_coupon_display_title).toBlankOrString())
+        setTitle(
+            context?.resources?.getString(R.string.voucher_bs_coupon_display_title).toBlankOrString() // ktlint-disable max-line-length
+        )
         initInjector()
         initObservers()
         viewModel.setSelectedVoucherChip(ImageRatio.HORIZONTAL)
@@ -62,7 +66,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         horizontalChip.chipType = ChipsUnify.TYPE_SELECTED
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
                         verticalChip.chipType = ChipsUnify.TYPE_NORMAL
-                        setUpImage(voucher?.image)
+                        setUpImage(ImageRatio.HORIZONTAL)
                         changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
                     }
                 }
@@ -71,7 +75,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         horizontalChip.chipType = ChipsUnify.TYPE_NORMAL
                         squareChip.chipType = ChipsUnify.TYPE_SELECTED
                         verticalChip.chipType = ChipsUnify.TYPE_NORMAL
-                        setUpImage(voucher?.imageSquare)
+                        setUpImage(ImageRatio.SQUARE)
                         changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
                     }
                 }
@@ -80,11 +84,15 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         horizontalChip.chipType = ChipsUnify.TYPE_NORMAL
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
                         verticalChip.chipType = ChipsUnify.TYPE_SELECTED
-                        setUpImage(voucher?.imagePortrait)
+                        setUpImage(ImageRatio.VERTICAL)
                         changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED)
                     }
                 }
             }
+        }
+
+        viewModel.couponImage.observe(viewLifecycleOwner) {
+            binding?.voucherImage?.loadImage(it)
         }
     }
 
@@ -93,12 +101,15 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
     }
 
-    private fun setUpImage(url: String?) {
-        if (url == null) {
-            return
-        }
-        binding?.voucherImage?.loadImage(url) {
-            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+    private fun setUpImage(imageRatio: ImageRatio) {
+        binding?.voucherImage?.clearImage()
+        voucherConfiguration?.let {
+            viewModel.previewImage(
+                isCreateMode = false,
+                voucherConfiguration = it,
+                parentProductIds = it.productIds,
+                imageRatio = imageRatio
+            )
         }
     }
 
@@ -116,7 +127,9 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
 
     private fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .build()
             .inject(this)
     }
@@ -131,6 +144,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         fun newInstance(voucher: Voucher): DisplayVoucherBottomSheet {
             return DisplayVoucherBottomSheet().apply {
                 this.voucher = voucher
+                this.voucherConfiguration = voucher.toVoucherConfiguration()
             }
         }
 

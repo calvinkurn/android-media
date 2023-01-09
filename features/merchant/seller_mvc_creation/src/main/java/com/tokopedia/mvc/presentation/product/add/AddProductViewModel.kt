@@ -294,17 +294,36 @@ class AddProductViewModel @Inject constructor(
         val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
         val currentlyDisplayedProductIds = currentState.products.map { it.id }
 
-        val maxProductSelection = currentState.maxProductSelection
+        var selectionCount = 0
+        val modifiedProducts = currentState.products.map { product ->
 
-        val modifiedProducts = currentState.products.mapIndexed { index, product ->
-            val isProductOnAutoSelectRange = index < maxProductSelection
+            val hasRemainingSelection = selectionCount < currentState.maxProductSelection
 
-            determineShouldSelectProduct(
-                product,
-                currentlyDisplayedProductIds,
-                isOnSearchMode,
-                isProductOnAutoSelectRange
-            )
+            when {
+                !product.isEligible -> product.copy(isSelected = false, enableCheckbox = false)
+                hasRemainingSelection -> {
+                    selectionCount++
+
+                    val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
+                    val isSelected = if (isOnSearchMode) {
+                        //If is on search product mode. Only product from search result should be selected
+                        isProductDisplayedOnSearchResult
+                    } else {
+                        //If we're not in search product mode. Select all loaded products
+                        true
+                    }
+
+                    //To make sure only eligible variant will be selected
+                    val eligibleVariantIdsOnly = product.originalVariants.eligibleVariantIdsOnly()
+
+                    product.copy(
+                        isSelected = isSelected,
+                        enableCheckbox = true,
+                        selectedVariantsIds = eligibleVariantIdsOnly
+                    )
+                }
+                else -> product.copy(isSelected = false, enableCheckbox = false)
+            }
         }
 
         _uiState.update {
@@ -562,13 +581,23 @@ class AddProductViewModel @Inject constructor(
 
             val updatedProducts = currentState.products.map { parentProduct ->
                 if (parentProduct.id == parentProductId) {
-                    parentProduct.copy(selectedVariantsIds = selectedVariantIds)
+                    parentProduct.copy(isSelected = true, selectedVariantsIds = selectedVariantIds)
                 } else {
                     parentProduct
                 }
             }
 
-            _uiState.update { it.copy(products = updatedProducts) }
+            val selectedProducts = updatedProducts.selectedProductsOnly()
+            val checkboxState = determineCheckboxState(selectedProducts.count(), currentState.totalProducts)
+
+            _uiState.update {
+                it.copy(
+                    products = updatedProducts,
+                    selectedProductsIds = selectedProducts,
+                    selectedProductCount = selectedProducts.count(),
+                    checkboxState = checkboxState
+                )
+            }
         }
     }
 
@@ -690,42 +719,5 @@ class AddProductViewModel @Inject constructor(
             else -> AddProductUiState.CheckboxState.UNCHECKED
         }
         return checkboxState
-    }
-
-    private fun determineShouldSelectProduct(
-        product: Product,
-        currentlyDisplayedProductIds: List<Long>,
-        isOnSearchMode: Boolean,
-        isProductOnAutoSelectRange: Boolean
-    ): Product {
-        return when {
-            !product.isEligible -> {
-                product.copy(isSelected = false, enableCheckbox = false)
-            }
-            isProductOnAutoSelectRange -> {
-
-                val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
-                val isSelected = if (isOnSearchMode) {
-                    //If is on search product mode. Only product from search result should be selected
-                    isProductDisplayedOnSearchResult
-                } else {
-                    //If we're not in search product mode. Select all loaded products
-                    true
-                }
-
-                //To make sure only eligible variant will be selected
-                val eligibleVariantIdsOnly = product.originalVariants.eligibleVariantIdsOnly()
-
-                product.copy(
-                    isSelected = isSelected,
-                    enableCheckbox = true,
-                    selectedVariantsIds = eligibleVariantIdsOnly
-                )
-            }
-            !isProductOnAutoSelectRange -> {
-                product.copy(isSelected = false, enableCheckbox = false)
-            }
-            else -> product
-        }
     }
 }

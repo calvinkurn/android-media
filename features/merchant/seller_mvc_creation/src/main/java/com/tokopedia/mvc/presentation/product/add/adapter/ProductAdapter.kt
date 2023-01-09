@@ -23,6 +23,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ProductAdapter(
     private val onCheckboxClick: (Int, Boolean) -> Unit,
+    private val onCtaChangeVariantClick: (Int) -> Unit,
     private val onVariantClick: (Int) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
@@ -54,7 +55,8 @@ class ProductAdapter(
     inner class ViewHolder(private val binding : SmvcItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.tpgUpdateVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
+            binding.tpgUpdateVariant.setOnClickListener { onCtaChangeVariantClick(bindingAdapterPosition) }
+            binding.layoutVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
         }
 
         fun bind(item: Product) {

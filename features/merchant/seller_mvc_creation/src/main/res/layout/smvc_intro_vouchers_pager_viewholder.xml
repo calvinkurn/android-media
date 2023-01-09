@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/header_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="32dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        tools:text="@string/smvc_intro_voucher_view_pager_header" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tab_layout"
+        android:layout_marginTop="8dp"
+        app:tabTextAppearance="@style/CustomTextAppearanceTab"
+        app:layout_constraintTop_toBottomOf="@+id/header_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/smvc_intro_voucher_view_pager_tab_1_title"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/smvc_intro_voucher_view_pager_tab_2_title"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/smvc_intro_voucher_view_pager_tab_3_title"/>
+    </com.google.android.material.tabs.TabLayout>
+
+    <com.tokopedia.carousel.CarouselUnify
+        android:id="@+id/container_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout">
+
+
+    </com.tokopedia.carousel.CarouselUnify>
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/carousel_page_control"
+        app:indicator_color="DEFAULT"
+        app:indicator_type="CIRCLE"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/container_carousel"
+        app:layout_constraintLeft_toLeftOf="@id/container_carousel"
+        app:layout_constraintRight_toRightOf="@id/container_carousel"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/view_pager_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:typographyWeight="bold"
+        app:typographyType="display_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_carousel"
+        tools:text="@string/smvc_intro_voucher_view_pager_tab_1_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/view_pager_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:typographyType="paragraph_2"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:gravity="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_pager_title"
+        tools:text="@string/smvc_intro_voucher_view_pager_tab_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

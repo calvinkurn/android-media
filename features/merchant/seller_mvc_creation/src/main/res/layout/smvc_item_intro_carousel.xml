@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:id="@+id/mvc_intro_carousel_deferred_image"
+        app:unify_image_type="circle"
+        android:scaleType="fitXY"
+        tools:src="@color/Unify_GN500"
+        tools:completeUrl="@string/smvc_intro_voucher_carousel_cashback_1"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

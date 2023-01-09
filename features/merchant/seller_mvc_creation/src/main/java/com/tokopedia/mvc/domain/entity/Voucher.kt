@@ -1,8 +1,12 @@
 package com.tokopedia.mvc.domain.entity
 
 import android.os.Parcelable
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -49,4 +53,28 @@ data class Voucher(
         val parentProductId: Long = 0,
         val childProductId: List<Long>? = listOf()
     ) : Parcelable
+
+    fun toVoucherConfiguration(): VoucherConfiguration {
+        val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
+
+        return VoucherConfiguration(
+            voucherId = id,
+            benefitIdr = discountAmt.toLong(),
+            benefitMax = discountAmtMax.toLong(),
+            benefitPercent = discountAmt,
+            benefitType = if (discountUsingPercent) BenefitType.PERCENTAGE else BenefitType.NOMINAL,
+            promoType = PromoType.values().firstOrNull { value -> value.text == typeFormatted }
+                ?: PromoType.FREE_SHIPPING,
+            isVoucherProduct = isLockToProduct,
+            minPurchase = minimumAmt.toLong(),
+            productIds = selectedParentProductIds,
+            targetBuyer = targetBuyer,
+            quota = quota.toLong(),
+            isVoucherPublic = isPublic,
+            voucherName = name,
+            voucherCode = code,
+            startPeriod = startTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+            endPeriod = finishTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+        )
+    }
 }
