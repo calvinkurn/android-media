@@ -9,7 +9,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.tkpd.feed_component.helper.select
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.tkpd.feed_component.builder.DynamicTabsModelBuilder
 import com.tokopedia.tkpd.feed_component.builder.WhitelistModelBuilder
 import com.tokopedia.tkpd.feed_component.const.DEFAULT_DELAY
