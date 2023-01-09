@@ -16,7 +16,6 @@ import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.watch.TokopediaWatchActivity
 import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {
@@ -116,37 +115,12 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-
-        //        val model = BottomSheetUiModel(date = ChooseDateUiModel(content =
-//        listOf(
-//            ButtonDateUiModel("Hari ini", "10 Agustus", false),
-//            ButtonDateUiModel("Besok", "11 Agustus"),
-//            ButtonDateUiModel("Selasa", "12 Agustus"))), availableTime = listOf(
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)", note = "Sisa 1 Slot"),
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)"),
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)"),
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)", note = "Sisa 2 Slot"),
-//
-//            ), listOf(
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)"),
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)"),
-//            ))
-//        ScheduleSlotBottomSheet.show(supportFragmentManager, model)
-
-        // staging
-//        etAppLink?.setText(ApplinkConstInternalTokopediaNow.HOME)
-
-        // prod
-        etAppLink?.setText("tokopedia://product/2150454745")
-
         val appLink = etAppLink.text.toString()
         if (appLink.isNotBlank()) {
             RouteManager.route(this, appLink)
         } else {
             Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
         }
-//        val intent = Intent(this, HanselActivity::class.java)
-//        startActivity(intent)
     }
 
     private fun getDefaultAppLink(): String {

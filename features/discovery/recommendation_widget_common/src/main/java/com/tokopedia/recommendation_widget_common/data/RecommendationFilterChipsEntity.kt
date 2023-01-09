@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class RecommendationFilterChipsEntity(
-    @SerializedName("recommendationFilterChips")
+    @SerializedName("recommendationFilterChips", alternate = ["recommendationFilterChipsV2"])
     val recommendationFilterChips: RecommendationFilterChips = RecommendationFilterChips()
 ) {
     data class RecommendationFilterChips(@SerializedName("data") val data: FilterAndSort = FilterAndSort())
