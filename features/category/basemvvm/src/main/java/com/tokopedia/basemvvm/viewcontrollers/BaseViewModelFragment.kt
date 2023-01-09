@@ -8,7 +8,7 @@ import com.tokopedia.basemvvm.BaseActivityFragmentInterface
 import com.tokopedia.basemvvm.viewmodel.BaseLifeCycleObserver
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
-abstract class BaseViewModelFragment<T : BaseViewModel> : TkpdBaseV4Fragment(), BaseActivityFragmentInterface<T> {
+abstract class BaseViewModelFragment< T : BaseViewModel>: TkpdBaseV4Fragment(),BaseActivityFragmentInterface<T> {
 
     private lateinit var bVM: T
 
