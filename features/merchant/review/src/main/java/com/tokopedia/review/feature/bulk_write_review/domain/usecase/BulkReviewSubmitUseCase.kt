@@ -54,7 +54,7 @@ class BulkReviewSubmitUseCase @Inject constructor(
 //        """.trimIndent(), BulkReviewSubmitResponse::class.java).data!!.productrevSubmitBulkReview!!
         return Gson().fromJson(
             """
-            {"data":{"productrevSubmitBulkReview":{"success":false,"failedInboxIDs":["-2147460944","-2147460936","-2147460934"]}}}
+            {"data":{"productrevSubmitBulkReview":{"success":false,"failedInboxIDs":[${params.filterIndexed { index, _ -> index % 2 == 1 }.map { it.inboxID }.joinToString(",") { "\"$it\"" }}]}}}
             """.trimIndent(),
             BulkReviewSubmitResponse::class.java
         ).data!!.productrevSubmitBulkReview!!
