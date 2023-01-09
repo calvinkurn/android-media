@@ -35,12 +35,9 @@ class CatalogProductItemViewHolder(
         }
         productTitle?.let {
             it.text = element?.catalogProduct?.name
-            it.setOnClickListener {
-                catalogLibraryListener.onCategoryItemClicked(element?.catalogProduct?.name)
-            }
         }
         productLayout.setOnClickListener {
-            catalogLibraryListener.onCategoryItemClicked(element?.catalogProduct?.name)
+            catalogLibraryListener.onProductCardClicked(element?.catalogProduct?.applink)
         }
     }
 }
