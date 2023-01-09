@@ -29,6 +29,7 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.PaymentInfoUiStateMapp
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ShipmentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
@@ -56,6 +57,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
@@ -125,7 +127,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
     ).toStateFlow(OrderInsuranceUiState.Loading)
     private val epharmacyInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapEpharmacyInfoUiState
-    ).toStateFlow(EpharmacyInfoUiState.Loading)
+    ).catch { t ->
+        emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
+    }.toStateFlow(EpharmacyInfoUiState.Loading)
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState,
