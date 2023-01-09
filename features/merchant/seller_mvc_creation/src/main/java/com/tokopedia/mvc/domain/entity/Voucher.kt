@@ -78,6 +78,3 @@ data class Voucher(
         )
     }
 }
-
-// isPublic -> typeFormatted -> promoType
-// isLockToProduct == true -> In VoucherDetailData Model object
