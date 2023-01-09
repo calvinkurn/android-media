@@ -128,6 +128,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val epharmacyInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapEpharmacyInfoUiState
     ).catch { t ->
+        //There is a case that additional_info returning null from backend, so make this default yet
+        //it will be hide in the section
         emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
     }.toStateFlow(EpharmacyInfoUiState.Loading)
 
