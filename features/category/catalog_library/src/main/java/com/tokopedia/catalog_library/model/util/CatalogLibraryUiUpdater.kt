@@ -22,8 +22,8 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
         )
         updateModel(
             CatalogShimmerDataModel(
-                CatalogLibraryConstant.CATALOG_LIST,
-                CatalogLibraryConstant.CATALOG_LIST,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
                 3
             )
         )
@@ -46,8 +46,8 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
         )
         updateModel(
             CatalogShimmerDataModel(
-                CatalogLibraryConstant.CATALOG_LIST,
-                CatalogLibraryConstant.CATALOG_LIST,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
                 3
             )
         )

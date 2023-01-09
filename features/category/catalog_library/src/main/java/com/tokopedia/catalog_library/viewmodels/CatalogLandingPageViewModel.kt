@@ -3,6 +3,7 @@ package com.tokopedia.catalog_library.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
@@ -69,7 +70,7 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogTopFive
     }
 
     private fun onAvailableCatalogTopFiveData(categoryIdentifier : String ,catalogListResponse: CatalogListResponse) {
-        if (catalogListResponse.catalogGetList.catalogsList.isEmpty()) {
+        if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
             catalogListResponse.let {
@@ -79,7 +80,7 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogTopFive
     }
 
     private fun onAvailableCatalogMostViralData(categoryIdentifier : String, catalogListResponse: CatalogListResponse) {
-        if (catalogListResponse.catalogGetList.catalogsList.isEmpty()) {
+        if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
             catalogListResponse.let {
@@ -89,11 +90,11 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogTopFive
     }
 
     private fun onAvailableCatalogListData(categoryIdentifier : String, catalogListResponse: CatalogListResponse) {
-        if (catalogListResponse.catalogGetList.catalogsList.isEmpty()) {
+        if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
             catalogListResponse.let {
-                _catalogLandingPageLiveData.postValue(Success(mapCatalogListData(categoryIdentifier, it)))
+                _catalogLandingPageLiveData.postValue(Success(mapCatalogProductData(it)))
             }
         }
     }
@@ -108,18 +109,24 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogTopFive
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 "Top 5 category terlaris di toped",
-                getTopFiveVisitableList(data.catalogGetList.catalogsList)
+                getTopFiveVisitableList(data.catalogGetList.catalogsProduct)
             )
         listOfComponents.add(catalogTopFiveDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getTopFiveVisitableList(catalogsList: ArrayList<CatalogListResponse.CatalogGetList.CatalogsList>): ArrayList<BaseCatalogLibraryDataModel> {
+    private fun getTopFiveVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
-        catalogsList.forEachIndexed { index, catalogTopFive ->
+        catalogsProduct.forEachIndexed { index, catalogTopFive ->
             catalogTopFive.rank = (index + 1)
-            visitableList.add(CatalogTopFiveDataModel(CATALOG_TOP_FIVE,CATALOG_TOP_FIVE,catalogTopFive))
+            visitableList.add(
+                CatalogTopFiveDataModel(
+                    CATALOG_TOP_FIVE,
+                    CATALOG_TOP_FIVE,
+                    catalogTopFive
+                )
+            )
         }
         return visitableList
     }
@@ -130,28 +137,61 @@ class CatalogLandingPageViewModel @Inject constructor(private val catalogTopFive
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                 "",
-                getMostViralVisitableList(data.catalogGetList.catalogsList)
+                getMostViralVisitableList(data.catalogGetList.catalogsProduct)
             )
         listOfComponents.add(catalogMostViralDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getMostViralVisitableList(catalogsList: ArrayList<CatalogListResponse.CatalogGetList.CatalogsList>): ArrayList<BaseCatalogLibraryDataModel> {
+    private fun getMostViralVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
-        catalogsList.forEach {
-            visitableList.add(CatalogMostViralDataModel(CATALOG_MOST_VIRAL,CATALOG_MOST_VIRAL,it))
+        catalogsProduct.forEach {
+            visitableList.add(CatalogMostViralDataModel(CATALOG_MOST_VIRAL, CATALOG_MOST_VIRAL, it))
         }
         return visitableList
     }
 
-    private fun mapCatalogListData(categoryIdentifier : String, data: CatalogListResponse): CatalogLibraryDataModel {
+    private fun mapCatalogProductData(data: CatalogListResponse): CatalogLibraryDataModel {
+        val catalogProductDataModel =
+            CatalogContainerDataModel(
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                "Katalog lainnya buat inspirasimu",
+                getProductsVisitableList(data.catalogGetList.catalogsProduct),
+                RecyclerView.VERTICAL
+            )
+
+        listOfComponents.add(catalogProductDataModel)
+
+        return CatalogLibraryDataModel(listOfComponents)
+    }
+
+    private fun getProductsVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        catalogsProduct.forEachIndexed { index, product ->
+            product.rank = (index + 1)
+            visitableList.add(
+                CatalogProductDataModel(
+                    CatalogLibraryConstant.CATALOG_PRODUCT,
+                    CatalogLibraryConstant.CATALOG_PRODUCT,
+                    product
+                )
+            )
+        }
+        return visitableList
+    }
+
+    private fun mapCatalogListData(
+        categoryIdentifier: String,
+        data: CatalogListResponse
+    ): CatalogLibraryDataModel {
         val catalogLandingListDataModel =
             CatalogLandingListDataModel(
-                CatalogLibraryConstant.CATALOG_LIST,
-                CatalogLibraryConstant.CATALOG_LIST,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
                 categoryIdentifier,
-                data.catalogGetList.catalogsList
+                data.catalogGetList.catalogsProduct
             )
         listOfComponents.add(catalogLandingListDataModel)
 

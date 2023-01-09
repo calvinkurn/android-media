@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.viewholder.components.*
-import com.tokopedia.catalog_library.viewholder.containers.*
+import com.tokopedia.catalog_library.viewholder.containers.CatalogLandingPageListContainerViewHolder
 
 class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: CatalogLibraryListener): BaseAdapterTypeFactory(),
     CatalogHomepageAdapterFactory {
@@ -18,8 +18,8 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
         return CatalogRelevantItemViewHolder.LAYOUT
     }
 
-    override fun type(data: CatalogListDataModel): Int {
-        return CatalogListContainerViewHolder.LAYOUT
+    override fun type(data: CatalogProductDataModel): Int {
+        return CatalogProductItemViewHolder.LAYOUT
     }
 
     override fun type(data: CatalogLihatDataModel): Int {
@@ -58,9 +58,18 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
             CatalogRelevantItemViewHolder.LAYOUT -> CatalogRelevantItemViewHolder(view, catalogLibraryListener)
             CatalogLihatViewHolder.LAYOUT -> CatalogLihatViewHolder(view, catalogLibraryListener)
             CatalogLihatItemViewHolder.LAYOUT -> CatalogLihatItemViewHolder(view, catalogLibraryListener)
-            CatalogLandingPageListContainerViewHolder.LAYOUT -> CatalogLandingPageListContainerViewHolder(view, catalogLibraryListener)
-            CatalogListContainerViewHolder.LAYOUT -> CatalogListContainerViewHolder(view, catalogLibraryListener)
-            CatalogContainerItemViewHolder.LAYOUT -> CatalogContainerItemViewHolder(view,catalogLibraryListener)
+            CatalogLandingPageListContainerViewHolder.LAYOUT -> CatalogLandingPageListContainerViewHolder(
+                view,
+                catalogLibraryListener
+            )
+            CatalogProductItemViewHolder.LAYOUT -> CatalogProductItemViewHolder(
+                view,
+                catalogLibraryListener
+            )
+            CatalogContainerItemViewHolder.LAYOUT -> CatalogContainerItemViewHolder(
+                view,
+                catalogLibraryListener
+            )
             CatalogShimmerViewHolder.LAYOUT -> CatalogShimmerViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

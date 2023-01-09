@@ -76,11 +76,11 @@ class CatalogHomepageViewModel @Inject constructor(
         catalogIdentifier: String,
         catalogListResponse: CatalogListResponse
     ) {
-        if (catalogListResponse.catalogGetList.catalogsList.isNullOrEmpty()) {
+        if (catalogListResponse.catalogGetList.catalogsProduct.isNullOrEmpty()) {
             onFailHomeData(IllegalStateException("No Catalog List Response Data"))
         } else {
             catalogListResponse.let {
-                _catalogHomeLiveData.postValue(Success(mapCatalogListData(it)))
+                _catalogHomeLiveData.postValue(Success(mapCatalogProductData(it)))
             }
         }
     }
@@ -149,15 +149,33 @@ class CatalogHomepageViewModel @Inject constructor(
         return visitableList
     }
 
-    private fun mapCatalogListData(data: CatalogListResponse): CatalogLibraryDataModel {
-        val catalogListDataModel =
-            CatalogListDataModel(
-                CatalogLibraryConstant.CATALOG_LIST,
-                CatalogLibraryConstant.CATALOG_LIST,
-                data.catalogGetList.catalogsList
+    private fun mapCatalogProductData(data: CatalogListResponse): CatalogLibraryDataModel {
+        val catalogProductDataModel =
+            CatalogContainerDataModel(
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                "Katalog lainnya buat inspirasimu",
+                getProductsVisitableList(data.catalogGetList.catalogsProduct),
+                RecyclerView.VERTICAL
             )
-        listOfComponents.add(catalogListDataModel)
+
+        listOfComponents.add(catalogProductDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
+    }
+
+    private fun getProductsVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        catalogsProduct.forEachIndexed { index, product ->
+            product.rank = (index + 1)
+            visitableList.add(
+                CatalogProductDataModel(
+                    CatalogLibraryConstant.CATALOG_PRODUCT,
+                    CatalogLibraryConstant.CATALOG_PRODUCT,
+                    product
+                )
+            )
+        }
+        return visitableList
     }
 }

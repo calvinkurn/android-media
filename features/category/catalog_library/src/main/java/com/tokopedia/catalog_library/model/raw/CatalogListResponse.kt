@@ -17,10 +17,10 @@ data class CatalogListResponse(
 
         @SerializedName("catalogs")
         @Expose
-        val catalogsList: ArrayList<CatalogsList> = arrayListOf()
+        val catalogsProduct: ArrayList<CatalogsProduct> = arrayListOf()
     )
         {
-            data class CatalogsList (
+            data class CatalogsProduct(
                 @SerializedName("id")
                 @Expose
                 val id: String? = "",

@@ -4,11 +4,11 @@ import android.os.Bundle
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 
-data class CatalogListDataModel(
+data class CatalogProductDataModel(
     val name: String = "",
     val type: String = "",
-    val catalogProductList: ArrayList<CatalogListResponse.CatalogGetList.CatalogsList>
-): BaseCatalogLibraryDataModel {
+    val catalogProduct: CatalogListResponse.CatalogGetList.CatalogsProduct
+) : BaseCatalogLibraryDataModel {
     override fun type() = type
 
     override fun type(typeFactory: CatalogHomepageAdapterFactory): Int {
