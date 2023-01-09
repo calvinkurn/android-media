@@ -2747,9 +2747,9 @@ class PlayViewModel @AssistedInject constructor(
                     it.copy(
                         param = it.param.copy(cursor = widgets.getConfig.cursor),
                         widgets = newList.getChannelBlocks,
+                        state = ResultState.Success
                     )
             }
-            _exploreWidget.update { it.copy(state = ResultState.Success) }
         }) { exception ->
             _exploreWidget.update { it.copy(state = ResultState.Fail(exception)) }
         }
@@ -2770,11 +2770,10 @@ class PlayViewModel @AssistedInject constructor(
 
                 it.copy(
                     widgets = newList.getChannelBlocks,
-                    param = it.param.copy(cursor = widgets.getConfig.cursor)
+                    param = it.param.copy(cursor = widgets.getConfig.cursor),
+                    state = ResultState.Success
                 )
             }
-
-            _exploreWidget.update { it.copy(state = ResultState.Success) }
         }){
                 exception -> _exploreWidget.update { it.copy(state = ResultState.Fail(exception)) }
         }
