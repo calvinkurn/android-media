@@ -2,6 +2,7 @@ package com.tokopedia.basemvvm.viewcontrollers
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.basemvvm.BaseActivityFragmentInterface
 import com.tokopedia.basemvvm.viewmodel.BaseLifeCycleObserver

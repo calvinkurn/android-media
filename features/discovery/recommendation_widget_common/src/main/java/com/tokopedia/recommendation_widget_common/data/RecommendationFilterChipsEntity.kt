@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -30,6 +31,7 @@ data class RecommendationFilterChipsEntity(
         val inputType: String = "",
         @SerializedName("key")
         val key: String = "",
+        @SuppressLint("EntityFieldAnnotation")
         var isSelected: Boolean = false
     )
 
