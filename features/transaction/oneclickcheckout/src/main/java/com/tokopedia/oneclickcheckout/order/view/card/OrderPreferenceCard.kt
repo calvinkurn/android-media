@@ -168,6 +168,7 @@ class OrderPreferenceCard(
         binding.shippingOccWidget.renderNormalShippingWithoutChooseCourierCard(
             serviceName = shipping.serviceName,
             shippingPrice = shipping.shippingPrice ?: 0,
+            description = shipping.whitelabelDescription,
             serviceEta = shipping.serviceEta,
             onChangeDurationListener = {
                 onChangeDuration(shipping)
