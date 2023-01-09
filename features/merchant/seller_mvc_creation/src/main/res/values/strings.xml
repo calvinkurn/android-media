@@ -349,6 +349,14 @@
     <string name="smvc_recurring_date_error_type_1_title">Sudah ada kode kupon yang sama untuk jadwal berikut:</string>
     <string name="smvc_recurring_date_error_type_2_title">Sudah ada Kupon Follower Baru lainnya di jadwal berikut: </string>
     <string name="smvc_recurring_date_error_type_3_title">Kuota kupon sudah habis untuk jadwal berikut: </string>
+    <string name="smvc_change_voucher_target_confirmation_label">Ganti Target Kupon?</string>
+    <string name="smvc_change_target_voucher_confirmation_description"><![CDATA[Target pembeli <b>Follower Baru</b> akan berubah menjadi <b>Semua Pembeli</b> jika kamu memilih target kupon Khusus.]]></string>
+    <string name="smvc_voucher_target_confirmation_primary_cta_label">Ya, Ganti</string>
+    <string name="smvc_voucher_target_confirmation_secondary_cta_label">Batalkan</string>
+    <string name="smvc_create_voucher_confirmation_title">Yakin tetap buat kupon?</string>
+    <string name="smvc_create_voucher_confirmation_description">Jika tetap lanjut buat kupon, semua jadwal yang bermasalah tidak akan disertakan.</string>
+    <string name="smvc_create_voucher_confirmation_primary_cta_label">Ya, Buat Kupon</string>
+    <string name="smvc_create_voucher_confirmation_secondary_cta_label">Batalkan</string>
 
     <!--Success Upload Bottomsheet-->
     <string name="smvc_success_upload_title">Yay, kupon berhasil dibuat!</string>

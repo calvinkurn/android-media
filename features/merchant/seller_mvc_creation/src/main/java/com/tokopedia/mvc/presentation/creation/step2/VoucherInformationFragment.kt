@@ -10,10 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_MINUTE_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.customview.RecurringDateScheduleCustomView
@@ -27,6 +29,7 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.SelectRepeatPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditCalendarBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
@@ -176,7 +179,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         )
         renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
         renderAvailableRecurringPeriod(state.validationDate)
-        renderButtonValidation(state.isInputValid())
+        renderButtonValidation(state.isInputValid(), state.validationDate)
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
@@ -270,7 +273,33 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setVoucherTarget(isPublic: Boolean) {
-        viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
+        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
+        if (!isPublic && currentVoucherConfiguration.targetBuyer == VoucherTargetBuyer.NEW_FOLLOWER) {
+            showChangeTargetConfirmationDialog(isPublic)
+        } else {
+            viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
+        }
+    }
+
+    private fun showChangeTargetConfirmationDialog(isPublic: Boolean) {
+        val dialog = context?.let { ctx ->
+            DialogUnify(
+                ctx,
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE
+            )
+        }
+        dialog?.apply {
+            setTitle(getString(R.string.smvc_change_voucher_target_confirmation_label))
+            setDescription(MethodChecker.fromHtml(getString(R.string.smvc_change_target_voucher_confirmation_description)))
+            setPrimaryCTAText(getString(R.string.smvc_voucher_target_confirmation_primary_cta_label))
+            setSecondaryCTAText(getString(R.string.smvc_voucher_target_confirmation_secondary_cta_label))
+            setPrimaryCTAClickListener {
+                viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
+                dismiss()
+            }
+            setSecondaryCTAClickListener { dismiss() }
+        }?.show()
     }
 
     private fun renderVoucherTargetSelection(isPublic: Boolean) {
@@ -590,7 +619,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             if (unAvailableDate.isNotEmpty()) {
                 unavailableRecurringPeriodView.run {
                     type = RecurringDateScheduleCustomView.TYPE_ERROR
-                    title = when(unAvailableDate.first().type) {
+                    title = when (unAvailableDate.first().type) {
                         1 -> getString(R.string.smvc_recurring_date_error_type_1_title)
                         2 -> getString(R.string.smvc_recurring_date_error_type_2_title)
                         else -> getString(R.string.smvc_recurring_date_error_type_3_title)
@@ -688,12 +717,41 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderButtonValidation(isEnabled: Boolean) {
+    private fun renderButtonValidation(
+        isEnabled: Boolean,
+        validationDate: List<VoucherValidationResult.ValidationDate>
+    ) {
         buttonSectionBinding?.run {
             btnContinue.apply {
+                val unAvailableDate = validationDate.filter { !it.available }
                 this.isEnabled = isEnabled
-                setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep) }
+                if (unAvailableDate.isNotEmpty()) {
+                    showCreateVoucherConfirmationDialog()
+                } else {
+                    setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep) }
+                }
             }
         }
+    }
+
+    private fun showCreateVoucherConfirmationDialog() {
+        val dialog = context?.let { ctx ->
+            DialogUnify(
+                ctx,
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE
+            )
+        }
+        dialog?.apply {
+            setTitle(getString(R.string.smvc_create_voucher_confirmation_title))
+            setDescription(getString(R.string.smvc_create_voucher_confirmation_description))
+            setPrimaryCTAText(getString(R.string.smvc_create_voucher_confirmation_primary_cta_label))
+            setSecondaryCTAText(getString(R.string.smvc_create_voucher_confirmation_secondary_cta_label))
+            setPrimaryCTAClickListener {
+                viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep)
+                dismiss()
+            }
+            setSecondaryCTAClickListener { dismiss() }
+        }?.show()
     }
 }
