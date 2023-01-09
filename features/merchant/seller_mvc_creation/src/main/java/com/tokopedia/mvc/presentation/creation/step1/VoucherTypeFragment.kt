@@ -219,7 +219,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
     }
 
     private fun showChangeVoucherTypeConfirmationDialog() {
-        TODO("Implement dialog")
+        //TODO("Implement dialog")
     }
 
     private fun showError(error: Throwable) {

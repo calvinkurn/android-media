@@ -213,6 +213,7 @@
     <string name="smvc_voucherlist_empty_data_title_text">Belum ada kupon %s, nih!</string>
     <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
     <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
+    <string name="smvc_voucher_type_editing_disabled">Jenis kupon tidak bisa diubah.</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>

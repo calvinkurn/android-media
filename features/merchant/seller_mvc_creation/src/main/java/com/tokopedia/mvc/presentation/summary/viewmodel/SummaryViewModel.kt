@@ -53,6 +53,9 @@ class SummaryViewModel @Inject constructor(
             it
         }
     }
+    val enableCouponTypeChange = Transformations.map(_configuration) {
+        it.voucherId == ADDING_VOUCHER_ID
+    }
 
     private val _products = MutableLiveData<List<SelectedProduct>>()
     val products: LiveData<List<SelectedProduct>> get() = _products

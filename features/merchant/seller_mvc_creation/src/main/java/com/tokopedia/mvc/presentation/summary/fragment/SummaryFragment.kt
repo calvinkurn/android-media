@@ -144,6 +144,10 @@ class SummaryFragment :
         activity?.finish()
     }
 
+    override fun onVoucherTypePageResult() {
+        //TODO("Not yet implemented")
+    }
+
     private fun setupPageMode() {
         if (pageMode == PageMode.EDIT) {
             viewModel.setupEditMode(voucherId ?: return)
@@ -209,6 +213,12 @@ class SummaryFragment :
                 loadingDialog?.show()
             } else {
                 loadingDialog?.dismiss()
+            }
+        }
+        viewModel.enableCouponTypeChange.observe(viewLifecycleOwner) {
+            binding?.layoutType?.apply {
+                tpgEditAction.isEnabled = it
+                tickerTypeEditingDisabled.isVisible = !it
             }
         }
     }
@@ -397,7 +407,7 @@ class SummaryFragment :
     }
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        // TODO: redirect to step 1
+        redirectionHelper.redirectToVoucherTypePage(this, configuration)
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {

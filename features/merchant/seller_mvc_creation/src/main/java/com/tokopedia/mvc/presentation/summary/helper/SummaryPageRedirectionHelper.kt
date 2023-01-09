@@ -6,17 +6,20 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 
 class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListener) {
     companion object {
         private const val REQUEST_CODE_ADD_PRODUCT = 100
         private const val REQUEST_CODE_VIEW_PRODUCT = 101
+        private const val REQUEST_CODE_CHANGE_COUPON_TYPE = 102
     }
 
     interface SummaryPageResultListener {
         fun onAddProductResult()
         fun onViewProductResult()
+        fun onVoucherTypePageResult()
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -24,6 +27,7 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
         when(requestCode) {
             REQUEST_CODE_ADD_PRODUCT -> listener.onAddProductResult()
             REQUEST_CODE_VIEW_PRODUCT -> listener.onViewProductResult()
+            REQUEST_CODE_CHANGE_COUPON_TYPE -> listener.onVoucherTypePageResult()
         }
     }
 
@@ -61,5 +65,14 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
             selectedWarehouseId = selectedWarehouseId
         )
         fragment.startActivityForResult(intent, REQUEST_CODE_VIEW_PRODUCT)
+    }
+
+    fun redirectToVoucherTypePage(
+        fragment: Fragment,
+        configuration: VoucherConfiguration
+    ) {
+        val context = fragment.context ?: return
+        val intent = VoucherTypeActivity.buildEditModeIntent(context, configuration)
+        fragment.startActivityForResult(intent, REQUEST_CODE_CHANGE_COUPON_TYPE)
     }
 }
