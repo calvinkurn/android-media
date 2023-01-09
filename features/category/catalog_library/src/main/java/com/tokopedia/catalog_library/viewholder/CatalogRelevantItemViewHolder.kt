@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library.viewholder.components
+package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout

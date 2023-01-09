@@ -1,12 +1,10 @@
-package com.tokopedia.catalog_library.viewholder.components
+package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogTopFiveDataModel
-import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify

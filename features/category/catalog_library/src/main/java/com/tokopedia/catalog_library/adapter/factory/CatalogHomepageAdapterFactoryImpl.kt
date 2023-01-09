@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.*
-import com.tokopedia.catalog_library.viewholder.components.*
+import com.tokopedia.catalog_library.viewholder.*
 
 class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: CatalogLibraryListener) :
     BaseAdapterTypeFactory(),
