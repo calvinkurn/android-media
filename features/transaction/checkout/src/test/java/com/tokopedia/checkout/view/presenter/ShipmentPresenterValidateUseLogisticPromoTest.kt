@@ -13,6 +13,7 @@ import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -73,6 +74,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
@@ -124,7 +128,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase,
+                getRatesWithScheduleUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -147,7 +153,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -188,7 +194,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode)
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode, true)
 
         // Then
         verifySequence {
@@ -226,7 +232,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode)
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode, true)
 
         // Then
         verifySequence {
@@ -273,7 +279,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                 )
         )
         presenter.setLatValidateUseRequest(validateUsePromoRequest)
-        presenter.doValidateUseLogisticPromo(cartPosition, "", validateUsePromoRequest, "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", validateUsePromoRequest, "", true)
 
         // Then
         verifySequence {
@@ -292,7 +298,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -312,7 +318,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -342,7 +348,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -368,7 +374,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -386,7 +392,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         presenter.detachView()
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verify(inverse = true) {

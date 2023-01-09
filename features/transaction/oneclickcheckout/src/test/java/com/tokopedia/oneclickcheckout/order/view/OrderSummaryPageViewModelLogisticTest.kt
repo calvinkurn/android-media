@@ -24,7 +24,9 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.utils.callOnCleared
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -41,6 +43,7 @@ import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import rx.Observable
 
@@ -2172,6 +2175,49 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(OccState.Failed(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
     }
 
+    @Test
+    fun `Get normal shipping duration param`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+
+        // When
+        orderSummaryPageViewModel.getShippingBottomsheetParam()
+
+        // Then
+        assert(orderSummaryPageViewModel.orderShippingDuration.value is OccState.Success)
+    }
+
+    @Test
+    fun `Get shipping duration param overweight`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(
+            shop = helper.orderData.cart.shop.copy(maximumWeight = 10, maximumWeightWording = "max"),
+            products = arrayListOf(helper.product.copy(weight = 100)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+
+        // When
+        orderSummaryPageViewModel.getShippingBottomsheetParam()
+
+        // Then
+        assertNotEquals(OccState.Success(OrderShippingDuration()), orderSummaryPageViewModel.orderShippingDuration.value)
+    }
+
+    @Test
+    fun `Get shipping duration param after choose BO`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = true)
+
+        // When
+        orderSummaryPageViewModel.getShippingBottomsheetParam()
+
+        // Then
+        assert((orderSummaryPageViewModel.orderShippingDuration.value as OccState.Success<OrderShippingDuration>).data.pslCode == helper.logisticPromo.promoCode)
+    }
+
     private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureData) {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
@@ -2185,6 +2231,17 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
         } answers {
             secondArg<(Throwable)-> Unit>().invoke(error)
+        }
+    }
+
+    @Test
+    fun `verify eligible for address cancel jobs when viewmodel call on cleared`() {
+        // When
+        orderSummaryPageViewModel.callOnCleared()
+
+        // Then
+        verify(exactly = 1) {
+            eligibleForAddressUseCase.cancelJobs()
         }
     }
 }

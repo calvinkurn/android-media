@@ -753,6 +753,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
+                shipmentCartItemModel.setShowScheduleDelivery(newCourierItemData.getScheduleDeliveryUiModel() != null);
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(newCourierItemData);
@@ -764,6 +765,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
+                shipmentCartItemModel.setShowScheduleDelivery(newCourierItemData.getScheduleDeliveryUiModel() != null);
             }
             updateShipmentCostModel();
             checkDataForCheckout();
@@ -962,10 +964,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     } else if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
                         shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                .getSelectedCourier().getShipperPrice();
+                                .getSelectedCourier().getSelectedShipper().getShipperPrice();
                         if (useInsurance != null && useInsurance) {
                             insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                    .getSelectedCourier().getInsurancePrice();
+                                    .getSelectedCourier().getSelectedShipper().getInsurancePrice();
                         }
                         if (isOrderPriority != null && isOrderPriority) {
                             orderPriorityFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()

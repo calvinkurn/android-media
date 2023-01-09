@@ -55,15 +55,15 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
 
     fun bindData(shippingDurationUiModel: ShippingDurationUiModel,
                  shippingDurationAdapterListener: ShippingDurationAdapterListener?,
-                 isDisableOrderPrioritas: Boolean) {
+                 isDisableOrderPrioritas: Boolean,
+                 isYearEndPromotion: Boolean) {
         if (shippingDurationUiModel.isShowShippingInformation && shippingDurationUiModel.etaErrorCode == 1) {
             tvShippingInformation.visibility = View.VISIBLE
         } else {
             tvShippingInformation.visibility = View.GONE
         }
 
-        if (shippingDurationAdapterListener?.isToogleYearEndPromotionOn() == true &&
-                shippingDurationUiModel.serviceData.isPromo == 1) {
+        if (isYearEndPromotion && shippingDurationUiModel.serviceData.isPromo == 1) {
             tvPromoPotency.visibility = View.VISIBLE
         } else {
             tvPromoPotency.visibility = View.GONE
