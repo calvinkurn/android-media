@@ -10,10 +10,10 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.data.response.UpdateStatusVoucherDataModel
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.*
-import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.Companion.UpdateVoucherAction
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -81,11 +81,9 @@ class VoucherDetailViewModel @Inject constructor(
                     promoType = data.voucherType,
                     isVoucherProduct = data.isVoucherProduct
                 )
-                val metaDataDeffered = async { getInitiateVoucherPageUseCase.execute(metadataParam) }
-                val token = metaDataDeffered.await()
-                val couponStatus =
-                    if (data.voucherStatus == VoucherStatus.NOT_STARTED) UpdateVoucherAction.DELETE else UpdateVoucherAction.STOP
-                val response = cancelVoucherUseCase.execute(data.voucherId.toInt(), couponStatus, token.token)
+                val token = getInitiateVoucherPageUseCase.execute(metadataParam).token
+                val couponStatus = if (data.voucherStatus == VoucherStatus.NOT_STARTED) UpdateVoucherAction.DELETE else UpdateVoucherAction.STOP
+                val response = cancelVoucherUseCase.execute(data.voucherId.toInt(), couponStatus, token)
                 _updateVoucherStatusData.postValue(Success(response))
             },
             onError = { error ->

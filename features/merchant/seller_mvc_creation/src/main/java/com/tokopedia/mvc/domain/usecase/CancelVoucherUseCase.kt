@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.mvc.data.exception.VoucherCancellationException
 import com.tokopedia.mvc.data.response.CancelVoucherResponse
 import com.tokopedia.mvc.data.response.UpdateStatusVoucherDataModel
+import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
 import com.tokopedia.mvc.util.constant.CommonConstant.SELLER_APP_PAGE_SOURCE
 import javax.inject.Inject
 
@@ -26,11 +27,6 @@ class CancelVoucherUseCase @Inject constructor(
         private const val TOKEN_KEY = "token"
         private const val STATUS_KEY = "status"
         private const val SOURCE_KEY = "source"
-
-        enum class UpdateVoucherAction(val state: String) {
-            STOP("stop"),
-            DELETE("delete")
-        }
     }
 
     private val mutation = object : GqlQueryInterface {

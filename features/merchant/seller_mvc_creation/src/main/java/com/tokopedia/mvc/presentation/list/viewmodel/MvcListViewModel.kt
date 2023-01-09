@@ -9,12 +9,11 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
+import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.*
-import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.Companion.UpdateVoucherAction.DELETE
-import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.Companion.UpdateVoucherAction.STOP
 import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
@@ -147,7 +146,7 @@ class MvcListViewModel @Inject constructor(
                 val metadataParam = GetInitiateVoucherPageUseCase.Param(VoucherAction.UPDATE, detailVoucher.voucherType, detailVoucher.isVoucherProduct)
                 val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam) }
                 val token = metadataDeferred.await()
-                val couponStatus = if (voucherStatus == VoucherStatus.NOT_STARTED) DELETE else STOP
+                val couponStatus = if (voucherStatus == VoucherStatus.NOT_STARTED) UpdateVoucherAction.DELETE else UpdateVoucherAction.STOP
                 val idCancelVoucher = cancelVoucherUseCase.execute(voucher.id.toInt(), couponStatus, token.token)
                 if (idCancelVoucher.updateStatusVoucherData.voucherId.isNotEmpty()) {
                     _deleteUIEffect.emit(DeleteVoucherUiEffect.SuccessDeletedVoucher(idCancelVoucher.updateStatusVoucherData.voucherId.toIntOrZero(), voucher.name, voucherStatus))

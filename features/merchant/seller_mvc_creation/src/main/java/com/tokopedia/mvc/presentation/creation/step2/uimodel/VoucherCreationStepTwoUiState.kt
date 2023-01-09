@@ -21,16 +21,42 @@ data class VoucherCreationStepTwoUiState(
     val error: Throwable? = null
 ) {
     fun isInputValid(): Boolean = if (voucherConfiguration.isVoucherPublic) {
-        if (voucherConfiguration.isPeriod){
-            !isVoucherNameError && !isStartDateError && !isEndDateError && validationDate.any { it.available }
-        } else {
-            !isVoucherNameError && !isStartDateError && !isEndDateError
-        }
+        validateWhenVoucherIsPublic()
     } else {
-        if (voucherConfiguration.isPeriod) {
-            !isVoucherNameError && !isVoucherCodeError && !isStartDateError && !isEndDateError && validationDate.any { it.available }
+        validateWhenVoucherIsNotPublic()
+    }
+
+    //public voucher region
+    private fun validateWhenVoucherIsPublic(): Boolean {
+        return if (voucherConfiguration.isPeriod) {
+            isRecurringPublicVoucherValid()
         } else {
-            !isVoucherNameError && !isVoucherCodeError && !isStartDateError && !isEndDateError
+            isNonRecurringPublicVoucherValid()
         }
+    }
+
+    private fun isRecurringPublicVoucherValid(): Boolean {
+        return !isVoucherNameError && !isStartDateError && !isEndDateError && validationDate.any { it.available }
+    }
+
+    private fun isNonRecurringPublicVoucherValid(): Boolean {
+        return !isVoucherNameError && !isStartDateError && !isEndDateError
+    }
+
+    //private voucher region
+    private fun validateWhenVoucherIsNotPublic(): Boolean {
+        return if (voucherConfiguration.isPeriod) {
+            isRecurringPrivateVoucherValid()
+        } else {
+            isNonRecurringPrivateVoucherValid()
+        }
+    }
+
+    private fun isRecurringPrivateVoucherValid(): Boolean {
+        return !isVoucherNameError && !isVoucherCodeError && !isStartDateError && !isEndDateError && validationDate.any { it.available }
+    }
+
+    private fun isNonRecurringPrivateVoucherValid(): Boolean {
+        return !isVoucherNameError && !isVoucherCodeError && !isStartDateError && !isEndDateError
     }
 }
