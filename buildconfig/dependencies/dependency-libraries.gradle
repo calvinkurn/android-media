@@ -26,8 +26,9 @@ ext {
             brizzi                  : "com.tokopedia.brizzi:brizzi:1.3.1@aar",
             larixBroadcaster        : "com.wmspanel.libstream:libstream:1.0@aar",
             logger                  : "com.tokopedia.library:logger:0.0.2",
-            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.1.7",
-            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.1.7"
+            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.3.4",
+            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.3.4",
+            cassavaTest             : "com.tokopedia.analyticsdebugger:cassavatest:1.3.4"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -46,7 +47,6 @@ ext {
             blockCanaryNoOp         : "com.github.markzhai:blockcanary-no-op:1.5.0",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
             bubbles                 : ":libraries:bubbles",
-            cassavaTest             : ":libraries:cassavatest",
             charts                  : ":libraries:charts",
             circularViewPager       : ":libraries:circular_view_pager",
             cmPushNotifications     : ":libraries:cm_push_notifications",
