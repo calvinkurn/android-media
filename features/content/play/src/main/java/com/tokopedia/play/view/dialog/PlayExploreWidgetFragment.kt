@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
@@ -38,6 +39,7 @@ import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
@@ -229,6 +231,22 @@ class PlayExploreWidgetFragment @Inject constructor(
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
+
+        setupDraggable()
+    }
+
+    private fun setupDraggable() {
+        view?.setOnTouchListener { vw, motionEvent ->
+            if(vw.x >= 700) {
+                dismiss()
+                return@setOnTouchListener false
+            }
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                if(motionEvent.x < 10) vw.x = vw.x - 100 else vw.x = vw.x + 100
+                true
+            }
+            false
+        }
     }
 
     override fun onDestroyView() {

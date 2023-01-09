@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:text="Eksplor"
+        android:text="@string/play_explore_widget_name"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/iv_explore_arrow"

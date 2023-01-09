@@ -22,7 +22,7 @@ data class ExploreWidgetUiModel(
                 chips = TabMenuUiModel.Empty,
                 param = WidgetParamUiModel.Empty,
                 widgets = emptyList(),
-                state = ResultState.Success,
+                state = ResultState.Loading,
             )
     }
 }
@@ -61,7 +61,7 @@ data class TabMenuUiModel(
     companion object {
         val Empty: TabMenuUiModel
             get() = TabMenuUiModel(
-                items = emptyList(), state = ResultState.Success,
+                items = emptyList(), state = ResultState.Loading,
             )
     }
 }
