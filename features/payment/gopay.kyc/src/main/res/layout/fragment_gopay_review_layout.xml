@@ -170,10 +170,12 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <include
+        android:id="@+id/gopaySupervisedLayout"
         layout="@layout/gopay_kyc_bank_supervised_layout"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/sendKycButton"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/sendKycButton"
         app:layout_constraintStart_toStartOf="@+id/sendKycButton" />
 
@@ -183,23 +185,34 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/unify_space_8"
         android:text="@string/gopay_kyc_submit_button_text"
-        app:layout_constraintBottom_toTopOf="@+id/tncText"
+        android:enabled="false"
+        android:clickable="false"
+        app:layout_constraintBottom_toTopOf="@+id/gopaySupervisedLayout"
         app:layout_constraintEnd_toEndOf="@+id/kycReviewTitle"
         app:layout_constraintStart_toStartOf="@+id/kycReviewTitle"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
 
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/tncCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/kycReviewTitle"
+        app:layout_constraintEnd_toStartOf="@id/tncText"
+        app:layout_constraintTop_toTopOf="@id/tncText"
+        app:layout_constraintBottom_toBottomOf="@id/tncText"
+        />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tncText"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_24"
-        android:gravity="center"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/sendKycButton"
         app:layout_constraintEnd_toEndOf="@+id/kycReviewTitle"
-        app:layout_constraintStart_toStartOf="@+id/kycReviewTitle"
+        app:layout_constraintStart_toEndOf="@id/tncCheckbox"
         app:typographyType="small" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
