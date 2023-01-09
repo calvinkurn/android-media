@@ -494,11 +494,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeViewEvent()
     }
 
-    private fun setupCoachMark() {
+    private fun setupCoachMark(isShortsEntryPointShown: Boolean) {
         if(coachMark != null) return
 
         val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
-            if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)) {
+            if(isShortsEntryPointShown && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)) {
                 add(
                     CoachMark2Item(
                         anchorView = binding.bannerShorts,
@@ -507,6 +507,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         position = CoachMark2.POSITION_BOTTOM,
                     )
                 )
+                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
 
             if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
@@ -798,13 +799,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         if(curr.shortVideoAllowed) {
             binding.bannerShorts.show()
-            setupCoachMark()
-
             analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
         }
         else {
             binding.bannerShorts.gone()
         }
+
+        setupCoachMark(curr.shortVideoAllowed)
     }
 
     /** Form */
