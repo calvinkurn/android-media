@@ -240,10 +240,10 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
-                        ContentWidgetDataModel(
-                            type = component.type,
-                            name = component.componentName
-                        )
+                            ContentWidgetDataModel(
+                                    type = component.type,
+                                    name = component.componentName
+                            )
                     )
                 }
                 ProductDetailConstant.AR_BUTTON -> {
@@ -693,30 +693,28 @@ object DynamicProductDetailMapper {
         val higherThanLollipop = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
 
         return initialLayoutData.filterNot {
-            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner)) ||
-                (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) ||
-                (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) ||
-                (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore) ||
-                (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
-                (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
-                (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp()) ||
-                (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) ||
-                (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) ||
-                /***
-                 * remove palugada type with name
-                 * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
-                 */
-                (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) ||
-                (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT) ||
-                (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) ||
-                (it.name() == ProductDetailConstant.ORDER_PRIORITY) ||
-                /**
-                 * Remove when lollipop and product of seller itself
-                 */
-                (
-                    it.name() == ProductDetailConstant.AR_BUTTON &&
-                        (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner)
-                    )
+            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO)
+                    || (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore)
+                    || (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp())
+                    || (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp())
+                    /***
+                     * remove palugada type with name
+                     * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
+                     */
+                    || (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
+                    || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
+                    || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
+                    /**
+                     * Remove when lollipop and product of seller itself
+                     */
+                    || (it.name() == ProductDetailConstant.AR_BUTTON
+                    && (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner))
         }.toMutableList()
     }
 
