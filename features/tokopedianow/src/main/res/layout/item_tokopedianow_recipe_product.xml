@@ -101,6 +101,7 @@
         android:id="@+id/imageChevron"
         android:layout_width="15dp"
         android:layout_height="28dp"
+        android:visibility="gone"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         app:icon_color_light_enable="@color/Unify_G500"
