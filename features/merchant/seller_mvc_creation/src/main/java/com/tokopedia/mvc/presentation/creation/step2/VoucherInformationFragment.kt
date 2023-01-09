@@ -529,6 +529,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun renderVoucherRecurringToggleChanges(voucherConfiguration: VoucherConfiguration) {
         voucherPeriodSectionBinding?.run {
             tfRepeat.isVisible = voucherConfiguration.isPeriod
+            iconChevronDown.isVisible = voucherConfiguration.isPeriod
         }
     }
 
@@ -587,7 +588,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 recurringPeriodView.run {
                     type = RecurringDateScheduleCustomView.TYPE_NORMAL
                     title = getString(R.string.smvc_voucher_active_label)
-                    isVisible = true
+                    isVisible = tfRepeat.isVisible
 
                     val firstPeriodStartDate = DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
@@ -649,7 +650,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         2 -> getString(R.string.smvc_recurring_date_error_type_2_title)
                         else -> getString(R.string.smvc_recurring_date_error_type_3_title)
                     }
-                    isVisible = true
+                    isVisible = tfRepeat.isVisible
 
                     val firstPeriodStartDate = DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
