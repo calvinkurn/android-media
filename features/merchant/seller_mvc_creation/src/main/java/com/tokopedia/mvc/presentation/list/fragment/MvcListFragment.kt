@@ -55,6 +55,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
+import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.PageState
@@ -170,9 +171,8 @@ class MvcListFragment :
             is MoreMenuUiModel.Broadcast -> {
                 SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
             }
-            // TODO change this , using for testing
             is MoreMenuUiModel.Download -> {
-                showDisplayVoucherBottomSheet(voucher)
+                showDownloadVoucherBottomSheet(voucher)
             }
             is MoreMenuUiModel.Clear -> {
             }
@@ -252,6 +252,34 @@ class MvcListFragment :
                     voucher
                 )
             displayVoucherBottomSheet?.show(childFragmentManager, "")
+        }
+    }
+
+    private fun showDownloadVoucherBottomSheet(voucher: Voucher) {
+        activity?.let {
+            if (!isVisible) return
+
+            val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+                voucher.image,
+                voucher.imageSquare,
+                voucher.imagePortrait
+            )
+            bottomSheet.setOnDownloadSuccess {
+                binding?.footer?.root?.showToaster(
+                    getString(
+                        R.string.smvc_placeholder_download_voucher_image_success,
+                        voucher.name
+                    ),
+                    getString(R.string.smvc_ok)
+                )
+            }
+            bottomSheet.setOnDownloadError {
+                binding?.footer?.root?.showToaster(
+                    getString(R.string.smvc_download_voucher_image_failed),
+                    getString(R.string.smvc_ok)
+                )
+            }
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
         }
     }
 
