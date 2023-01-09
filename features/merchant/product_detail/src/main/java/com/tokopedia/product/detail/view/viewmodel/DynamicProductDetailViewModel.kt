@@ -22,7 +22,6 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
@@ -59,14 +58,11 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generat
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
@@ -92,8 +88,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
@@ -111,7 +105,6 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import dagger.Lazy
-import javax.inject.Inject
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -129,6 +122,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
+import javax.inject.Inject
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
@@ -270,9 +264,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _playWidgetReminderSwitch = MutableLiveData<Result<PlayWidgetReminderType>>()
     val playWidgetReminderSwitch: LiveData<Result<PlayWidgetReminderType>> = _playWidgetReminderSwitch
 
-    private val _toolbarTransparentState = MutableLiveData<Boolean>()
-    val toolbarTransparentState: LiveData<Boolean> get() = _toolbarTransparentState
-
     private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
 
@@ -308,7 +299,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
 
     init {
-        setToolbarState()
         iniQuantityFlow()
     }
 
@@ -615,8 +605,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
             p2DataDeffered.await().let { p2 ->
-                val p2Data = p2.copy(isToolbarTransparent = _toolbarTransparentState.value.orFalse())
-                _p2Data.postValue(p2Data)
+                _p2Data.postValue(p2)
             }
 
             p2LoginDeferred?.let {
@@ -1130,25 +1119,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _playWidgetModel.value = Success(reversedToggleUi)
             _playWidgetReminderSwitch.value = Fail(it)
         })
-    }
-
-    private fun setToolbarState() {
-        if (!GlobalConfig.isSellerApp()) {
-            setToolbarStateFromRollence()
-        }
-    }
-
-    private fun setToolbarStateFromRollence() {
-        try {
-            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
-            val abTestToolbarState = abTestPlatform.getString(
-                key = RollenceKey.PdpToolbar.key,
-                defaultValue = ""
-            )
-            _toolbarTransparentState.value = abTestToolbarState == RollenceKey.PdpToolbar.transparent
-        } catch (throwable: Throwable) {
-            _toolbarTransparentState.value = false
-        }
     }
 
     fun getVerticalRecommendationData(pageName: String, page: Int? = DEFAULT_PAGE_NUMBER, productId: String?) {

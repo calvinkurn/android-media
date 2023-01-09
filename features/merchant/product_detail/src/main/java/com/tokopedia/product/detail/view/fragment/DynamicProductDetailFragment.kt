@@ -82,7 +82,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -559,6 +558,7 @@ open class DynamicProductDetailFragment :
         initBtnAction()
 
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
+        setupToolbarState()
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
 
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
@@ -630,7 +630,6 @@ open class DynamicProductDetailFragment :
     }
 
     override fun observeData() {
-        observeToolbarState()
         observeP1()
         observeP2Data()
         observeP2Login()
@@ -2669,12 +2668,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun observeToolbarState() {
-        viewLifecycleOwner.observe(viewModel.toolbarTransparentState) { shouldTransparent ->
-            setupToolbarState(shouldTransparent = shouldTransparent)
-        }
-    }
-
     /**
      * Region of PLT Monitoring
      */
@@ -3210,18 +3203,10 @@ open class DynamicProductDetailFragment :
             if (items.isEmpty()) {
                 navigation?.stop(recyclerView)
             } else {
-                val offsetY = getNavTabBarOffset(isToolbarTransparent = data.isToolbarTransparent)
+                val offsetY = navToolbar?.height.orZero()
                 navigation?.start(recyclerView, items, this, offsetY = offsetY)
             }
         }
-    }
-
-    private fun getNavTabBarOffset(
-        isToolbarTransparent: Boolean
-    ) = if (isToolbarTransparent) {
-        navToolbar?.height.orZero()
-    } else {
-        0
     }
 
     override fun onButtonFollowNplClick() {
@@ -4140,54 +4125,9 @@ open class DynamicProductDetailFragment :
         return ContextCompat.getColor(requireContext(), unifyColor)
     }
 
-    private fun setupToolbarState(shouldTransparent: Boolean) {
-        if (shouldTransparent) {
-            setContentConstraintToParentTop()
-            setupToolbarWithStatusBarDark()
-            addRecyclerViewScrollListener()
-            setToolbarShadowState(show = true)
-        } else {
-            setContentConstraintToNavToolbarBottom()
-            setupToolbarWithStatusBarLight()
-            removeRecyclerViewScrollListener()
-            setToolbarShadowState(show = false)
-        }
-    }
-
-    /**
-     * when the toolbar is transparent, then the content is displayed full-screen
-     */
-    private fun setContentConstraintToParentTop() {
-        binding?.apply {
-            TransitionManager.beginDelayedTransition(containerDynamicProductDetail)
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(containerDynamicProductDetail)
-            constraintSet.connect(
-                swipeRefreshPdp.id,
-                ConstraintSet.TOP,
-                containerDynamicProductDetail.id,
-                ConstraintSet.TOP
-            )
-            constraintSet.applyTo(containerDynamicProductDetail)
-        }
-    }
-
-    /**
-     * when the toolbar is solid, then the content is displayed normally under the toolbar
-     */
-    private fun setContentConstraintToNavToolbarBottom() {
-        binding?.apply {
-            TransitionManager.beginDelayedTransition(containerDynamicProductDetail)
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(containerDynamicProductDetail)
-            constraintSet.connect(
-                swipeRefreshPdp.id,
-                ConstraintSet.TOP,
-                pdpNavtoolbar.id,
-                ConstraintSet.BOTTOM
-            )
-            constraintSet.applyTo(containerDynamicProductDetail)
-        }
+    private fun setupToolbarState() {
+        setupToolbarWithStatusBarDark()
+        addRecyclerViewScrollListener()
     }
 
     private fun setupToolbarWithStatusBarLight() {
@@ -4222,31 +4162,6 @@ open class DynamicProductDetailFragment :
     private fun addRecyclerViewScrollListener() {
         scrollListener?.let {
             getRecyclerView()?.addOnScrollListener(it)
-        }
-    }
-
-    /**
-     * remove [NavRecyclerViewScrollListener] when dimen ratio is square
-     * non-active when not [RollenceKey.PdpToolbar.transparent]
-     */
-    private fun removeRecyclerViewScrollListener() {
-        scrollListener?.let {
-            getRecyclerView()?.removeOnScrollListener(it)
-        }
-    }
-
-    /**
-     * set toolbar shadow state
-     * If the toolbar is transparent, put a shadow on the top media so that the toolbar icon doesn't disappear
-     */
-    private fun setToolbarShadowState(show: Boolean) {
-        binding?.apply {
-            pdpToolbarShadow.isVisible = show
-            if (show) {
-                pdpToolbarShadow.setImageResource(R.drawable.bg_pdp_toolbar_gradient)
-            } else {
-                pdpToolbarShadow.setImageResource(0)
-            }
         }
     }
 
