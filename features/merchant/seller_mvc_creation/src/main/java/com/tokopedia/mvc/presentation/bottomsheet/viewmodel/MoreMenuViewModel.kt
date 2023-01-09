@@ -4,14 +4,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.util.StringHandler
 import javax.inject.Inject
 
 class MoreMenuViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private var menuItem: List<MoreMenuUiModel> = emptyList()
@@ -22,87 +21,98 @@ class MoreMenuViewModel @Inject constructor(
         voucherStatus: VoucherStatus?
     ): List<MoreMenuUiModel> {
         if (isFromVoucherDetail) {
-            when (voucherStatus) {
-                VoucherStatus.ONGOING -> {
-                    getVoucherDetailUpcomingOptionsListMenu()
+            menuItem =
+                when (voucherStatus) {
+                    VoucherStatus.ONGOING -> {
+                        getVoucherDetailOngoingOptionsListMenu()
+                    }
+                    VoucherStatus.NOT_STARTED -> {
+                        getVoucherDetailUpcomingOptionsListMenu()
+                    }
+                    else -> {
+                        getVoucherDetailEndedStoppedOptionsListMenu()
+                    }
                 }
-                VoucherStatus.NOT_STARTED -> {
-                    getVoucherDetailOngoingOptionsListMenu()
-                }
-                else -> {
-                    getVoucherDetailEndedStoppedOptionsListMenu()
-                }
-            }
         } else {
             if (voucher == null) {
                 return menuItem
             } else {
-                voucher.type.let { type ->
-                    menuItem = when (type) {
-                        PromoType.FREE_SHIPPING.id -> {
-                            // TODO adjust this
-                            getOngoingOptionsListMenu()
+                voucher.type.let {
+                    menuItem =
+                        // ONGOING
+                        if (voucher.isOngoingPromo()) {
+                            getOptionsListForOngoingPromo(voucher)
                         }
-                        else -> {
-                            // ONGOING
-                            if (voucher.isOngoingPromo()) {
-                                // return vps voucher menu
-                                if (voucher.isVps) {
-                                    getOngoingVpsSubsidyMenu()
+                        // UPCOMING
+                        else if (voucher.isUpComingPromo()) {
+                            getOptionsListForUpcomingPromo(voucher)
+                        }
+                        // STOPPED and ENDED
+                        else {
+                            when (voucher.status) {
+                                VoucherStatus.ENDED -> {
+                                    getOptionsListForEndedPromo(voucher)
                                 }
-                                // return subsidy voucher menu, isVps is always false here
-                                else if (voucher.isSubsidy) {
-                                    getOngoingVpsSubsidyMenu()
+                                VoucherStatus.STOPPED -> {
+                                    getOptionsListForStoppedPromo(voucher)
                                 }
-                                // return seller create voucher menu
-                                getOngoingOptionsListMenu()
-                            }
-                            // UPCOMING
-                            else if (voucher.isUpComingPromo()) {
-                                // return vps voucher menu
-                                if (voucher.isVps) {
-                                    getUpcomingVpsSubsidyMenu()
-                                }
-                                // return subsidy voucher menu
-                                else if (voucher.isSubsidy) {
-                                    getUpcomingVpsSubsidyMenu()
-                                }
-                                // return seller created voucher menu
-                                else {
-                                    getUpcomingOptionsListMenu()
-                                }
-                            }
-                            // STOPPED and ENDED
-                            else {
-                                when (voucher.status) {
-                                    VoucherStatus.ENDED -> {
-                                        if (voucher.isVps) {
-                                            getEndedVpsSubsidyListMenu()
-                                        } else if (voucher.isSubsidy) {
-                                            getEndedVpsSubsidyListMenu()
-                                        } else {
-                                            getEndedOrCancelledOptionsListMenu()
-                                        }
-                                    }
-                                    VoucherStatus.STOPPED -> {
-                                        if (voucher.isVps) {
-                                            getCancelledVpsSubsidyListMenu()
-                                        } else if (voucher.isSubsidy) {
-                                            getCancelledVpsSubsidyListMenu()
-                                        } else {
-                                            getEndedOrCancelledOptionsListMenu()
-                                        }
-                                    }
-                                    else ->
-                                        getEndedOrCancelledOptionsListMenu()
-                                }
+                                else ->
+                                    getEndedOrCancelledOptionsListMenu()
                             }
                         }
-                    }
                 }
             }
         }
         return menuItem
+    }
+
+    private fun getOptionsListForOngoingPromo(voucher: Voucher): List<MoreMenuUiModel> {
+        // return vps voucher menu
+        return if (voucher.isVps) {
+            getOngoingVpsSubsidyMenu()
+        }
+        // return subsidy voucher menu, isVps is always false here
+        else if (voucher.isSubsidy) {
+            getOngoingVpsSubsidyMenu()
+        } else {
+            // return seller create voucher menu
+            getOngoingOptionsListMenu()
+        }
+    }
+
+    private fun getOptionsListForUpcomingPromo(voucher: Voucher): List<MoreMenuUiModel> {
+        // return vps voucher menu
+        return if (voucher.isVps) {
+            getUpcomingVpsSubsidyMenu()
+        }
+        // return subsidy voucher menu
+        else if (voucher.isSubsidy) {
+            getUpcomingVpsSubsidyMenu()
+        }
+        // return seller created voucher menu
+        else {
+            getUpcomingOptionsListMenu()
+        }
+    }
+
+    private fun getOptionsListForStoppedPromo(voucher: Voucher): List<MoreMenuUiModel> {
+        return if (voucher.isVps) {
+            getCancelledVpsSubsidyListMenu()
+        } else if (voucher.isSubsidy) {
+            getCancelledVpsSubsidyListMenu()
+        } else {
+            getEndedOrCancelledOptionsListMenu()
+        }
+    }
+
+    private fun getOptionsListForEndedPromo(voucher: Voucher): List<MoreMenuUiModel> {
+        return if (voucher.isVps) {
+            getEndedVpsSubsidyListMenu()
+        } else if (voucher.isSubsidy) {
+            getEndedVpsSubsidyListMenu()
+        } else {
+            getEndedOrCancelledOptionsListMenu()
+        }
     }
 
     private fun getUpcomingOptionsListMenu(): List<MoreMenuUiModel> {

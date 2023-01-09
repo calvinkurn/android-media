@@ -654,6 +654,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 MoreMenuBottomSheet.newInstance(
                     context = it,
                     voucher = null,
+                    title = data.voucherName,
                     isFromVoucherDetailPage = true,
                     voucherStatus =
                     voucherStatus

@@ -99,7 +99,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private val sortChips by lazy { SortFilterItem(getString(R.string.smvc_sort)) }
 
     private val productAdapter by lazy {
-        ProductAdapter(onCheckboxClick, onVariantClick)
+        ProductAdapter(
+            onCheckboxClick = onCheckboxClick,
+            onCtaChangeVariantClick = onVariantClick,
+            onVariantClick = onVariantClick
+        )
     }
 
 

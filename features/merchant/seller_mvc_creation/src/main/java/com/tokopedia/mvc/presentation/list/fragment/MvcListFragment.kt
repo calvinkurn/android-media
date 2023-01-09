@@ -57,6 +57,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
+import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.PageState
@@ -80,8 +81,11 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
-    VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener,
+class MvcListFragment :
+    BaseDaggerFragment(),
+    HasPaginatedList by HasPaginatedListImpl(),
+    VoucherAdapterListener,
+    FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener,
     FilterVoucherBottomSheet.FilterVoucherBottomSheetListener,
     OtherPeriodBottomSheet.OtherPeriodBottomSheetListener,
     EduCenterClickListener {
@@ -148,7 +152,8 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
             moreMenuBottomSheet =
                 MoreMenuBottomSheet.newInstance(
                     it,
-                    voucher
+                    voucher,
+                    voucher.name
                 )
             moreMenuBottomSheet?.setOnMenuClickListener { menu ->
                 onClickListenerForMoreMenu(menu, voucher)
@@ -161,8 +166,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
-                // TODO change this
-                showDisplayVoucherBottomSheet(voucher)
+                showUpdateQuotaBottomSheet(voucher)
             }
             is MoreMenuUiModel.EditPeriod -> {
                 showEditPeriodBottomSheet(voucher)
@@ -176,12 +180,14 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
                 SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
             }
             is MoreMenuUiModel.Download -> {
+                showDownloadVoucherBottomSheet(voucher)
             }
             is MoreMenuUiModel.Clear -> {
             }
             is MoreMenuUiModel.Share -> {
             }
             is MoreMenuUiModel.Stop -> {
+                deleteVoucher(voucher)
             }
             is MoreMenuUiModel.Copy -> {
             }
@@ -257,6 +263,34 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         }
     }
 
+    private fun showDownloadVoucherBottomSheet(voucher: Voucher) {
+        activity?.let {
+            if (!isVisible) return
+
+            val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+                voucher.image,
+                voucher.imageSquare,
+                voucher.imagePortrait
+            )
+            bottomSheet.setOnDownloadSuccess {
+                binding?.footer?.root?.showToaster(
+                    getString(
+                        R.string.smvc_placeholder_download_voucher_image_success,
+                        voucher.name
+                    ),
+                    getString(R.string.smvc_ok)
+                )
+            }
+            bottomSheet.setOnDownloadError {
+                binding?.footer?.root?.showToaster(
+                    getString(R.string.smvc_download_voucher_image_failed),
+                    getString(R.string.smvc_ok)
+                )
+            }
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+    }
+
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
         activity?.let { ClipboardHandler().copyToClipboard(it, voucher.code) }
         binding?.footer?.root.showToaster(getString(R.string.smvc_voucherlist_copy_to_clipboard_message))
@@ -291,7 +325,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         viewModel.voucherList.observe(viewLifecycleOwner) { vouchers ->
             val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
             adapter?.addDataList(vouchers)
-            notifyLoadResult(vouchers.size.isMoreThanZero())
+            notifyLoadResult(vouchers.size >= PAGE_SIZE)
         }
         viewModel.error.observe(viewLifecycleOwner) {
             binding?.loaderPage?.gone()
@@ -318,8 +352,8 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.deleteUIEffect.collect {
                 when (it) {
-                    is DeleteVoucherUiEffect.SuccessDeletedVoucher-> {
-                        stopVoucherDialog?.let {dialog ->
+                    is DeleteVoucherUiEffect.SuccessDeletedVoucher -> {
+                        stopVoucherDialog?.let { dialog ->
                             dialog.setLoadingProses(false)
                             dialog.setDismissDialog()
                         }
@@ -328,8 +362,8 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
                         loadInitialDataList()
                     }
 
-                    is DeleteVoucherUiEffect.ShowToasterErrorDelete-> {
-                        stopVoucherDialog?.let {dialog ->
+                    is DeleteVoucherUiEffect.ShowToasterErrorDelete -> {
+                        stopVoucherDialog?.let { dialog ->
                             dialog.setLoadingProses(false)
                             dialog.setDismissDialog()
                         }
@@ -337,7 +371,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
                         view?.showToasterError(errorMessage, getString(R.string.smvc_ok))
                     }
 
-                    is DeleteVoucherUiEffect.OnProgressToDeletedVoucherList-> {
+                    is DeleteVoucherUiEffect.OnProgressToDeletedVoucherList -> {
                         stopVoucherDialog?.setLoadingProses(true)
                         stopVoucherDialog?.setCancelable(false)
                     }
@@ -513,12 +547,12 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
 
     private fun setEduCenterBottomSheet() {
         eduCenterBottomSheet = EduCenterBottomSheet.createInstance().apply {
-            initRecyclerView(this@MvcListFragment.context?:return, this@MvcListFragment)
+            initRecyclerView(this@MvcListFragment.context ?: return, this@MvcListFragment)
         }
     }
 
-    private fun setupStopConfirmationDialog(){
-        stopVoucherDialog = StopVoucherConfirmationDialog(context?:return)
+    private fun setupStopConfirmationDialog() {
+        stopVoucherDialog = StopVoucherConfirmationDialog(context ?: return)
     }
 
     override fun onMenuClicked(menu: EduCenterMenuModel) {
@@ -564,10 +598,9 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         }
     }
 
-
     private fun showConfirmationStopVoucherDialog(voucher: Voucher) {
         val voucherStatus = voucher.status
-        stopVoucherDialog?.let {dialog ->
+        stopVoucherDialog?.let { dialog ->
             with(dialog) {
                 setOnPositiveConfirmed {
                     viewModel.stopVoucher(voucher)
@@ -605,7 +638,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         }
     }
 
-    private fun getStringSuccessStopVoucher(voucherStatus: VoucherStatus, voucherName : String): String {
+    private fun getStringSuccessStopVoucher(voucherStatus: VoucherStatus, voucherName: String): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_success_to_deleted_voucher, voucherName)
         } else {
@@ -613,7 +646,7 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         }
     }
 
-    private fun getStringFailedStopVoucher(voucherStatus: VoucherStatus, voucherName : String): String {
+    private fun getStringFailedStopVoucher(voucherStatus: VoucherStatus, voucherName: String): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_failed_to_deleted_voucher, voucherName)
         } else {
@@ -623,14 +656,16 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
 
     private fun goToTokopediaCare() {
         RouteManager.route(
-            activity, String.format(
-                TOKOPEDIA_CARE_STRING_FORMAT, ApplinkConst.WEBVIEW,
+            activity,
+            String.format(
+                TOKOPEDIA_CARE_STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
                 TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
             )
         )
     }
 
-    private fun showSuccessToaster(message : String){
+    private fun showSuccessToaster(message: String) {
         view?.let { view ->
             Toaster.build(
                 view,
@@ -642,18 +677,18 @@ class MvcListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedLi
         }
     }
 
-    private fun showUpdateQuotaBottomSheet(voucher: Voucher){
+    private fun showUpdateQuotaBottomSheet(voucher: Voucher) {
         val bottomSheet = ChangeQuotaBottomSheet.newInstance(
             getString(R.string.smvc_title_bottom_sheet_change_quota),
             voucher.id
         )
 
-        bottomSheet.setOnSuccessUpdateQuotaListener {message ->
+        bottomSheet.setOnSuccessUpdateQuotaListener { message ->
             showSuccessToaster(message)
             loadInitialDataList()
         }
 
-        bottomSheet.setOnFailedQuotaListener {message ->
+        bottomSheet.setOnFailedQuotaListener { message ->
             view?.showToasterError(message, getString(R.string.smvc_ok))
         }
 
