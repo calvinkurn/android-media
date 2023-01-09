@@ -15,6 +15,8 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_MINUTE_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
@@ -114,6 +116,13 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private var repeatPeriodBottomSheet: SelectRepeatPeriodBottomSheet? = null
     private var voucherRecurringPeriodBottomSheet: VoucherPeriodBottomSheet? = null
 
+    // coachmark
+    private val coachMark by lazy {
+        context?.let {
+            CoachMark2(it)
+        }
+    }
+
     override fun getScreenName(): String =
         VoucherInformationFragment::class.java.canonicalName.orEmpty()
 
@@ -144,6 +153,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         setupView()
         observeUiState()
         observeUiAction()
+        viewModel.processEvent(VoucherCreationStepTwoEvent.HandleCoachMark)
     }
 
     private fun observeUiState() {
@@ -186,8 +196,23 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         when (action) {
             is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
             is VoucherCreationStepTwoAction.ContinueToNextStep -> TODO()
-            is VoucherCreationStepTwoAction.ValidateVoucherNameInput -> TODO()
             is VoucherCreationStepTwoAction.ShowError -> TODO()
+            is VoucherCreationStepTwoAction.ShowCoachmark -> showCoachmark()
+        }
+    }
+
+    private fun showCoachmark() {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        voucherPeriodSectionBinding?.run {
+            coachMarkItem.add(
+                CoachMark2Item(
+                    cbRepeatPeriod,
+                    getString(R.string.smvc_voucher_creation_step_one_coachmark_title),
+                    getString(R.string.smvc_voucher_creation_step_one_coachmark_description)
+                )
+            )
+            coachMark?.showCoachMark(coachMarkItem)
+            coachMark?.onDismissListener = { viewModel.setSharedPrefCoachMarkAlreadyShown() }
         }
     }
 

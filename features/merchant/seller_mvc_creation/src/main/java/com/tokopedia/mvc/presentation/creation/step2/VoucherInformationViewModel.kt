@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.creation.step2
 
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
@@ -11,6 +12,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
+import com.tokopedia.mvc.util.constant.CommonConstant
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.*
 import java.util.*
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 class VoucherInformationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
+    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
+    private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(VoucherCreationStepTwoUiState())
@@ -41,8 +44,8 @@ class VoucherInformationViewModel @Inject constructor(
             is VoucherCreationStepTwoEvent.OnVoucherStartDateChanged -> setStartDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.OnVoucherEndDateChanged -> setEndDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected -> setRecurringPeriod(event.selectedRecurringPeriod)
-            is VoucherCreationStepTwoEvent.ValidateVoucherInput -> {}
             is VoucherCreationStepTwoEvent.NavigateToNextStep -> {}
+            is VoucherCreationStepTwoEvent.HandleCoachMark -> { handleCoachmark() }
         }
     }
 
@@ -192,5 +195,24 @@ class VoucherInformationViewModel @Inject constructor(
                 hourEnd = it.hourEnd
             )
         }
+    }
+
+    private fun handleCoachmark() {
+        if (!isCoachMarkShown()) {
+            _uiAction.tryEmit(VoucherCreationStepTwoAction.ShowCoachmark)
+        }
+    }
+
+    private fun isCoachMarkShown(): Boolean {
+        return sharedPreferences.getBoolean(
+            CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_TWO_COACH_MARK,
+            false
+        )
+    }
+
+    fun setSharedPrefCoachMarkAlreadyShown() {
+        sharedPreferences.edit()
+            .putBoolean(CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_TWO_COACH_MARK, true)
+            .apply()
     }
 }
