@@ -175,7 +175,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     )
 
     private fun mapQuickReply(quickRepliesResponse: List<String>) = PlayQuickReplyInfoUiModel(
-            quickReplyList = quickRepliesResponse.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() }
+        quickReplyList = quickRepliesResponse.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() }
     )
 
     private fun mapVideoMeta(

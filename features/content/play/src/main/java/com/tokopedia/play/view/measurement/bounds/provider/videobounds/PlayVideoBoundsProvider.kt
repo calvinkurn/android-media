@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.measurement.bounds.provider.videobounds
 
+import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.type.VideoOrientation
@@ -20,9 +21,25 @@ class PlayVideoBoundsProvider(
         else getPortraitManager().getVideoTopBounds(videoOrientation)
     }
 
-    override suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
-        return if (dataSource.getScreenOrientation().isLandscape) getLandscapeManager().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
-        else getPortraitManager().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
+    override suspend fun getVideoBottomBoundsOnKeyboardShown(
+        view: View,
+        estimatedKeyboardHeight: Int,
+        videoOrientation: VideoOrientation
+    ): Int {
+        return if (dataSource.getScreenOrientation().isLandscape) {
+            getLandscapeManager().getVideoBottomBoundsOnKeyboardShown(
+                view,
+                estimatedKeyboardHeight,
+                videoOrientation,
+            )
+        }
+        else {
+            getPortraitManager().getVideoBottomBoundsOnKeyboardShown(
+                view,
+                estimatedKeyboardHeight,
+                videoOrientation,
+            )
+        }
     }
 
     /**

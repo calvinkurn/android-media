@@ -46,13 +46,13 @@ import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
 import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
+import com.tokopedia.play_common.view.addKeyboardInsetsListener
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -104,8 +104,6 @@ class PlayFragment @Inject constructor(
 
     private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
-
-    private val keyboardWatcher = KeyboardWatcher()
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
@@ -235,6 +233,11 @@ class PlayFragment @Inject constructor(
 
     override fun onAnimationFinish(isHidingInsets: Boolean) {
         fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
+    }
+
+    fun getCloseIconView(): View? {
+        return if (::ivClose.isInitialized) ivClose
+        else null
     }
 
     fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
@@ -541,21 +544,19 @@ class PlayFragment @Inject constructor(
         )
     }
 
-    fun registerKeyboardListener(view: View) {
-        keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
-            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                playViewModel.onKeyboardShown(estimatedKeyboardHeight)
-            }
-
-            override fun onKeyboardHidden() {
+    private fun registerKeyboardListener(view: View) {
+        view.addKeyboardInsetsListener(triggerOnAttached = false) { isVisible, height ->
+            if (isVisible) {
+                playViewModel.onKeyboardShown(height)
+            } else {
                 playViewModel.onKeyboardHidden()
                 if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
-        })
+        }
     }
 
-    fun unregisterKeyboardListener(view: View) {
-        keyboardWatcher.unlisten(view)
+    private fun unregisterKeyboardListener(view: View) {
+        view.setOnApplyWindowInsetsListener(null)
     }
 
     private fun hideAllInsets() {

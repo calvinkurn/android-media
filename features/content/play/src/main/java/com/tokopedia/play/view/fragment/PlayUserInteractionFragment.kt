@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -21,6 +22,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -89,6 +91,8 @@ import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.util.ActivityResultHelper
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -248,11 +252,20 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Animation
      */
-    private val fadeInAnimation = PlayFadeInAnimation(FADE_DURATION)
-    private val fadeOutAnimation = PlayFadeOutAnimation(FADE_DURATION)
-    private val fadeInFadeOutAnimation = PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
-    private val delayFadeOutAnimation = PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
-    private val fadeAnimationList = arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation)
+    private val fadeInAnimation by viewLifecycleBound( { PlayFadeInAnimation(FADE_DURATION) } )
+    private val fadeOutAnimation by viewLifecycleBound( { PlayFadeOutAnimation(FADE_DURATION) })
+    private val fadeInFadeOutAnimation by viewLifecycleBound(
+        { PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY) }
+    )
+    private val delayFadeOutAnimation by viewLifecycleBound(
+        { PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY) }
+    )
+    private val fadeAnimationList by viewLifecycleBound(
+        { arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation) },
+        whenLifecycle {
+            onDestroy { cancelAllAnimations() }
+        }
+    )
 
     private val interactiveDialogDataSource = object : InteractiveDialogFragment.DataSource {
         override fun getViewModelProvider(): ViewModelProvider {
@@ -367,8 +380,6 @@ class PlayUserInteractionFragment @Inject constructor(
         chatListHeightManager = null
 
         hasInvalidateChat = false
-
-        cancelAllAnimations()
 
         super.onDestroyView()
         _binding = null
@@ -558,7 +569,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     fun onStartAnimateInsets(isHidingInsets: Boolean) {
-        view?.hide()
+        view?.alpha = 0f
     }
 
     //TODO("Find better logic to improve this code")
@@ -569,7 +580,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
             invalidateChatListBounds(shouldForceInvalidate = true)
         }
-        view?.show()
+        view?.alpha = VISIBLE_ALPHA
         /**
          * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
          */
@@ -633,19 +644,19 @@ class PlayUserInteractionFragment @Inject constructor(
         /**
          * This is a temporary workaround for when insets not working as intended inside viewpager
          */
-        val realBottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val layoutParams = viewSize.rootView.layoutParams as? ViewGroup.MarginLayoutParams
+        val initialBottomMargin = layoutParams?.bottomMargin ?: 0
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                val layoutParams = viewSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
-                val initialBottomMargin = layoutParams.bottomMargin
                 val rootInsets = activity?.window?.decorView?.rootWindowInsets
                 if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
                 val insets = if (orientation.isPortrait) portraitInsets else rootInsets
                 if (insets != null) {
-                    layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
-                    initialBottomMargin
+                    layoutParams?.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
                 } else error("Insets not supported")
-            } catch (e: Throwable) { 0 }
-        } else 0
+            } catch (e: Throwable) {  }
+        }
 
         viewSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             val skipTop = !isOpened && insets.systemWindowInsetTop == 0
@@ -656,7 +667,7 @@ class PlayUserInteractionFragment @Inject constructor(
             /**
              * Reduce margin by the first added value
              */
-            val margin = recordedMargin.copy(bottom = realBottomMargin)
+            val margin = recordedMargin.copy(bottom = initialBottomMargin)
 
             var isMarginChanged = false
 
@@ -1236,10 +1247,18 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
-        val hasQuickReply = playViewModel.quickReply.quickReplyList.isNotEmpty()
-
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
-            playFragment.onBottomInsetsViewShown(getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply))
+            playFragment.onBottomInsetsViewShown(
+                getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight)
+            )
+
+            if (playViewModel.videoOrientation.isVertical && orientation.isPortrait) {
+                chatListView?.setMaxHeight(
+                    requireContext().resources.getDimensionPixelSize(
+                        R.dimen.play_chat_vertical_max_height
+                    ).toFloat()
+                )
+            }
         }
     }
 
@@ -1251,9 +1270,13 @@ class PlayUserInteractionFragment @Inject constructor(
         return getVideoBoundsProvider().getVideoTopBounds(videoOrientation)
     }
 
-    private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+    private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int): Int {
         return try {
-            getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
+            getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(
+                requireView(),
+                estimatedKeyboardHeight,
+                playViewModel.videoOrientation,
+            )
         } catch (e: Throwable) { getScreenHeight() }
     }
 

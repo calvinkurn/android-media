@@ -387,9 +387,19 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
-        val statusBarHeight = view?.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
-        val requiredMargin = offset16
-        playFragment.onBottomInsetsViewShown(requireView().height - (productSheetHeight + statusBarHeight + requiredMargin))
+        val closeIcon = playFragment.getCloseIconView() ?: return
+        val videoOrientation = playViewModel.videoOrientation
+        val dstHeight = if (videoOrientation is VideoOrientation.Horizontal) {
+            val dstStart = closeIcon.right + offset16
+            val dstEnd = requireView().right - dstStart
+            val dstWidth = dstEnd - dstStart
+            (1 / (videoOrientation.widthRatio / videoOrientation.heightRatio.toFloat()) * dstWidth)
+        } else {
+            requireView().height - productSheetHeight -
+                    closeIcon.top -
+                    offset16
+        }
+        playFragment.onBottomInsetsViewShown(dstHeight.toInt())
     }
 
     private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
