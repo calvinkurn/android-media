@@ -4,6 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DEFAULT_BANNER_ID
 import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DEFAULT_VALUE
+import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DIMENSION_40
+import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DIMENSION_84
+import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DIMENSION_96
+import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.ITEM_CATEGORY_FORMAT
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -22,7 +26,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val EVENT_LABEL_FORMAT = "%s - %s"
             const val TRACKER_ID = "trackerId"
             const val TRACKER_ID_CLICKED = "32188"
-            const val TRACKER_ID_CLICKED_PDP = "34629"
+            const val TRACKER_ID_CLICKED_PDP = "40380"
             const val TRACKER_ID_IMPRESSION = "40379"
             const val DEFAULT_VALUE = ""
             const val DEFAULT_PRICE = "0"
@@ -36,6 +40,10 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val NON_TOPADS = "non topads"
             const val CAROUSEL = "carousel"
             const val NON_CAROUSEL = "non carousel"
+            const val DIMENSION_40 = "dimension40"
+            const val DIMENSION_84 = "dimension84"
+            const val DIMENSION_96 = "dimension96"
+            const val ITEM_CATEGORY_FORMAT = "%s / %s / S"
         }
     }
 
@@ -146,24 +154,28 @@ object MissionWidgetTracking : BaseTrackerConst() {
         item.putString(Items.ITEM_BRAND, DEFAULT_VALUE)
         item.putString(
             Items.ITEM_CATEGORY,
-            element.categoryID
+            ITEM_CATEGORY_FORMAT.format(DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE)
         )
         item.putString(Items.ITEM_ID, element.productID)
         item.putString(Items.ITEM_NAME, element.productName)
         item.putString(Items.ITEM_VARIANT, DEFAULT_VALUE)
         item.putString(Items.PRICE, CustomAction.DEFAULT_PRICE)
+        val itemList = CustomAction.ITEM_LIST_FORMAT.format(
+            element.verticalPosition,
+            if (element.isTopads) CustomAction.TOPADS else CustomAction.NON_TOPADS,
+            if (element.isCarousel) CustomAction.CAROUSEL else CustomAction.NON_CAROUSEL,
+            element.recommendationType,
+            element.pageName,
+            element.buType,
+            element.title
+        )
+        item.putString(DIMENSION_40, itemList)
+        item.putString(DIMENSION_84, element.id.toString())
+        item.putString(DIMENSION_96, "${element.pageName}_")
         bundle.putParcelableArrayList(Items.KEY, arrayListOf(item))
         bundle.putString(
             ItemList.KEY,
-            CustomAction.ITEM_LIST_FORMAT.format(
-                element.verticalPosition,
-                if (element.isTopads) CustomAction.TOPADS else CustomAction.NON_TOPADS,
-                if (element.isCarousel) CustomAction.CAROUSEL else CustomAction.NON_CAROUSEL,
-                element.recommendationType,
-                element.pageName,
-                element.buType,
-                element.title
-            )
+            itemList
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(com.tokopedia.analytic_constant.Event.SELECT_CONTENT, bundle)
     }
