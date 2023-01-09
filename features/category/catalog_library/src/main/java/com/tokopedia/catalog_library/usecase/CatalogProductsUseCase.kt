@@ -8,7 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
 @GqlQuery("GQL_CATALOG_LIST", GQL_CATALOG_LIST)
-class CatalogListUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<CatalogListResponse>(graphqlRepository) {
 
     fun getCatalogListData(

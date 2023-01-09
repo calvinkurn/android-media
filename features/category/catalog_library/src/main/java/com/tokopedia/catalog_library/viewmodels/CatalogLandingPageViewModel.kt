@@ -9,16 +9,16 @@ import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_MOST_VIRAL
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_TOP_FIVE
-import com.tokopedia.catalog_library.usecase.CatalogListUseCase
+import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class CatalogLandingPageViewModel @Inject constructor(
-    private val catalogTopFiveUseCase: CatalogListUseCase,
-    private val catalogMostViralUseCase: CatalogListUseCase,
-    private val catalogProductListUseCase: CatalogListUseCase
+    private val catalogTopFiveUseCase: CatalogProductsUseCase,
+    private val catalogMostViralUseCase: CatalogProductsUseCase,
+    private val catalogProductListUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 
     private val _catalogLandingPageLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()

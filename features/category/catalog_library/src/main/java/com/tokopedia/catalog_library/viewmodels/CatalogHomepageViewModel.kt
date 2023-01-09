@@ -9,7 +9,7 @@ import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
-import com.tokopedia.catalog_library.usecase.CatalogListUseCase
+import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
 import com.tokopedia.catalog_library.usecase.CatalogRelevantUseCase
 import com.tokopedia.catalog_library.usecase.CatalogSpecialUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class CatalogHomepageViewModel @Inject constructor(
     private val catalogSpecialUseCase: CatalogSpecialUseCase,
     private val catalogRelevantUseCase: CatalogRelevantUseCase,
-    private val catalogListUseCase: CatalogListUseCase,
+    private val catalogProductsUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 
     private val _catalogHomeLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
@@ -62,8 +62,8 @@ class CatalogHomepageViewModel @Inject constructor(
         sortType: String,
         rows: String
     ) {
-        catalogListUseCase.cancelJobs()
-        catalogListUseCase.getCatalogListData(
+        catalogProductsUseCase.cancelJobs()
+        catalogProductsUseCase.getCatalogListData(
             ::onAvailableCatalogListData,
             ::onFailHomeData,
             categoryIdentifier,
