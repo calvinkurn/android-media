@@ -18,6 +18,7 @@ import io.mockk.coEvery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.io.IOException
 
 @ExperimentalCoroutinesApi
 class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewModelTest() {
@@ -3106,6 +3107,44 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 ),
                 OccButtonState.NORMAL,
                 OccButtonType.PAY
+            ),
+            orderSummaryPageViewModel.orderTotal.value
+        )
+    }
+
+    @Test
+    fun `Calculate Total Non Installment With Failed Dynamic Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(
+            products = mutableListOf(
+                OrderProduct(
+                    orderQuantity = 1,
+                    productPrice = 1000.0
+                )
+            )
+        )
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value =
+            OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            maximumAmount = 100000,
+            walletAmount = 100000,
+            originalPaymentFees = helper.paymentFeeDetails
+        )
+        coEvery { dynamicPaymentFeeUseCase.invoke(any()) } throws IOException()
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(
+            OrderTotal(
+                OrderCost(),
+                OccButtonState.DISABLE,
+                OccButtonType.PAY,
+                showTickerError = true
             ),
             orderSummaryPageViewModel.orderTotal.value
         )
