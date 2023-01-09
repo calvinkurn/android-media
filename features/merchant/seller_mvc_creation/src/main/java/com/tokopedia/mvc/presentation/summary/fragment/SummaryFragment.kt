@@ -163,17 +163,12 @@ class SummaryFragment :
     private fun setupObservables() {
         viewModel.configuration.observe(viewLifecycleOwner) {
             binding?.apply {
+                layoutPreview.updateLayoutPreview(it)
                 layoutType.updateLayoutType(it)
                 layoutSetting.updatePageData(it)
                 layoutProducts.updateProductData(it)
                 layoutInfo.updatePageInfo(it)
             }
-            viewModel.previewImage(
-                isCreateMode = false,
-                voucherConfiguration = it,
-                parentProductIds = it.productIds,
-                imageRatio = ImageRatio.SQUARE
-            )
         }
         viewModel.maxExpense.observe(viewLifecycleOwner) {
             binding?.layoutSubmission?.labelSpendingEstimation
@@ -247,9 +242,6 @@ class SummaryFragment :
         val corner = CORNER_RADIUS_HEADER.toPx().toFloat()
         drawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, corner, corner, corner, corner)
         viewBg.background = drawable
-        cardPreview.setOnClickListener {
-            DisplayVoucherBottomSheet.newInstance(Voucher()).show(childFragmentManager, "")
-        }
     }
 
     private fun SmvcVoucherDetailVoucherTypeSectionBinding.setupLayoutType() {
@@ -369,6 +361,20 @@ class SummaryFragment :
         } else {
             getString(R.string.smvc_summary_page_shop_coupon_text)
         }
+    }
+
+    private fun SmvcFragmentSummaryPreviewBinding.updateLayoutPreview(configuration: VoucherConfiguration) {
+        cardPreview.setOnClickListener {
+            DisplayVoucherBottomSheet
+                .newInstance(configuration)
+                .show(childFragmentManager, "")
+        }
+        viewModel.previewImage(
+            isCreateMode = false,
+            voucherConfiguration = configuration,
+            parentProductIds = configuration.productIds,
+            imageRatio = ImageRatio.SQUARE
+        )
     }
 
     private fun showErrorUploadDialog(message: String) {
