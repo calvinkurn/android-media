@@ -989,6 +989,27 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assert(viewModel.isOnModerationMode.value is Fail)
     }
 
+    @Test
+    fun `when update image list`(){
+        val inputAndTarget = arrayListOf("/adasdsad", "/1234", "20123123")
+        val product = inputProductModelDummy()
+        viewModel.productInputModel.value = product
+        viewModel.saveImageListToDetailInput(inputAndTarget)
+        viewModel.productInputModel.getOrAwaitValue()
+        val imageListActual = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(inputAndTarget, imageListActual.detailInputModel.imageUrlOrPathList)
+    }
+
+    @Test
+    fun `when update image list when model is null for the 1st place`(){
+        val inputAndTarget = arrayListOf("/adasdsad", "/1234", "20123123")
+        viewModel.productInputModel.value = null
+        viewModel.saveImageListToDetailInput(inputAndTarget)
+        viewModel.productInputModel.getOrAwaitValue()
+        val imageListActual = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(null, imageListActual)
+    }
+
     private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {
         coEvery { productLimitationUseCase.executeOnBackground() } returns successResponse
     }
