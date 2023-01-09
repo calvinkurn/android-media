@@ -93,6 +93,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+        implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.diffUtilRecycler)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
 

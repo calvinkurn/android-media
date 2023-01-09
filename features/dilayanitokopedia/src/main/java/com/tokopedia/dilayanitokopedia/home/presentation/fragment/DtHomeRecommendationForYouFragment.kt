@@ -31,6 +31,8 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -42,9 +44,12 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         private const val REQUEST_FROM_PDP = 349
         private const val MAX_RECYCLED_VIEWS = 20
 
+
         fun newInstance(): DtHomeRecommendationForYouFragment {
             return DtHomeRecommendationForYouFragment()
         }
+
+
     }
 
     @Inject
@@ -69,58 +74,6 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
 
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
-    private fun provideListener(): HomeRecommendationListener {
-        return object : HomeRecommendationListener {
-            override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
-                // no-op
-            }
-
-            override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
-                goToProductDetail(homeRecommendationItemDataModel.product.id, position)
-            }
-
-            override fun onProductThreeDotsClick(
-                homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
-                position: Int
-            ) {
-                showProductCardOptions(
-                    this@DtHomeRecommendationForYouFragment,
-                    createProductCardOptionsModel(homeRecommendationItemDataModel, position)
-                )
-            }
-
-            override fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel) {
-                // no-op
-            }
-
-            override fun onBannerTopAdsClick(
-                homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
-                position: Int
-            ) {
-                // no-op
-            }
-
-            override fun onBannerTopAdsImpress(
-                homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
-                position: Int
-            ) {
-                // no-op
-            }
-
-            override fun onRetryGetProductRecommendationData() {
-                viewModel.loadInitialPage()
-            }
-        }
-    }
-
-    private val staggeredGridLayoutManager by lazy {
-        StaggeredGridLayoutManager(
-            DynamicChannelTabletConfiguration.getSpanCountForHomeRecommendationAdapter(
-                requireContext()
-            ),
-            StaggeredGridLayoutManager.VERTICAL
-        )
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -215,7 +168,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
     }
 
     private fun loadFirstPageData() {
-        viewModel.loadInitialPage()
+        viewModel.loadInitialPage(getLocationParamString())
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
@@ -238,5 +191,63 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         productCardOptionsModel.productImageUrl = homeRecommendationItemDataModel.product.imageUrl
         productCardOptionsModel.productPosition = position
         return productCardOptionsModel
+    }
+
+    private fun provideListener(): HomeRecommendationListener {
+        return object : HomeRecommendationListener {
+            override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
+                // no-op
+            }
+
+            override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
+                goToProductDetail(homeRecommendationItemDataModel.product.id, position)
+            }
+
+            override fun onProductThreeDotsClick(
+                homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
+                position: Int
+            ) {
+                showProductCardOptions(
+                    this@DtHomeRecommendationForYouFragment,
+                    createProductCardOptionsModel(homeRecommendationItemDataModel, position)
+                )
+            }
+
+            override fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel) {
+                // no-op
+            }
+
+            override fun onBannerTopAdsClick(
+                homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
+                position: Int
+            ) {
+                // no-op
+            }
+
+            override fun onBannerTopAdsImpress(
+                homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
+                position: Int
+            ) {
+                // no-op
+            }
+
+            override fun onRetryGetProductRecommendationData() {
+                viewModel.loadInitialPage(getLocationParamString())
+            }
+        }
+    }
+
+    private val staggeredGridLayoutManager by lazy {
+        StaggeredGridLayoutManager(
+            DynamicChannelTabletConfiguration.getSpanCountForHomeRecommendationAdapter(
+                requireContext()
+            ),
+            StaggeredGridLayoutManager.VERTICAL
+        )
+    }
+
+
+    private fun getLocationParamString(): String {
+        return ChooseAddressUtils.getLocalizingAddressData(requireContext()).convertToLocationParams() ?: ""
     }
 }

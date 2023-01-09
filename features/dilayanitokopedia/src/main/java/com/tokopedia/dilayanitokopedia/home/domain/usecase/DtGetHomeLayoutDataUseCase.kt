@@ -35,8 +35,6 @@ class DtGetHomeLayoutDataUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        token: String = "",
-        numOfChannel: Int = 0,
         localCacheModel: LocalCacheModel
     ): List<HomeLayoutResponse> {
         setRequestParams(

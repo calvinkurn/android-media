@@ -1,10 +1,11 @@
 package com.tokopedia.dilayanitokopedia.home.domain.usecase
 
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetDtHomeRecommendationResponse
-import com.tokopedia.dilayanitokopedia.home.domain.model.Product
+import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeRecommendationProductV2
 import com.tokopedia.dilayanitokopedia.home.domain.query.GetDtHomeRecomendationQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -17,13 +18,12 @@ class DtGetRecommendationForYouUseCase @Inject constructor(
 ) : GraphqlUseCase<GetDtHomeRecommendationResponse>(graphqlRepository) {
 
     companion object {
-//        private const val PARAM_PAGE = "page"
-//        private const val PARAM_PARAM = "param"
-//        private const val PARAM_GROUPIDS = "groupIDs"
-//        private const val PARAM_CHANNELIDS = "channelIDs"
-//        private const val PARAM_LOCATION = "location"
-//
-//        private const val PARAM_VALUE_PAGE_DT = "dt"
+        private const val PARAM_TAB_NAME = "tabName"
+        private const val PARAM_LOCATION = "location"
+        private const val PARAM_SOURCE_TYPE = "sourceType"
+        private const val PARAM_TYPE = "type"
+        private const val PARAM_PRODUCT_PAGE = "productPage"
+        private const val PARAM_PAGE = "page"
     }
 
     init {
@@ -31,19 +31,24 @@ class DtGetRecommendationForYouUseCase @Inject constructor(
         setTypeClass(GetDtHomeRecommendationResponse::class.java)
     }
 
-    suspend fun execute(
-//        token: String = "",
-//        numOfChannel: Int = 0,
-//        localCacheModel: LocalCacheModel?
-    ): List<Product> {
-//        setRequestParams(RequestParams.create()
-//            .appLinky {
-////                putString(PARAM_PAGE, PARAM_VALUE_PAGE_DT)
-////            putStringng(PARAM_LOCATION, mapLocation(localCacheModel))
-//            }.parameters
-//        )
 
-        val response = executeOnBackground().response
-        return response.products
+    /**
+     * https://tokopedia.slack.com/archives/C03VBG627FG/p1672885579202169?thread_ts=1669610989.489449&cid=C03VBG627FG
+     *
+     */
+    suspend fun execute(
+        locationParamString: String?
+    ): GetHomeRecommendationProductV2 {
+        setRequestParams(
+            RequestParams.create()
+                .apply {
+                    putString(PARAM_PAGE, "dt")
+                    putString(PARAM_TYPE, "banner,position,banner_ads")
+                    putInt(PARAM_PRODUCT_PAGE, 1)
+                    putString(PARAM_LOCATION, locationParamString)
+                }.parameters
+        )
+
+        return executeOnBackground().response
     }
 }

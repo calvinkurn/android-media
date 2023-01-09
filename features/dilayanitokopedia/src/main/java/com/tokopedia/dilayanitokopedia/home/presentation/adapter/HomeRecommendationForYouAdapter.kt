@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.BannerRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationBannerTopAdsDataModel
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationError
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoading
 import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendationTypeFactory
@@ -26,25 +27,15 @@ class HomeRecommendationForYouAdapter(
     diffCallback = object : DiffUtil.ItemCallback<HomeRecommendationVisitable>() {
 
         override fun getChangePayload(oldItem: HomeRecommendationVisitable, newItem: HomeRecommendationVisitable): Any? {
-            Timber.d("HomeRecommendationAdapter getChangePayload called")
-
             return oldItem.getChangePayloadFrom(newItem)
-//            return true
         }
 
         override fun areItemsTheSame(oldItem: HomeRecommendationVisitable, newItem: HomeRecommendationVisitable): Boolean {
-            Timber.d("HomeRecommendationAdapter areItemsTheSame called ${oldItem.getUniqueIdentity() == newItem.getUniqueIdentity()}")
-
             return oldItem.getUniqueIdentity() == newItem.getUniqueIdentity()
-
-//            return false
         }
 
         override fun areContentsTheSame(oldItem: HomeRecommendationVisitable, newItem: HomeRecommendationVisitable): Boolean {
-            Timber.d("HomeRecommendationAdapter areContentsTheSame called")
-
             return oldItem.equalsDataModel(newItem)
-//            return false
         }
     }
 ) {
@@ -64,12 +55,12 @@ class HomeRecommendationForYouAdapter(
     provide full width for necessary widget
      */
     private fun adjustWithWidgets(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: HomeRecommendationVisitable) {
-        Timber.d("HomeRecommendationAdapte bind1")
-
         val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-
+        layout.isFullSpan = true
         when (item) {
             is HomeRecommendationLoading -> layout.isFullSpan = true
+            is HomeRecommendationError -> layout.isFullSpan = true
+            else -> layout.isFullSpan = false
         }
     }
 
@@ -78,8 +69,6 @@ class HomeRecommendationForYouAdapter(
         item: HomeRecommendationVisitable,
         payloads: MutableList<Any>
     ) {
-        Timber.d("HomeRecommendationAdapte bind2")
-
         if (payloads.isNotEmpty()) {
             holder.bind(item, listener, payloads)
         }

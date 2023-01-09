@@ -7,6 +7,7 @@ import com.tokopedia.dilayanitokopedia.home.domain.mapper.recommendationforyou.H
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetRecommendationForYouUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationEmpty
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationError
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoading
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
@@ -23,25 +24,21 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
     private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> = MutableLiveData()
 
-    val homeRecommendationNetworkLiveData get() = _homeRecommendationNetworkLiveData
-    private val _homeRecommendationNetworkLiveData: MutableLiveData<Result<HomeRecommendationDataModel>> = MutableLiveData()
     private val loadingModel = HomeRecommendationLoading()
 
-    fun loadInitialPage() {
+    fun loadInitialPage(locationParamString: String) {
         launchCatchError(coroutineContext, block = {
-            val data = dtGetRecommendationForYouUseCase.executeOnBackground()
-            val vistableData = HomeRecommendationMapper.mapToHomeRecommendationDataModel(data, TAB_DILAYANI_TOKOPEDIA, 1)
-            if (data.response.products.isEmpty()) {
+            val data = dtGetRecommendationForYouUseCase.execute(locationParamString)
+            val visitableData = HomeRecommendationMapper.mapToHomeRecommendationDataModel(data, TAB_DILAYANI_TOKOPEDIA, 1)
+            if (data.products.isEmpty()) {
                 _homeRecommendationLiveData.postValue(
                     HomeRecommendationDataModel(homeRecommendations = listOf(HomeRecommendationEmpty()))
                 )
             } else {
-                _homeRecommendationLiveData.postValue(vistableData)
+                _homeRecommendationLiveData.postValue(visitableData)
             }
-//            _homeRecommendationNetworkLiveData.postValue(Result.success(vistableData))
         }) {
-//            _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(HomeRecommendationError())))
-//            _homeRecommendationNetworkLiveData.postValue(Result.failure(it))
+            _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(HomeRecommendationError())))
         }
     }
 

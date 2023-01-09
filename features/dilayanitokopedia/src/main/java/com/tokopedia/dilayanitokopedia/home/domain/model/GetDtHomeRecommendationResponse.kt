@@ -26,6 +26,7 @@ data class GetHomeRecommendationProductV2(
     @SerializedName("positions")
     @Expose
     val positions: List<Position> = listOf(),
+
     @SerializedName("products")
     @Expose
     val products: List<Product> = listOf()
