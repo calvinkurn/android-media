@@ -1,10 +1,11 @@
-package com.tokopedia.tkpd
+package com.tokopedia.samples.foldables
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.samples.R
 
 class FoldableFragment1(): Fragment(){
     var listener : Listener? = null

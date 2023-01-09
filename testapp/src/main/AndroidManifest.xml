@@ -29,9 +29,6 @@
             </intent-filter>
         </activity>
         <activity android:name="com.tokopedia.tkpd.ErrorMessageActivity" />
-        <activity android:name=".FoldableActivity" />
-        <activity android:name=".FoldableFragmentsActivity" />
-        <activity android:name=".ExoPlayerSampleActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

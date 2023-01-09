@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation project(rootProject.ext.libraries.foldable)
+}
+
+//project.ext {
+//    artifactId = 'sample'
+//    groupId = 'com.tokopedia.sample'
+//    versionName = "0.0.1"
+//    artifactName = "samples-release"
+//}

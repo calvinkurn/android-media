@@ -63,6 +63,7 @@ ext {
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
             floatingWindow          : ":libraries:floating_window",
+            foldable                : ":libraries:foldable",
             graphql                 : ":libraries:graphql",
             imagePicker             : ":libraries:image_picker",
             imagePickerCommon       : ":libraries:image_picker_common",
@@ -123,6 +124,5 @@ ext {
             telemetry               : ":libraries:telemetry",
             sse                     : ":libraries:sse",
             macrobenchmarkUtil      : ":libraries:macrobenchmark_util",
-            foldable                : ":libraries:foldable"
     ]
 }

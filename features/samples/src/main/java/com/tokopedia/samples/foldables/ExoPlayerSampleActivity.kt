@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd
+package com.tokopedia.samples.foldables
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
+import com.tokopedia.samples.R
 
 
 class ExoPlayerSampleActivity : AppCompatActivity(), FoldableSupportManager.FoldableInfoCallback {
