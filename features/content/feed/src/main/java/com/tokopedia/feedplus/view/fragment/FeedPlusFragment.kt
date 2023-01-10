@@ -1755,8 +1755,7 @@ class FeedPlusFragment :
                                         positionInFeed,
                                         postId,
                                         reasonType,
-                                        reasonDesc,
-                                        "content"
+                                        reasonDesc
                                     )
                                 }
                             }
