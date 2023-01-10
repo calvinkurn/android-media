@@ -919,7 +919,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
         val intent = ProductListActivity.buildIntentForVoucherDetailPage(
             context = activity ?: return,
-            showCtaChangeProductOnToolbar = voucherDetail.voucherStatus == VoucherStatus.PROCESSING,
+            showCtaChangeProductOnToolbar = voucherDetail.voucherStatus == VoucherStatus.NOT_STARTED,
             voucherConfiguration = voucherDetail.toVoucherConfiguration(),
             selectedProducts = voucherDetail.toSelectedProducts(),
             selectedWarehouseId = voucherDetail.warehouseId
