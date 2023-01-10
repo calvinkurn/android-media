@@ -28,10 +28,8 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
     private fun MutableList<TickerData>.addTobaccoTicker() {
         add(
             TickerData(
-                title = resourceProvider.getTickerTobaccoTitle(),
                 description = resourceProvider.getTickerTobaccoDescription(),
                 type = Ticker.TYPE_ANNOUNCEMENT,
-                isFromHtml = false
             )
         )
     }

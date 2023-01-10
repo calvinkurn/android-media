@@ -44,7 +44,6 @@
     <string name="product_manage_shop_moderated_ticker_title" tools:ignore="UnusedResources">Pengaturan produk belum bisa dilakukan</string>
     <string name="product_manage_shop_moderated_ticker_description" tools:ignore="UnusedResources"><![CDATA[Status tokomu ditangguhkan sementara. Aktifkan toko untuk bisa mengatur produk lagi. <a href="https://seller.tokopedia.com/edu/toko-dimoderasi/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
     <string name="product_manage_shop_moderated_permanent_ticker_description" tools:ignore="UnusedResources"><![CDATA[Status tokomu ditangguhkan permanen. Aktifkan toko untuk bisa mengatur produk lagi. <a href="https://seller.tokopedia.com/edu/toko-dimoderasi/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
-    <string name="product_manage_tobacco_ticker_title">Perubahan pada stok produk</string>
     <string name="product_manage_tobacco_ticker_description"><![CDATA[Produk yang tidak tampil di aplikasi disebabkan karena larangan dari Google Policy.<a href="https://seller.tokopedia.com/manage-product" target="_blank">Cek di Web</a>]]></string>
 
     <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>

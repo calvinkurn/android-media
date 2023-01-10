@@ -50,10 +50,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_available_description).orEmpty()
     }
 
-    fun getTickerTobaccoTitle(): String {
-        return getString(com.tokopedia.product.manage.common.R.string.product_manage_tobacco_ticker_title).orEmpty()
-    }
-
     fun getTickerTobaccoDescription(): String {
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_tobacco_ticker_description).orEmpty()
     }
