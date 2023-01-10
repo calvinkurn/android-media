@@ -300,9 +300,9 @@
     <!--Voucher Creation Step Two-->
     <string name="smvc_creation_step_two_out_of_three_sub_title_label">Langkah 2 dari 3</string>
     <string name="smvc_creation_step_two_out_of_four_sub_title_label">Langkah 2 dari 4</string>
-    <string name="smvc_description_public_voucher_target">Bisa langsung digunakan oleh semua pembeli.</string>
+    <string name="smvc_description_public_voucher_target"><![CDATA[Bisa langsung digunakan oleh <b>semua pembeli.</b>]]></string>
     <string name="smvc_choose_voucher_target_label">Pilih Target Kupon</string>
-    <string name="smvc_description_private_voucher_target">Hanya bisa digunakan pembeli yang menerima kode.</string>
+    <string name="smvc_description_private_voucher_target"><![CDATA[Hanya bisa digunakan <b>pembeli yang menerima kode.</b>]]></string>
     <string name="smvc_voucher_name_label">Nama Kupon</string>
     <string name="smvc_voucher_code_label">Kode Kupon</string>
     <string name="smvc_voucher_active_period_label">Periode Kupon Aktif</string>

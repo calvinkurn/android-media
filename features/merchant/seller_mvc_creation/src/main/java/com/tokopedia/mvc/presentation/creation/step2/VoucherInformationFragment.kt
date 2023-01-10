@@ -189,7 +189,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         )
         renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
         renderAvailableRecurringPeriod(state.validationDate)
-        renderButtonValidation(state.isInputValid(), state.validationDate)
+        renderButtonValidation(state.voucherConfiguration, state.isInputValid(), state.validationDate)
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
@@ -208,7 +208,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 CoachMark2Item(
                     cbRepeatPeriod,
                     getString(R.string.smvc_voucher_creation_step_one_coachmark_title),
-                    getString(R.string.smvc_voucher_creation_step_one_coachmark_description)
+                    getString(R.string.smvc_voucher_creation_step_one_coachmark_description),
+                    CoachMark2.POSITION_TOP
                 )
             )
             coachMark?.showCoachMark(coachMarkItem)
@@ -744,6 +745,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun renderButtonValidation(
+        voucherConfiguration: VoucherConfiguration,
         isEnabled: Boolean,
         validationDate: List<VoucherValidationResult.ValidationDate>
     ) {
@@ -752,15 +754,15 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 val unAvailableDate = validationDate.filter { !it.available }
                 this.isEnabled = isEnabled
                 if (unAvailableDate.isNotEmpty()) {
-                    showCreateVoucherConfirmationDialog()
+                    showCreateVoucherConfirmationDialog(voucherConfiguration)
                 } else {
-                    setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep) }
+                    setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep(voucherConfiguration)) }
                 }
             }
         }
     }
 
-    private fun showCreateVoucherConfirmationDialog() {
+    private fun showCreateVoucherConfirmationDialog(voucherConfiguration: VoucherConfiguration) {
         val dialog = context?.let { ctx ->
             DialogUnify(
                 ctx,
@@ -774,7 +776,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             setPrimaryCTAText(getString(R.string.smvc_create_voucher_confirmation_primary_cta_label))
             setSecondaryCTAText(getString(R.string.smvc_create_voucher_confirmation_secondary_cta_label))
             setPrimaryCTAClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep)
+                viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep(voucherConfiguration))
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }

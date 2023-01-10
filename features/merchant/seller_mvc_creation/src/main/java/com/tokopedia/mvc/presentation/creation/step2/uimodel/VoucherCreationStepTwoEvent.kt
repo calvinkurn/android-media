@@ -14,6 +14,6 @@ sealed class VoucherCreationStepTwoEvent {
     data class OnVoucherStartDateChanged(val calendar: Calendar) : VoucherCreationStepTwoEvent()
     data class OnVoucherEndDateChanged(val calendar: Calendar) : VoucherCreationStepTwoEvent()
     data class OnVoucherRecurringPeriodSelected(val selectedRecurringPeriod: Int) : VoucherCreationStepTwoEvent()
-    object NavigateToNextStep : VoucherCreationStepTwoEvent()
+    data class NavigateToNextStep(val voucherConfiguration: VoucherConfiguration) : VoucherCreationStepTwoEvent()
     object HandleCoachMark : VoucherCreationStepTwoEvent()
 }

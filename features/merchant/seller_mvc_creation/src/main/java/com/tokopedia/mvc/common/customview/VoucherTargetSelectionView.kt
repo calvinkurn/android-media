@@ -3,6 +3,7 @@ package com.tokopedia.mvc.common.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.mvc.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.CardUnify2
@@ -87,7 +88,7 @@ class VoucherTargetSelectionView : BaseCustomView {
 
     private fun refreshViews() {
         tpgTitle?.text = titleText
-        tpgDescription?.text = descriptionText
+        tpgDescription?.text = MethodChecker.fromHtml(descriptionText)
         if (isActive) {
             cardParent?.cardType = CardUnify2.TYPE_BORDER_ACTIVE
         } else {

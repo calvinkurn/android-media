@@ -35,17 +35,25 @@ class VoucherInformationViewModel @Inject constructor(
 
     fun processEvent(event: VoucherCreationStepTwoEvent) {
         when (event) {
-            is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(event.voucherConfiguration)
+            is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
+                event.voucherConfiguration
+            )
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(event.isPublic)
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
             is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
-            is VoucherCreationStepTwoEvent.OnVoucherRecurringToggled -> handleVoucherRecurringToggleChanges(event.isActive)
+            is VoucherCreationStepTwoEvent.OnVoucherRecurringToggled -> handleVoucherRecurringToggleChanges(
+                event.isActive
+            )
             is VoucherCreationStepTwoEvent.OnVoucherStartDateChanged -> setStartDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.OnVoucherEndDateChanged -> setEndDateTime(event.calendar)
-            is VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected -> setRecurringPeriod(event.selectedRecurringPeriod)
+            is VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected -> setRecurringPeriod(
+                event.selectedRecurringPeriod
+            )
             is VoucherCreationStepTwoEvent.NavigateToNextStep -> {}
-            is VoucherCreationStepTwoEvent.HandleCoachMark -> { handleCoachmark() }
+            is VoucherCreationStepTwoEvent.HandleCoachMark -> {
+                handleCoachmark()
+            }
         }
     }
 
@@ -76,7 +84,6 @@ class VoucherInformationViewModel @Inject constructor(
                 )
             )
         }
-
         handleVoucherInputValidation()
     }
 
