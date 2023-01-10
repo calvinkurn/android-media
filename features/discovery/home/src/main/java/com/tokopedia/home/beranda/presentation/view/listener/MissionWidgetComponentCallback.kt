@@ -43,12 +43,22 @@ class MissionWidgetComponentCallback(
         element: CarouselMissionWidgetDataModel,
         horizontalPosition: Int
     ) {
-        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-            MissionWidgetTracking.getMissionWidgetView(
-                element,
-                horizontalPosition,
-                homeCategoryListener.userId
-            ) as HashMap<String, Any>
-        )
+        if (element.productID.isNotBlank() && element.productID != ZERO_PRODUCT_ID) {
+            homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+                MissionWidgetTracking.getMissionWidgetProductView(
+                    element,
+                    horizontalPosition,
+                    homeCategoryListener.userId
+                ) as HashMap<String, Any>
+            )
+        } else {
+            homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+                MissionWidgetTracking.getMissionWidgetView(
+                    element,
+                    horizontalPosition,
+                    homeCategoryListener.userId
+                ) as HashMap<String, Any>
+            )
+        }
     }
 }

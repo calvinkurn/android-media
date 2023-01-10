@@ -23,11 +23,13 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val EVENT_ACTION_CLICK = "click on banner dynamic channel mission widget"
             const val EVENT_ACTION_CLICK_PRODUCT = "click on product dynamic channel mission widget"
             const val EVENT_ACTION_IMPRESSION_BANNER = "impression on banner dynamic channel mission widget"
+            const val EVENT_ACTION_IMPRESSION_PRODUCT = "impression on product dynamic channel mission widget"
             const val EVENT_LABEL_FORMAT = "%s - %s"
             const val TRACKER_ID = "trackerId"
             const val TRACKER_ID_CLICKED = "40381"
             const val TRACKER_ID_CLICKED_PDP = "40380"
             const val TRACKER_ID_IMPRESSION = "40379"
+            const val TRACKER_ID_PRODUCT = "40378"
             const val DEFAULT_VALUE = ""
             const val DEFAULT_PRICE = "0"
             const val DEFAULT_BANNER_ID = "0"
@@ -43,7 +45,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val DIMENSION_40 = "dimension40"
             const val DIMENSION_84 = "dimension84"
             const val DIMENSION_96 = "dimension96"
-            const val ITEM_CATEGORY_FORMAT = "%s / %s / S"
+            const val ITEM_CATEGORY_FORMAT = "%s / %s / %s"
         }
     }
 
@@ -179,5 +181,63 @@ object MissionWidgetTracking : BaseTrackerConst() {
             itemList
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(com.tokopedia.analytic_constant.Event.SELECT_CONTENT, bundle)
+    }
+
+    fun getMissionWidgetProductView(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String): Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        val creativeName = DEFAULT_VALUE
+        val creativeSlot = (horizontalPosition + 1).toString()
+        val itemId = CustomAction.ITEM_ID_FORMAT.format(
+            element.id,
+            DEFAULT_BANNER_ID,
+            element.pageName,
+            DEFAULT_VALUE,
+            element.categoryID,
+            element.recommendationType
+        )
+        val itemName = CustomAction.ITEM_NAME_FORMAT.format(
+            element.verticalPosition,
+            CustomAction.DYNAMIC_CHANNEL_MISSION_WIDGET,
+            CustomAction.BANNER,
+            element.title
+        )
+        val listProducts = arrayListOf(
+            Product(
+                brand = DEFAULT_VALUE,
+                category = ITEM_CATEGORY_FORMAT.format(DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE),
+                channelId = element.id.toString(),
+                persoType = element.pageName,
+                categoryId = DEFAULT_VALUE,
+                id = element.productID,
+                name = element.productName,
+                productPosition = (horizontalPosition + 1).toString(),
+                productPrice = CustomAction.DEFAULT_PRICE,
+                variant = DEFAULT_VALUE,
+                isFreeOngkir = false
+            )
+        )
+
+        val itemList = CustomAction.ITEM_LIST_FORMAT.format(
+            element.verticalPosition,
+            if (element.isTopads) CustomAction.TOPADS else CustomAction.NON_TOPADS,
+            if (element.isCarousel) CustomAction.CAROUSEL else CustomAction.NON_CAROUSEL,
+            element.recommendationType,
+            element.pageName,
+            element.buType,
+            element.title
+        )
+        return trackingBuilder.constructBasicProductView(
+            event = Event.PRODUCT_VIEW,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = CustomAction.EVENT_ACTION_IMPRESSION_PRODUCT,
+            eventLabel = Label.NONE,
+            products = listProducts,
+            list = itemList
+        )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendCustomKeyValue(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_PRODUCT)
+            .build()
     }
 }
