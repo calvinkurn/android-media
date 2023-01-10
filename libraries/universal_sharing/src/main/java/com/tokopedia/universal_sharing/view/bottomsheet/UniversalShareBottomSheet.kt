@@ -51,6 +51,7 @@ import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.BroadcastChannelModel
 import com.tokopedia.universal_sharing.model.TickerShareModel
 import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
@@ -286,6 +287,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     //affiliate commission view
     private var affiliateCommissionTextView: Typography? = null
+    private var layoutCommisionExtra: View? = null
 
     private var thumbNailTitle = ""
     private var bottomSheetTitleRemoteConfKey = ""
@@ -512,6 +514,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             showAffiliateRegister(generateAffiliateLinkEligibility, deeplink)
         }
         affiliateListener?.invoke(isAffiliateUser)
+
+        if (generateAffiliateLinkEligibility.eligibleCommission?.ssaStatus == true) {
+            showCommissionExtra(generateAffiliateLinkEligibility)
+        }
     }
 
     private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
@@ -541,6 +547,17 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             return
         }
         affiliateQueryData = null
+    }
+
+    private fun showCommissionExtra(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+        layoutCommisionExtra?.let { layoutCommisionExtra ->
+            layoutCommisionExtra.visibility = View.VISIBLE
+            val badgeView = layoutCommisionExtra.findViewById<Typography>(R.id.tg_commision_extra)
+            val expiredDateView = layoutCommisionExtra.findViewById<Typography>(R.id.tg_expired_date)
+            badgeView?.text = generateAffiliateLinkEligibility.eligibleCommission?.badge ?: ""
+            expiredDateView?.text = generateAffiliateLinkEligibility.eligibleCommission?.expiredDateFormatted
+                ?: ""
+        }
     }
 
     private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String) {
@@ -613,6 +630,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             affiliateRegisterTitle = findViewById(R.id.tv_title_affiliate)
             affiliateRegisterIcon = findViewById(R.id.iv_affiliate)
             affiliateRegisterContainer = findViewById(R.id.card_register_affiliate)
+            layoutCommisionExtra = findViewById(R.id.layout_commission_extra)
             rvTicker = findViewById(R.id.rv_ticker)
             setFixedOptionsClickListeners()
 
@@ -1050,9 +1068,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executePdpContextualImage(shareModel: ShareModel) {
-        if (imageGeneratorParam == null) return
-        imageGeneratorParam?.apply {
+        if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
+        (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
+            this.productImageUrl = transformOgImageURL(ogImageUrl)
         }
 
         lifecycleScope.launchCatchError(block = {
