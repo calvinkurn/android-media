@@ -11,10 +11,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.SignatureData
-import java.security.KeyFactory
-import java.security.KeyPairGenerator
-import java.security.KeyStore
-import java.security.Signature
+import java.security.*
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.X509EncodedKeySpec
 
@@ -34,6 +31,18 @@ class RsaSignatureUtils {
         } catch (e: Exception) {
             log("hasKey", e)
             false
+        }
+    }
+
+    fun generateNewKeyPair(): KeyPair? {
+        try {
+            val kpGenerator: KeyPairGenerator =
+                KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
+            val keyPair = kpGenerator.generateKeyPair()
+            return keyPair
+//            return Base64.encodeToString(keyPair.private.encoded, Base64.NO_WRAP)
+        } catch (e: Exception) {
+            return null
         }
     }
 
