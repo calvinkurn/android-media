@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -103,9 +105,13 @@ class ContentDetailFragment :
     ContentDetailPostViewHolder.CDPListener,
     ProductItemInfoBottomSheet.Listener,
     ShareBottomsheetListener,
-    FeedFollowersOnlyBottomSheet.Listener {
+    FeedFollowersOnlyBottomSheet.Listener,
+    SwipeRefreshLayout.OnRefreshListener
+{
 
     private var cdpRecyclerView: RecyclerView? = null
+    private var swipeToRefresh: SwipeToRefresh? = null
+
     private var postId = "0"
     private var visitedUserID = ""
     private var visitedUserEncryptedID = ""
@@ -187,20 +193,29 @@ class ContentDetailFragment :
             userProfileFeedPost.observe(
                 viewLifecycleOwner
             ) {
-                when (it) {
-                    is Success -> onSuccessGetUserProfileFeedPost(it.data)
-                    is Fail -> showToast(
-                        getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder),
-                        Toaster.TYPE_ERROR
-                    )
+                    when (it) {
+                        is Success -> {
+                            finishLoading()
+                            onSuccessGetUserProfileFeedPost(it.data)
+                        }
+                        is Fail -> {
+                            finishLoading()
+                            showToast(
+                                getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder),
+                                Toaster.TYPE_ERROR
+                            )
+                        }
+
                 }
             }
             getCDPPostFirstPostData.observe(viewLifecycleOwner) {
                 when (it) {
                     is Success -> {
+                        finishLoading()
                         onSuccessGetFirstPostCDPData(it.data)
                     }
                     else -> {
+                        finishLoading()
                         showToast(
                             getString(feedComponentR.string.feed_video_tab_error_reminder),
                             Toaster.TYPE_ERROR
@@ -238,6 +253,10 @@ class ContentDetailFragment :
 
         val backBtn = activity.getHeaderView()
             ?.findViewById<AppCompatImageView>(kolR.id.content_detail_back_icon)
+        swipeToRefresh = view.findViewById(kolR.id.cdp_swipe_refresh_layout)
+
+        swipeToRefresh?.isRefreshing = true
+        swipeToRefresh?.isEnabled = false
         backBtn?.setOnClickListener {
             viewModel.getCDPPostFirstPostData.value?.let {
                 if (it is Success && it.data.postList.firstOrNull()?.isTypeSgcVideo == true) {
@@ -279,6 +298,8 @@ class ContentDetailFragment :
             cdpRecyclerView?.addOnScrollListener(it)
             it.resetState()
         }
+        swipeToRefresh?.setOnRefreshListener(this)
+
 
         cdpRecyclerView?.adapter = adapter
     }
@@ -2444,5 +2465,20 @@ class ContentDetailFragment :
             onFollowUnfollowClicked(card, position, isFollowedFromRSRestrictionBottomSheet = true)
         }
     }
+
+    override fun onRefresh() {
+        if (contentDetailSource == SOURCE_USER_PROFILE) {
+            viewModel.fetchUserProfileFeedPost(visitedUserID, currentPosition)
+        } else {
+            viewModel.getContentDetail(postId)
+        }
+        swipeToRefresh?.isRefreshing = true
+        swipeToRefresh?.isEnabled = false
+    }
+    private fun finishLoading() {
+        swipeToRefresh?.isRefreshing = false
+        swipeToRefresh?.isEnabled = true
+    }
+
     //endregion
 }
