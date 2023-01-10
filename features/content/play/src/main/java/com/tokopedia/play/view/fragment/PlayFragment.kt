@@ -105,8 +105,8 @@ class PlayFragment @Inject constructor(
     private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
 
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(requireActivity())
 
     private val playNavigation: PlayNavigation
         get() = requireActivity() as PlayNavigation
@@ -190,7 +190,7 @@ class PlayFragment @Inject constructor(
                 .filterIsInstance<PlayFragmentContract>()
                 .any { it.onInterceptOrientationChangedEvent(newOrientation) }
         val videoOrientation = playViewModel.videoOrientation
-        return isIntercepted || !videoOrientation.isHorizontal
+        return isIntercepted
     }
 
     override fun onEnterPiPState(pipState: PiPState) {
@@ -282,7 +282,7 @@ class PlayFragment @Inject constructor(
     }
 
     fun setCurrentVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
-        val key = BoundsKey.getByOrientation(orientation, videoOrientation)
+        val key = BoundsKey.getByOrientation(orientation.orientation, videoOrientation)
         boundsMap[key] = topBounds
 
         invalidateVideoTopBounds(videoOrientation)
@@ -339,7 +339,7 @@ class PlayFragment @Inject constructor(
     private fun invalidateVideoTopBounds(
             videoOrientation: VideoOrientation = playViewModel.videoOrientation
     ) {
-        val key = BoundsKey.getByOrientation(orientation, playViewModel.videoOrientation)
+        val key = BoundsKey.getByOrientation(orientation.orientation, playViewModel.videoOrientation)
         val topBounds = boundsMap[key] ?: 0
         getVideoBoundsManager().invalidateVideoBounds(videoOrientation, playViewModel.videoPlayer, topBounds)
     }
@@ -355,7 +355,7 @@ class PlayFragment @Inject constructor(
         if (videoBoundsManager == null) {
             videoBoundsManager = PlayVideoBoundsManager(requireView() as ViewGroup, object : ScreenOrientationDataSource {
                 override fun getScreenOrientation(): ScreenOrientation {
-                    return orientation
+                    return orientation.orientation
                 }
             })
         }
@@ -364,7 +364,7 @@ class PlayFragment @Inject constructor(
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val newOrientation = ScreenOrientation.getByInt(newConfig.orientation)
+        val newOrientation = ScreenOrientation2.get(requireActivity())
         if (newOrientation.isLandscape) hideAllInsets()
 
         invalidateVideoTopBounds()

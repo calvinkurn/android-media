@@ -76,7 +76,7 @@ class VideoViewComponent(
 
         fun configureVideo() {
             pvVideo.resizeMode = when {
-                !videoOrientation.isHorizontal -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+//                !videoOrientation.isHorizontal -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 screenOrientation.isLandscape -> AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
                 else -> AspectRatioFrameLayout.RESIZE_MODE_FIT
             }

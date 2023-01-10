@@ -221,14 +221,17 @@ class PlayUserInteractionFragment @Inject constructor(
      * that's why I have to use nullable context.
      * Though tbh this is not something that I recommend
      */
-    private val orientation: ScreenOrientation
-        get() = context?.resources?.configuration?.orientation?.let {
-            ScreenOrientation.getByInt(it)
-        } ?: ScreenOrientation.Unknown
+//    private val orientation: ScreenOrientation
+//        get() = context?.resources?.configuration?.orientation?.let {
+//            ScreenOrientation.getByInt(it)
+//        } ?: ScreenOrientation.Unknown
+
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(requireActivity())
 
     private val screenOrientationDataSource = object : ScreenOrientationDataSource {
         override fun getScreenOrientation(): ScreenOrientation {
-            return orientation
+            return orientation.orientation
         }
     }
 
@@ -521,7 +524,7 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onImmersiveBoxClicked(view: ImmersiveBoxViewComponent, currentAlpha: Float) {
         analytic.clickWatchArea(
-                screenOrientation = orientation
+            screenOrientation = orientation.orientation
         )
         triggerImmersive(currentAlpha == VISIBLE_ALPHA)
     }
@@ -723,7 +726,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun invalidateSystemUiVisibility() {
         when {
             playViewModel.isFreezeOrBanned -> playFullscreenManager.onExitFullscreen()
-            orientation.isLandscape -> playFullscreenManager.onEnterFullscreen()
+            orientation.isLandscape && orientation.isCompact -> playFullscreenManager.onEnterFullscreen()
             !playViewModel.videoOrientation.isHorizontal && container.isFullAlpha -> playFullscreenManager.onEnterFullscreen()
             else -> playFullscreenManager.onExitFullscreen()
         }
@@ -1087,7 +1090,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 container.alpha = VISIBLE_ALPHA
                 playFullscreenManager.onExitFullscreen()
             }
-            orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
+            orientation.isLandscape && orientation.isCompact -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
                 if (shouldImmersive) {
@@ -1449,14 +1452,20 @@ class PlayUserInteractionFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) toolbarView.show()
-        else if (!bottomInsets.isAnyShown && orientation.isPortrait) toolbarView.show()
+        else if (!bottomInsets.isAnyShown &&
+            orientation.isPortrait ||
+            !orientation.isCompact
+        ) toolbarView.show()
         else toolbarView.hide()
     }
 
     private fun partnerInfoViewOnStateChanged(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
     ) {
-        if (!bottomInsets.isAnyShown && orientation.isPortrait) partnerInfoView?.show()
+        if (!bottomInsets.isAnyShown &&
+            orientation.isPortrait ||
+            !orientation.isCompact
+        ) partnerInfoView?.show()
         else partnerInfoView?.hide()
     }
 
@@ -1468,7 +1477,10 @@ class PlayUserInteractionFragment @Inject constructor(
         statsInfoView.setLiveBadgeVisibility(channelType.isLive)
 
         if (isFreezeOrBanned) statsInfoView.hide()
-        else if (!bottomInsets.isAnyShown && orientation.isPortrait) statsInfoView.show()
+        else if (!bottomInsets.isAnyShown &&
+            orientation.isPortrait ||
+            !orientation.isCompact
+        ) statsInfoView.show()
         else statsInfoView.hide()
     }
 

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play.view.custom.PlayInteractionConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_play_interaction"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    >
+
+    <View
+        android:id="@+id/view_size"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <include
+        android:id="@+id/view_gradient_background"
+        layout="@layout/view_gradient_background"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <View
+        android:id="@+id/v_immersive_box"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toTopOf="@id/view_real_time_notification"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_stats_info"
+        />
+
+    <include
+        android:id="@+id/view_send_chat"
+        layout="@layout/view_send_chat"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/play_send_chat_height"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/view_size"
+        app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"
+        app:layout_constraintStart_toEndOf="@id/view_product_see_more"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl4"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_product_featured"
+        layout="@layout/view_product_featured"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        />
+
+    <View
+        android:id="@+id/view_topmost_like"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginBottom="@dimen/spacing_lvl8"
+        app:layout_constraintBottom_toBottomOf="@id/view_like"
+        />
+
+    <include
+        android:id="@+id/view_share_experience"
+        layout="@layout/view_share_experience"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_goneMarginEnd="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/view_like"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
+        />
+
+    <include
+        android:id="@+id/view_kebab_menu"
+        layout="@layout/view_kebab_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@id/view_share_experience"
+        app:layout_constraintEnd_toStartOf="@id/view_share_experience"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl3"
+        />
+
+    <include
+        android:id="@+id/view_like"
+        layout="@layout/view_like"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/view_send_chat"
+        app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_like_count"
+        layout="@layout/view_like_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_like"
+        app:layout_constraintEnd_toEndOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/view_like"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_pinned"
+        layout="@layout/view_pinned"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/view_share_experience"
+        app:layout_constraintBottom_toTopOf="@id/view_play_widget_address"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_goneMarginBottom="@dimen/play_offset_12"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.play.view.custom.PlayChatListView
+        android:id="@+id/view_chat_list"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_pinned"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.play.view.custom.video.PlayVideoControlView
+        android:id="@+id/pcv_video"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
+        app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"
+        app:layout_constraintStart_toEndOf="@id/view_product_see_more"
+        app:layout_constraintTop_toTopOf="@id/view_send_chat"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_product_see_more"
+        layout="@layout/view_product_see_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/view_video_settings"
+        layout="@layout/view_video_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintTop_toBottomOf="@id/view_stats_info"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_pip_control"
+        layout="@layout/view_pip_control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/play_offset_12"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
+        tools:visibility="visible" />
+
+    <androidx.mediarouter.app.MediaRouteButton
+        android:id="@+id/btn_play_cast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/view_pip_control"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl2"
+        app:mediaRouteButtonTint="@color/Unify_Static_White"
+        />
+
+    <include
+        android:id="@+id/view_end_live_info"
+        layout="@layout/view_end_live_info"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <include
+        android:id="@+id/view_toolbar_room"
+        layout="@layout/view_toolbar_room"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_size"
+        />
+
+    <include
+        android:id="@+id/view_partner_info"
+        layout="@layout/view_partner_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/play_offset_12"
+        android:layout_marginEnd="@dimen/spacing_lvl5"
+        app:layout_constraintEnd_toStartOf="@id/btn_play_cast"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/view_toolbar_room"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl5"
+        />
+
+    <include
+        android:id="@+id/view_stats_info"
+        layout="@layout/view_stats_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintTop_toBottomOf="@id/view_partner_info"
+        />
+
+    <include
+        android:id="@+id/view_game_interactive_result"
+        layout="@layout/view_game_interactive_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintTop_toBottomOf="@id/v_engagement_widget" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_quick_reply"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_real_time_notification"
+        layout="@layout/view_real_time_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="invisible"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="@id/view_chat_list"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
+        app:layout_constraintHorizontal_bias="0"
+        app:rcl_cornerRadius="@dimen/play_real_time_notif_radius"
+        />
+
+    <include
+        android:id="@+id/view_play_button"
+        layout="@layout/view_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_like_bubble_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_like_bubble_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <include
+        android:id="@+id/view_like_bubble"
+        layout="@layout/view_like_bubble"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/gl_like_bubble_start"
+        app:layout_constraintTop_toTopOf="@id/gl_like_bubble_height"
+        />
+
+    <include
+        android:id="@+id/view_play_widget_address"
+        layout="@layout/view_play_widget_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
+        app:layout_constraintEnd_toEndOf="@id/gl_like_bubble_start"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/view_size" />
+
+    <include
+        android:id="@+id/v_engagement_widget"
+        layout="@layout/view_small_engagement_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:maxHeight="110dp"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_stats_info"
+        android:visibility="visible"
+        tools:visibility="visible" />
+
+</com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>

@@ -51,12 +51,12 @@ class PlaySensorOrientationManager(
     }
 
     private fun requestOrientationChange(newOrientation: ScreenOrientation) {
-        if (currentOrientation == ScreenOrientation.Unknown) {
-            currentOrientation = newOrientation
-            return
-        } else if (newOrientation != currentOrientation) {
-            currentOrientation = newOrientation
-            if (isAutoRotateEnabled) listener.onOrientationChanged(currentOrientation, isTilting = true)
-        }
+//        if (currentOrientation == ScreenOrientation.Unknown) {
+//            currentOrientation = newOrientation
+//            return
+//        } else if (newOrientation != currentOrientation) {
+//            currentOrientation = newOrientation
+//            if (isAutoRotateEnabled) listener.onOrientationChanged(currentOrientation, isTilting = true)
+//        }
     }
 }

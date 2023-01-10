@@ -24,6 +24,7 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
@@ -59,8 +60,8 @@ class PlayYouTubeFragment @Inject constructor(
     private val orientationListener: PlayOrientationListener
         get() = requireActivity() as PlayOrientationListener
 
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(requireActivity())
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
@@ -111,7 +112,7 @@ class PlayYouTubeFragment @Inject constructor(
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val orientation = ScreenOrientation.getByInt(newConfig.orientation)
+        val orientation = ScreenOrientation2.get(requireActivity())
         youtubeView.setIsFullScreen(orientation.isLandscape)
     }
 

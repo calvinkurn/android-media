@@ -5,7 +5,7 @@
     android:id="@+id/container_video"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_dms_video_background">
+    android:background="@color/play_dms_background">
 
     <include
         android:id="@+id/view_video"

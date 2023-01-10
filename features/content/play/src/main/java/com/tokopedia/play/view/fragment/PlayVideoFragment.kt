@@ -52,6 +52,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
@@ -202,8 +203,8 @@ class PlayVideoFragment @Inject constructor(
 
     private lateinit var containerVideo: RoundedConstraintLayout
 
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(requireActivity())
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
@@ -272,8 +273,8 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val orientation = ScreenOrientation.getByInt(newConfig.orientation)
-        videoView.setOrientation(orientation, playViewModel.videoOrientation)
+        val orientation = ScreenOrientation2.get(requireActivity())
+        videoView.setOrientation(orientation.orientation, playViewModel.videoOrientation)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -323,7 +324,10 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun setupView() {
-        videoView.setOrientation(orientation, playViewModel.videoOrientation)
+        videoView.setOrientation(
+            orientation.orientation,
+            playViewModel.videoOrientation,
+        )
     }
 
     private fun setupObserve() {
@@ -358,7 +362,10 @@ class PlayVideoFragment @Inject constructor(
     //region observe
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
-            videoView.setOrientation(orientation, meta.videoStream.orientation)
+            videoView.setOrientation(
+                orientation.orientation,
+                meta.videoStream.orientation,
+            )
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
