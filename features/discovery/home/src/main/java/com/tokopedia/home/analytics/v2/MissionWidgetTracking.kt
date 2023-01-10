@@ -25,7 +25,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val EVENT_ACTION_IMPRESSION_BANNER = "impression on banner dynamic channel mission widget"
             const val EVENT_LABEL_FORMAT = "%s - %s"
             const val TRACKER_ID = "trackerId"
-            const val TRACKER_ID_CLICKED = "32188"
+            const val TRACKER_ID_CLICKED = "40381"
             const val TRACKER_ID_CLICKED_PDP = "40380"
             const val TRACKER_ID_IMPRESSION = "40379"
             const val DEFAULT_VALUE = ""
@@ -62,9 +62,10 @@ object MissionWidgetTracking : BaseTrackerConst() {
         bundle.putString(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_CLICKED)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CampaignCode.KEY, element.channel.trackingAttributionModel.campaignCode)
-        bundle.putString(Label.CHANNEL_LABEL, element.id.toString())
+        bundle.putString(Label.CHANNEL_LABEL, "${element.id} - ${element.channel.channelHeader.name}")
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(UserId.KEY, userId)
+        bundle.putString(ChannelId.KEY, element.id.toString())
         val promotion = Bundle()
         promotion.putString(Promotion.CREATIVE_NAME, DEFAULT_VALUE)
         promotion.putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
