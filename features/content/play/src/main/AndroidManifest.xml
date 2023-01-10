@@ -15,7 +15,7 @@
             android:name=".view.activity.PlayActivity"
             android:theme="@style/Play.FullScreen"
             android:launchMode="singleTop"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|density"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false">
             <intent-filter>
