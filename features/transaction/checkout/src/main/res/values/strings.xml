@@ -137,6 +137,8 @@
     <string name="checkout_label_set_pinpoint_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
     <string name="checkout_label_set_pinpoint_action">Atur</string>
     <string name="checkout_failed_auto_apply_bo_message">Bebas ongkir gagal diaplikasikan, silahkan coba lagi</string>
+    <string name="checkout_whitelabel_otdg_url"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="checkout_whitelabel_desc_otdg_url"><![CDATA[%1$s & <a href="%2$s">%3$s</a>]]></string>
     <string name="checkout_epharmacy_reminder_prescription_dialog_title">Yakin mau keluar dari halaman ini?</string>
     <string name="checkout_epharmacy_reminder_prescription_dialog_description">Resep digital akan tersedia 1x24 jam selama kamu tidak mengubah jumlah obat kerasnya.</string>
     <string name="checkout_epharmacy_reminder_prescription_dialog_positive_button">Lanjut Bayar</string>

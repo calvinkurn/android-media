@@ -171,7 +171,6 @@
 /features/promo/promo_checkout/                 		@tokopedia/android-minionmark-dev
 /features/promo/promo_checkout_common/          		@tokopedia/android-minionmark-dev
 
-/features/payment/payment/                      		@tokopedia/android-minionbob-dev
 /features/transaction/atc_common/               		@tokopedia/android-minionbob-dev
 /features/transaction/unifyorderhistory/                @tokopedia/android-minionbob-dev
 /features/transaction/wishlist/                         @tokopedia/android-minionbob-dev
@@ -287,6 +286,7 @@
 /features/payment/thankyou_native                		@tokopedia/android-minionmark-dev
 /features/payment/withdraw/             				@tokopedia/android-minionmark-dev
 
+/features/payment/payment/                      		@tokopedia/android-minionmark-dev
 /features/payment/payment_setting/              		@tokopedia/android-minionmark-dev
 /features/payment/pms/                          		@tokopedia/android-minionmark-dev
 /features/payment/gopay.kyc/                          	@tokopedia/android-minionmark-dev
