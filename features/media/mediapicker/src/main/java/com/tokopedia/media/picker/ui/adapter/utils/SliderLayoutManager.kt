@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.adapter.managers
+package com.tokopedia.media.picker.ui.adapter.utils
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +19,9 @@ class SliderLayoutManager(context: Context?) : LinearLayoutManager(context) {
         super.onAttachedToWindow(view)
         recyclerView = view
 
-        LinearSnapHelper().attachToRecyclerView(recyclerView)
+        if (recyclerView.onFlingListener == null) {
+            LinearSnapHelper().attachToRecyclerView(recyclerView)
+        }
     }
 
     override fun onScrollStateChanged(state: Int) {

@@ -8,7 +8,7 @@ import com.tokopedia.media.R
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.unifycomponents.TabsUnify
 
-class BottomNavComponent(
+class BottomNavUiComponent(
     private val listener: Listener,
     parent: ViewGroup
 ) : UiComponent(parent, R.id.uc_parent_bottom_nav) {

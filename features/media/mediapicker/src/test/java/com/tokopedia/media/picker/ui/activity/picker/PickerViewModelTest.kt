@@ -1,13 +1,14 @@
 package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.mapper.toModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
-import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.media.picker.data.repository.MediaFileRepository
 import com.tokopedia.media.picker.ui.observer.*
 import com.tokopedia.media.update
 import com.tokopedia.media.util.awaitItem
@@ -21,6 +22,7 @@ import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
@@ -40,7 +42,7 @@ class PickerViewModelTest {
 
     private val deviceInfoRepository = mockk<DeviceInfoRepository>()
     private val bitmapConverterRepository = mockk<BitmapConverterRepository>()
-    private val mediaRepository = mockk<MediaRepository>()
+    private val mediaRepository = mockk<MediaFileRepository>()
     private val paramCacheManager = mockk<PickerCacheManager>()
     private val featureToggleManager = mockk<FeatureToggleManager>()
 
@@ -179,7 +181,7 @@ class PickerViewModelTest {
 
         // When
         every { paramCacheManager.get() } returns PickerParam()
-        every { deviceInfoRepository.execute(any()) } returns expectedValue
+        every { deviceInfoRepository.isDeviceStorageAlmostFull(any()) } returns expectedValue
 
         val isStorageLimit = viewModel.isDeviceStorageAlmostFull()
 
@@ -194,7 +196,7 @@ class PickerViewModelTest {
 
         // When
         every { paramCacheManager.get() } returns PickerParam()
-        every { deviceInfoRepository.execute(any()) } returns expectedValue
+        every { deviceInfoRepository.isDeviceStorageAlmostFull(any()) } returns expectedValue
 
         val isStorageLimit = viewModel.isDeviceStorageAlmostFull()
 
@@ -205,10 +207,12 @@ class PickerViewModelTest {
     @Test
     fun `fetch local gallery data should be return list of media`() = coroutineScopeRule.runBlockingTest {
         // Given
-        coEvery { mediaRepository.invoke(any()) } returns mediaList
+        every { mediaRepository.invoke(any(), any()) } returns flow {
+            emit(mediaList)
+        }
 
         // When
-        viewModel.loadLocalGalleryBy(-1)
+        viewModel.loadMedia(-1)
 
         // Then
         assert(viewModel.medias.value?.size == mediaList.size)

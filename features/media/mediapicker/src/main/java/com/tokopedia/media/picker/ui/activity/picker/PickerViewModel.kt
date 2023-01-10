@@ -6,7 +6,7 @@ import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
-import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.media.picker.data.repository.MediaFileRepository
 import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.PickerParam
@@ -16,26 +16,32 @@ import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isUrl
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class PickerViewModel @Inject constructor(
     private val deviceInfo: DeviceInfoRepository,
-    private val mediaGallery: MediaRepository,
+    private val mediaFiles: MediaFileRepository,
     private val bitmapConverter: BitmapConverterRepository,
     private val param: PickerCacheManager,
     private val featureToggle: FeatureToggleManager,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private var _medias = MediatorLiveData<List<MediaUiModel>>()
+    private var _medias = MutableLiveData<List<MediaUiModel>>()
     val medias: LiveData<List<MediaUiModel>> get() = _medias
 
-    private var _includeMedias = MediatorLiveData<List<String?>>()
+    private var _isMediaEmpty = MutableLiveData<Boolean>()
+    val isMediaEmpty: LiveData<Boolean> get() = _isMediaEmpty
+
+    private var _includeMedias = MutableLiveData<List<String?>>()
     val includeMedias: LiveData<List<String?>> get() = _includeMedias
+
+    private var _isFetchMediaLoading = MutableLiveData<Boolean>()
+    val isFetchMediaLoading: LiveData<Boolean> get() = _isFetchMediaLoading
 
     private var _pickerParam = MutableLiveData<PickerParam>()
     val pickerParam: LiveData<PickerParam> get() = _pickerParam
@@ -68,7 +74,7 @@ class PickerViewModel @Inject constructor(
     }
 
     fun isDeviceStorageAlmostFull(): Boolean {
-        return deviceInfo.execute(
+        return deviceInfo.isDeviceStorageAlmostFull(
             param.get().minStorageThreshold()
         )
     }
@@ -92,13 +98,21 @@ class PickerViewModel @Inject constructor(
         }
     }
 
-    fun loadLocalGalleryBy(bucketId: Long) {
+    fun loadMedia(bucketId: Long, start: Int = 0) {
         viewModelScope.launch {
-            val result = mediaGallery(bucketId)
+            mediaFiles(bucketId, start)
+                .flowOn(dispatchers.io)
+                .onStart { _isFetchMediaLoading.value = true }
+                .onCompletion { _isFetchMediaLoading.value = false }
+                .collect { data ->
+                    _medias.value = mediaToUiModel(data)
 
-            withContext(dispatchers.main) {
-                _medias.value = mediaToUiModel(result)
-            }
+                    // check if the data is exist or not,
+                    // it used for rendering the empty state page
+                    if (_isMediaEmpty.value == null) {
+                        _isMediaEmpty.value = data.isEmpty()
+                    }
+                }
         }
     }
 

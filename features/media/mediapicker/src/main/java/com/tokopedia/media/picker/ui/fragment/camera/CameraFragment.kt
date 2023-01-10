@@ -27,7 +27,7 @@ import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
 import com.tokopedia.media.picker.ui.activity.picker.PickerViewModel
 import com.tokopedia.media.picker.ui.component.CameraControllerComponent
-import com.tokopedia.media.picker.ui.component.CameraViewComponent
+import com.tokopedia.media.picker.ui.component.CameraViewUiComponent
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
@@ -49,7 +49,7 @@ open class CameraFragment @Inject constructor(
     private var cameraAnalytics: CameraAnalytics,
 ) : BaseDaggerFragment()
     , CameraControllerComponent.Listener
-    , CameraViewComponent.Listener {
+    , CameraViewUiComponent.Listener {
 
     private val pickerViewModel: PickerViewModel by activityViewModels { viewModelFactory }
 
@@ -66,7 +66,7 @@ open class CameraFragment @Inject constructor(
     private var loaderDialog: LoaderDialogWidget? = null
 
     private val cameraView by uiComponent {
-        CameraViewComponent(
+        CameraViewUiComponent(
             param = param.get(),
             listener = this,
             parent = it
