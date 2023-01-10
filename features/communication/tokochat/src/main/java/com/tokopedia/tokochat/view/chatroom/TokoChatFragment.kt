@@ -76,7 +76,7 @@ import kotlinx.coroutines.flow.collect
 import java.io.File
 import javax.inject.Inject
 
-class TokoChatFragment :
+open class TokoChatFragment :
     TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
