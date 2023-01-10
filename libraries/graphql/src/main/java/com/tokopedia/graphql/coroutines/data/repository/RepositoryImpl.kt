@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.LoggingUtils
+import com.tokopedia.graphql.util.RemoteConfigHelper
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -84,31 +85,36 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             try {
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-                try {
-                    if (data != null && !data.isJsonNull) {
-                        //Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
-                        results[typeOfT] = CommonUtils.fromJson(data, typeOfT)
-                        isCachedData.put(typeOfT, false)
-                    }
+                if (data != null && !data.isJsonNull) {
+                    //Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
+                    results[typeOfT] = CommonUtils.fromJson(data, typeOfT)
+                    isCachedData.put(typeOfT, false)
+                }
 
-                    val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
-                    if (error != null && !error.isJsonNull) {
-                        errors[typeOfT] =
-                            CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
-                    }
-                } catch (jse: JsonSyntaxException) {
-                    LoggingUtils.logGqlSuccessRate(operationName, "0")
+                val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
+                if (error != null && !error.isJsonNull) {
+                    errors[typeOfT] =
+                        CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
+                }
+                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
+                LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
+            } catch (jse: JsonSyntaxException) {
+                LoggingUtils.logGqlSuccessRate(operationName, "0")
+                if (RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()) {
                     LoggingUtils.logGqlParseError(
                         "json",
                         "${jse.message.orEmpty()} at ${jse.stackTrace.firstOrNull()?.toString().orEmpty()}",
                         requests[index],
                         jsonElement.toString()
                     )
-                    jse.printStackTrace()
-                    return@forEachIndexed
+                } else {
+                    LoggingUtils.oldLogGqlParseError(
+                        "json",
+                        Log.getStackTraceString(jse),
+                        requests.toString()
+                    )
                 }
-                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
-                LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
+                jse.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -159,24 +165,30 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 try {
                     //Lookup for data
                     results[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                    isCachedData[copyRequests[i].typeOfT] = true
+                    copyRequests[i].isNoCache = true
+                    refreshRequests.add(copyRequests[i])
+                    requests.remove(copyRequests[i])
+
+                    LoggingUtils.logGqlParseSuccess("kt", requests.toString())
+                    LoggingUtils.logGqlSuccessRate(operationName, "1")
                 } catch (jse: JsonSyntaxException) {
                     LoggingUtils.logGqlSuccessRate(operationName, "0")
-                    LoggingUtils.logGqlParseError(
-                        "json",
-                        "${jse.message.orEmpty()} at ${jse.stackTrace.firstOrNull()?.toString().orEmpty()}",
-                        copyRequests[i],
-                        cachesResponse
-                    )
+                    if (RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()) {
+                        LoggingUtils.logGqlParseError(
+                            "json",
+                            "${jse.message.orEmpty()} at ${
+                                jse.stackTrace.firstOrNull()?.toString().orEmpty()
+                            }",
+                            copyRequests[i],
+                            cachesResponse
+                        )
+                    } else {
+                        LoggingUtils.oldLogGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
+                    }
                     jse.printStackTrace()
                     continue
                 }
-                isCachedData[copyRequests[i].typeOfT] = true
-                copyRequests[i].isNoCache = true
-                refreshRequests.add(copyRequests[i])
-                requests.remove(copyRequests[i])
-
-                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
-                LoggingUtils.logGqlSuccessRate(operationName, "1")
             }
         } catch (e: Exception) {
             e.printStackTrace()

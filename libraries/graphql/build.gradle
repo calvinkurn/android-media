@@ -41,6 +41,8 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.firebase.config
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     api rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.url

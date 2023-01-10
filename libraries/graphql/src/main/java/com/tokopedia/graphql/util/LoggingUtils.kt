@@ -46,6 +46,18 @@ object LoggingUtils {
     }
 
     @JvmStatic
+    fun oldLogGqlParseError(type: String, err: String, request: String) {
+        ServerLogger.log(
+            Priority.P1, "GQL_PARSE_ERROR",
+            mapOf(
+                "type" to type,
+                "err" to err.take(Const.GQL_ERROR_MAX_LENGTH).trim(),
+                "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()
+            )
+        )
+    }
+
+    @JvmStatic
     fun logGqlParseError(type: String, err: String, request: GraphqlRequest, response: String) {
         val regex = ".*(?=\\)).+\\n.*".toRegex()
         val requestWithParam = regex.find(request.query)?.value.orEmpty() to request.variables.toString()
