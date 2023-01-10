@@ -88,7 +88,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -138,6 +137,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var linearLayoutManager: CustomLinearLayoutManager? = null
+    private var anchorTabLinearLayoutManager: LinearLayoutManager? = null
 
     private val adapter by lazy {
         DtHomeAdapter(
@@ -181,6 +181,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         initUiVariable()
         initNavToolbar()
         initRecyclerView()
+        initAnchorTabGql()
         initAnchorTabMenu()
         initRecyclerScrollListener()
         initRefreshLayout()
@@ -192,6 +193,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
         observeLiveData()
         loadLayout()
+    }
+
+    private fun initAnchorTabGql() {
     }
 
     private fun initScreenSootListener() {
@@ -212,8 +216,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun initAnchorTabMenu() {
+        anchorTabLinearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
-        binding?.headerCompHolder?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding?.headerCompHolder?.layoutManager = anchorTabLinearLayoutManager
         binding?.headerCompHolder?.adapter = anchorTabAdapter
     }
 
@@ -221,13 +226,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         return object : DtAnchorTabAdapter.AnchorTabListener {
 
             override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int) {
-                Timber.d("onMenuSelected ${anchorTabUiModel.title} and $position")
-                anchorTabAdapter?.selectMenu(anchorTabUiModel)
-
-                val scrollPosition = adapter.data.indexOf(anchorTabUiModel.visitable)
-
+                var scrollPosition = adapter.data.indexOf(viewModelDtHome.getPositionUsingGroupId(anchorTabUiModel.groupId)?.layout)
+                // handle 0 value
+                if (position != 0 && scrollPosition == 0) return
                 if (scrollPosition == -1) return
-                if (statusBarState == AnchorTabStatus.MAXIMIZE) {
+
+                if (statusBarState == AnchorTabStatus.MAXIMIZE && scrollPosition != 0) {
                     setAnchorTabMinimize()
                 }
 
@@ -439,17 +443,11 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun showEmptyState(@HomeStaticLayoutId id: String) {
         localCacheModel?.service_type?.let { serviceType ->
             if (id != EMPTY_STATE_OUT_OF_COVERAGE) {
-//                rvLayoutManager?.setScrollEnabled(false)
+                rvLayoutManager?.setScrollEnabled(false)
                 viewModelDtHome.getEmptyState(id, serviceType)
             } else {
                 viewModelDtHome.getEmptyState(id, serviceType)
-//                viewModelDtHome.getProductRecomOoc()
             }
-
-//            miniCartWidgetget?.hide()
-//            miniCartWidget?.hideCoachMark()
-//            setToolbarTypeTitle()
-//            setupPadding(false)
         }
     }
 
@@ -909,18 +907,25 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
          * select and scroll tab anchor from pisition
          */
         if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList().isNotEmpty()) {
-            val visitable = viewModelDtHome.getHomeVisitableList()[visiblePosition]
-
-            val anchorTabUiModel = viewModelDtHome.menuList.value?.find {
-                it.visitable == visitable
-            }
+            val anchorTabUiModel = viewModelDtHome.getAnchorTabByVisitablePosition(visiblePosition)
             val indexAnchorTab = viewModelDtHome.menuList.value?.indexOf(anchorTabUiModel)
 
             if (anchorTabUiModel != null && indexAnchorTab != null) {
+                smoothScrollAnchorTab(indexAnchorTab)
                 anchorTabAdapter?.selectMenu(anchorTabUiModel)
-                binding?.headerCompHolder?.smoothScrollToPosition(indexAnchorTab)
             }
         }
+    }
+
+    private fun smoothScrollAnchorTab(position: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller =
+            object : LinearSmoothScroller(context) {
+                override fun getHorizontalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+        smoothScroller.targetPosition = position
+        anchorTabLinearLayoutManager?.startSmoothScroll(smoothScroller)
     }
 
     private fun smoothScrollToComponentWithPosition(position: Int) {

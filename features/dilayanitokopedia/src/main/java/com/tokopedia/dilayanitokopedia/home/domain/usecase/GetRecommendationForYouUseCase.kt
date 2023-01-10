@@ -13,7 +13,7 @@ import javax.inject.Inject
  * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2053933208/HPB+Home+-+API+GQL+GraphQL+getHomeRecommendationProductV2
  */
 
-class DtGetRecommendationForYouUseCase @Inject constructor(
+class GetRecommendationForYouUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetDtHomeRecommendationResponse>(graphqlRepository) {
 

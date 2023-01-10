@@ -3,7 +3,7 @@ package com.tokopedia.dilayanitokopedia.home.domain.usecase
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LocationParamMapper.mapLocation
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
-import com.tokopedia.dilayanitokopedia.home.domain.query.DtGetHomeLayoutData
+import com.tokopedia.dilayanitokopedia.home.domain.query.GetHomeLayoutData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -15,7 +15,7 @@ import javax.inject.Inject
  * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2043906993/HPB+Home+-+API+GQL+GraphQL+getHomeChannelV2
  */
 
-class DtGetHomeLayoutDataUseCase @Inject constructor(
+class GetHomeLayoutDataUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetHomeLayoutResponse>(graphqlRepository) {
 
@@ -30,7 +30,7 @@ class DtGetHomeLayoutDataUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(DtGetHomeLayoutData)
+        setGraphqlQuery(GetHomeLayoutData)
         setTypeClass(GetHomeLayoutResponse::class.java)
     }
 

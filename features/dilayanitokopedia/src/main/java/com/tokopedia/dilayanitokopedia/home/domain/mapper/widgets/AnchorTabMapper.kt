@@ -1,6 +1,7 @@
-package com.tokopedia.dilayanitokopedia.home.domain.mapper
+package com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeAnchorTabResponse
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 
@@ -30,7 +31,6 @@ object AnchorTabMapper {
             this.forEach anchorTabForEach@{ anchorTab ->
                 if (anchorTab.groupId == homeLayoutResponse[index].groupId) {
                     anchorTab.apply {
-                        this.visitable = homeLayoutList[index]
                         // remove later
                         this.title = homeLayoutResponse[index].header.name
                     }
@@ -42,4 +42,41 @@ object AnchorTabMapper {
         }
         return listMenu.toList()
     }
+
+    /**
+     * Mapping layout list to list menu Anchor tab
+     */
+    fun GetHomeAnchorTabResponse.GetHomeIconV2.mapMenuList(
+        homeLayoutResponse: List<HomeLayoutResponse>,
+        homeLayoutList: List<Visitable<*>>
+    ): List<AnchorTabUiModel> {
+        var listMenu = mutableListOf<AnchorTabUiModel>()
+
+        /**
+         *
+         * looping list layout
+         * each layout will looping anchor tab hard code data
+         * if group id from hard code data same with groupId with visitable then add to list
+         * the item added to list and get modified the visitable since still null
+         */
+        
+        this.icons.forEachIndexed anchorTabForEach@{ index, homeIcon ->
+
+            //remove later
+            // should homeIcon provide own group id, will get update later (the value should from be)
+            val dummyGroupId = homeLayoutResponse[index].groupId
+
+            val anchorTab = AnchorTabUiModel(
+                homeIcon.id.toString(),
+                homeIcon.name,
+                homeIcon.imageUrl,
+                dummyGroupId
+            )
+            listMenu.add(anchorTab)
+            listMenu = listMenu.distinctBy { it.groupId }.toMutableList()
+
+        }
+        return listMenu.toList()
+    }
+
 }

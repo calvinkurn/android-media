@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.recommendationforyou.HomeRecommendationMapper
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetRecommendationForYouUseCase
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetRecommendationForYouUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationEmpty
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationError
@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 
 class DtHomeRecommendationForYouViewModel @Inject constructor(
-    private val dtGetRecommendationForYouUseCase: DtGetRecommendationForYouUseCase,
+    private val getRecommendationForYouUseCase: GetRecommendationForYouUseCase,
     homeDispatcher: CoroutineDispatchers
 ) : BaseViewModel(homeDispatcher.io) {
 
@@ -32,7 +32,7 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
     fun loadInitialPage(locationParamString: String) {
         val INIT_NUMBER = 1
         launchCatchError(coroutineContext, block = {
-            val data = dtGetRecommendationForYouUseCase.execute(locationParamString, INIT_NUMBER)
+            val data = getRecommendationForYouUseCase.execute(locationParamString, INIT_NUMBER)
             val visitableData =
                 HomeRecommendationMapper.mapToHomeRecommendationDataModel(data, TAB_DILAYANI_TOKOPEDIA, INIT_NUMBER)
             if (data.products.isEmpty()) {
@@ -57,7 +57,7 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
         _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list))
 
         launchCatchError(coroutineContext, block = {
-            val data = dtGetRecommendationForYouUseCase.execute(locationParamString, page)
+            val data = getRecommendationForYouUseCase.execute(locationParamString, page)
             val visitableData = HomeRecommendationMapper.mapToHomeRecommendationDataModel(data, TAB_DILAYANI_TOKOPEDIA, page)
             list.remove(loadMoreModel)
             list.addAll(visitableData.homeRecommendations)
