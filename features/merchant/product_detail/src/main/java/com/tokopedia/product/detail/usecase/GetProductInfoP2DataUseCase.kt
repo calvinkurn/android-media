@@ -380,6 +380,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 hasUsedBenefit
               }
               boMetadata
+              productMetadata {
+                productID
+                value
+              }
             }
             merchantVoucherSummary{
                 animatedInfo{

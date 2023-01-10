@@ -2,10 +2,14 @@ package com.tokopedia.product.estimasiongkir.data
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
+import com.tokopedia.product.estimasiongkir.data.model.ScheduledDeliveryRatesModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.Product
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductServiceDetailDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.WhiteLabelDataModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.Service
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceBasedShipment
@@ -45,6 +49,32 @@ object RatesMapper {
         val productServiceData: MutableList<ProductShippingVisitable> = mapToServicesData(ratesModel.rates)
         productServiceData.add(0, productShippingHeader)
         return productServiceData
+    }
+
+    fun mapToVisitable(scheduledDeliveryRatesModel: ScheduledDeliveryRatesModel): ProductShippingVisitable {
+        val services = scheduledDeliveryRatesModel.deliveryServices.filter { !it.isHidden }.map { service ->
+                val products = service.deliveryProducts.filter { !it.isHidden }.map { product ->
+                    Product(
+                        scheduledTime = product.title,
+                        finalPrice = product.textFinalPrice,
+                        realPrice = product.textRealPrice,
+                        isAvailable = product.isAvailable,
+                        isRecommend = product.isRecommend,
+                        text = product.text
+                    )
+                }
+
+                val scheduleDate = service.titleLabel.let {
+                    if (it.isNotEmpty()) ", $it"
+                    else ""
+                }
+                Service(
+                    scheduledDate = service.title + scheduleDate,
+                    products = products,
+                    isAvailable = service.isAvailable
+                )
+            }
+        return ProductShippingSellyDataModel(services = services)
     }
 
     private fun mapToServicesData(rates: RatesModel): MutableList<ProductShippingVisitable> {
