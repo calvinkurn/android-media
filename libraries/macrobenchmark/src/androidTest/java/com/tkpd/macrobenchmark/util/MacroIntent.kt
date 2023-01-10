@@ -237,4 +237,15 @@ object MacroIntent {
             return intent
         }
     }
+
+    object ReschedulePickup {
+
+        const val RECYCLER_VIEW_ID = "layout_form_reschedule_pickup"
+
+        fun getIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://logistic/reschedulepickup?order_id=1111111")
+            return intent
+        }
+    }
 }
