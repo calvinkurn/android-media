@@ -7,10 +7,8 @@ import android.view.ViewGroup
 import android.widget.ScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
@@ -31,17 +29,10 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
+class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     private var shimmerLayout: ScrollView? = null
     private var catalogHomeRecyclerView: RecyclerView? = null
-    private val categoryId = ""
-    private val categoryIdentifier = ""
-    private val brandIdentifier = ""
-    private val keyword = ""
-    private val sortType = "0"
-    private val page = ""
-    private val rows = ""
 
     companion object {
         const val CATALOG_HOME_PAGE_FRAGMENT_TAG = "CATALOG_HOME_PAGE_FRAGMENT_TAG"
@@ -80,7 +71,6 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
     private fun getDataFromViewModel() {
         homepageViewModel?.getSpecialData()
         homepageViewModel?.getRelevantData()
-        homepageViewModel?.getCatalogListData(categoryIdentifier, sortType, rows)
     }
 
     override fun getScreenName(): String {
@@ -112,7 +102,8 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
     private fun setupRecyclerView(view: View) {
         catalogHomeRecyclerView = view.findViewById(R.id.catalog_home_rv)
         catalogHomeRecyclerView?.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            // TODO :: Check if this layout manager isn't affecting on other Fragment instances
+            layoutManager = getLinearLayoutManager()
             adapter = catalogHomeAdapter
             setHasFixedSize(true)
         }
@@ -149,8 +140,8 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
     private fun onError(e: Throwable) {
         shimmerLayout?.hide()
         catalogHomeRecyclerView?.hide()
-        if (e is UnknownHostException
-            || e is SocketTimeoutException
+        if (e is UnknownHostException ||
+            e is SocketTimeoutException
         ) {
             global_error_page.setType(GlobalError.NO_CONNECTION)
         } else {
@@ -167,13 +158,15 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
     }
 
     private fun showShimmer() {
-        if (catalogLibraryUiUpdater.mapOfData.isEmpty())
+        if (catalogLibraryUiUpdater.mapOfData.isEmpty()) {
             shimmerLayout?.show()
+        }
     }
 
     private fun hideShimmer() {
-        if (catalogLibraryUiUpdater.mapOfData.isNotEmpty())
+        if (catalogLibraryUiUpdater.mapOfData.isNotEmpty()) {
             shimmerLayout?.hide()
+        }
     }
 
     override fun onLihatSemuaTextClick(applink: String) {
@@ -188,6 +181,17 @@ class CatalogHomepageFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
     override fun onCategoryItemClicked(categoryName: String?) {
         super.onCategoryItemClicked(categoryName)
-        RouteManager.route(context, "tokopedia://catalog-library/kategori/${categoryName}")
+        RouteManager.route(context, "tokopedia://catalog-library/kategori/$categoryName")
+    }
+
+    override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {
+        productsList.forEach { component ->
+            catalogLibraryUiUpdater.updateModel(component)
+        }
+        updateUi()
+    }
+
+    override fun onErrorFetchingProducts(throwable: Throwable) {
+        onError(throwable)
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.catalog_library.viewmodels.CatalogHomepageViewModel
 import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageViewModel
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
+import com.tokopedia.catalog_library.viewmodels.ProductsBaseViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -36,4 +37,9 @@ abstract class ViewModelModule {
     @ViewModelKey(CatalogLandingPageViewModel::class)
     internal abstract fun catalogLandingPageViewModel(viewModel: CatalogLandingPageViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @CatalogLibraryScope
+    @ViewModelKey(ProductsBaseViewModel::class)
+    internal abstract fun productsBaseViewModel(viewModel: ProductsBaseViewModel): ViewModel
 }
