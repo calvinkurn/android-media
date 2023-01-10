@@ -27,7 +27,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
@@ -69,6 +68,7 @@ import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.presentation.quota.QuotaInfoActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
@@ -393,7 +393,7 @@ class MvcListFragment :
     ) {
         tfQuotaCounter.text = voucherCreationQuota.quotaUsageFormatted
         iconInfo.setOnClickListener {
-            redirectToQuotaVoucherPage()
+            redirectToQuotaVoucherPage(voucherCreationQuota)
         }
         btnAddCoupon.setOnClickListener {
             if (voucherCreationQuota.quotaErrorMessage.isEmpty()) {
@@ -705,8 +705,8 @@ class MvcListFragment :
         }
     }
 
-    private fun redirectToQuotaVoucherPage() {
-        // TODO: create redirection here
+    private fun redirectToQuotaVoucherPage(voucherCreationQuota: VoucherCreationQuota) {
+        QuotaInfoActivity.start(context, voucherCreationQuota)
     }
 
     private fun redirectToEditPage(voucher: Voucher) {

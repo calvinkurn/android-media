@@ -98,6 +98,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
         </activity>
+
+        <activity
+            android:name=".presentation.quota.QuotaInfoActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+        </activity>
+
     </application>
 
 </manifest>

@@ -14,4 +14,5 @@ object BundleConstant {
     const val BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE = "is_entry_point_from_voucher_summary_page"
     const val BUNDLE_KEY_SELECTED_WAREHOUSE_ID = "selected_warehouse_id"
     const val BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER = "enable_duplicate_voucher"
+    const val BUNDLE_KEY_VOUCHER_QUOTA = "voucher_quota"
 }
