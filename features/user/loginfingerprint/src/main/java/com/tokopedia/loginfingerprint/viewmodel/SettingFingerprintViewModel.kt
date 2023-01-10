@@ -80,9 +80,10 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
                 val result = registerFingerprintUseCase(params)
                 onSuccessRegisterFP(result)
             } else {
-                mutableErrorMessageRegister.value = "Terjadi Kesalahan, Silahkan coba lagi"
+                keyPairManager.get()?.removeKeys()
             }
         }, onError = {
+            keyPairManager.get()?.removeKeys()
             mutableErrorMessageRegister.value = it.message
         })
     }
