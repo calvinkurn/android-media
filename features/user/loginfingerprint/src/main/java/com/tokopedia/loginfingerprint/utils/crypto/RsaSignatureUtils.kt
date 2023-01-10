@@ -34,18 +34,6 @@ class RsaSignatureUtils {
         }
     }
 
-    fun generateNewKeyPair(): KeyPair? {
-        try {
-            val kpGenerator: KeyPairGenerator =
-                KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
-            val keyPair = kpGenerator.generateKeyPair()
-            return keyPair
-//            return Base64.encodeToString(keyPair.private.encoded, Base64.NO_WRAP)
-        } catch (e: Exception) {
-            return null
-        }
-    }
-
     private fun initKeys() {
         if(!hasKey()) {
             try {
