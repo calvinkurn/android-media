@@ -3,9 +3,9 @@ package com.tokopedia.editshipping.data.preference
 import android.content.Context
 import android.content.SharedPreferences
 
-class GocarInstanCoachMarkSharePref(context: Context) {
+class WhitelabelInstanCoachMarkSharePref(context: Context) {
 
-    private val PREFERENCE_NAME = "coachmark_gocar_instan"
+    private val PREFERENCE_NAME = "coachmark_whitelabel_instan"
 
     private val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
 

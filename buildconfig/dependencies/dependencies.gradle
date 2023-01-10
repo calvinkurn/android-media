@@ -126,7 +126,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.23.2'
     unifyPrinciplesVersion = '1.4.2'
-    unifyComponentsVersion = '1.2.20'
+    unifyComponentsVersion = '1.2.20-rc01'
     unifyCoachMarkVersion = '1.2.17.2'
     unifyCalendarVersion = '1.2.1.2'
     unifyBannerVersion = '1.0.6.2'
@@ -390,7 +390,9 @@ ext {
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",
-            leakPublisher : "com.gojek.android.local:library-leak-publisher:866fb8ad"
+            leakPublisher : "com.gojek.android.local:library-leak-publisher:866fb8ad",
+            chuckMqtt       : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion",
+            chuckMqttNoop   : "com.gojek.courier:chuck-mqtt-no-ops:$gojekCourierVersion"
     ]
 
     tkpdLibDependencies = [
