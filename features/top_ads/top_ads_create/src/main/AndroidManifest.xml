@@ -77,9 +77,20 @@
         <activity
             android:name="com.tokopedia.topads.view.activity.MpAdCreationActivity"
             android:label="@string/topads_create_onboarding_title"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustPan"
-            />
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="satyam_testing"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

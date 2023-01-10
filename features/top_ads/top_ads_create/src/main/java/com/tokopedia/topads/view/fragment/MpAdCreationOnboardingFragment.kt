@@ -13,6 +13,7 @@ import com.tokopedia.topads.create.databinding.MpAdCreationOnboardingFragmentBin
 import com.tokopedia.topads.utils.Span
 import com.tokopedia.topads.utils.SpannableUtils
 import com.tokopedia.topads.utils.SpannedString
+import com.tokopedia.topads.view.activity.MpAdCreationActivity
 import com.tokopedia.utils.image.ImageUtils
 
 class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
@@ -21,6 +22,7 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
         private const val SCREEN_NAME = "MpAdCreationOnboarding"
         private const val FOOTER_LINK_TEXT = "Yuk, Kenalan Dulu"
         private const val ONBOARDING_IMG_URL = "https://images.tokopedia.net/img/topads/topads_onboarding.png"
+        private const val TAG = "MP_TOPADS_CREATE_ONBOARDING"
 
         fun newInstance() : MpAdCreationOnboardingFragment{
             return MpAdCreationOnboardingFragment()
@@ -43,6 +45,7 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
         setupToolbar()
         loadOnboardingImage()
         setupFooterText()
+        setupCtaClickListener()
     }
 
     private fun setupToolbar(){
@@ -75,6 +78,17 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
               )
           } ?: text
       }
+    }
+
+    private fun setupCtaClickListener(){
+        binding?.onboardingCta?.setOnClickListener{
+            activity?.supportFragmentManager?.beginTransaction()?.setCustomAnimations(
+                    com.tokopedia.abstraction.R.anim.slide_in_right,
+                    com.tokopedia.abstraction.R.anim.slide_out_left,
+                    com.tokopedia.abstraction.R.anim.slide_in_left,
+                    com.tokopedia.abstraction.R.anim.slide_out_right
+                )?.replace(R.id.mp_ad_creation_container,MpCreateAdGroupFragment.newInstance())?.addToBackStack(TAG)?.commit()
+        }
     }
 
     override fun getScreenName() = SCREEN_NAME
