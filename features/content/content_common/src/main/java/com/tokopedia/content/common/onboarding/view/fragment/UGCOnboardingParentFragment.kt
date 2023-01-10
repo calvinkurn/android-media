@@ -61,8 +61,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                         mListener?.clickUsernameFieldOnCompleteOnboarding()
                     }
 
-                    override fun clickCheckBoxOnCompleteOnboarding() {
-                        mListener?.clickCheckBoxOnCompleteOnboarding()
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        mListener?.clickAcceptTnc(isChecked)
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
@@ -81,6 +81,10 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
             is UserTnCOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserTnCOnboardingBottomSheet.Listener,
                         BaseUserOnboardingBottomSheet.Listener {
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        mListener?.clickAcceptTnc(isChecked)
+                    }
+
                     override fun clickNextOnTncOnboarding() {
                         mListener?.clickNextOnTncOnboarding()
                     }
@@ -134,7 +138,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         fun impressCompleteOnboarding() {}
         fun clickNextOnTncOnboarding() {}
         fun clickUsernameFieldOnCompleteOnboarding() {}
-        fun clickCheckBoxOnCompleteOnboarding() {}
+        fun clickAcceptTnc(isChecked: Boolean) {}
         fun clickNextOnCompleteOnboarding() {}
         fun clickCloseIcon() {}
     }

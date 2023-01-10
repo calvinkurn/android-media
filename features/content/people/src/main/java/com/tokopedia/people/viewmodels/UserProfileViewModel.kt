@@ -74,6 +74,9 @@ class UserProfileViewModel @AssistedInject constructor(
     val isSelfProfile: Boolean
         get() = _profileType.value == ProfileType.Self
 
+    val isWhitelist: Boolean
+        get() = isSelfProfile && _profileWhitelist.value.isWhitelist
+
     val profileWebLink: String
         get() = _profileInfo.value.shareLink.webLink
 

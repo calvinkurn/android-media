@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -22,6 +23,7 @@ import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
+import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -32,6 +34,8 @@ import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparation
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsSummaryFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -48,6 +52,9 @@ class PlayShortsActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var analytic: PlayShortsAnalytic
 
     private lateinit var binding: ActivityPlayShortsBinding
 
@@ -72,7 +79,6 @@ class PlayShortsActivity : BaseActivity() {
             is UGCOnboardingParentFragment -> {
                 fragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
-                        /** TODO: handle tracker */
                         if(isFragmentContainerEmpty()) {
                             showNoEligibleAccountBackground(false)
                             viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
@@ -82,23 +88,31 @@ class PlayShortsActivity : BaseActivity() {
                     }
 
                     override fun impressTncOnboarding() {
-                        /** TODO: handle tracker */
+                        analytic.viewOnboardingUGC(viewModel.selectedAccount)
                     }
 
                     override fun impressCompleteOnboarding() {
-                        /** TODO: handle tracker */
+                        analytic.viewOnboardingUGC(viewModel.selectedAccount)
+                    }
+
+                    override fun clickUsernameFieldOnCompleteOnboarding() {
+                        analytic.clickTextFieldUsernameOnboardingUGC(viewModel.selectedAccount)
+                    }
+
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        if(isChecked) analytic.clickAcceptTncOnboardingUGC(viewModel.selectedAccount)
                     }
 
                     override fun clickNextOnTncOnboarding() {
-                        /** TODO: handle tracker */
+                        analytic.clickContinueOnboardingUGC(viewModel.selectedAccount)
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
-                        /** TODO: handle tracker */
+                        analytic.clickContinueOnboardingUGC(viewModel.selectedAccount)
                     }
 
                     override fun clickCloseIcon() {
-                        /** TODO: handle tracker */
+                        analytic.clickCancelOnboardingUGC(viewModel.selectedAccount)
                         if (isFragmentContainerEmpty()) finish()
                     }
                 })
@@ -115,6 +129,10 @@ class PlayShortsActivity : BaseActivity() {
                 })
 
                 fragment.setListener(object : SellerTncBottomSheet.Listener {
+                    override fun clickOkButton() {
+
+                    }
+
                     override fun clickCloseIcon() {
                         if(isFragmentContainerEmpty()) finish()
                     }
@@ -293,6 +311,7 @@ class PlayShortsActivity : BaseActivity() {
     private fun getPreferredAccountType(): String {
         return intent.getStringExtra(ContentCommonUserType.KEY_AUTHOR_TYPE).orEmpty()
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

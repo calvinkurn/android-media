@@ -240,13 +240,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val isAllowChangeAccount: Boolean
         get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
 
+    val selectedAccount: ContentAccountUiModel
+        get() = _selectedAccount.value
+
     val authorId: String
         get() = _selectedAccount.value.id
 
     val authorName: String
         get() = _selectedAccount.value.name
 
-    private val authorType: String
+    val authorType: String
         get() = _selectedAccount.value.type
 
     private val _channelUiState = _configInfo

@@ -51,18 +51,22 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.EVENT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ID
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.IS_LOGGED_IN_STATUS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NAME
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PLAY
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.POSITION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMOTIONS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_CLICK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_VIEW
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SCREEN_NAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SESSION_IRIS
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.TRACKER_ID
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.USER_ID
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_COMMUNICATION
+import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_CONTENT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_FEED
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_COMMUNICATION
+import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_CONTENT_IRIS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Function.isLiveOrNotLive
 import com.tokopedia.people.analytic.UserProfileAnalytics.Function.isLiveOrVod
@@ -71,6 +75,7 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.ScreenName.FEED_USER_P
 import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.analyticTracker
 import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.currentSite
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -903,6 +908,45 @@ class UserProfileTrackerImpl @Inject constructor(
                 BUSINESS_UNIT to CONTENT,
             ),
         )
+    }
+
+    /**
+     * Mynakama Tracker
+     * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
+     *
+     * Row 70
+     */
+    override fun clickCreateShorts(userId: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_CONTENT)
+            .setEventCategory(FEED_USER_PROFILE)
+            .setEventAction("click - buat video")
+            .setEventLabel("$userId - user")
+            .setCustomProperty(TRACKER_ID, "37593")
+            .setBusinessUnit(PLAY)
+            .setCurrentSite(currentSite)
+            .setCustomProperty(SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    /**
+     * Row 81
+     */
+    override fun viewCreateShorts(userId: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_CONTENT_IRIS)
+            .setEventCategory(FEED_USER_PROFILE)
+            .setEventAction("view - buat video")
+            .setEventLabel("$userId - user")
+            .setCustomProperty(TRACKER_ID, "37604")
+            .setBusinessUnit(PLAY)
+            .setCurrentSite(currentSite)
+            .setCustomProperty(SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
     override fun sendAll() {

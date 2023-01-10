@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
@@ -41,7 +42,7 @@ import kotlinx.coroutines.withContext
  * @author by jessica on 27/05/20
  */
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
-    @Assisted("authorId") val authorId: String,
+    @Assisted("account") val account: ContentAccountUiModel,
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
@@ -61,7 +62,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("authorId") authorId: String,
+            @Assisted("account") account: ContentAccountUiModel,
             @Assisted("channelId") channelId: String,
             @Assisted("channelTitle") channelTitle: String,
             productSectionList: List<ProductTagSectionUiModel>
@@ -338,7 +339,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             setQueryParams(
                 UpdateChannelUseCase.createUpdateStatusRequest(
                     channelId = channelId,
-                    authorId = authorId,
+                    authorId = account.id,
                     status = PlayChannelStatusType.Transcoding
                 )
             )

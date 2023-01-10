@@ -26,6 +26,7 @@ import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
+import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -39,7 +40,9 @@ import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleMan
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
@@ -62,6 +65,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val mediaSourceFactory: PlayShortsMediaSourceFactory,
     private val idleManager: PlayShortsIdleManager,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
+    private val analytic: PlayShortsAnalytic,
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -105,6 +109,9 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        analytic.viewPreparationPage(viewModel.selectedAccount)
+
         setupView()
         setupListener()
         setupObserver()
@@ -175,19 +182,29 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return viewModel.productSectionList.flatMap { it.products }
                     }
 
-                    override fun getAuthorId(): String {
-                        return viewModel.selectedAccount.id
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return viewModel.selectedAccount
                     }
 
                     override fun getChannelId(): String {
                         return viewModel.shortsId
                     }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Shorts
+                    }
                 })
             }
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(viewModel.accountList)
-                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                childFragment.setListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
+                        when {
+                            contentAccount.isShop -> analytic.clickShopAccount(viewModel.selectedAccount)
+                            contentAccount.isUser -> analytic.clickUserAccount(viewModel.selectedAccount)
+                            else -> {}
+                        }
+
                         if (contentAccount.id == viewModel.selectedAccount.id) return
 
                         if (viewModel.isFormFilled) {
@@ -195,6 +212,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                         } else {
                             viewModel.submitAction(PlayShortsAction.SwitchAccount)
                         }
+                    }
+
+                    override fun onClickClose() {
+                        analytic.clickCloseSwitchAccount(viewModel.selectedAccount)
                     }
                 })
             }
@@ -230,16 +251,17 @@ class PlayShortsPreparationFragment @Inject constructor(
         with(binding) {
             toolbar.apply {
                 setOnBackClickListener {
+                    analytic.clickBackOnPreparationPage(viewModel.selectedAccount)
                     activity?.onBackPressed()
                 }
 
-                if (viewModel.isAllowChangeAccount) {
-                    setOnAccountClickListener {
+                setOnAccountClickListener {
+                    if (viewModel.isAllowChangeAccount) {
+                        analytic.clickSwitchAccount(viewModel.selectedAccount)
+
                         coachMark?.dismissCoachMark()
                         viewModel.submitAction(PlayShortsAction.ClickSwitchAccount)
                     }
-                } else {
-                    setOnBackClickListener(null)
                 }
             }
 
@@ -252,12 +274,15 @@ class PlayShortsPreparationFragment @Inject constructor(
 
                 when (it.menuId) {
                     DynamicPreparationMenu.TITLE -> {
+                        analytic.clickMenuTitle(viewModel.selectedAccount)
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                     }
                     DynamicPreparationMenu.PRODUCT -> {
+                        analytic.clickMenuProduct(viewModel.selectedAccount)
                         openProductPicker()
                     }
                     DynamicPreparationMenu.COVER -> {
+                        analytic.clickMenuCover(viewModel.selectedAccount)
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
                     }
                 }
@@ -265,30 +290,42 @@ class PlayShortsPreparationFragment @Inject constructor(
 
             formTitle.setListener(object : TitleFormView.Listener {
                 override fun onClearTitle() {
-                    /** TODO: attach tracker here */
+                    analytic.clickClearTextBoxOnTitleForm(viewModel.selectedAccount)
+                }
+
+                override fun onClickTextField() {
+                    analytic.clickTextFieldOnTitleForm(viewModel.selectedAccount)
                 }
 
                 override fun onCloseTitleForm(view: TitleFormView) {
+                    analytic.clickBackOnTitleForm(viewModel.selectedAccount)
                     hideKeyboard()
                     viewModel.submitAction(PlayShortsAction.CloseTitleForm)
                 }
 
                 override fun onTitleSaved(view: TitleFormView, title: String) {
+                    analytic.clickSaveOnTitleForm(viewModel.selectedAccount)
                     viewModel.submitAction(PlayShortsAction.UploadTitle(title))
                 }
             })
 
             formCover.setListener(object : CoverFormView.Listener {
                 override fun onCloseCoverForm() {
+                    analytic.clickCloseOnCoverForm(viewModel.selectedAccount)
+
                     viewModel.submitAction(PlayShortsAction.CloseCoverForm)
                 }
 
                 override fun onClickCoverPreview(isEditCover: Boolean) {
+                    analytic.clickSelectCoverOnCoverForm(viewModel.selectedAccount)
+
                     openCoverSetupFragment()
                 }
             })
 
             btnNext.setOnClickListener {
+                analytic.clickNextOnPreparationPage(viewModel.selectedAccount)
+
                 viewModel.submitAction(PlayShortsAction.ClickNext)
             }
         }
@@ -366,6 +403,11 @@ class PlayShortsPreparationFragment @Inject constructor(
         if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)) {
             coachMark?.showCoachMark(ArrayList(coachMarkItems))
             coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
+
+            coachMark?.simpleCloseIcon?.setOnClickListener {
+                analytic.clickCloseCoachMarkOnPreparationPage(viewModel.selectedAccount)
+                coachMark?.dismissCoachMark()
+            }
         }
     }
 
@@ -406,6 +448,8 @@ class PlayShortsPreparationFragment @Inject constructor(
             title = getString(R.string.play_shorts_toolbar_title)
             subtitle = curr.selectedAccount.name
             icon = curr.selectedAccount.iconUrl
+
+            showHideExpandIcon(viewModel.isAllowChangeAccount)
         }
     }
 
@@ -494,11 +538,19 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun showTitleForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formTitle.showWithCondition(isShow)
+
+        if(isShow) {
+            analytic.openScreenTitleForm(viewModel.selectedAccount)
+        }
     }
 
     private fun showCoverForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formCover.showWithCondition(isShow)
+
+        if(isShow) {
+            analytic.openScreenCoverForm(viewModel.selectedAccount)
+        }
     }
 
     private fun showExitConfirmationDialog() {
@@ -508,6 +560,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                 setDescription(getString(R.string.play_shorts_exit_confirmation_description))
                 setPrimaryCTAText(getString(R.string.play_shorts_exit_confirmation_continue))
                 setPrimaryCTAClickListener {
+                    analytic.clickContinueOnLeaveConfirmationPopup(viewModel.selectedAccount)
+
                     dismiss()
                 }
                 setSecondaryCTAText(getString(R.string.play_shorts_exit_confirmation_exit))
@@ -519,6 +573,8 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
 
         if (exitConfirmationDialog?.isShowing == false) {
+            analytic.viewLeavePreparationConfirmationPopup(viewModel.selectedAccount)
+
             exitConfirmationDialog?.show()
         }
     }
@@ -549,6 +605,12 @@ class PlayShortsPreparationFragment @Inject constructor(
             )
             setPrimaryCTAText(getString(R.string.play_shorts_switch_account_cancel))
             setPrimaryCTAClickListener {
+                when {
+                    selectedAccount.isShop -> analytic.clickCancelSwitchAccountToShop(viewModel.selectedAccount)
+                    selectedAccount.isUser -> analytic.clickCancelSwitchAccountToUser(viewModel.selectedAccount)
+                    else -> {}
+                }
+
                 dismiss()
             }
             setSecondaryCTAText(
@@ -567,11 +629,19 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
 
         if (switchAccountConfirmationDialog?.isShowing == false) {
+            when {
+                selectedAccount.isShop -> analytic.viewSwitchAccountToShopConfirmation(viewModel.selectedAccount)
+                selectedAccount.isUser -> analytic.viewSwitchAccountToUserConfirmation(viewModel.selectedAccount)
+                else -> {}
+            }
+
             switchAccountConfirmationDialog?.show()
         }
     }
 
     private fun showSwitchAccountBottomSheet() {
+        analytic.viewSwitchAccountBottomSheet(viewModel.selectedAccount)
+
         ContentAccountTypeBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)

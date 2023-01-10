@@ -48,7 +48,7 @@ import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
-import com.tokopedia.feedplus.view.customview.FeedMainToolbar
+import com.tokopedia.feedplus.view.analytics.shorts.PlayShortsInFeedAnalytic
 import com.tokopedia.feedplus.view.customview.PostProgressUpdateView
 import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
@@ -63,6 +63,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
@@ -144,6 +145,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     lateinit var playShortsUploader: PlayShortsUploader
+
+    @Inject
+    lateinit var playShortsInFeedAnalytic: PlayShortsInFeedAnalytic
+
+    @Inject
+    lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
 
     @JvmField @Inject
     var coachMarkManager: ContentCoachMarkManager? = null
@@ -531,13 +538,22 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         type = Toaster.TYPE_NORMAL,
                         actionText = getString(R.string.feed_upload_shorts_see_video),
                         clickListener = View.OnClickListener {
+                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                uploadData.authorId,
+                                uploadData.authorType,
+                                uploadData.shortsId
+                            )
                             RouteManager.route(requireContext(), ApplinkConst.PLAY_DETAIL, uploadData.shortsId)
                         }
                     ).show()
                 }
                 PlayShortsUploadConst.PROGRESS_FAILED -> {
                     postProgressUpdateView?.show()
-                    postProgressUpdateView?.handleShortsUploadFailed(uploadData, playShortsUploader)
+                    postProgressUpdateView?.handleShortsUploadFailed(
+                        uploadData,
+                        playShortsUploader,
+                        playShortsInFeedAnalytic
+                    )
                 }
                 else -> {
                     postProgressUpdateView?.show()
@@ -556,7 +572,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         feedFloatingButton.setOnClickListener {
             coachMarkManager?.hasBeenShown(feedFloatingButton)
             fabFeed.menuOpen = !fabFeed.menuOpen
-            if (fabFeed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
+            if (fabFeed.menuOpen) {
+                entryPointAnalytic.clickMainEntryPoint()
+
+                if(viewModel.isShowShortsButton)
+                    playShortsInFeedAnalytic.viewShortsEntryPoint()
+            }
         }
     }
 
@@ -739,8 +760,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             title = getString(R.string.feed_fab_create_shorts_video),
             listener = {
                 fabFeed.menuOpen = false
-                /** TODO: attach analytic here */
-//                entryPointAnalytic.clickCreateLiveEntryPoint()
+                playShortsInFeedAnalytic.clickCreateShortsEntryPoint()
 
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }

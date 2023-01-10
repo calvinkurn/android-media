@@ -6,6 +6,7 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -105,6 +106,13 @@ class TitleFormView : ConstraintLayout {
                 return@setOnKeyListener false
             }
 
+            textFieldTitle.editText.setOnTouchListener { _, motionEvent ->
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                    mListener?.onClickTextField()
+                }
+                false
+            }
+
             textFieldTitle.clearIconView.setOnClickListener {
                 textFieldTitle.editText.text.clear()
                 mListener?.onClearTitle()
@@ -193,6 +201,7 @@ class TitleFormView : ConstraintLayout {
 
     interface Listener {
         fun onClearTitle() { }
+        fun onClickTextField() { }
 
         fun onCloseTitleForm(view: TitleFormView)
         fun onTitleSaved(view: TitleFormView, title: String)

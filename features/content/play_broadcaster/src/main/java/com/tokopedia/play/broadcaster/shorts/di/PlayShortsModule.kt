@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
@@ -95,7 +96,8 @@ class PlayShortsModule(
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
         pinProductAnalytic: PlayBroadcastPinProductAnalytic,
-        accountAnalytic: PlayBroadcastAccountAnalytic
+        accountAnalytic: PlayBroadcastAccountAnalytic,
+        shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -107,7 +109,8 @@ class PlayShortsModule(
             summaryAnalytic,
             scheduleAnalytic,
             pinProductAnalytic,
-            accountAnalytic
+            accountAnalytic,
+            shortsEntryPointAnalytic,
         )
     }
 

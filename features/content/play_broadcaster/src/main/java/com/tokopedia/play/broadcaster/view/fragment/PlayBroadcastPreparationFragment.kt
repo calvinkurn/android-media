@@ -45,6 +45,7 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
@@ -256,18 +257,22 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return parentViewModel.productSectionList.flatMap { it.products }
                     }
 
-                    override fun getAuthorId(): String {
-                        return parentViewModel.authorId
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return parentViewModel.selectedAccount
                     }
 
                     override fun getChannelId(): String {
                         return parentViewModel.channelId
                     }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
+                    }
                 })
             }
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(parentViewModel.contentAccountList)
-                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                childFragment.setListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
                         analytic.onClickAccount()
@@ -279,6 +284,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         }
                         viewModel.setFromSwitchAccount(true)
                     }
+
+                    override fun onClickClose() { }
                 })
             }
             is UGCOnboardingParentFragment -> {
@@ -295,8 +302,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         analytic.onClickUsernameFieldCompleteOnboardingUGC()
                     }
 
-                    override fun clickCheckBoxOnCompleteOnboarding() {
-                        analytic.onClickCheckBoxCompleteOnboardingUGC()
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        if(isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
@@ -383,6 +390,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             description = getString(R.string.play_bro_banner_shorts_description)
             bannerIcon = IconUnify.SHORT_VIDEO
         }
+        analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
     }
 
     private fun setupInsets() {
@@ -442,6 +450,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             bannerShorts.setOnClickListener {
+                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+
                 coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
 
                 val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
@@ -514,6 +524,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
 
         coachMark?.showCoachMark(ArrayList(coachMarkItems))
+
+        coachMark?.simpleCloseIcon?.setOnClickListener {
+            analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
+            coachMark?.dismissCoachMark()
+        }
+
         coachMark?.onDismissListener = {
             coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
         }

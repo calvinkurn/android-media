@@ -22,6 +22,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.view.analytics.shorts.PlayShortsInFeedAnalytic
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 
@@ -87,7 +88,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     fun handleShortsUploadFailed(
         uploadData: PlayShortsUploadModel,
-        uploader: PlayShortsUploader
+        uploader: PlayShortsUploader,
+        analytic: PlayShortsInFeedAnalytic
     ) {
         mPostUpdateSwipe?.updateVisibility(true)
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
@@ -95,8 +97,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
         processingText?.text = context.getString(R.string.cp_common_progress_bar_failed_text)
         processingText?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
+            analytic.clickRetryUploadShorts(uploadData.authorId, uploadData.authorType)
             retryPostShorts(uploadData, uploader)
-            /** TODO: attach tracker */
         }
     }
 

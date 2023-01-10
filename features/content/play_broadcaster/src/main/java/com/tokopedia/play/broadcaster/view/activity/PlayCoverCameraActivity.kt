@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -20,13 +21,17 @@ import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalytic
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
@@ -53,8 +58,16 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     private var cameraTimerEnum: CameraTimerEnum = CameraTimerEnum.Immediate
     private var isTimerRunning = false
 
+    private val account by lazy(LazyThreadSafetyMode.NONE) {
+        (intent.getSerializableExtra(EXTRA_ACCOUNT) as? ContentAccountUiModel).orUnknown()
+    }
+
+    private val pageSource by lazy(LazyThreadSafetyMode.NONE) {
+        PlayBroPageSource.getByValue(intent.getStringExtra(EXTRA_PAGE_SOURCE).orEmpty())
+    }
+
     @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
+    lateinit var analytic: PlayBroCoverPickerAnalytic
 
     private val cvCamera by lazy { findViewById<PlayCameraView>(R.id.cv_camera) }
     private val tvCancel by lazy { findViewById<TextView>(R.id.tv_cancel) }
@@ -95,7 +108,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         super.onStart()
         tvCancel.requestApplyInsetsWhenAttached()
         ivFlash.requestApplyInsetsWhenAttached()
-        analytic.openCameraScreenToAddCover()
+        analytic.openCameraScreenToAddCover(account, pageSource)
     }
 
     override fun onResume() {
@@ -128,7 +141,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         })
 
         tvCancel.setOnClickListener {
-            analytic.clickCancelOnCameraPage()
+            analytic.clickCancelOnCameraPage(account, pageSource)
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
@@ -136,26 +149,26 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         cvCamera.addCameraListener(cameraListener)
         ivShutter.setOnClickListener {
             takePicture()
-            analytic.clickCaptureFromCameraPage()
+            analytic.clickCaptureFromCameraPage(account, pageSource)
         }
         ivFlash.setOnClickListener {
             toggleFlash()
         }
         ivReverse.setOnClickListener {
             reverseCamera()
-            analytic.clickSwitchCameraOnCameraPage()
+            analytic.clickSwitchCameraOnCameraPage(account, pageSource)
         }
         tvTimer0.setOnClickListener {
             setImmediateCapture()
-            analytic.clickTimerCameraOnCameraPage(CameraTimerEnum.Immediate.seconds)
+            analytic.clickTimerCameraOnCameraPage(account, pageSource, CameraTimerEnum.Immediate.seconds)
         }
         tvTimer5.setOnClickListener {
             setTimerFiveSecondsCapture()
-            analytic.clickTimerCameraOnCameraPage(CameraTimerEnum.Five.seconds)
+            analytic.clickTimerCameraOnCameraPage(account, pageSource, CameraTimerEnum.Five.seconds)
         }
         tvTimer10.setOnClickListener {
             setTimerTenSecondsCapture()
-            analytic.clickTimerCameraOnCameraPage(CameraTimerEnum.Ten.seconds)
+            analytic.clickTimerCameraOnCameraPage(account, pageSource, CameraTimerEnum.Ten.seconds)
         }
         cvCamera.mapGesture(Gesture.PINCH, GestureAction.ZOOM)
         cvCamera.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
@@ -315,6 +328,20 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_IMAGE_URI = "EXTRA_IMAGE_URI"
 
+        private const val EXTRA_PAGE_SOURCE = "EXTRA_PAGE_SOURCE"
+        private const val EXTRA_ACCOUNT = "EXTRA_ACCOUNT"
+
         private const val REQUEST_CODE_PERMISSION = 1010
+
+        fun getIntent(
+            context: Context,
+            pageSource: PlayBroPageSource,
+            account: ContentAccountUiModel,
+        ): Intent {
+            return Intent(context, PlayCoverCameraActivity::class.java).apply {
+                putExtra(EXTRA_PAGE_SOURCE, pageSource.value)
+                putExtra(EXTRA_ACCOUNT, account)
+            }
+        }
     }
 }

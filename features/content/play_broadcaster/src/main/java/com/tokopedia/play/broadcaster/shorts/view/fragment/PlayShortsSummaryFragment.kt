@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsSummaryBinding
+import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
@@ -33,7 +34,8 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 11, 2022
  */
 class PlayShortsSummaryFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val analytic: PlayShortsAnalytic,
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = TAG
@@ -48,10 +50,14 @@ class PlayShortsSummaryFragment @Inject constructor(
             it, binding.layoutTagRecommendation,
             object : TagListViewComponent.Listener {
                 override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
+                    analytic.clickContentTag(tag.tag, viewModel.selectedAccount)
+
                     viewModel.submitAction(PlayShortsAction.SelectTag(tag))
                 }
 
                 override fun onTagRefresh(view: TagListViewComponent) {
+                    analytic.clickRefreshContentTag(viewModel.selectedAccount)
+
                     viewModel.submitAction(PlayShortsAction.LoadTag)
                 }
             }
@@ -77,6 +83,9 @@ class PlayShortsSummaryFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        analytic.openScreenSummaryPage(viewModel.selectedAccount)
+
         setupView()
         setupListener()
         setupObserver()
@@ -95,10 +104,14 @@ class PlayShortsSummaryFragment @Inject constructor(
 
     private fun setupListener() {
         binding.icBack.setOnClickListener {
+            analytic.clickBackOnSummaryPage(viewModel.selectedAccount)
+
             activity?.onBackPressed()
         }
 
         binding.btnUploadVideo.setOnClickListener {
+            analytic.clickUploadVideo(viewModel.shortsId, viewModel.selectedAccount)
+
             viewModel.submitAction(PlayShortsAction.ClickUploadVideo)
         }
     }

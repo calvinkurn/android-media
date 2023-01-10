@@ -12,7 +12,7 @@ import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.BroadcasterAddMediasUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
-import com.tokopedia.play_common.shortsuploader.di.DaggerPlayShortsWorkerComponent
+import com.tokopedia.play_common.shortsuploader.di.worker.DaggerPlayShortsWorkerComponent
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.notification.PlayShortsUploadNotificationManager
 import com.tokopedia.play_common.types.PlayChannelStatusType
