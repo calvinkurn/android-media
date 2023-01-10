@@ -86,7 +86,7 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                     tvTotalPaymentValue.text = "-"
                     btnOrderDetail.visibility = View.GONE
                     if (orderTotal.showTickerError) {
-                        tickerPaymentError.setHtmlDescription("Total bayar gagal ditampilkan. <a href=\"refresh\">Muat Ulang</a>")
+                        tickerPaymentError.setHtmlDescription(tickerPaymentError.context.getString(R.string.occ_payment_fee_error_ticker))
                         tickerPaymentError.setDescriptionClickEvent(object : TickerCallback {
                             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                                 listener.onRefreshPaymentClicked()
