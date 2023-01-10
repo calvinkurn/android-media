@@ -185,22 +185,6 @@ object MissionWidgetTracking : BaseTrackerConst() {
 
     fun getMissionWidgetProductView(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
-        val creativeName = DEFAULT_VALUE
-        val creativeSlot = (horizontalPosition + 1).toString()
-        val itemId = CustomAction.ITEM_ID_FORMAT.format(
-            element.id,
-            DEFAULT_BANNER_ID,
-            element.pageName,
-            DEFAULT_VALUE,
-            element.categoryID,
-            element.recommendationType
-        )
-        val itemName = CustomAction.ITEM_NAME_FORMAT.format(
-            element.verticalPosition,
-            CustomAction.DYNAMIC_CHANNEL_MISSION_WIDGET,
-            CustomAction.BANNER,
-            element.title
-        )
         val listProducts = arrayListOf(
             Product(
                 brand = DEFAULT_VALUE,

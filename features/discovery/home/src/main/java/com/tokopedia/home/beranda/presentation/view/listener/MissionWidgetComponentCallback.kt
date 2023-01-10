@@ -31,7 +31,7 @@ class MissionWidgetComponentCallback(
         element: CarouselMissionWidgetDataModel,
         horizontalPosition: Int
     ) {
-        if (element.productID.isNotBlank() && element.productID != ZERO_PRODUCT_ID) {
+        if (element.isProduct()) {
             MissionWidgetTracking.sendMissionWidgetClickedToPdp(element, horizontalPosition, homeCategoryListener.userId)
         } else {
             MissionWidgetTracking.sendMissionWidgetClicked(element, horizontalPosition, homeCategoryListener.userId)
@@ -43,7 +43,7 @@ class MissionWidgetComponentCallback(
         element: CarouselMissionWidgetDataModel,
         horizontalPosition: Int
     ) {
-        if (element.productID.isNotBlank() && element.productID != ZERO_PRODUCT_ID) {
+        if (element.isProduct()) {
             homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MissionWidgetTracking.getMissionWidgetProductView(
                     element,
@@ -60,5 +60,9 @@ class MissionWidgetComponentCallback(
                 ) as HashMap<String, Any>
             )
         }
+    }
+
+    private fun CarouselMissionWidgetDataModel.isProduct(): Boolean {
+        return this.productID.isNotBlank() && this.productID != ZERO_PRODUCT_ID
     }
 }
