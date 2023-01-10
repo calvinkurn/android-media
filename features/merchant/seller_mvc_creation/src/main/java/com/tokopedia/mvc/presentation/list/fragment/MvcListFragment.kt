@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
+import com.tokopedia.mvc.common.util.UrlConstant.URL_MAIN_ARTICLE
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -51,7 +52,6 @@ import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherB
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterClickListener
-import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterMenuAdapter.Companion.URL_MAIN_ARTICLE
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.model.EduCenterMenuModel
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
