@@ -74,6 +74,15 @@
         app:layout_constraintStart_toStartOf="@id/tpg_voucher_status"
         app:layout_constraintTop_toBottomOf="@+id/tpg_voucher_status" />
 
+    <ImageView
+        android:id="@+id/btn_download_image_voucher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/smvc_shape_download_overlay"
+        app:layout_constraintBottom_toBottomOf="@+id/img_voucher"
+        app:layout_constraintStart_toStartOf="@+id/img_voucher"
+        app:layout_constraintEnd_toEndOf="@+id/img_voucher"/>
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_voucher_source"
         android:layout_width="wrap_content"
