@@ -17,11 +17,11 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
 
     fun map(response: MerchantPromotionGetMVDataByIDResponse): VoucherDetailData {
         return with(response.merchantPromotionGetMVDataByID.data) {
-            val voucherDetailData: VoucherDetailData = VoucherDetailData(
+            val voucherDetailData = VoucherDetailData(
                 voucherId = voucherId,
                 shopId = shopId,
                 voucherName = voucherName,
-                voucherType = PromoType.values().firstOrNull { value -> value.id == voucherDiscountType }
+                voucherType = PromoType.values().firstOrNull { value -> value.id == voucherType }
                     ?: PromoType.FREE_SHIPPING,
                 voucherImage = voucherImage,
                 voucherImageSquare = voucherImageSquare,
