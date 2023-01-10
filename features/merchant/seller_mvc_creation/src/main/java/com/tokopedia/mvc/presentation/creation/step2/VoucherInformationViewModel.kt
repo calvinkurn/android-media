@@ -1,19 +1,27 @@
 package com.tokopedia.mvc.presentation.creation.step2
 
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
+import com.tokopedia.mvc.util.constant.CommonConstant
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.*
+import java.util.*
 import javax.inject.Inject
 
 class VoucherInformationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
+    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
+    private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(VoucherCreationStepTwoUiState())
@@ -27,15 +35,17 @@ class VoucherInformationViewModel @Inject constructor(
 
     fun processEvent(event: VoucherCreationStepTwoEvent) {
         when (event) {
-            is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
-                event.voucherConfiguration
-            )
+            is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(event.voucherConfiguration)
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(event.isPublic)
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
             is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
-            is VoucherCreationStepTwoEvent.ValidateVoucherInput -> {}
+            is VoucherCreationStepTwoEvent.OnVoucherRecurringToggled -> handleVoucherRecurringToggleChanges(event.isActive)
+            is VoucherCreationStepTwoEvent.OnVoucherStartDateChanged -> setStartDateTime(event.calendar)
+            is VoucherCreationStepTwoEvent.OnVoucherEndDateChanged -> setEndDateTime(event.calendar)
+            is VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected -> setRecurringPeriod(event.selectedRecurringPeriod)
             is VoucherCreationStepTwoEvent.NavigateToNextStep -> {}
+            is VoucherCreationStepTwoEvent.HandleCoachMark -> { handleCoachmark() }
         }
     }
 
@@ -47,6 +57,10 @@ class VoucherInformationViewModel @Inject constructor(
             )
         }
         handleVoucherInputValidation()
+    }
+
+    fun getCurrentVoucherConfiguration(): VoucherConfiguration {
+        return currentState.voucherConfiguration
     }
 
     private fun handleBackToPreviousStep() {
@@ -101,21 +115,104 @@ class VoucherInformationViewModel @Inject constructor(
                     targetBuyer = voucherConfiguration.targetBuyer,
                     couponName = voucherConfiguration.voucherName,
                     isPublic = voucherConfiguration.isVoucherPublic,
-                    code = voucherConfiguration.voucherCode
+                    code = voucherConfiguration.voucherCode,
+                    isPeriod = voucherConfiguration.isPeriod,
+                    periodType = voucherConfiguration.periodType,
+                    periodRepeat = voucherConfiguration.periodRepeat,
+                    totalPeriod = voucherConfiguration.totalPeriod,
+                    startDate = voucherConfiguration.startPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
+                    endDate = voucherConfiguration.endPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
+                    startHour = voucherConfiguration.startPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
+                    endHour = voucherConfiguration.endPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION)
                 )
                 val validationResult =
-                    voucherValidationPartialUseCase.execute(voucherValidationParam).validationError
+                    voucherValidationPartialUseCase.execute(voucherValidationParam)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        isVoucherNameError = validationResult.couponName.isNotBlank(),
-                        voucherNameErrorMsg = validationResult.couponName,
-                        isVoucherCodeError = validationResult.code.isNotBlank(),
-                        voucherCodeErrorMsg = validationResult.code
+                        isVoucherNameError = validationResult.validationError.couponName.isNotBlank(),
+                        voucherNameErrorMsg = validationResult.validationError.couponName,
+                        isVoucherCodeError = validationResult.validationError.code.isNotBlank(),
+                        voucherCodeErrorMsg = validationResult.validationError.code,
+                        isStartDateError = validationResult.validationError.dateStart.isNotBlank(),
+                        startDateErrorMsg = validationResult.validationError.dateStart,
+                        isEndDateError = validationResult.validationError.dateEnd.isNotBlank(),
+                        endDateErrorMsg = validationResult.validationError.dateEnd,
+                        validationDate = validationResult.validationDate
                     )
                 }
             },
             onError = { }
         )
+    }
+
+    private fun handleVoucherRecurringToggleChanges(isActive: Boolean) {
+        _uiState.update {
+            it.copy(
+                voucherConfiguration = it.voucherConfiguration.copy(isPeriod = isActive)
+            )
+        }
+        handleVoucherInputValidation()
+    }
+
+    private fun setStartDateTime(startDate: Calendar?) {
+        startDate?.let {
+            _uiState.update {
+                it.copy(
+                    voucherConfiguration = it.voucherConfiguration.copy(startPeriod = startDate.time)
+                )
+            }
+            handleVoucherInputValidation()
+        }
+    }
+
+    private fun setEndDateTime(endDate: Calendar?) {
+        endDate?.let {
+            _uiState.update {
+                it.copy(
+                    voucherConfiguration = it.voucherConfiguration.copy(endPeriod = endDate.time)
+                )
+            }
+            handleVoucherInputValidation()
+        }
+    }
+
+    private fun setRecurringPeriod(selectedRecurringPeriod: Int) {
+        _uiState.update {
+            it.copy(
+                voucherConfiguration = it.voucherConfiguration.copy(totalPeriod = selectedRecurringPeriod)
+            )
+        }
+        handleVoucherInputValidation()
+    }
+
+    fun mapVoucherRecurringPeriodData(validationDate: List<VoucherValidationResult.ValidationDate>): List<DateStartEndData> {
+        return validationDate.map {
+            DateStartEndData(
+                dateStart = it.dateStart,
+                dateEnd = it.dateEnd,
+                hourStart = it.hourStart,
+                hourEnd = it.hourEnd
+            )
+        }
+    }
+
+    private fun handleCoachmark() {
+        if (!isCoachMarkShown()) {
+            _uiAction.tryEmit(VoucherCreationStepTwoAction.ShowCoachmark)
+        }
+    }
+
+    private fun isCoachMarkShown(): Boolean {
+        return sharedPreferences.getBoolean(
+            CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_TWO_COACH_MARK,
+            false
+        )
+    }
+
+    fun setSharedPrefCoachMarkAlreadyShown() {
+        sharedPreferences.edit()
+            .putBoolean(CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_TWO_COACH_MARK, true)
+            .apply()
     }
 }
