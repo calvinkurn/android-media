@@ -832,8 +832,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                     if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
-                            (pair.first as? UpdateParam)?.productList?.firstOrNull()
-                                ?.let { requestParam ->
+                            (pair.first as? UpdateParam)?.productList?.forEach { requestParam ->
                                     (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
                                         cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
