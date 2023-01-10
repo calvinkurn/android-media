@@ -133,10 +133,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.loginregister)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.exoPlayerCore
-    implementation rootProject.ext.miscDependencies.exoPlayer
-    implementation rootProject.ext.miscDependencies.exoPlayerUi
 
     /*
         Do not remove this dependency, because we use it in Abstraction
@@ -150,5 +146,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.libraries.foldable)
 }
