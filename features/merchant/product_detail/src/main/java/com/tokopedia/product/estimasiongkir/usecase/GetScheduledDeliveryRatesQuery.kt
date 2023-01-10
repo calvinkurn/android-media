@@ -20,27 +20,27 @@ object GetScheduledDeliveryRatesQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-            query ScheduledDeliveryRates($$PARAM_ORIGIN: String!, $$PARAM_DESTINATION: String!, $$PARAM_WAREHOUSE_ID: Int64!, $$PARAM_WEIGHT: String!, $$PARAM_SHOP_ID: Int64, $$PARAM_UNIQUE_ID: String, $$PARAM_PRODUCTS: String, $$PARAM_BO_METADATA: String, $$PARAM_SOURCE: String) {
-                ongkirGetScheduledDeliveryRates(input: {$PARAM_ORIGIN: $$PARAM_ORIGIN, $PARAM_DESTINATION: $$PARAM_DESTINATION, $PARAM_WAREHOUSE_ID: $$PARAM_WAREHOUSE_ID, $PARAM_WEIGHT: $$PARAM_WEIGHT, $PARAM_SHOP_ID: $$PARAM_SHOP_ID, $PARAM_UNIQUE_ID: $$PARAM_UNIQUE_ID, $PARAM_PRODUCTS: $$PARAM_PRODUCTS, $PARAM_BO_METADATA: $$PARAM_BO_METADATA, $PARAM_SOURCE: $$PARAM_SOURCE}) {
-                    data {
-                        delivery_services {
+        query ScheduledDeliveryRates($$PARAM_ORIGIN: String!, $$PARAM_DESTINATION: String!, $$PARAM_WAREHOUSE_ID: Int64!, $$PARAM_WEIGHT: String!, $$PARAM_SHOP_ID: Int64, $$PARAM_UNIQUE_ID: String, $$PARAM_PRODUCTS: String, $$PARAM_BO_METADATA: String, $$PARAM_SOURCE: String) {
+            ongkirGetScheduledDeliveryRates(input: {$PARAM_ORIGIN: $$PARAM_ORIGIN, $PARAM_DESTINATION: $$PARAM_DESTINATION, $PARAM_WAREHOUSE_ID: $$PARAM_WAREHOUSE_ID, $PARAM_WEIGHT: $$PARAM_WEIGHT, $PARAM_SHOP_ID: $$PARAM_SHOP_ID, $PARAM_UNIQUE_ID: $$PARAM_UNIQUE_ID, $PARAM_PRODUCTS: $$PARAM_PRODUCTS, $PARAM_BO_METADATA: $$PARAM_BO_METADATA, $PARAM_SOURCE: $$PARAM_SOURCE}) {
+                data {
+                    delivery_services {
+                        title
+                        title_label
+                        available
+                        hidden
+                        delivery_products {
                             title
-                            title_label
                             available
                             hidden
-                            delivery_products {
-                                title
-                                available
-                                hidden
-                                text
-                                recommend
-                                text_real_price
-                                text_final_price
-                            }
+                            text
+                            recommend
+                            text_real_price
+                            text_final_price
                         }
                     }
                 }
             }
+        }
     """.trimIndent()
 
     override fun getTopOperationName() = OPERATION_NAME
