@@ -15,7 +15,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -103,7 +103,8 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, warehouseId: String) {
         val categoryListUiModel = HomeCategoryMapper.mapToCategoryList(response, warehouseId, CATEGORY_GRID_TITLE)
-        add(TokoNowCategoryGridUiModel(
+        add(
+            TokoNowCategoryMenuUiModel(
                 id = "",
                 title = "",
                 categoryListUiModel = categoryListUiModel,

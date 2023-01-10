@@ -63,7 +63,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
@@ -75,7 +75,7 @@ import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.Erro
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.LOAD_LAYOUT_ERROR
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.LOAD_MORE_ERROR
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
@@ -263,7 +263,7 @@ class TokoNowRepurchaseFragment:
 
     override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { /* noting to do */ }
 
-    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
+    override fun onCategoryImpression(data: TokoNowCategoryMenuUiModel) { }
 
     override fun onFindInTokopediaClick() {
         RouteManager.route(context, ApplinkConst.HOME)

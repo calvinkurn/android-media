@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
@@ -51,7 +51,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
     }
 
     private fun `Then assert category grid ui model state show`() {
-        val expectedCategoryList = HomeCategoryMapper.mapToCategoryList(categoryList.response.data, warehouseId, CATEGORY_GRID_TITLE)
+        val expectedCategoryList = HomeCategoryMapper.mapToCategoryList(categoryList.response.data, CATEGORY_GRID_TITLE)
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         val categoryGridUiModel = visitableList.findIndexedCategoryGridUIModel()
 
@@ -60,8 +60,8 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
     }
 
     private fun List<Visitable<*>>.findIndexedCategoryGridUIModel() =
-            find { it is TokoNowCategoryGridUiModel }
-                as? TokoNowCategoryGridUiModel
+            find { it is TokoNowCategoryMenuUiModel }
+                as? TokoNowCategoryMenuUiModel
                 ?: throw AssertionError("Cannot find category grid ui model")
 
     @Test

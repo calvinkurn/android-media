@@ -92,7 +92,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SH
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
@@ -107,7 +107,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceT
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
@@ -436,7 +436,7 @@ class TokoNowHomeFragment : Fragment(),
     override fun onClickChooseAddressWidgetTracker() {}
 
     override fun onCategoryRetried() {
-        adapter.getItem(TokoNowCategoryGridUiModel::class.java)?.let {
+        adapter.getItem(TokoNowCategoryMenuUiModel::class.java)?.let {
             viewModelTokoNow.getCategoryGrid(it, localCacheModel?.warehouse_id.orEmpty())
         }
     }
@@ -449,7 +449,7 @@ class TokoNowHomeFragment : Fragment(),
         analytics.onClickCategory(position, categoryId, headerName, categoryName)
     }
 
-    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
+    override fun onCategoryImpression(data: TokoNowCategoryMenuUiModel) {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
         analytics.trackCategoryImpression(data, warehouseId)
     }

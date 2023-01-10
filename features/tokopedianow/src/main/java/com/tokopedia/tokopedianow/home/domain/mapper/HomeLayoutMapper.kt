@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
@@ -29,7 +30,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
@@ -85,6 +86,7 @@ object HomeLayoutMapper {
 
     const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
+    private const val APPLINK_PARAM_WAREHOUSE_ID = "{warehouse_id}"
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         CATEGORY,
@@ -208,14 +210,15 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryGridData(
-        item: TokoNowCategoryGridUiModel,
+        item: TokoNowCategoryMenuUiModel,
         response: List<CategoryResponse>?,
         warehouseId: String = ""
     ) {
         updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
-                val categoryList = mapToCategoryList(response, warehouseId, item.title)
-                val layout = item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW)
+                val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_LIST.replace(APPLINK_PARAM_WAREHOUSE_ID, warehouseId)
+                val categoryList = mapToCategoryList(response, item.title, seeAllAppLink)
+                val layout = item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
                 val layout = item.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
@@ -636,7 +639,7 @@ object HomeLayoutMapper {
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
             is TokoNowRepurchaseUiModel -> id
-            is TokoNowCategoryGridUiModel -> id
+            is TokoNowCategoryMenuUiModel -> id
             else -> null
         }
     }

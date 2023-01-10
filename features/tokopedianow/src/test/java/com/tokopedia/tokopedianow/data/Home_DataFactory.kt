@@ -22,8 +22,7 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -431,10 +430,10 @@ fun createLeftCarouselAtcDataModel(
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: TokoNowCategoryListUiModel?,
+    categoryList: List<Visitable<*>>?,
     @TokoNowLayoutState state: Int
-): TokoNowCategoryGridUiModel {
-    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
+): TokoNowCategoryMenuUiModel {
+    return TokoNowCategoryMenuUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
 }
 
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {

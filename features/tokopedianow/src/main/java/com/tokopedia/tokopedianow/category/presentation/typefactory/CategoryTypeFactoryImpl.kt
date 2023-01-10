@@ -8,9 +8,9 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataV
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryAisleViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryChooseAddressViewHolder
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
@@ -70,8 +70,8 @@ class CategoryTypeFactoryImpl(
                 CategoryChooseAddressViewHolder(view, chooseAddressListener)
             CategoryAisleViewHolder.LAYOUT ->
                 CategoryAisleViewHolder(view, categoryAisleListener)
-            TokoNowCategoryGridViewHolder.LAYOUT ->
-                TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
+            TokoNowCategoryMenuViewHolder.LAYOUT ->
+                TokoNowCategoryMenuViewHolder(view, tokoNowCategoryGridListener)
             TokoNowRepurchaseViewHolder.LAYOUT ->
                 TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener)
             else -> super.createViewHolder(view, type)

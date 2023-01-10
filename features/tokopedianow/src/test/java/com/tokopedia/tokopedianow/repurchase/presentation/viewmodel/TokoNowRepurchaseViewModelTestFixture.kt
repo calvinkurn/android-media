@@ -18,7 +18,7 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -170,8 +170,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun verifyGetCategoryGridLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
         val actualResponse = viewModel.getLayout.value
-        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
-        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
+        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryMenuUiModel } as TokoNowCategoryMenuUiModel)
+        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowCategoryMenuUiModel } as TokoNowCategoryMenuUiModel)
         Assert.assertEquals(expectedObject, actualObject)
     }
 

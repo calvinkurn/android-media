@@ -39,7 +39,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PR
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
@@ -356,7 +356,7 @@ class TokoNowHomeViewModel @Inject constructor(
         }, source)
     }
 
-    fun getCategoryGrid(item: TokoNowCategoryGridUiModel, warehouseId: String) {
+    fun getCategoryGrid(item: TokoNowCategoryMenuUiModel, warehouseId: String) {
         launchCatchError(block = {
             val response = getCategoryList(warehouseId)
             homeLayoutItemList.mapHomeCategoryGridData(item, response, warehouseId)
@@ -650,7 +650,7 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getTokoNowGlobalComponent(item: Visitable<*>?, warehouseId: String) {
         when (item) {
-            is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
+            is TokoNowCategoryMenuUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
             else -> removeUnsupportedLayout(item)
         }
@@ -673,7 +673,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private suspend fun getCategoryGridDataAsync(
-        item: TokoNowCategoryGridUiModel,
+        item: TokoNowCategoryMenuUiModel,
         warehouseId: String
     ): Deferred<Unit?> {
         return asyncCatchError(block = {

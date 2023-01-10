@@ -38,12 +38,12 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemD
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
@@ -553,7 +553,7 @@ class TokoNowCategoryFragment:
 
     override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { }
 
-    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
+    override fun onCategoryImpression(data: TokoNowCategoryMenuUiModel) { }
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         super.onProductCardImpressed(position, data)

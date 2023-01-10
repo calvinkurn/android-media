@@ -32,8 +32,7 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
@@ -209,7 +208,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         super.createVisitableListWithEmptyProduct()
 
         val categoryGridIndex = minOf(visitableList.size, 2)
-        val categoryGridUIModel = TokoNowCategoryGridUiModel(
+        val categoryGridUIModel = TokoNowCategoryMenuUiModel(
                 id = "",
                 title = CATEGORY_GRID_TITLE,
                 categoryListUiModel = null,
@@ -254,7 +253,7 @@ class TokoNowCategoryViewModel @Inject constructor (
             getCategoryListUseCase.execute(warehouseId, CATEGORY_LIST_DEPTH)?.data
 
     private suspend fun updateCategoryUIModel(
-            categoryItemListUIModel: TokoNowCategoryListUiModel?,
+            categoryItemListUIModel: List<Visitable<*>>?,
             categoryUIModelState: Int,
     ) {
         val currentCategoryUIModel = getCategoryGridUIModelInVisitableList() ?: return
@@ -269,15 +268,15 @@ class TokoNowCategoryViewModel @Inject constructor (
         suspendUpdateVisitableListLiveData()
     }
 
-    private fun getCategoryGridUIModelInVisitableList(): TokoNowCategoryGridUiModel? {
+    private fun getCategoryGridUIModelInVisitableList(): TokoNowCategoryMenuUiModel? {
         return visitableList
-                .find { it is TokoNowCategoryGridUiModel }
-                as? TokoNowCategoryGridUiModel
+                .find { it is TokoNowCategoryMenuUiModel }
+                as? TokoNowCategoryMenuUiModel
     }
 
     private fun replaceCategoryUIModelInVisitableList(
-            current: TokoNowCategoryGridUiModel,
-            updated: TokoNowCategoryGridUiModel,
+        current: TokoNowCategoryMenuUiModel,
+        updated: TokoNowCategoryMenuUiModel,
     ) {
         val position = visitableList.indexOf(current)
 
