@@ -12,9 +12,9 @@ class BulkReviewProductInfoUiStateMapper @Inject constructor() {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
-                    *getFormRequestState.result.reviewForm?.map { reviewForm ->
+                    *getFormRequestState.result.reviewForm.map { reviewForm ->
                         mapProductInfoUiState(reviewForm)
-                    }?.toTypedArray().orEmpty()
+                    }.toTypedArray()
                 )
             }
             else -> emptyMap()
@@ -25,13 +25,13 @@ class BulkReviewProductInfoUiStateMapper @Inject constructor() {
         reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm
     ): Pair<String, BulkReviewProductInfoUiState> {
         return Pair(
-            reviewForm.inboxID.orEmpty(),
+            reviewForm.inboxID,
             BulkReviewProductInfoUiState.Showing(
-                productID = reviewForm.product?.productID.orEmpty(),
-                productName = reviewForm.product?.productName.orEmpty(),
-                productImageUrl = reviewForm.product?.productImageURL.orEmpty(),
-                productVariantName = reviewForm.product?.productVariant?.variantName.orEmpty(),
-                productPurchaseDate = reviewForm.timestamp?.createTimeFormatted.orEmpty()
+                productID = reviewForm.product.productID,
+                productName = reviewForm.product.productName,
+                productImageUrl = reviewForm.product.productImageURL,
+                productVariantName = reviewForm.product.productVariant.variantName,
+                productPurchaseDate = reviewForm.timestamp.createTimeFormatted
             )
         )
     }

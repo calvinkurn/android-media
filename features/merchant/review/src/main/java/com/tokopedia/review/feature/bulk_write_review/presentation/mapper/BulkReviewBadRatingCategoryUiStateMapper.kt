@@ -14,14 +14,14 @@ class BulkReviewBadRatingCategoryUiStateMapper @Inject constructor() {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
-                    *getFormRequestState.result.reviewForm?.map { reviewForm ->
+                    *getFormRequestState.result.reviewForm.map { reviewForm ->
                         mapBulkReviewBadRatingCategoryUiState(
                             reviewForm = reviewForm,
                             reviewItemBadRatingCategory = reviewItemsBadRatingCategory.find {
                                 it.inboxID == reviewForm.inboxID
                             }
                         )
-                    }?.toTypedArray().orEmpty()
+                    }.toTypedArray()
                 )
             }
             else -> emptyMap()
@@ -34,15 +34,15 @@ class BulkReviewBadRatingCategoryUiStateMapper @Inject constructor() {
     ): Pair<String, BulkReviewBadRatingCategoryUiState> {
         val badRatingCategory = reviewItemBadRatingCategory?.badRatingCategory
         return if (badRatingCategory.isNullOrEmpty()) {
-            Pair(reviewForm.inboxID.orEmpty(), BulkReviewBadRatingCategoryUiState.Hidden)
+            Pair(reviewForm.inboxID, BulkReviewBadRatingCategoryUiState.Hidden)
         } else {
             if (badRatingCategory.any { it.selected }) {
                 Pair(
-                    reviewForm.inboxID.orEmpty(),
+                    reviewForm.inboxID,
                     BulkReviewBadRatingCategoryUiState.Showing(badRatingCategory = badRatingCategory)
                 )
             } else {
-                Pair(reviewForm.inboxID.orEmpty(), BulkReviewBadRatingCategoryUiState.Hidden)
+                Pair(reviewForm.inboxID, BulkReviewBadRatingCategoryUiState.Hidden)
             }
         }
     }

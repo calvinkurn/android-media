@@ -24,8 +24,8 @@ class BulkReviewMediaPickerUiStateMapper @Inject constructor() {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
-                    *getFormRequestState.result.reviewForm?.map { reviewForm ->
-                        val inboxID = reviewForm.inboxID.orEmpty()
+                    *getFormRequestState.result.reviewForm.map { reviewForm ->
+                        val inboxID = reviewForm.inboxID
                         val reviewItemMediaItems = mediaItems[inboxID]
                         if (reviewItemMediaItems.isNullOrEmpty()) {
                             inboxID to CreateReviewMediaPickerUiState.Hidden
@@ -96,7 +96,7 @@ class BulkReviewMediaPickerUiStateMapper @Inject constructor() {
                                 )
                             }
                         }
-                    }?.toTypedArray().orEmpty()
+                    }.toTypedArray()
                 )
             }
             else -> emptyMap()

@@ -31,7 +31,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
             textAreaUiState is BulkReviewTextAreaUiState.Showing && textAreaUiState.focused
         }
         return listOf(BulkReviewAnnouncementUiModel).plus(
-            productRevGetBulkForm.reviewForm?.mapIndexedNotNull { index, reviewForm ->
+            productRevGetBulkForm.reviewForm.mapIndexedNotNull { index, reviewForm ->
                 if (reviewForm.inboxID !in removedReviewItem) {
                     mapReviewFormToBulkReviewVisitable(
                         index = index,
@@ -48,7 +48,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
                 } else {
                     null
                 }
-            }.orEmpty()
+            }
         )
     }
 
@@ -64,9 +64,9 @@ class BulkReviewVisitableMapper @Inject constructor() {
         bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>,
         reviewItemImpressed: Boolean
     ): BulkReviewItemUiModel? {
-        val inboxID = reviewForm.inboxID.orEmpty()
-        val reputationID = reviewForm.reputationID.orEmpty()
-        val orderID = reviewForm.orderID.orEmpty()
+        val inboxID = reviewForm.inboxID
+        val reputationID = reviewForm.reputationID
+        val orderID = reviewForm.orderID
         val productCardUiState = bulkReviewProductInfoUiState[inboxID]
         val ratingUiState = bulkReviewRatingUiState[inboxID]
         val badRatingCategoriesUiState = bulkReviewBadRatingCategoryUiState[inboxID]

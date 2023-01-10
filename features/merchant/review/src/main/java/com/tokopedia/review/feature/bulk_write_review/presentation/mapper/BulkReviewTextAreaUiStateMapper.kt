@@ -23,7 +23,7 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
-                    *getFormRequestState.result.reviewForm?.map { reviewForm ->
+                    *getFormRequestState.result.reviewForm.map { reviewForm ->
                         mapTextAreaUiState(
                             reviewForm = reviewForm,
                             reviewItemTestimony = reviewItemsTestimony.find {
@@ -32,7 +32,7 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
                             bulkReviewBadRatingCategoryUiState = bulkReviewBadRatingCategoryUiState,
                             bulkReviewRatingUiState = bulkReviewRatingUiState
                         )
-                    }?.toTypedArray().orEmpty()
+                    }.toTypedArray()
                 )
             }
             else -> emptyMap()
@@ -45,7 +45,7 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>
     ): Pair<String, BulkReviewTextAreaUiState> {
-        val inboxID = reviewForm.inboxID.orEmpty()
+        val inboxID = reviewForm.inboxID
         val badRatingCategoryUiState = bulkReviewBadRatingCategoryUiState[inboxID]
         val isOnlyBadRatingOtherCategorySelected =
             if (badRatingCategoryUiState is BulkReviewBadRatingCategoryUiState.Showing) {

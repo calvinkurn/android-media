@@ -915,14 +915,13 @@ class BulkReviewViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatchers.io) {
             submitBulkReviewRequestState.collectLatest { submitBulkReviewRequestState ->
                 if (submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Success) {
-                    if (submitBulkReviewRequestState.result.success == false) {
+                    if (!submitBulkReviewRequestState.result.success) {
                         val bulkReviewItems = bulkReviewVisitableList.value
                             .filterIsInstance<BulkReviewItemUiModel>()
                         val reviewItemsInboxID = bulkReviewItems.map { it.inboxID }
                         val failedReviewItemsInboxID = submitBulkReviewRequestState
                             .result
                             .failedInboxIDs
-                            .orEmpty()
                         val successReviewItemsInboxID = reviewItemsInboxID
                             .filter { it !in failedReviewItemsInboxID }
                         if (successReviewItemsInboxID.isNotEmpty()) {
@@ -1006,7 +1005,7 @@ class BulkReviewViewModel @Inject constructor(
         submitBulkReviewRequestState
             .params
             .map { it.inboxID }
-            .filter { it !in submitBulkReviewRequestState.result.failedInboxIDs.orEmpty() }
+            .filter { it !in submitBulkReviewRequestState.result.failedInboxIDs }
             .forEach { emit(it) }
     }
 
@@ -1023,7 +1022,7 @@ class BulkReviewViewModel @Inject constructor(
     private fun getFailedInboxIDs(
         submitBulkReviewRequestState: BulkReviewSubmitRequestState.Complete.Success
     ) = flow {
-        submitBulkReviewRequestState.result.failedInboxIDs.orEmpty().forEach { emit(it) }
+        submitBulkReviewRequestState.result.failedInboxIDs.forEach { emit(it) }
     }
 
     private fun handleReviewItemFullyErrorSubmissionEventTracker() {

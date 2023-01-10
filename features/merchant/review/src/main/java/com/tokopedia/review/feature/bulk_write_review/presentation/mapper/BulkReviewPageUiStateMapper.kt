@@ -80,8 +80,7 @@ class BulkReviewPageUiStateMapper @Inject constructor(
         ) {
             BulkReviewPageUiState.Submitting
         } else if (
-            submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Success &&
-            submitBulkReviewRequestState.result.success == true
+            submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Success && submitBulkReviewRequestState.result.success
         ) {
             BulkReviewPageUiState.Submitted(userName = userSession.name)
         } else {

@@ -19,14 +19,14 @@ class BulkReviewRatingUiStateMapper @Inject constructor() {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
-                    *getFormRequestState.result.reviewForm?.map { reviewForm ->
+                    *getFormRequestState.result.reviewForm.map { reviewForm ->
                         mapRatingUiState(
                             reviewForm = reviewForm,
                             reviewItemRating = reviewItemsRating.find {
                                 it.inboxID == reviewForm.inboxID
                             }
                         )
-                    }?.toTypedArray().orEmpty()
+                    }.toTypedArray()
                 )
             }
             else -> emptyMap()
@@ -38,7 +38,7 @@ class BulkReviewRatingUiStateMapper @Inject constructor() {
         reviewItemRating: BulkReviewItemRatingUiModel?
     ): Pair<String, BulkReviewRatingUiState> {
         return Pair(
-            reviewForm.inboxID.orEmpty(),
+            reviewForm.inboxID,
             BulkReviewRatingUiState.Showing(
                 rating = reviewItemRating?.rating ?: DEFAULT_PRODUCT_RATING,
                 animate = reviewItemRating?.animate ?: true

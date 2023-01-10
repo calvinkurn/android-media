@@ -50,14 +50,14 @@ class BulkReviewSubmitUseCase @Inject constructor(
         Log.d("ReviewLog", Gson().toJson(createRequestParam(params)))
         delay(5000L)
 //        return Gson().fromJson("""
-//            {"data":{"productrevSubmitBulkReview":{"success":true,"failedInboxIDs":null}}}
+//            {"data":{"productrevSubmitBulkReview":{"success":true,"failedInboxIDs":[]}}}
 //        """.trimIndent(), BulkReviewSubmitResponse::class.java).data!!.productrevSubmitBulkReview!!
         return Gson().fromJson(
             """
             {"data":{"productrevSubmitBulkReview":{"success":false,"failedInboxIDs":[${params.filterIndexed { index, _ -> index % 2 == 1 }.map { it.inboxID }.joinToString(",") { "\"$it\"" }}]}}}
             """.trimIndent(),
             BulkReviewSubmitResponse::class.java
-        ).data!!.productrevSubmitBulkReview!!
+        ).data.productrevSubmitBulkReview
 //        return Gson().fromJson(
 //            """
 //            {"data":{"productrevSubmitBulkReview":{"success":false,"failedInboxIDs":["1234567891","1234567893"]}}}

@@ -6,20 +6,20 @@ import com.google.gson.annotations.SerializedName
 data class BulkReviewSubmitResponse(
     @SerializedName("data")
     @Expose
-    val data: Data? = null
+    val data: Data = Data()
 ) {
     data class Data(
         @SerializedName("productrevSubmitBulkReview")
         @Expose
-        val productrevSubmitBulkReview: ProductrevSubmitBulkReview? = null
+        val productrevSubmitBulkReview: ProductrevSubmitBulkReview = ProductrevSubmitBulkReview()
     ) {
         data class ProductrevSubmitBulkReview(
             @SerializedName("success")
             @Expose
-            val success: Boolean? = null,
+            val success: Boolean = false,
             @SerializedName("failedInboxIDs")
             @Expose
-            val failedInboxIDs: List<String>? = null
+            val failedInboxIDs: List<String> = emptyList()
         )
     }
 }

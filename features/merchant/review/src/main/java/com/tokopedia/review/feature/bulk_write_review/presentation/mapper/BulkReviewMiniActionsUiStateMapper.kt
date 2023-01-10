@@ -21,13 +21,13 @@ class BulkReviewMiniActionsUiStateMapper @Inject constructor() {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
                 mapOf(
-                    *getFormRequestState.result.reviewForm?.map { reviewForm ->
+                    *getFormRequestState.result.reviewForm.map { reviewForm ->
                         mapMiniActionsUiState(
                             reviewForm = reviewForm,
                             bulkReviewTextAreaUiState = bulkReviewTextAreaUiState,
                             bulkReviewMediaPickerUiState = bulkReviewMediaPickerUiState
                         )
-                    }?.toTypedArray().orEmpty()
+                    }.toTypedArray()
                 )
             }
             else -> emptyMap()
@@ -39,7 +39,7 @@ class BulkReviewMiniActionsUiStateMapper @Inject constructor() {
         bulkReviewTextAreaUiState: Map<String, BulkReviewTextAreaUiState>,
         bulkReviewMediaPickerUiState: Map<String, CreateReviewMediaPickerUiState>
     ): Pair<String, BulkReviewMiniActionsUiState> {
-        val inboxID = reviewForm.inboxID.orEmpty()
+        val inboxID = reviewForm.inboxID
         val miniActions = mutableListOf<BulkReviewMiniActionUiModel>().apply {
             if (bulkReviewTextAreaUiState[inboxID] is BulkReviewTextAreaUiState.Hidden) {
                 add(
@@ -68,7 +68,7 @@ class BulkReviewMiniActionsUiStateMapper @Inject constructor() {
                 BulkReviewMiniActionsUiState.Hidden
             } else {
                 BulkReviewMiniActionsUiState.Showing(
-                    inboxID = reviewForm.inboxID.orEmpty(),
+                    inboxID = reviewForm.inboxID,
                     miniActions = miniActions
                 )
             }

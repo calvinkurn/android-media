@@ -6,63 +6,63 @@ import com.google.gson.annotations.SerializedName
 data class BulkReviewGetFormResponse(
     @SerializedName("data")
     @Expose
-    val data: Data? = null
+    val data: Data = Data()
 ) {
     data class Data(
         @SerializedName("productrevGetBulkForm")
         @Expose
-        val productrevGetBulkForm: ProductRevGetBulkForm? = null
+        val productrevGetBulkForm: ProductRevGetBulkForm = ProductRevGetBulkForm()
     ) {
         data class ProductRevGetBulkForm(
             @SerializedName("list")
             @Expose
-            val reviewForm: List<ReviewForm>? = null
+            val reviewForm: List<ReviewForm> = emptyList()
         ) {
             data class ReviewForm(
                 @SerializedName("inboxID")
                 @Expose
-                val inboxID: String? = null,
+                val inboxID: String = "",
                 @SerializedName("reputationID")
                 @Expose
-                val reputationID: String? = null,
+                val reputationID: String = "",
                 @SerializedName("orderID")
                 @Expose
-                val orderID: String? = null,
+                val orderID: String = "",
                 @SerializedName("product")
                 @Expose
-                val product: Product? = null,
+                val product: Product = Product(),
                 @SerializedName("timestamp")
                 @Expose
-                val timestamp: Timestamp? = null
+                val timestamp: Timestamp = Timestamp()
             ) {
                 data class Product(
                     @SerializedName("productID")
                     @Expose
-                    val productID: String? = null,
+                    val productID: String = "",
                     @SerializedName("productName")
                     @Expose
-                    val productName: String? = null,
+                    val productName: String = "",
                     @SerializedName("productImageURL")
                     @Expose
-                    val productImageURL: String? = null,
+                    val productImageURL: String = "",
                     @SerializedName("productVariant")
                     @Expose
-                    val productVariant: Variant? = null
+                    val productVariant: Variant = Variant()
                 ) {
                     data class Variant(
                         @SerializedName("variantID")
                         @Expose
-                        val variantID: String? = null,
+                        val variantID: String = "",
                         @SerializedName("variantName")
                         @Expose
-                        val variantName: String? = null
+                        val variantName: String = ""
                     )
                 }
 
                 data class Timestamp(
                     @SerializedName("createTimeFormatted")
                     @Expose
-                    val createTimeFormatted: String? = null
+                    val createTimeFormatted: String = ""
                 )
             }
         }
