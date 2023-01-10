@@ -399,5 +399,6 @@
 
     <!--Summary Page-->
     <string name="smvc_quota_info_page_title">Kuota Kupon Toko Saya</string>
+    <string name="smvc_quota_info_quota_remaining_format">Sisa Kuota %s</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.tokopedia.mvc.presentation.quota.fragment
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentQuotaInfoBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -60,27 +62,37 @@ class QuotaInfoFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
-        binding?.setupView()
+        binding?.header?.setupHeader()
         setupObservables()
-        setupPage()
+        setupPageData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun setupPage() {
+    private fun setupObservables() {
+        viewModel.quotaInfo.observe(viewLifecycleOwner) {
+            binding?.setupPage(it)
+        }
+    }
+
+    private fun setupPageData() {
         voucherCreationQuota?.let {
             viewModel.setQuotaInfo(it)
         }
     }
 
-    private fun setupObservables() {
-        //
-    }
-
-    private fun SmvcFragmentQuotaInfoBinding.setupView() {
-        header.setupHeader()
+    private fun SmvcFragmentQuotaInfoBinding.setupPage(quotaInfo: VoucherCreationQuota) {
+        btnAction.text = quotaInfo.ctaText
+        btnAction.setOnClickListener {
+            val uri = Uri.parse(quotaInfo.ctaLink)
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
+        tickerQuotaInfo.setHtmlDescription(quotaInfo.tickerTitle)
+        tickerQuotaInfo.isVisible = quotaInfo.tickerTitle.isNotEmpty()
+        tfRemainingQuota.text = getString(R.string.smvc_quota_info_quota_remaining_format, quotaInfo.quotaUsageFormatted)
     }
 
     private fun HeaderUnify.setupHeader() {
