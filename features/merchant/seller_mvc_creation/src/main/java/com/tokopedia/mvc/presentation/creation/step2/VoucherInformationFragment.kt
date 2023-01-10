@@ -31,6 +31,7 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepTwoFieldValidation
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.SelectRepeatPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditCalendarBottomSheet
@@ -169,27 +170,62 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleUiState(state: VoucherCreationStepTwoUiState) {
-        renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
-        renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
-        renderVoucherCodeValidation(
+        when (state.fieldValidated) {
+            VoucherCreationStepTwoFieldValidation.VOUCHER_TARGET -> {
+                renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
+            }
+            VoucherCreationStepTwoFieldValidation.VOUCHER_NAME -> {
+                renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
+            }
+            VoucherCreationStepTwoFieldValidation.VOUCHER_CODE -> {
+                renderVoucherCodeValidation(
+                    state.voucherConfiguration,
+                    state.isVoucherCodeError,
+                    state.voucherCodeErrorMsg
+                )
+            }
+            VoucherCreationStepTwoFieldValidation.VOUCHER_START_DATE -> {
+                renderVoucherStartPeriodSelection(
+                    state.voucherConfiguration,
+                    state.isStartDateError,
+                    state.startDateErrorMsg
+                )
+            }
+            VoucherCreationStepTwoFieldValidation.VOUCHER_END_DATE -> {
+                renderVoucherEndPeriodSelection(
+                    state.voucherConfiguration,
+                    state.isEndDateError,
+                    state.endDateErrorMsg
+                )
+            }
+            VoucherCreationStepTwoFieldValidation.ALL -> {
+                renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
+                renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
+                renderVoucherCodeValidation(
+                    state.voucherConfiguration,
+                    state.isVoucherCodeError,
+                    state.voucherCodeErrorMsg
+                )
+                renderVoucherStartPeriodSelection(
+                    state.voucherConfiguration,
+                    state.isStartDateError,
+                    state.startDateErrorMsg
+                )
+                renderVoucherEndPeriodSelection(
+                    state.voucherConfiguration,
+                    state.isEndDateError,
+                    state.endDateErrorMsg
+                )
+                renderVoucherRecurringToggleChanges(state.voucherConfiguration)
+                renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
+                renderAvailableRecurringPeriod(state.validationDate)
+            }
+        }
+        renderButtonValidation(
             state.voucherConfiguration,
-            state.isVoucherCodeError,
-            state.voucherCodeErrorMsg
+            state.isInputValid(),
+            state.validationDate
         )
-        renderVoucherRecurringToggleChanges(state.voucherConfiguration)
-        renderVoucherStartPeriodSelection(
-            state.voucherConfiguration,
-            state.isStartDateError,
-            state.startDateErrorMsg
-        )
-        renderVoucherEndPeriodSelection(
-            state.voucherConfiguration,
-            state.isEndDateError,
-            state.endDateErrorMsg
-        )
-        renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
-        renderAvailableRecurringPeriod(state.validationDate)
-        renderButtonValidation(state.voucherConfiguration, state.isInputValid(), state.validationDate)
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
@@ -441,10 +477,20 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherPeriodSectionBinding?.run {
             tfVoucherStartPeriod.run {
                 disableText(editText)
+                editText.setText(
+                    voucherConfiguration.startPeriod.formatTo(
+                        DATE_TIME_MINUTE_PRECISION
+                    )
+                )
                 editText.setOnClickListener { onClickListenerForStartDate() }
             }
             tfVoucherEndPeriod.run {
                 disableText(editText)
+                editText.setText(
+                    voucherConfiguration.endPeriod.formatTo(
+                        DATE_TIME_MINUTE_PRECISION
+                    )
+                )
                 editText.setOnClickListener { onClickListenerForEndDate() }
             }
             cbRepeatPeriod.setOnCheckedChangeListener { _, isChecked ->
@@ -756,7 +802,13 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 if (unAvailableDate.isNotEmpty()) {
                     showCreateVoucherConfirmationDialog(voucherConfiguration)
                 } else {
-                    setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep(voucherConfiguration)) }
+                    setOnClickListener {
+                        viewModel.processEvent(
+                            VoucherCreationStepTwoEvent.NavigateToNextStep(
+                                voucherConfiguration
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -776,7 +828,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             setPrimaryCTAText(getString(R.string.smvc_create_voucher_confirmation_primary_cta_label))
             setSecondaryCTAText(getString(R.string.smvc_create_voucher_confirmation_secondary_cta_label))
             setPrimaryCTAClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep(voucherConfiguration))
+                viewModel.processEvent(
+                    VoucherCreationStepTwoEvent.NavigateToNextStep(
+                        voucherConfiguration
+                    )
+                )
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }

@@ -7,6 +7,8 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
+import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepTwoFieldValidation
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
@@ -57,7 +59,9 @@ class VoucherInformationViewModel @Inject constructor(
         }
     }
 
-    private fun initVoucherConfiguration(voucherConfiguration: VoucherConfiguration) {
+    private fun initVoucherConfiguration(
+        voucherConfiguration: VoucherConfiguration
+    ) {
         _uiState.update {
             it.copy(
                 isLoading = false,
@@ -81,7 +85,8 @@ class VoucherInformationViewModel @Inject constructor(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
                     isVoucherPublic = isPublic
-                )
+                ),
+                fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.VOUCHER_TARGET)
             )
         }
         handleVoucherInputValidation()
@@ -90,7 +95,8 @@ class VoucherInformationViewModel @Inject constructor(
     private fun handleVoucherNameChanges(voucherName: String) {
         _uiState.update {
             it.copy(
-                voucherConfiguration = it.voucherConfiguration.copy(voucherName = voucherName)
+                voucherConfiguration = it.voucherConfiguration.copy(voucherName = voucherName),
+                fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.VOUCHER_NAME)
             )
         }
         handleVoucherInputValidation()
@@ -99,7 +105,8 @@ class VoucherInformationViewModel @Inject constructor(
     private fun handleVoucherCodeChanges(voucherCode: String) {
         _uiState.update {
             it.copy(
-                voucherConfiguration = it.voucherConfiguration.copy(voucherCode = voucherCode)
+                voucherConfiguration = it.voucherConfiguration.copy(voucherCode = voucherCode),
+                fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.VOUCHER_CODE)
             )
         }
         handleVoucherInputValidation()
@@ -156,7 +163,8 @@ class VoucherInformationViewModel @Inject constructor(
     private fun handleVoucherRecurringToggleChanges(isActive: Boolean) {
         _uiState.update {
             it.copy(
-                voucherConfiguration = it.voucherConfiguration.copy(isPeriod = isActive)
+                voucherConfiguration = it.voucherConfiguration.copy(isPeriod = isActive),
+                fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -166,7 +174,8 @@ class VoucherInformationViewModel @Inject constructor(
         startDate?.let {
             _uiState.update {
                 it.copy(
-                    voucherConfiguration = it.voucherConfiguration.copy(startPeriod = startDate.time)
+                    voucherConfiguration = it.voucherConfiguration.copy(startPeriod = startDate.time),
+                    fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.VOUCHER_START_DATE)
                 )
             }
             handleVoucherInputValidation()
@@ -177,7 +186,8 @@ class VoucherInformationViewModel @Inject constructor(
         endDate?.let {
             _uiState.update {
                 it.copy(
-                    voucherConfiguration = it.voucherConfiguration.copy(endPeriod = endDate.time)
+                    voucherConfiguration = it.voucherConfiguration.copy(endPeriod = endDate.time),
+                    fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.VOUCHER_END_DATE)
                 )
             }
             handleVoucherInputValidation()
@@ -221,5 +231,13 @@ class VoucherInformationViewModel @Inject constructor(
         sharedPreferences.edit()
             .putBoolean(CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_TWO_COACH_MARK, true)
             .apply()
+    }
+
+    private fun getFieldValidated(field: VoucherCreationStepTwoFieldValidation): VoucherCreationStepTwoFieldValidation {
+        return if (currentState.pageMode == PageMode.CREATE) {
+            field
+        } else {
+            VoucherCreationStepTwoFieldValidation.ALL
+        }
     }
 }

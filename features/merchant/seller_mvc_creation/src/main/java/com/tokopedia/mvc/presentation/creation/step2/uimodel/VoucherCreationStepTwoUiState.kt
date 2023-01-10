@@ -3,6 +3,7 @@ package com.tokopedia.mvc.presentation.creation.step2.uimodel
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepTwoFieldValidation
 
 data class VoucherCreationStepTwoUiState(
     val isLoading: Boolean = true,
@@ -18,6 +19,7 @@ data class VoucherCreationStepTwoUiState(
     val isEndDateError: Boolean = false,
     val endDateErrorMsg: String = "",
     val validationDate: List<VoucherValidationResult.ValidationDate> = emptyList(),
+    val fieldValidated: VoucherCreationStepTwoFieldValidation = VoucherCreationStepTwoFieldValidation.ALL,
     val error: Throwable? = null
 ) {
     fun isInputValid(): Boolean = if (voucherConfiguration.isVoucherPublic) {
@@ -26,7 +28,7 @@ data class VoucherCreationStepTwoUiState(
         validateWhenVoucherIsNotPublic()
     }
 
-    //public voucher region
+    // public voucher region
     private fun validateWhenVoucherIsPublic(): Boolean {
         return if (voucherConfiguration.isPeriod) {
             isRecurringPublicVoucherValid()
@@ -43,7 +45,7 @@ data class VoucherCreationStepTwoUiState(
         return !isVoucherNameError && !isStartDateError && !isEndDateError
     }
 
-    //private voucher region
+    // private voucher region
     private fun validateWhenVoucherIsNotPublic(): Boolean {
         return if (voucherConfiguration.isPeriod) {
             isRecurringPrivateVoucherValid()
