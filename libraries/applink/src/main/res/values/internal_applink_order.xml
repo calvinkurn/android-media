@@ -25,6 +25,7 @@
     <string name="path_reschedule" translatable="false">/reschedulepickup</string>
     <string name="path_buyer_order_detail" translatable="false">/buyer-order-detail</string>
     <string name="path_buyer_order_detail_extension" translatable="false">/buyer-order-extension</string>
+    <string name="path_buyer_order_detail_partial_fulfillment" translatable="false">/buyer-partial-order-fulfillment</string>
 
     <string name="path_orderlist" translatable="false">/orderlist</string>
     <string name="path_track" translatable="false">/track</string>
