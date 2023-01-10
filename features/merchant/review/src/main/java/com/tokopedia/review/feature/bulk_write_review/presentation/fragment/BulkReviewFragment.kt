@@ -337,7 +337,9 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
                         it.duration,
                         it.type,
                         it.actionText.getStringValue(view.context)
-                    ) {}.run {
+                    ) { _ ->
+                        viewModel.onToasterCtaClicked(it)
+                    }.run {
                         anchorView = binding?.widgetBulkReviewStickyButton
                         addCallback(object : Snackbar.Callback() {
                             override fun onDismissed(

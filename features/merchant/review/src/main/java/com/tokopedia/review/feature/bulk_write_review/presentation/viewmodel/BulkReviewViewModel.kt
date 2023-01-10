@@ -139,6 +139,8 @@ class BulkReviewViewModel @Inject constructor(
         private const val SAVE_STATE_KEY_ANONYMOUS = "anonymous"
         private const val SAVE_STATE_KEY_SHOULD_SUBMIT_REVIEW = "shouldSubmitReview"
         private const val SAVE_STATE_KEY_ACTIVE_MEDIA_PICKER_INBOX_ID = "activeMediaPickerInboxID"
+
+        private const val TOASTER_ID_REMOVE_REVIEW = 0
     }
 
     // region stateflow that need to be saved and restored
@@ -161,6 +163,7 @@ class BulkReviewViewModel @Inject constructor(
     private val shouldCancelBulkReview = MutableStateFlow(false)
     private val reviewItemsMediaUploadJobs = MutableStateFlow(emptyList<BulkReviewItemMediaUploadJobsUiModel>())
     private val reviewItemImpressEventInboxID = MutableSharedFlow<String>(extraBufferCapacity = 50)
+    private val bulkReviewToasterCtaKeyEvents = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
     private val reviewItemsProductInfoUiState = getFormRequestState.mapLatest(
         ::mapProductInfoUiState
     ).stateIn(
@@ -281,11 +284,11 @@ class BulkReviewViewModel @Inject constructor(
     private val _expandedTextAreaBottomSheetUiState = MutableStateFlow<BulkReviewExpandedTextAreaBottomSheetUiState>(BulkReviewExpandedTextAreaBottomSheetUiState.Dismissed)
     val expandedTextAreaBottomSheetUiState: StateFlow<BulkReviewExpandedTextAreaBottomSheetUiState>
         get() = _expandedTextAreaBottomSheetUiState
-    private val _bulkReviewPageToasterQueue = MutableSharedFlow<CreateReviewToasterUiModel>(extraBufferCapacity = 50)
-    val bulkReviewPageToasterQueue: Flow<CreateReviewToasterUiModel>
+    private val _bulkReviewPageToasterQueue = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
+    val bulkReviewPageToasterQueue: Flow<CreateReviewToasterUiModel<Any>>
         get() = _bulkReviewPageToasterQueue
-    private val _expandedTextAreaToasterQueue = MutableSharedFlow<CreateReviewToasterUiModel>(extraBufferCapacity = 50)
-    val expandedTextAreaToasterQueue: Flow<CreateReviewToasterUiModel>
+    private val _expandedTextAreaToasterQueue = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
+    val expandedTextAreaToasterQueue: Flow<CreateReviewToasterUiModel<Any>>
         get() = _expandedTextAreaToasterQueue
     val bulkReviewPageUiState = combine(
         shouldCancelBulkReview,
@@ -305,6 +308,7 @@ class BulkReviewViewModel @Inject constructor(
     init {
         observeMediaUrisForUpload()
         observeSubmitReviewsResult()
+        observeToasterCtaClickEvents()
         handleMediaPickerErrorToasterQueue()
         handleSubmitReviews()
         handleTrackers()
@@ -488,12 +492,14 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onSubmitReviews() {
         reviewItemsMediaPickerUiState.value.let { currentMediaPickerUiState ->
-            val firstFailMediaPickerUiState = currentMediaPickerUiState.values.firstOrNull {
-                it is CreateReviewMediaPickerUiState.FailedUpload
-            } as? CreateReviewMediaPickerUiState.FailedUpload
-            val firstUploadingMediaPickerUiState = currentMediaPickerUiState.values.firstOrNull {
-                it is CreateReviewMediaPickerUiState.Uploading
-            } as? CreateReviewMediaPickerUiState.Uploading
+            val firstFailMediaPickerUiState = currentMediaPickerUiState.entries.firstOrNull {
+                it.key !in removedReviewItemsInboxID.value &&
+                    it.value is CreateReviewMediaPickerUiState.FailedUpload
+            }?.value as? CreateReviewMediaPickerUiState.FailedUpload
+            val firstUploadingMediaPickerUiState = currentMediaPickerUiState.entries.firstOrNull {
+                it.key !in removedReviewItemsInboxID.value &&
+                    it.value is CreateReviewMediaPickerUiState.Uploading
+            }?.value as? CreateReviewMediaPickerUiState.Uploading
             if (firstFailMediaPickerUiState != null) {
                 enqueueToasterErrorUploadMedia(firstFailMediaPickerUiState.errorCode)
             } else if (firstUploadingMediaPickerUiState != null) {
@@ -725,7 +731,8 @@ class BulkReviewViewModel @Inject constructor(
                 message = ResourceProvider.getErrorMessageCannotAddMediaWhileUploading(),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_NORMAL
+                type = Toaster.TYPE_NORMAL,
+                payload = Unit
             )
         )
     }
@@ -757,6 +764,10 @@ class BulkReviewViewModel @Inject constructor(
 
     fun sendAllTrackers() {
         bulkWriteReviewTracker.sendAllTrackers()
+    }
+
+    fun onToasterCtaClicked(data: CreateReviewToasterUiModel<Any>) {
+        bulkReviewToasterCtaKeyEvents.tryEmit(data)
     }
 
     private fun mapProductInfoUiState(
@@ -938,6 +949,16 @@ class BulkReviewViewModel @Inject constructor(
                 } else if (submitBulkReviewRequestState is BulkReviewSubmitRequestState.Complete.Error) {
                     enqueueToasterFailedSubmitReviews()
                     dismissCancelReviewSubmissionDialog()
+                }
+            }
+        }
+    }
+
+    private fun observeToasterCtaClickEvents() {
+        viewModelScope.launch {
+            bulkReviewToasterCtaKeyEvents.collect {
+                when (it.id) {
+                    TOASTER_ID_REMOVE_REVIEW -> onUndoRemoveReviewItem(it.payload as? String)
                 }
             }
         }
@@ -1289,7 +1310,8 @@ class BulkReviewViewModel @Inject constructor(
                 message = ResourceProvider.getMessageFailedUploadMedia(errorCode),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
@@ -1300,7 +1322,8 @@ class BulkReviewViewModel @Inject constructor(
                 message = ResourceProvider.getMessageWaitForUploadMedia(),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_NORMAL
+                type = Toaster.TYPE_NORMAL,
+                payload = Unit
             )
         )
     }
@@ -1311,7 +1334,8 @@ class BulkReviewViewModel @Inject constructor(
                 message = ResourceProvider.getMessageBadRatingReasonCannotEmpty(),
                 actionText = ResourceProvider.getCtaOke(),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
@@ -1322,18 +1346,21 @@ class BulkReviewViewModel @Inject constructor(
                 message = ResourceProvider.getMessageCannotRemoveMoreReviewItem(MIN_REVIEW_ITEM),
                 actionText = ResourceProvider.getCtaOke(),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
 
-    private fun enqueueToasterSuccessRemoveReviewItem() {
+    private fun enqueueToasterSuccessRemoveReviewItem(inboxID: String) {
         _bulkReviewPageToasterQueue.tryEmit(
             CreateReviewToasterUiModel(
                 message = ResourceProvider.getMessageReviewItemRemoved(),
-                actionText = ResourceProvider.getCtaOke(),
+                actionText = ResourceProvider.getCtaCancel(),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_NORMAL
+                type = Toaster.TYPE_NORMAL,
+                id = TOASTER_ID_REMOVE_REVIEW,
+                payload = inboxID
             )
         )
     }
@@ -1344,7 +1371,8 @@ class BulkReviewViewModel @Inject constructor(
                 message = ResourceProvider.getMessageReviewItemSubmissionFullyError(),
                 actionText = ResourceProvider.getCtaOke(),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
@@ -1355,7 +1383,8 @@ class BulkReviewViewModel @Inject constructor(
                 message = ResourceProvider.getMessageReviewItemPartiallySubmitted(),
                 actionText = ResourceProvider.getCtaOke(),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
@@ -1417,7 +1446,12 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun removeReviewItem(vararg inboxID: String, notifyUser: Boolean) {
         removedReviewItemsInboxID.update { it.plus(inboxID) }
-        if (notifyUser) enqueueToasterSuccessRemoveReviewItem()
+        if (notifyUser) inboxID.firstOrNull()?.let { enqueueToasterSuccessRemoveReviewItem(it) }
+    }
+
+    private fun onUndoRemoveReviewItem(inboxID: String?) {
+        if (inboxID.isNullOrBlank()) return
+        removedReviewItemsInboxID.update { it.toMutableSet().apply { remove(inboxID) } }
     }
 
     private fun getAndUpdateRating(inboxID: String, rating: Int): Int {

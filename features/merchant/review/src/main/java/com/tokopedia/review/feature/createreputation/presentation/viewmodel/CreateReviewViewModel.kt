@@ -185,7 +185,7 @@ class CreateReviewViewModel @Inject constructor(
     private val mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     private val textAreaHasFocus = MutableStateFlow(false)
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
-    private val _toasterQueue = MutableSharedFlow<CreateReviewToasterUiModel>(extraBufferCapacity = 50)
+    private val _toasterQueue = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
     private val bottomSheetBottomInset = MutableStateFlow(Int.ZERO)
     // endregion state that must not be saved nor restored
 
@@ -344,7 +344,7 @@ class CreateReviewViewModel @Inject constructor(
     ).toStateFlow(CreateReviewAnonymousInfoBottomSheetUiState.Hidden)
     // endregion anonymous info bottom sheet state
 
-    val toasterQueue: Flow<CreateReviewToasterUiModel>
+    val toasterQueue: Flow<CreateReviewToasterUiModel<Any>>
         get() = _toasterQueue
 
     val submitReviewResult: Flow<SubmitReviewRequestState>
@@ -1260,7 +1260,8 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message, listOf(errorCode)),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
@@ -1271,7 +1272,8 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_NORMAL
+                type = Toaster.TYPE_NORMAL,
+                payload = Unit
             )
         )
     }
@@ -1282,7 +1284,8 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_create_fail_toaster, listOf(errorCode)),
                 actionText = StringRes(R.string.review_oke),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
@@ -1345,7 +1348,8 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_NORMAL
+                type = Toaster.TYPE_NORMAL,
+                payload = Unit
             )
         )
     }

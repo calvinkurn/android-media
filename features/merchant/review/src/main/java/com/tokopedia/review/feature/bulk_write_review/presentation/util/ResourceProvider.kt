@@ -25,6 +25,10 @@ object ResourceProvider {
         return StringRes(R.string.review_oke)
     }
 
+    fun getCtaCancel(): StringRes {
+        return StringRes(R.string.review_cancel)
+    }
+
     fun getBadRatingCategoryExpandedTextAreaHint(): StringRes {
         return StringRes(R.string.hint_bulk_review_bad_rating_category_expanded_text_area)
     }

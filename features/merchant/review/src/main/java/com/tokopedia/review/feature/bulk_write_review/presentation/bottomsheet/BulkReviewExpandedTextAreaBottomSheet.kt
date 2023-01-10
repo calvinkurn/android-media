@@ -83,7 +83,7 @@ class BulkReviewExpandedTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope
         }
     }
 
-    fun setToasterQueue(expandedTextAreaToasterQueue: Flow<CreateReviewToasterUiModel>) {
+    fun setToasterQueue(expandedTextAreaToasterQueue: Flow<CreateReviewToasterUiModel<Any>>) {
         toasterQueueCollectorJob?.cancel()
         toasterQueueCollectorJob = launchCatchError(block = {
             collectWhenResumed(expandedTextAreaToasterQueue.cancellable()) {
