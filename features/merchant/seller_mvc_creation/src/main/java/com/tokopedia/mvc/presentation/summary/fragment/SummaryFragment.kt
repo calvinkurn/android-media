@@ -48,6 +48,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
@@ -331,7 +332,7 @@ class SummaryFragment :
             tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
                                     else getString(R.string.smvc_voucher_private_label)
             llVoucherCode.isVisible = !isVoucherPublic
-            llVoucherMultiperiod.isVisible = totalPeriod.isMoreThanZero()
+            llVoucherMultiperiod.isVisible = isPeriod
             tpgVoucherMultiperiod.text = getString(R.string.smvc_summary_page_multiperiod_format, totalPeriod)
             tpgVoucherMultiperiodAction.setOnClickListener {
                 onMultiPeriodClicked(this)
@@ -418,6 +419,10 @@ class SummaryFragment :
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         // TODO: redirect to step 2
+        context?.let {
+            val intent = VoucherInformationActivity.buildEditModeIntent(it, configuration)
+            startActivity(intent)
+        }
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {

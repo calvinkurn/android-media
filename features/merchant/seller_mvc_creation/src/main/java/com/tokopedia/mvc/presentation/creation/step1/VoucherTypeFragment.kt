@@ -240,11 +240,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToNextStep(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {
-        if (pageMode == PageMode.CREATE) {
-            VoucherInformationActivity.start(requireContext(), voucherConfiguration)
-            activity?.finish()
-        } else {
-            TODO("Navigate to next step in edit mode")
-        }
+        VoucherInformationActivity.start(requireContext(), voucherConfiguration)
+        activity?.finish()
     }
 }
