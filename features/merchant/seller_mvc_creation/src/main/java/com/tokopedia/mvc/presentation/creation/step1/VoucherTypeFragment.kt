@@ -142,15 +142,13 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         binding?.run {
             voucherTypeSelectionShop.apply {
                 imgVoucherType?.setImageUrl(ImageUrlConstant.IMAGE_URL_SHOP_VOUCHER)
-                radioButton?.setOnClickListener {
-                    setVoucherType(false)
-                }
+                radioButton?.setOnClickListener { setVoucherType(false) }
+                cardParent?.setOnClickListener { setVoucherType(false) }
             }
             voucherTypeSelectionProduct.apply {
                 imgVoucherType?.setImageUrl(ImageUrlConstant.IMAGE_URL_PRODUCT_VOUCHER)
-                radioButton?.setOnClickListener {
-                    setVoucherType(true)
-                }
+                radioButton?.setOnClickListener { setVoucherType(true) }
+                cardParent?.setOnClickListener { setVoucherType(true) }
             }
         }
     }

@@ -34,6 +34,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tf_voucher_start_period"
         app:layout_constraintTop_toBottomOf="@+id/tpg_voucher_period_title"
@@ -53,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tf_voucher_start_period" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
-        android:id="@+id/tf_voucher_code"
+        android:id="@+id/tf_repeat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -61,7 +62,43 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cb_repeat_period"
-        app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
         app:unify_text_field_label="@string/smvc_repeat_for_label" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_chevron_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@+id/tf_repeat"
+        app:layout_constraintEnd_toEndOf="@+id/tf_repeat"
+        app:layout_constraintTop_toTopOf="@+id/tf_repeat" />
+
+    <com.tokopedia.mvc.common.customview.RecurringDateScheduleCustomView
+        android:id="@+id/recurring_period_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tf_repeat" />
+
+    <com.tokopedia.mvc.common.customview.RecurringDateScheduleCustomView
+        android:id="@+id/unavailable_recurring_period_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recurring_period_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

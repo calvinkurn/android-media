@@ -5,20 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
+import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.usecase.*
 import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
 import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
-import com.tokopedia.mvc.domain.usecase.*
-import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.Companion.UpdateVoucherAction.DELETE
-import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase.Companion.UpdateVoucherAction.STOP
 import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -137,7 +136,7 @@ class MvcListViewModel @Inject constructor(
         return count
     }
 
-    fun stopVoucher(voucher: Voucher){
+    fun stopVoucher(voucher: Voucher) {
         val voucherStatus = voucher.status
         launchCatchError(
             dispatchers.io,
@@ -147,15 +146,15 @@ class MvcListViewModel @Inject constructor(
                 val detailVoucherDeffer = async { merchantPromotionGetMVDataByIDUseCase.execute(detailVoucherParam) }
                 val detailVoucher = detailVoucherDeffer.await()
                 val metadataParam = GetInitiateVoucherPageUseCase.Param(VoucherAction.UPDATE, detailVoucher.voucherType, detailVoucher.isVoucherProduct)
-                val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam)}
+                val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam) }
                 val token = metadataDeferred.await()
-                val couponStatus = if(voucherStatus == VoucherStatus.NOT_STARTED) DELETE else STOP
+                val couponStatus = if (voucherStatus == VoucherStatus.NOT_STARTED) UpdateVoucherAction.DELETE else UpdateVoucherAction.STOP
                 val idCancelVoucher = cancelVoucherUseCase.execute(voucher.id.toInt(), couponStatus, token.token)
-                if(!idCancelVoucher.isZero()){
-                    _deleteUIEffect.emit(DeleteVoucherUiEffect.SuccessDeletedVoucher(idCancelVoucher, voucher.name, voucherStatus))
+                if (idCancelVoucher.updateStatusVoucherData.voucherId.isNotEmpty()) {
+                    _deleteUIEffect.emit(DeleteVoucherUiEffect.SuccessDeletedVoucher(idCancelVoucher.updateStatusVoucherData.voucherId.toIntOrZero(), voucher.name, voucherStatus))
                 }
             },
-            onError = {error ->
+            onError = { error ->
                 _deleteUIEffect.emit(DeleteVoucherUiEffect.ShowToasterErrorDelete(error, voucher.name, voucherStatus))
             }
         )

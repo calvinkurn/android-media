@@ -29,5 +29,21 @@ data class VoucherValidationPartialRequest(
     @SerializedName("is_public")
     val isPublic: Int,
     @SerializedName("code")
-    val code: String
+    val code: String,
+    @SerializedName("is_period")
+    val isPeriod: Boolean,
+    @SerializedName("period_type")
+    val periodType: Int,
+    @SerializedName("period_repeat")
+    val periodRepeat: Int,
+    @SerializedName("total_period")
+    val totalPeriod: Int,
+    @SerializedName("date_start")
+    val startDate: String,
+    @SerializedName("date_end")
+    val endDate: String,
+    @SerializedName("hour_start")
+    val startHour: String,
+    @SerializedName("hour_end")
+    val endHour: String
 )

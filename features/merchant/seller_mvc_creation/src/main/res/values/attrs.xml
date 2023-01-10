@@ -19,4 +19,11 @@
         <attr name="voucher_target_title_text" format="string"/>
         <attr name="voucher_target_description_text" format="string"/>
     </declare-styleable>
+    <declare-styleable name="VoucherRecurringPeriodView">
+        <attr name="voucher_recurring_title" format="string"/>
+        <attr name="voucher_recurring_first_period" format="string"/>
+        <attr name="voucher_recurring_second_period" format="string"/>
+        <attr name="voucher_recurring_type" format="integer"/>
+        <attr name="is_show_button" format="boolean"/>
+    </declare-styleable>
 </resources>

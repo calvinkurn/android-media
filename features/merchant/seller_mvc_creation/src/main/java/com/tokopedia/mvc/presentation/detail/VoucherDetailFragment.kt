@@ -94,6 +94,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         private const val COPY_PROMO_CODE_LABEL = "promo_code"
         private const val broadCastChatUrl =
             "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id="
+        private const val tncUrl =
+            "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
     }
 
     // binding
@@ -163,6 +165,19 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     showGlobalError()
+                }
+            }
+        }
+
+        viewModel.updateVoucherStatusData.observe(viewLifecycleOwner) { result ->
+            hideLoading()
+            when (result) {
+                is Success -> {
+                    binding?.layoutButtonGroup.showToaster(result.data.message)
+                    getVoucherDetailData(voucherId)
+                }
+                is Fail -> {
+                    binding?.layoutButtonGroup.showToasterError(result.throwable)
                 }
             }
         }
@@ -244,6 +259,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 data.remainingQuota
             )
             pgbUsedVoucher.setValue(usedQuotaPercentage, true)
+            btnDownloadImageVoucher.apply {
+                isVisible =
+                    data.voucherStatus == VoucherStatus.NOT_STARTED || data.voucherStatus == VoucherStatus.ONGOING
+                setOnClickListener { viewModel.onTapDownloadVoucherImage() }
+            }
         }
     }
 
@@ -656,24 +676,23 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     voucher = null,
                     title = data.voucherName,
                     isFromVoucherDetailPage = true,
-                    voucherStatus =
-                    voucherStatus
+                    voucherStatus = voucherStatus
                 )
             moreMenuBottomSheet?.setOnMenuClickListener { menu ->
-                onClickListenerForMoreMenu(menu)
+                onClickListenerForMoreMenu(menu, data)
             }
             moreMenuBottomSheet?.show(childFragmentManager, "")
         }
     }
 
-    private fun onClickListenerForMoreMenu(menuUiModel: MoreMenuUiModel) {
+    private fun onClickListenerForMoreMenu(menuUiModel: MoreMenuUiModel, data: VoucherDetailData) {
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
-            is MoreMenuUiModel.Clear -> {
-            }
             is MoreMenuUiModel.TermsAndConditions -> {
+                openTncPage()
             }
             else -> {
+                updateVoucherStatusData(data)
             }
         }
     }
@@ -681,6 +700,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun getVoucherDetailData(voucherId: Long) {
         showLoading()
         viewModel.getVoucherDetail(voucherId)
+    }
+
+    private fun updateVoucherStatusData(data: VoucherDetailData) {
+        viewModel.updateVoucherStatus(data)
     }
 
     private fun copyVoucherCode(voucherCode: String) {
@@ -734,6 +757,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun shareToBroadcastChat(voucherId: Long) {
         routeToUrl(broadCastChatUrl + voucherId.toString())
+    }
+
+    private fun openTncPage() {
+        routeToUrl(tncUrl)
     }
 
     private fun displayShareBottomSheet(voucherImageMetadata: GenerateVoucherImageMetadata) {
@@ -892,12 +919,15 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
         val intent = ProductListActivity.buildIntentForVoucherDetailPage(
             context = activity ?: return,
-            showCtaChangeProductOnToolbar = voucherDetail.voucherStatus == VoucherStatus.PROCESSING,
+            showCtaChangeProductOnToolbar = voucherDetail.voucherStatus == VoucherStatus.NOT_STARTED,
             voucherConfiguration = voucherDetail.toVoucherConfiguration(),
             selectedProducts = voucherDetail.toSelectedProducts(),
             selectedWarehouseId = voucherDetail.warehouseId
         )
 
-        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION)
+        startActivityForResult(
+            intent,
+            NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION
+        )
     }
 }
