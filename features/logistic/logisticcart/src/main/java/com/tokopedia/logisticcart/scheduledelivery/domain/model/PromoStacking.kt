@@ -16,7 +16,7 @@ class PromoStacking(
     val isBebasOngkirExtra: Boolean = false,
     @SerializedName("benefit_amount")
     val benefitAmount: Long = 0,
-    @SerializedName("boCampaignId")
+    @SerializedName("bo_campaign_id")
     val boCampaignId: Long = 0,
     @SerializedName("free_shipping_metadata")
     val freeShippingMetadata: FreeShippingMetadata = FreeShippingMetadata(),
