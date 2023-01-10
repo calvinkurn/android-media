@@ -243,6 +243,10 @@ object MacroIntent {
 
         const val RECYCLER_VIEW_ID = "layout_form_reschedule_pickup"
 
+        private const val DF_MODULE_NAME = "df_base"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+        const val TRACE_NAME = "mp_reschedule_pickup"
+
         fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://logistic/reschedulepickup?order_id=1111111")
