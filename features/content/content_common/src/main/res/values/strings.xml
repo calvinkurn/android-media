@@ -45,9 +45,8 @@
     <string name="content_creation_search_bs_item_last_purchase">Terakhir Dibeli</string>
     <string name="content_creation_search_bs_item_wishlist">Wishlist</string>
     <string name="content_creation_search_bs_header_item_shop" tools:ignore="UnusedResources">Toko saya</string>
-    <string name="content_creation_search_coachmark_header">Nge-tag produk dari mana-mana</string>
-    <string name="content_creation_search_coachmark_desc">Kamu bahkan bisa nge-tag dari yang terakhir
-dibeli, Wishlist, dan bahkan produk tokomu.</string>
+    <string name="content_creation_search_coachmark_header">Bisa nge-tag produk pilihanmu</string>
+    <string name="content_creation_search_coachmark_desc">Kamu juga bisa nge-tag dari yang produk yang terakhir dibeli.</string>
     <string name="content_creation_search_shop_item_button_text" tools:ignore="UnusedResources">Lihat Toko</string>
     <string name="content_creation_barang_text">Barang</string>
     <string name="content_creation_toko_text">Toko</string>
