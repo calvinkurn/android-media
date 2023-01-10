@@ -8,9 +8,11 @@ import com.tokopedia.sellerhome.domain.model.ShopCoreInfoResponse
 import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopStateInfoUseCase
 import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
+import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -70,6 +72,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -187,6 +190,9 @@ class SellerHomeViewModelTest {
     lateinit var submitWidgetDismissUseCase: SubmitWidgetDismissUseCase
 
     @RelaxedMockK
+    lateinit var getShopStateInfoUseCase: GetShopStateInfoUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     @RelaxedMockK
@@ -248,6 +254,7 @@ class SellerHomeViewModelTest {
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
             { submitWidgetDismissUseCase },
+            { getShopStateInfoUseCase },
             { sellerHomeLayoutHelper },
             { widgetSse },
             remoteConfig,
@@ -386,7 +393,9 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get widget layout should success`() = runBlocking {
-        val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+        val widgetLayout = WidgetLayoutUiModel(
+            widgetList = provideCompleteSuccessWidgetLayout()
+        )
         val shopId = "123456"
         val page = "seller-home"
 
@@ -398,7 +407,7 @@ class SellerHomeViewModelTest {
 
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
 
         viewModel.getWidgetLayout()
 
@@ -412,13 +421,15 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         }
 
-        Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
-        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
+        Assertions.assertEquals(Success(widgetLayout), viewModel.widgetLayout.value)
+        Assertions.assertEquals(widgetLayout.widgetList, viewModel.rawWidgetList)
     }
 
     @Test
     fun `when get widget layout and set height as 0f, should also success`() = runBlocking {
-        val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+        val widgetLayout = WidgetLayoutUiModel(
+            widgetList = provideCompleteSuccessWidgetLayout()
+        )
         val shopId = "123456"
         val page = "seller-home"
         val widgetHeightInDp = 0f
@@ -456,7 +467,7 @@ class SellerHomeViewModelTest {
 
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
 
         every {
             getLayoutUseCase.isFirstLoad
@@ -486,10 +497,14 @@ class SellerHomeViewModelTest {
 
         coVerify {
             getLayoutUseCase.executeOnBackground()
-            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp, isCachingEnabled)
+            sellerHomeLayoutHelper.getInitialWidget(
+                widgetLayout.widgetList,
+                widgetHeightInDp,
+                isCachingEnabled
+            )
         }
 
-        val successLayoutList = layoutList.map {
+        val successLayoutList = widgetLayout.widgetList.map {
             when (it) {
                 is CardWidgetUiModel -> it.apply { data = cardData }
                 is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
@@ -512,16 +527,18 @@ class SellerHomeViewModelTest {
             }
         }
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.all { actualWidget ->
             successLayoutList.find { it.data == actualWidget.data } != null
         } == true)
-        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
+        Assertions.assertEquals(widgetLayout.widgetList, viewModel.rawWidgetList)
     }
 
     @Test
     fun `when get widget layout and height param is not null, should also success`() {
         runBlocking {
-            val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+            val widgetLayout = WidgetLayoutUiModel(
+                widgetList = provideCompleteSuccessWidgetLayout()
+            )
             val shopId = "123456"
             val page = "seller-home"
 
@@ -556,7 +573,7 @@ class SellerHomeViewModelTest {
             } returns true
             coEvery {
                 getLayoutUseCase.executeOnBackground()
-            } returns layoutList
+            } returns widgetLayout
             every {
                 getLayoutUseCase.isFirstLoad
             } returns true
@@ -585,7 +602,7 @@ class SellerHomeViewModelTest {
                 getLayoutUseCase.executeOnBackground()
             }
 
-            val successLayoutList = layoutList.map {
+            val successLayoutList = widgetLayout.widgetList.map {
                 when (it) {
                     is CardWidgetUiModel -> it.apply { data = cardData }
                     is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
@@ -608,10 +625,10 @@ class SellerHomeViewModelTest {
                 }
             }
 
-            assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
+            assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.all { actualWidget ->
                 successLayoutList.find { it.data == actualWidget.data } != null
             } == true)
-            Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
+            Assertions.assertEquals(widgetLayout.widgetList, viewModel.rawWidgetList)
         }
     }
 
@@ -647,7 +664,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `given old and use case with transform flow should only called once`() {
-        val layoutList = listOf<BaseWidgetUiModel<*>>()
+        val widgetLayout = WidgetLayoutUiModel(widgetList = listOf())
         val shopId = "123456"
         val page = "seller-home"
 
@@ -661,14 +678,14 @@ class SellerHomeViewModelTest {
 
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
 
         viewModel.getWidgetLayout(10f)
 
         coVerify(exactly = 1) {
             getLayoutUseCase.executeOnBackground()
         }
-        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
+        Assertions.assertEquals(widgetLayout.widgetList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -1503,7 +1520,63 @@ class SellerHomeViewModelTest {
             }
 
             val expectedResult = Fail(exception)
-            viewModel.submitWidgetDismissal.verifyValueEquals(expectedResult)
+            viewModel.submitWidgetDismissal.verifyErrorEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when get shop state info should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "123"
+            val dataKeys = "shopStateChanged"
+            val pageSource = "seller-home"
+
+            val response = ShopStateInfoUiModel()
+
+            coEvery {
+                userSession.shopId
+            } returns shopId
+
+            coEvery {
+                getShopStateInfoUseCase.executeInBackground(any(), any(), any())
+            } returns response
+
+            viewModel.getShopStateInfo()
+
+            coVerify {
+                getShopStateInfoUseCase.executeInBackground(shopId, dataKeys, pageSource)
+            }
+
+            val expected = Success(response)
+            viewModel.shopStateInfo.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when get shop state info should return error result`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "123"
+            val dataKeys = "shopStateChanged"
+            val pageSource = "seller-home"
+
+            val throwable = RuntimeException()
+
+            coEvery {
+                userSession.shopId
+            } returns shopId
+
+            coEvery {
+                getShopStateInfoUseCase.executeInBackground(any(), any(), any())
+            } throws throwable
+
+            viewModel.getShopStateInfo()
+
+            coVerify {
+                getShopStateInfoUseCase.executeInBackground(shopId, dataKeys, pageSource)
+            }
+
+            val expected = Fail(throwable)
+            viewModel.shopStateInfo.verifyValueEquals(expected)
         }
     }
 
@@ -1911,9 +1984,6 @@ class SellerHomeViewModelTest {
         coVerify {
             getMultiLineGraphUseCase.executeOnBackground()
         }
-
-        //number of data keys and result should same
-        Assertions.assertTrue(dataKeys.size == result.size)
 
         val expectedResult = Success(result)
         Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
@@ -2331,7 +2401,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `given getting widget data is success, when getting initial widgets layout, start and stop plt custom trace should not be null`() =
+    fun `given getting widget data is success, when getting initial widgets layout, start and stop plt custom trace should not be null`() {
         runBlocking {
             val layoutList: List<BaseWidgetUiModel<*>> = listOf(
                 SectionWidgetUiModel(
@@ -2414,6 +2484,7 @@ class SellerHomeViewModelTest {
             val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
             val shopId = "123456"
             val page = "seller-home"
+            val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
             getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -2426,7 +2497,7 @@ class SellerHomeViewModelTest {
             } returns true
             coEvery {
                 getLayoutUseCase.executeOnBackground()
-            } returns layoutList
+            } returns widgetLayout
             coEvery {
                 getLayoutUseCase.isFirstLoad
             } returns true
@@ -2439,6 +2510,7 @@ class SellerHomeViewModelTest {
             assert(viewModel.startWidgetCustomMetricTag.value != null)
             assert(viewModel.stopWidgetType.value != null)
         }
+    }
 
     @Test
     fun `given some widget data is empty and should be removed, when initial load, should not have included that widget`() {
@@ -2592,6 +2664,7 @@ class SellerHomeViewModelTest {
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -2604,7 +2677,7 @@ class SellerHomeViewModelTest {
         } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
@@ -2623,7 +2696,7 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(1000f)
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
     }
 
     @Test
@@ -2674,6 +2747,7 @@ class SellerHomeViewModelTest {
             AnnouncementDataUiModel(dataKey = DATA_KEY_ANNOUNCEMENT, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -2685,7 +2759,7 @@ class SellerHomeViewModelTest {
         } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
@@ -2698,7 +2772,7 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(1000f)
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_PROGRESS } == false)
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.any { it.id == DATA_KEY_PROGRESS } == false)
     }
 
     @Test
@@ -2728,6 +2802,7 @@ class SellerHomeViewModelTest {
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = false)
         val shopId = "123456"
         val page = "seller-home"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -2739,7 +2814,7 @@ class SellerHomeViewModelTest {
         } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
@@ -2749,7 +2824,7 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(1000f)
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_PROGRESS } == false)
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.any { it.id == DATA_KEY_PROGRESS } == false)
     }
 
     @Test
@@ -2779,6 +2854,7 @@ class SellerHomeViewModelTest {
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -2790,7 +2866,7 @@ class SellerHomeViewModelTest {
         } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
@@ -2800,7 +2876,7 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(1000f)
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_PROGRESS } == true)
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.any { it.id == DATA_KEY_PROGRESS } == true)
     }
 
     @Test
@@ -2830,6 +2906,7 @@ class SellerHomeViewModelTest {
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -2841,7 +2918,7 @@ class SellerHomeViewModelTest {
         } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
@@ -2851,7 +2928,7 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(1000f)
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_PROGRESS } == false)
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.any { it.id == DATA_KEY_PROGRESS } == false)
     }
 
     @Test
@@ -2882,6 +2959,7 @@ class SellerHomeViewModelTest {
             ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, value = 1, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -2893,7 +2971,7 @@ class SellerHomeViewModelTest {
         } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
@@ -2903,7 +2981,7 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(1000f)
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_PROGRESS } == true)
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.any { it.id == DATA_KEY_PROGRESS } == true)
     }
 
     @Test
@@ -2940,6 +3018,7 @@ class SellerHomeViewModelTest {
         )
         val shopId = "123456"
         val page = "seller-home"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -2952,7 +3031,7 @@ class SellerHomeViewModelTest {
         } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
@@ -2962,7 +3041,7 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(1000f)
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
     }
 
     @Test
@@ -3005,6 +3084,7 @@ class SellerHomeViewModelTest {
         )
         val shopId = "123456"
         val page = "seller-home"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -3017,7 +3097,7 @@ class SellerHomeViewModelTest {
         } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
@@ -3027,7 +3107,7 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(1000f)
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
+        assert((viewModel.widgetLayout.value as? Success)?.data?.widgetList?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
     }
 
     @Test
