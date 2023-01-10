@@ -29,6 +29,15 @@ class PinpointNewPageViewModel @Inject constructor(
     private var saveAddressDataModel = SaveAddressDataModel()
 
     var isGmsAvailable: Boolean = true
+    var currentPlaceId: String? = ""
+
+    /*to differentiate positive flow or negative flow*/
+    var isPositiveFlow: Boolean = true
+    var showIllustrationMap: Boolean = false
+    var isFromAddressForm: Boolean = false
+    var isEdit: Boolean = false
+    var isPolygon: Boolean = false
+    var source: String? = ""
 
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
@@ -45,6 +54,37 @@ class PinpointNewPageViewModel @Inject constructor(
     private val _districtCenter = MutableLiveData<Result<DistrictCenterUiModel>>()
     val districtCenter: LiveData<Result<DistrictCenterUiModel>>
         get() = _districtCenter
+
+    fun setDataFromArguments(
+        currentPlaceId: String?,
+        latitude: Double,
+        longitude: Double,
+        addressData: SaveAddressDataModel?,
+        isPositiveFlow: Boolean,
+        districtId: Long,
+        isPolygon: Boolean,
+        isFromAddressForm: Boolean,
+        isEdit: Boolean,
+        source: String,
+    ) {
+        this.currentPlaceId = currentPlaceId
+        setLatLong(latitude, longitude)
+        addressData?.apply {
+            setAddress(this)
+        }
+        this.isPositiveFlow = isPositiveFlow
+        if (getAddress().districtId == 0L) {
+            districtId.takeIf { value -> value != 0L }?.let { id ->
+                setAddress(
+                    getAddress().copy(districtId = id)
+                )
+            }
+        }
+        this.isPolygon = isPolygon
+        this.isFromAddressForm = isFromAddressForm
+        this.isEdit = isEdit
+        this.source = source
+    }
 
     fun getDistrictData(lat: Double, long: Double) {
         val param = "$lat,$long"

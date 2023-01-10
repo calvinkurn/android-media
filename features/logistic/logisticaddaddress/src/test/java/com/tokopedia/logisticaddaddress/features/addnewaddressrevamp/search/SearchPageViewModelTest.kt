@@ -12,6 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,24 +48,30 @@ class SearchPageViewModelTest {
     @Test
     fun `Get Auto Complete List Success`() {
         coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
-        searchPageViewModel.getAutoCompleteList("Jakarta", "")
+        searchPageViewModel.loadAutoComplete("Jakarta")
         verify { autoCompleteListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
-    fun `Get Auto Complete List Fail`() {
+    fun `verify set latlong and get auto complete list is fail`() {
+        // Inject
+        val latitude = 1.0
+        val longitude = 1.0
+
+        // Given
         coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
-        searchPageViewModel.getAutoCompleteList("Jakarta", "")
+
+        // When
+        searchPageViewModel.setLatLong(
+            latitude = latitude,
+            longitude = longitude
+        )
+        searchPageViewModel.loadAutoComplete("Jakarta")
+
+        // Then
+        Assert.assertEquals(searchPageViewModel.currentLat.toString(), latitude.toString())
+        Assert.assertEquals(searchPageViewModel.currentLong.toString(), longitude.toString())
         verify { autoCompleteListObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
-    fun `Get Address Data`() {
-        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
-
-        searchPageViewModel.setAddress(address)
-
-        Assert.assertEquals(searchPageViewModel.getAddress(), address)
     }
 
     @Test
@@ -73,5 +80,66 @@ class SearchPageViewModelTest {
         searchPageViewModel.isGmsAvailable = gmsAvailable
 
         Assert.assertEquals(searchPageViewModel.isGmsAvailable, gmsAvailable)
+    }
+
+    @Test
+    fun `verify set all data from arguments is correctly`() {
+        // Inject
+        val isPositiveFlow = true
+        val isFromPinpoint = true
+        val isPolygon = true
+        val isEdit = true
+        val source = "source"
+        val addressData = spyk<SaveAddressDataModel>()
+
+        // When
+        searchPageViewModel.setDataFromArguments(
+            isPositiveFlow,
+            isFromPinpoint,
+            isPolygon,
+            isEdit,
+            source,
+            addressData
+        )
+
+        // Then
+        with(searchPageViewModel) {
+            Assert.assertTrue(this.isPositiveFlow)
+            Assert.assertTrue(this.isFromPinpoint)
+            Assert.assertTrue(this.isPolygon)
+            Assert.assertTrue(this.isEdit)
+            Assert.assertEquals(this.source, source)
+            Assert.assertEquals(this.saveAddressDataModel, addressData)
+        }
+    }
+
+    @Test
+    fun `verify set data from arguments when address data null is correctly`() {
+        // Inject
+        val isPositiveFlow = false
+        val isFromPinpoint = false
+        val isPolygon = false
+        val isEdit = false
+        val source = ""
+
+        // When
+        searchPageViewModel.setDataFromArguments(
+            isPositiveFlow,
+            isFromPinpoint,
+            isPolygon,
+            isEdit,
+            source,
+            null
+        )
+
+        // Then
+        with(searchPageViewModel) {
+            Assert.assertFalse(this.isPositiveFlow)
+            Assert.assertFalse(this.isFromPinpoint)
+            Assert.assertFalse(this.isPolygon)
+            Assert.assertFalse(this.isEdit)
+            Assert.assertEquals(this.source, source)
+            Assert.assertNotNull(this.saveAddressDataModel)
+        }
     }
 }
