@@ -40,13 +40,11 @@ object GetScheduledDeliveryRatesQuery : GqlQueryInterface {
                         }
                     }
                 }
-            }""".trimIndent()
+            }
+    """.trimIndent()
 
     override fun getTopOperationName() = OPERATION_NAME
 
-    /**
-     * TODO vindo - update with actual param
-     */
     fun createParams(
         origin: String,
         destination: String,
@@ -55,25 +53,16 @@ object GetScheduledDeliveryRatesQuery : GqlQueryInterface {
         shopId: Long,
         uniqueId: String,
         productMetadata: String,
-        boMetadata: String = "",
+        boMetadata: String = ""
     ) = mapOf(
-        "destination" to "2274||,",
-        "weight" to "2.0",
-        "origin" to "579|20117|3.6095088000000146,98.66532999999998",
-        "shop_id" to 6552935,
-        "unique_id" to "-6552935-0-343034",
-        "products" to "[{\"is_free_shipping\":true,\"is_free_shipping_tc\":false,\"product_id\":2148326513}]",
-        "bo_metadata" to "{\"bo_metadata\":{\"bo_type\":1,\"bo_eligibilities\":[{\"key\":\"campaign_ids\",\"value\":\"3,8,9,59\"}]}}",
-        "warehouse_id" to 12212,
-        "source" to "pdp"
-//        PARAM_ORIGIN to origin,
-//        PARAM_DESTINATION to destination,
-//        PARAM_WAREHOUSE_ID to warehouseId,
-//        PARAM_WEIGHT to weight,
-//        PARAM_SHOP_ID to shopId,
-//        PARAM_UNIQUE_ID to uniqueId,
-//        PARAM_PRODUCTS to products,
-//        PARAM_BO_METADATA to boMetadata,
-//        PARAM_SOURCE to SOURCE
+        PARAM_ORIGIN to origin,
+        PARAM_DESTINATION to destination,
+        PARAM_WAREHOUSE_ID to warehouseId,
+        PARAM_WEIGHT to weight,
+        PARAM_SHOP_ID to shopId,
+        PARAM_UNIQUE_ID to uniqueId,
+        PARAM_PRODUCTS to productMetadata,
+        PARAM_BO_METADATA to boMetadata,
+        PARAM_SOURCE to SOURCE
     )
 }
