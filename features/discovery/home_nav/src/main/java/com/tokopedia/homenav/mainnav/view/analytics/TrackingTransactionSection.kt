@@ -161,15 +161,15 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 eventLabel = Label.NONE,
                 list = LIST_WISHLIST,
                 products = listOf(Product(
-                    name = wishlistModel.productName,
-                    id = wishlistModel.productId,
-                    variant = wishlistModel.variant,
+                    name = wishlistModel.name,
+                    id = wishlistModel.id,
+                    variant = "",
                     brand = Value.NONE_OTHER,
                     productPosition = (position+1).toString(),
-                    productPrice = wishlistModel.price,
-                    wishlistId = wishlistModel.wishlistId,
+                    productPrice = "",
+                    wishlistId = "",
                     isFreeOngkir = false,
-                    category =  wishlistModel.categoryBreadcrumb
+                    category =  ""
                 )),
                 buildCustomList = { LIST_WISHLIST }
             )
@@ -184,22 +184,22 @@ object TrackingTransactionSection: BaseTrackerConst() {
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
         bundle.putString(Action.KEY, ACTION_CLICK_ON_WISHLIST_CARD)
-        bundle.putString(Label.KEY, Label.FORMAT_2_ITEMS.format(wishlistModel.wishlistId, wishlistModel.productId))
+        bundle.putString(Label.KEY, Label.FORMAT_2_ITEMS.format("", wishlistModel.id))
         bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
         bundle.putString(UserId.KEY, userId)
         bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
         bundle.putString(ItemList.KEY, LIST_WISHLIST)
         val items = arrayListOf(
             Bundle().apply {
-                putString(DIMENSION_125, wishlistModel.wishlistId)
+                putString(DIMENSION_125, "")
                 putString(DIMENSION_40, LIST_WISHLIST)
                 putString(Items.INDEX, (position+1).toString())
                 putString(Items.ITEM_BRAND, Value.NONE_OTHER)
-                putString(Items.ITEM_CATEGORY, wishlistModel.categoryBreadcrumb)
-                putString(Items.ITEM_ID, wishlistModel.productId)
-                putString(Items.ITEM_NAME, wishlistModel.productName)
-                putString(Items.ITEM_VARIANT, wishlistModel.variant)
-                putString(Items.PRICE, wishlistModel.price)
+                putString(Items.ITEM_CATEGORY, "")
+                putString(Items.ITEM_ID, wishlistModel.id)
+                putString(Items.ITEM_NAME, wishlistModel.name)
+                putString(Items.ITEM_VARIANT, "")
+                putString(Items.PRICE, "")
             }
         )
         bundle.putParcelableArrayList(Items.KEY, items)

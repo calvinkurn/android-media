@@ -7,6 +7,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataMod
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
@@ -48,6 +49,8 @@ interface MainNavTypeFactory {
     fun type(errorStateFavoriteShopDataModel: ErrorStateFavoriteShopDataModel): Int
 
     fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int
+
+    fun type(errorStateReviewDataModel: ErrorStateReviewDataModel): Int
 
     fun createViewHolder(view: View, viewType: Int) : AbstractViewHolder<*>
 }

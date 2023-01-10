@@ -1025,7 +1025,7 @@ class TestMainNavViewModel {
 
         Assert.assertNotNull(viewModel.mainNavLiveData.value)
         val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as? WishlistDataModel
-        Assert.assertTrue(wishlistModel != null && wishlistModel.wishlist.isEmpty())
+        Assert.assertTrue(wishlistModel != null && wishlistModel.collections.isEmpty())
         val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as? FavoriteShopListDataModel
         Assert.assertTrue(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
         val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel?
@@ -1091,7 +1091,7 @@ class TestMainNavViewModel {
         viewModel.initializeState(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
         val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as WishlistDataModel?
-        assert(wishlistModel != null && wishlistModel.wishlist.isEmpty())
+        assert(wishlistModel != null && wishlistModel.collections.isEmpty())
     }
 
     @Test
@@ -1198,13 +1198,13 @@ class TestMainNavViewModel {
         val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
 
         val wishlist1 = NavWishlistModel(
-            productId = "123",
-            productName = "Item 1",
+            id = "123",
+            name = "Item 1",
             wishlistId = "111"
         )
         val wishlist2 = NavWishlistModel(
-            productId = "234",
-            productName = "Item 2",
+            id = "234",
+            name = "Item 2",
             wishlistId = "112"
         )
 
@@ -1222,7 +1222,7 @@ class TestMainNavViewModel {
         assert(
             viewModel.mainNavLiveData.value?.dataList?.any {
                 it is WishlistDataModel &&
-                    it.wishlist.contains(wishlist1)
+                    it.collections.contains(wishlist1)
             } == true
         )
 
@@ -1233,7 +1233,7 @@ class TestMainNavViewModel {
         assert(
             viewModel.mainNavLiveData.value?.dataList?.any {
                 it is WishlistDataModel &&
-                    it.wishlist.contains(wishlist2)
+                    it.collections.contains(wishlist2)
             } == true
         )
     }
@@ -1243,8 +1243,8 @@ class TestMainNavViewModel {
         val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
 
         val wishlist = NavWishlistModel(
-            productId = "123",
-            productName = "Item 1",
+            id = "123",
+            name = "Item 1",
             wishlistId = "111"
         )
 
@@ -1263,7 +1263,7 @@ class TestMainNavViewModel {
         Assert.assertTrue(
             viewModel.mainNavLiveData.value?.dataList?.any {
                 it is WishlistDataModel &&
-                    it.wishlist.contains(wishlist)
+                    it.collections.contains(wishlist)
             } == true
         )
     }
@@ -1273,8 +1273,8 @@ class TestMainNavViewModel {
         val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
 
         val wishlist = NavWishlistModel(
-            productId = "123",
-            productName = "Item 1",
+            id = "123",
+            name = "Item 1",
             wishlistId = "111"
         )
 
@@ -1293,7 +1293,7 @@ class TestMainNavViewModel {
         Assert.assertTrue(
             viewModel.mainNavLiveData.value?.dataList?.any {
                 it is WishlistDataModel &&
-                    it.wishlist.contains(wishlist)
+                    it.collections.contains(wishlist)
             } == true
         )
     }
@@ -1664,8 +1664,8 @@ class TestMainNavViewModel {
             it is WishlistDataModel
         } as WishlistDataModel
 
-        Assert.assertEquals(1, wishlistDataModel.wishlist.size)
-        Assert.assertTrue(wishlistDataModel.wishlist[0].fullWidth)
+        Assert.assertEquals(1, wishlistDataModel.collections.size)
+        Assert.assertTrue(wishlistDataModel.collections[0].fullWidth)
     }
 
     @Test

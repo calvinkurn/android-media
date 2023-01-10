@@ -83,5 +83,7 @@
 
     <string name="global_view_all">Lihat Semua</string>
 
-    <string name="wishlist_cashback">Cashback</string>
+    <string name="wishlist_item_count_format">%d Barang</string>
+
+    <string name="empty_state_review">Kasih ulasan untuk barang belanjaanmu nanti lewat sini.</string>
 </resources>

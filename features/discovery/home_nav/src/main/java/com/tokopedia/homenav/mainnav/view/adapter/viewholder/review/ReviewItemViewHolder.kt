@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder.review
 
 import android.net.Uri
 import android.view.View

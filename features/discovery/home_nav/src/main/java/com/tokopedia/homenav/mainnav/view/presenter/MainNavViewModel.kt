@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.MePageRollenceController.isUsingMePageRollenceVariant
+import com.tokopedia.homenav.MePageRollenceController.isUsingMePageRollenceVariant1
 import com.tokopedia.homenav.MePageRollenceController.isUsingMePageRollenceVariant2
 import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
@@ -17,7 +18,9 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_MY_ACTIVITY
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ORDER_HISTORY
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_WISHLIST
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
@@ -66,6 +69,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.TokopediaPlusDataMod
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
@@ -513,10 +517,10 @@ class MainNavViewModel @Inject constructor(
     private suspend fun getReview() {
         // find error state if available and change to shimmering
         val transactionErrorState = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateOngoingTransactionModel
+            it.value is ErrorStateReviewDataModel
         }
         transactionErrorState?.let {
-            updateWidget(InitialShimmerTransactionRevampDataModel(), it.index)
+            updateWidget(ShimmerReviewDataModel(), it.index)
         }
         try {
             val reviewList = getReviewProductUseCase.get().executeOnBackground()
@@ -547,8 +551,8 @@ class MainNavViewModel @Inject constructor(
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             // find shimmering and change with result value
-            findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
-                updateWidget(ErrorStateOngoingTransactionModel(), it)
+            findShimmerPosition<ShimmerReviewDataModel>()?.let {
+                updateWidget(ErrorStateReviewDataModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         }
@@ -673,21 +677,22 @@ class MainNavViewModel @Inject constructor(
         }
         try {
             val wishlistResult = getWishlistNavUseCase.get().executeOnBackground()
-            val wishlist = wishlistResult.first
-            val hasNext = wishlistResult.second
+            val collections = wishlistResult.first
+            val showViewAll = wishlistResult.second
+            val isEmptyState = wishlistResult.third
 
-            if (wishlist.isNotEmpty()) {
-                if (wishlist.size == SIZE_LAYOUT_SHOW_FULL_WIDTH) {
-                    wishlist[INDEX_FOR_FULL_WIDTH].fullWidth = true
+            if (collections.isNotEmpty()) {
+                if (collections.size == SIZE_LAYOUT_SHOW_FULL_WIDTH) {
+                    collections[INDEX_FOR_FULL_WIDTH].fullWidth = true
                 }
-                val wishlistModel = WishlistDataModel(showViewAll = hasNext, wishlist = wishlist)
+                val wishlistModel = WishlistDataModel(showViewAll = showViewAll, collections = collections, isEmptyState = isEmptyState)
 
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
                     updateWidget(wishlistModel, it)
                 }
             } else {
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
-                    updateWidget(WishlistDataModel(wishlist = listOf()), it)
+                    updateWidget(WishlistDataModel(collections = listOf(), isEmptyState = true), it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
@@ -763,29 +768,59 @@ class MainNavViewModel @Inject constructor(
 
     private fun buildTransactionMenuListRevamp(): List<Visitable<*>> {
         clientMenuGenerator.get().let {
-            var transactionDataList: MutableList<Visitable<*>> = mutableListOf()
-            if (userSession.get().isLoggedIn) {
-                transactionDataList = mutableListOf(
-                    it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
-                    InitialShimmerTransactionRevampDataModel(),
-                    it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                    ShimmerWishlistDataModel(),
-                    it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
-                    ShimmerFavoriteShopDataModel(),
-                    SeparatorDataModel(isUsingRollence = isUsingMePageRollenceVariant())
-                )
+            return if(isUsingMePageRollenceVariant1()) {
+                if (userSession.get().isLoggedIn) {
+                    mutableListOf(
+                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                        InitialShimmerTransactionRevampDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
+                        ShimmerFavoriteShopDataModel(),
+                        SeparatorDataModel(isUsingRollence = true),
+                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ACTIVITY),
+                        it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ACTIVITY),
+                        SeparatorDataModel(isUsingRollence = true),
+                    )
+                } else {
+                    mutableListOf(
+                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                        TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = true),
+                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
+                        FavoriteShopListDataModel(favoriteShops = listOf()),
+                        SeparatorDataModel(isUsingRollence = true),
+                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ACTIVITY),
+                        it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ACTIVITY),
+                        SeparatorDataModel(isUsingRollence = true),
+                    )
+                }
             } else {
-                transactionDataList = mutableListOf(
-                    it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
-                    TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isUsingMePageRollenceVariant()),
-                    it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                    WishlistDataModel(wishlist = listOf()),
-                    it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
-                    FavoriteShopListDataModel(favoriteShops = listOf()),
-                    SeparatorDataModel(isUsingRollence = isUsingMePageRollenceVariant())
-                )
+                if (userSession.get().isLoggedIn) {
+                    mutableListOf(
+                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                        InitialShimmerTransactionRevampDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_REVIEW),
+                        ShimmerReviewDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
+                        ShimmerWishlistDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
+                        ShimmerFavoriteShopDataModel(),
+                        SeparatorDataModel(isUsingRollence = true)
+                    )
+                } else {
+                    mutableListOf(
+                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                        TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = true),
+                        it.getSectionTitle(IDENTIFIER_TITLE_REVIEW),
+                        ReviewListDataModel(reviewList = listOf()),
+                        it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
+                        WishlistDataModel(collections = listOf()),
+                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
+                        FavoriteShopListDataModel(favoriteShops = listOf()),
+                        SeparatorDataModel(isUsingRollence = true)
+                    )
+                }
             }
-            return transactionDataList
         }
     }
 

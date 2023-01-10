@@ -336,9 +336,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshWishlistData()
     }
 
-    override fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int) {
+    override fun onWishlistCollectionClicked(wishlistModel: NavWishlistModel, position: Int) {
         TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
-        goToPDP(wishlistModel.productId, position)
+        goToPDP(wishlistModel.id, position)
     }
 
     override fun onErrorFavoriteShopClicked() {
@@ -358,6 +358,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun showReviewProduct(uriReviewProduct: String) {
         val intent = RouteManager.getIntent(context, uriReviewProduct)
         startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
+    }
+
+    override fun onErrorReviewClicked() {
+
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {

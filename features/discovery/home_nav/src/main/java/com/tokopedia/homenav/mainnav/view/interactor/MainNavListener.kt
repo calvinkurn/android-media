@@ -34,11 +34,13 @@ interface MainNavListener : HomeNavListener{
 
     fun onErrorWishlistClicked()
 
-    fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int)
+    fun onWishlistCollectionClicked(wishlistModel: NavWishlistModel, position: Int)
 
     fun onErrorFavoriteShopClicked()
 
     fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int)
 
     fun showReviewProduct(uriReviewProduct: String)
+
+    fun onErrorReviewClicked()
 }

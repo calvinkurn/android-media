@@ -3,7 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.ReviewItemViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewItemViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.EmptyReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.OtherReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.review.EmptyStateReviewDataModel
