@@ -71,7 +71,7 @@ class DefaultTopChatWebSocket @Inject constructor(
         private const val HEADER_KEY_PAGE = "page"
         private const val HEADER_USER_AGENT = "User-Agent"
         private const val HEADER_VALUE_BEARER = "Bearer"
-        private const val HEADER_IRIS_SESSION_ID = "Iris-Session-Id"
+        private const val HEADER_IRIS_SESSION_ID = "X-Iris-Session-Id"
 
         private const val KEY_USER_AGENT = "chat_useragent"
 
