@@ -1,5 +1,7 @@
 package com.tokopedia.universal_sharing.model
 
+import android.annotation.SuppressLint
+
 abstract class ImageGeneratorParamModel(var platform: String = "wa")
 
 data class PdpParamModel(
@@ -11,6 +13,8 @@ data class PdpParamModel(
     val productTitle: String = "",
 ) : ImageGeneratorParamModel()
 
+//this data class can be ignored for ParamFieldAnnotation, since this class is being used to map the request on ImagePolicyResponse.generateToShopPage function
+@SuppressLint("ParamFieldAnnotation")
 data class ShopPageParamModel(
     var shopProfileImgUrl: String = "",
     var isProfileImageExist: Boolean = true,
