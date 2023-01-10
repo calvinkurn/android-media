@@ -42,7 +42,7 @@ object KycOnBoardingViewInflater {
         }
     }
 
-    fun setupKycBenefitView(activity: FragmentActivity?, view: View, mainAction: () -> Unit, closeButtonAction: () -> Unit, onCheckedChanged: (Boolean) -> Unit, onTncClicked: () -> Unit) {
+    fun setupKycBenefitView(activity: FragmentActivity?, view: View, closeButtonAction: () -> Unit) {
         val kycBenefitImage = view.findViewById<ImageUnify>(R.id.image_banner)
         kycBenefitImage?.cornerRadius = 0
         kycBenefitImage.loadImage(KycUrl.KYC_BENEFIT_BANNER)
@@ -65,43 +65,10 @@ object KycOnBoardingViewInflater {
             }
         }
 
-        val benefitButton: UnifyButton? = view.findViewById(R.id.kyc_benefit_btn)
-        benefitButton?.isEnabled = false
-        benefitButton?.setOnClickListener {
-            mainAction()
-        }
-
         val kycBenefitCloseButton: UnifyImageButton? = view.findViewById(R.id.close_button)
         kycBenefitCloseButton?.setOnClickListener {
             closeButtonAction()
         }
-        val chkBox: CheckboxUnify? = view.findViewById(R.id.kyc_benefit_checkbox)
-
-        if(activity != null){
-            val spannableString = setupTncText(activity, onTncClicked)
-            chkBox?.movementMethod = LinkMovementMethod.getInstance()
-            chkBox?.setText(spannableString, TextView.BufferType.SPANNABLE)
-            chkBox?.setOnCheckedChangeListener { _, isChecked ->
-                onCheckedChanged(isChecked)
-                benefitButton?.isEnabled = isChecked
-            }
-        }
-    }
-
-
-    fun setupTncText(activity: FragmentActivity, onTncClicked: () -> Unit): SpannableString {
-        val sourceString = activity.getString(R.string.kyc_consent_text)
-        val spannable = SpannableString(sourceString)
-        spannable.setSpan(object : ClickableSpan() {
-            override fun onClick(view: View) {
-                onTncClicked()
-                RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=$URL_TNC")
-            }
-            override fun updateDrawState(ds: TextPaint) {
-                ds.color = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400)
-            }
-        }, sourceString.indexOf("Syarat & Ketentuan."), sourceString.length, 0)
-        return spannable
     }
 
     fun restoreStatusBar(activity: Activity?, defaultStatusBarColor: Int) {

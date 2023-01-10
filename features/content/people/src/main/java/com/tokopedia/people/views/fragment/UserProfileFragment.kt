@@ -255,8 +255,6 @@ class UserProfileFragment @Inject constructor(
                                 viewModel.profileUserID,
                             )
                         }
-
-                        override fun clickCloseIcon() {}
                     },
                 )
             }
