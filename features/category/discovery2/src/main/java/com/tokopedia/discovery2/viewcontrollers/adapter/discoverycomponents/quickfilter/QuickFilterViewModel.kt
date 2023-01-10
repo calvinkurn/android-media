@@ -168,7 +168,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
-            components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
+            if(option.inputType == Option.INPUT_TYPE_RADIO) {
+                components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = true)
+            }else{
+                components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
+            }
         } else {
             components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
         }
