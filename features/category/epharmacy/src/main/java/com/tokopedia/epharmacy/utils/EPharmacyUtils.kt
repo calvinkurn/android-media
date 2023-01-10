@@ -1,12 +1,14 @@
 package com.tokopedia.epharmacy.utils
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.usecase.BuildConfig
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 object EPharmacyUtils {
 
@@ -66,6 +68,26 @@ object EPharmacyUtils {
         } ?: kotlin.run {
             return ""
         }
+    }
+
+    fun getConsultationIds(response: EPharmacyPrepareProductsGroupResponse?): ArrayList<String> {
+        val ids = arrayListOf<String>()
+        response?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
+            ids.add(gp?.consultationSource?.id.toString())
+        }
+        return ids
+    }
+
+    fun getPrescriptionIds(response: EPharmacyPrepareProductsGroupResponse?): ArrayList<String?> {
+        val ids = arrayListOf<String?>()
+        response?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
+            gp?.prescriptionImages?.forEach { pres ->
+                if (!pres?.prescriptionId.isNullOrBlank()) {
+                    ids.add(pres?.prescriptionId)
+                }
+            }
+        }
+        return ids
     }
 }
 

@@ -199,7 +199,9 @@ data class EPharmacyPrepareProductsGroupResponse(
         @SerializedName("type")
         var type: String?,
         @SerializedName("message")
-        val message: String?
+        val message: String?,
+        @SerializedName("epharmacy_group_id")
+        val ePharmacyGroupId: String?
     ) : Parcelable
 
     @Parcelize

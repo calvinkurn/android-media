@@ -160,17 +160,22 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private fun observerPrescriptionError() {
         ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
             if (error is EPharmacyMiniConsultationToaster) {
+                val group = ePharmacyPrescriptionAttachmentViewModel.findGroup(error.ePharmacyGroupId)
                 showToast(
                     if (error.showErrorToast) {
                         EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
+                            group?.consultationSource?.id ?: 0L,
+                            group?.consultationSource?.enablerName ?: "",
                             FAILED,
-                            error.message
+                            group?.epharmacyGroupId ?: ""
                         )
                         TYPE_ERROR
                     } else {
                         EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult(
+                            group?.consultationSource?.id ?: 0L,
+                            group?.consultationSource?.enablerName ?: "",
                             SUCCESS,
-                            error.message
+                            group?.epharmacyGroupId ?: ""
                         )
                         Toaster.TYPE_NORMAL
                     },
@@ -371,7 +376,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             return
         }
 
-        EPharmacyMiniConsultationAnalytics.clickLanjutButton("${ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.toaster?.message}", ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString())
+        EPharmacyMiniConsultationAnalytics.clickLanjutButton(
+            EPharmacyUtils.getConsultationIds(ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData).toString(),
+            ePharmacyPrescriptionAttachmentViewModel.getEnablers().toString(),
+            "${ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.toaster?.message}",
+            ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString(),
+            EPharmacyUtils.getPrescriptionIds(ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData).toString()
+        )
         if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
             activity?.setResult(
                 EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
@@ -554,10 +565,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                     }
                 }
             }
-            EPHARMACY_MINI_CONSULTATION_REQUEST_CODE -> {
-                getData()
-            }
-            EPHARMACY_UPLOAD_REQUEST_CODE -> {
+            EPHARMACY_MINI_CONSULTATION_REQUEST_CODE, EPHARMACY_UPLOAD_REQUEST_CODE -> {
                 getData()
             }
         }

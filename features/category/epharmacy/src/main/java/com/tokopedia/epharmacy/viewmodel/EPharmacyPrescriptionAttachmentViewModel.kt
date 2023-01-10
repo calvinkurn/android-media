@@ -64,12 +64,12 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    fun getConsultationDetails(tokoConsultationId: Long) {
+    fun getConsultationDetails(consultationId: Long) {
         ePharmacyGetConsultationDetailsUseCase.cancelJobs()
         ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(
             ::onSuccessGetConsultationDetails,
             ::onFailGetConsultationDetails,
-            tokoConsultationId
+            consultationId
         )
     }
 
@@ -106,9 +106,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private fun showToastData(toaster: EPharmacyPrepareProductsGroupResponse.EPharmacyToaster?) {
         toaster?.message?.let { message ->
             if (PRESCRIPTION_ATTACH_SUCCESS == toaster.type) {
-                _uploadError.value = EPharmacyMiniConsultationToaster(false, message)
+                _uploadError.value = EPharmacyMiniConsultationToaster(false, message, toaster.ePharmacyGroupId)
             } else {
-                _uploadError.value = EPharmacyMiniConsultationToaster(true, message)
+                _uploadError.value = EPharmacyMiniConsultationToaster(true, message, toaster.ePharmacyGroupId)
             }
         }
     }
@@ -232,5 +232,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
             }
         }
         return ids
+    }
+
+    fun findGroup(ePharmacyGroupId: String?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup? {
+        return ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.find { group -> group?.epharmacyGroupId == ePharmacyGroupId }
     }
 }
