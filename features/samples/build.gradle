@@ -22,9 +22,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.foldable)
 }
 
-//project.ext {
-//    artifactId = 'sample'
-//    groupId = 'com.tokopedia.sample'
-//    versionName = "0.0.1"
-//    artifactName = "samples-release"
-//}
+project.ext {
+    artifactId = 'samples'
+    groupId = 'com.tokopedia.samples'
+    versionName = "0.0.1"
+    artifactName = "samples-release"
+}
