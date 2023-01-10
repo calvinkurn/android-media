@@ -37,15 +37,20 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class BuyerOrderDetailViewModelTestFixture {
 
     @RelaxedMockK
@@ -140,36 +145,43 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     @After
     fun cleanup() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
+        unmockkAll()
     }
 
     fun createSuccessGetBuyerOrderDetailDataResult(
-        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true),
+        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true) {
+            every { getPodInfo() } returns null
+        },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
         getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        actionBeforeComplete: () -> Unit = {}
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
-        } returns flow {
-            emit(
-                GetBuyerOrderDetailDataRequestState.Requesting(
-                    GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
-                    GetP1DataRequestState.Requesting(
-                        GetOrderResolutionRequestState.Requesting,
-                        GetInsuranceDetailRequestState.Requesting
+        } answers {
+            flow {
+                emit(
+                    GetBuyerOrderDetailDataRequestState.Requesting(
+                        GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
+                        GetP1DataRequestState.Requesting(
+                            GetOrderResolutionRequestState.Requesting,
+                            GetInsuranceDetailRequestState.Requesting
+                        )
                     )
                 )
-            )
-            emit(
-                GetBuyerOrderDetailDataRequestState.Complete(
-                    GetP0DataRequestState.Complete(
-                        GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
-                    ),
-                    GetP1DataRequestState.Complete(
-                        GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
-                        GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                actionBeforeComplete()
+                emit(
+                    GetBuyerOrderDetailDataRequestState.Complete(
+                        GetP0DataRequestState.Complete(
+                            GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
+                        ),
+                        GetP1DataRequestState.Complete(
+                            GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
+                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                        )
                     )
                 )
-            )
+            }
         }
     }
 
@@ -274,7 +286,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                 ProductListUiStateMapper["mapOnDataReady"](
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(),
                     any<GetInsuranceDetailRequestState>(),
-                    any<Map<String, AddToCartSingleRequestState>>()
+                    any<Map<String, AddToCartSingleRequestState>>(),
+                    any<Boolean>()
                 )
             } returns showingState
             every {
@@ -312,13 +325,38 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
     }
 
-    fun runCollectingUiState(block: (List<BuyerOrderDetailUiState>) -> Unit) {
+    fun runCollectingUiState(block: suspend TestCoroutineScope.(List<BuyerOrderDetailUiState>) -> Unit) {
         val uiStates = mutableListOf<BuyerOrderDetailUiState>()
         val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
         val uiStateCollectorJob = scope.launch {
             viewModel.buyerOrderDetailUiState.toList(uiStates)
         }
-        block(uiStates)
+        rule.runBlockingTest { block(uiStates) }
         uiStateCollectorJob.cancel()
+    }
+
+    fun isProductListCollapsed(): Boolean {
+        return BuyerOrderDetailViewModel::class.java.getDeclaredField("productListCollapsed").run {
+            isAccessible = true
+            (get(viewModel) as MutableStateFlow<*>).value as Boolean
+        }
+    }
+
+    fun isProductListExpanded(): Boolean {
+        return BuyerOrderDetailViewModel::class.java.getDeclaredField("productListCollapsed").run {
+            isAccessible = true
+            !((get(viewModel) as MutableStateFlow<*>).value as Boolean)
+        }
+    }
+
+    fun TestCoroutineScope.getBuyerOrderDetailData(
+        orderId: String = this@BuyerOrderDetailViewModelTestFixture.orderId,
+        paymentId: String = this@BuyerOrderDetailViewModelTestFixture.paymentId,
+        cart: String = this@BuyerOrderDetailViewModelTestFixture.cart,
+        shouldCheckCache: Boolean = false
+    ) {
+        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
+        // skip debounce on viewModel#productListUiState
+        advanceTimeBy(1000L)
     }
 }

@@ -193,8 +193,17 @@ data class GetBuyerOrderDetailResponse(
                 val indicatorColor: String = "",
                 @Expose
                 @SerializedName("status_name")
-                val statusName: String = ""
-            )
+                val statusName: String = "",
+                @Expose
+                @SerializedName("labels")
+                val labels: List<Label> = listOf()
+            ) {
+                data class Label(
+                    @Expose
+                    @SerializedName("label")
+                    val label: String = ""
+                )
+            }
 
             data class Payment(
                 @Expose
