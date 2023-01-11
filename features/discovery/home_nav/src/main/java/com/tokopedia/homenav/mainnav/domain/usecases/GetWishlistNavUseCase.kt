@@ -39,7 +39,7 @@ class GetWishlistNavUseCase @Inject constructor(
                 )
             )
         }
-        val showViewAll = (responseData.data.totalCollection ?: 0) > 5
+        val showViewAll = (responseData.data.totalCollection ?: 0) > 4
         return Triple(wishlistList, showViewAll, responseData.data.isEmptyState.orFalse())
     }
 }
