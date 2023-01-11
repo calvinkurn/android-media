@@ -202,7 +202,7 @@
         <include
             android:id="@+id/gopaySupervisedLayout"
             layout="@layout/gopay_kyc_bank_supervised_layout"
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -212,7 +212,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/takePhotoButton"
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/gopay_kyc_take_ktp_text"
