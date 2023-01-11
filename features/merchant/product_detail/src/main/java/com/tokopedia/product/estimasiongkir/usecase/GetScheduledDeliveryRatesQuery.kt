@@ -15,6 +15,7 @@ object GetScheduledDeliveryRatesQuery : GqlQueryInterface {
     private const val PARAM_BO_METADATA = "bo_metadata"
     private const val PARAM_SOURCE = "source"
     private const val PARAM_ORDER_VALUE = "order_value"
+
     private const val SOURCE = "pdp"
 
     override fun getOperationNameList() = listOf(OPERATION_NAME)
