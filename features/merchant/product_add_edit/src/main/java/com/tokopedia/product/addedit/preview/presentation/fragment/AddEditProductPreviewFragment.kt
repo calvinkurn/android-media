@@ -1033,6 +1033,7 @@ class AddEditProductPreviewFragment :
     private fun observeImageUrlOrPathList() {
         viewModel.imageUrlOrPathList.observe(viewLifecycleOwner, {
             productPhotoAdapter?.setProductPhotoPaths(it)
+            viewModel.saveImageListToDetailInput(it)
         })
     }
 

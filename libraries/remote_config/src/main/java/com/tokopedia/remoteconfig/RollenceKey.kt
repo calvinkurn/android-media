@@ -83,7 +83,7 @@ object RollenceKey {
     const val SWIPE_LIVE_ROOM = "play_sc"
 
     // Bubbles
-    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat"
+    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat_2"
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
