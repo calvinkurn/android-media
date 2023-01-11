@@ -3,6 +3,8 @@ package com.tokopedia.affiliate.sse
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.affiliate.AFFILIATE_SSE_URL_PROD
+import com.tokopedia.affiliate.AFFILIATE_SSE_URL_STAGING
 import com.tokopedia.affiliate.sse.model.AffiliateSSEAction
 import com.tokopedia.affiliate.sse.model.AffiliateSSECloseReason
 import com.tokopedia.affiliate.sse.model.AffiliateSSEResponse
@@ -29,12 +31,17 @@ class AffiliateSSEImpl @Inject constructor(
     private var sse: ServerSentEvent? = null
     private var sseFlow = MutableSharedFlow<AffiliateSSEAction>(extraBufferCapacity = 100)
 
-    override fun connect(pageSource: String) {
+    override fun connect(pageSource: String, authToken: String) {
         SSELogger.getInstance(context)
             .init(buildGeneralInfo(userSession.gcToken, pageSource).toString())
         SSELogger.getInstance(context).send("SSE Connecting...")
-
-        val url = "https://sse-staging.tokopedia.com/$AFFILIATE_SSE?page_source=$pageSource"
+        val affiliateSSEUrl =
+            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+                AFFILIATE_SSE_URL_STAGING
+            } else {
+                AFFILIATE_SSE_URL_PROD
+            }
+        val url = "$affiliateSSEUrl?page_source=$pageSource&token=$authToken"
 
         val request = Request.Builder().get().url(url)
             .header("Origin", TokopediaUrl.getInstance().WEB)
@@ -68,7 +75,8 @@ class AffiliateSSEImpl @Inject constructor(
                 override fun onComment(sse: ServerSentEvent, comment: String) = Unit
 
                 override fun onRetryTime(sse: ServerSentEvent, milliseconds: Long): Boolean {
-                    return true
+                    sseFlow.tryEmit(AffiliateSSEAction.Close(AffiliateSSECloseReason.ERROR))
+                    return false
                 }
 
                 override fun onRetryError(
@@ -108,9 +116,5 @@ class AffiliateSSEImpl @Inject constructor(
             "gcToken" to gcToken.ifEmpty { "\"\"" },
             "pageSource" to pageSource.ifEmpty { "\"\"" }
         )
-    }
-
-    private companion object {
-        const val AFFILIATE_SSE = "affiliate/sse/connect"
     }
 }
