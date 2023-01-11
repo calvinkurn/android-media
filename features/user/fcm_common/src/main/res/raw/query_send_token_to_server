@@ -1,6 +1,0 @@
-mutation AddToken($userId: Int, $appId: String, $notificationToken: String, $deviceOS: String, $sdkVersion: String, $macAddress: String, $appVersion: String, $requestTimestamp: String, $loggedStatus: String, $appName: String) {
-  cmAddToken(input: {userId: $userId, appId: $appId, notificationToken: $notificationToken, deviceOS: $deviceOS, sdkVersion: $sdkVersion, macAddress: $macAddress, appVersion: $appVersion, requestTimestamp: $requestTimestamp, loggedStatus: $loggedStatus, appName: $appName}) {
-    UserId
-    Error
-  }
-}
