@@ -5,7 +5,6 @@
     <string name="tv_bulk_review_write_review_message">Testimoni</string>
     <string name="tv_bulk_review_anonymous">Sembunyikan namamu</string>
     <string name="btn_bulk_review_send">Kirim (%d)</string>
-    <string name="tv_bulk_review_announcement">Hampir 3 bulan sama kamu, barang ini akan segera hilang dari daftar Menunggu Diulas.</string>
     <string name="tv_bulk_review_variant">Varian: %s</string>
     <string name="bulk_review_remove_review_item_dialog_title">Hapus barang dari daftar ini?</string>
     <string name="bulk_review_remove_review_item_dialog_description">Padahal kamu sudah isi ulasannya, lho. Tinggal selangkah lagi untuk kirim.</string>

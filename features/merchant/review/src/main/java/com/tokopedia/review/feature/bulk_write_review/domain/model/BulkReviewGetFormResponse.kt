@@ -14,6 +14,9 @@ data class BulkReviewGetFormResponse(
         val productrevGetBulkForm: ProductRevGetBulkForm = ProductRevGetBulkForm()
     ) {
         data class ProductRevGetBulkForm(
+            @SerializedName("themeCopy")
+            @Expose
+            val themeCopy: String = "",
             @SerializedName("list")
             @Expose
             val reviewForm: List<ReviewForm> = emptyList()

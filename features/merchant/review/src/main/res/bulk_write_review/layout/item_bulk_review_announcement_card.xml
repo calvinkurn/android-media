@@ -7,8 +7,7 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginTop="10dp"
     android:layout_marginBottom="6dp"
-    app:card_type="clear"
-    tools:viewBindingIgnore="true">
+    app:card_type="clear">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -27,10 +26,10 @@
             app:srcCompat="@drawable/ic_bulk_review_announcement" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bulk_review_announcement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/tv_bulk_review_announcement"
             android:textColor="@color/Unify_NN600"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +37,8 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/ic_bulk_review_announcement"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_3" />
+            app:typographyType="display_3"
+            tools:text="Hampir 3 bulan sama kamu, barang ini akan segera hilang dari daftar Menunggu Diulas." />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify2>

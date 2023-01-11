@@ -23,6 +23,7 @@ class BulkReviewGetFormUseCase @Inject constructor(
         return """
             query GetBulkReviewForm {
                 productrevGetBulkForm {
+                    themeCopy
                     list {
                         inboxID
                         reputationID

@@ -27,29 +27,58 @@ class BulkReviewVisitableMapper @Inject constructor() {
         bulkReviewTextAreaUiState: Map<String, BulkReviewTextAreaUiState>,
         bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>
     ): List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>> {
+        return arrayListOf<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>().apply {
+            includeAnnouncementWidget(productRevGetBulkForm.themeCopy)
+            includeReviewItems(
+                productRevGetBulkForm.reviewForm,
+                removedReviewItem,
+                impressedReviewItems,
+                bulkReviewProductInfoUiState,
+                bulkReviewRatingUiState,
+                bulkReviewBadRatingCategoryUiState,
+                bulkReviewMediaPickerUiState,
+                bulkReviewTextAreaUiState,
+                bulkReviewMiniActionsUiState
+            )
+        }
+    }
+
+    private fun ArrayList<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>.includeAnnouncementWidget(
+        themeCopy: String
+    ) {
+        if (themeCopy.isNotBlank()) add(BulkReviewAnnouncementUiModel(themeCopy))
+    }
+
+    private fun ArrayList<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>.includeReviewItems(
+        reviewForms: List<BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm>,
+        removedReviewItem: Set<String>,
+        impressedReviewItems: Set<String>,
+        bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
+        bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>,
+        bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
+        bulkReviewMediaPickerUiState: Map<String, CreateReviewMediaPickerUiState>,
+        bulkReviewTextAreaUiState: Map<String, BulkReviewTextAreaUiState>,
+        bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>
+    ) {
         val hasFocusedReviewItem = bulkReviewTextAreaUiState.values.any { textAreaUiState ->
             textAreaUiState is BulkReviewTextAreaUiState.Showing && textAreaUiState.focused
         }
-        return listOf(BulkReviewAnnouncementUiModel).plus(
-            productRevGetBulkForm.reviewForm.mapIndexedNotNull { index, reviewForm ->
-                if (reviewForm.inboxID !in removedReviewItem) {
-                    mapReviewFormToBulkReviewVisitable(
-                        index = index,
-                        reviewForm = reviewForm,
-                        hasFocusedReviewItem = hasFocusedReviewItem,
-                        bulkReviewProductInfoUiState = bulkReviewProductInfoUiState,
-                        bulkReviewRatingUiState = bulkReviewRatingUiState,
-                        bulkReviewBadRatingCategoryUiState = bulkReviewBadRatingCategoryUiState,
-                        bulkReviewTextAreaUiState = bulkReviewTextAreaUiState,
-                        bulkReviewMediaPickerUiState = bulkReviewMediaPickerUiState,
-                        bulkReviewMiniActionsUiState = bulkReviewMiniActionsUiState,
-                        reviewItemImpressed = reviewForm.inboxID in impressedReviewItems
-                    )
-                } else {
-                    null
-                }
+        reviewForms.forEachIndexed { index, reviewForm ->
+            if (reviewForm.inboxID !in removedReviewItem) {
+                mapReviewFormToBulkReviewVisitable(
+                    index = index,
+                    reviewForm = reviewForm,
+                    hasFocusedReviewItem = hasFocusedReviewItem,
+                    bulkReviewProductInfoUiState = bulkReviewProductInfoUiState,
+                    bulkReviewRatingUiState = bulkReviewRatingUiState,
+                    bulkReviewBadRatingCategoryUiState = bulkReviewBadRatingCategoryUiState,
+                    bulkReviewTextAreaUiState = bulkReviewTextAreaUiState,
+                    bulkReviewMediaPickerUiState = bulkReviewMediaPickerUiState,
+                    bulkReviewMiniActionsUiState = bulkReviewMiniActionsUiState,
+                    reviewItemImpressed = reviewForm.inboxID in impressedReviewItems
+                )?.let { add(it) }
             }
-        )
+        }
     }
 
     private fun mapReviewFormToBulkReviewVisitable(
