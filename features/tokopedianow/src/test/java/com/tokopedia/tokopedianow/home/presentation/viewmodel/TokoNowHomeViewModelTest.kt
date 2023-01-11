@@ -1371,6 +1371,16 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given null homeLayoutItemList when getRepurchaseWidgetProducts should return empty list`() {
+        addHomeLayoutItem(null)
+
+        val expected = emptyList<TokoNowProductCardUiModel>()
+        val actual = viewModel.getRepurchaseProducts()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `given homeLayoutItemList is empty when getRepurchaseWidgetProducts should return empty list`() {
         val expected = emptyList<TokoNowProductCardUiModel>()
         val actual = viewModel.getRepurchaseProducts()
