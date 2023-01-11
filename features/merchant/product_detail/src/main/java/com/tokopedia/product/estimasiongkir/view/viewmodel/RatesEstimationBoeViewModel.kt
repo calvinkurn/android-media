@@ -24,10 +24,12 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 16/02/21
  */
-class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: GetRatesEstimateUseCase,
-                                                      private val scheduledDeliveryRatesUseCase: GetScheduledDeliveryRatesUseCase,
-                                                      private val userSession: UserSessionInterface,
-                                                      val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
+class RatesEstimationBoeViewModel @Inject constructor(
+    private val ratesUseCase: GetRatesEstimateUseCase,
+    private val scheduledDeliveryRatesUseCase: GetScheduledDeliveryRatesUseCase,
+    private val userSession: UserSessionInterface,
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _ratesRequest = MutableLiveData<RatesEstimateRequest>()
 
@@ -47,9 +49,9 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
             result.postValue((ratesDataModel + scheduledDeliveryDataModel).asSuccess())
         }) {
             ProductDetailShippingLogger.logRateEstimate(
-                    throwable = it,
-                    rateRequest = _ratesRequest.value,
-                    deviceId = userSession.deviceId
+                throwable = it,
+                rateRequest = _ratesRequest.value,
+                deviceId = userSession.deviceId
             )
             result.postValue(it.asFail())
         }
@@ -66,27 +68,30 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
             uniqueId = generateUniqueId(request),
             productMetadata = request.productMetadata,
             boMetadata = request.boMetadata,
+            orderValue = request.orderValue,
             forceRefresh = true
         )
     }
 
     private suspend fun getRatesEstimate(request: RatesEstimateRequest): RatesEstimationModel {
         return ratesUseCase.executeOnBackground(
-                GetRatesEstimateUseCase.createParams(
-                        request.getWeightRequest(),
-                        request.shopDomain,
-                        request.origin,
-                        request.productId,
-                        request.shopId,
-                        request.isFulfillment,
-                        request.destination,
-                        request.boType,
-                        request.poTime,
-                        request.shopTier,
-                        generateUniqueId(request),
-                        request.orderValue,
-                        request.boMetadata),
-                request.forceRefresh)
+            GetRatesEstimateUseCase.createParams(
+                request.getWeightRequest(),
+                request.shopDomain,
+                request.origin,
+                request.productId,
+                request.shopId,
+                request.isFulfillment,
+                request.destination,
+                request.boType,
+                request.poTime,
+                request.shopTier,
+                generateUniqueId(request),
+                request.orderValue,
+                request.boMetadata
+            ),
+            request.forceRefresh
+        )
     }
 
     private fun generateUniqueId(request: RatesEstimateRequest): String {

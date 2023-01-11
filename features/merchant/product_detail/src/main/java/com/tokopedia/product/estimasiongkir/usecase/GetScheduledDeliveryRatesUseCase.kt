@@ -8,7 +8,6 @@ import com.tokopedia.product.estimasiongkir.data.model.ScheduledDeliveryRatesMod
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationScope
 import javax.inject.Inject
 
-
 @RatesEstimationScope
 class GetScheduledDeliveryRatesUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
@@ -28,6 +27,7 @@ class GetScheduledDeliveryRatesUseCase @Inject constructor(
         uniqueId: String,
         productMetadata: String,
         boMetadata: String,
+        orderValue: Int,
         forceRefresh: Boolean
     ): ScheduledDeliveryRatesModel {
         setRequestParams(
@@ -39,7 +39,8 @@ class GetScheduledDeliveryRatesUseCase @Inject constructor(
                 shopId = shopId,
                 uniqueId = uniqueId,
                 productMetadata = productMetadata,
-                boMetadata = boMetadata
+                boMetadata = boMetadata,
+                orderValue = orderValue
             )
         )
         setCacheStrategy(getCacheStrategy(forceRefresh))
