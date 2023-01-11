@@ -5,12 +5,10 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.seeallcategories.persentation.adapter.SeeAllCategoriesTypeFactory
 
 data class SeeAllCategoriesItemUiModel(
-    val id: String = "",
-    val title: String = "",
+    val id: String,
+    val name: String,
     val imageUrl: String? = null,
-    val appLink: String = "",
-    val warehouseId: String = "",
-    val headerName: String = ""
+    val appLink: String? = null,
 ): Visitable<SeeAllCategoriesTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: SeeAllCategoriesTypeFactory): Int = typeFactory.type(this)
 }

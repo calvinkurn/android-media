@@ -10,7 +10,8 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuItemBi
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SeeAllCategoriesItemViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: SeeAllCategoriesListener? = null
 ): AbstractViewHolder<SeeAllCategoriesItemUiModel>(itemView) {
 
     companion object {
@@ -22,30 +23,15 @@ class SeeAllCategoriesItemViewHolder(
 
     override fun bind(data: SeeAllCategoriesItemUiModel) {
         binding?.apply {
-            tpCategoryTitle.text = data.title
+            tpCategoryTitle.text = data.name
             ivCategoryImage.loadImage(data.imageUrl)
             root.setOnClickListener {
-//                setLayoutClicked(data)
+                listener?.onCategoryClicked(data)
             }
         }
     }
 
-//    private fun setLayoutClicked(data: TokoNowCategoryMenuItemUiModel) {
-//        RouteManager.route(itemView.context, data.appLink)
-//        listener?.onCategoryClicked(
-//            position = layoutPosition,
-//            categoryId = data.id,
-//            headerName = data.headerName,
-//            categoryName = data.title
-//        )
-//    }
-
-    interface TokoNowCategoryMenuItemListener {
-        fun onCategoryClicked(
-            position: Int,
-            categoryId: String,
-            headerName: String,
-            categoryName: String
-        )
+    interface SeeAllCategoriesListener {
+        fun onCategoryClicked(data: SeeAllCategoriesItemUiModel)
     }
 }

@@ -4,6 +4,7 @@ import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryList
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListChildUiModel.*
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel.SeeAllCategoriesItemUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 object CategoryListMapper {
@@ -13,6 +14,15 @@ object CategoryListMapper {
             val childList = mapToChildUiModel(it)
             CategoryListItemUiModel(it.id, it.name, it.imageUrl, it.appLinks, childList)
         }
+    }
+
+    fun GetCategoryListResponse.CategoryListResponse.mapToSeeAllCategoriesItemUiModel(): List<SeeAllCategoriesItemUiModel> = data.map {
+        SeeAllCategoriesItemUiModel(
+            id = it.id,
+            name = it.name,
+            appLink = it.appLinks,
+            imageUrl = it.imageUrl
+        )
     }
 
     private fun mapToChildUiModel(category: GetCategoryListResponse.CategoryListResponse.CategoryResponse): List<CategoryListChildUiModel> {

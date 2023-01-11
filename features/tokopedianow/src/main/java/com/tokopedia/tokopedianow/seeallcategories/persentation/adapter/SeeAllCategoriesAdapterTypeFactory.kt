@@ -7,12 +7,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel.SeeAllCategoriesItemUiModel
 import com.tokopedia.tokopedianow.seeallcategories.persentation.viewholder.SeeAllCategoriesItemViewHolder
 
-class SeeAllCategoriesAdapterTypeFactory: BaseAdapterTypeFactory(), SeeAllCategoriesTypeFactory {
+class SeeAllCategoriesAdapterTypeFactory(
+    private val seeAllCategoriesListener: SeeAllCategoriesItemViewHolder.SeeAllCategoriesListener
+): BaseAdapterTypeFactory(), SeeAllCategoriesTypeFactory {
     override fun type(uiModel: SeeAllCategoriesItemUiModel): Int = SeeAllCategoriesItemViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            SeeAllCategoriesItemViewHolder.LAYOUT -> SeeAllCategoriesItemViewHolder(parent)
+            SeeAllCategoriesItemViewHolder.LAYOUT -> SeeAllCategoriesItemViewHolder(
+                itemView = parent,
+                listener = seeAllCategoriesListener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }
