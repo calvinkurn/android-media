@@ -1,9 +1,8 @@
-package com.tokopedia.tokopedianow.categorylist.domain.usecase
+package com.tokopedia.tokopedianow.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -50,7 +49,7 @@ class GetCategoryListUseCase @Inject constructor(
         setTypeClass(GetCategoryListResponse::class.java)
     }
 
-    suspend fun execute(warehouseId: String, depth: Int): CategoryListResponse {
+    suspend fun execute(warehouseId: String, depth: Int): GetCategoryListResponse.CategoryListResponse {
         val requestParams = RequestParams.create().apply {
             putString(PARAM_WAREHOUSE_ID, warehouseId)
             putInt(PARAM_DEPTH, depth)

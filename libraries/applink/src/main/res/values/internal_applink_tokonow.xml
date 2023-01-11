@@ -12,6 +12,7 @@
     <!--path-->
     <string name="path_tokopedia_now_home" translatable="false">/home</string>
     <string name="path_tokopedia_now_category_list" translatable="false">/category-list</string>
+    <string name="path_tokopedia_now_category_menu" translatable="false">/category-menu</string>
     <string name="path_tokopedia_now_sort_filter" translatable="false">/sort-filter</string>
     <string name="path_tokopedia_now_date_filter" translatable="false">/date-filter</string>
     <string name="path_tokopedia_now_search" translatable="false">/search</string>

@@ -12,7 +12,6 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
@@ -30,6 +29,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -86,7 +86,7 @@ object HomeLayoutMapper {
 
     const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
-    private const val APPLINK_PARAM_WAREHOUSE_ID = "{warehouse_id}"
+    private const val APPLINK_PARAM_WAREHOUSE_ID = "?warehouse_id="
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         CATEGORY,
@@ -211,12 +211,12 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryGridData(
         item: TokoNowCategoryMenuUiModel,
-        response: List<CategoryResponse>?,
+        response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?,
         warehouseId: String = ""
     ) {
         updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
-                val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_LIST.replace(APPLINK_PARAM_WAREHOUSE_ID, warehouseId)
+                val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
                 val categoryList = mapToCategoryList(response, item.title, seeAllAppLink)
                 val layout = item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)

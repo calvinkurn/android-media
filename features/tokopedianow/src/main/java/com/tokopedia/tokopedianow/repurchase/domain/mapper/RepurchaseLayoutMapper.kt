@@ -12,8 +12,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
@@ -101,7 +101,7 @@ object RepurchaseLayoutMapper {
         removeAll { it is RepurchaseProductUiModel }
     }
 
-    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, warehouseId: String) {
+    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?, warehouseId: String) {
         val categoryListUiModel = HomeCategoryMapper.mapToCategoryList(response, warehouseId, CATEGORY_GRID_TITLE)
         add(
             TokoNowCategoryMenuUiModel(

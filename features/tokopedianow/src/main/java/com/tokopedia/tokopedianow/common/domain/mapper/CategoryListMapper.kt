@@ -1,21 +1,21 @@
-package com.tokopedia.tokopedianow.categorylist.domain.mapper
+package com.tokopedia.tokopedianow.common.domain.mapper
 
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListChildUiModel
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListChildUiModel.*
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.unifyprinciples.Typography
 
 object CategoryListMapper {
 
-    fun mapToUiModel(response: List<CategoryResponse>): List<CategoryListItemUiModel> {
+    fun mapToUiModel(response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>): List<CategoryListItemUiModel> {
         return response.map {
             val childList = mapToChildUiModel(it)
             CategoryListItemUiModel(it.id, it.name, it.imageUrl, it.appLinks, childList)
         }
     }
 
-    private fun mapToChildUiModel(category: CategoryResponse): List<CategoryListChildUiModel> {
+    private fun mapToChildUiModel(category: GetCategoryListResponse.CategoryListResponse.CategoryResponse): List<CategoryListChildUiModel> {
         val categoryList = mutableListOf<CategoryListChildUiModel>()
 
         val childList = category.childList?.map {

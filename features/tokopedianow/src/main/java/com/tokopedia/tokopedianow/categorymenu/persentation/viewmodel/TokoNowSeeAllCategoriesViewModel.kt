@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.categorylist.presentation.viewmodel
+package com.tokopedia.tokopedianow.categorymenu.persentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,17 +12,13 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokoNowCategoryListViewModel @Inject constructor(
+class TokoNowSeeAllCategoriesViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
 
     companion object {
-        const val ERROR_PAGE_NOT_FOUND = "400"
-        const val ERROR_SERVER = "500"
-        const val ERROR_PAGE_FULL = "501"
-        const val ERROR_MAINTENANCE = "502"
-        private const val CATEGORY_LEVEL_DEPTH = 2
+        private const val CATEGORY_LEVEL_DEPTH = 1
     }
 
     val categoryList: LiveData<Result<GetCategoryListResponse.CategoryListResponse>>

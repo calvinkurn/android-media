@@ -3,8 +3,8 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -25,7 +25,7 @@ object HomeCategoryMapper {
         return HomeLayoutItemUiModel(categoryGridUiModel, state)
     }
 
-    fun mapToCategoryList(response: List<CategoryResponse>?, headerName: String, seeAllAppLink: String): List<Visitable<*>> {
+    fun mapToCategoryList(response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?, headerName: String, seeAllAppLink: String): List<Visitable<*>> {
         val newCategoryList = mutableListOf<Visitable<*>>()
         val responseCategoryList = response?.take(MAX_CATEGORY_ITEM_COUNT).orEmpty()
 
