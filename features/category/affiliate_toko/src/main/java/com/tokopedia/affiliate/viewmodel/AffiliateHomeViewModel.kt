@@ -35,6 +35,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceM
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceItemTypeUseCase
+import com.tokopedia.affiliate.usecase.AffiliateSSEAuthTokenUseCase
 import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.affiliate.utils.DateUtils
@@ -57,6 +58,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase,
     private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase,
     private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase,
+    private val affiliateSSEAuthTokenUseCase: AffiliateSSEAuthTokenUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val affiliateSSE: AffiliateSSE
 ) : BaseViewModel() {
@@ -68,6 +70,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private val affiliateDataList =
         MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private val noMoreDataAvailable = MutableLiveData(false)
+    private val isSSEConnected = MutableStateFlow(false)
     private val validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private val errorMessage = MutableLiveData<Throwable>()
     private val rangeChanged = MutableLiveData<Boolean>()
@@ -219,7 +222,8 @@ class AffiliateHomeViewModel @Inject constructor(
                         selectedDateRange,
                         selectedDateMessage,
                         dateUpdateDescription
-                    )
+                    ),
+                    isSSEConnected
                 )
             )
             tempList.add(
@@ -237,7 +241,12 @@ class AffiliateHomeViewModel @Inject constructor(
             if (items.isNotEmpty()) {
                 for (product in items) {
                     product?.let {
-                        tempList.add(AffiliatePerformaSharedProductCardsModel(product))
+                        tempList.add(
+                            AffiliatePerformaSharedProductCardsModel(
+                                product,
+                                affiliateSSEAdpTotalClickItem
+                            )
+                        )
                     }
                 }
             } else if (page == PAGE_ZERO && items.isEmpty()) {
@@ -282,8 +291,7 @@ class AffiliateHomeViewModel @Inject constructor(
                     performanceTempList.add(
                         AffiliateUserPerformanceListModel(
                             metrics,
-                            affiliateSSEAdpTotalClick,
-                            affiliateSSEAdpTotalClickItem
+                            affiliateSSEAdpTotalClick
                         )
                     )
                 }
@@ -312,13 +320,15 @@ class AffiliateHomeViewModel @Inject constructor(
     fun startSSE() {
         sseJob?.cancel()
         sseJob = viewModelScope.launch {
-            connectSSE(AffiliateSSEPageSource.AffiliateADP.source)
+            val token = affiliateSSEAuthTokenUseCase.getAffiliateToken().data?.token.orEmpty()
+            connectSSE(AffiliateSSEPageSource.AffiliateADP.source, token)
             affiliateSSE.listen().collect {
                 when (it) {
                     is AffiliateSSEAction.Message -> handleSSEMessage(it.message)
                     is AffiliateSSEAction.Close -> {
+                        isSSEConnected.value = false
                         if (it.reason == AffiliateSSECloseReason.ERROR) {
-                            connectSSE(AffiliateSSEPageSource.AffiliateADP.source)
+                            connectSSE(AffiliateSSEPageSource.AffiliateADP.source, token)
                         }
                     }
                 }
@@ -326,8 +336,8 @@ class AffiliateHomeViewModel @Inject constructor(
         }
     }
 
-    private fun connectSSE(pageSource: String) {
-        affiliateSSE.connect(pageSource)
+    private fun connectSSE(pageSource: String, authToken: String) {
+        affiliateSSE.connect(pageSource, authToken)
     }
 
     fun stopSSE() {
@@ -336,6 +346,7 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     private suspend fun handleSSEMessage(message: AffiliateSSEResponse) {
+        isSSEConnected.value = true
         val result = withContext(dispatchers.computation) {
             val sseMapper = AffiliateSSEMapper(message)
             sseMapper.mapping()
