@@ -147,6 +147,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
                 if (cachedState.isChanged {
                         it.exploreWidget.data.widgets
+                        it.exploreWidget.data.state
                     })
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
