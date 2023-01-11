@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.categorymenu.persentation.decoration
+package com.tokopedia.tokopedianow.seeallcategories.persentation.decoration
 
 import android.graphics.Rect
 import android.view.View

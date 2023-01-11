@@ -1,11 +1,11 @@
-package com.tokopedia.tokopedianow.categorymenu.persentation.viewholder
+package com.tokopedia.tokopedianow.seeallcategories.persentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.categorymenu.persentation.uimodel.SeeAllCategoriesItemUiModel
+import com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel.SeeAllCategoriesItemUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 

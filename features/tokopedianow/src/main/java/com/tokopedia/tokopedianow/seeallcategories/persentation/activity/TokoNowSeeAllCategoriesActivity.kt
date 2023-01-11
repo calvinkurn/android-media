@@ -1,8 +1,8 @@
-package com.tokopedia.tokopedianow.categorymenu.persentation.activity
+package com.tokopedia.tokopedianow.seeallcategories.persentation.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.tokopedianow.common.base.activity.BaseTokoNowActivity
-import com.tokopedia.tokopedianow.categorymenu.persentation.fragment.TokoNowSeeAllCategoriesFragment
+import com.tokopedia.tokopedianow.seeallcategories.persentation.fragment.TokoNowSeeAllCategoriesFragment
 
 class TokoNowSeeAllCategoriesActivity: BaseTokoNowActivity() {
 

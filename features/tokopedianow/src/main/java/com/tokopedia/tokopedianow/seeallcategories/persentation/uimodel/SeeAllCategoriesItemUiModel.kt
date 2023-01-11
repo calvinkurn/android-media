@@ -1,8 +1,8 @@
-package com.tokopedia.tokopedianow.categorymenu.persentation.uimodel
+package com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.tokopedianow.categorymenu.persentation.adapter.SeeAllCategoriesTypeFactory
+import com.tokopedia.tokopedianow.seeallcategories.persentation.adapter.SeeAllCategoriesTypeFactory
 
 data class SeeAllCategoriesItemUiModel(
     val id: String = "",

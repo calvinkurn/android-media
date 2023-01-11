@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.categorymenu.persentation.fragment
+package com.tokopedia.tokopedianow.seeallcategories.persentation.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.tokopedianow.categorymenu.persentation.viewmodel.TokoNowSeeAllCategoriesViewModel
+import com.tokopedia.tokopedianow.seeallcategories.persentation.viewmodel.TokoNowSeeAllCategoriesViewModel
 import com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity
-import com.tokopedia.tokopedianow.categorymenu.di.component.DaggerSeeAllCategoriesComponent
-import com.tokopedia.tokopedianow.categorymenu.persentation.adapter.SeeAllCategoriesAdapter
-import com.tokopedia.tokopedianow.categorymenu.persentation.adapter.SeeAllCategoriesAdapterTypeFactory
-import com.tokopedia.tokopedianow.categorymenu.persentation.decoration.SeeAllCategoriesDecoration
-import com.tokopedia.tokopedianow.categorymenu.persentation.uimodel.SeeAllCategoriesItemUiModel
+import com.tokopedia.tokopedianow.seeallcategories.di.component.DaggerSeeAllCategoriesComponent
+import com.tokopedia.tokopedianow.seeallcategories.persentation.adapter.SeeAllCategoriesAdapter
+import com.tokopedia.tokopedianow.seeallcategories.persentation.adapter.SeeAllCategoriesAdapterTypeFactory
+import com.tokopedia.tokopedianow.seeallcategories.persentation.decoration.SeeAllCategoriesDecoration
+import com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel.SeeAllCategoriesItemUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryMenuBinding
 import com.tokopedia.usecase.coroutines.Success

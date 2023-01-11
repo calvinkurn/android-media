@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.categorymenu.persentation.viewmodel
+package com.tokopedia.tokopedianow.seeallcategories.persentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

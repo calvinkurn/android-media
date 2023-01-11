@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".categorymenu.persentation.activity.TokoNowSeeAllCategoriesActivity"
+            android:name=".seeallcategories.persentation.activity.TokoNowSeeAllCategoriesActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"

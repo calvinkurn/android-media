@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.categorymenu.di.scope
+package com.tokopedia.tokopedianow.seeallcategories.di.scope
 
 import javax.inject.Scope
 
