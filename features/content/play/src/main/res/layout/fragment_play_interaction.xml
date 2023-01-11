@@ -201,7 +201,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_offset_12"
-        android:layout_marginEnd="@dimen/play_offset_12"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
