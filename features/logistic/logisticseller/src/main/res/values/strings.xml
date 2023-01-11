@@ -33,6 +33,6 @@
     <string name="description_rts_success_dialog">Yay, pengembalian barang berhasil di konfirmasi</string>
     <string name="btn_rts_understand">Mengerti</string>
     <string name="title_rts_failed_dialog">Yaah, gagal pengembalian barang</string>
-    <string name="description_rts_failed_dialog">Konfirmasi pengemablian barang kamu gagal, sialhkan coba lagi ya</string>
+    <string name="description_rts_failed_dialog">Konfirmasi pengembalian barang kamu gagal, silahkan coba lagi ya</string>
     <string name="description_failed_load_image_rts">Oops, foto gagal dimuat. Pastikan koneksimu lancar dan coba beberapa saat lagi, ya.\n%s</string>
 </resources>
