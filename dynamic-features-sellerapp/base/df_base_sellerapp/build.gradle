@@ -78,7 +78,6 @@ dependencies {
 
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-    implementation projectOrAar(rootProject.ext.features.people)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
@@ -115,6 +114,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.voucherCreation)
     implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
+    implementation projectOrAar(rootProject.ext.features.sellerTokopediaFlashSale)
     implementation projectOrAar(rootProject.ext.features.sellerSearch)
     implementation projectOrAar(rootProject.ext.features.activation)
     implementation projectOrAar(rootProject.ext.features.manageaddress)

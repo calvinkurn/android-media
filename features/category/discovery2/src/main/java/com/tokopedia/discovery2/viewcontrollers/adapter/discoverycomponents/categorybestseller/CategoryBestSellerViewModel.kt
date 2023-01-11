@@ -5,11 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
@@ -24,15 +22,19 @@ private const val PRODUCT_PER_PAGE = 10
 class CategoryBestSellerViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
+    private val backgroundImageUrl: MutableLiveData<String> = MutableLiveData()
 
     @Inject
     lateinit var productCardsUseCase: ProductCardsUseCase
 
+    fun getComponentData(): LiveData<ComponentsItem> = componentData
     fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
     fun getProductCardMaxHeight(): LiveData<Int> = maxHeightProductCard
     fun getProductLoadState(): LiveData<Boolean> = productLoadError
+    fun getBackgroundImage(): LiveData<String> = backgroundImageUrl
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -40,7 +42,17 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        updateComponent()
         fetchProductCarouselData()
+        setupBackground()
+    }
+
+    private fun updateComponent() {
+        componentData.value = components
+    }
+
+    private fun setupBackground() {
+            backgroundImageUrl.value = components.properties?.backgroundImageUrl
     }
 
     private fun fetchProductCarouselData() {

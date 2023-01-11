@@ -17,8 +17,8 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.RatingBarReview
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -34,7 +34,7 @@ private const val RAD_30f = 30f
 class ProductPostTagViewHolder(val mainView: View,
                                val listener: DynamicPostViewHolder.DynamicPostListener,
                                private val screenWidth: Int)
-    : AbstractViewHolder<ProductPostTagViewModel>(mainView) {
+    : AbstractViewHolder<ProductPostTagModel>(mainView) {
 
     private lateinit var productLayout: FrameLayout
     private lateinit var productImage: ImageView
@@ -47,7 +47,7 @@ class ProductPostTagViewHolder(val mainView: View,
     private lateinit var container: CardUnify
     private lateinit var widgetRating: RatingBarReview
 
-    override fun bind(item: ProductPostTagViewModel) {
+    override fun bind(item: ProductPostTagModel) {
         productLayout = itemView.findViewById(R.id.productLayout)
         productImage = itemView.findViewById(R.id.productImage)
         productPrice = itemView.findViewById(R.id.productPrice)
@@ -151,10 +151,10 @@ class ProductPostTagViewHolder(val mainView: View,
         }
     }
 
-    private fun mappingTracking(trackListPojo: List<Tracking>): MutableList<TrackingViewModel> {
-        val trackList = ArrayList<TrackingViewModel>()
+    private fun mappingTracking(trackListPojo: List<Tracking>): MutableList<TrackingModel> {
+        val trackList = ArrayList<TrackingModel>()
         for (trackPojo: Tracking in trackListPojo) {
-            trackList.add(TrackingViewModel(
+            trackList.add(TrackingModel(
                     trackPojo.clickURL,
                     trackPojo.viewURL,
                     trackPojo.type,

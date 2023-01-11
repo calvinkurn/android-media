@@ -81,6 +81,43 @@
             app:typographyType="body_3"
             tools:text="28:42" />
 
+        <View
+            android:id="@+id/v_separator_1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:alpha="0.7"
+            android:layout_marginTop="10dp"
+            android:background="@color/Unify_NN200"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/ic_bro_summary_time"
+            app:layout_constraintTop_toBottomOf="@id/ic_bro_summary_time" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_author"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/v_separator_1"
+            app:layout_constraintStart_toStartOf="@id/ic_bro_summary_time"
+            tools:src="@tools:sample/avatars"
+            app:unify_image_type="circle"
+            android:layout_marginTop="10dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_author"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toBottomOf="@id/image_author"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/image_author"
+            app:layout_constraintTop_toTopOf="@id/image_author"
+            app:layout_constraintVertical_bias="1.0"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:typographyType="body_3"
+            tools:text="Buyer Account" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

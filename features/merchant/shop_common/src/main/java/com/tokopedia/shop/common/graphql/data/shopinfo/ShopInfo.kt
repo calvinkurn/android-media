@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
@@ -209,7 +210,18 @@ data class ShopInfo(
         @SerializedName("tickerType")
         @Expose
         val tickerType: String = ""
-    )
+    ) {
+        companion object {
+            private const val ON_MODERATED_STAGE = 3
+            private const val ON_MODERATED_PERMANENTLY = 5
+        }
+
+        fun isOnModerationMode(): Boolean {
+            val status = shopStatus
+            return status == ON_MODERATED_STAGE || status == ON_MODERATED_PERMANENTLY
+        }
+    }
+
 
     data class FavoriteData(
         @SerializedName("alreadyFavorited")

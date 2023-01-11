@@ -50,7 +50,7 @@
     <string name="title_profile_completion">Lengkapi Profil</string>
     <string name="change_profile_info_title">Ubah Info Profil</string>
     <string name="title_change_gender">Jenis Kelamin</string>
-    <string name="title_add_phone">Tambah Nomor HP</string>
+    <string name="add_phone_title_add_phone">Tambah Nomor HP</string>
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
@@ -59,6 +59,12 @@
 
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
+
+    <!--    Dynamic feature for Privacy Account-->
+    <string name="title_privacy_center">Privacy Center</string>
+    <string name="dsar_activity_title">Download Data</string>
+    <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
+    <string name="privacy_policy_label">Privacy Policy</string>
 
     <!--    Dynamic feature for Login Fingerprint-->
     <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
@@ -351,6 +357,7 @@
     <string name="page_name_wishlist">Wishlist</string>
     <string name="page_name_wishlist_collection">Wishlist Collection</string>
     <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
+    <string name="page_name_wishlist_edit">Ubah Wishlist</string>
     <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
 
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
@@ -439,4 +446,10 @@
 
     <!-- Shop Admin -->
     <string name="title_shop_admin">Shop Admin</string>
+
+    <!-- Product Ar   -->
+    <string name="title_product_ar">Product Ar</string>
+
+    <!-- Toko Chat -->
+    <string name="df_title_tokochat">Toko Chat</string>
 </resources>

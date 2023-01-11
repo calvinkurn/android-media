@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.types
 
 object ContentCommonUserType {
+    const val KEY_AUTHOR_TYPE = "author_type"
     const val TYPE_NAME_SELLER = "seller"
     const val TYPE_NAME_USER = "user"
     const val TYPE_USER = "content-user"

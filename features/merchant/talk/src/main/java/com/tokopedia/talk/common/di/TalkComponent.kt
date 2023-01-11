@@ -15,6 +15,7 @@ import dagger.Component
 interface TalkComponent {
     @ApplicationContext
     fun getContext(): Context
+    @ApplicationContext
     fun graphqlRepository(): GraphqlRepository
     fun userSession(): UserSessionInterface
     fun coroutineDispatchers(): CoroutineDispatchers

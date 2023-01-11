@@ -15,9 +15,9 @@
             android:id="@+id/tfStartDate"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_width="@dimen/layout_lvl0"
-            android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingStart="@dimen/spacing_lvl4"
+            android:layout_width="0dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
             app:text_field_label="@string/start_date"
             app:text_field_placeholder="@string/select_date" />
 
@@ -25,16 +25,16 @@
             android:id="@+id/tfEndDate"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_width="@dimen/layout_lvl0"
-            android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingStart="@dimen/spacing_lvl4"
+            android:layout_width="0dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
             app:text_field_label="@string/end_date"
             app:text_field_placeholder="@string/select_date" />
     </LinearLayout>
 
     <FrameLayout
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:layout_width="match_parent">
 
@@ -42,8 +42,8 @@
             android:id="@+id/penaltyFilterCalendar"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingStart="@dimen/spacing_lvl4" />
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp" />
 
     </FrameLayout>
 

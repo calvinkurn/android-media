@@ -22,7 +22,7 @@ import org.junit.Test
 import org.junit.rules.ExpectedException
 import kotlin.reflect.KClass
 
-
+@ExperimentalCoroutinesApi
 class CouponLisitingStackedViewModelTest {
 
 

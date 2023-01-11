@@ -33,5 +33,4 @@ open class ShopHeaderButtonComponentUiModel : BaseShopHeaderComponentUiModel, Im
             -1
         }
     }
-
 }

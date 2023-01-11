@@ -1,9 +1,8 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
-import android.graphics.PorterDuff
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.config.GlobalConfig
@@ -15,8 +14,12 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.databinding.ItemManageProductListBinding
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_STOCK_AVAILABLE
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlin.math.abs
 
 class ProductViewHolder(
     view: View,
@@ -28,7 +31,6 @@ class ProductViewHolder(
         @LayoutRes
         var LAYOUT = R.layout.item_manage_product_list
         const val MAX_SHOWING_STOCK = 999_999
-        const val POSITION_TICKET_BTN_MORE_OPTION = 0
     }
 
     private val binding by viewBinding<ItemManageProductListBinding>()
@@ -47,6 +49,7 @@ class ProductViewHolder(
         showProductImage(product)
         showNotifyMeBuyer(product)
         showStockHintImage(product)
+        showLabelGuaranteed(product)
         if (!product.isVariant()) {
             showStockAlertImage(product)
             showStockAlertActiveImage(product)
@@ -59,29 +62,6 @@ class ProductViewHolder(
         showCampaignCountText(product)
 
         setOnClickListeners(product)
-
-        impressionView()
-
-    }
-
-    private fun impressionView() {
-        val impressHolder = ImpressHolder()
-        if (adapterPosition.orZero() == Int.ZERO) {
-            binding?.imageNotifyMeBuyer?.addOnImpressionListener(impressHolder) {
-                listener.onImpressionNotifyMe()
-            }
-        }
-
-        if (binding?.imageStockReminder?.isVisible.orTrue()) {
-            listener.onImpressionProductStockReminder()
-        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
-            && GlobalConfig.isSellerApp()
-        ) {
-            if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
-                listener.onImpressionMoreOption()
-            }
-        }
-
     }
 
     private fun setTitleAndPrice(product: ProductUiModel) {
@@ -95,16 +75,14 @@ class ProductViewHolder(
 
     private fun showProductTicker(product: ProductUiModel) {
         binding?.tickerProductManageViolation?.showWithCondition(
-            product.isPending()
-                || product.isSuspendLevelTwoUntilFour()
+            product.isPending() ||
+                product.isSuspendLevelTwoUntilFour()
         )
         if (product.isPending()) {
             binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_violation_ticker_message))
         } else {
             binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_suspend_ticker_message))
-
         }
-
     }
 
     private fun showProductStock(product: ProductUiModel) {
@@ -122,7 +100,23 @@ class ProductViewHolder(
     private fun showProductLabel(product: ProductUiModel) {
         binding?.labelBanned?.showWithCondition(product.isViolation())
         binding?.labelInactive?.showWithCondition(product.isInactive())
+
         binding?.labelActive?.showWithCondition(product.isActive())
+
+        val layoutParams = binding?.labelActive?.layoutParams as ViewGroup.MarginLayoutParams
+        if (product.isStockGuaranteed) {
+            val marginLeft =
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                    .orZero()
+            binding?.labelActive?.setMargin(
+                marginLeft.toDp(),
+                layoutParams.topMargin,
+                Int.ZERO,
+                Int.ZERO
+            )
+        } else {
+            binding?.labelActive?.setMargin(Int.ZERO, layoutParams.topMargin, Int.ZERO, Int.ZERO)
+        }
     }
 
     private fun showVariantLabel(product: ProductUiModel) {
@@ -138,8 +132,8 @@ class ProductViewHolder(
         } else {
             binding?.btnContactCS?.run {
                 showWithCondition(
-                    product.isViolation() || product.isPending()
-                        || product.isSuspendLevelTwoUntilFour()
+                    product.isViolation() || product.isPending() ||
+                        product.isSuspendLevelTwoUntilFour()
                 )
                 when {
                     product.isViolation() -> {
@@ -153,9 +147,8 @@ class ProductViewHolder(
             binding?.btnEditPrice?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
-
         }
-
+        binding?.btnEditStock?.isEnabled = !product.isShopModerate
         binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
     }
 
@@ -165,8 +158,13 @@ class ProductViewHolder(
                 buttonType = UnifyButton.Type.ALTERNATE
                 buttonVariant = UnifyButton.Variant.GHOST
             } else {
-                buttonType = UnifyButton.Type.MAIN
-                buttonVariant = UnifyButton.Variant.FILLED
+                if (!product.isShopModerate) {
+                    buttonType = UnifyButton.Type.MAIN
+                    buttonVariant = UnifyButton.Variant.FILLED
+                } else {
+                    buttonType = UnifyButton.Type.ALTERNATE
+                    buttonVariant = UnifyButton.Variant.GHOST
+                }
             }
         }
     }
@@ -183,6 +181,14 @@ class ProductViewHolder(
             )
     }
 
+    private fun showLabelGuaranteed(product: ProductUiModel) {
+        binding?.ivLabelGuaranteed
+            ?.showWithCondition(product.isStockGuaranteed)
+        binding?.ivLabelGuaranteed?.setOnClickListener {
+            listener.onClickLabelGuarantee()
+        }
+    }
+
     private fun showNotifyMeBuyer(product: ProductUiModel) {
         binding?.imageNotifyMeBuyer
             ?.showWithCondition(product.haveNotifyMeOOS)
@@ -196,41 +202,35 @@ class ProductViewHolder(
     }
 
     private fun showStockAlertImage(product: ProductUiModel) {
-        binding?.imageStockReminder?.setColorFilter(
-            ContextCompat.getColor(
-                itemView.context,
-                com.tokopedia.unifycomponents.R.color.Unify_NN500
-            ), PorterDuff.Mode.SRC_ATOP
-        )
         binding?.imageStockReminder
             ?.showWithCondition(
-                product.hasStockAlert && !product.stockAlertActive
-                    && !binding?.imageStockInformation?.isVisible.orTrue()
-                    && !product.haveNotifyMeOOS
+                product.hasStockAlert && !product.stockAlertActive &&
+                    !binding?.imageStockInformation?.isVisible.orTrue() &&
+                    !product.haveNotifyMeOOS
             )
         binding?.clImage
             ?.showWithCondition(
-                binding?.imageStockInformation?.isVisible.orFalse()
-                    || binding?.imageStockReminder?.isVisible.orFalse()
-                    || binding?.imageStockAlertActive?.isVisible.orFalse()
-                    || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+                binding?.imageStockInformation?.isVisible.orFalse() ||
+                    binding?.imageStockReminder?.isVisible.orFalse() ||
+                    binding?.imageStockAlertActive?.isVisible.orFalse() ||
+                    binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
     private fun showStockAlertActiveImage(product: ProductUiModel) {
         binding?.imageStockAlertActive
             ?.showWithCondition(
-                product.stockAlertActive
-                    && !binding?.imageStockInformation?.isVisible.orTrue()
-                    && !product.haveNotifyMeOOS
+                product.stockAlertActive &&
+                    !binding?.imageStockInformation?.isVisible.orTrue() &&
+                    !product.haveNotifyMeOOS
 
             )
         binding?.clImage
             ?.showWithCondition(
-                binding?.imageStockInformation?.isVisible.orFalse()
-                    || binding?.imageStockReminder?.isVisible.orFalse()
-                    || binding?.imageStockAlertActive?.isVisible.orFalse()
-                    || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+                binding?.imageStockInformation?.isVisible.orFalse() ||
+                    binding?.imageStockReminder?.isVisible.orFalse() ||
+                    binding?.imageStockAlertActive?.isVisible.orFalse() ||
+                    binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
@@ -356,7 +356,7 @@ class ProductViewHolder(
     }
 
     private fun onClickProductItem(product: ProductUiModel) {
-        if (product.isNotViolation()) {
+        if (product.isNotViolation() || !product.isShopModerate) {
             listener.onClickProductItem(product)
         }
     }
@@ -365,6 +365,7 @@ class ProductViewHolder(
         fun onClickStockInformation()
         fun onClickNotifyMeBuyerInformation(product: ProductUiModel)
         fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean)
+        fun onClickLabelGuarantee()
         fun onClickMoreOptionsButton(product: ProductUiModel)
         fun onClickProductItem(product: ProductUiModel)
         fun onClickProductCheckBox(isChecked: Boolean, position: Int)
@@ -373,8 +374,5 @@ class ProductViewHolder(
         fun onClickEditVariantPriceButton(product: ProductUiModel)
         fun onClickEditVariantStockButton(product: ProductUiModel)
         fun onClickContactCsButton(product: ProductUiModel)
-        fun onImpressionMoreOption()
-        fun onImpressionProductStockReminder()
-        fun onImpressionNotifyMe()
     }
 }

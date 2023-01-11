@@ -39,11 +39,13 @@ class OrderCustomizationViewModel @Inject constructor(
     private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
         customListItems.forEach {
             it.orderNote = String.EMPTY
-            it.addOnUiModel?.isSelected = false
-            it.addOnUiModel?.options?.forEach { optionUiModel ->
-                optionUiModel.isSelected = false
+            it.addOnUiModel?.run {
+                isSelected = false
+                options.forEach { optionUiModel ->
+                    optionUiModel.isSelected = false
+                }
+                selectedAddOns = listOf()
             }
-            it.addOnUiModel?.selectedAddOns = listOf()
         }
         return customListItems
     }
@@ -53,16 +55,15 @@ class OrderCustomizationViewModel @Inject constructor(
     fun validateCustomOrderInput(customListItems: List<CustomListItem>): Pair<Boolean, List<CustomListItem>> {
         val mutableCustomListItems = customListItems.toMutableList()
         // exclude the last custom list item which contain order note information
-        mutableCustomListItems.filter { it.addOnUiModel != null }.forEach { customListItem ->
-            customListItem.addOnUiModel?.run {
-                val optionUiModels = this.options
-                this.isError = optionUiModels.filter { it.isSelected }.count() < this.minQty
+        mutableCustomListItems.forEach { customListItem ->
+            if (customListItem.addOnUiModel != null) {
+                val optionUiModels = customListItem.addOnUiModel.options
+                customListItem.addOnUiModel.isError = optionUiModels.filter { it.isSelected }
+                    .count() < customListItem.addOnUiModel.minQty
             }
         }
         val isError = isCustomOrderContainError(
-                mutableCustomListItems
-                        .filter { it.addOnUiModel != null }
-                        .map { it.addOnUiModel?: AddOnUiModel() }
+                mutableCustomListItems.mapNotNull { it.addOnUiModel }
         )
         return isError to mutableCustomListItems.toList()
     }

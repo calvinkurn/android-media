@@ -2,16 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_50">
+    android:layout_height="50dp"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filter_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginBottom="@dimen/dp_15"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:lineSpacingExtra="6sp"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        tools:text="Tokopedia Care Gampang diakses"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,21 +25,22 @@
         android:id="@+id/layout_inside1"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginBottom="@dimen/dp_15"
-        android:layout_marginRight="@dimen/dp_18"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/check_box_bg"/>
+        android:background="@drawable/check_box_bg"
+        android:contentDescription="@string/contact_us_post_item"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginLeft="16dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/black_12"/>
+        android:background="@color/Unify_N75"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -54,6 +54,7 @@ public class AddressConstants {
     public static final String EXTRA_IS_NULL_ZIPCODE = "EXTRA_IS_NULL_ZIPCODE";
     public static final String EXTRA_DISTRICT_NAME = "EXTRA_DISTRICT_NAME";
     public static final String EXTRA_KOTA_KECAMATAN = "EXTRA_KOTA_KECAMATAN";
+    public static final String EXTRA_GMS_AVAILABILITY = "EXTRA_GMS_AVAILABILITY";
     public static final String EXTRA_NEGATIVE_FULL_FLOW = "EXTRA_NEGATIVE_FULL_FLOW";
     public static final String EXTRA_FROM_ADDRESS_FORM = "EXTRA_FROM_ADDRESS_FORM";
     public static final String EXTRA_FROM_PINPOINT = "EXTRA_FROM_PINPOINT";

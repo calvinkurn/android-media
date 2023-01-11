@@ -5,14 +5,17 @@ import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
+import com.tokopedia.play.broadcaster.ui.model.PagingType
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
+import org.junit.jupiter.api.fail
 
 /**
  * Created By : Jonathan Darwin on February 18, 2022
@@ -36,6 +39,8 @@ class PlaySetupLoadProductViewModelTest {
 
     private val mockException = uiModelBuilder.buildException()
 
+    private val mockCursor = "asdfasdf"
+
     @Test
     fun `when user change keyword, it should trigger load product and emit new product list`() {
         val keyword = mockProduct.name
@@ -43,6 +48,7 @@ class PlaySetupLoadProductViewModelTest {
         val mockEtalasePagedDataResponse = PagedDataUiModel(
             dataList = listOf(mockProduct),
             hasNextPage = false,
+            cursor = "",
         )
 
         coEvery { mockRepo.getProductsInEtalase(any(), any(), keyword, any()) } returns mockEtalasePagedDataResponse
@@ -61,7 +67,7 @@ class PlaySetupLoadProductViewModelTest {
             state.focusedProductList.apply {
                 productList.assertEqualTo(mockEtalasePagedDataResponse.dataList)
                 resultState.assertEqualTo(PageResultState.Success(false))
-                page.assertEqualTo(1)
+                assertPagingCursor(pagingType, "")
             }
         }
     }
@@ -73,11 +79,13 @@ class PlaySetupLoadProductViewModelTest {
         val mockEtalasePagedDataResponseWhenSearch = PagedDataUiModel(
             dataList = listOf(mockProduct),
             hasNextPage = true,
+            cursor = mockCursor,
         )
 
         val mockEtalasePagedDataResponseWhenScrollDown = PagedDataUiModel(
             dataList = listOf(mockProduct),
             hasNextPage = false,
+            cursor = "",
         )
 
         val robot = PlayBroProductSetupViewModelRobot(
@@ -96,7 +104,7 @@ class PlaySetupLoadProductViewModelTest {
             state.focusedProductList.apply {
                 productList.assertEqualTo(mockEtalasePagedDataResponseWhenSearch.dataList)
                 resultState.assertEqualTo(PageResultState.Success(true))
-                page.assertEqualTo(1)
+                assertPagingCursor(pagingType, mockCursor)
             }
 
             coEvery { mockRepo.getProductsInEtalase(any(), any(), keyword, any()) } returns mockEtalasePagedDataResponseWhenScrollDown
@@ -108,7 +116,7 @@ class PlaySetupLoadProductViewModelTest {
             stateAfterScrollDown.focusedProductList.apply {
                 productList.assertEqualTo(mockEtalasePagedDataResponseWhenSearch.dataList + mockEtalasePagedDataResponseWhenScrollDown.dataList)
                 resultState.assertEqualTo(PageResultState.Success(false))
-                page.assertEqualTo(2)
+                assertPagingCursor(pagingType, "")
             }
         }
     }
@@ -141,7 +149,7 @@ class PlaySetupLoadProductViewModelTest {
             state.focusedProductList.apply {
                 productList.assertEqualTo(mockCampaignPagedDataResponseWhenSelectCampaign.dataList)
                 resultState.assertEqualTo(PageResultState.Success(true))
-                page.assertEqualTo(1)
+                assertPagingPage(pagingType, 1)
             }
 
             coEvery { mockRepo.getProductsInCampaign(any(), any()) } returns mockCampaignPagedDataResponseWhenScrollDown
@@ -153,7 +161,7 @@ class PlaySetupLoadProductViewModelTest {
             stateAfterScrollDown.focusedProductList.apply {
                 productList.assertEqualTo(mockCampaignPagedDataResponseWhenSelectCampaign.dataList + mockCampaignPagedDataResponseWhenScrollDown.dataList)
                 resultState.assertEqualTo(PageResultState.Success(false))
-                page.assertEqualTo(2)
+                assertPagingPage(pagingType, 2)
             }
         }
     }
@@ -177,8 +185,28 @@ class PlaySetupLoadProductViewModelTest {
             state.focusedProductList.apply {
                 productList.assertEqualTo(emptyList())
                 resultState.assertEqualTo(PageResultState.Fail(mockException))
-                page.assertEqualTo(0)
+                pagingType.assertType<PagingType.Unknown>()
             }
+        }
+    }
+
+    private fun assertPagingPage(pagingType: PagingType, page: Int) {
+        pagingType.assertType<PagingType.Page>()
+        when(pagingType) {
+            is PagingType.Page -> {
+                pagingType.page.assertEqualTo(page)
+            }
+            else -> fail("cursor should be PagingType.Page")
+        }
+    }
+
+    private fun assertPagingCursor(pagingType: PagingType, cursor: String) {
+        pagingType.assertType<PagingType.Cursor>()
+        when(pagingType) {
+            is PagingType.Cursor -> {
+                pagingType.cursor.assertEqualTo(cursor)
+            }
+            else -> fail("cursor should be PagingType.Cursor")
         }
     }
 }

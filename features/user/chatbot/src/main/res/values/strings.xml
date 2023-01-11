@@ -10,8 +10,8 @@
     <string name="chatbot_no">Tidak</string>
     <string name="chatbot_text_satisfied">Beri nilai pada kualitas layanan kami</string>
     <string name="cb_bot_reason_text">Beri saran untuk Toped Bot</string>
-    <string name="cb_bot_other_reason_text_hint">Tulis saran untuk kami (Opsional)</string>
-    <string name="minimum_30_character">Minimum 30 karakter</string>
+    <string name="cb_bot_other_reason_text_hint">Tulis di sini</string>
+    <string name="minimum_30_character">Min. 30 karakter.</string>
     <string name="cb_bot_leave_queue">Keluar Antrian</string>
     <string name="cb_bot_leave_the_queue">Keluar dari Antrian</string>
     <string name="cb_bot_leave_the_queue_desc_one">Antrian kamu akan terputus jika keluar dari percakapan ini. Kamu yakin?</string>
@@ -71,6 +71,10 @@
     <string name="chatbot_migration_list_item_2">Temukan TANYA di bagian bawah halaman Tokopedia Care dan klik “Mulai Chat!”</string>
     <string name="chatbot_invoice_button">Pilih</string>
     <string name="chatbot_placeholder_date">1 Jan</string>
+    <string name="chatbot_video_upload_onboarding_title">Fitur baru, bisa upload video 🎦</string>
+    <string name="chatbot_video_upload_onboarding_description">Klik ikon (+) dan pilih 1 atau lebih video kamu. Pastikan ukurannya &#60;800MB per video, ya.</string>
+    <string name="chatbot_csat_ok">Kirim</string>
+    <string name="chatbot_csat_opsional"> (Opsional)</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

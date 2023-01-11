@@ -30,20 +30,24 @@ class ShopProductSortModule {
     }
 
     @Provides
-    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor,
-                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                            errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        shopAuthInterceptor: ShopAuthInterceptor,
+        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+        errorResponseInterceptor: HeaderErrorResponseInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
-                .addInterceptor(shopAuthInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build()
+            .addInterceptor(shopAuthInterceptor)
+            .addInterceptor(errorResponseInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .build()
     }
 
     @ShopProductSortScope
     @Provides
-    fun provideShopAceRetrofit(okHttpClient: OkHttpClient,
-                               retrofitBuilder: Retrofit.Builder): Retrofit {
+    fun provideShopAceRetrofit(
+        okHttpClient: OkHttpClient,
+        retrofitBuilder: Retrofit.Builder
+    ): Retrofit {
         return retrofitBuilder.baseUrl(ShopUrl.BASE_ACE_URL).client(okHttpClient).build()
     }
 

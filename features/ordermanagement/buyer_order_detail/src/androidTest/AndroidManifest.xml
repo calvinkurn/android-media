@@ -10,6 +10,7 @@
         <activity
             android:name=".stub.detail.presentation.activity.BuyerOrderDetailActivityStub"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>

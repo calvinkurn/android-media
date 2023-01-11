@@ -1,9 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
@@ -21,25 +20,14 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import java.util.Calendar
+import java.util.*
 
 /**
  * Created by jegul on 21/09/20
  */
 interface PlayBroadcastMapper {
-
-    fun mapSearchSuggestionList(
-        keyword: String,
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData
-    ): List<SearchSuggestionUiModel>
-
-    fun mapLiveFollowers(
-        response: GetLiveFollowersResponse
-    ): FollowerDataUiModel
 
     fun mapLiveStream(
         channelId: String,
@@ -54,13 +42,9 @@ interface PlayBroadcastMapper {
 
     fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel>
 
-    fun mapProductTag(productTag: ProductTagging): List<ProductData>
-
     fun mapConfiguration(config: Config): ConfigurationUiModel
 
     fun mapChannelInfo(channel: GetChannelResponse.Channel): ChannelInfoUiModel
-
-    fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData>
 
     fun mapChannelSchedule(
         timestamp: GetChannelResponse.Timestamp,
@@ -76,7 +60,8 @@ interface PlayBroadcastMapper {
         coverUrl: String,
         date: String,
         duration: String,
-        isEligiblePostVideo: Boolean
+        isEligiblePostVideo: Boolean,
+        author: ContentAccountUiModel,
     ): ChannelSummaryUiModel
 
     fun mapIncomingChat(chat: Chat): PlayChatUiModel
@@ -130,5 +115,5 @@ interface PlayBroadcastMapper {
         channelId: String,
     ): PlayBroadcasterMetric
 
-    fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel>
+    fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel>
 }

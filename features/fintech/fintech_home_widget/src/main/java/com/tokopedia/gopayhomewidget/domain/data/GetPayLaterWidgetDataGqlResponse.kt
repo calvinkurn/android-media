@@ -30,6 +30,9 @@ data class PayLaterWidgetData(
     @SerializedName("button")
     @Expose
     val button: PayLaterButton?,
+
+    @SerializedName("gateway_code")
+    val gatewayCode: String?
 )
 
 data class PayLaterButton(
@@ -44,5 +47,5 @@ data class PayLaterButton(
     val webUrl: String?,
     @SerializedName("apps_url")
     @Expose
-    val appsUrl: String?,
+    val appsUrl: String?
 )

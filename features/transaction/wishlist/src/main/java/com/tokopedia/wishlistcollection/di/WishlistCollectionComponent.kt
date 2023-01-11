@@ -6,6 +6,7 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectio
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionEditFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 import dagger.Component
 
@@ -17,6 +18,7 @@ import dagger.Component
 interface WishlistCollectionComponent {
     fun inject(fragment: WishlistCollectionFragment)
     fun inject(fragment: WishlistCollectionDetailFragment)
+    fun inject(fragment: WishlistCollectionEditFragment)
     fun inject(bottomsheet: BottomSheetAddCollectionWishlist)
     fun inject(bottomsheet: BottomSheetUpdateWishlistCollectionName)
     fun inject(bottomsheet: BottomSheetCreateNewCollectionWishlist)

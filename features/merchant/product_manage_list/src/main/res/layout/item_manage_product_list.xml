@@ -40,7 +40,7 @@
         android:id="@+id/imageProduct"
         android:layout_width="@dimen/product_manage_list_image_size"
         android:layout_height="@dimen/product_manage_list_image_size"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="@dimen/product_manage_list_image_horizontal_spacing"
         app:layout_constraintLeft_toRightOf="@id/checkBoxSelect"
         app:layout_constraintRight_toLeftOf="@id/textTitle"
@@ -53,8 +53,8 @@
         android:id="@+id/imageTopAds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl7"
-        android:layout_marginTop="@dimen/spacing_lvl7"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="40dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/imageProduct"
         app:layout_constraintLeft_toLeftOf="@id/imageProduct"
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_manage_text_stock_vertical_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginEnd="4dp"
         android:ellipsize="end"
         android:text="@string/product_manage_stock_format"
         android:textColor="@color/Unify_N700_68"
@@ -106,7 +106,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Stok: "
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textStockCount"
@@ -123,19 +123,29 @@
         app:typographyWeight="reguler"
         tools:text="**0**" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivLabelGuaranteed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="7dp"
+        app:layout_constraintTop_toBottomOf="@id/textStock"
+        app:layout_constraintStart_toStartOf="@id/textStock"
+        app:srcCompat="@drawable/ic_available_filled"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelActive"
         android:contentDescription="@string/content_desc_labelActive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginTop="5dp"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_active"
         app:labelType="general_light_green"
-        app:layout_constraintLeft_toRightOf="@id/clImage"
-        app:layout_constraintRight_toLeftOf="@id/labelInactive"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        app:layout_constraintStart_toEndOf="@id/ivLabelGuaranteed"
+        app:layout_constraintTop_toBottomOf="@id/textStock"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
@@ -143,71 +153,65 @@
         android:contentDescription="@string/content_desc_labelInactive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginTop="5dp"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_inactive"
         app:labelType="general_light_grey"
-        app:layout_constraintLeft_toRightOf="@id/labelActive"
-        app:layout_constraintRight_toLeftOf="@id/labelBanned"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        app:layout_constraintStart_toEndOf="@id/labelActive"
+        app:layout_constraintTop_toBottomOf="@id/textStock"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelBanned"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="4dp"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_banned"
         app:labelType="general_light_red"
-        app:layout_constraintLeft_toRightOf="@id/labelInactive"
-        app:layout_constraintRight_toLeftOf="@id/labelDraft"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        app:layout_constraintStart_toEndOf="@id/labelInactive"
+        app:layout_constraintTop_toBottomOf="@id/textStock"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelDraft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="4dp"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_draft"
         app:labelType="general_light_blue"
-        app:layout_constraintLeft_toRightOf="@id/labelBanned"
-        app:layout_constraintRight_toLeftOf="@id/labelVariant"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        app:layout_constraintStart_toEndOf="@id/labelBanned"
+        app:layout_constraintTop_toBottomOf="@id/textStock"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="4dp"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_variant"
-        app:labelType="general_dark_grey"
-        app:layout_constraintLeft_toRightOf="@id/labelDraft"
-        app:layout_constraintRight_toLeftOf="@id/tv_manage_product_item_campaign_count"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        app:labelType="highlight_light_teal"
+        app:layout_constraintStart_toEndOf="@id/labelDraft"
+        app:layout_constraintTop_toBottomOf="@id/textStock"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_manage_product_item_campaign_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl1"
-        android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="4dp"
         android:textColor="@color/Unify_G500"
         android:visibility="gone"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        app:layout_constraintLeft_toRightOf="@id/labelVariant"
-        app:layout_constraintRight_toLeftOf="@id/tv_manage_product_item_campaign_count"
+        app:layout_constraintLeft_toRightOf="@id/clImage"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
         tools:visibility="visible"
         tools:text="1 Promosi"
@@ -218,7 +222,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
-        android:layout_marginEnd="8dp"
         app:layout_constraintLeft_toRightOf="@id/textStockCount"
         app:layout_constraintRight_toLeftOf="@id/labelActive"
         app:layout_constraintTop_toBottomOf="@id/textPrice">
@@ -228,24 +231,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imageStockInformation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_notify_me_buyer"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageStockInformation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
+            app:icon_color_night_enable="@color/Unify_RN500"
+            app:icon_color_light_enable="@color/Unify_RN500"
+            app:icon_name="WARNING"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imageNotifyMeBuyer"
             app:layout_constraintEnd_toStartOf="@id/imageStockReminder"
-            app:srcCompat="@drawable/ic_attention"
+            app:layout_constraintStart_toEndOf="@id/imageNotifyMeBuyer"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
@@ -254,11 +259,13 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imageStockInformation"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:icon_color_night_enable="@color/Unify_NN500"
+            app:icon_color_light_enable="@color/Unify_NN500"
             app:icon_name="BELL_FILLED"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageStockInformation"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
@@ -266,43 +273,48 @@
             android:id="@+id/imageStockAlertActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginStart="3dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imageStockInformation"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageStockInformation"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_information_filled_yellow"
             tools:ignore="ContentDescription"
             tools:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="ivLabelGuaranteed,labelActive,labelInactive,labelDraft,labelVariant"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnEditPrice"
         android:contentDescription="@string/content_desc_btnEditPrice"
         android:layout_width="0dp"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_height="32dp"
         android:text="@string/product_manage_menu_edit_price"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/btnMoreOptions"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@id/btnEditStock"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
         app:layout_constraintTop_toTopOf="@id/btnMoreOptions"
         app:unifyButtonSize="small"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnEditStock"
         android:contentDescription="@string/content_desc_btnEditStock"
         android:layout_width="0dp"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_height="32dp"
         android:layout_marginStart="@dimen/product_manage_button_horizontal_spacing_long"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginEnd="8dp"
         android:text="@string/product_manage_menu_edit_stock"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/btnMoreOptions"
@@ -313,33 +325,33 @@
         app:unifyButtonSize="small"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnContactCS"
         android:layout_width="0dp"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_height="32dp"
         android:layout_marginTop="@dimen/product_manage_button_horizontal_spacing_long"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintLeft_toRightOf="@id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-        app:layout_constraintTop_toBottomOf="@id/textStockCount"
+        app:layout_constraintTop_toBottomOf="@id/barrier"
         app:unifyButtonSize="small"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btnMoreOptions"
         android:contentDescription="@string/content_desc_btnMoreOptions"
         android:layout_width="@dimen/product_manage_button_width"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/product_manage_more_option_vertical_spacing"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
         android:clickable="true"
         android:focusable="true"
@@ -347,7 +359,7 @@
         app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintRight_toRightOf="@id/rightGuideline"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        app:layout_constraintTop_toBottomOf="@id/barrier"
         app:icon_name="MENU_KEBAB_VERTICAL"
         tools:ignore="ContentDescription,UnusedAttribute"
         tools:visibility="visible" />
@@ -355,7 +367,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"
+        android:layout_height="8dp"
         android:layout_marginTop="@dimen/product_manage_vertical_spacing"
         app:layout_constraintTop_toBottomOf="@id/btnMoreOptions"
         app:layout_goneMarginTop="@dimen/product_manage_more_option_vertical_spacing" />

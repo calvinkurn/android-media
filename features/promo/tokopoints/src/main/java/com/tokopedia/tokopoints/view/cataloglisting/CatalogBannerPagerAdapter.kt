@@ -31,7 +31,7 @@ class CatalogBannerPagerAdapter(context: Context?, private val mItems: List<Cata
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
         val banner = mInflater.inflate(R.layout.tp_item_catalog_banner, view, false) as ImageView
         ImageHandler.loadImageFit2(banner.context, banner, mItems[position].imageUrl)
-        banner.setOnClickListener { view1: View? ->
+        banner.setOnClickListener {
             if (URLUtil.isValidUrl(mItems[position].redirectUrl)) {
                 mView.openWebView(mItems[position].redirectUrl)
             } else {

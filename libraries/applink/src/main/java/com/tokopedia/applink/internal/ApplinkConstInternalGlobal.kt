@@ -50,6 +50,8 @@ object ApplinkConstInternalGlobal {
     const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
     const val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
     const val PARAM_LD = "redirectionApplink"
+    const val PARAM_PROJECT_ID = "projectId"
+    const val PARAM_REDIRECT_URL = "redirectUrl"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -58,33 +60,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     const val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection?projectId={projectId}"
-
-    const val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
-
-    // UserIdentificationInfoActivity
-    // tokopedia-android-internal://global/user-identification-info
-    @JvmField
-    val USER_IDENTIFICATION_INFO = "$USER_IDENTIFICATION_INFO_BASE?projectId={projectId}"
-
-    const val PARAM_SOURCE_KYC_SELLER = "seller"
-
-    const val USER_IDENTIFICATION_FORM_BASE = "$INTERNAL_GLOBAL/user-identification-form"
-
-    // UserIdentificationFormActivity
-    // tokopedia-android-internal://global/user-identification-form
-    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&redirectUrl={redirectUrl}"
-    const val PARAM_PROJECT_ID = "projectId"
-
-    const val PARAM_CALL_BACK = "callBack"
-
-    // UserIdentificationInfoSimpleActivity
-    // tokopedia-android-internal://global/user-identification-only
-    @JvmField
-    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
-    const val PARAM_SHOW_INTRO = "showIntro"
-    const val PARAM_REDIRECT_URL = "redirectUrl"
-    const val PARAM_KYC_TYPE = "type"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
@@ -160,14 +135,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     const val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
 
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE = "$INTERNAL_GLOBAL/deals-slug/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT = "$GLOBAL_INTERNAL_DIGITAL_DEAL/checkout"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE{slug}/"
-
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
     const val ADD_BANK = "$INTERNAL_GLOBAL/add-bank"
@@ -239,7 +206,6 @@ object ApplinkConstInternalGlobal {
      * If you want to use {shopId} to chatroom use external applink
      */
     const val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
-
 
 
     //ReferralPhoneNumberVerificationActivity

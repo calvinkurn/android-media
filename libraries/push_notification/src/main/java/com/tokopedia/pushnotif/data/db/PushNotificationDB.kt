@@ -19,7 +19,7 @@ import com.tokopedia.pushnotif.data.db.model.TransactionNotification
 @Database(entities = [
     HistoryNotification::class,
     TransactionNotification::class
-], version = 3)
+], version = 4)
 abstract class PushNotificationDB : RoomDatabase() {
 
     abstract fun historyNotificationDao(): HistoryNotificationDao
@@ -29,7 +29,7 @@ abstract class PushNotificationDB : RoomDatabase() {
         // For Singleton instantiation
         @Volatile private var instance: PushNotificationDB? = null
 
-        private val migration_2_3 = object : Migration(2, 3) {
+        private val migration_3_4 = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("""
                     CREATE TABLE IF NOT EXISTS $TRANSACTION_TABLE(
@@ -38,7 +38,9 @@ abstract class PushNotificationDB : RoomDatabase() {
                         `message` TEXT,
                         `notification_type` INTEGER,
                         `notification_id` INTEGER,
-                        `transaction_id` TEXT
+                        `transaction_id` TEXT,
+                        `avatar_url` TEXT,
+                        `applink` TEXT
                     )
                 """.trimIndent())
             }
@@ -57,7 +59,7 @@ abstract class PushNotificationDB : RoomDatabase() {
                     context,
                     PushNotificationDB::class.java,
                     PUSHNOTIF_DB)
-                    .addMigrations(migration_2_3)
+                    .addMigrations(migration_3_4)
                     .build()
         }
     }

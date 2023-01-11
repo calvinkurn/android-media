@@ -1,15 +1,7 @@
 package com.tokopedia.liveness.view
 
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.Detector.WarnCode.FACELARGE
-import ai.advance.liveness.lib.Detector.WarnCode.FACECAPTURE
-import ai.advance.liveness.lib.Detector.WarnCode.FACENOTCENTER
-import ai.advance.liveness.lib.Detector.WarnCode.FACESMALL
-import ai.advance.liveness.lib.Detector.WarnCode.FACEINACTION
-import ai.advance.liveness.lib.Detector.WarnCode.FACEMISSING
-import ai.advance.liveness.lib.Detector.WarnCode.WARN_MULTIPLEFACES
-import ai.advance.liveness.lib.Detector.WarnCode.FACENOTFRONTAL
-import ai.advance.liveness.lib.Detector.WarnCode.FACENOTSTILL
+import ai.advance.liveness.lib.Detector.WarnCode.*
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.http.entity.ResultEntity
@@ -27,6 +19,7 @@ import android.view.ViewGroup
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
 import com.tokopedia.liveness.databinding.FragmentRevampLivenessBinding
@@ -39,7 +32,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.Exception
 import javax.inject.Inject
 
 class LivenessFragment : BaseDaggerFragment(),
@@ -67,7 +59,7 @@ class LivenessFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toString()
+            projectId = it.getString(PARAM_PROJECT_ID).orEmpty()
         }
     }
 
@@ -128,7 +120,7 @@ class LivenessFragment : BaseDaggerFragment(),
     }
 
     override fun onDetectionSuccess() {
-        analytics.eventSuccessHeadDetection(projectId, true)
+        sendTrackerDetectionSuccess(livenessActionState)
         viewBinding?.livenessView?.getLivenessData(this)
     }
 
@@ -158,11 +150,30 @@ class LivenessFragment : BaseDaggerFragment(),
 
     override fun onDetectionActionChanged() {
         viewBinding?.backgroundOverlay?.changeColor()
-        livenessActionState?.let {
-            if (it == Detector.DetectionType.BLINK) {
+        sendTrackerDetectionSuccess(livenessActionState)
+    }
+
+    /*
+    * WARNING!!!
+    * when this code created, tokopedia only use 3 DetectionType,
+    * there are:
+    * 1. Detector.DetectionType.BLINK
+    * 2. Detector.DetectionType.MOUTH
+    * 3. Detector.DetectionType.POS_YAW
+    *
+    * if in the future, there is a change in the rules, we must add it at the code logic
+    * */
+    @Suppress("NON_EXHAUSTIVE_WHEN")
+    private fun sendTrackerDetectionSuccess(type: Detector.DetectionType?) {
+        when(type) {
+            Detector.DetectionType.BLINK -> {
                 analytics.eventSuccessBlinkDetection(projectId, true)
-            } else if (it == Detector.DetectionType.MOUTH) {
+            }
+            Detector.DetectionType.MOUTH -> {
                 analytics.eventSuccessMouthDetection(projectId, true)
+            }
+            Detector.DetectionType.POS_YAW -> {
+                analytics.eventSuccessHeadDetection(projectId, true)
             }
         }
     }
@@ -372,7 +383,7 @@ class LivenessFragment : BaseDaggerFragment(),
     private fun setFailedResultData(detectionFailedType: Detector.DetectionFailedType) {
         val bundle = Bundle()
         bundle.putSerializable(LivenessConstants.ARG_FAILED_TYPE, detectionFailedType)
-
+        bundle.putString(PARAM_PROJECT_ID, projectId)
         activity?.let {
             val fragment = LivenessErrorFragment.newInstance(bundle)
             (it as LivenessActivity).replaceFragment(fragment)

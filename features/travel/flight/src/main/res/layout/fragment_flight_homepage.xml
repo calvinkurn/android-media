@@ -9,7 +9,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
         android:paddingBottom="@dimen/spacing_lvl4">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
@@ -59,7 +58,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/flight_dp_20"
-            android:background="@color/Unify_N0"
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"

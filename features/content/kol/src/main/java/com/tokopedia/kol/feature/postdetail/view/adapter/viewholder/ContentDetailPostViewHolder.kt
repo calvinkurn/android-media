@@ -77,7 +77,7 @@ class ContentDetailPostViewHolder(
         fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int, isDoubleTap: Boolean = false)
         fun onCommentClicked(feedXCard: FeedXCard, postPosition: Int, isSeeMoreComment: Boolean = false)
         fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int)
-        fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition: Int, isFollowedFromRSRestrictionBottomSheet: Boolean = false)
         fun onClickOnThreeDots(feedXCard: FeedXCard, postPosition: Int)
         fun onFullScreenButtonClicked(
             feedXCard: FeedXCard,

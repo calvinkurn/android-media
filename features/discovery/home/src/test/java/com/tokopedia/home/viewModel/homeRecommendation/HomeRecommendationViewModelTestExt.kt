@@ -14,17 +14,17 @@ import java.util.concurrent.TimeoutException
  */
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel) {
-    setParams("", 0, 10, 0)
+    setParams("", 0, 10, 0, sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel
 }
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel, nextReturnData: HomeRecommendationDataModel) {
-    setParams("", 0, 10, 0)
+    setParams("", 0, 10, 0, sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel andThen nextReturnData
 }
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel, exception: Exception) {
-    setParams("", 0, 10, 0)
+    setParams("", 0, 10, 0, sourceType = "")
     coEvery { executeOnBackground() } returns homeRecommendationDataModel andThenThrows exception
 }
 
@@ -32,19 +32,19 @@ fun GetHomeRecommendationUseCase.givenThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
 
-fun TopAdsImageViewUseCase.givenDataReturn(data: ArrayList<TopAdsImageViewModel>){
+fun TopAdsImageViewUseCase.givenDataReturn(data: ArrayList<TopAdsImageViewModel>) {
     coEvery { getImageData(any()) } returns data
 }
 
-fun TopAdsImageViewUseCase.givenDataReturn(data: ArrayList<TopAdsImageViewModel>, secondData: ArrayList<TopAdsImageViewModel>){
+fun TopAdsImageViewUseCase.givenDataReturn(data: ArrayList<TopAdsImageViewModel>, secondData: ArrayList<TopAdsImageViewModel>) {
     coEvery { getImageData(any()) } returns data andThen secondData
 }
 
-fun TopAdsImageViewUseCase.givenDataReturnAndThenThrows(data: ArrayList<TopAdsImageViewModel>){
+fun TopAdsImageViewUseCase.givenDataReturnAndThenThrows(data: ArrayList<TopAdsImageViewModel>) {
     coEvery { getImageData(any()) } returns data andThenThrows TimeoutException()
 }
 
-fun TopAdsImageViewUseCase.givenThrows(){
+fun TopAdsImageViewUseCase.givenThrows() {
     coEvery { getImageData(any()) } throws TimeoutException()
 }
 

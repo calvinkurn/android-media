@@ -3,20 +3,16 @@ package com.tokopedia.profilecompletion.profileinfo
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.profilecompletion.di.ActivityComponentFactory
-import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
-import com.tokopedia.profilecompletion.profileinfo.view.activity.ProfileInfoActivity
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.view.activity.AddBodActivity
 import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity
 import com.tokopedia.profilecompletion.changegender.view.activity.ChangeGenderActivity
 import com.tokopedia.profilecompletion.changename.view.ChangeNameActivity
-import com.tokopedia.profilecompletion.common.helper.checkToasterShowing
-import com.tokopedia.profilecompletion.common.helper.clickViewHolder
-import com.tokopedia.profilecompletion.common.helper.goToAnotherActivity
-import com.tokopedia.profilecompletion.common.helper.isViewsExists
-import com.tokopedia.profilecompletion.common.helper.clickChildWithViewId
+import com.tokopedia.profilecompletion.common.helper.*
+import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
+import com.tokopedia.profilecompletion.di.ActivityComponentFactory
+import com.tokopedia.profilecompletion.profileinfo.view.activity.ProfileInfoActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
@@ -24,7 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @UiTest
-class ProfileInfoInstrumentTest {
+open class ProfileInfoInstrumentTest {
 
     val testComponentFactory = TestComponentActivityFactory()
 
@@ -49,6 +45,8 @@ class ProfileInfoInstrumentTest {
     fun header_profile_appear() {
         runTest {
             isViewsExists(listOf(R.id.profileInfoImageSubtitle, R.id.profileInfoImageUnify))
+            swipeUp(R.id.nested_scroll_view)
+            isViewsExists(listOf(R.id.text_close_account))
         }
     }
 
@@ -116,7 +114,37 @@ class ProfileInfoInstrumentTest {
         }
     }
 
-    private fun runTest(test: () -> Unit) {
+    @Test
+    fun click_close_account_then_user_not_eligible() {
+        runTest {
+            swipeUp(R.id.nested_scroll_view)
+            clickOnView(R.id.text_close_account)
+
+            isViewsExists(
+                listOf(
+                    R.id.tg_requirement_desc_1,
+                    R.id.label_requirement_check_1,
+                    R.id.tg_requirement_desc_2,
+                    R.id.label_requirement_check_2,
+                    R.id.tg_requirement_desc_3_center,
+                    R.id.img_requirement_1,
+                    R.id.img_requirement_2,
+                    R.id.img_requirement_3,
+                    R.id.tg_sub_title,
+                    R.id.tg_title,
+                    R.id.btn_oke
+                )
+            )
+            isViewsNotExists(
+                R.id.tg_requirement_desc_1_center,
+                R.id.tg_requirement_desc_2_center,
+                R.id.tg_requirement_desc_3,
+                R.id.label_requirement_check_3,
+            )
+        }
+    }
+
+    open fun runTest(test: () -> Unit) {
         activity = activityTestRule.launchActivity(Intent())
         test.invoke()
     }

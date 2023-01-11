@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -24,12 +26,14 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
@@ -53,6 +57,7 @@ import com.yalantis.ucrop.util.FastBitmapDrawable
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.max
+
 
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
@@ -90,6 +95,10 @@ class DetailEditorFragment @Inject constructor(
     private var initialImageMatrix: Matrix? = null
 
     private var initialRotateNumber = 0
+
+    // storage variable for watermark case
+    private var globalWidth = 0
+    private var globalHeight = 0
 
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
@@ -193,26 +202,16 @@ class DetailEditorFragment @Inject constructor(
                 } else {
                     viewModel.setRemoveBackground(it) { _ ->
                         if (activity?.isFinishing != false) return@setRemoveBackground
-                        viewBinding?.let {
-                            Toaster.build(
-                                it.editorFragmentDetailRoot,
-                                getString(editorR.string.editor_tool_remove_background_failed_normal),
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_NORMAL,
-                                getString(editorR.string.editor_tool_remove_background_failed_cta)
-                            ) {
-                                removeBackgroundRetryLimit--
-                                if (removeBackgroundRetryLimit == 0) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(editorR.string.editor_tool_remove_background_failed_normal),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    activity?.finish()
-                                } else
+                        removeBgConnectionToast {
+                            removeBackgroundRetryLimit--
+                            if (removeBackgroundRetryLimit == 0) {
+                                removeBgClosePage()
+                            } else {
+                                Handler().postDelayed({
                                     onRemoveBackgroundClicked(removeBackgroundType)
-                            }.show()
-                        }
+                                }, DELAY_REMOVE_BG_TOASTER)
+                            }
+                        }?.show()
                     }
                 }
             }
@@ -246,7 +245,7 @@ class DetailEditorFragment @Inject constructor(
         editorDetailAnalytics.clickRotationRotate()
         viewModel.setRotate(
             viewBinding?.imgUcropPreview,
-            RotateToolUiComponent.ROTATE_BTN_DEGREE,
+            ROTATE_BTN_DEGREE,
             true,
             getImagePairRatio()
         )
@@ -262,10 +261,11 @@ class DetailEditorFragment @Inject constructor(
             cropView.targetAspectRatio = ratio.getRatio()
 
             val newRatio = Pair(ratio.getRatioX(), ratio.getRatioY())
-            if (data.cropRotateValue.cropRatio != newRatio) {
+            if (data.cropRotateValue.cropRatio != newRatio && data.cropRotateValue.cropRatio != EMPTY_RATIO) {
                 data.cropRotateValue.cropRatio = newRatio
                 isEdited = true
             }
+            data.cropRotateValue.cropRatio = newRatio
         }
     }
 
@@ -421,7 +421,13 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkBitmap ->
-            getImageView()?.setImageBitmap(watermarkBitmap)
+            // if watermark tool just implement the result, on another tools need to neutralize rotate value
+            val usedImage = if (!data.isToolCrop() && !data.isToolRotate()) {
+                watermarkBitmap
+            } else {
+                neutralizeWatermarkResult(watermarkBitmap)
+            }
+            getImageView()?.setImageBitmap(usedImage)
         }
     }
 
@@ -506,7 +512,7 @@ class DetailEditorFragment @Inject constructor(
             val cropView = it.cropImageView
 
             val rotateDegree =
-                (cropRotateData.rotateDegree + (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE))
+                (cropRotateData.rotateDegree + (cropRotateData.orientationChangeNumber * ROTATE_BTN_DEGREE))
 
             // need to check if previous value is rotate / not, if rotated then ratio is changed
             val isRotate = cropRotateData.orientationChangeNumber % 2 == 1
@@ -534,9 +540,15 @@ class DetailEditorFragment @Inject constructor(
             }
 
             getBitmap()?.let { bitmap ->
+                val finalBitmap = if (!data.isToolCrop() && !data.isToolRotate()) {
+                    bitmap
+                } else {
+                    watermarkRotateBitmap(detailUiModel.cropRotateValue, bitmap)
+                }
+
                 WatermarkType.map(it.watermarkType)?.let { type ->
                     viewModel.setWatermark(
-                        bitmap,
+                        finalBitmap,
                         type,
                         detailUiModel = detailUiModel,
                         useStorageColor = true
@@ -548,18 +560,53 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun watermarkRotateBitmap(
+        rotateValue: EditorCropRotateUiModel,
+        source: Bitmap,
+        isInverse: Boolean = false
+    ): Bitmap {
+        var finalRotateDegree = rotateValue.let {
+            it.rotateDegree + (it.orientationChangeNumber * ROTATE_BTN_DEGREE)
+        }
+
+        val mirrorX = rotateValue.scaleX
+        val mirrorY = rotateValue.scaleY
+        val matrix = Matrix()
+
+        // rotate is used on image that sent to watermark, inverse is used on watermark image result
+        if (isInverse) {
+            finalRotateDegree *= -1
+
+            matrix.preRotate(finalRotateDegree)
+            matrix.postScale(mirrorX, mirrorY)
+        } else {
+            matrix.preScale(mirrorX, mirrorY)
+            matrix.postRotate(finalRotateDegree)
+        }
+
+        if (globalWidth == 0) {
+            globalWidth = source.width
+            globalHeight = source.height
+        }
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
+
+    // neutralize rotate value on watermark result
+    private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap {
+        val neutralizeBitmap =
+            watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)
+
+        val cropX = (neutralizeBitmap.width - globalWidth) / 2
+        val cropY = (neutralizeBitmap.height - globalHeight) / 2
+        return Bitmap.createBitmap(neutralizeBitmap, cropX, cropY, globalWidth, globalHeight)
+    }
+
     private fun readPreviousState() {
         var cropScale = 0f
-        var rotateIndexNumber = -1
-        var watermarkIndexNumber = -1
         var latestBrightnessIndex = -1
         var latestContrastIndex = -1
 
         detailState.getFilteredStateList().forEachIndexed { index, editorDetailUi ->
-            if (editorDetailUi.isToolWatermark()) watermarkIndexNumber = index
-
-            if (editorDetailUi.cropRotateValue.isRotate) rotateIndexNumber = index
-
             if (editorDetailUi.cropRotateValue.isCrop) cropScale =
                 editorDetailUi.cropRotateValue.scale
 
@@ -570,22 +617,18 @@ class DetailEditorFragment @Inject constructor(
 
         implementBrightnessAndContrast(latestBrightnessIndex, latestContrastIndex)
 
-        // need to provide sequence for watermark that implemented before / after rotate
-        if (watermarkIndexNumber < rotateIndexNumber && !data.isToolWatermark()) {
-            implementPreviousWatermark(data)
-        }
-
         if (viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0) {
             manualCropBitmap(data.cropRotateValue)
+        }
+
+        // need to provide sequence for watermark that implemented before / after rotate
+        if (!data.isToolWatermark()) {
+            implementPreviousWatermark(data)
         }
 
         if ((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
             implementPreviousStateRotate(data.cropRotateValue)
             if (cropScale != 0f) viewModel.rotateInitialScale = cropScale
-        }
-
-        if (watermarkIndexNumber > rotateIndexNumber && !data.isToolWatermark()) {
-            implementPreviousWatermark(data)
         }
 
         implementedBaseBitmap = getBitmap()
@@ -624,7 +667,7 @@ class DetailEditorFragment @Inject constructor(
             }
 
             val finalRotationDegree =
-                (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)
+                (cropRotateData.orientationChangeNumber * ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)
 
             val offsetX = (cropRotateData.offsetX * scalingSize).toInt()
             val imageWidth = (cropRotateData.imageWidth * scalingSize).toInt()
@@ -693,7 +736,9 @@ class DetailEditorFragment @Inject constructor(
                         viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
                     currentMatrix?.let {
                         initialMatrixValue.forEachIndexed { index, value ->
-                            if (value != currentMatrix[index]) isEdited = true
+                            if (value != currentMatrix[index]) {
+                                isEdited = true
+                            }
                         }
                     }
                 }
@@ -852,6 +897,28 @@ class DetailEditorFragment @Inject constructor(
         return editHistory
     }
 
+    private fun removeBgConnectionToast(ctaAction: () -> Unit): Snackbar? {
+        viewBinding?.let {
+            return Toaster.build(
+                it.editorFragmentDetailRoot,
+                getString(editorR.string.editor_tool_remove_background_failed_normal),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(editorR.string.editor_tool_remove_background_failed_cta)
+            ) { ctaAction() }
+        }
+        return null
+    }
+
+    private fun removeBgClosePage() {
+        Toast.makeText(
+            requireContext(),
+            getString(editorR.string.editor_tool_remove_background_failed_normal),
+            Toast.LENGTH_LONG
+        ).show()
+        activity?.finish()
+    }
+
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -862,5 +929,7 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_EXECUTION_PREVIOUS_CROP = 400L
         private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 400L
+
+        private const val DELAY_REMOVE_BG_TOASTER = 300L
     }
 }

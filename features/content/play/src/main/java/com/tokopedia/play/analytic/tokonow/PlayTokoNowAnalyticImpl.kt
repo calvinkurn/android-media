@@ -1,6 +1,8 @@
 package com.tokopedia.play.analytic.tokonow
 
+import android.os.Bundle
 import com.tokopedia.play.analytic.*
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.PlayChannelType
@@ -9,6 +11,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -204,32 +207,31 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     }
 
     override fun impressProductBottomSheetNow(
-        product: PlayProductUiModel.Product,
-        position: Int,
+        products: Map<ProductSheetAdapter.Item.Product, Int>
     ) {
-        trackingQueue.putEETracking(
-            event = EventModel(
-                "productView",
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "view - now product bottomsheet",
-                "$channelId - ${product.id} - ${channelType.value}"
-            ),
-            enhanceECommerceMap = hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        add(convertProductToHashMapWithList(product, position, "bottom sheet"))
-                    }
-                )
-            ),
-            customDimension =
-            hashMapOf(
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-            )
+        if (products.isEmpty()) return
 
+        val items = arrayListOf<Bundle>().apply {
+            products.forEach {
+                add(productsToBundle(it.key.product, it.value, "bottom sheet"))
+            }
+        }
+
+        val dataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, KEY_EVENT_ITEM_LIST)
+            putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
+            putString(KEY_EVENT_ACTION, "view - now product bottomsheet",)
+            putString(KEY_EVENT_LABEL,  "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value}")
+            putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
+            putString(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            putString(KEY_USER_ID, userId)
+            putString(KEY_BUSINESS_UNIT, KEY_TRACK_BUSINESS_UNIT)
+            putParcelableArrayList("items", items)
+            putString(KEY_ITEM_LIST, "/groupchat - bottom sheet")
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            KEY_EVENT_ITEM_LIST, dataLayer
         )
     }
 
@@ -371,10 +373,26 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
+    private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String) : Bundle =
+        Bundle().apply {
+            putString("item_name", product.title)
+            putString("item_id", product.id)
+            putDouble("price", when(product.price) {
+                is DiscountedPrice -> product.price.discountedPriceNumber
+                is OriginalPrice -> product.price.priceNumber
+            })
+            putString("item_brand", "")
+            putString("item_category", "")
+            putString("item_variant", "")
+            putString("dimension40", "/groupchat - $sourceFrom")
+            putInt("index", position)
+        }
+
     companion object {
         private const val KEY_PRODUCT_NAME = "productName"
         private const val KEY_PRODUCT_URL = "productUrl"
         private const val KEY_ITEM_LIST = "item_list"
+        private const val KEY_EVENT_ITEM_LIST = "view_item_list"
         private const val KEY_TRACK_ADD_TO_CART = "addToCart"
     }
 }

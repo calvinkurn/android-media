@@ -142,12 +142,6 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("show_pinned_product")
         val showPinnedProduct: Boolean = false,
 
-        @SerializedName("active")
-        val active: Boolean = true,
-
-        @SerializedName("freezed")
-        val freezed: Boolean = false,
-
         @SerializedName("has_promo")
         val hasPromo: Boolean = false,
 
@@ -176,7 +170,16 @@ data class ChannelDetailsWithRecomResponse(
         val hasFollowButton: Boolean = false,
 
         @SerializedName("empty_bottom_sheet")
-        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet()
+        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet(),
+
+        @SerializedName("status")
+        val status: String = "",
+
+        @SerializedName("channel_archived_screen")
+        val archiveConfig: ArchivedData = ArchivedData(),
+
+        @SerializedName("pop_up")
+        val popupConfig: PopupConfig = PopupConfig(),
     )
 
     data class FreezeData(
@@ -267,5 +270,30 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("image_url")
         val imageUrl: String = "",
+    )
+
+    data class ArchivedData(
+        @SerializedName("title")
+        val title: String = "",
+
+        @SerializedName("description")
+        val description: String = "",
+
+        @SerializedName("button_text")
+        val buttonText: String = "",
+
+        @SerializedName("button_app_link")
+        val appLink: String = "",
+    )
+
+    data class PopupConfig(
+        @SerializedName("is_enabled")
+        val isEnabled: Boolean = false,
+
+        @SerializedName("duration_to_pop_up")
+        val duration: Long = 0,
+
+        @SerializedName("copy_text_bottomsheet")
+        val copyText: String = "",
     )
 }

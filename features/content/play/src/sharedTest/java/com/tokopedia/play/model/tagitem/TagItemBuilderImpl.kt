@@ -1,8 +1,8 @@
 package com.tokopedia.play.model.tagitem
 
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -35,7 +35,7 @@ class TagItemBuilderImpl : TagItemBuilder {
     )
 
     override fun buildVoucherModel(
-        voucherList: List<MerchantVoucherUiModel>
+        voucherList: List<PlayVoucherUiModel.Merchant>
     ) = VoucherUiModel(
         voucherList = voucherList,
     )
@@ -54,6 +54,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         isTokoNow: Boolean,
         isPinned: Boolean,
         isRilisanSpesial: Boolean,
+        buttons: List<ProductButtonUiModel>,
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -68,6 +69,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         isTokoNow = isTokoNow,
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
+        buttons = buttons,
     )
 
     override fun buildMerchantVoucher(
@@ -79,8 +81,9 @@ class TagItemBuilderImpl : TagItemBuilder {
         copyable: Boolean,
         highlighted: Boolean,
         voucherStock: Int,
-        expiredDate: String
-    ) = MerchantVoucherUiModel(
+        expiredDate: String,
+        isPrivate: Boolean,
+    ) = PlayVoucherUiModel.Merchant(
         id = id,
         type = type,
         title = title,
@@ -90,6 +93,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         highlighted = highlighted,
         voucherStock = voucherStock,
         expiredDate = expiredDate,
+        isPrivate = isPrivate,
     )
 
     override fun buildProductSection(
@@ -123,4 +127,11 @@ class TagItemBuilderImpl : TagItemBuilder {
         background = background,
         reminder = reminderStatus,
     )
+
+    override fun buildButton(
+        text: String,
+        color: ProductButtonColor,
+        type: ProductButtonType
+    ): ProductButtonUiModel =
+        ProductButtonUiModel(text, color, type)
 }

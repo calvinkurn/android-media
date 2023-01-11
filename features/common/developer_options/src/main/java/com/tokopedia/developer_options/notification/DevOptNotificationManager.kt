@@ -46,9 +46,11 @@ class DevOptNotificationManager(
             val intent = RouteManager.getIntent(application, ApplinkConst.DEVELOPER_OPTIONS).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
-
-            val pendingIntent = PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-
+            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            } else {
+                PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
             val builder = NotificationCompat.Builder(application, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_developer_mode)
                 .setContentTitle(NOTIFICATION_TITLE)

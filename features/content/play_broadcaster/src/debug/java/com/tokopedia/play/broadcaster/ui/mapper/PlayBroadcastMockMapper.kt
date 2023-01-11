@@ -1,16 +1,11 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
-import android.graphics.Typeface
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
-import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.play.broadcaster.data.model.ProductData
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
@@ -31,7 +26,6 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import java.util.*
 import kotlin.random.Random
 
@@ -39,35 +33,6 @@ import kotlin.random.Random
  * Created by jegul on 21/09/20
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
-    @Suppress("MagicNumber")
-    override fun mapSearchSuggestionList(keyword: String, productsResponse: GetProductsByEtalaseResponse.GetProductListData): List<SearchSuggestionUiModel> {
-        return List(keyword.length) {
-            val suggestionText = " ${keyword.substring(0, it + 1)}"
-            val fullText = "$keyword$suggestionText"
-            SearchSuggestionUiModel(
-                    queriedText = keyword,
-                    suggestedId = "1",
-                    suggestedText = fullText,
-                    spannedSuggestion = SpannableStringBuilder(fullText).apply {
-                        setSpan(StyleSpan(Typeface.BOLD), fullText.indexOf(suggestionText), fullText.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                    }
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun mapLiveFollowers(response: GetLiveFollowersResponse): FollowerDataUiModel {
-        return FollowerDataUiModel(
-                List(3) {
-                    FollowerUiModel.Unknown(when (it) {
-                        0 -> com.tokopedia.unifyprinciples.R.color.Unify_Y500
-                        1 -> com.tokopedia.unifyprinciples.R.color.Unify_B600
-                        else -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
-                    })
-                },
-                3
-        )
-    }
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return LiveStreamInfoUiModel(
@@ -118,10 +83,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
-    override fun mapProductTag(productTag: ProductTagging): List<ProductData> {
-        return emptyList()
-    }
-
     @Suppress("MagicNumber")
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
@@ -161,14 +122,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 channelId = "1234",
                 title = "Klarifikasi Bisa Tebak Siapa?",
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
-                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                coverUrl = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
                 status = ChannelStatus.Draft
         )
-    }
-
-    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData> {
-        return emptyList()
     }
 
     override fun mapChannelSchedule(
@@ -187,15 +144,15 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 id = "1234",
                 title = "Tokopedia PLAY seru!",
                 description = "Nonton siaran seru di Tokopedia PLAY!",
-                imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                imageUrl = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 redirectUrl = "https://beta.tokopedia.com/play/channel/10140",
                 textContent =  "\"testing\"\nYuk, nonton siaran dari MRG Audio di Tokopedia PLAY! Bakal seru banget lho!\n${'$'}{url}",
                 shortenUrl = true
         )
     }
 
-    override fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean): ChannelSummaryUiModel {
-        return ChannelSummaryUiModel(title, coverUrl, date, duration, isEligiblePostVideo)
+    override fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean, author: ContentAccountUiModel): ChannelSummaryUiModel {
+        return ChannelSummaryUiModel(title, coverUrl, date, duration, isEligiblePostVideo, author)
     }
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel {
@@ -391,7 +348,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         audioBufferTimestamp = 0,
     )
 
-    override fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel> {
+    override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
         return emptyList()
     }
 

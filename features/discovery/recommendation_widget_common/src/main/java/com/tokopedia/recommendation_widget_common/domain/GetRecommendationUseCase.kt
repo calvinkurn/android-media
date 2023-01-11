@@ -23,34 +23,39 @@ import javax.inject.Inject
 @Deprecated(message = "please use GetRecommendationUseCase from coroutine folder instead")
 open class GetRecommendationUseCase @Inject
 constructor(
-            private val context: Context,
-            private val recomRawString: String,
-            private val graphqlUseCase: GraphqlUseCase,
-            private val userSession: UserSessionInterface) : UseCase<List<RecommendationWidget>>() {
+    private val context: Context,
+    private val recomRawString: String,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val userSession: UserSessionInterface
+) : UseCase<List<RecommendationWidget>>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<List<RecommendationWidget>> {
         val graphqlRequest = GraphqlRequest(recomRawString, RecommendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map { graphqlResponse ->
-                    val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
-                    entity?.productRecommendationWidget?.data?.mappingToRecommendationModel()
-                }
+            .map { graphqlResponse ->
+                val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
+                entity?.productRecommendationWidget?.data?.mappingToRecommendationModel()
+            }
     }
 
-    fun getRecomParams(pageNumber: Int,
-                       xSource: String,
-                       pageName: String,
-                       productIds: List<String>): RequestParams {
+    fun getRecomParams(
+        pageNumber: Int,
+        xSource: String,
+        pageName: String,
+        productIds: List<String>
+    ): RequestParams {
         return getRecomParams(pageNumber, xSource, pageName, productIds, "")
     }
 
-    fun getRecomParams(pageNumber: Int,
-                       xSource: String = DEFAULT_VALUE_X_SOURCE,
-                       pageName: String,
-                       productIds: List<String>,
-                       queryParam: String = ""): RequestParams {
+    fun getRecomParams(
+        pageNumber: Int,
+        xSource: String = DEFAULT_VALUE_X_SOURCE,
+        pageName: String,
+        productIds: List<String>,
+        queryParam: String = ""
+    ): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
         val newQueryParam = try {
@@ -78,12 +83,14 @@ constructor(
         return params
     }
 
-    fun getRecomTokonowParams(pageNumber: Int,
-                              xSource: String = DEFAULT_VALUE_X_SOURCE,
-                              pageName: String,
-                              productIds: List<String>,
-                              queryParam: String = "",
-                              isTokonow: Boolean = false): RequestParams {
+    fun getRecomTokonowParams(
+        pageNumber: Int,
+        xSource: String = DEFAULT_VALUE_X_SOURCE,
+        pageName: String,
+        productIds: List<String>,
+        queryParam: String = "",
+        isTokonow: Boolean = false
+    ): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
         val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam
@@ -93,7 +100,7 @@ constructor(
         } else {
             params.putInt(USER_ID, 0)
         }
-        if(xSource.isEmpty()) {
+        if (xSource.isEmpty()) {
             params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
         } else {
             params.putString(X_SOURCE, xSource)
@@ -107,9 +114,11 @@ constructor(
         return params
     }
 
-    fun getOfficialStoreRecomParams(pageNumber: Int,
-                                    pageName: String,
-                                    categoryIds: String): RequestParams {
+    fun getOfficialStoreRecomParams(
+        pageNumber: Int,
+        pageName: String,
+        categoryIds: String
+    ): RequestParams {
         val params = getRecomParams(pageNumber, OFFICIAL_STORE, pageName, listOf(), "")
         params.putString(CATEGORY_IDS, categoryIds)
         params.putBoolean(OS, true)

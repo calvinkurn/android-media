@@ -17,8 +17,8 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.banner.BannerViewPagerAdapter
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemFavoriteAdapter
@@ -213,7 +213,7 @@ class RechargeHomepageInstrumentTest {
     private fun check_swipe_banner_section(){
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(12)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(13)
         )
         Thread.sleep(2000)
         onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))

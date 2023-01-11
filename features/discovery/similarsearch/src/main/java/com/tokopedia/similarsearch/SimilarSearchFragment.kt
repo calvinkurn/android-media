@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
@@ -43,24 +42,12 @@ import com.tokopedia.similarsearch.recyclerview.SimilarSearchItemDecoration
 import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener, EmptyResultListener {
-
-    companion object {
-        fun getInstance(): SimilarSearchFragment {
-            return SimilarSearchFragment()
-        }
-
-        const val REQUEST_CODE_GO_TO_PRODUCT_DETAIL = 123
-    }
 
     private var binding: SimilarSearchFragmentLayoutBinding? by viewBinding()
     private val toolbarBinding: SimilarSearchToolbarLayoutBinding?
@@ -252,7 +239,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         return object : OriginalProductViewListener {
 
             override fun onItemClicked() {
-                routeToProductDetail(originalProduct.id)
+                routeToProductDetail(originalProduct.applink)
             }
 
             override fun onButtonWishlistClicked() {
@@ -271,9 +258,9 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
-    private fun routeToProductDetail(productId: String) {
+    private fun routeToProductDetail(applink: String) {
         activity?.let { activity ->
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            val intent = RouteManager.getIntent(activity, applink)
 
             startActivityForResult(intent, REQUEST_CODE_GO_TO_PRODUCT_DETAIL)
         }
@@ -432,7 +419,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     override fun onItemClicked(similarProductItem: Product, adapterPosition: Int) {
         trackEventClickSimilarProduct(similarProductItem)
-        routeToProductDetail(similarProductItem.id)
+        routeToProductDetail(similarProductItem.applink)
     }
 
     private fun trackEventClickSimilarProduct(similarProductItem: Product) {
@@ -481,5 +468,9 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroyView()
+    }
+
+    companion object {
+        const val REQUEST_CODE_GO_TO_PRODUCT_DETAIL = 123
     }
 }

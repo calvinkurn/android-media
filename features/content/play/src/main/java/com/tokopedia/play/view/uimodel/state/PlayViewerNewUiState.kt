@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.state
 
+import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -34,6 +35,8 @@ data class PlayViewerNewUiState(
     val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
+    val engagement: EngagementUiState,
+    val followPopUp: Boolean,
 ) {
 
     companion object {
@@ -64,6 +67,8 @@ data class PlayViewerNewUiState(
                     warehouseInfo = WarehouseInfoUiModel.Empty,
                 ),
                 featuredProducts = emptyList(),
+                engagement = EngagementUiState.Empty,
+                followPopUp = false,
             )
     }
 }
@@ -123,3 +128,25 @@ data class AddressWidgetUiState(
     val shouldShow: Boolean,
     val warehouseInfo: WarehouseInfoUiModel
 )
+
+
+data class EngagementUiState(
+    val shouldShow: Boolean,
+    val data: List<EngagementUiModel>,
+) {
+    companion object {
+        val Empty: EngagementUiState get() = EngagementUiState(shouldShow = false, data = emptyList())
+    }
+}
+data class FollowPopUpUiState(
+    val shouldShow: Boolean,
+    val partnerId: Long,
+){
+    companion object {
+        val Empty: FollowPopUpUiState
+            get() = FollowPopUpUiState(
+                shouldShow = false,
+                partnerId = 0L,
+            )
+    }
+}

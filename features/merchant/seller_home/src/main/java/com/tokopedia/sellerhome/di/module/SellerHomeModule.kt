@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.di.module
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -12,6 +13,9 @@ import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSEImpl
+import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -82,5 +86,16 @@ class SellerHomeModule {
     @Provides
     fun provideVoucherCreationSharedPref(@ApplicationContext context: Context): SharedPreferences {
         return context.getSharedPreferences(VOUCHER_CREATION_PREF_NAME, Context.MODE_PRIVATE)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideSellerHomeSSE(
+        @ApplicationContext context: Context,
+        sseMapper: WidgetSSEMapper,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers
+    ): SellerHomeWidgetSSE {
+        return SellerHomeWidgetSSEImpl(context, userSession, sseMapper, dispatchers)
     }
 }

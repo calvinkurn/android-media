@@ -1,6 +1,6 @@
 package com.tokopedia.people.analytic.tracker
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_ACCESS_MEDIA
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_BACK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_BURGER_MENU
@@ -100,14 +100,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_BACK,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -117,14 +117,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SHARE,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -134,14 +134,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_HOME_PAGE,
                 category = FEED_USER_PROFILE,
                 action = CLICK_BURGER_MENU,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -151,14 +151,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_PROFILE_PICTURE,
-                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - live"
+                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - live",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -168,14 +168,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOWER,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -185,14 +185,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOWING,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -202,14 +202,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SELENGKAPNYA,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -219,14 +219,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -236,14 +236,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_UNFOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -253,14 +253,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_VIDEO_TAB,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -270,30 +270,30 @@ class UserProfileTrackerImpl @Inject constructor(
         live: Boolean,
         activityId: String,
         imageUrl: String,
-        videoPosition: Int
+        videoPosition: Int,
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 event = PROMO_VIEW,
                 category = FEED_USER_PROFILE,
                 action = IMPRESSION_VIDEO,
-                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - ${isLiveOrVod(live)}"
+                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - ${isLiveOrVod(live)}",
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, videoPosition, FEED_USER_PROFILE_VIDEO)
-                        )
-                    )
-                )
+                            convertToPromotion(activityId, imageUrl, videoPosition, "/$FEED_USER_PROFILE_VIDEO"),
+                        ),
+                    ),
+                ),
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -303,30 +303,35 @@ class UserProfileTrackerImpl @Inject constructor(
         live: Boolean,
         activityId: String,
         imageUrl: String,
-        videoPosition: Int
+        videoPosition: Int,
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 event = PROMO_CLICK,
                 category = FEED_USER_PROFILE,
                 action = CLICK_VIDEO,
-                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - ${isLiveOrVod(live)}"
+                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - ${isLiveOrVod(live)}",
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
                     PROMO_CLICK to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, videoPosition, FEED_USER_PROFILE_VIDEO)
-                        )
-                    )
-                )
+                            convertToPromotion(
+                                activityId,
+                                imageUrl,
+                                videoPosition,
+                                "/$FEED_USER_PROFILE_VIDEO",
+                            ),
+                        ),
+                    ),
+                ),
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -336,14 +341,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FEED_TAB,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -353,30 +358,30 @@ class UserProfileTrackerImpl @Inject constructor(
         activityId: String,
         imageUrl: String,
         postPosition: Int,
-        mediaType: String
+        mediaType: String,
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 event = PROMO_VIEW,
                 category = FEED_USER_PROFILE,
                 action = IMPRESSION_POST,
-                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - $mediaType"
+                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - $mediaType",
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, postPosition, FEED_USER_PROFILE_POST)
-                        )
-                    )
-                )
+                            convertToPromotion(activityId, imageUrl, postPosition + 1, "/$FEED_USER_PROFILE_POST"),
+                        ),
+                    ),
+                ),
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -386,30 +391,35 @@ class UserProfileTrackerImpl @Inject constructor(
         activityId: String,
         imageUrl: String,
         postPosition: Int,
-        mediaType: String
+        mediaType: String,
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 event = PROMO_CLICK,
                 category = FEED_USER_PROFILE,
                 action = CLICK_POST,
-                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - $mediaType"
+                label = "$activityId - $userId - ${isSelfOrVisitor(self)} - $mediaType",
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
                     PROMO_CLICK to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, postPosition, FEED_USER_PROFILE_POST)
-                        )
-                    )
-                )
+                            convertToPromotion(
+                                activityId,
+                                imageUrl,
+                                postPosition + 1,
+                                "/$FEED_USER_PROFILE_POST",
+                            ),
+                        ),
+                    ),
+                ),
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -419,14 +429,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SHARE_BUTTON,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -436,14 +446,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_CLOSE_SHARE_BUTTON,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -453,14 +463,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SHARE_CHANNEL,
-                label = "$channel - $userId - ${isSelfOrVisitor(self)}"
+                label = "$channel - $userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -470,14 +480,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_VIEW_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = VIEW_SHARE_CHANNEL,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -487,14 +497,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_VIEW_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = VIEW_SHARE_SCREENSHOT_BOTTOMSHEET,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -504,14 +514,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_CLOSE_SHARE_SCREENSHOT_BOTTOMSHEET,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -521,14 +531,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_CHANNEL_SHARE_SCREENSHOT_BOTTOMSHEET,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -538,14 +548,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_COMMUNICATION,
                 category = FEED_USER_PROFILE,
                 action = CLICK_ACCESS_MEDIA,
-                label = "$allow - $userId - ${isSelfOrVisitor(self)}"
+                label = "$allow - $userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -566,14 +576,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_USER,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -583,14 +593,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_FOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -600,14 +610,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_UNFOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -628,14 +638,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_USER,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -645,14 +655,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_FOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -662,14 +672,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_FEED,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_UNFOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
+                label = "$userId - ${isSelfOrVisitor(self)}",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -679,14 +689,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_VIEW_HOME_PAGE,
                 category = FEED_USER_PROFILE,
                 action = IMPRESSION_PROFILE_COMPLETION_PROMPT,
-                label = userId
+                label = userId,
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -696,14 +706,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_HOME_PAGE,
                 category = FEED_USER_PROFILE,
                 action = CLICK_PROFILE_COMPLETION_PROMPT,
-                label = userId
+                label = userId,
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -717,26 +727,26 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = PROMO_VIEW,
                 category = FEED_USER_PROFILE,
                 action = IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL,
-                label = "$userId - $userId"
+                label = "$userId - $userId",
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to convertToPromotion(
-                                shops.id.toString(),
-                                shops.logoImageURL,
-                                postPosition,
-                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-                            )
-                    )
-                )
+                            shops.id.toString(),
+                            shops.logoImageURL,
+                            postPosition,
+                            FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL,
+                        ),
+                    ),
+                ),
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -744,14 +754,14 @@ class UserProfileTrackerImpl @Inject constructor(
         userId: String,
         shopId: String,
         imageUrl: String,
-        postPosition: Int
+        postPosition: Int,
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 event = PROMO_CLICK,
                 category = FEED_USER_PROFILE,
                 action = CLICK_PROFILE_RECOMMENDATION,
-                label = "$userId - $shopId"
+                label = "$userId - $shopId",
             ),
             hashMapOf(
                 ECOMMERCE to hashMapOf(
@@ -761,18 +771,18 @@ class UserProfileTrackerImpl @Inject constructor(
                                 shopId,
                                 imageUrl,
                                 postPosition,
-                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-                            )
-                        )
-                    )
-                )
+                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL,
+                            ),
+                        ),
+                    ),
+                ),
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -782,14 +792,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_HOME_PAGE,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOW_PROFILE_RECOMMENDATION,
-                label = "$userId - $shopId"
+                label = "$userId - $shopId",
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -799,14 +809,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_HOME_PAGE,
                 category = FEED_USER_PROFILE,
                 action = CLICK_CREATE_POST,
-                label = userId
+                label = userId,
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -816,14 +826,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_VIEW_HOME_PAGE,
                 category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
                 action = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME,
-                label = userId
+                label = userId,
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -833,14 +843,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_HOME_PAGE,
                 category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
                 action = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITH_USERNAME,
-                label = userId
+                label = userId,
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -850,14 +860,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_VIEW_HOME_PAGE,
                 category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
                 action = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME,
-                label = userId
+                label = userId,
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -867,14 +877,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_HOME_PAGE,
                 category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
                 action = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME,
-                label = userId
+                label = userId,
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -884,14 +894,14 @@ class UserProfileTrackerImpl @Inject constructor(
                 event = EVENT_CLICK_HOME_PAGE,
                 category = FEED_USER_PROFILE,
                 action = CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE,
-                label = userId
+                label = userId,
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
+                BUSINESS_UNIT to CONTENT,
+            ),
         )
     }
 
@@ -903,7 +913,7 @@ class UserProfileTrackerImpl @Inject constructor(
         shopID: String,
         imageUrl: String,
         position: Int,
-        name: String
+        name: String,
     ): HashMap<String, Any> {
         return hashMapOf(
             ID to shopID,
@@ -912,5 +922,4 @@ class UserProfileTrackerImpl @Inject constructor(
             NAME to name,
         )
     }
-
 }

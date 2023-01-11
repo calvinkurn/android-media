@@ -14,7 +14,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import java.util.*
 
 /**
@@ -27,7 +27,7 @@ data class PlayBroadcastUiState(
     val schedule: ScheduleUiModel,
     val isExiting: Boolean,
     val quizForm: QuizFormUiState,
-    val interactive: InteractiveUiModel,
+    val game: GameUiModel,
     val interactiveConfig: InteractiveConfigUiModel,
     val interactiveSetup: InteractiveSetupUiModel,
     val quizDetail: QuizDetailStateUiModel,
@@ -51,7 +51,7 @@ data class PlayBroadcastUiState(
                 schedule = ScheduleUiModel.Empty,
                 isExiting = false,
                 quizForm = QuizFormUiState.Empty,
-                interactive = InteractiveUiModel.Unknown,
+                game = GameUiModel.Unknown,
                 interactiveConfig = InteractiveConfigUiModel.empty(),
                 interactiveSetup = InteractiveSetupUiModel.Empty,
                 quizDetail = QuizDetailStateUiModel.Empty,

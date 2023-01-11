@@ -27,7 +27,7 @@ class SectionTickerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(content: SectionContent) {
         val tickerContainer = view.findViewById<View>(R.id.cons_ticker_container)
         val pager: Ticker? = view.findViewById(R.id.ticker_new)
-        if (content.layoutTickerAttr == null || content.layoutTickerAttr.tickerList == null || content.layoutTickerAttr.tickerList.isEmpty()) {
+        if (content.layoutTickerAttr.tickerList.isEmpty()) {
             tickerContainer.visibility = View.GONE
             return
         }
@@ -36,7 +36,7 @@ class SectionTickerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             content.layoutTickerAttr.tickerList?.let { tickerData ->
                 tickerData.forEachIndexed { index, tickerContainer ->
                     val tickerItemText =  tickerContainer.metadata?.get(INDEX_TEXT)?: TickerMetadata()
-                    val tickerItemLink =  tickerContainer.metadata?.get(INDEX_LINK)?: TickerMetadata()
+                    val tickerItemLink =  tickerContainer.metadata?.getOrNull(INDEX_LINK)?: TickerMetadata()
 
                     link = if (tickerItemLink.link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
                         tickerItemLink.link[CommonConstant.TickerMapKeys.APP_LINK].toString()
