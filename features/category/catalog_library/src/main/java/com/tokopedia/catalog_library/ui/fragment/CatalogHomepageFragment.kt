@@ -17,6 +17,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogHomepageViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -49,6 +50,9 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
             ViewModelProvider(this, it).get(CatalogHomepageViewModel::class.java)
         }
     }
+    override var baseRecyclerView: RecyclerView?
+        get() = catalogHomeRecyclerView
+        set(value) {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +69,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         getDataFromViewModel()
         showShimmer()
         setupRecyclerView(view)
+        setUpBase()
         setObservers()
     }
 
@@ -181,7 +186,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     override fun onCategoryItemClicked(categoryName: String?) {
         super.onCategoryItemClicked(categoryName)
-        RouteManager.route(context, "tokopedia://catalog-library/kategori/$categoryName")
+        RouteManager.route(context, "${CatalogLibraryConstant.APP_LINK_KATEGORI}$categoryName")
     }
 
     override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {

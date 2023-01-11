@@ -11,23 +11,33 @@ import javax.inject.Inject
 class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<CatalogListResponse>(graphqlRepository) {
 
-    fun getCatalogListData(
-        onSuccess: (String, CatalogListResponse) -> Unit,
+    fun getCatalogProductsData(
+        onSuccess: (CatalogListResponse) -> Unit,
         onError: (Throwable) -> Unit,
         categoryIdentifier: String,
-        sortType: String,
-        rows: String
+        sortType: Int,
+        rows: Int,
+        page: Int = 1
     ) {
         try {
             this.setTypeClass(CatalogListResponse::class.java)
-            this.setRequestParams(getRequestParams(categoryIdentifier, sortType, rows))
+            this.setRequestParams(
+                getRequestParams(
+                    categoryIdentifier,
+                    sortType.toString(),
+                    rows,
+                    page
+                )
+            )
             this.setGraphqlQuery(GQL_CATALOG_LIST)
             this.execute(
                 { result ->
-                    onSuccess(categoryIdentifier,result)
-                }, { error ->
+                    onSuccess(result)
+                },
+                { error ->
                     onError(error)
-                })
+                }
+            )
         } catch (throwable: Throwable) {
             onError(throwable)
         }
@@ -36,12 +46,14 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
     private fun getRequestParams(
         categoryIdentifier: String,
         sortType: String,
-        rows: String
+        rows: Int,
+        page: Int
     ): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[CATEGORY_IDENTIFIER] = categoryIdentifier
         requestMap[SORT_TYPE] = sortType
-        requestMap[ROWS] = rows
+        requestMap[ROWS] = rows.toString()
+        requestMap[PAGE] = page.toString()
         return requestMap
     }
 
@@ -49,5 +61,6 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
         const val CATEGORY_IDENTIFIER = "category_identifier"
         const val SORT_TYPE = "sortType"
         const val ROWS = "rows"
+        const val PAGE = "page"
     }
 }

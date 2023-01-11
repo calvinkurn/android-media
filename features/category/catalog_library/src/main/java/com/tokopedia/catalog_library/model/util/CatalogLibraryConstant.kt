@@ -19,4 +19,14 @@ object CatalogLibraryConstant {
     const val CATALOG_SHIMMER_TOP_FIVE = 1
     const val CATALOG_SHIMMER_VIRAL = 2
     const val CATALOG_SHIMMER_PRODUCTS = 3
+
+    const val SORT_TYPE_CATALOG = 0
+    const val SORT_TYPE_VIRAL = 5
+    const val SORT_TYPE_TOP_FIVE = 6
+
+    const val TOTAL_ROWS_TOP_FIVE = 5
+    const val TOTAL_ROWS_VIRAL = 1
+    const val TOTAL_ROWS_CATALOG = 5
+
+    const val APP_LINK_KATEGORI = "tokopedia://catalog-library/kategori/"
 }

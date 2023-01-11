@@ -20,6 +20,12 @@ import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_TOP_FIVE
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -76,10 +82,6 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
                 }
             }
         }
-        private const val VIRAL_SORT_TYPE = "5"
-        private const val TOP_FIVE_SORT_TYPE = "6"
-        private const val TOP_FIVE_TOTAL_ROWS = "5"
-        private const val VIRAL_TOTAL_ROWS = "1"
     }
 
     override fun onCreateView(
@@ -190,9 +192,17 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
     }
 
     private fun getDataFromViewModel() {
-        landingPageViewModel.getCatalogTopFiveData(categoryName, TOP_FIVE_SORT_TYPE, TOP_FIVE_TOTAL_ROWS)
-        landingPageViewModel.getCatalogMostViralData(categoryName, VIRAL_SORT_TYPE, VIRAL_TOTAL_ROWS)
-        landingPageViewModel.getCatalogListData(categoryName, "", "10")
+        landingPageViewModel.getCatalogTopFiveData(
+            categoryName,
+            SORT_TYPE_TOP_FIVE,
+            TOTAL_ROWS_TOP_FIVE
+        )
+        landingPageViewModel.getCatalogMostViralData(
+            categoryName,
+            SORT_TYPE_VIRAL,
+            TOTAL_ROWS_VIRAL
+        )
+        landingPageViewModel.getCatalogListData(categoryName, SORT_TYPE_CATALOG, TOTAL_ROWS_CATALOG)
     }
 
     private fun addShimmer() {

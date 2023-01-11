@@ -16,8 +16,6 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class CatalogLandingPageViewModel @Inject constructor(
-    private val catalogTopFiveUseCase: CatalogProductsUseCase,
-    private val catalogMostViralUseCase: CatalogProductsUseCase,
     private val catalogProductListUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 
@@ -28,11 +26,11 @@ class CatalogLandingPageViewModel @Inject constructor(
 
     fun getCatalogTopFiveData(
         categoryIdentifier: String,
-        sortType: String,
-        rows: String
+        sortType: Int,
+        rows: Int
     ) {
-        catalogTopFiveUseCase.cancelJobs()
-        catalogTopFiveUseCase.getCatalogListData(
+        catalogProductListUseCase.cancelJobs()
+        catalogProductListUseCase.getCatalogProductsData(
             ::onAvailableCatalogTopFiveData,
             ::onFailLandingPageData,
             categoryIdentifier,
@@ -43,11 +41,11 @@ class CatalogLandingPageViewModel @Inject constructor(
 
     fun getCatalogMostViralData(
         categoryIdentifier: String,
-        sortType: String,
-        rows: String
+        sortType: Int,
+        rows: Int
     ) {
-        catalogMostViralUseCase.cancelJobs()
-        catalogMostViralUseCase.getCatalogListData(
+        catalogProductListUseCase.cancelJobs()
+        catalogProductListUseCase.getCatalogProductsData(
             ::onAvailableCatalogMostViralData,
             ::onFailLandingPageData,
             categoryIdentifier,
@@ -58,11 +56,11 @@ class CatalogLandingPageViewModel @Inject constructor(
 
     fun getCatalogListData(
         categoryIdentifier: String,
-        sortType: String,
-        rows: String
+        sortType: Int,
+        rows: Int
     ) {
         catalogProductListUseCase.cancelJobs()
-        catalogProductListUseCase.getCatalogListData(
+        catalogProductListUseCase.getCatalogProductsData(
             ::onAvailableCatalogListData,
             ::onFailLandingPageData,
             categoryIdentifier,
@@ -71,7 +69,7 @@ class CatalogLandingPageViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableCatalogTopFiveData(categoryIdentifier: String, catalogListResponse: CatalogListResponse) {
+    private fun onAvailableCatalogTopFiveData(catalogListResponse: CatalogListResponse) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
@@ -81,7 +79,7 @@ class CatalogLandingPageViewModel @Inject constructor(
         }
     }
 
-    private fun onAvailableCatalogMostViralData(categoryIdentifier: String, catalogListResponse: CatalogListResponse) {
+    private fun onAvailableCatalogMostViralData(catalogListResponse: CatalogListResponse) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
@@ -91,7 +89,7 @@ class CatalogLandingPageViewModel @Inject constructor(
         }
     }
 
-    private fun onAvailableCatalogListData(categoryIdentifier: String, catalogListResponse: CatalogListResponse) {
+    private fun onAvailableCatalogListData(catalogListResponse: CatalogListResponse) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {

@@ -54,10 +54,6 @@ class CatalogHomepageViewModel @Inject constructor(
         }
     }
 
-    private fun onFailHomeData(throwable: Throwable) {
-        _catalogHomeLiveData.postValue(Fail(throwable))
-    }
-
     private fun mapSpecialData(data: CatalogSpecialResponse): CatalogLibraryDataModel {
         val specialDataModel =
             CatalogContainerDataModel(
@@ -66,7 +62,7 @@ class CatalogHomepageViewModel @Inject constructor(
                 "Kategori spesial buatmi",
                 getSpecialVisitableList(data.catalogCategorySpecial.catalogSpecialDataList),
                 RecyclerView.HORIZONTAL,
-                "tokopedia://catalog-library/kategori",
+                CatalogLibraryConstant.APP_LINK_KATEGORI,
                 true,
                 isGrid = true,
                 4
@@ -116,5 +112,9 @@ class CatalogHomepageViewModel @Inject constructor(
             )
         }
         return visitableList
+    }
+
+    private fun onFailHomeData(throwable: Throwable) {
+        _catalogHomeLiveData.postValue(Fail(throwable))
     }
 }
