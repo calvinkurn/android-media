@@ -168,17 +168,21 @@
 
     <!-- New Preparation -->
     <string name="play_bro_title_label">Judul</string>
+    <string name="play_bro_title_label_bottom_sheet">Tambah Judul</string>
     <string name="play_bro_cover_label">Cover</string>
     <string name="play_bro_product_label">Produk</string>
     <string name="play_bro_schedule_label">Atur Jadwal</string>
     <string name="play_bro_save">Simpan</string>
 
     <string name="play_bro_title_form_hint">Tulis Judul Live</string>
+    <string name="play_bro_title_form_hint_bottom_sheet">Isi Judul</string>
     <string name="play_bro_title_form_instruction">Buat judul yang kreatif dan bisa bikin calon penonton penasaran!</string>
 
     <string name="play_bro_cover_form_instruction">Pilih cover yang keren &amp; menarik perhatian, ya!</string>
     <string name="play_bro_title_empty_error">Tulis judul kalau mau bikin Live atau jadwal baru, ya!</string>
     <string name="play_bro_cover_empty_error">Kamu perlu upload cover dulu, ya.</string>
+
+    <string name="play_bro_default_error_message">Terjadi kesalahan</string>
 
     <!--Campaign & Etalase-->
     <string name="play_bro_campaign_and_etalase">Campaign &amp; Etalase</string>

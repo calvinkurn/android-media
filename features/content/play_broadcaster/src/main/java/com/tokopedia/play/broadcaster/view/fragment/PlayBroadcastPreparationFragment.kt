@@ -44,10 +44,10 @@ import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
-import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -60,7 +60,6 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
-import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -84,8 +83,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
     PreparationMenuView.Listener,
-    TitleFormView.Listener,
-    CoverFormView.Listener {
+    CoverFormView.Listener,
+    PlayBroadcastSetupTitleBottomSheet.Listener {
 
     /** ViewModel */
     private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
@@ -176,12 +175,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        return when {
-            binding.formTitle.visibility == View.VISIBLE -> {
-                showTitleForm(false)
-                true
-            }
-            binding.formCover.visibility == View.VISIBLE -> {
+        return when (binding.formCover.visibility) {
+            View.VISIBLE -> {
                 showCoverForm(false)
                 true
             }
@@ -290,6 +285,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 })
             }
+            is PlayBroadcastSetupTitleBottomSheet -> {
+                childFragment.setupListener(this)
+                childFragment.setupTitle(parentViewModel.channelTitle)
+            }
         }
     }
 
@@ -358,7 +357,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun setupListener() {
         binding.apply {
             viewPreparationMenu.setListener(this@PlayBroadcastPreparationFragment)
-            formTitle.setListener(this@PlayBroadcastPreparationFragment)
             formCover.setListener(this@PlayBroadcastPreparationFragment)
 
             flBroStartLivestream.setOnClickListener {
@@ -435,15 +433,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
-                    binding.formTitle.setLoading(false)
-                    toaster.showError(content.error, content.error.message)
+                    getSetupTitleBottomSheet().failSubmit(content.error.message)
                 }
                 is NetworkResult.Success -> {
-                    if (!it.hasBeenHandled) {
-                        binding.formTitle.setLoading(false)
-                        showTitleForm(false)
-                    }
+                    if (!it.hasBeenHandled) getSetupTitleBottomSheet().successSubmit()
                 }
+                else -> {}
             }
         }
     }
@@ -649,20 +644,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     /** Form */
-    private fun showTitleForm(isShow: Boolean) {
-        if(isShow) {
-            showMainComponent(false)
-
-            binding.formTitle.setTitle(parentViewModel.channelTitle)
-            binding.formTitle.setLoading(false)
-            binding.formTitle.visibility = View.VISIBLE
-        }
-        else {
-            showMainComponent(true)
-
-            binding.formTitle.visibility = View.GONE
-        }
+    private fun openSetupTitleBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment =
+            childFragmentManager.findFragmentByTag(PlayBroadcastSetupTitleBottomSheet.TAG)
+        if (existingFragment is PlayBroadcastSetupTitleBottomSheet && existingFragment.isVisible) return
+        try {
+            getSetupTitleBottomSheet().show(childFragmentManager)
+        } catch (e: Exception) {}
     }
+
+    private fun getSetupTitleBottomSheet() = PlayBroadcastSetupTitleBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
 
     private fun showCoverForm(isShow: Boolean) {
         if(isShow) {
@@ -710,8 +703,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** Callback Preparation Menu */
     override fun onClickSetTitle() {
         analytic.clickSetupTitleMenu()
-
-        showTitleForm(true)
+        openSetupTitleBottomSheet()
     }
 
     override fun onClickSetCover() {
@@ -733,16 +725,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     /** Callback Title Form */
-    override fun onCloseTitleForm(view: TitleFormView) {
-        hideKeyboard()
-        activity?.onBackPressed()
-    }
-
-    override fun onTitleSaved(view: TitleFormView, title: String) {
+    override fun submitTitle(title: String) {
         analytic.clickSubmitTitle()
-
-        hideKeyboard()
-        binding.formTitle.setLoading(true)
         viewModel.uploadTitle(parentViewModel.authorId, title)
     }
 
