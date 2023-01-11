@@ -358,21 +358,15 @@ class DiscoveryFragment :
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) &&
-                    newState == RecyclerView.SCROLL_STATE_IDLE
-                ) {
-                    ivToTop.hide()
-                }
-                if (scrollDist > MINIMUM) {
-                    chooseAddressWidget?.hide()
-                    chooseAddressWidgetDivider?.hide()
-                    shouldShowChooseAddressWidget = false
-                    scrollDist = 0
-                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        scrollToLastSection()
+                if (recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION)) {
+                    if (shouldShowChooseAddressWidget) {
+                        chooseAddressWidget?.hide()
+                        chooseAddressWidgetDivider?.hide()
+                        shouldShowChooseAddressWidget = false
                     }
-                } else if (scrollDist < -MINIMUM) {
+                } else {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                        ivToTop.hide()
                     if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
                         if (isLightThemeStatusBar != true) {
@@ -382,6 +376,14 @@ class DiscoveryFragment :
                         }
                         shouldShowChooseAddressWidget = true
                     }
+                }
+                if (scrollDist > MINIMUM) {
+                    scrollDist = 0
+                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        scrollToLastSection()
+                    }
+                } else if (scrollDist < -MINIMUM) {
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
                     if (mAnchorHeaderView.childCount == 0) {
