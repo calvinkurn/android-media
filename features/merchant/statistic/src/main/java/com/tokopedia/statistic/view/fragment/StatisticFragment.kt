@@ -477,7 +477,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
+    override fun setOnAnnouncementWidgetCtaClicked(element: AnnouncementWidgetUiModel) {
         statisticPage?.let {
             StatisticTracker.sendAnnouncementCtaClickEvent(it)
         }

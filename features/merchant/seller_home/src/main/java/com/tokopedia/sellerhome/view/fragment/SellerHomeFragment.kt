@@ -715,7 +715,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendAnnouncementImpressionEvent(element)
     }
 
-    override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
+    override fun setOnAnnouncementWidgetCtaClicked(element: AnnouncementWidgetUiModel) {
+        val appLink = element.data?.appLink.orEmpty()
+        showDownloadToaster(appLink)
+        context?.let {
+            RouteManager.route(it, element.data?.appLink.orEmpty())
+        }
         SellerHomeTracking.sendAnnouncementClickEvent(element)
     }
 
@@ -2763,6 +2768,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getNotificationView(): View? {
         return menu?.findItem(NOTIFICATION_MENU_ID)?.actionView
+    }
+
+    private fun showDownloadToaster(appLink: String) {
+        activity?.let {
+            val isDownloadAppLink = appLink.contains(ApplinkConst.WEBVIEW_DOWNLOAD, true)
+            if (isDownloadAppLink) {
+                view?.run {
+                    post {
+                        val message = context.getString(R.string.sah_toaster_download_message)
+                        Toaster.build(
+                            this,
+                            message
+                        ).show()
+                    }
+                }
+            }
+        }
     }
 
     interface Listener {
