@@ -64,7 +64,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData
@@ -89,7 +88,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -139,6 +137,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var linearLayoutManager: CustomLinearLayoutManager? = null
+    private var anchorTabLinearLayoutManager: LinearLayoutManager? = null
 
     private val adapter by lazy {
         DtHomeAdapter(
@@ -153,33 +152,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             ),
             differ = HomeListDiffer()
         )
-    }
-
-    private fun createRecommendationCallback(): DtHomeCategoryListener {
-        return object : DtHomeCategoryListener {
-            override val windowHeight: Int
-                get() = if (activity != null) {
-                    root?.height ?: 0
-                } else {
-                    0
-                }
-            override val homeMainToolbarHeight: Int
-                get() {
-                    var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                    context?.let { context ->
-                        navToolbar?.let {
-                            height = navToolbar?.height
-                                ?: context.resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                            height += 8f.toDpInt()
-                        }
-                    }
-                    return height
-                }
-            override val homeMainAnchorTabHeight: Int
-                get() {
-                    return binding?.headerCompHolder?.height ?: 0
-                }
-        }
     }
 
     private var anchorTabAdapter: DtAnchorTabAdapter? = null
@@ -205,13 +177,28 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initUiVariable()
         initNavToolbar()
         initRecyclerView()
+        initAnchorTabGql()
         initAnchorTabMenu()
         initRecyclerScrollListener()
         initRefreshLayout()
+        initScreenSootListener()
+        initChooseAddressWidget()
+        initStatusBar()
 
+        updateCurrentPageLocalCacheModelData()
+
+        observeLiveData()
+        loadLayout()
+    }
+
+    private fun initAnchorTabGql() {
+    }
+
+    private fun initScreenSootListener() {
         context?.let {
             screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
                 context = it,
@@ -220,31 +207,18 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 permissionListener = this
             )
         }
-        setupChooseAddressWidget()
-        setupStatusBar()
-        updateCurrentPageLocalCacheModelData()
-
-        observeLiveData()
-        switchServiceOrLoadLayout()
-
-        /**
-         * Temporary
-         * Remove later
-         */
-//        showLayout()
-
-        loadLayout()
     }
 
-    private fun setupChooseAddressWidget() {
+    private fun initChooseAddressWidget() {
         chooseAddressWidget = binding?.chooseAddressWidget
         bindChooseAddressWidget()
         showCoachMark()
     }
 
     private fun initAnchorTabMenu() {
+        anchorTabLinearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
-        binding?.headerCompHolder?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding?.headerCompHolder?.layoutManager = anchorTabLinearLayoutManager
         binding?.headerCompHolder?.adapter = anchorTabAdapter
     }
 
@@ -252,13 +226,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         return object : DtAnchorTabAdapter.AnchorTabListener {
 
             override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int) {
-                Timber.d("onMenuSelected ${anchorTabUiModel.title} and $position")
-                anchorTabAdapter?.selectMenu(anchorTabUiModel)
-
-                val scrollPosition = adapter.data.indexOf(anchorTabUiModel.visitable)
-
+                var scrollPosition = adapter.data.indexOf(viewModelDtHome.getPositionUsingGroupId(anchorTabUiModel.groupId)?.layout)
+                // handle 0 value
+                if (position != 0 && scrollPosition == 0) return
                 if (scrollPosition == -1) return
-                if (statusBarState == AnchorTabStatus.MAXIMIZE) {
+
+                if (statusBarState == AnchorTabStatus.MAXIMIZE && scrollPosition != 0) {
                     setAnchorTabMinimize()
                 }
 
@@ -267,7 +240,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun setupStatusBar() {
+    private fun initStatusBar() {
         /*
             this status bar background only shows for android Kitkat below
             In that version, status bar can't be forced to dark mode
@@ -347,8 +320,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 },
                 searchbarClickCallback = { onSearchBarClick() },
                 searchbarImpressionCallback = {}
-//                durationAutoTransition = durationAutoTransition,
-//                shouldShowTransition = shouldShowTransition()
             )
         }
     }
@@ -365,32 +336,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         )
 
         shareClicked(shareHome)
-
-//        val dummyPageinfo = PageInfo(
-//            path = "discovery / dilayani - tokopedia",
-//            name = "Dilayani Tokopedia",
-//            type = "general",
-//            searchApplink = "tokopedia://search-autocomplete?hint=Cari%20di%20Dilayani%20Tokopedia&navsource=tokocabang&srp_page_id=45021&srp_page_title=Dilayani%20Tokopedia",
-//            identifier = "dilayani - tokopedia",
-//            id = 45021,
-// //            share = Share(
-// //                enabled = true,
-// //                title = "Dilayani Tokopedia | Tokopedia",
-// //                image = "https://images.tokopedia.net/img/QBrNqa/2022/10/12/facd6ee4-849f-4309-a3c9-69261238929a.png",
-// //                url = "https://www.tokopedia.com/discovery/dilayani-tokopedia, description=Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
-// //            ),
-//            campaignCode = "tca00031148_dilayani tokopedia_18march22 -18 march24",
-//            searchTitle = "Cari di Dilayani Tokopedia",
-//            showChooseAddress = true,
-//            tokonowMiniCartActive = false,
-// //            additionalInfo = AdditionalInfo(category = null, categoryData = null),
-//            redirectionUrl = null,
-//            isAdult = 0,
-//            origin = 0
-//        )
-//
-//
-//        showUniversalShareBottomSheet(dummyPageinfo)
     }
 
     private fun updateShareHomeData(
@@ -498,17 +443,11 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun showEmptyState(@HomeStaticLayoutId id: String) {
         localCacheModel?.service_type?.let { serviceType ->
             if (id != EMPTY_STATE_OUT_OF_COVERAGE) {
-//                rvLayoutManager?.setScrollEnabled(false)
+                rvLayoutManager?.setScrollEnabled(false)
                 viewModelDtHome.getEmptyState(id, serviceType)
             } else {
                 viewModelDtHome.getEmptyState(id, serviceType)
-//                viewModelDtHome.getProductRecomOoc()
             }
-
-//            miniCartWidgetget?.hide()
-//            miniCartWidget?.hideCoachMark()
-//            setToolbarTypeTitle()
-//            setupPadding(false)
         }
     }
 
@@ -624,17 +563,16 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun onRefreshLayout() {
         rvLayoutManager?.setScrollEnabled(true)
         anchorTabAdapter?.resetToFirst()
-        loadLayout()
+        switchService()
     }
 
     private fun loadLayout() {
-        viewModelDtHome.getLoadingState()
+        viewModelDtHome.loadLayout()
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         loadHeaderBackgroundLoading()
-        checkAddressDataAndServiceArea()
         showLayout()
         visibilityChooseAddress(false)
         visibilityAnchorTab(false)
@@ -674,37 +612,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun getAutoCompleteApplinkPattern() =
         ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE + "&" + getParamDtSRP()
 
-    private fun switchServiceOrLoadLayout() {
+    private fun switchService() {
         localCacheModel?.apply {
-            viewModelDtHome.switchServiceOrLoadLayout(
-//                externalServiceType = externalServiceType,
-//                localCacheModel = this
-            )
+            viewModelDtHome.switchService()
         }
-    }
-
-    private fun checkAddressDataAndServiceArea() {
-        checkIfChooseAddressWidgetDataUpdated()
-        val shopId = localCacheModel?.shop_id.toLongOrZero()
-        val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
-        checkStateNotInServiceArea(shopId, warehouseId)
-    }
-
-    private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
-//        context?.let {
-//            when {
-//                shopId == 0L -> {
-//                    viewModelDtHome.getChooseAddress(SOURCE)
-//                }
-//                warehouseId == 0L -> {
-// //                    showEmptyStateNoAddress()
-//                }
-//                else -> {
-        showLayout()
-// //                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
-//                }
-//            }
-//        }
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -748,9 +659,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
-        checkStateNotInServiceArea(
-            warehouseId = data.tokonow.warehouseId
-        )
     }
 
     private fun showEmptyStateNoAddress() {
@@ -999,18 +907,25 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
          * select and scroll tab anchor from pisition
          */
         if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList().isNotEmpty()) {
-            val visitable = viewModelDtHome.getHomeVisitableList()[visiblePosition]
-
-            val anchorTabUiModel = viewModelDtHome.menuList.value?.find {
-                it.visitable == visitable
-            }
+            val anchorTabUiModel = viewModelDtHome.getAnchorTabByVisitablePosition(visiblePosition)
             val indexAnchorTab = viewModelDtHome.menuList.value?.indexOf(anchorTabUiModel)
 
             if (anchorTabUiModel != null && indexAnchorTab != null) {
+                smoothScrollAnchorTab(indexAnchorTab)
                 anchorTabAdapter?.selectMenu(anchorTabUiModel)
-                binding?.headerCompHolder?.smoothScrollToPosition(indexAnchorTab)
             }
         }
+    }
+
+    private fun smoothScrollAnchorTab(position: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller =
+            object : LinearSmoothScroller(context) {
+                override fun getHorizontalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+        smoothScroller.targetPosition = position
+        anchorTabLinearLayoutManager?.startSmoothScroll(smoothScroller)
     }
 
     private fun smoothScrollToComponentWithPosition(position: Int) {
@@ -1088,5 +1003,32 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     override fun permissionAction(action: String, label: String) {
+    }
+
+    private fun createRecommendationCallback(): DtHomeCategoryListener {
+        return object : DtHomeCategoryListener {
+            override val windowHeight: Int
+                get() = if (activity != null) {
+                    root?.height ?: 0
+                } else {
+                    0
+                }
+            override val homeMainToolbarHeight: Int
+                get() {
+                    var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                    context?.let { context ->
+                        navToolbar?.let {
+                            height = navToolbar?.height
+                                ?: context.resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                            height += 8f.toDpInt()
+                        }
+                    }
+                    return height
+                }
+            override val homeMainAnchorTabHeight: Int
+                get() {
+                    return binding?.headerCompHolder?.height ?: 0
+                }
+        }
     }
 }

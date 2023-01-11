@@ -2,7 +2,7 @@ package com.tokopedia.dilayanitokopedia.home.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-internal object DtGetHomeLayoutData : GqlQueryInterface {
+internal object GetHomeLayoutData : GqlQueryInterface {
 
     private const val OPERATION_NAME = "getHomeChannelV2"
 

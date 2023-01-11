@@ -15,7 +15,7 @@ class DtTopCarouselCallback {
                 // no-op
             }
 
-            override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
+            override fun onSeeAllHeaderClicked(channel: ChannelModel, applink: String) {
                 onActionLinkClicked(channel.channelHeader.applink)
             }
 

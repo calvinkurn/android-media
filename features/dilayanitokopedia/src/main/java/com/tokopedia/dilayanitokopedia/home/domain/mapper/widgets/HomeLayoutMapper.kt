@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.home.domain.mapper
+package com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets
 
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.FEATURED_SHOP
@@ -8,11 +8,11 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MI
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_TOP_CAROUSEL
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.FeaturedShopMapper.mapToFeaturedShop
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.LeftCarouselMapper.mapToLeftCarousel
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.TopCarouselMapper.mapTopCarouselModel
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.FeaturedShopMapper.mapToFeaturedShop
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.LeftCarouselMapper.mapToLeftCarousel
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.LegoBannerMapper.mapLegoBannerDataModel
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.SliderBannerMapper.mapSliderBannerModel
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.TopCarouselMapper.mapTopCarouselModel
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
@@ -75,6 +75,6 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
         val loadingLayout = HomeLoadingStateUiModel(id = LOADING_STATE)
-        add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED))
+        add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED , null))
     }
 }

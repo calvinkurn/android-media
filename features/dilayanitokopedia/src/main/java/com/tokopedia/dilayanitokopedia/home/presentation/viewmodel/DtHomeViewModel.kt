@@ -9,10 +9,12 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabData
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.AnchorTabMapper.mapMenuList
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUseCase
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMapper.mapMenuList
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.HomeLayoutMapper.addLoadingIntoList
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.HomeLayoutMapper.mapHomeLayoutList
+import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetHomeAnchorTabUseCase
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
@@ -27,7 +29,8 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class DtHomeViewModel @Inject constructor(
-    private val getHomeLayoutDataUseCase: DtGetHomeLayoutDataUseCase,
+    private val getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase,
+    private val getHomeAnchorTabUseCase: GetHomeAnchorTabUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
@@ -68,6 +71,15 @@ class DtHomeViewModel @Inject constructor(
         return homeLayoutItemList.mapNotNull { it.layout }
     }
 
+    fun getPositionUsingGroupId(groupId: String): HomeLayoutItemUiModel? {
+        return homeLayoutItemList.find { groupId == it.groupId }
+    }
+
+    fun getAnchorTabByVisitablePosition(indexVisitable: Int): AnchorTabUiModel? {
+        val getGroupId = homeLayoutItemList.get(indexVisitable).groupId
+        return _menuList.value?.find { getGroupId == it.groupId }
+    }
+
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             homeLayoutItemList.clear()
@@ -82,14 +94,23 @@ class DtHomeViewModel @Inject constructor(
             )
 
             _homeLayoutList.postValue(Success(data))
-            val menuList = dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList())
 
-            _menuList.postValue(menuList)
-
+            getAnchorTabMenu(homeLayoutResponse)
             getRecommendationForYouNew()
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
+    }
+
+    /**
+     * anchor tab contain info and visitable of click to scroll
+     */
+    private fun getAnchorTabMenu(homeLayoutResponse: List<HomeLayoutResponse>) {
+        launchCatchError(block = {
+            val anchorTabResponse = getHomeAnchorTabUseCase.execute()
+            val menuList = anchorTabResponse.mapMenuList(homeLayoutResponse, getHomeVisitableList())
+            _menuList.postValue(menuList)
+        }) {}
     }
 
     private fun getRecommendationForYouNew() {
@@ -98,7 +119,7 @@ class DtHomeViewModel @Inject constructor(
 
         val data = HomeLayoutListUiModel(items = newVisitable, state = DtLayoutState.SHOW)
 
-        homeLayoutItemList.add(HomeLayoutItemUiModel(HomeRecommendationFeedDataModel(), state = HomeLayoutItemState.LOADING))
+        homeLayoutItemList.add(HomeLayoutItemUiModel(HomeRecommendationFeedDataModel(), state = HomeLayoutItemState.LOADING, null))
         _homeLayoutList.postValue(Success(data))
     }
 
@@ -109,11 +130,15 @@ class DtHomeViewModel @Inject constructor(
         return AnchorTabData.getListAnchorTab()
     }
 
-    fun switchServiceOrLoadLayout() {
+    fun switchService() {
         getLoadingState()
     }
 
-    fun getLoadingState() {
+    fun loadLayout() {
+        getLoadingState()
+    }
+
+    private fun getLoadingState() {
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
         val data = HomeLayoutListUiModel(

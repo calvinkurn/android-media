@@ -5,5 +5,6 @@ import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 
 data class HomeLayoutItemUiModel(
     val layout: Visitable<*>?,
-    val state: HomeLayoutItemState
+    val state: HomeLayoutItemState,
+    val groupId: String?
 )
