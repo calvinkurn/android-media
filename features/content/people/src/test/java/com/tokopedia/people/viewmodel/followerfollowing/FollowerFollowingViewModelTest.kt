@@ -39,6 +39,9 @@ class FollowerFollowingViewModelTest {
     private val mockFollowingList = followingListBuilder.buildModel()
 
     private val mockNextCursor = "asdf"
+    private val mockFollowerListWithCursor = followerListBuilder.buildModel(cursor = mockNextCursor)
+    private val mockFollowingListWithCursor = followingListBuilder.buildModel(cursor = mockNextCursor)
+
     private val mockFollowerListEmptyWithCursor = followerListBuilder.buildModel(size = 0, cursor = mockNextCursor)
     private val mockFollowingListEmptyListWithCursor = followingListBuilder.buildModel(size = 0, cursor = mockNextCursor)
 
@@ -93,6 +96,18 @@ class FollowerFollowingViewModelTest {
     }
 
     @Test
+    fun `when user load follower list, the list is not empty  & has next cursor, it should not re-hit the gql`() {
+        robot.start {
+            coEvery { repo.getFollowerList(any(), "", any()) } returns mockFollowerListWithCursor
+            coEvery { repo.getFollowerList(any(), mockNextCursor, any()) } returns mockFollowerList
+            getFollowers()
+
+            val result = robot.viewModel.profileFollowersListLiveData.getOrAwaitValue()
+            result equalTo Success(mockFollowerListWithCursor)
+        }
+    }
+
+    @Test
     fun `when user load following list successfully, it should emit the data`() {
         robot.start {
             getFollowings()
@@ -122,6 +137,18 @@ class FollowerFollowingViewModelTest {
 
             val result = robot.viewModel.profileFollowingsListLiveData.getOrAwaitValue()
             result equalTo Success(mockFollowingList)
+        }
+    }
+
+    @Test
+    fun `when user load following list, the list is not empty & has next cursor, it should not re-hit the gql`() {
+        robot.start {
+            coEvery { repo.getFollowingList(any(), "", any()) } returns mockFollowingListWithCursor
+            coEvery { repo.getFollowingList(any(), mockNextCursor, any()) } returns mockFollowingList
+            getFollowings()
+
+            val result = robot.viewModel.profileFollowingsListLiveData.getOrAwaitValue()
+            result equalTo Success(mockFollowingListWithCursor)
         }
     }
 
