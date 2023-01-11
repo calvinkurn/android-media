@@ -481,6 +481,7 @@ object DeeplinkMapper {
         DLP.matchPattern(ApplinkConst.ORDER_TRACKING) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink) },
         DLP.matchPattern(ApplinkConst.ORDER_POD) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink) },
         DLP.matchPattern(ApplinkConst.SHARE_ADDRESS) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationShareAddress(deeplink) },
+        DLP.matchPattern(ApplinkConst.DilayaniTokopedia.HOME) { _, _, _, _ -> ApplinkConstInternalDilayaniTokopedia.HOME },
 
         DLP.matchPattern(ApplinkConst.ORDER_HISTORY_SHOP) { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, idList?.getOrNull(0)) },
         DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD),
