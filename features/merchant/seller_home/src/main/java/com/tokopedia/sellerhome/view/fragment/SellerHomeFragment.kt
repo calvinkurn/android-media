@@ -2774,7 +2774,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showDownloadToaster(appLink: String) {
         activity?.let {
-            val isDownloadAppLink = appLink.contains(ApplinkConst.WEBVIEW_DOWNLOAD, true)
+            val isDownloadAppLink = appLink.startsWith(ApplinkConst.WEBVIEW_DOWNLOAD, true)
             if (isDownloadAppLink) {
                 view?.run {
                     post {
