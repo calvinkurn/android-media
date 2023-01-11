@@ -113,6 +113,7 @@ class AffiliateHomeFragment :
         private const val TICKER_SHARED_PREF = "tickerSharedPref"
         private const val USER_ID = "userId"
         private const val TICKER_ID = "tickerId"
+        private const val RANGE_TODAY = "0"
         fun getFragmentInstance(
             affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface,
             affiliateActivity: AffiliateActivityInterface
@@ -158,16 +159,6 @@ class AffiliateHomeFragment :
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
         sendOpenScreenTracking()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        affiliateHomeViewModel.startSSE()
-    }
-
-    override fun onStop() {
-        affiliateHomeViewModel.stopSSE()
-        super.onStop()
     }
 
     private fun sendOpenScreenTracking() {
@@ -503,6 +494,11 @@ class AffiliateHomeFragment :
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_FILTER
         )
         affiliateHomeViewModel.onRangeChanged(range)
+        if (range.value == RANGE_TODAY) {
+            affiliateHomeViewModel.startSSE()
+        } else {
+            affiliateHomeViewModel.stopSSE()
+        }
     }
 
     override fun onRangeSelectionButtonClicked() {
