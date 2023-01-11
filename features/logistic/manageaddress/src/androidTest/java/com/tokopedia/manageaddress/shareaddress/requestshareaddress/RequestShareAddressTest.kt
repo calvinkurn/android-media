@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.manageaddress.di.DaggerTestAppComponent
 import com.tokopedia.manageaddress.di.FakeAppModule
 import com.tokopedia.manageaddress.di.FakeGraphqlUseCase

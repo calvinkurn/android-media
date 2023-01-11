@@ -80,11 +80,15 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cassava
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+    implementation projectOrAar(rootProject.ext.libraries.keys)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.supportLibDependencies.design

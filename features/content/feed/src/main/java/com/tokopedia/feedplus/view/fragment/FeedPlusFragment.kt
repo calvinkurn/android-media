@@ -15,8 +15,11 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +61,7 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
@@ -70,7 +74,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
@@ -108,11 +115,7 @@ import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -138,7 +141,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.net.ConnectException
@@ -151,15 +153,6 @@ import com.tokopedia.wishlist_common.R as Rwishlist
 /**
  * @author by nisie on 5/15/17.
  */
-
-const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
-const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
-const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
-const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
-const val CLICK_SHOP_TOPADS = "click - shop - topads"
-const val CLICK_PRODUCT_TOPADS = "click - product - topads"
-const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
-
 @Suppress("LateinitUsage")
 class FeedPlusFragment :
     BaseDaggerFragment(),
@@ -352,6 +345,14 @@ class FeedPlusFragment :
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
 
+        const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
+        const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
+        const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
+        const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
+        const val CLICK_SHOP_TOPADS = "click - shop - topads"
+        const val CLICK_PRODUCT_TOPADS = "click - product - topads"
+        const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
+
         fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()
             fragment.arguments = bundle
@@ -473,10 +474,13 @@ class FeedPlusFragment :
                                             feedFollowersOnlyBottomSheet?.dismiss()
                                         }
                                     }
-                                } else {val messageRes =
-                                    if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast
-                                           showToast(getString(messageRes), Toaster.TYPE_NORMAL
-                                        )
+                                } else {
+                                    val messageRes =
+                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast
+                                    showToast(
+                                        getString(messageRes),
+                                        Toaster.TYPE_NORMAL
+                                    )
                                 }
                                 onSuccessFollowUnfollowKol(data.rowNumber)
                             } else {
@@ -1476,7 +1480,12 @@ class FeedPlusFragment :
         }
         dialog.setSecondaryCTAClickListener {
             feedAnalytics.clickDeleteConfirmThreeDotsPage(
-                id, shopId, type, isFollowed, isVideo, authorType
+                id,
+                shopId,
+                type,
+                isFollowed,
+                isVideo,
+                authorType
             )
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
@@ -1623,7 +1632,7 @@ class FeedPlusFragment :
     ) {
         onGoToLink(redirectUrl)
         val trackerId = if (isCaption) {
-            getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17981")
+            getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17981", trackerIdAsgcRecom = "40070")
         } else {
             getTrackerIdForCampaignSaleTracker(
                 positionInFeed,
@@ -1706,7 +1715,7 @@ class FeedPlusFragment :
             val finalId =
                 if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
             val trackerId =
-                getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "13452")
+                getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "13452", trackerIdAsgcRecom = "40065")
             getFeedTrackerDataModelFromPosition(positionInFeed, trackerId)?.let {
                 feedAnalytics.evenClickMenu(
                     it
@@ -1722,7 +1731,7 @@ class FeedPlusFragment :
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
                 val trackerIdReport =
-                    getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17985")
+                    getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17985", trackerIdAsgcRecom = "40066")
                 feedAnalytics.eventClickThreeDotsOption(
                     finalId,
                     "laporkan",
@@ -1746,8 +1755,7 @@ class FeedPlusFragment :
                                         positionInFeed,
                                         postId,
                                         reasonType,
-                                        reasonDesc,
-                                        "content"
+                                        reasonDesc
                                     )
                                 }
                             }
@@ -1797,7 +1805,12 @@ class FeedPlusFragment :
                     authorType
                 )
                 feedAnalytics.clickDeleteThreeDotsPage(
-                    finalId, authorId, postType, isFollowed, mediaType, authorType
+                    finalId,
+                    authorId,
+                    postType,
+                    isFollowed,
+                    mediaType,
+                    authorType
                 )
             }
             sheet.onDismiss = {
@@ -1813,7 +1826,11 @@ class FeedPlusFragment :
 
             sheet.onClosedClicked = {
                 feedAnalytics.eventCloseThreeDotBS(
-                    finalId, postType, isFollowed, authorId, authorType
+                    finalId,
+                    postType,
+                    isFollowed,
+                    authorId,
+                    authorType
                 )
             }
         }
@@ -2565,8 +2582,8 @@ class FeedPlusFragment :
                     hasVoucher = card.hasVoucher,
                     authorType = card.author.type.toString()
                 ),
-                    viewModelFactory,
- customMvcTracker = customMvcTracker
+                viewModelFactory,
+                customMvcTracker = customMvcTracker
             )
             productTagBS.closeClicked = {
                 val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
@@ -2845,6 +2862,31 @@ class FeedPlusFragment :
         afterRefresh = false
     }
 
+    private fun checkIfPostsAreSame(model: Visitable<*>?): Boolean {
+        val adapterItemAtFirstPosition = adapter.getlist()[1]
+        when (model) {
+            is DynamicPostUiModel -> {
+                if (adapterItemAtFirstPosition is DynamicPostUiModel) {
+                    return adapterItemAtFirstPosition.feedXCard.id == model.feedXCard.id
+                }
+                return false
+            }
+            is TopadsHeadLineV2Model -> {
+                if (adapterItemAtFirstPosition is TopadsHeadLineV2Model) {
+                    return adapterItemAtFirstPosition.feedXCard.id == model.feedXCard.id
+                }
+                return false
+            }
+            is ShopRecomWidgetModel -> {
+                if (adapterItemAtFirstPosition is ShopRecomWidgetModel) {
+                    return true
+                }
+                return false
+            }
+            else -> return false
+        }
+    }
+
     private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
         if (!firstPageDomainModel.shouldOverwrite) {
             adapter.updateList(firstPageDomainModel.dynamicFeedDomainModel.postList)
@@ -2852,7 +2894,13 @@ class FeedPlusFragment :
         }
         if (isRefreshForPostCOntentCreation) {
             isRefreshForPostCOntentCreation = false
-            adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
+            val fetchedPostIsSameAsTopMostPost =
+                firstPageDomainModel.dynamicFeedDomainModel.postList.size >= 2 && checkIfPostsAreSame(
+                    firstPageDomainModel.dynamicFeedDomainModel.postList[1]
+                )
+            if (!fetchedPostIsSameAsTopMostPost) {
+                adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
+            }
             return
         }
 
@@ -3476,7 +3524,11 @@ class FeedPlusFragment :
         if (type == TYPE_TOPADS_HEADLINE_NEW) {
             sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
             feedAnalytics.clickSekSekarang(
-                postId, shopId, type, isFollowed, feedXCard.author.type.toString()
+                postId,
+                shopId,
+                type,
+                isFollowed,
+                feedXCard.author.type.toString()
             )
         } else {
             val trackerId =
@@ -3487,7 +3539,7 @@ class FeedPlusFragment :
                         "13426"
                     }
                 } else {
-                    ""
+                    if (feedXCard.followers.isFollowed.not()) "40069" else ""
                 }
             getFeedTrackerDataModelFromPosition(positionInFeed, trackerId = trackerId)?.let {
                 feedAnalytics.eventGridMoreProductCLicked(

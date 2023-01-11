@@ -124,7 +124,7 @@ class RecipeProductAnalytics(
             createAtcProductItemDataLayer(
                 id = product.id,
                 name = product.name,
-                price = product.priceFmt,
+                price = product.getPrice(),
                 categoryName = product.categoryName,
                 categoryId = product.categoryId,
                 quantity = product.minOrder.toString(),
