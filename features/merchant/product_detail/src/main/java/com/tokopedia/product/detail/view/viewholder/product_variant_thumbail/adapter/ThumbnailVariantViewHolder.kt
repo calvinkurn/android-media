@@ -51,8 +51,8 @@ class ThumbnailVariantViewHolder(
     }
 
     private fun setEvent(element: VariantOptionWithAttribute) = with(binding) {
-        root.setOnClickListener {
-            listener.onVariantClicked(element, VariantConstant.STATE_SELECTED)
+        variantCard.setOnClickListener {
+            listener.onThumbnailVariantClicked(element)
         }
     }
 
@@ -67,8 +67,11 @@ class ThumbnailVariantViewHolder(
                 variantCard.cardType = CardUnify2.TYPE_BORDER
             }
             VariantConstant.STATE_SELECTED -> {
-                variantCard.cardType = if (firstLoad) CardUnify2.TYPE_BORDER
-                else CardUnify2.TYPE_BORDER_ACTIVE
+                variantCard.cardType = if (firstLoad) {
+                    CardUnify2.TYPE_BORDER
+                } else {
+                    CardUnify2.TYPE_BORDER_ACTIVE
+                }
             }
             VariantConstant.STATE_UNSELECTED -> {
                 variantCard.cardType = CardUnify2.TYPE_BORDER
