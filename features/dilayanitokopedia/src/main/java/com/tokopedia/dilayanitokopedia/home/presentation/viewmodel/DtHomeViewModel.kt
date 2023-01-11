@@ -35,10 +35,6 @@ class DtHomeViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    companion object {
-        val RECOMWIDGET_GROUP_ID = "RECOMMENDATION_WIDGET_GROUP_ID_"
-    }
-
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -53,7 +49,7 @@ class DtHomeViewModel @Inject constructor(
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
 
-    val homeRecommendationDataModel = HomeRecommendationFeedDataModel()
+    private val homeRecommendationDataModel = HomeRecommendationFeedDataModel()
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         launchCatchError(block = {
@@ -119,7 +115,13 @@ class DtHomeViewModel @Inject constructor(
 
         val data = HomeLayoutListUiModel(items = newVisitable, state = DtLayoutState.SHOW)
 
-        homeLayoutItemList.add(HomeLayoutItemUiModel(HomeRecommendationFeedDataModel(), state = HomeLayoutItemState.LOADING, null))
+        homeLayoutItemList.add(
+            HomeLayoutItemUiModel(
+                HomeRecommendationFeedDataModel(),
+                state = HomeLayoutItemState.LOADING,
+                null
+            )
+        )
         _homeLayoutList.postValue(Success(data))
     }
 
