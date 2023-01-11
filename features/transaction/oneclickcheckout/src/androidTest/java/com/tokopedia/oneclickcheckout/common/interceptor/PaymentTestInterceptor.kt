@@ -62,10 +62,14 @@ class PaymentTestInterceptor : BaseOccInterceptor() {
     }
 
     override fun resetInterceptor() {
+        customGetPaymentFeeResponsePath = null
+        customGetPaymentFeeThrowable = null
         customGetListingParamResponsePath = null
         customGetListingParamThrowable = null
         customCreditCardTenorListResponsePath = null
         customCreditCardTenorListThrowable = null
+        customGoCicilInstallmentOptionResponsePath = null
+        customGoCicilInstallmentOptionThrowable = null
     }
 }
 
