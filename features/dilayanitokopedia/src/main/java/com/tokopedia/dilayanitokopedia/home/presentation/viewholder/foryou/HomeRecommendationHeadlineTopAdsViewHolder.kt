@@ -30,13 +30,12 @@ class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private val topAdsB
                     data
                 )
             }
-
         })
         binding?.headlineAds?.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
             override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
             }
         })
-        if (!element.headlineAds.data.isNullOrEmpty()){
+        if (!element.headlineAds.data.isNullOrEmpty()) {
             binding?.headlineAds?.displayAds(element.headlineAds, Int.ZERO)
         }
         binding?.headlineAdsShimmer?.hide()

@@ -15,34 +15,12 @@ class GetHomeAnchorTabUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetHomeAnchorTabResponse>(graphqlRepository) {
 
-    companion object {
-        private const val PARAM_TAB_NAME = "tabName"
-        private const val PARAM_LOCATION = "location"
-        private const val PARAM_SOURCE_TYPE = "sourceType"
-        private const val PARAM_TYPE = "type"
-        private const val PARAM_PRODUCT_PAGE = "productPage"
-        private const val PARAM_PAGE = "page"
-    }
-
     init {
         setGraphqlQuery(GetAnchorTabQuery)
         setTypeClass(GetHomeAnchorTabResponse::class.java)
     }
 
-    suspend fun execute(
-//        locationParamString: String,
-//        page: Int
-    ): GetHomeAnchorTabResponse.GetHomeIconV2 {
-//        setRequestParams(
-//            RequestParams.create()
-//                .apply {
-//                    putString(PARAM_PAGE, "dt")
-//                    putString(PARAM_TYPE, "banner,position,banner_ads")
-//                    putInt(PARAM_PRODUCT_PAGE, page)
-//                    putString(PARAM_LOCATION, locationParamString)
-//                }.parameters
-//        )
-
+    suspend fun execute(): GetHomeAnchorTabResponse.GetHomeIconV2 {
         return executeOnBackground().response
     }
 }

@@ -6,7 +6,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
  * Created by irpan on 29/11/22.
  */
 
-internal object GetDtHomeRecomendationQuery : GqlQueryInterface {
+internal object GetHomeRecommendationQuery : GqlQueryInterface {
 
     private const val OPERATION_NAME = "getHomeRecommendationProductV2"
 

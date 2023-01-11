@@ -62,7 +62,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
@@ -99,7 +98,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     companion object {
         const val SOURCE = "dilayanitokopedia"
         const val SOURCE_TRACKING = "dilayanitokopedia page"
-        private const val EXTRA_URL = "url"
 
         // scroll listener
         private const val RV_DIRECTION_TOP = 1
@@ -138,6 +136,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private var linearLayoutManager: CustomLinearLayoutManager? = null
     private var anchorTabLinearLayoutManager: LinearLayoutManager? = null
+
+    private val CLICK_TIME_INTERVAL: Long = 500
+    private var mLastClickTime = System.currentTimeMillis()
 
     private val adapter by lazy {
         DtHomeAdapter(
@@ -181,7 +182,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         initUiVariable()
         initNavToolbar()
         initRecyclerView()
-        initAnchorTabGql()
         initAnchorTabMenu()
         initRecyclerScrollListener()
         initRefreshLayout()
@@ -193,9 +193,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
         observeLiveData()
         loadLayout()
-    }
-
-    private fun initAnchorTabGql() {
     }
 
     private fun initScreenSootListener() {
@@ -226,7 +223,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         return object : DtAnchorTabAdapter.AnchorTabListener {
 
             override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int) {
-                var scrollPosition = adapter.data.indexOf(viewModelDtHome.getPositionUsingGroupId(anchorTabUiModel.groupId)?.layout)
+                var scrollPosition =
+                    adapter.data.indexOf(viewModelDtHome.getPositionUsingGroupId(anchorTabUiModel.groupId)?.layout)
                 // handle 0 value
                 if (position != 0 && scrollPosition == 0) return
                 if (scrollPosition == -1) return
@@ -673,10 +671,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private val CLICK_TIME_INTERVAL: Long = 500
-
-    private var mLastClickTime = System.currentTimeMillis()
-
     private fun onActionLinkClicked(actionLink: String) {
         val now = System.currentTimeMillis()
         if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
@@ -742,19 +736,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
         }
     }
-
-    private val homeMainToolbarHeight: Int
-        get() {
-            val defaultHeight = context?.resources?.getDimensionPixelSize(
-                R.dimen.dt_default_toolbar_status_height
-            ).orZero()
-            val height = (navToolbar?.height ?: defaultHeight)
-            val padding = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
-            ).orZero()
-
-            return height + padding
-        }
 
     private fun bindChooseAddressWidget() {
         chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
@@ -838,7 +819,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                     }
                 }
 
-                updateAnchorTabWhenScroll(recyclerView)
+                updateAnchorTabWhenScroll()
 
                 // for recommendation scroll
                 evaluateHomeComponentOnScroll(recyclerView)
@@ -898,7 +879,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun updateAnchorTabWhenScroll(recyclerView: RecyclerView) {
+    private fun updateAnchorTabWhenScroll() {
         val visiblePosition = rvLayoutManager?.findFirstCompletelyVisibleItemPosition()
 
         /**

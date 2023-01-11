@@ -59,10 +59,10 @@ object AnchorTabMapper {
          * if group id from hard code data same with groupId with visitable then add to list
          * the item added to list and get modified the visitable since still null
          */
-        
+
         this.icons.forEachIndexed anchorTabForEach@{ index, homeIcon ->
 
-            //remove later
+            // remove later
             // should homeIcon provide own group id, will get update later (the value should from be)
             val dummyGroupId = homeLayoutResponse[index].groupId
 
@@ -74,9 +74,7 @@ object AnchorTabMapper {
             )
             listMenu.add(anchorTab)
             listMenu = listMenu.distinctBy { it.groupId }.toMutableList()
-
         }
         return listMenu.toList()
     }
-
 }

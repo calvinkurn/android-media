@@ -59,8 +59,6 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
     private var totalScrollY = 0
-    private var tabName: String = ""
-    private var hasLoadData = false
 
     private var parentPool: RecyclerView.RecycledViewPool? = null
 

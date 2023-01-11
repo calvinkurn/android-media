@@ -75,6 +75,6 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
         val loadingLayout = HomeLoadingStateUiModel(id = LOADING_STATE)
-        add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED , null))
+        add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED, null))
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.dilayanitokopedia.home.domain.usecase
 
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetDtHomeRecommendationResponse
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeRecommendationProductV2
-import com.tokopedia.dilayanitokopedia.home.domain.query.GetDtHomeRecomendationQuery
+import com.tokopedia.dilayanitokopedia.home.domain.query.GetHomeRecommendationQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
@@ -18,16 +18,16 @@ class GetRecommendationForYouUseCase @Inject constructor(
 ) : GraphqlUseCase<GetDtHomeRecommendationResponse>(graphqlRepository) {
 
     companion object {
-        private const val PARAM_TAB_NAME = "tabName"
         private const val PARAM_LOCATION = "location"
-        private const val PARAM_SOURCE_TYPE = "sourceType"
         private const val PARAM_TYPE = "type"
         private const val PARAM_PRODUCT_PAGE = "productPage"
         private const val PARAM_PAGE = "page"
+        private const val VALUE_PAGE_DT = "dt"
+        private const val VALUE_TYPE = "banner,position,banner_ads"
     }
 
     init {
-        setGraphqlQuery(GetDtHomeRecomendationQuery)
+        setGraphqlQuery(GetHomeRecommendationQuery)
         setTypeClass(GetDtHomeRecommendationResponse::class.java)
     }
 
@@ -42,8 +42,8 @@ class GetRecommendationForYouUseCase @Inject constructor(
         setRequestParams(
             RequestParams.create()
                 .apply {
-                    putString(PARAM_PAGE, "dt")
-                    putString(PARAM_TYPE, "banner,position,banner_ads")
+                    putString(PARAM_PAGE, VALUE_PAGE_DT)
+                    putString(PARAM_TYPE, VALUE_TYPE)
                     putInt(PARAM_PRODUCT_PAGE, page)
                     putString(PARAM_LOCATION, locationParamString)
                 }.parameters

@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
-import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabData
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMapper.mapMenuList
@@ -125,13 +124,6 @@ class DtHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    /**
-     * still dummy, need to update
-     */
-    private fun dataMenuList(): MutableList<AnchorTabUiModel> {
-        return AnchorTabData.getListAnchorTab()
-    }
-
     fun switchService() {
         getLoadingState()
     }
@@ -156,15 +148,6 @@ class DtHomeViewModel @Inject constructor(
         }, {
             _chooseAddress.postValue(Fail(it))
         }, source)
-    }
-
-    fun getPositionWidget(listComponent: MutableList<AnchorTabUiModel>?, pinnedComponentId: AnchorTabUiModel): Int {
-        listComponent?.forEachIndexed { index, componentsItem ->
-            if (componentsItem == pinnedComponentId) {
-                return index
-            }
-        }
-        return -1
     }
 
     fun isLastWidgetIsRecommendationForYou(): Boolean? {

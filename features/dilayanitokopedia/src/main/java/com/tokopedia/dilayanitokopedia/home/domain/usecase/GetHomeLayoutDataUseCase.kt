@@ -3,7 +3,7 @@ package com.tokopedia.dilayanitokopedia.home.domain.usecase
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LocationParamMapper.mapLocation
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
-import com.tokopedia.dilayanitokopedia.home.domain.query.GetHomeLayoutData
+import com.tokopedia.dilayanitokopedia.home.domain.query.GetHomeLayoutDataQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -21,16 +21,12 @@ class GetHomeLayoutDataUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_PAGE = "page"
-        private const val PARAM_PARAM = "param"
-        private const val PARAM_GROUPIDS = "groupIDs"
-        private const val PARAM_CHANNELIDS = "channelIDs"
         private const val PARAM_LOCATION = "location"
-
         private const val PARAM_VALUE_PAGE_DT = "dt"
     }
 
     init {
-        setGraphqlQuery(GetHomeLayoutData)
+        setGraphqlQuery(GetHomeLayoutDataQuery)
         setTypeClass(GetHomeLayoutResponse::class.java)
     }
 

@@ -30,11 +30,11 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
     private val loadMoreModel = HomeRecommendationLoadMore()
 
     fun loadInitialPage(locationParamString: String) {
-        val INIT_NUMBER = 1
+        val defaultPage = 1
         launchCatchError(coroutineContext, block = {
-            val data = getRecommendationForYouUseCase.execute(locationParamString, INIT_NUMBER)
+            val data = getRecommendationForYouUseCase.execute(locationParamString, defaultPage)
             val visitableData =
-                HomeRecommendationMapper.mapToHomeRecommendationDataModel(data, TAB_DILAYANI_TOKOPEDIA, INIT_NUMBER)
+                HomeRecommendationMapper.mapToHomeRecommendationDataModel(data, TAB_DILAYANI_TOKOPEDIA, defaultPage)
             if (data.products.isEmpty()) {
                 _homeRecommendationLiveData.postValue(
                     HomeRecommendationDataModel(homeRecommendations = listOf(HomeRecommendationEmpty()))
