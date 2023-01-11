@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.di
 import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -14,5 +15,10 @@ abstract class GotoKycViewModelModule {
     @IntoMap
     @ViewModelKey(GotoKycMainViewModel::class)
     abstract fun gotoKycMainViewModel(viewModel: GotoKycMainViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(GotoKycTransparentViewModel::class)
+    abstract fun gotoKycTransparentViewModel(viewModel: GotoKycTransparentViewModel): ViewModel
 
 }
