@@ -716,12 +716,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun setOnAnnouncementWidgetCtaClicked(element: AnnouncementWidgetUiModel) {
-        val appLink = element.data?.appLink.orEmpty()
-        showDownloadToaster(appLink)
         context?.let {
-            RouteManager.route(it, element.data?.appLink.orEmpty())
+            val appLink = element.data?.appLink.orEmpty()
+            val isRouting = RouteManager.route(it, appLink)
+            if (isRouting) {
+                showDownloadToaster(appLink)
+                SellerHomeTracking.sendAnnouncementClickEvent(element)
+            }
         }
-        SellerHomeTracking.sendAnnouncementClickEvent(element)
     }
 
     override fun sendUnificationImpressionEvent(element: UnificationWidgetUiModel) {
@@ -2777,10 +2779,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 view?.run {
                     post {
                         val message = context.getString(R.string.sah_toaster_download_message)
-                        Toaster.build(
-                            this,
-                            message
-                        ).show()
+                        Toaster.build(this, message).show()
                     }
                 }
             }
