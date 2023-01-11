@@ -18,6 +18,10 @@ import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
+import java.util.HashMap;
 
 /**
  * Created by nisie on 8/12/16.
@@ -43,6 +47,8 @@ public class ContactUsActivity extends BaseSimpleActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        String dataAppLink = getIntent().getData().toString();
+        sendToNewRelicLog(dataAppLink);
     }
 
     @Override
@@ -177,5 +183,11 @@ public class ContactUsActivity extends BaseSimpleActivity implements
         void onBackPressed();
 
         boolean canGoBack();
+    }
+
+    void sendToNewRelicLog(String url) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("urlPath", url);
+        ServerLogger.log(Priority.P2, "CONTACT_US_FAQ_ACTIVITY", map);
     }
 }

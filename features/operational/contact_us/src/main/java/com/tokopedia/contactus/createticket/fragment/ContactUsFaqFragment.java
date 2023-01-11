@@ -31,11 +31,15 @@ import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
 import com.tokopedia.contactus.createticket.utils.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
+
+import java.util.HashMap;
 
 /**
  * Created by nisie on 8/12/16.
@@ -47,6 +51,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     private static final String ORDER_ID = "order_id";
     private static final String APPLINK_SCHEME = "tokopedia://";
     private static final String CHATBOT_SCHEME = "tokopedia://topchat";
+    private static final String NEW_RELIC_LOG_TAG = "CONTACT_US_FAQ_FRAGMENT";
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -106,6 +111,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         } else
             url = getArguments().getString(EXTRAS_PARAM_URL);
 
+        sendToNewRelicLogOnLandingPage(url);
         webView.loadAuthUrlWithFlags(url, session);
     }
 
@@ -257,35 +263,42 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                         webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
                                 .BASE_CONTACT_US, mContext), session);
                     }
+                    sendToNewRelicLog(url.toString());
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID,
-                            url.getQueryParameter(SOLUTION_ID) == null ? "" : url
-                                    .getQueryParameter(SOLUTION_ID));
-                    bundle.putString(ContactUsActivity.PARAM_TAG,
-                            url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS));
+                    String solutionId = url.getQueryParameter(SOLUTION_ID) == null ? "" : url
+                            .getQueryParameter(SOLUTION_ID);
+                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID, solutionId);
+                    String tag = url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS);
+                    bundle.putString(ContactUsActivity.PARAM_TAG, tag);
                     bundle.putString(ContactUsActivity.PARAM_ORDER_ID,
                             url.getQueryParameter(ORDER_ID) == null ? "" : url.getQueryParameter
                                     (ORDER_ID));
+                    sendToNewRelicLog(url.toString(), "create_ticket", solutionId, tag);
                     listener.onGoToCreateTicket(bundle);
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("return")) {
                     Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.finish_contact_us)), Toast.LENGTH_LONG).show();
                     getActivity().finish();
+                    sendToNewRelicLog(url.toString());
                     return true;
                 } else if (url.toString().contains(CHATBOT_SCHEME)) {
                     String messageId = url.getLastPathSegment();
-                    Intent chatBotIntent = RouteManager.getIntent(getContext(), ApplinkConst.CHATBOT
-                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
+                    String chatRoute = ApplinkConst.CHATBOT
+                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId);
+                    sendToNewRelicLog(url.toString(), chatRoute);
+                    Intent chatBotIntent = RouteManager.getIntent(getContext(), chatRoute);
                     startActivity(chatBotIntent);
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)) {
                     RouteManager.route(getActivity(), url.toString());
+                    sendToNewRelicLog(url.toString());
                     return true;
                 } else {
+                    sendToNewRelicLog(url.toString());
                     return false;
                 }
             } catch (NullPointerException e) {
@@ -317,5 +330,34 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                 return webView != null && webView.canGoBack();
             }
         };
+    }
+
+    void sendToNewRelicLogOnLandingPage(String url) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("urlPath", url);
+        ServerLogger.log(Priority.P2, NEW_RELIC_LOG_TAG, map);
+    }
+
+    void sendToNewRelicLog(String url) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("urlPath", url);
+        ServerLogger.log(Priority.P2, NEW_RELIC_LOG_TAG, map);
+    }
+
+    void sendToNewRelicLog(String url, String action, String solutionId, String tags) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("urlPath", url);
+        map.put("action", action);
+        map.put("solutionId", solutionId);
+        map.put("tags", tags);
+        ServerLogger.log(Priority.P2, NEW_RELIC_LOG_TAG, map);
+    }
+
+    void sendToNewRelicLog(String url, String chatRoute) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("urlPath", url);
+        map.put("action", "to_chat_bot");
+        map.put("addressChat", chatRoute);
+        ServerLogger.log(Priority.P2, NEW_RELIC_LOG_TAG, map);
     }
 }
