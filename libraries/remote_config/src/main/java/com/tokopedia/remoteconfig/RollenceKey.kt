@@ -13,7 +13,7 @@ object RollenceKey {
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
-    //home component rollence section
+    // home component rollence section
     const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
     const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
     const val HOME_COMPONENT_LEGO24BANNER_VARIANT = "lego24_new"
@@ -28,16 +28,16 @@ object RollenceKey {
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
 
-    //TBD
+    // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
-    //Recommendation page section
+    // Recommendation page section
     const val RECOM_PAGE_CPM_EXP = "ShopAdsIM3"
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
 
-    //Auto Complete
+    // Auto Complete
     const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
     const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
 
@@ -65,7 +65,7 @@ object RollenceKey {
     const val KEY_GOFOOD_SEARCH = "gofood_search"
 
     // TokoChat
-    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat"
+    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
@@ -74,12 +74,12 @@ object RollenceKey {
     const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
 
     // Saldo
-    const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval";
+    const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval"
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
-    //Play
+    // Play
     const val SWIPE_LIVE_ROOM = "play_sc"
 
     // Bubbles
