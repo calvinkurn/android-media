@@ -15,18 +15,31 @@ data class AffiliateSSEAdpTotalClick(
         val metricType: String? = null,
         @SerializedName("metric_value")
         val metricValue: Int? = null,
+        @SerializedName("metric_value_fmt")
+        val metricValueFmt: String? = null,
         @SerializedName("metric_difference_value")
         val metricDifferenceValue: Int? = null,
-        @SerializedName("page_type")
-        val pageType: Int? = null,
-        @SerializedName("item_id")
-        val itemId: Long? = null,
+        @SerializedName("metric_difference_value_fmt")
+        val metricDifferenceValueFmt: String? = null,
         @SerializedName("tooltip")
         val tooltip: ToolTip? = null
     ) {
         data class ToolTip(
             @SerializedName("metrics")
-            val metrics: List<String?>? = null
-        )
+            val metrics: List<Metric?>? = null
+        ) {
+            data class Metric(
+                @SerializedName("metric_type")
+                val metricType: String? = null,
+                @SerializedName("metric_value")
+                val metricValue: String? = null,
+                @SerializedName("metric_value_fmt")
+                val metricValueFmt: String? = null,
+                @SerializedName("metric_difference_fmt")
+                val metricDifferenceFmt: String? = null,
+                @SerializedName("metric_difference_value")
+                val metricDifferenceValue: String? = null
+            )
+        }
     }
 }
