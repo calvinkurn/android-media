@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog_library.ui.fragment.CatalogLihatSemuaPageFragment
 import com.tokopedia.kotlin.extensions.view.hide
 
-class CatalogLibraryKategoriActivity : BaseSimpleActivity() {
+class CatalogLibraryLihatSemuaPageActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         toolbar?.hide()

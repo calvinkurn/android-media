@@ -28,5 +28,5 @@ object CatalogLibraryConstant {
     const val TOTAL_ROWS_VIRAL = 1
     const val TOTAL_ROWS_CATALOG = 5
 
-    const val APP_LINK_KATEGORI = "tokopedia://catalog-library/kategori/"
+    const val APP_LINK_KATEGORI = "tokopedia://catalog-library/kategori"
 }

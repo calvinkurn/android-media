@@ -24,7 +24,7 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
             this.setRequestParams(
                 getRequestParams(
                     categoryIdentifier,
-                    sortType.toString(),
+                    sortType,
                     rows,
                     page
                 )
@@ -45,13 +45,13 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
 
     private fun getRequestParams(
         categoryIdentifier: String,
-        sortType: String,
+        sortType: Int,
         rows: Int,
         page: Int
     ): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[CATEGORY_IDENTIFIER] = categoryIdentifier
-        requestMap[SORT_TYPE] = sortType
+        requestMap[SORT_TYPE] = sortType.toString()
         requestMap[ROWS] = rows.toString()
         requestMap[PAGE] = page.toString()
         return requestMap

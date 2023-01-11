@@ -16,6 +16,8 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class CatalogLandingPageViewModel @Inject constructor(
+    private val catalogTopFiveUseCase: CatalogProductsUseCase,
+    private val catalogMostViralUseCase: CatalogProductsUseCase,
     private val catalogProductListUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 
@@ -29,8 +31,8 @@ class CatalogLandingPageViewModel @Inject constructor(
         sortType: Int,
         rows: Int
     ) {
-        catalogProductListUseCase.cancelJobs()
-        catalogProductListUseCase.getCatalogProductsData(
+        catalogTopFiveUseCase.cancelJobs()
+        catalogTopFiveUseCase.getCatalogProductsData(
             ::onAvailableCatalogTopFiveData,
             ::onFailLandingPageData,
             categoryIdentifier,
@@ -44,8 +46,8 @@ class CatalogLandingPageViewModel @Inject constructor(
         sortType: Int,
         rows: Int
     ) {
-        catalogProductListUseCase.cancelJobs()
-        catalogProductListUseCase.getCatalogProductsData(
+        catalogMostViralUseCase.cancelJobs()
+        catalogMostViralUseCase.getCatalogProductsData(
             ::onAvailableCatalogMostViralData,
             ::onFailLandingPageData,
             categoryIdentifier,
