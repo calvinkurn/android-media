@@ -23,6 +23,7 @@ class OtherReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
     override fun bind(otherReviewModel: OtherReviewModel) {
         val context = itemView.context
         setForegroundClickViewAllCard()
+        binding?.cardViewAll?.description = itemView.resources.getString(R.string.review_view_all_desc)
         binding?.cardViewAll?.setCta(context.getString(R.string.global_view_all))
 
         itemView.setOnClickListener {

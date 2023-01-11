@@ -24,6 +24,7 @@ class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
     override fun bind(otherWishlistModel: OtherWishlistModel) {
         val context = itemView.context
         setForegroundClickViewAllCard()
+        binding?.cardViewAll?.description = itemView.resources.getString(R.string.wishlist_view_all_desc)
         binding?.cardViewAll?.setCta(context.getString(R.string.global_view_all))
 
         itemView.setOnClickListener {

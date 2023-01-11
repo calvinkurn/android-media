@@ -32,6 +32,7 @@ class OtherTransactionRevampViewHolder (itemView: View, val mainNavListener: Mai
 
     override fun bind(otherTransactionRevampModel: OtherTransactionRevampModel) {
         setForegroundClickViewAllCard()
+        binding?.cardViewAll?.description = itemView.resources.getString(R.string.transaction_view_all_desc)
         binding?.cardViewAll?.setCta(itemView.resources.getString(R.string.transaction_view_all))
         binding?.cardViewAll?.cardView?.setOnClickListener {
             val tracking = TrackingTransactionSection.getClickViewAllTransaction()

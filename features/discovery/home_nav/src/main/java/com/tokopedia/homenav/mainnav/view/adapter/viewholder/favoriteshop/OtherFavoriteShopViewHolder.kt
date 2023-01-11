@@ -23,6 +23,7 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
     override fun bind(otherFavoriteShopModel: OtherFavoriteShopModel) {
         val context = itemView.context
         setForegroundClickViewAllCard()
+        binding?.cardViewAll?.description = itemView.resources.getString(R.string.favorite_shop_view_all_desc)
         binding?.cardViewAll?.setCta(context.getString(R.string.global_view_all))
 
         itemView.setOnClickListener {

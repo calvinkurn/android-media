@@ -40,6 +40,7 @@
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
+    <string name="title_activity_revamp">Aktivitasmu</string>
 
     <string name="transaction_item_default_status">Menunggu pembayaran</string>
     <string name="transaction_item_total_product">%s\nBarang</string>
@@ -86,4 +87,9 @@
     <string name="wishlist_item_count_format">%d Barang</string>
 
     <string name="empty_state_review">Kasih ulasan untuk barang belanjaanmu nanti lewat sini.</string>
+
+    <string name="transaction_view_all_desc">Transaksi lainnya</string>
+    <string name="review_view_all_desc">Ulasan lainnya</string>
+    <string name="wishlist_view_all_desc">Wishlist lainnya</string>
+    <string name="favorite_shop_view_all_desc">Toko lainnya</string>
 </resources>
