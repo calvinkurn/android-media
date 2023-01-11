@@ -8,7 +8,7 @@ class CatalogLibraryDiffUtil : DiffUtil.ItemCallback<BaseCatalogLibraryDataModel
         oldItem: BaseCatalogLibraryDataModel,
         newItem: BaseCatalogLibraryDataModel
     ): Boolean {
-        return oldItem.name() == newItem.name()
+        return oldItem.type() == newItem.type()
     }
 
     override fun areContentsTheSame(
@@ -24,5 +24,4 @@ class CatalogLibraryDiffUtil : DiffUtil.ItemCallback<BaseCatalogLibraryDataModel
     ): Any? {
         return oldItem.getChangePayload(newItem)
     }
-
 }
