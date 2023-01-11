@@ -7,8 +7,7 @@ import android.widget.Toast
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class
-DeprecatedApiInterceptor(val context: Context) : Interceptor {
+class DeprecatedApiInterceptor(val context: Context) : Interceptor {
     val WARNING_HEADER_KEY = "warning"
 
     override fun intercept(chain: Interceptor.Chain): Response {
