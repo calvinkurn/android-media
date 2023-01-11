@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.adapter
 
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -51,35 +53,59 @@ class ThumbnailVariantViewHolder(
     }
 
     private fun setEvent(element: VariantOptionWithAttribute) = with(binding) {
+        // trigger to adapter for scroll smooth to position
+        if (element.currentState == VariantConstant.STATE_SELECTED) {
+            listener.onSelectionChanged(
+                itemView,
+                bindingAdapterPosition
+            )
+        }
+
         variantCard.setOnClickListener {
             listener.onThumbnailVariantClicked(element)
         }
     }
 
     private fun setState(element: VariantOptionWithAttribute, firstLoad: Boolean) = with(binding) {
-       /* if (element.currentState == VariantConstant.STATE_SELECTED) listener.onSelectionChanged(
-            itemView,
-            bindingAdapterPosition
-        )*/
-
         when (element.currentState) {
-            VariantConstant.STATE_EMPTY, VariantConstant.STATE_SELECTED_EMPTY -> {
-                variantCard.cardType = CardUnify2.TYPE_BORDER
-            }
-            VariantConstant.STATE_SELECTED -> {
-                variantCard.cardType = if (firstLoad) {
-                    CardUnify2.TYPE_BORDER
-                } else {
-                    CardUnify2.TYPE_BORDER_ACTIVE
-                }
-            }
-            VariantConstant.STATE_UNSELECTED -> {
-                variantCard.cardType = CardUnify2.TYPE_BORDER
-            }
-            else -> {
-                variantCard.cardType = CardUnify2.TYPE_BORDER_DISABLED
-            }
+            VariantConstant.STATE_SELECTED -> setSelectedState(firstLoad)
+            VariantConstant.STATE_SELECTED_EMPTY -> setSelectedStockEmptyState(firstLoad)
+            VariantConstant.STATE_UNSELECTED -> setUnselectedState()
+            else -> setDisableState()
         }
+    }
+
+    private fun setUnselectedState() {
+        binding.variantCard.cardType = CardUnify2.TYPE_BORDER
+    }
+
+    private fun setSelectedState(firstLoad: Boolean) {
+        binding.variantCard.cardType = if (firstLoad) {
+            CardUnify2.TYPE_BORDER
+        } else {
+            CardUnify2.TYPE_BORDER_ACTIVE
+        }
+    }
+
+    private fun setSelectedStockEmptyState(firstLoad: Boolean) {
+        if (firstLoad) {
+            setDisableState()
+        } else {
+            binding.variantCard.cardType = CardUnify2.TYPE_BORDER_ACTIVE
+            setThumbGrayscale()
+        }
+    }
+
+    private fun setDisableState() {
+        binding.variantCard.cardType = CardUnify2.TYPE_BORDER_DISABLED
+        setThumbGrayscale()
+    }
+
+    private fun setThumbGrayscale() {
+        val colorMatrix = ColorMatrix()
+        colorMatrix.setSaturation(0f)
+        val filter = ColorMatrixColorFilter(colorMatrix)
+        binding.variantThumbnail.colorFilter = filter
     }
 
     private fun renderFlashSale(element: VariantOptionWithAttribute) {

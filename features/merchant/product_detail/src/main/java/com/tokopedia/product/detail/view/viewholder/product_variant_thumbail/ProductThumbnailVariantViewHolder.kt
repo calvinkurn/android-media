@@ -64,7 +64,7 @@ class ProductThumbnailVariantViewHolder(
             }
 
             itemView.setOnClickListener {
-                //pass dummy object since we need to redirect to variant bottomsheet
+                // pass dummy object since we need to redirect to variant bottomsheet
                 variantListener.onVariantClicked(emptyVariantData)
             }
         }
@@ -84,5 +84,8 @@ class ProductThumbnailVariantViewHolder(
         }
 
     override fun onSelectionChanged(view: View, position: Int) {
+        if (!layoutManager.isViewPartiallyVisible(view, true, true)) {
+            view.post { binding.thumbVariantList.smoothScrollToPosition(position) }
+        }
     }
 }
