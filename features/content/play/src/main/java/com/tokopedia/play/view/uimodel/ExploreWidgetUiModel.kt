@@ -13,6 +13,7 @@ data class ExploreWidgetUiModel(
     val chips: TabMenuUiModel,
     val widgets: List<WidgetItemUiModel>,
     val state: ResultState,
+    val isOpened: Boolean,
 ) {
     companion object {
         val Empty: ExploreWidgetUiModel
@@ -21,6 +22,7 @@ data class ExploreWidgetUiModel(
                 param = WidgetParamUiModel.Empty,
                 widgets = emptyList(),
                 state = ResultState.Loading,
+                isOpened = false,
             )
     }
 }

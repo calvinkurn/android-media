@@ -208,9 +208,9 @@ class PlayViewModel @AssistedInject constructor(
     private val _isSharingOpened = MutableStateFlow(false)
     private val _videoProperty = MutableStateFlow(VideoPropertyUiModel.Empty)
 
-    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive, _videoProperty) {
-        bottomInsets, popUp, partner, kebab, sharing, interactive, videoState ->
-            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying && (!videoState.state.hasNoData || videoPlayer.isYouTube)
+    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive, _videoProperty, _exploreWidget) {
+        bottomInsets, popUp, partner, kebab, sharing, interactive, videoState, explore ->
+            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying && (!videoState.state.hasNoData || videoPlayer.isYouTube) && !explore.isOpened
     }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(
@@ -1027,7 +1027,10 @@ class PlayViewModel @AssistedInject constructor(
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
-            FetchWidgets -> fetchWidgets()
+            FetchWidgets -> {
+                _exploreWidget.update { it.copy(isOpened = true) }
+                fetchWidgets()
+            }
             is ClickChipWidget -> handleClickChip(action.item)
             NextPageWidgets -> onActionWidget(isNextPage = true)
             RefreshWidget -> onActionWidget(isNextPage = false)
@@ -1035,7 +1038,7 @@ class PlayViewModel @AssistedInject constructor(
             DismissExploreWidget -> {
                 //Resetting
                 _exploreWidget.update {
-                    it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty)
+                    it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty, isOpened = false)
                 }
                 mChannelData?.channelDetail?.exploreWidgetConfig?.let {
                     updateWidgetParam(group = it.group, sourceId = it.sourceId, sourceType = it.sourceType)
