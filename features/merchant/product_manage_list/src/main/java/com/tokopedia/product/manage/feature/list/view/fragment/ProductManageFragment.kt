@@ -1225,7 +1225,15 @@ open class ProductManageFragment :
 
     private fun setupMultiSelect() {
         textMultipleSelect?.setOnClickListener {
-            viewModel.toggleMultiSelect()
+            val isNotEmpty =adapter.data.filterIsInstance<ProductUiModel>().filter {
+                !it.isTobacco
+            }.isNotEmpty()
+
+            if (isNotEmpty){
+                viewModel.toggleMultiSelect()
+            }else{
+                showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
+            }
             ProductManageTracking.eventMultipleSelect()
         }
 
@@ -1252,11 +1260,11 @@ open class ProductManageFragment :
             recyclerView?.post {
                 if (isChecked) {
                     productManageListAdapter.checkAllProducts(itemsChecked) {
-                        itemsChecked = it
+                        itemsChecked = it.filter { !it.isTobacco }.toMutableList()
                     }
                 } else {
                     productManageListAdapter.unCheckMultipleProducts(null, itemsChecked) {
-                        itemsChecked = it
+                        itemsChecked = it.filter { !it.isTobacco }.toMutableList()
                     }
                 }
 
@@ -1311,7 +1319,6 @@ open class ProductManageFragment :
 
     private fun renderCheckedView() {
         val multiSelectEnabled = viewModel.toggleMultiSelect.value == true
-
         if (multiSelectEnabled) {
             val textSelectedProduct = getString(
                 R.string.product_manage_bulk_count,
@@ -1498,6 +1505,7 @@ open class ProductManageFragment :
         val productNotEmpty = adapter.data
             .filterIsInstance<ProductUiModel>()
             .isNotEmpty()
+
         val productManageAccess =
             viewModel.productManageAccess.value as? Success<ProductManageAccess>
         val hasMultiSelectAccess = productManageAccess?.data?.multiSelect == true
@@ -1793,7 +1801,7 @@ open class ProductManageFragment :
     private fun unCheckMultipleProducts(productIds: List<String>) {
         recyclerView?.post {
             productManageListAdapter.unCheckMultipleProducts(productIds, itemsChecked) {
-                itemsChecked = it
+                itemsChecked = it.filter { !it.isTobacco }.toMutableList()
             }
 
             renderSelectAllCheckBox()
@@ -2758,7 +2766,7 @@ open class ProductManageFragment :
     }
 
     private fun showEditProductsInActiveConfirmationDialog() {
-        context?.let {
+        context?.let { it ->
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
