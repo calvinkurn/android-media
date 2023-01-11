@@ -21,7 +21,6 @@ import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
-import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -30,7 +29,6 @@ import javax.inject.Inject
 class DtHomeViewModel @Inject constructor(
     private val getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase,
     private val getHomeAnchorTabUseCase: GetHomeAnchorTabUseCase,
-    private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -51,15 +49,7 @@ class DtHomeViewModel @Inject constructor(
     private val homeRecommendationDataModel = HomeRecommendationFeedDataModel()
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
-        launchCatchError(block = {
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = DtLayoutState.HIDE
-            )
-            _homeLayoutList.postValue(Success(data))
-        }) {
-            _homeLayoutList.postValue(Fail(it))
-        }
+        // no op yet
     }
 
     fun getHomeVisitableList(): List<Visitable<*>> {
@@ -140,14 +130,6 @@ class DtHomeViewModel @Inject constructor(
             state = DtLayoutState.LOADING
         )
         _homeLayoutList.postValue(Success(data))
-    }
-
-    fun getChooseAddress(source: String) {
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
-            _chooseAddress.postValue(Success(it))
-        }, {
-            _chooseAddress.postValue(Fail(it))
-        }, source)
     }
 
     fun isLastWidgetIsRecommendationForYou(): Boolean? {

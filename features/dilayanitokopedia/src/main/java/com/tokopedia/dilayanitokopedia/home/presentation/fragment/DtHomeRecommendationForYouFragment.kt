@@ -117,8 +117,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
 
     private fun setupRecyclerView() {
         recyclerView?.layoutManager = staggeredGridLayoutManager
-        (recyclerView?.layoutManager as StaggeredGridLayoutManager?)?.gapStrategy =
-            StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
@@ -138,6 +137,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                // no-op
             }
         })
     }
@@ -154,7 +154,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             try {
                 startActivityForResult(intent, REQUEST_FROM_PDP)
             } catch (exception: ActivityNotFoundException) {
-                exception.printStackTrace()
+                // no-op
             }
         }
     }

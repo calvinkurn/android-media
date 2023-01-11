@@ -87,6 +87,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -102,8 +103,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         // scroll listener
         private const val RV_DIRECTION_TOP = 1
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
-        const val PAGE_SHARE_NAME = "DilayaniTokopedia"
-        const val SHARE = "share"
+        private const val PAGE_SHARE_NAME = "DilayaniTokopedia"
+        private const val SHARE = "share"
+
+        private const val CLICK_TIME_INTERVAL: Long = 500
     }
 
     @Inject
@@ -137,7 +140,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private var linearLayoutManager: CustomLinearLayoutManager? = null
     private var anchorTabLinearLayoutManager: LinearLayoutManager? = null
 
-    private val CLICK_TIME_INTERVAL: Long = 500
     private var mLastClickTime = System.currentTimeMillis()
 
     private val adapter by lazy {
@@ -323,6 +325,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun onClickCartButton() {
+        // no-op
     }
 
     private fun onClickShareButton() {
@@ -458,7 +461,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun onSuccessGetHomeLayout(data: HomeLayoutListUiModel) {
         when (data.state) {
             DtLayoutState.SHOW -> onShowHomeLayout(data)
-//            DtLayoutState.HIDE -> onHideHomeLayout(data)
             DtLayoutState.LOADING -> onLoadingHomeLayout(data)
             else -> {
                 showHomeLayout(data)
@@ -471,9 +473,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         showHeaderBackground()
         visibilityChooseAddress()
         visibilityAnchorTab()
-//        stickyLoginLoadContent()
-//        showOnBoarding()
-//        getLayoutComponentData()
     }
 
     private fun updateAnchorTab(data: List<AnchorTabUiModel>) {
@@ -482,17 +481,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun observeLiveData() {
         observe(viewModelDtHome.homeLayoutList) {
-//            removeAllScrollListener()
-
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
-                is Fail -> onFailedGetHomeLayout(it.throwable)
+                is Fail -> onFailedGetHomeLayout()
             }
-
-//            rvHome?.post {
-//                addScrollListener()
-//                resetSwipeLayout()
-//            }
         }
 
         observe(viewModelDtHome.chooseAddress) {
@@ -509,10 +501,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         observeMenuList()
     }
 
-    private fun onFailedGetHomeLayout(throwable: Throwable) {
+    private fun onFailedGetHomeLayout() {
         showFailedToFetchData()
-//        stickyLoginLoadContent()
-//        logHomeLayoutError(throwable)
     }
 
     private fun observeMenuList() {
@@ -644,6 +634,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 lat = chooseAddressData.data.latitude,
                 long = chooseAddressData.data.longitude,
                 label = String.format(
+                    Locale.getDefault(),
                     "%s %s",
                     chooseAddressData.data.addressName,
                     chooseAddressData.data.receiverName
@@ -959,12 +950,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun createShareHomeTokonow(): DtShareUniversalModel {
-        val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+        val imageShareUrl = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
 
         return DtShareUniversalModel(
             sharingText = "sharingText".orEmpty(),
-            thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-            ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            thumbNailImage = imageShareUrl,
+            ogImageUrl = imageShareUrl,
             specificPageName = "title",
             specificPageDescription = "desc".orEmpty(),
             linkerType = "dt",
@@ -984,6 +975,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     override fun permissionAction(action: String, label: String) {
+        // no-op
     }
 
     private fun createRecommendationCallback(): DtHomeCategoryListener {

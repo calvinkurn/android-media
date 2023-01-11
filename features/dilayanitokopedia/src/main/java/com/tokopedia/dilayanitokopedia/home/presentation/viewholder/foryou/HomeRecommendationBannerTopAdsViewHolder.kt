@@ -26,6 +26,8 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
     companion object {
         val LAYOUT = R.layout.item_home_banner_topads_layout
         private const val HOME_RECOM_TAB_BANNER = "home_recom_tab_banner"
+
+        private const val roundedCorners = 8
     }
 
     private var binding: ItemHomeBannerTopadsLayoutBinding? by viewBinding()
@@ -70,7 +72,7 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
             binding?.homeRecomTopadsImageView?.let {
                 Glide.with(itemView.context)
                     .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
-                    .transform(RoundedCorners(8))
+                    .transform(RoundedCorners(roundedCorners))
                     .override(
                         itemView.context.resources.displayMetrics.widthPixels,
                         getHeight(

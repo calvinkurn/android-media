@@ -33,6 +33,7 @@ class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private val topAdsB
         })
         binding?.headlineAds?.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
             override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
+                // no-op
             }
         })
         if (!element.headlineAds.data.isNullOrEmpty()) {
