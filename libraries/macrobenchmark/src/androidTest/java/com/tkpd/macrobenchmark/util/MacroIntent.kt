@@ -241,10 +241,12 @@ object MacroIntent {
 
     object ReschedulePickup {
 
-        const val RECYCLER_VIEW_ID = "layout_form_reschedule_pickup"
+        const val RECYCLER_VIEW_ID = "invoice_order_detail"
 
-        private const val DF_MODULE_NAME = "df_base"
-        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+        // todo for testapp only
+//        const val PACKAGE_NAME = TKPD_PACKAGE_NAME
+
+        const val PACKAGE_NAME = TKPD_PACKAGE_SELLER_APP
         const val TRACE_NAME = "mp_reschedule_pickup"
 
         fun getIntent(): Intent {
