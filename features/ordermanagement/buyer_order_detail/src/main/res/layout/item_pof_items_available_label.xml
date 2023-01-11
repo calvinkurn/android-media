@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toStartOf="@id/tvAvailableProductLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:text="@string/buyer_order_detail_pof_product_label"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAvailableProductLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        app:layout_constraintBottom_toBottomOf="@id/tvProductLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvProductLabel"
+        android:text="@string/buyer_order_detail_pof_item_available_label" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icCheckAvailable"
+        android:layout_width="19dp"
+        android:layout_height="19dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_name="CHECK_CIRCLE"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toStartOf="@id/icDropdown"
+        app:layout_constraintStart_toEndOf="@id/icCheckAvailable"
+        app:layout_constraintTop_toTopOf="@id/icCheckAvailable"
+        app:layout_constraintBottom_toBottomOf="@id/icCheckAvailable"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="@string/buyer_order_detail_pof_item_still_available_label"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icDropdown"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/icCheckAvailable"
+        app:layout_constraintBottom_toBottomOf="@id/icCheckAvailable"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_name="CHEVRON_UP"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
