@@ -8,8 +8,8 @@ class FcmCacheHandler(
     cacheCMNotifications: String
 ) : LocalCacheHandler(context, cacheCMNotifications) {
 
-    fun getStringValue(Key: String): String? {
-        return getString(Key)
+    fun getStringValue(key: String): String? {
+        return getString(key)
     }
 
     fun saveStringValue(key: String, value: String) {

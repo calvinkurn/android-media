@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl
 import com.tokopedia.fcmcommon.R
+import com.tokopedia.fcmcommon.SendTokenToCMHandler
 import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
 import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
@@ -32,13 +33,13 @@ class FcmModule(@ApplicationContext private val context: Context) {
         updateFcmTokenUseCase: UpdateFcmTokenUseCase,
         sharedPreferences: SharedPreferences,
         userSession: UserSessionInterface,
-        sendTokenToCMUseCase: SendTokenToCMUseCase
+        sendTokenToCMHandler: SendTokenToCMHandler
     ): FirebaseMessagingManager {
         return FirebaseMessagingManagerImpl(
             updateFcmTokenUseCase,
             sharedPreferences,
             userSession,
-            sendTokenToCMUseCase
+            sendTokenToCMHandler
         )
     }
 
@@ -70,9 +71,19 @@ class FcmModule(@ApplicationContext private val context: Context) {
     @Provides
     @FcmScope
     fun provideFcmTokenCMUseCase(
-        userSession: UserSessionInterface
+        repository: GraphqlRepository
     ): SendTokenToCMUseCase {
-        return SendTokenToCMUseCase(context, userSession)
+        return SendTokenToCMUseCase(repository)
+    }
+
+    @Provides
+    @FcmScope
+    fun provideSendTokenToCMHandler(
+        sendTokenToCMUseCase: SendTokenToCMUseCase,
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface
+    ): SendTokenToCMHandler {
+        return SendTokenToCMHandler(sendTokenToCMUseCase, context, userSession)
     }
 
     @Provides
