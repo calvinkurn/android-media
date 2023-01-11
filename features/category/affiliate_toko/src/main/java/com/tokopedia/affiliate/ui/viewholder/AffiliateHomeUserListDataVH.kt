@@ -10,13 +10,16 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceL
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import java.util.concurrent.TimeUnit
 
 class AffiliateHomeUserListDataVH(
     itemView: View,
@@ -27,9 +30,10 @@ class AffiliateHomeUserListDataVH(
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_performa_item
-        const val ROTATION_90 = 90f
-        const val ROTATION_270 = 270f
-        const val CUMULATIVE_TOTAL_CLICK = "cumulativeTotalClick"
+        private const val ROTATION_90 = 90f
+        private const val ROTATION_270 = 270f
+        private const val CUMULATIVE_TOTAL_CLICK = "cumulativeTotalClick"
+        private const val DELAY_TIME: Long = 500
     }
 
     private val cardUserPerformance = itemView.findViewById<CardUnify2>(R.id.card_user_performance)
@@ -37,10 +41,12 @@ class AffiliateHomeUserListDataVH(
     private val tvChangedValue = itemView.findViewById<Typography>(R.id.value_change_value)
     private val tvPerformanceType = itemView.findViewById<Typography>(R.id.performa_type)
     private val valueIcon = itemView.findViewById<IconUnify>(R.id.increase_value_icon)
+    private val valueShimmer = itemView.findViewById<LoaderUnify>(R.id.value_shimmer)
+    private val valueChangeShimmer = itemView.findViewById<LoaderUnify>(R.id.value_change_shimmer)
 
     override fun bind(element: AffiliateUserPerformanceListModel?) {
         setData(element)
-        setTrend(element)
+        setTrend(element?.data?.metricDifferenceValue?.toDouble())
         initClickListener(element)
     }
 
@@ -55,27 +61,21 @@ class AffiliateHomeUserListDataVH(
             )
         }
         if (element?.data?.metricType == CUMULATIVE_TOTAL_CLICK) {
-            element.totalClick
-                ?.onEach {
-                    tvValue.apply {
-                        post {
-                            text = it?.data?.metricValue?.toString() ?: element.data.metricValueFmt
-                        }
-                    }
+            element.totalClick?.onEach {
+                valueShimmer.post {
+                    toggleShimmer(true)
                 }
-                ?.launchIn(CoroutineScope(Dispatchers.IO))
-
-            element.totalClickItem
-                ?.onEach {
-                    tvChangedValue.apply {
-                        post {
-                            text =
-                                it?.data?.metricDifferenceValue?.toString()
-                                    ?: element.data.metricDifferenceValueFmt
-                        }
-                    }
+                tvValue.apply {
+                    postDelayed({
+                        text = it?.data?.metricValueFmt ?: element.data.metricValueFmt
+                        tvChangedValue.text =
+                            it?.data?.metricDifferenceValueFmt
+                                ?: element.data.metricDifferenceValueFmt
+                        setTrend(it?.data?.metricDifferenceValue?.toDouble())
+                        toggleShimmer(false)
+                    }, TimeUnit.MILLISECONDS.toMillis(DELAY_TIME))
                 }
-                ?.launchIn(CoroutineScope(Dispatchers.IO))
+            }?.launchIn(CoroutineScope(Dispatchers.IO))
         }
     }
 
@@ -85,14 +85,13 @@ class AffiliateHomeUserListDataVH(
         tvChangedValue.text = element?.data?.metricDifferenceValueFmt
     }
 
-    private fun setTrend(element: AffiliateUserPerformanceListModel?) {
-        val metricIntValue = element?.data?.metricDifferenceValue?.toDouble()
-        if (metricIntValue != null) {
+    private fun setTrend(metricDifference: Double?) {
+        if (metricDifference != null) {
             when {
-                metricIntValue == 0.0 -> {
+                metricDifference == 0.0 -> {
                     hideTrend()
                 }
-                metricIntValue > 0 -> {
+                metricDifference > 0 -> {
                     showTrend()
                     tvChangedValue.setTextColor(
                         ContextCompat.getColor(
@@ -110,7 +109,7 @@ class AffiliateHomeUserListDataVH(
                         rotation = ROTATION_90
                     }
                 }
-                metricIntValue < 0 -> {
+                metricDifference < 0 -> {
                     showTrend()
                     tvChangedValue.setTextColor(
                         MethodChecker.getColor(
@@ -140,5 +139,13 @@ class AffiliateHomeUserListDataVH(
     private fun showTrend() {
         tvChangedValue.show()
         valueIcon.show()
+    }
+
+    private fun toggleShimmer(isVisible: Boolean) {
+        valueShimmer.isVisible = isVisible
+        valueChangeShimmer.isVisible = isVisible
+        tvChangedValue.isVisible = !isVisible
+        tvValue.isVisible = !isVisible
+        valueIcon.isVisible = !isVisible
     }
 }
