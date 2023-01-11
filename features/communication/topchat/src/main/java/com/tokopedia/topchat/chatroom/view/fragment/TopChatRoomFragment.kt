@@ -1070,7 +1070,7 @@ open class TopChatRoomFragment :
         // change the retry value
         element.isRetry = false
         adapter.updatePreviewState(element.localId)
-        viewModel.startUploadImages(element)
+        viewModel.startUploadImages(element, isUploadImageSecure())
     }
 
     override fun onProductClicked(element: ProductAttachmentUiModel) {
@@ -1656,7 +1656,7 @@ open class TopChatRoomFragment :
     private fun handleImageToUpload(imagePathList: List<String>) {
         processImagePathToUpload(imagePathList)?.let { model ->
             onSendAndReceiveMessage()
-            viewModel.startUploadImages(model)
+            viewModel.startUploadImages(model, isUploadImageSecure())
             topchatViewState?.scrollToBottom()
             sellerReviewHelper.hasRepliedChat = true
         }
@@ -3153,7 +3153,8 @@ open class TopChatRoomFragment :
             UploadImageChatService.enqueueWork(
                 it,
                 image,
-                viewModel.roomMetaData.msgId
+                viewModel.roomMetaData.msgId,
+                isUploadImageSecure()
             )
         }
     }
@@ -3570,6 +3571,12 @@ open class TopChatRoomFragment :
         return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
+    private fun isUploadImageSecure(): Boolean {
+//        return abTestPlatform.getString(ROLLENCE_UPLOAD_SECURE, "") == ROLLENCE_UPLOAD_SECURE
+        var result = true
+        return result
+    }
+
     override fun onClickSRWTab() {
         val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
         TopChatAnalyticsKt.eventClickSRWTabChatTextAreaLayout(
@@ -3613,6 +3620,7 @@ open class TopChatRoomFragment :
         const val AB_TEST_NEW_SRW = "srw_new_design"
         const val AB_TEST_OLD_SRW = "control_variant"
         const val ROLLENCE_ENABLE_MEDIA_PICKER = "and_chat_picker_v2"
+        const val ROLLENCE_UPLOAD_SECURE = "topchat_upload_secure"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

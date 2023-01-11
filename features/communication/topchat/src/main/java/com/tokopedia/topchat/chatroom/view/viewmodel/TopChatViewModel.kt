@@ -982,7 +982,10 @@ open class TopChatViewModel @Inject constructor(
         sendWsStopTyping()
     }
 
-    fun startUploadImages(image: ImageUploadUiModel) {
+    fun startUploadImages(
+        image: ImageUploadUiModel,
+        isSecure: Boolean
+    ) {
         _removeSrwBubble.value = null
         if (isEnableUploadImageService()) {
             showPreviewMsg(image)
@@ -993,7 +996,8 @@ open class TopChatViewModel @Inject constructor(
             uploadImageUseCase.upload(
                 image = image,
                 onSuccess = ::onSuccessUploadImage,
-                onError = ::onErrorUploadImage
+                onError = ::onErrorUploadImage,
+                isSecure = isSecure
             )
         }
     }
@@ -1015,12 +1019,14 @@ open class TopChatViewModel @Inject constructor(
 
     private fun onSuccessUploadImage(
         uploadId: String,
-        imageUploadUiModel: ImageUploadUiModel
+        imageUploadUiModel: ImageUploadUiModel,
+        isSecure: Boolean
     ) {
         val wsPayload = payloadGenerator.generateImageWsPayload(
             roomMetaData,
             uploadId,
-            imageUploadUiModel
+            imageUploadUiModel,
+            isSecure
         )
         sendWsPayload(wsPayload)
     }
@@ -1163,14 +1169,16 @@ open class TopChatViewModel @Inject constructor(
     }
 
     private fun isEnableUploadImageService(): Boolean {
-        return try {
-            remoteConfig.getBoolean(
-                ENABLE_UPLOAD_IMAGE_SERVICE,
-                false
-            ) && !isProblematicDevice()
-        } catch (ex: Throwable) {
-            false
-        }
+//        return try {
+//            remoteConfig.getBoolean(
+//                ENABLE_UPLOAD_IMAGE_SERVICE,
+//                false
+//            ) && !isProblematicDevice()
+//        } catch (ex: Throwable) {
+//            false
+//        }
+        val result = true
+        return result
     }
 
     private fun isProblematicDevice(): Boolean {
