@@ -294,7 +294,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         navToolbar?.let { toolbar ->
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
             initHint(SearchPlaceholder(Data(null, context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(), "")))
-            addNavBarScrollListener()
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
                 toolbar.setToolbarTitle(getString(R.string.dt_home_title))
@@ -403,12 +402,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     override fun onCloseOptionClicked() {
         // no-op
-    }
-
-    private fun addNavBarScrollListener() {
-//        navBarScrollListener?.let {
-//            rvHome?.addOnScrollListener(it)
-//        }
     }
 
     private fun isFirstInstall(): Boolean {
@@ -592,13 +585,11 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             context,
             getAutoCompleteApplinkPattern(),
             SOURCE,
-            context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(),
-            isFirstInstall().toString()
+            context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty()
         )
     }
 
-    private fun getAutoCompleteApplinkPattern() =
-        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE + "&" + getParamDtSRP()
+    private fun getAutoCompleteApplinkPattern() = ApplinkConstInternalDiscovery.AUTOCOMPLETE
 
     private fun switchService() {
         localCacheModel?.apply {
@@ -786,8 +777,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             chooseAddressWidget?.let {
                 CoachMark2Item(
                     it,
-                    requireContext().getString(R.string.dt_home_choose_address_widget_coachmark_title).orEmpty(),
-                    requireContext().getString(R.string.dt_home_choose_address_widget_coachmark_description).orEmpty()
+                    requireContext().getString(R.string.dt_home_choose_address_widget_coachmark_title),
+                    requireContext().getString(R.string.dt_home_choose_address_widget_coachmark_description)
                 )
             }
         } else {
@@ -864,7 +855,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             rvHome?.setNestedCanScroll(false)
         } else {
             // home feed now can scroll up, so hide maintoolbar shadow
-
             navToolbar?.hideShadow(lineShadow = true)
             rvHome?.setNestedCanScroll(true)
         }
@@ -933,7 +923,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         binding?.headerCompHolder?.setBackgroundColor(whiteColor)
         binding?.chooseAddressWidget?.setBackgroundColor(whiteColor)
         binding?.dtViewBackgroundImage?.gone()
-
         statusBarState = AnchorTabStatus.MINIMIZE
     }
 

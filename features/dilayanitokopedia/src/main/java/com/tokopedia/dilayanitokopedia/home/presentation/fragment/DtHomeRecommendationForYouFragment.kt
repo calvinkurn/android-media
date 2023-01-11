@@ -1,6 +1,5 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -153,7 +152,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
             try {
                 startActivityForResult(intent, REQUEST_FROM_PDP)
-            } catch (exception: ActivityNotFoundException) {
+            } catch (exception: Exception) {
                 // no-op
             }
         }

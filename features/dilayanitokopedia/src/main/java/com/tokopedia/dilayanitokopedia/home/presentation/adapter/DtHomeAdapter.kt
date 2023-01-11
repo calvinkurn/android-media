@@ -10,7 +10,7 @@ class DtHomeAdapter(
 ) : BaseDtListAdapter<Visitable<*>, DtHomeAdapterTypeFactory>(typeFactory, differ) {
 
     inline fun <reified T : Visitable<*>> getItem(itemClass: Class<T>): T? {
-        return data.find { it.javaClass == itemClass } as T?
+        return data.find { it.javaClass == itemClass } as? T
     }
 
     fun findPosition(visitable: Visitable<*>): Int {
