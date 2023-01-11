@@ -15,6 +15,6 @@ class ReschedulePickupActivity : BaseSimpleActivity() {
             val orderId = intent?.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
             bundle.putString(LogisticSellerConst.PARAM_ORDER_ID, orderId)
         }
-        return ReschedulePickupFragment.newInstance(bundle)
+        return ReschedulePickupComposeFragment.newInstance(bundle)
     }
 }
