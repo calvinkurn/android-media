@@ -1225,13 +1225,13 @@ open class ProductManageFragment :
 
     private fun setupMultiSelect() {
         textMultipleSelect?.setOnClickListener {
-            val isNotEmpty =adapter.data.filterIsInstance<ProductUiModel>().filter {
+            val isNotEmpty = adapter.data.filterIsInstance<ProductUiModel>().filter {
                 !it.isTobacco
             }.isNotEmpty()
 
-            if (isNotEmpty){
+            if (isNotEmpty) {
                 viewModel.toggleMultiSelect()
-            }else{
+            } else {
                 showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
             }
             ProductManageTracking.eventMultipleSelect()
