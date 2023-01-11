@@ -1630,6 +1630,7 @@ class PlayUserInteractionFragment @Inject constructor(
             cancelAllAnimations()
 
             triggerImmersive(false)
+            closeExploreWidget()
         }
 
         endLiveInfoViewOnStateChanged(event = status)
@@ -1868,6 +1869,10 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(FetchWidgets)
         PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader)
             .showNow(childFragmentManager)
+    }
+
+    private fun closeExploreWidget() {
+        PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader).dismiss()
     }
 
     companion object {
