@@ -15,6 +15,7 @@ import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ACTIVITY_REVAMP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
@@ -232,7 +233,7 @@ class MainNavViewModel @Inject constructor(
             initialList.add(AccountHeaderDataModel(loginState = getLoginState(), state = NAV_PROFILE_STATE_SUCCESS))
         }
         initialList.addTransactionMenu()
-        if(!isUsingMePageRollenceVariant()) {
+        if (!isUsingMePageRollenceVariant()) {
             initialList.addBUTitle()
         }
         initialList.addUserMenu()
@@ -262,7 +263,7 @@ class MainNavViewModel @Inject constructor(
             onlyForLoggedInUser { getOnGoingTransaction() }
             if (isUsingMePageRollenceVariant()) {
                 onlyForLoggedInUser { getFavoriteShops() }
-                if(isUsingMePageRollenceVariant2()) {
+                if (isUsingMePageRollenceVariant2()) {
                     onlyForLoggedInUser { getWishlist() }
                     onlyForLoggedInUser { getReview() }
                 }
@@ -297,7 +298,6 @@ class MainNavViewModel @Inject constructor(
 
     private fun addHomeBackButtonMenu() {
         val listOfHomeMenuSection = mutableListOf<Visitable<*>>()
-        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME, isUsingRollence = isUsingMePageRollenceVariant()))
         listOfHomeMenuSection.add(clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
         listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME, isUsingRollence = isUsingMePageRollenceVariant()))
         addWidgetList(listOfHomeMenuSection, INDEX_HOME_BACK_SEPARATOR)
@@ -628,7 +628,7 @@ class MainNavViewModel @Inject constructor(
         }
         try {
             val favoriteShopResult = getFavoriteShopsNavUseCase.get().executeOnBackground()
-            val favoriteShopList = favoriteShopResult.first
+            val favoriteShopList = favoriteShopResult.first.take(MAX_CARD_SHOWN_REVAMP)
             val hasNext = favoriteShopResult.second
 
             if (favoriteShopList.isNotEmpty()) {
@@ -677,7 +677,7 @@ class MainNavViewModel @Inject constructor(
         }
         try {
             val wishlistResult = getWishlistNavUseCase.get().executeOnBackground()
-            val collections = wishlistResult.first
+            val collections = wishlistResult.first.take(MAX_CARD_SHOWN_REVAMP)
             val showViewAll = wishlistResult.second
             val isEmptyState = wishlistResult.third
 
@@ -746,7 +746,7 @@ class MainNavViewModel @Inject constructor(
             var transactionDataList: MutableList<Visitable<*>> = mutableListOf()
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
-                    it.getSectionTitle(ClientMenuGenerator.IDENTIFIER_TITLE_MY_ACTIVITY),
+                    it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                     InitialShimmerTransactionDataModel(),
                     it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
@@ -755,7 +755,7 @@ class MainNavViewModel @Inject constructor(
                 )
             } else {
                 transactionDataList = mutableListOf(
-                    it.getSectionTitle(ClientMenuGenerator.IDENTIFIER_TITLE_MY_ACTIVITY),
+                    it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                     it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
@@ -768,7 +768,7 @@ class MainNavViewModel @Inject constructor(
 
     private fun buildTransactionMenuListRevamp(): List<Visitable<*>> {
         clientMenuGenerator.get().let {
-            return if(isUsingMePageRollenceVariant1()) {
+            return if (isUsingMePageRollenceVariant1()) {
                 if (userSession.get().isLoggedIn) {
                     mutableListOf(
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
@@ -776,10 +776,10 @@ class MainNavViewModel @Inject constructor(
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
                         ShimmerFavoriteShopDataModel(),
                         SeparatorDataModel(isUsingRollence = true),
-                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getSectionTitle(IDENTIFIER_TITLE_ACTIVITY_REVAMP),
                         it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ACTIVITY),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ACTIVITY),
-                        SeparatorDataModel(isUsingRollence = true),
+                        SeparatorDataModel(isUsingRollence = true)
                     )
                 } else {
                     mutableListOf(
@@ -788,10 +788,10 @@ class MainNavViewModel @Inject constructor(
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
                         FavoriteShopListDataModel(favoriteShops = listOf()),
                         SeparatorDataModel(isUsingRollence = true),
-                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getSectionTitle(IDENTIFIER_TITLE_ACTIVITY_REVAMP),
                         it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ACTIVITY),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ACTIVITY),
-                        SeparatorDataModel(isUsingRollence = true),
+                        SeparatorDataModel(isUsingRollence = true)
                     )
                 }
             } else {
