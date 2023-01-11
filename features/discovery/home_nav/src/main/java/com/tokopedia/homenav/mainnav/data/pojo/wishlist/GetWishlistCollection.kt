@@ -10,18 +10,18 @@ data class GetWishlistCollection(
 )
 
 data class Wishlist(
-    @SerializedName("total_collection")
-    @Expose
-    val totalCollection: Int? = 0,
-    @SerializedName("is_empty_state")
-    @Expose
-    val isEmptyState: Boolean? = false,
     @SerializedName("data")
     @Expose
     val data: WishlistData? = WishlistData()
 )
 
 data class WishlistData(
+    @SerializedName("total_collection")
+    @Expose
+    val totalCollection: Int? = 0,
+    @SerializedName("is_empty_state")
+    @Expose
+    val isEmptyState: Boolean? = false,
     @SerializedName("collections")
     @Expose
     val wishlistCollections: List<WishlistCollection>? = listOf()

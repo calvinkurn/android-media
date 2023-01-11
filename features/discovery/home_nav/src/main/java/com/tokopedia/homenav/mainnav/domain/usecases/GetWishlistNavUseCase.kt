@@ -15,9 +15,9 @@ import javax.inject.Inject
 /**
  * Created by Frenzel on 21/04/22
  */
-class GetWishlistNavUseCase @Inject constructor (
-        private val graphqlUseCase: GraphqlUseCase<GetWishlistCollection>
-): UseCase<Triple<List<NavWishlistModel>, Boolean, Boolean>>(){
+class GetWishlistNavUseCase @Inject constructor(
+    private val graphqlUseCase: GraphqlUseCase<GetWishlistCollection>
+) : UseCase<Triple<List<NavWishlistModel>, Boolean, Boolean>>() {
 
     init {
         graphqlUseCase.setGraphqlQuery(GetWishlistQuery())
@@ -26,18 +26,20 @@ class GetWishlistNavUseCase @Inject constructor (
     }
 
     override suspend fun executeOnBackground(): Triple<List<NavWishlistModel>, Boolean, Boolean> {
-        val responseData = Success(graphqlUseCase.executeOnBackground().wishlist?:Wishlist())
+        val responseData = Success(graphqlUseCase.executeOnBackground().wishlist?.data ?: WishlistData())
         val wishlistList = mutableListOf<NavWishlistModel>()
-        responseData.data.data?.wishlistCollections?.map {
-            wishlistList.add(NavWishlistModel(
-                id = it.id.orEmpty(),
-                name = it.name.orEmpty(),
-                totalItem = it.totalItem.orZero(),
-                itemText = it.itemText.orEmpty(),
-                images = it.images.orEmpty()
-            ))
+        responseData.data.wishlistCollections?.map {
+            wishlistList.add(
+                NavWishlistModel(
+                    id = it.id.orEmpty(),
+                    name = it.name.orEmpty(),
+                    totalItem = it.totalItem.orZero(),
+                    itemText = it.itemText.orEmpty(),
+                    images = it.images.orEmpty()
+                )
+            )
         }
-        val showViewAll = (responseData.data.totalCollection ?: 0) > 2
+        val showViewAll = (responseData.data.totalCollection ?: 0) > 5
         return Triple(wishlistList, showViewAll, responseData.data.isEmptyState.orFalse())
     }
 }
