@@ -10,14 +10,14 @@ import com.tokopedia.homenav.mainnav.view.datamodel.review.EmptyStateReviewDataM
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
-class EmptyReviewViewHolder(itemView: View): AbstractViewHolder<EmptyStateReviewDataModel>(itemView) {
+class EmptyReviewViewHolder(itemView: View) : AbstractViewHolder<EmptyStateReviewDataModel>(itemView) {
     private var binding: HolderEmptyStateRevampBinding? by viewBinding()
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_empty_state_revamp
         private const val EMPTY_IMAGE_LINK =
-            "https://images.tokopedia.net/img/android/home_nav/home_nav_empty_followed_shop.png"
+            "https://images.tokopedia.net/img/android/home_nav/home_nav_empty_review.png"
     }
 
     override fun bind(emptyStateReviewDataModel: EmptyStateReviewDataModel) {
