@@ -152,7 +152,12 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-                        listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))
+                        listOfComponent.add(ProductSingleVariantDataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            isChipType = component.componentData.firstOrNull()?.componentType == "chips",
+                            firstLoad = true
+                        ))
                     } else {
                         listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                     }

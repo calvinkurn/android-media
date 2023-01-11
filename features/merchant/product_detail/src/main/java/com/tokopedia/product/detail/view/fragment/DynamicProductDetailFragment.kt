@@ -2606,7 +2606,7 @@ open class DynamicProductDetailFragment :
                 return@observe
             }
             val listOfVariantLevelOne = listOf(variantCategory)
-            pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
+            pdpUiUpdater?.updateVariantData(listOfVariantLevelOne, firstLoad = true)
             updateUi()
         }
     }

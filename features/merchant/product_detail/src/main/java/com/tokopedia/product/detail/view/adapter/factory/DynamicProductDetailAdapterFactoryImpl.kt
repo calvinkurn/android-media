@@ -82,6 +82,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
+import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 
 class DynamicProductDetailAdapterFactoryImpl(
     private val listener: DynamicProductDetailListener,
@@ -174,7 +175,11 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductSingleVariantDataModel): Int {
-        return ProductSingleVariantViewHolder.LAYOUT
+        return if (data.isChipType) {
+            ProductSingleVariantViewHolder.LAYOUT
+        } else {
+            ProductThumbnailVariantViewHolder.LAYOUT
+        }
     }
 
     override fun type(data: ProductMiniShopWidgetDataModel): Int {
@@ -289,6 +294,11 @@ class DynamicProductDetailAdapterFactoryImpl(
             )
             PdpComparisonWidgetViewHolder.LAYOUT -> PdpComparisonWidgetViewHolder(view, listener)
             ProductSingleVariantViewHolder.LAYOUT -> ProductSingleVariantViewHolder(
+                view,
+                variantListener,
+                listener
+            )
+            ProductThumbnailVariantViewHolder.LAYOUT -> ProductThumbnailVariantViewHolder(
                 view,
                 variantListener,
                 listener

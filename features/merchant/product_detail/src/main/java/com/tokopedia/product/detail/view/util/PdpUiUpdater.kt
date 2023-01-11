@@ -788,13 +788,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateVariantData(processedVariant: List<VariantCategory>?) {
+    fun updateVariantData(processedVariant: List<VariantCategory>?, firstLoad: Boolean = false) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
             productNewVariantDataModel?.listOfVariantCategory = processedVariant
         }
 
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             productSingleVariant?.variantLevelOne = processedVariant?.firstOrNull()
+            productSingleVariant?.firstLoad = firstLoad
         }
     }
 
@@ -812,6 +813,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
                 copyMap[variantKey] = variantId
                 it.mapOfSelectedVariant = copyMap
+                it.firstLoad = false
             }
         }
     }
