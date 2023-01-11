@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.campaign.utils.extension.applyRoundedRectangle
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -17,6 +20,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentQuotaInfoBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
+import com.tokopedia.mvc.presentation.quota.adapter.QuotaSourceAdapter
 import com.tokopedia.mvc.presentation.quota.viewmodel.QuotaInfoViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -63,17 +67,23 @@ class QuotaInfoFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         binding?.header?.setupHeader()
+        binding?.setupExpandQuotaListButton(false)
         setupObservables()
         setupPageData()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setupObservables() {
         viewModel.quotaInfo.observe(viewLifecycleOwner) {
             binding?.setupPage(it)
+        }
+        viewModel.sourceList.observe(viewLifecycleOwner) {
+            binding?.setupQuotaSourceList(it)
+        }
+        viewModel.sourceListExpanded.observe(viewLifecycleOwner) { isExpanded ->
+            binding?.setupExpandQuotaListButton(isExpanded)
+        }
+        viewModel.enableExpand.observe(viewLifecycleOwner) {
+            binding?.groupExpandAction?.isVisible = it
         }
     }
 
@@ -93,6 +103,24 @@ class QuotaInfoFragment: BaseDaggerFragment() {
         tickerQuotaInfo.setHtmlDescription(quotaInfo.tickerTitle)
         tickerQuotaInfo.isVisible = quotaInfo.tickerTitle.isNotEmpty()
         tfRemainingQuota.text = getString(R.string.smvc_quota_info_quota_remaining_format, quotaInfo.quotaUsageFormatted)
+        tfMoreSource.text = getString(R.string.smvc_quota_info_quota_button_format, quotaInfo.sources.size)
+        viewExpand.applyRoundedRectangle(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        viewModel.displayShortQuotaList()
+    }
+
+    private fun SmvcFragmentQuotaInfoBinding.setupQuotaSourceList(sources: List<VoucherCreationQuota.Sources>) {
+        val adapter = QuotaSourceAdapter()
+        rvQuotaSource.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvQuotaSource.adapter = adapter
+        adapter.setDataList(sources)
+    }
+
+    private fun SmvcFragmentQuotaInfoBinding.setupExpandQuotaListButton(isExpanded: Boolean) {
+        binding?.viewExpand?.setOnClickListener {
+            val iconRes = if (isExpanded) IconUnify.CHEVRON_DOWN else IconUnify.CHEVRON_UP
+            binding?.iconExpand?.setImage(iconRes)
+            viewModel.toggleSourceListExpanded(isExpanded)
+        }
     }
 
     private fun HeaderUnify.setupHeader() {
