@@ -81,6 +81,9 @@ class PlayShortsAccountManagerImpl @Inject constructor(
         accountList: List<ContentAccountUiModel>,
         currentAccountType: String
     ): ContentAccountUiModel {
+
+        if(accountList.size == 1) return accountList.first()
+
         val switchAccountType = when (currentAccountType) {
             TYPE_USER -> TYPE_SHOP
             TYPE_SHOP -> TYPE_USER
