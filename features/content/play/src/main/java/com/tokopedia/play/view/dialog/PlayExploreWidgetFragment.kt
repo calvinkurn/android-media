@@ -277,11 +277,9 @@ class PlayExploreWidgetFragment @Inject constructor(
         if (needToShow) {
             binding.srExploreWidget.gone()
             binding.viewExploreWidgetEmpty.root.visible()
-            binding.ivKnob.gone()
         } else {
             binding.srExploreWidget.visible()
             binding.viewExploreWidgetEmpty.root.gone()
-            binding.ivKnob.visible()
         }
     }
 
