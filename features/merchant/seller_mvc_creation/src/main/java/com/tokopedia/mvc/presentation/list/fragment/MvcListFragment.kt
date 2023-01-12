@@ -455,7 +455,9 @@ class MvcListFragment :
                 // TODO: Implement loading
             }
         )
-        attachPaging(this, config, ::getDataList)
+        attachPaging(this, config) { page, _ ->
+            viewModel.getVoucherList(page, PAGE_SIZE)
+        }
     }
 
     private fun SortFilter.setupFilter() {
@@ -480,14 +482,11 @@ class MvcListFragment :
 
     private fun loadInitialDataList() {
         val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
+        resetPaging()
         adapter?.clearDataList()
         binding?.loaderPage?.show()
         viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
         viewModel.getVoucherQuota()
-    }
-
-    private fun getDataList(page: Int, pageSize: Int) {
-        viewModel.getVoucherList(page, pageSize)
     }
 
     private fun displayNoDataSearch() {
@@ -706,7 +705,7 @@ class MvcListFragment :
     }
 
     private fun redirectToQuotaVoucherPage(voucherCreationQuota: VoucherCreationQuota) {
-        QuotaInfoActivity.start(context, voucherCreationQuota)
+        QuotaInfoActivity.start(context, null)
     }
 
     private fun redirectToEditPage(voucher: Voucher) {
