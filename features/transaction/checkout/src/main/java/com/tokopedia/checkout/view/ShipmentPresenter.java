@@ -40,6 +40,7 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
+import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingParamRequest;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
@@ -47,6 +48,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateDynamicDataPassingUseCase;
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
@@ -194,6 +196,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetPrescriptionIdsUseCase prescriptionIdsUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
+    private final UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
     private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
@@ -237,6 +240,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PublishSubject<Boolean> logisticDonePublisher = null;
     private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
+    private boolean isUsingDynamicDataPassing = false;
+    private DynamicDataPassingParamRequest _dynamicData = null;
+
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
                              CheckoutGqlUseCase checkoutGqlUseCase,
@@ -259,7 +265,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
-                             EligibleForAddressUseCase eligibleForAddressUseCase) {
+                             EligibleForAddressUseCase eligibleForAddressUseCase,
+                             UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -282,6 +289,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.gson = gson;
         this.executorSchedulers = executorSchedulers;
         this.eligibleForAddressUseCase = eligibleForAddressUseCase;
+        this.updateDynamicDataPassingUseCase = updateDynamicDataPassingUseCase;
     }
 
     @Override
@@ -301,10 +309,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (eligibleForAddressUseCase != null) {
             eligibleForAddressUseCase.cancelJobs();
         }
+        if (updateDynamicDataPassingUseCase != null) {
+            updateDynamicDataPassingUseCase.cancelJobs();
+        }
         ratesPublisher = null;
         logisticDonePublisher = null;
         ratesPromoPublisher = null;
         logisticPromoDonePublisher = null;
+        _dynamicData = null;
     }
 
     @Override
@@ -688,6 +700,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
 
         }
+        isUsingDynamicDataPassing = cartShipmentAddressFormData.isUsingDdp();
     }
 
     private void checkIsUserEligibleForRevampAna(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -2546,7 +2559,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
                     if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
                         AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
-                        setAddOnsData(addOnsDataModel, addOnResult, 0);
+                        setAddOnsData(addOnsDataModel, addOnResult, 0, cartItemModel.getCartString(), cartItemModel.getCartId());
                     }
                 }
             }
@@ -2559,14 +2572,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if ((shipmentCartItemModel.getCartString() + "-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
                     AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
-                    setAddOnsData(addOnsDataModel, addOnResult, 1);
+                    setAddOnsData(addOnsDataModel, addOnResult, 1, shipmentCartItemModel.getCartString(), 0L);
                 }
             }
         }
     }
 
     // identifier : 0 = product level, 1  = order level
-    private void setAddOnsData(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier) {
+    private void setAddOnsData(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier, String cartString, long cartId) {
         addOnsDataModel.setStatus(addOnResult.getStatus());
 
         AddOnButtonResult addOnButtonResult = addOnResult.getAddOnButton();
@@ -2618,6 +2631,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         addOnsDataModel.setAddOnsDataItemModelList(listAddOnDataItem);
         getView().updateAddOnsData(addOnsDataModel, identifier);
+        if (isUsingDynamicDataPassing) {
+            getView().updateAddOnsDynamicDataPassing(addOnsDataModel, addOnResult, identifier, cartString, cartId);
+        }
     }
 
     @Override
@@ -2887,6 +2903,61 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe();
             }
         }
+    }
+
+    private void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget) {
+        updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest);
+        updateDynamicDataPassingUseCase.execute(
+                dynamicDataPassingUiModel -> {
+                    if (getView() != null) {
+                        getView().stopEmbraceTrace();
+                        getView().stopTrace();
+                        if (!isFireAndForget) {
+                            getView().doCheckout();
+                        }
+                    }
+                    return Unit.INSTANCE;
+                }, throwable -> {
+                    Timber.d(throwable);
+                    if (getView() != null) {
+                        String errorMessage = throwable.getMessage();
+                        if (!(throwable instanceof CartResponseErrorException) && !(throwable instanceof AkamaiErrorException)) {
+                            errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), throwable);
+                        }
+                        getView().showToastError(errorMessage);
+                        getView().stopTrace();
+                        getView().logOnErrorLoadCheckoutPage(throwable);
+                    }
+                    return Unit.INSTANCE;
+                }
+        );
+    }
+
+    @Override
+    public void setDynamicData(DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam, boolean isChecked) {
+        for (DynamicDataPassingParamRequest.DynamicDataParam dynamicDataExisting : _dynamicData.getData()) {
+            if (!dynamicDataExisting.getUniqueId().equalsIgnoreCase(dynamicDataParam.getUniqueId())) {
+                if (isChecked) {
+                    _dynamicData.getData().add(dynamicDataParam);
+                }
+            }
+        }
+        updateDynamicData(_dynamicData, true);
+    }
+
+    @Override
+    public void validateDynamicData() {
+        updateDynamicData(_dynamicData, false);
+    }
+
+    @Override
+    public DynamicDataPassingParamRequest getDynamicData() {
+        return _dynamicData;
+    }
+
+    @Override
+    public boolean isUsingDynamicDataPassing() {
+        return isUsingDynamicDataPassing;
     }
 
     @Override

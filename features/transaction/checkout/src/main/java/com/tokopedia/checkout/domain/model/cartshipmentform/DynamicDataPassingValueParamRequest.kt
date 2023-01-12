@@ -1,0 +1,42 @@
+package com.tokopedia.checkout.domain.model.cartshipmentform
+
+import com.google.gson.annotations.SerializedName
+
+data class DynamicDataPassingValueParamRequest(
+    @SerializedName("source")
+    var source: String = "",
+
+    @SerializedName("add_on_data")
+    var addOnData: List<AddOnDataParam> = emptyList()
+) {
+
+    data class AddOnDataParam(
+        @SerializedName("add_on_id")
+        var addOnId: Long = 0L,
+
+        @SerializedName("add_on_qty")
+        var addOnQty: Int = 0,
+
+        @SerializedName("add_on_metadata")
+        var addOnMetadata: AddOnMetadataParam = AddOnMetadataParam()
+    ) {
+        data class AddOnMetadataParam(
+            @SerializedName("add_on_note")
+            var addOnNote: AddOnNoteParam = AddOnNoteParam()
+        ) {
+            data class AddOnNoteParam(
+                @SerializedName("from")
+                var from: String = "",
+
+                @SerializedName("is_custom_note")
+                var isCustomNote: Boolean = false,
+
+                @SerializedName("notes")
+                var notes: String = "",
+
+                @SerializedName("to")
+                var to: String = ""
+            )
+        }
+    }
+}

@@ -1,0 +1,94 @@
+package com.tokopedia.checkout.domain.mapper
+
+import com.google.gson.Gson
+import com.tokopedia.checkout.data.model.response.dynamicdata.UpdateDynamicDataPassingUiModel
+import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingParamRequest
+import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingValueParamRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
+
+object DynamicDataPassingMapper {
+
+    private val dynamicDataParamList: List<DynamicDataPassingParamRequest>? = null
+
+    // temporary using gson --> probably will change into Hashmap
+    private val gson = Gson()
+
+    fun mapResponseToUiModel(dynamicData: String): UpdateDynamicDataPassingUiModel {
+        return UpdateDynamicDataPassingUiModel(dynamicData = dynamicData)
+    }
+
+    fun getCartStringCartId(addOnResult: AddOnResult, listCartItemModel: List<CartItemModel>): String {
+        var cartStringCartId = ""
+        if (addOnResult.addOnData.isNotEmpty()) {
+            addOnResult.addOnData.forEach { addOnData ->
+                run loop@{
+                    listCartItemModel.forEach { cartItemModel ->
+                        val keyProductLevel = cartItemModel.cartString + "-" + cartItemModel.cartId
+                        if (addOnResult.addOnKey.equals(keyProductLevel, ignoreCase = true)) {
+                            cartStringCartId = keyProductLevel
+                            return@loop
+                        }
+                    }
+                }
+            }
+        }
+        return cartStringCartId
+    }
+
+    fun getCartString(addOnResult: AddOnResult, shipmentCartItemModel: ShipmentCartItemModel): String {
+        var cartString = ""
+        if (addOnResult.addOnData.isNotEmpty()) {
+            addOnResult.addOnData.forEach { addOnData ->
+                if ((shipmentCartItemModel.cartString + "-0").equals(addOnResult.addOnKey, ignoreCase = true)) {
+                    cartString = shipmentCartItemModel.cartString ?: ""
+                }
+            }
+        }
+        return cartString
+    }
+
+    fun getValue(
+        addOnResult: AddOnResult,
+        isOcs: Boolean
+    ): String {
+        val listAddOnData = arrayListOf<DynamicDataPassingValueParamRequest.AddOnDataParam>()
+        if (addOnResult.addOnData.isNotEmpty()) {
+            addOnResult.addOnData.forEach { data ->
+                val addOnData = DynamicDataPassingValueParamRequest.AddOnDataParam(
+                    addOnId = data.addOnId.toLongOrZero(),
+                    addOnQty = data.addOnQty,
+                    addOnMetadata = DynamicDataPassingValueParamRequest.AddOnDataParam.AddOnMetadataParam(
+                        addOnNote = DynamicDataPassingValueParamRequest.AddOnDataParam.AddOnMetadataParam.AddOnNoteParam(
+                            from = data.addOnMetadata.addOnNote.from,
+                            isCustomNote = data.addOnMetadata.addOnNote.isCustomNote,
+                            notes = data.addOnMetadata.addOnNote.notes,
+                            to = data.addOnMetadata.addOnNote.to
+                        )
+                    )
+                )
+                listAddOnData.add(addOnData)
+            }
+        }
+
+        val param = DynamicDataPassingValueParamRequest(
+            source = if (isOcs) SOURCE_OCS else SOURCE_NORMAL,
+            addOnData = listAddOnData
+        )
+        return gson.toJson(param) ?: ""
+    }
+
+    const val ORDER_LEVEL = "order_level"
+    const val PRODUCT_LEVEL = "product_level"
+    const val PAYMENT_LEVEL = "payment_level"
+    const val ADD_ON_DETAILS = "addon_details"
+    const val IS_DONATION = "is_donation"
+    const val KEY_IS_ADD_ON = "is_addon"
+    const val KEY_ADD_ON_NOTES_TO = "to"
+    const val KEY_ADD_ON_NOTES_FROM = "from"
+    const val KEY_ADD_ON_NOTES = "notes"
+    private const val SOURCE_OCS = "OCS"
+    private const val SOURCE_NORMAL = "normal"
+}
