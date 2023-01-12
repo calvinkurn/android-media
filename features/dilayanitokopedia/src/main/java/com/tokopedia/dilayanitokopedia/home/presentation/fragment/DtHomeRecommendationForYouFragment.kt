@@ -68,11 +68,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
 
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dt_home_recommendation_for_you_fragment, container, false)
     }
 
@@ -119,10 +115,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
         recyclerView?.adapter = adapter
-        parentPool?.setMaxRecycledViews(
-            HomeRecommendationFeedViewHolder.LAYOUT,
-            MAX_RECYCLED_VIEWS
-        )
+        parentPool?.setMaxRecycledViews(HomeRecommendationFeedViewHolder.LAYOUT, MAX_RECYCLED_VIEWS)
         recyclerView?.setRecycledViewPool(parentPool)
         createEndlessRecyclerViewListener()
         endlessRecyclerViewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
@@ -150,11 +143,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
                 productId.toString()
             )
             intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
-            try {
-                startActivityForResult(intent, REQUEST_FROM_PDP)
-            } catch (exception: Exception) {
-                // no-op
-            }
+            startActivityForResult(intent, REQUEST_FROM_PDP)
         }
     }
 
@@ -170,18 +159,17 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
         position: Int
     ): ProductCardOptionsModel {
-        val productCardOptionsModel = ProductCardOptionsModel()
-        productCardOptionsModel.hasWishlist = true
-        productCardOptionsModel.isWishlisted = homeRecommendationItemDataModel.product.isWishlist
-        productCardOptionsModel.productId = homeRecommendationItemDataModel.product.id.toString()
-        productCardOptionsModel.isTopAds = homeRecommendationItemDataModel.product.isTopads
-        productCardOptionsModel.topAdsWishlistUrl =
-            homeRecommendationItemDataModel.product.wishlistUrl
-        productCardOptionsModel.topAdsClickUrl = homeRecommendationItemDataModel.product.clickUrl
-        productCardOptionsModel.productName = homeRecommendationItemDataModel.product.name
-        productCardOptionsModel.productImageUrl = homeRecommendationItemDataModel.product.imageUrl
-        productCardOptionsModel.productPosition = position
-        return productCardOptionsModel
+        return ProductCardOptionsModel().apply {
+            hasWishlist = true
+            isWishlisted = homeRecommendationItemDataModel.product.isWishlist
+            productId = homeRecommendationItemDataModel.product.id.toString()
+            isTopAds = homeRecommendationItemDataModel.product.isTopads
+            topAdsWishlistUrl = homeRecommendationItemDataModel.product.wishlistUrl
+            topAdsClickUrl = homeRecommendationItemDataModel.product.clickUrl
+            productName = homeRecommendationItemDataModel.product.name
+            productImageUrl = homeRecommendationItemDataModel.product.imageUrl
+            productPosition = position
+        }
     }
 
     private fun provideListener(): HomeRecommendationListener {

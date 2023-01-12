@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -50,7 +49,6 @@ import com.tokopedia.dilayanitokopedia.home.presentation.view.NestedRecyclerView
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.dilayanitokopedia.home.widget.ToggleableSwipeRefreshLayout
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
@@ -403,30 +401,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     override fun onCloseOptionClicked() {
         // no-op
     }
-
-    private fun isFirstInstall(): Boolean {
-//        context?.let {
-//            if (!userSession.isLoggedIn && isShowFirstInstallSearch) {
-//                val sharedPrefs = it.getSharedPreferences(SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
-//                var firstInstallCacheValue = sharedPrefs.getLong(SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH, 0)
-//                if (firstInstallCacheValue == 0L) return false
-//                firstInstallCacheValue += FIRST_INSTALL_CACHE_VALUE
-//                val now = Date()
-//                val firstInstallTime = Date(firstInstallCacheValue)
-//                return if (now <= firstInstallTime) {
-//                    true
-//                } else {
-//                    saveFirstInstallTime()
-//                    false
-//                }
-//            } else {
-//                return false
-//            }
-//        }
-        return false
-    }
-
-    private fun getParamDtSRP() = "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalDilayaniTokopedia.SEARCH}"
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
         rvHome?.post {
