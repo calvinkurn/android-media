@@ -657,10 +657,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun loadUohItemDelay(uuid: String, index: Int) {
+    private fun loadUohItemDelay(isDelay: Boolean, uuid: String, index: Int) {
         paramUohOrder.uUID = uuid
         paramUohOrder.page = 1
-        uohListViewModel.loadUohItemDelay(paramUohOrder, index)
+        uohListViewModel.loadUohItemDelay(isDelay, paramUohOrder.copy(), index)
     }
 
     private fun loadRecommendationList() {
@@ -760,6 +760,22 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
+                    val errorType = when ((it.first as Fail).throwable) {
+                        is MessageErrorException -> null
+                        is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
+                        else -> GlobalError.SERVER_ERROR
+                    }
+                    if (errorType != null) {
+                        binding?.run {
+                            rvOrderList.gone()
+                            globalErrorUoh.visible()
+                            globalErrorUoh.setType(errorType)
+                            globalErrorUoh.setActionClickListener {
+                                initialLoadOrderHistoryList()
+                            }
+                        }
+                    }
+
                     showToaster(
                         ErrorHandler.getErrorMessage(context, (it.first as Fail).throwable),
                         Toaster.TYPE_ERROR
@@ -792,7 +808,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (responseFinishOrder.success == 1) {
                         responseFinishOrder.message.firstOrNull()
                             ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
-                        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
+                        loadUohItemDelay(true, orderIdNeedUpdated, currIndexNeedUpdate)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
                             responseFinishOrder.message.firstOrNull()

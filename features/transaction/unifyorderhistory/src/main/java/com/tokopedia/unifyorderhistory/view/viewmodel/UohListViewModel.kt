@@ -117,6 +117,7 @@ class UohListViewModel @Inject constructor(
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launch {
+            // make sure delayRefreshJob is not ongoing
             if (paramOrder.page == 1 && paramOrder.uUID.isEmpty()) {
                 delayRefreshJob?.cancel()
             }
@@ -125,10 +126,17 @@ class UohListViewModel @Inject constructor(
         }
     }
 
-    fun loadUohItemDelay(paramOrder: UohListParam, index: Int) {
-        delayRefreshJob = launch {
-            delay(DELAY_REFRESH)
-            _uohItemDelayResult.value = Pair(uohListUseCase.executeSuspend(paramOrder), index)
+    fun loadUohItemDelay(isDelay: Boolean, paramOrder: UohListParam, index: Int) {
+        // provide flag isDelay for hansel
+        if (isDelay) {
+            delayRefreshJob = launch {
+                delay(DELAY_REFRESH)
+                _uohItemDelayResult.value = Pair(uohListUseCase.executeSuspend(paramOrder), index)
+            }
+        } else {
+            launch {
+                _uohItemDelayResult.value = Pair(uohListUseCase.executeSuspend(paramOrder), index)
+            }
         }
     }
 
