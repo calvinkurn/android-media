@@ -81,10 +81,12 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
+import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
@@ -294,6 +296,10 @@ class UserProfileFragment @Inject constructor(
 
                         if (shouldBlock) getBlockUserDialog().show()
                         else viewModel.submitAction(UserProfileAction.UnblockUser)
+                    }
+
+                    override fun onReportUser(bottomSheet: UserProfileOptionBottomSheet) {
+                        goToTopChatReport()
                     }
                 })
                 childFragment.setDataSource(object : UserProfileOptionBottomSheet.DataSource {
@@ -1167,6 +1173,16 @@ class UserProfileFragment @Inject constructor(
 
     override fun onChildRefresh() {
         /** Not yet implemented */
+    }
+
+    private fun goToTopChatReport() {
+        val reportUrl = URLEncoder.encode("${TokopediaUrl.getInstance().MOBILEWEB}chat/report/0?isSeller=1", "UTF-8")
+        context?.let {
+            RouteManager.route(
+                it,
+                "${ApplinkConst.WEBVIEW}?url=$reportUrl"
+            )
+        }
     }
 
     companion object {

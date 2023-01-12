@@ -95,6 +95,13 @@ class UserProfileOptionBottomSheet : BottomSheetUnify() {
         val isBlocking = mDataSource?.isBlocking() == true
         return listOf(
             Option(
+                getString(R.string.up_report_user),
+                MethodChecker.getColor(
+                    requireContext(),
+                    unifyR.color.Unify_RN500,
+                )
+            ) { mListener?.onReportUser(this) },
+            Option(
                 getString(
                     if (isBlocking) R.string.up_unblock_user
                     else R.string.up_block_user
@@ -103,7 +110,7 @@ class UserProfileOptionBottomSheet : BottomSheetUnify() {
                     requireContext(),
                     unifyR.color.Unify_NN950,
                 ),
-            ) { mListener?.onBlockingUser(this, shouldBlock = !isBlocking) }
+            ) { mListener?.onBlockingUser(this, shouldBlock = !isBlocking) },
         )
     }
 
@@ -132,6 +139,7 @@ class UserProfileOptionBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onBlockingUser(bottomSheet: UserProfileOptionBottomSheet, shouldBlock: Boolean)
+        fun onReportUser(bottomSheet: UserProfileOptionBottomSheet)
     }
 
     interface DataSource {
