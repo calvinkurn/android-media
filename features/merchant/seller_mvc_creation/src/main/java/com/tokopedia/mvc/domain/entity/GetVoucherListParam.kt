@@ -61,7 +61,7 @@ data class VoucherListParam (
                 page = page,
                 perPage = perPage,
                 sortBy = sort?.type,
-                isInverted = false,
+                isInverted = true,
                 includeSubsidy = source.mapToSubsidy(),
                 isVps = if (source.any { it == VoucherSource.VPS_PROMOTION }) VoucherVps.VPS.id.toString() else "",
                 voucherName = voucherName,

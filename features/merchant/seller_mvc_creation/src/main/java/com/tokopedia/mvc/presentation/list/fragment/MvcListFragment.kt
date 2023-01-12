@@ -27,7 +27,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
@@ -69,6 +68,7 @@ import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.presentation.quota.QuotaInfoActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
@@ -393,7 +393,7 @@ class MvcListFragment :
     ) {
         tfQuotaCounter.text = voucherCreationQuota.quotaUsageFormatted
         iconInfo.setOnClickListener {
-            redirectToQuotaVoucherPage()
+            redirectToQuotaVoucherPage(voucherCreationQuota)
         }
         btnAddCoupon.setOnClickListener {
             if (voucherCreationQuota.quotaErrorMessage.isEmpty()) {
@@ -455,7 +455,9 @@ class MvcListFragment :
                 // TODO: Implement loading
             }
         )
-        attachPaging(this, config, ::getDataList)
+        attachPaging(this, config) { page, _ ->
+            viewModel.getVoucherList(page, PAGE_SIZE)
+        }
     }
 
     private fun SortFilter.setupFilter() {
@@ -480,14 +482,11 @@ class MvcListFragment :
 
     private fun loadInitialDataList() {
         val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
+        resetPaging()
         adapter?.clearDataList()
         binding?.loaderPage?.show()
         viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
         viewModel.getVoucherQuota()
-    }
-
-    private fun getDataList(page: Int, pageSize: Int) {
-        viewModel.getVoucherList(page, pageSize)
     }
 
     private fun displayNoDataSearch() {
@@ -705,8 +704,8 @@ class MvcListFragment :
         }
     }
 
-    private fun redirectToQuotaVoucherPage() {
-        // TODO: create redirection here
+    private fun redirectToQuotaVoucherPage(voucherCreationQuota: VoucherCreationQuota) {
+        QuotaInfoActivity.start(context, null)
     }
 
     private fun redirectToEditPage(voucher: Voucher) {

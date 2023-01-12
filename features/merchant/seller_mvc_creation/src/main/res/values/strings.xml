@@ -412,4 +412,10 @@
     <string name="smvc_intro_voucher_carousel_cashback_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_1.png</string>
     <string name="smvc_intro_voucher_carousel_cashback_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_2.png</string>
 
+    <!--Summary Page-->
+    <string name="smvc_quota_info_page_title">Kuota Kupon Toko Saya</string>
+    <string name="smvc_quota_info_quota_remaining_format">Sisa Kuota %s</string>
+    <string name="smvc_quota_info_quota_button_format">Cek %d Sumber Lainnya</string>
+    <string name="smvc_quota_info_quota_total_format">/ %d</string>
+
 </resources>
