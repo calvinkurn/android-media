@@ -79,9 +79,18 @@ class PlayShortsAccountManagerTest {
     @Test
     fun playShorts_accountManager_switchAccount_accountNotFound() {
         rule.runBlockingTest {
+            val account = accountManager.switchAccount(mockAccountList, "random_account_type")
+
+            account.assertEqualTo(mockAccountList.first())
+        }
+    }
+
+    @Test
+    fun playShorts_accountManager_switchAccount_onlyHas1Account() {
+        rule.runBlockingTest {
             val account = accountManager.switchAccount(mockAccountUser, TYPE_USER)
 
-            account.assertEqualTo(ContentAccountUiModel.Empty)
+            account.assertEqualTo(mockAccountUser.first())
         }
     }
 
