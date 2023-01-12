@@ -250,7 +250,7 @@ class DetailEditorFragment @Inject constructor(
                         )
                     )
                 } else {
-                    viewModel.setRemoveBackground(it) { _ ->
+                    viewModel.setRemoveBackground(it) {
                         if (activity?.isFinishing != false) return@setRemoveBackground
                         removeBgConnectionToast {
                             removeBackgroundRetryLimit--
@@ -1054,23 +1054,6 @@ class DetailEditorFragment @Inject constructor(
         return editHistory
     }
 
-    fun showAddLogoUploadTips(isUpload: Boolean = true) {
-        addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, bottomSheetTag)
-        isAddLogoTipsShowed = true
-    }
-
-    private fun showAddLogoPicker() {
-        val intent = MediaPicker.intent(requireContext()) {
-            pageType(PageType.GALLERY)
-            modeType(ModeType.IMAGE_ONLY)
-            minImageResolution(500)
-            pageSource(PageSource.AddLogo)
-            singleSelectionMode()
-        }
-
-        startActivityForResult(intent, ADD_LOGO_PICKER_REQUEST_CODE)
-    }
-
     private fun updateAddLogoOverlay(newSize: Pair<Int, Int>, onFinish:() -> Unit) {
         loadImageWithEmptyTarget(requireContext(),
             data.addLogoValue.logoUrl,
@@ -1128,25 +1111,6 @@ class DetailEditorFragment @Inject constructor(
             Toast.LENGTH_LONG
         ).show()
         activity?.finish()
-    }
-
-    private fun updateAddLogoOverlay(newSize: Pair<Int, Int>, onFinish:() -> Unit) {
-        loadImageWithEmptyTarget(requireContext(),
-            data.addLogoValue.logoUrl,
-            {},
-            MediaBitmapEmptyTarget(
-                onReady = { logoBitmap ->
-                    viewModel.saveImageCache(
-                        addLogoComponent.generateOverlayImage(
-                            logoBitmap,
-                            newSize
-                        ), sourcePath = "image.png"
-                    )?.let { fileResult ->
-                        data.addLogoValue.overlayLogoUrl = fileResult.path
-                        onFinish()
-                    }
-                }
-            ))
     }
 
     override fun getScreenName() = SCREEN_NAME
