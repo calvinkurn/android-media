@@ -15,4 +15,5 @@ object BundleConstant {
     const val BUNDLE_KEY_SELECTED_WAREHOUSE_ID = "selected_warehouse_id"
     const val BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER = "enable_duplicate_voucher"
     const val BUNDLE_KEY_VOUCHER_QUOTA = "voucher_quota"
+    const val BUNDLE_KEY_SHOW_TOOLBAR = "show_toolbar"
 }

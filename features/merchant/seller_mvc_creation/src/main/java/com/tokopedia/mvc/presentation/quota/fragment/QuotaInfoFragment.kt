@@ -11,10 +11,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.extension.applyRoundedRectangle
-import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.R
@@ -32,10 +32,14 @@ class QuotaInfoFragment: BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(voucherCreationQuota: VoucherCreationQuota?): QuotaInfoFragment {
+        fun newInstance(
+            voucherCreationQuota: VoucherCreationQuota? = null,
+            showToolbar: Boolean = true
+        ): QuotaInfoFragment {
             return QuotaInfoFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_QUOTA, voucherCreationQuota)
+                    putBoolean(BundleConstant.BUNDLE_KEY_SHOW_TOOLBAR, showToolbar)
                 }
             }
         }
@@ -43,6 +47,7 @@ class QuotaInfoFragment: BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<SmvcFragmentQuotaInfoBinding>()
     private val voucherCreationQuota by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_QUOTA) as? VoucherCreationQuota }
+    private val showToolbar by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_TOOLBAR, false) }
 
     @Inject
     lateinit var viewModel: QuotaInfoViewModel
@@ -156,5 +161,6 @@ class QuotaInfoFragment: BaseDaggerFragment() {
         setNavigationOnClickListener {
             activity?.finish()
         }
+        isVisible = showToolbar.orFalse()
     }
 }

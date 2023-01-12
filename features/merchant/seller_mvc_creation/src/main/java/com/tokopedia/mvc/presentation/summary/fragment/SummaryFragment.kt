@@ -418,7 +418,6 @@ class SummaryFragment :
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        // TODO: redirect to step 2
         context?.let {
             val intent = VoucherInformationActivity.buildEditModeIntent(it, configuration)
             startActivity(intent)

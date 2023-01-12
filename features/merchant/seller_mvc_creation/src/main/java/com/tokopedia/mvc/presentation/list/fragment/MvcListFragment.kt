@@ -705,7 +705,7 @@ class MvcListFragment :
     }
 
     private fun redirectToQuotaVoucherPage(voucherCreationQuota: VoucherCreationQuota) {
-        QuotaInfoActivity.start(context, null)
+        QuotaInfoActivity.start(context, voucherCreationQuota)
     }
 
     private fun redirectToEditPage(voucher: Voucher) {
