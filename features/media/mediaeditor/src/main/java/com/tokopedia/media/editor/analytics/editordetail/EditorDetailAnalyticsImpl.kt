@@ -23,17 +23,14 @@ import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_ROTATE
-import com.tokopedia.media.editor.data.repository.WatermarkType
-import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.utils.ParamCacheManager
-import com.tokopedia.media.editor.utils.getToolEditorText
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class EditorDetailAnalyticsImpl(
+class EditorDetailAnalyticsImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val cacheManager: ParamCacheManager
+    private val cacheManager: PickerCacheManager
 ) : EditorDetailAnalytics {
     private val userId: String
         get() = userSession.userId.toZeroStringIfNullOrBlank()
@@ -42,7 +39,7 @@ class EditorDetailAnalyticsImpl(
         get() = userSession.shopId.toZeroStringIfNullOrBlank()
 
     private val pageSource: String
-        get() = cacheManager.getPickerParam().pageSourceName()
+        get() = cacheManager.get().pageSourceName()
 
     override fun clickRotationRotate() {
         sendGeneralEvent(

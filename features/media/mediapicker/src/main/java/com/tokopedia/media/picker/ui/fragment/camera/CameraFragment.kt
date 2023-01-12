@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.databinding.FragmentCameraBinding
 import com.tokopedia.media.picker.analytics.*
 import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
@@ -44,7 +44,7 @@ import javax.inject.Inject
 
 open class CameraFragment @Inject constructor(
     private var viewModelFactory: ViewModelProvider.Factory,
-    private var param: ParamCacheManager,
+    private var param: PickerCacheManager,
     private var cameraAnalytics: CameraAnalytics,
 ) : BaseDaggerFragment()
     , CameraControllerComponent.Listener

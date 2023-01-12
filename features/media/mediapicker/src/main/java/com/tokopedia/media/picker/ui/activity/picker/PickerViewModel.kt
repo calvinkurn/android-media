@@ -1,15 +1,16 @@
 package com.tokopedia.media.picker.ui.activity.picker
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isUrl
@@ -22,7 +23,8 @@ class PickerViewModel @Inject constructor(
     private val deviceInfo: DeviceInfoRepository,
     private val mediaGallery: MediaRepository,
     private val bitmapConverter: BitmapConverterRepository,
-    private val param: ParamCacheManager,
+    private val param: PickerCacheManager,
+    private val featureToggle: FeatureToggleManager,
     private val dispatchers: CoroutineDispatchers
 ): ViewModel() {
 
@@ -32,9 +34,32 @@ class PickerViewModel @Inject constructor(
     private var _includeMedias = MediatorLiveData<List<String?>>()
     val includeMedias: LiveData<List<String?>> get() = _includeMedias
 
+    private var _pickerParam = MutableLiveData<PickerParam>()
+    val pickerParam: LiveData<PickerParam> get() = _pickerParam
+
+    private var _editorParam = MutableLiveData<Pair<PickerResult, EditorParam>>()
+    val editorParam: LiveData<Pair<PickerResult, EditorParam>> get() = _editorParam
+
     val uiEvent = EventFlowFactory
         .subscriber(viewModelScope)
         .flowOn(dispatchers.computation)
+
+    fun navigateToEditorPage(result: PickerResult) {
+        viewModelScope.launch {
+            val data = Pair(result, param.get().getEditorParam() ?: EditorParam())
+            _editorParam.value = data
+        }
+    }
+
+    fun setPickerParam(pickerParam: PickerParam?) {
+        val mPickerParam = pickerParam ?: return
+
+        if (mPickerParam.isEditorEnabled() && featureToggle.isEditorEnabled().not()) {
+            mPickerParam.withoutEditor()
+        }
+
+        _pickerParam.value = param.set(mPickerParam)
+    }
 
     fun isDeviceStorageAlmostFull(): Boolean {
         return deviceInfo.execute(
@@ -42,8 +67,8 @@ class PickerViewModel @Inject constructor(
         )
     }
 
-    fun preSelectedMedias() {
-        val mIncludeMedias = param.get().includeMedias()
+    fun preSelectedMedias(param: PickerParam) {
+        val mIncludeMedias = param.includeMedias()
         if (mIncludeMedias.isEmpty()) return
 
         viewModelScope.launch(dispatchers.io) {

@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import java.util.concurrent.CountDownLatch
+import javax.inject.Inject
 
 interface AddLogoFilterRepository {
     fun flattenImage(
@@ -19,8 +21,8 @@ interface AddLogoFilterRepository {
     fun getLocalLogo(): String
 }
 
-class AddLogoFilterRepositoryImpl(
-    private val context: Context,
+class AddLogoFilterRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val saveImage: SaveImageRepository
 ): AddLogoFilterRepository {
     private val localCacheHandler = LocalCacheHandler(context, PREF_NAME_CACHE_ADD_LOGO)

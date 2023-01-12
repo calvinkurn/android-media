@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 open class GalleryFragment @Inject constructor(
     private var viewModelFactory: ViewModelProvider.Factory,
-    private var param: ParamCacheManager,
+    private var param: PickerCacheManager,
     private var galleryAnalytics: GalleryAnalytics,
 ) : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
 

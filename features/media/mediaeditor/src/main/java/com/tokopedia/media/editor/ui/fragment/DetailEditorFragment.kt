@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -56,6 +57,7 @@ import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
@@ -69,7 +71,8 @@ import kotlin.math.max
 
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val editorDetailAnalytics: EditorDetailAnalytics
+    private val editorDetailAnalytics: EditorDetailAnalytics,
+    private val pickerParam: PickerCacheManager
 ) : BaseEditorFragment(),
     BrightnessToolUiComponent.Listener,
     ContrastToolsUiComponent.Listener,
@@ -1061,7 +1064,8 @@ class DetailEditorFragment @Inject constructor(
             pageType(PageType.GALLERY)
             modeType(ModeType.IMAGE_ONLY)
             minImageResolution(500)
-            pageSource(PageSource.AddLogo)
+            pageSource(pickerParam.get().pageSource())
+            subPageSource(PageSource.AddLogo)
             singleSelectionMode()
         }
 

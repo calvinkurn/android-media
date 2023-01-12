@@ -2,13 +2,14 @@ package com.tokopedia.media.editor.analytics.editorhome
 
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.media.editor.analytics.*
-import com.tokopedia.media.editor.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class EditorHomeAnalyticsImpl(
+class EditorHomeAnalyticsImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val cacheManager: ParamCacheManager
+    private val cacheManager: PickerCacheManager
 ) : EditorHomeAnalytics {
     private val userId: String
         get() = userSession.userId.toZeroStringIfNullOrBlank()
@@ -17,7 +18,7 @@ class EditorHomeAnalyticsImpl(
         get() = userSession.shopId.toZeroStringIfNullOrBlank()
 
     private val pageSource: String
-        get() = cacheManager.getPickerParam().pageSourceName()
+        get() = cacheManager.get().pageSourceName()
 
     override fun clickUpload() {
         sendGeneralEvent(

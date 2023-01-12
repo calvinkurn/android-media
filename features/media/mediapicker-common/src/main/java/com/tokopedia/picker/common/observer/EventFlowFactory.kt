@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
 object EventFlowFactory {
-
     private const val TIMEOUT_IN_MILLIS = 500L
     private const val MAX_REPLAY = 50
 
@@ -28,4 +27,7 @@ object EventFlowFactory {
         state.resetReplayCache()
     }
 
+    fun dispose() {
+        state.tryEmit(EventState.Idle)
+    }
 }

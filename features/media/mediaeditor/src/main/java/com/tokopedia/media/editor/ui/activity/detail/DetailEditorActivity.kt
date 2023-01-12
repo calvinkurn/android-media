@@ -13,6 +13,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -23,6 +24,9 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var pickerParam: PickerCacheManager
 
     private val viewModel: DetailEditorViewModel by lazy {
         ViewModelProvider(
@@ -83,6 +87,11 @@ class DetailEditorActivity : BaseEditorActivity() {
             getString(getToolEditorText(editorIntent.editorToolType)),
             rightIcon = if (editorIntent.isToolAddLogo()) IconUnify.INFORMATION else null
         )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        pickerParam.disposeSubPicker()
     }
 
     override fun initInjector() {

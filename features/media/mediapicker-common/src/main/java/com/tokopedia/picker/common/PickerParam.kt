@@ -25,6 +25,7 @@ data class PickerParam(
     @SerializedName("isIncludeAnimation") private var isIncludeAnimation: Boolean = false,
     @SerializedName("withEditor") private var withEditor: Boolean = false,
     @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
+    @SerializedName("subPageSource") private var subPageSource: PageSource = PageSource.Unknown,
     @SerializedName("includeMedias") private var includeMedias: List<String> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
     @SerializedName("previewActionText") private var previewActionText: String = "",
@@ -34,7 +35,10 @@ data class PickerParam(
     // getter
     fun pageType() = pageType
     fun modeType() = modeType
+    fun pageSource() = pageSource
     fun pageSourceName() = pageSource.value
+    fun subPageSource() = subPageSource
+    fun subPageSourceName() = subPageSource.value
     fun isImageModeOnly() = modeType == ModeType.IMAGE_ONLY
     fun isVideoModeOnly() = modeType == ModeType.VIDEO_ONLY
     fun isCommonPageType() = pageType == PageType.COMMON
@@ -70,6 +74,7 @@ data class PickerParam(
 
     // setter
     fun pageSource(value: PageSource) = apply { pageSource = value }
+    fun subPageSource(value: PageSource) = apply { subPageSource = value }
     fun cameraRatio(value: CameraRatio) = apply { cameraRatio = value }
     fun maxMediaItem(value: Int) = apply { maxMediaItem = value }
     fun maxVideoItem(value: Int) = apply { maxVideoItem = value }
