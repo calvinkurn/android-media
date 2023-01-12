@@ -1230,13 +1230,13 @@ open class ProductManageFragment :
             }.isNotEmpty()
 
             if (textMultipleSelect?.text.toString() == getString(R.string.product_manage_multiple_select)){
-                viewModel.toggleMultiSelect()
-            }else{
                 if (isNotAllTobacco) {
                     viewModel.toggleMultiSelect()
                 } else {
                     showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
                 }
+            }else{
+                viewModel.toggleMultiSelect()
             }
             ProductManageTracking.eventMultipleSelect()
         }
