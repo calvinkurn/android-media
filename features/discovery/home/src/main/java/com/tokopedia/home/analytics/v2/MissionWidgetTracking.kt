@@ -31,7 +31,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val TRACKER_ID_IMPRESSION = "40379"
             const val TRACKER_ID_PRODUCT = "40378"
             const val DEFAULT_VALUE = ""
-            const val DEFAULT_PRICE = "0"
+            const val DEFAULT_PRICE = 0f
             const val DEFAULT_BANNER_ID = "0"
             const val ITEM_ID_FORMAT = "%s_%s_%s_%s_%s_%s"
             const val DYNAMIC_CHANNEL_MISSION_WIDGET = "dynamic channel mission widget"
@@ -162,7 +162,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
         item.putString(Items.ITEM_ID, element.productID)
         item.putString(Items.ITEM_NAME, element.productName)
         item.putString(Items.ITEM_VARIANT, DEFAULT_VALUE)
-        item.putString(Items.PRICE, CustomAction.DEFAULT_PRICE)
+        item.putFloat(Items.PRICE, CustomAction.DEFAULT_PRICE)
         val itemList = CustomAction.ITEM_LIST_FORMAT.format(
             element.verticalPosition,
             if (element.isTopads) CustomAction.TOPADS else CustomAction.NON_TOPADS,
@@ -195,7 +195,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
                 id = element.productID,
                 name = element.productName,
                 productPosition = (horizontalPosition + 1).toString(),
-                productPrice = CustomAction.DEFAULT_PRICE,
+                productPrice = CustomAction.DEFAULT_PRICE.toString(),
                 variant = DEFAULT_VALUE,
                 isFreeOngkir = false
             )
