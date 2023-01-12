@@ -7,13 +7,13 @@ import com.tokopedia.product.manage.feature.list.data.model.PopupManagerResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-@GqlQuery("GetShopManagerPopupsGqlQuery", GetShopManagerPopupsUseCase.query)
+@GqlQuery("GetShopManagerPopupsGqlQuery", GetShopManagerPopupsUseCase.QUERY)
 class GetShopManagerPopupsUseCase @Inject constructor(repository: GraphqlRepository)
     : GraphqlUseCase<PopupManagerResponse>(repository) {
 
     companion object {
         private const val SHOP_ID = "shopID"
-        const val query = """
+        const val QUERY = """
             query GetShopManagerPopups(${'$'}shopID:Int!){
               getShopManagerPopups(shopID: ${'$'}shopID) {
                  data {

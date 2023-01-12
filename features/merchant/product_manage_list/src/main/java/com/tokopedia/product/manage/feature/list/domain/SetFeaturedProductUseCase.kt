@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import javax.inject.Inject
 
-@GqlQuery("SetFeaturedProductGqlQuery", SetFeaturedProductUseCase.query)
+@GqlQuery("SetFeaturedProductGqlQuery", SetFeaturedProductUseCase.QUERY)
 class SetFeaturedProductUseCase @Inject constructor(
     repository: GraphqlRepository
 ) : GraphqlUseCase<FeaturedProductResponseModel>(repository) {
@@ -14,7 +14,7 @@ class SetFeaturedProductUseCase @Inject constructor(
     companion object {
         private const val PARAM_PRODUCT_ID = "productId"
         private const val PARAM_STATUS = "status"
-        const val query = """
+        const val QUERY = """
             mutation GoldManageFeaturedProductV2(${"$"}productId: Int!, ${"$"}status: Int!) {
               GoldManageFeaturedProductV2(ProductID: ${"$"}productId, Status: ${"$"}status) {
                 header {

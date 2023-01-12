@@ -9,13 +9,13 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-@GqlQuery("DeleteProductGqlQuery", DeleteProductUseCase.query)
+@GqlQuery("DeleteProductGqlQuery", DeleteProductUseCase.QUERY)
 class DeleteProductUseCase @Inject constructor(repository: GraphqlRepository)
     : GraphqlUseCase<ProductUpdateV3Response>(repository) {
 
     companion object {
         const val PARAM_INPUT = "input"
-        const val query = """
+        const val QUERY = """
             mutation productUpdateV3(${'$'}input: ProductInputV3!){
                 ProductUpdateV3(input:${'$'}input) {
                     header {
