@@ -36,17 +36,14 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
-import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
@@ -83,8 +80,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
     PreparationMenuView.Listener,
-    CoverFormView.Listener,
-    PlayBroadcastSetupTitleBottomSheet.Listener {
+    PlayBroadcastSetupTitleBottomSheet.Listener,
+    PlayBroadcastSetupCoverBottomSheet.Listener {
 
     /** ViewModel */
     private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
@@ -175,16 +172,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        return when (binding.formCover.visibility) {
-            View.VISIBLE -> {
-                showCoverForm(false)
-                true
-            }
-            else -> {
-                analytic.clickCloseOnSetupPage()
-                super.onBackPressed()
-            }
-        }
+        analytic.clickCloseOnSetupPage()
+        return super.onBackPressed()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -198,28 +187,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
 
                     override fun isEligibleForPin(): Boolean = false
-                })
-            }
-            is PlayBroadcastSetupBottomSheet -> {
-                childFragment.setListener(object: PlayBroadcastSetupBottomSheet.Listener {
-                    override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        parentViewModel.submitAction(
-                            PlayBroadcastAction.SetCover(cover)
-                        )
-                    }
-                })
-                childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
-                    override fun getProductList(): List<ProductUiModel> {
-                        return parentViewModel.productSectionList.flatMap { it.products }
-                    }
-
-                    override fun getAuthorId(): String {
-                        return parentViewModel.authorId
-                    }
-
-                    override fun getChannelId(): String {
-                        return parentViewModel.channelId
-                    }
                 })
             }
             is ContentAccountTypeBottomSheet -> {
@@ -289,6 +256,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setupListener(this)
                 childFragment.setupTitle(parentViewModel.channelTitle)
             }
+            is PlayBroadcastSetupCoverBottomSheet -> {
+                childFragment.setupListener(this)
+            }
         }
     }
 
@@ -308,7 +278,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 activity?.onBackPressed()
             }
         }
-        binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
         with(binding.toolbarContentCommon) {
             if (parentViewModel.isAllowChangeAccount) {
                 if (viewModel.isFirstSwitchAccount) {
@@ -357,8 +326,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun setupListener() {
         binding.apply {
             viewPreparationMenu.setListener(this@PlayBroadcastPreparationFragment)
-            formCover.setListener(this@PlayBroadcastPreparationFragment)
-
             flBroStartLivestream.setOnClickListener {
                 analytic.clickStartStreaming(parentViewModel.channelId)
 
@@ -391,7 +358,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     err = MessageErrorException(errorMessage),
                     customErrMessage = errorMessage,
                 )
-                showCoverForm(true)
+                openSetupCoverBottomSheet()
             }
         } else {
             val errorMessage = getString(R.string.play_bro_title_empty_error)
@@ -450,15 +417,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     if(croppedCover.coverImage.toString().isNotEmpty() &&
                         croppedCover.coverImage.toString().contains("http")) {
                         binding.viewPreparationMenu.isSetCoverChecked(true)
-                        binding.formCover.setCover(croppedCover.coverImage.toString())
                     } else if (!croppedCover.localImage?.toString().isNullOrEmpty()){
                         binding.viewPreparationMenu.isSetCoverChecked(true)
-                        binding.formCover.setCover(croppedCover.localImage.toString())
                     } else {
                         binding.viewPreparationMenu.isSetCoverChecked(false)
-                        binding.formCover.setInitialCover()
                     }
                 }
+                else -> {}
             }
         }
     }
@@ -657,16 +622,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun getSetupTitleBottomSheet() = PlayBroadcastSetupTitleBottomSheet
         .getFragment(childFragmentManager, requireActivity().classLoader)
 
-    private fun showCoverForm(isShow: Boolean) {
-        if(isShow) {
-            showMainComponent(false)
-
-            binding.formCover.setTitle(parentViewModel.channelTitle)
-            binding.formCover.setAuthorName(parentViewModel.authorName)
-        }
-        else showMainComponent(true)
-        binding.formCover.showWithCondition(isShow)
+    private fun openSetupCoverBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(PlayBroadcastSetupCoverBottomSheet.TAG)
+        if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
+        try {
+            getSetupCoverBottomSheet().show(childFragmentManager)
+        } catch (e: Exception) {}
     }
+
+    private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
 
     private fun showScheduleBottomSheet() {
         val schedule = parentViewModel.uiState.value.schedule
@@ -708,8 +674,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onClickSetCover() {
         analytic.clickSetupCoverMenu()
-
-        showCoverForm(true)
+        openSetupCoverBottomSheet()
     }
 
     override fun onClickSetProduct() {
@@ -731,14 +696,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     /** Callback Cover Form */
-    override fun onCloseCoverForm() {
-        activity?.onBackPressed()
-    }
-
-    override fun onClickCoverPreview(isEditCover: Boolean) {
-        if(isEditCover) analytic.clickEditCover() else analytic.clickAddNewCover()
-        openCoverSetupFragment()
-    }
+    // TODO add cover callback here
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
@@ -826,13 +784,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             showMainComponent(true)
             binding.playPreparationCountdownTimer.visibility = View.GONE
         }
-    }
-
-    private fun openCoverSetupFragment() {
-        val setupClass = PlayBroadcastSetupBottomSheet::class.java
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
-        setupFragment.show(childFragmentManager)
     }
 
     private fun openBroadcastLivePage() {
