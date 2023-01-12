@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetFilterShowcaseBinding
 import com.tokopedia.mvc.domain.entity.ShopShowcase
@@ -21,6 +23,7 @@ class ShowcaseFilterBottomSheet: BottomSheetUnify() {
         private const val BUNDLE_KEY_SELECTED_SHOWCASE_IDS = "selected_showcase_ids"
         private const val BUNDLE_KEY_SHOWCASES = "showcases"
         private const val ITEM_DIVIDER_INSET = 16
+        private const val IMAGE_URL_NO_SHOWCASE = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/ic_empty_state_no_showcase.png"
 
         @JvmStatic
         fun newInstance(selectedShowcaseIds: List<Long>, items: List<ShopShowcase>): ShowcaseFilterBottomSheet {
@@ -76,7 +79,11 @@ class ShowcaseFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupEmptyState(showcases: List<ShopShowcase>) {
-        binding?.emptyState?.isVisible = showcases.isEmpty()
+        if (showcases.isEmpty()) {
+            binding?.groupEmptyState?.visible()
+            binding?.imgNoShowcase?.loadImage(IMAGE_URL_NO_SHOWCASE)
+        }
+
         binding?.btnApply?.isVisible = showcases.isNotEmpty()
     }
 

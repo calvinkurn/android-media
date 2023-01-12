@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imgProduct" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/imgProduct"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -42,41 +42,39 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgSku"
         android:layout_width="0dp"
-        android:layout_marginTop="4dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:typographyType="small"
-        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tpgProductName"
         app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
+        app:typographyType="small"
         tools:text="SKU: ABC123" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintStart_toStartOf="@+id/tpgSku"
         app:layout_constraintTop_toBottomOf="@+id/tpgSku"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold"
-        android:layout_marginEnd="16dp"
         tools:text="Rp. 5.000.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgStock"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:paddingBottom="8dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintStart_toStartOf="@+id/tpgPrice"
         app:layout_constraintTop_toBottomOf="@+id/tpgPrice"
         app:typographyType="paragraph_3"
         tools:text="Total stok: 9990" />
@@ -112,16 +110,16 @@
         android:id="@+id/tpgIneligibleReason"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:layout_marginEnd="16dp"
-        android:textColor="@color/Unify_RN500"
         android:paddingBottom="16dp"
+        android:textColor="@color/Unify_RN500"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tpgStock"
         app:layout_constraintTop_toBottomOf="@+id/tpgStock"
         app:typographyType="display_3"
-        tools:text="Produk tidak berlaku untuk produk logam mulia, emas, voucher dan produk digital" />
+        tools:text="Produk tidak berlaku untuk produk logam mulia, emas, voucher dan produk digital"
+        tools:visibility="visible" />
 
     <RelativeLayout
         android:id="@+id/layoutVariant"

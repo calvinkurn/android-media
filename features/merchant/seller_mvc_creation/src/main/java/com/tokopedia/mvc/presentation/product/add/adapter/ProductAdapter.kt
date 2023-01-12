@@ -66,7 +66,6 @@ class ProductAdapter(
                 tpgIneligibleReason.setIneligibleReason(item)
 
                 imgProduct.loadRemoteImageUrl(item)
-                imgProduct.cornerRadius = NumberConstant.IMAGE_VIEW_CORNER_RADIUS
 
                 tpgProductName.text = item.name
                 tpgProductName.isEnabled = item.isEligible
