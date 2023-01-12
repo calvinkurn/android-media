@@ -28,6 +28,8 @@ import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,19 +37,21 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 03/07/20.
  */
-class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                           private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
-                                           private val uohListUseCase: UohListUseCase,
-                                           private val getRecommendationUseCase: GetRecommendationUseCase,
-                                           private val uohFinishOrderUseCase: UohFinishOrderUseCase,
-                                           private val atcMultiProductsUseCase: AddToCartMultiUseCase,
-                                           private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
-                                           private val flightResendEmailUseCase: FlightResendEmailUseCase,
-                                           private val trainResendEmailUseCase: TrainResendEmailUseCase,
-                                           private val rechargeSetFailUseCase: RechargeSetFailUseCase,
-                                           private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-                                           private val atcUseCase: AddToCartUseCase,
-                                           private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase) : BaseViewModel(dispatcher.main) {
+class UohListViewModel @Inject constructor(
+    dispatcher: CoroutineDispatchers,
+    private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
+    private val uohListUseCase: UohListUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val uohFinishOrderUseCase: UohFinishOrderUseCase,
+    private val atcMultiProductsUseCase: AddToCartMultiUseCase,
+    private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
+    private val flightResendEmailUseCase: FlightResendEmailUseCase,
+    private val trainResendEmailUseCase: TrainResendEmailUseCase,
+    private val rechargeSetFailUseCase: RechargeSetFailUseCase,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val atcUseCase: AddToCartUseCase,
+    private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase
+) : BaseViewModel(dispatcher.main) {
 
     private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory.Data>>()
     val filterCategoryResult: LiveData<Result<UohFilterCategory.Data>>
@@ -56,6 +60,10 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
         get() = _orderHistoryListResult
+
+    private val _uohItemDelayResult = MutableLiveData<Pair<Result<UohListOrder.Data.UohOrders>, Int>>()
+    val uohItemDelayResult: LiveData<Pair<Result<UohListOrder.Data.UohOrders>, Int>>
+        get() = _uohItemDelayResult
 
     private val _recommendationListResult = MutableLiveData<Result<List<RecommendationWidget>>>()
     val recommendationListResult: LiveData<Result<List<RecommendationWidget>>>
@@ -97,6 +105,9 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val getUohPmsCounterResult: LiveData<Result<PmsNotification>>
         get() = _getUohPmsCounterResult
 
+    private var delayRefreshJob: Job? = null
+    private val DELAY_REFRESH = 2000L
+
     fun loadFilterCategory() {
         launch {
             _filterCategoryResult.value = getUohFilterCategoryUseCase.executeSuspend()
@@ -106,8 +117,20 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launch {
+            if (paramOrder.page == 1 && paramOrder.uUID.isEmpty()) {
+                delayRefreshJob?.cancel()
+            }
             _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
             UohIdlingResource.decrement()
+        }
+    }
+
+    fun loadUohItemDelay(paramOrder: UohListParam, index: Int) {
+        launch {
+            delayRefreshJob = launch {
+                delay(DELAY_REFRESH)
+                _uohItemDelayResult.value = Pair(uohListUseCase.executeSuspend(paramOrder), index)
+            }
         }
     }
 
@@ -122,9 +145,11 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launch {
             try {
                 val recommendationData = getRecommendationUseCase.getData(
-                        GetRecommendationRequestParam(
-                                pageNumber = pageNumber,
-                                pageName = UohConsts.PAGE_NAME))
+                    GetRecommendationRequestParam(
+                        pageNumber = pageNumber,
+                        pageName = UohConsts.PAGE_NAME
+                    )
+                )
                 _recommendationListResult.value = (recommendationData.asSuccess())
             } catch (e: Exception) {
                 Timber.d(e)
@@ -152,18 +177,24 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
             listParam.forEachIndexed { index, product ->
                 arrayListProducts.add(
-                        ECommerceAdd.Add.Products(
-                                name = product.productName,
-                                id = product.productId.toString(),
-                                price = product.productPrice.toString(),
-                                quantity = product.qty.toString(),
-                                dimension79 = product.shopId.toString()
-                        ))
+                    ECommerceAdd.Add.Products(
+                        name = product.productName,
+                        id = product.productId.toString(),
+                        price = product.productPrice.toString(),
+                        quantity = product.qty.toString(),
+                        dimension79 = product.shopId.toString()
+                    )
+                )
             }
 
             if (result is Success) {
-                UohAnalytics.clickBeliLagiOnOrderCardMP("", userId, arrayListProducts,
-                        verticalCategory, result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString())
+                UohAnalytics.clickBeliLagiOnOrderCardMP(
+                    "",
+                    userId,
+                    arrayListProducts,
+                    verticalCategory,
+                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
+                )
             }
 
             UohIdlingResource.decrement()
@@ -214,7 +245,6 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             }
         }
     }
-
 
     fun doAtc(atcParams: AddToCartRequestParams) {
         UohIdlingResource.increment()

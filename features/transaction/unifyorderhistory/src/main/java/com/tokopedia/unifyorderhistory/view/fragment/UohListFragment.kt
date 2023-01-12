@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -263,7 +262,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private lateinit var trackingQueue: TrackingQueue
     private var _arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
-    private var delayRefreshJob: Job? = null
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -520,6 +518,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingTrainResendEmail()
         observeTdnBanner()
         observeUohPmsCounter()
+        observingUohItemDelay()
     }
 
     private fun observeTdnBanner() {
@@ -681,6 +680,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
+    private fun loadUohItemDelay(uuid: String, index: Int) {
+        paramUohOrder.uUID = uuid
+        paramUohOrder.page = 1
+        uohListViewModel.loadUohItemDelay(paramUohOrder, index)
+    }
+
     private fun loadRecommendationList() {
         isFetchRecommendation = true
         uohListViewModel.loadRecommendationList(currRecommendationListPage)
@@ -769,6 +774,24 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
+    private fun observingUohItemDelay() {
+        uohListViewModel.uohItemDelayResult.observe(viewLifecycleOwner) {
+            when (it.first) {
+                is Success -> {
+                    if (it.second > -1 && (it.first as Success<UohListOrder.Data.UohOrders>).data.orders.isNotEmpty()) {
+                        uohItemAdapter.updateDataAtIndex(it.second, (it.first as Success<UohListOrder.Data.UohOrders>).data.orders[0])
+                    }
+                }
+                is Fail -> {
+                    showToaster(
+                        ErrorHandler.getErrorMessage(context, (it.first as Fail).throwable),
+                        Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        }
+    }
+
     private fun observingRecommendationList() {
         uohListViewModel.recommendationListResult.observe(viewLifecycleOwner) {
             when (it) {
@@ -792,12 +815,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (responseFinishOrder.success == 1) {
                         responseFinishOrder.message.firstOrNull()
                             ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
-
-                        delayRefreshJob?.cancel()
-                        delayRefreshJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                            delay(DELAY_REFRESH)
-                            loadOrderHistoryList(orderIdNeedUpdated)
-                        }
+                        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
                             responseFinishOrder.message.firstOrNull()
@@ -1818,7 +1836,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val toasterSuccess = Toaster
         view?.let { v ->
             toasterSuccess.build(
-                v, message, Toaster.LENGTH_SHORT, type, CTA_ATC,
+                v,
+                message,
+                Toaster.LENGTH_SHORT,
+                type,
+                CTA_ATC,
                 View.OnClickListener {
                     RouteManager.route(context, ApplinkConst.CART)
                     userSession.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
@@ -2327,6 +2349,5 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onDestroy() {
         super.onDestroy()
-        delayRefreshJob?.cancel()
     }
 }
