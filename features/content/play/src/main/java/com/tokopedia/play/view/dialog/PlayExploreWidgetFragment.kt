@@ -262,6 +262,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     override fun dismiss() {
+        if (!isVisible) return
         viewModel.submitAction(DismissExploreWidget)
         super.dismiss()
     }

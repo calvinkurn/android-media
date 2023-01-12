@@ -365,6 +365,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         recreateView()
+        closeExploreWidget() //move to view component
     }
 
     override fun onDestroyView() {
