@@ -66,12 +66,8 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private val widgetAdapter = PlayWidgetChannelMediumAdapter(cardChannelListener = this)
 
-    private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
-    }
-
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        object : EndlessRecyclerViewScrollListener(layoutManager) {
+        object : EndlessRecyclerViewScrollListener(binding.rvWidgets.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.submitAction(NextPageWidgets)
             }
@@ -124,7 +120,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.rvChips.addItemDecoration(chipDecoration)
 
         binding.rvWidgets.adapter = widgetAdapter
-        binding.rvWidgets.layoutManager = layoutManager
+        binding.rvWidgets.layoutManager = GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
         binding.rvWidgets.addOnScrollListener(scrollListener)
 
         binding.srExploreWidget.setOnRefreshListener {
