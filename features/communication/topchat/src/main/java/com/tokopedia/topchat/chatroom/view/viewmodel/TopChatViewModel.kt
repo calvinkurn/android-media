@@ -1169,16 +1169,14 @@ open class TopChatViewModel @Inject constructor(
     }
 
     private fun isEnableUploadImageService(): Boolean {
-//        return try {
-//            remoteConfig.getBoolean(
-//                ENABLE_UPLOAD_IMAGE_SERVICE,
-//                false
-//            ) && !isProblematicDevice()
-//        } catch (ex: Throwable) {
-//            false
-//        }
-        val result = true
-        return result
+        return try {
+            remoteConfig.getBoolean(
+                ENABLE_UPLOAD_IMAGE_SERVICE,
+                false
+            ) && !isProblematicDevice()
+        } catch (ex: Throwable) {
+            false
+        }
     }
 
     private fun isProblematicDevice(): Boolean {

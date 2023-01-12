@@ -8,20 +8,21 @@ import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
 import javax.inject.Inject
 
 class TopchatUploadImageUseCaseStub @Inject constructor(
-        uploadImageUseCase: UploaderUseCase,
-        chatImageServerUseCase: ChatImageServerUseCase,
-        dispatchers: CoroutineDispatchers
-): TopchatUploadImageUseCase(uploadImageUseCase, chatImageServerUseCase, dispatchers) {
+    uploadImageUseCase: UploaderUseCase,
+    chatImageServerUseCase: ChatImageServerUseCase,
+    dispatchers: CoroutineDispatchers
+) : TopchatUploadImageUseCase(uploadImageUseCase, chatImageServerUseCase, dispatchers) {
 
     var isError: Boolean = false
 
     override fun upload(
         image: ImageUploadUiModel,
-        onSuccess: (String, ImageUploadUiModel) -> Unit,
-        onError: (Throwable, ImageUploadUiModel) -> Unit
+        onSuccess: (String, ImageUploadUiModel, Boolean) -> Unit,
+        onError: (Throwable, ImageUploadUiModel) -> Unit,
+        isSecure: Boolean
     ) {
         if (!isError) {
-            onSuccess.invoke("DummyUploadId", image)
+            onSuccess.invoke("DummyUploadId", image, isSecure)
         } else {
             onError.invoke(IllegalStateException("Some error"), image)
         }
