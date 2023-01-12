@@ -72,6 +72,8 @@ class UserDetailsUseCase @Inject constructor(
                   }
                   hasAcceptTnC
                   shouldSeoIndex
+                  isBlocking
+                  isBlockedBy
                 }
             }
         """
