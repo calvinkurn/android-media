@@ -150,8 +150,9 @@ class PlayExploreWidgetFragment @Inject constructor(
 
         binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.text =
             buildSpannedString {
+                append(getString(playR.string.play_empty_desc_explore_widget))
                 append(
-                    getString(playR.string.play_empty_desc_explore_widget),
+                    "Cek Sekarang",
                     clickableSpan,
                     Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                 )
