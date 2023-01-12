@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPofEstimateRefundedLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        tools:text="Estimasi dana dikembalikan" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icEstimateRefundInfo"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/tvPofEstimateRefundedLabel"
+        app:layout_constraintTop_toTopOf="@id/tvPofEstimateRefundedLabel"
+        app:layout_constraintBottom_toBottomOf="@id/tvPofEstimateRefundedLabel"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_name="INFORMATION" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPofEstimateRefundedValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="display_3"
+        app:layout_constraintBottom_toBottomOf="@id/tvPofEstimateRefundedLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvPofEstimateRefundedLabel"
+        tools:text="Rp5.000.000" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

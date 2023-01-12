@@ -20,9 +20,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icEstimateRefundInfo"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="2dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
         app:layout_constraintStart_toEndOf="@id/tvPofEstimateRefundLabel"
         app:layout_constraintTop_toTopOf="@id/tvPofEstimateRefundLabel"
         app:layout_constraintBottom_toBottomOf="@id/tvPofEstimateRefundLabel"
@@ -49,13 +49,11 @@
         android:layout_marginBottom="12dp"
         android:textColor="@color/Unify_NN600"
         app:typographyType="small"
-        app:typographyWeight="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPofEstimateRefundLabel"
         tools:text="Segera konfirmasi agar pesanan ini tetap diproses penjual, ya. Lihat Syarat &amp; Ketentuan" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
