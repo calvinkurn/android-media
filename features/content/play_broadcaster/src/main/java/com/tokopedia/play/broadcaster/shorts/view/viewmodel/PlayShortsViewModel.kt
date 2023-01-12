@@ -129,9 +129,10 @@ class PlayShortsViewModel @Inject constructor(
         _menuListUiState,
         _titleForm,
         _coverForm,
+        _productSectionList,
         _tags,
-        _uploadState
-    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags, uploadState ->
+        _uploadState,
+    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, productSectionList, tags, uploadState ->
         PlayShortsUiState(
             globalLoader = globalLoader,
             config = config,
@@ -141,6 +142,7 @@ class PlayShortsViewModel @Inject constructor(
             menuList = menuListUiState,
             titleForm = titleForm,
             coverForm = coverForm,
+            productSectionList = productSectionList,
             tags = tags,
             uploadState = uploadState
         )

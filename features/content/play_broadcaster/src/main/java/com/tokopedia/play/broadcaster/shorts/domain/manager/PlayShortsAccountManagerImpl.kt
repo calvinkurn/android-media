@@ -24,11 +24,11 @@ class PlayShortsAccountManagerImpl @Inject constructor(
      * 2. Else if user only has 1 account, return the account
      * 3. Else, get account by preferred / last selected account
      * 4. Check account:
-     *    a. Eligible -> return user / shop account
+     *    a. Eligible -> return that user / shop account
      *    b. Not Eligible
      *          i. Switch account
      *          ii. Check account
-     *              - Eligible -> return user / shop account
+     *              - Eligible -> return that user / shop account
      *              - Not eligible & prev was shop -> return shop account
      *              - Not eligible & prev was not shop -> return empty account
      */
@@ -59,6 +59,10 @@ class PlayShortsAccountManagerImpl @Inject constructor(
         if (isAccountEligible(finalAccount)) {
             finalAccount
         } else if (account.isShop) {
+            /**
+             * Need to at least return shop account if there's no eligible account
+             * to determine which ineligible bottom sheet is shown
+             */
             account
         } else {
             ContentAccountUiModel.Empty
@@ -77,6 +81,9 @@ class PlayShortsAccountManagerImpl @Inject constructor(
         accountList: List<ContentAccountUiModel>,
         currentAccountType: String
     ): ContentAccountUiModel {
+
+        if(accountList.size == 1) return accountList.first()
+
         val switchAccountType = when (currentAccountType) {
             TYPE_USER -> TYPE_SHOP
             TYPE_SHOP -> TYPE_USER

@@ -15,14 +15,12 @@ data class PlayShortsConfigUiModel(
 ) {
     companion object {
 
-        private const val DEFAULT_MAX_TITLE_CHARACTER = 24
-
         val Empty: PlayShortsConfigUiModel
             get() = PlayShortsConfigUiModel(
                 shortsId = "",
                 shortsAllowed = false,
                 tncList = emptyList(),
-                maxTitleCharacter = DEFAULT_MAX_TITLE_CHARACTER,
+                maxTitleCharacter = 0,
                 maxTaggedProduct = 0,
                 shortsVideoSourceId = ""
             )
