@@ -126,11 +126,9 @@ class UohListViewModel @Inject constructor(
     }
 
     fun loadUohItemDelay(paramOrder: UohListParam, index: Int) {
-        launch {
-            delayRefreshJob = launch {
-                delay(DELAY_REFRESH)
-                _uohItemDelayResult.value = Pair(uohListUseCase.executeSuspend(paramOrder), index)
-            }
+        delayRefreshJob = launch {
+            delay(DELAY_REFRESH)
+            _uohItemDelayResult.value = Pair(uohListUseCase.executeSuspend(paramOrder), index)
         }
     }
 
@@ -260,5 +258,10 @@ class UohListViewModel @Inject constructor(
                 UohIdlingResource.decrement()
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        delayRefreshJob?.cancel()
     }
 }

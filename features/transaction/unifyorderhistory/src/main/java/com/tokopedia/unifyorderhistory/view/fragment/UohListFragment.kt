@@ -67,9 +67,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -257,7 +255,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var gson = Gson()
     private var activityOrderHistory = ""
     private var searchQuery = ""
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var trackingQueue: TrackingQueue
     private var _arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
@@ -331,14 +328,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val RESULT_CODE_SUCCESS = 1
         const val EXTEND_ORDER_REQUEST_CODE = 400
         const val OPEN_ORDER_REQUEST_CODE = 500
-        const val DELAY_REFRESH = 2000L
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
     }
 
     private fun isAutoRefreshEnabled(): Boolean {
