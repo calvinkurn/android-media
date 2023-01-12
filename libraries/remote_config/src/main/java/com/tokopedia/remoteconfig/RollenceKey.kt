@@ -61,9 +61,6 @@ object RollenceKey {
     const val ME_PAGE_REVAMP = "Navigation_Mepage"
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
 
-    // Food
-    const val KEY_GOFOOD_SEARCH = "gofood_search"
-
     // TokoChat
     const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat"
 
