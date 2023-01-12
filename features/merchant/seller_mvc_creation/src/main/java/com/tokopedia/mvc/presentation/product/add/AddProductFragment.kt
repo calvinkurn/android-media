@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -70,6 +71,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     companion object {
         const val PAGE_SIZE = 20
         private const val ONE_FILTER_SELECTED = 1
+        private const val SCROLL_ANIMATION_DURATION = 150
 
         @JvmStatic
         fun newInstance(
@@ -211,9 +213,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             attachDividerItemDecoration()
             attachOnScrollListener(
                 onScrollDown = {
-                    binding?.sortFilter?.slideDown()
+                    binding?.sortFilter?.slideDown(duration = SCROLL_ANIMATION_DURATION)
                 }, onScrollUp = {
-                    binding?.sortFilter?.slideUp()
+                    binding?.sortFilter?.slideUp(duration = SCROLL_ANIMATION_DURATION)
                 }
             )
             adapter = productAdapter
