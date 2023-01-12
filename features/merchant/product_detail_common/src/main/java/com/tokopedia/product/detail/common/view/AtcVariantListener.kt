@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  */
 interface AtcVariantListener {
     fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int = IGNORE_STATE)
-    fun onThumbnailVariantClicked(variantOptions: VariantOptionWithAttribute) {}
+    fun onThumbnailVariantSelected(variantOptions: VariantOptionWithAttribute) {}
     fun getStockWording(): String = ""
 
     fun onVariantGuideLineClicked(url: String) {}

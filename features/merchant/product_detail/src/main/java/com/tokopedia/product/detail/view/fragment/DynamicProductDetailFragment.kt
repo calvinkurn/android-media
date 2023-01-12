@@ -3306,7 +3306,12 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onThumbnailVariantClicked(variantOptions: VariantOptionWithAttribute) {
+    override fun onThumbnailVariantSelected(variantOptions: VariantOptionWithAttribute) {
+        pdpUiUpdater?.updateThumbVariantSelected(
+            variantOptions.variantId,
+            variantOptions.variantCategoryKey
+        )
+        viewModel.onThumbnailVariantSelected(pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant.orEmpty())
     }
 
     private fun selectVariantInPdp(variantOptions: VariantOptionWithAttribute, state: Int) {

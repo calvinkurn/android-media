@@ -404,8 +404,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
                     shopLastActive =
-                        if (context == null) ""
-                        else it.shopInfo.shopLastActive.getRelativeDate(context)
+                        if (context == null) {
+                            ""
+                        } else {
+                            it.shopInfo.shopLastActive.getRelativeDate(context)
+                        }
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
                     partnerLabel = it.shopInfo.partnerLabel
@@ -796,6 +799,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             productSingleVariant?.variantLevelOne = processedVariant?.firstOrNull()
             productSingleVariant?.firstLoad = firstLoad
+        }
+    }
+
+    fun updateThumbVariantSelected(variantId: String, variantKey: String) {
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+            productSingleVariant?.let {
+                it.mapOfSelectedVariant.clear()
+                it.mapOfSelectedVariant[variantKey] = variantId
+                it.firstLoad = false
+            }
         }
     }
 

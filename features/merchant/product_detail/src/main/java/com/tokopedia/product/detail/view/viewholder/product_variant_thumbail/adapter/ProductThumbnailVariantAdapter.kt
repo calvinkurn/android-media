@@ -20,18 +20,6 @@ class ProductThumbnailVariantAdapter(
         holder.bind(element = getItem(position), firstLoad = firstLoad)
     }
 
-    override fun onBindViewHolder(
-        holder: ThumbnailVariantViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-        if (payloads.isNotEmpty()) {
-            holder.bind(element = getItem(position), payloads = payloads, firstLoad = firstLoad)
-        } else {
-            super.onBindViewHolder(holder, position, payloads)
-        }
-    }
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -51,7 +39,8 @@ class ProductThumbnailVariantAdapter(
             override fun areContentsTheSame(
                 oldItem: VariantOptionWithAttribute,
                 newItem: VariantOptionWithAttribute
-            ): Boolean = oldItem.currentState == newItem.currentState &&
+            ): Boolean = oldItem.variantCategoryKey == newItem.variantCategoryKey &&
+                oldItem.currentState == newItem.currentState &&
                 oldItem.flashSale == newItem.flashSale
         }
     }

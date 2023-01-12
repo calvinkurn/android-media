@@ -10,6 +10,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.databinding.ItemThumbnailVariantBinding
 import com.tokopedia.unifycomponents.CardUnify2
@@ -38,12 +39,6 @@ class ThumbnailVariantViewHolder(
         setState(element = element, firstLoad = firstLoad)
     }
 
-    fun bind(element: VariantOptionWithAttribute, payloads: MutableList<Any>, firstLoad: Boolean) {
-        if (payloads.isNotEmpty()) {
-            setState(element = element, firstLoad = firstLoad)
-        }
-    }
-
     private fun setUI(element: VariantOptionWithAttribute) = with(binding) {
         variantTitle.text = element.variantName
         variantThumbnail.loadImage(element.image100, properties = {
@@ -62,7 +57,7 @@ class ThumbnailVariantViewHolder(
         }
 
         variantCard.setOnClickListener {
-            listener.onThumbnailVariantClicked(element)
+            listener.onThumbnailVariantSelected(element, VariantConstant.IGNORE_STATE)
         }
     }
 
@@ -76,11 +71,13 @@ class ThumbnailVariantViewHolder(
     }
 
     private fun setUnselectedState() {
+        setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
         binding.variantCard.cardType = CardUnify2.TYPE_BORDER
     }
 
-    private fun setSelectedState(firstLoad: Boolean) {
-        binding.variantCard.cardType = if (firstLoad) {
+    private fun setSelectedState(firstLoad: Boolean) = with(binding) {
+        setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        variantCard.cardType = if (firstLoad) {
             CardUnify2.TYPE_BORDER
         } else {
             CardUnify2.TYPE_BORDER_ACTIVE
@@ -91,12 +88,13 @@ class ThumbnailVariantViewHolder(
         if (firstLoad) {
             setDisableState()
         } else {
-            binding.variantCard.cardType = CardUnify2.TYPE_BORDER_ACTIVE
+            setSelectedState(firstLoad = false)
             setThumbGrayscale()
         }
     }
 
     private fun setDisableState() {
+        setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
         binding.variantCard.cardType = CardUnify2.TYPE_BORDER_DISABLED
         setThumbGrayscale()
     }
@@ -106,6 +104,14 @@ class ThumbnailVariantViewHolder(
         colorMatrix.setSaturation(0f)
         val filter = ColorMatrixColorFilter(colorMatrix)
         binding.variantThumbnail.colorFilter = filter
+    }
+
+    private fun setVariantTitleColor(resId: Int) {
+        binding.variantTitle.setTextColor(getColor(resId))
+    }
+
+    private fun getColor(resId: Int): Int {
+        return binding.root.context.getColorChecker(resId)
     }
 
     private fun renderFlashSale(element: VariantOptionWithAttribute) {
