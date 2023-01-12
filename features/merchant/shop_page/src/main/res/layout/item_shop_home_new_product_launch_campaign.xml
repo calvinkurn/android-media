@@ -184,6 +184,7 @@
             android:paddingEnd="16dp"
             android:paddingBottom="3dp"
             android:visibility="gone"
+            android:alpha="0.9"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
