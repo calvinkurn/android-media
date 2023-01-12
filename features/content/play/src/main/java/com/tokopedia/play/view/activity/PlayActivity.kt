@@ -312,7 +312,7 @@ class PlayActivity : BaseActivity(),
                 gotoHome()
             } else {
                 fragmentUpcomingView.getActiveFragment()?.setResultBeforeFinish()
-                fragmentErrorView.activeFragment?.onBackPressed()
+                fragmentErrorView.activeFragment?.onBackPressed(startChannelId)
                 supportFinishAfterTransition()
             }
         }

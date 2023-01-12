@@ -47,7 +47,6 @@ class PlayErrorFragment @Inject constructor(
     private lateinit var imgBack: IconUnify
     private lateinit var tvTitle: TextView
 
-    private var mChannelId: String = ""
     private var mState: PageResultState = PageResultState.Loading
 
     override fun getScreenName() = "Play Video"
@@ -181,8 +180,6 @@ class PlayErrorFragment @Inject constructor(
     }
 
     private fun showArchived(config: ArchivedUiModel, channelId: String) {
-        mChannelId = channelId
-
         analytic.sendScreenArchived(channelId)
 
         imgBack.setImage(newIconId = IconUnify.ARROW_BACK)
@@ -203,9 +200,9 @@ class PlayErrorFragment @Inject constructor(
         container.show()
     }
 
-    fun onBackPressed() {
+    fun onBackPressed(channelId: String) {
         if(mState is PageResultState.Archived) {
-            analytic.clickExitArchived(mChannelId)
+            analytic.clickExitArchived(channelId)
         }
     }
 }
