@@ -1453,8 +1453,8 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (isFreezeOrBanned) toolbarView.show()
         else if (!bottomInsets.isAnyShown &&
-            orientation.isPortrait ||
-            !orientation.isCompact
+            (orientation.isPortrait ||
+            !orientation.isCompact)
         ) toolbarView.show()
         else toolbarView.hide()
     }
@@ -1463,8 +1463,8 @@ class PlayUserInteractionFragment @Inject constructor(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
     ) {
         if (!bottomInsets.isAnyShown &&
-            orientation.isPortrait ||
-            !orientation.isCompact
+            (orientation.isPortrait ||
+            !orientation.isCompact)
         ) partnerInfoView?.show()
         else partnerInfoView?.hide()
     }
@@ -1478,8 +1478,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (isFreezeOrBanned) statsInfoView.hide()
         else if (!bottomInsets.isAnyShown &&
-            orientation.isPortrait ||
-            !orientation.isCompact
+            (orientation.isPortrait ||
+            !orientation.isCompact)
         ) statsInfoView.show()
         else statsInfoView.hide()
     }
