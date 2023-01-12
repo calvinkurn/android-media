@@ -59,6 +59,8 @@
     <string name="sbank_no_bank_account">Tidak ada Bank yang ditemukan</string>
     <string name="sbank_please_select_photo">Silakan pilih foto dokumen</string>
     <string name="sbank_name_char_limit_error">Panjang harus dalam min 3 dan maks 128</string>
+    <string name="sbank_name_char_less_error">Oops, minimal 3 karakter.</string>
+    <string name="sbank_name_char_greater_error">Oops, maksimal 50 karakter.</string>
     <string name="sbank_oke">oke</string>
     <string name="sbank_ya_benar">Ya, Benar</string>
     <string name="sbank_batal">Batal</string>

@@ -431,7 +431,7 @@ class AddBankFragment : BaseDaggerFragment() {
                     bankSettingAnalytics.eventOnManualNameSimpanClick()
                     val accountHolderName =
                         textAreaBankAccountHolderName.editText.text.toString()
-                    if (isAccountNameLengthValid(accountHolderName)) {
+                    checkAccountNameLength(accountHolderName) {
                         if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
                             builder.setAccountName(accountHolderName, true)
                             openConfirmationPopUp()
@@ -442,21 +442,24 @@ class AddBankFragment : BaseDaggerFragment() {
                                 accountHolderName
                             )
                         }
-                    } else {
-                        showManualAccountNameError(
-                            getString(R.string.sbank_name_char_limit_error)
-                        )
                     }
                 }
             } catch (e: Exception) {
             }
     }
 
-    private fun isAccountNameLengthValid(accountHolderName: String): Boolean {
-        if (accountHolderName.length in BANK_ACC_START_IDX..BANK_ACC_LAST_IDX) {
-            return true
+    private fun checkAccountNameLength(accountHolderName: String, action: () -> Unit) {
+        if (accountHolderName.length < BANK_ACC_START_IDX) {
+            showManualAccountNameError(
+                getString(R.string.sbank_name_char_less_error)
+            )
+        } else if (accountHolderName.length > BANK_ACC_LAST_IDX) {
+            showManualAccountNameError(
+                getString(R.string.sbank_name_char_greater_error)
+            )
+        } else {
+            action.invoke()
         }
-        return false
     }
 
     private fun openConfirmationPopUp() {
@@ -555,7 +558,7 @@ class AddBankFragment : BaseDaggerFragment() {
         private const val REQUEST_OTP = 103
 
         const val BANK_ACC_START_IDX = 3
-        const val BANK_ACC_LAST_IDX = 128
+        const val BANK_ACC_LAST_IDX = 50
         const val TEXT_PERIKSA_MARGIN_OFFSET_DP = 5
     }
 
