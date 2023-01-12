@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
+import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
@@ -284,7 +285,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun requestRequiredPermission() {
         permissionHelper.requestMultiPermissionsFullFlow(
-                permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
+                permissions = arrayOf(Manifest.permission.CAMERA, PermissionHelper.READ_EXTERNAL_STORAGE),
                 requestCode = REQUEST_CODE_PERMISSION,
                 permissionResultListener = object : PermissionResultListener {
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
@@ -301,7 +302,10 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
+            arrayOf(
+                Manifest.permission.CAMERA,
+                PermissionHelper.READ_EXTERNAL_STORAGE
+            )
     )
 
     companion object {

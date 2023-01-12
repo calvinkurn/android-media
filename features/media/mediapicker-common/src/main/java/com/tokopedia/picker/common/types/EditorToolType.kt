@@ -16,6 +16,7 @@ import androidx.annotation.IntDef
     EditorToolType.ROTATE,
     EditorToolType.REMOVE_BACKGROUND,
     EditorToolType.WATERMARK,
+    EditorToolType.ADD_LOGO
 ])
 annotation class EditorToolType {
     companion object {

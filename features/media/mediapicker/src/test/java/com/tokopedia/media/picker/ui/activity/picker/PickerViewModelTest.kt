@@ -1,7 +1,8 @@
 package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.picker.data.FeatureToggleManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.mapper.toModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
@@ -39,7 +40,8 @@ class PickerViewModelTest {
     private val deviceInfoRepository = mockk<DeviceInfoRepository>()
     private val bitmapConverterRepository = mockk<BitmapConverterRepository>()
     private val mediaRepository = mockk<MediaRepository>()
-    private val paramCacheManager = mockk<ParamCacheManager>()
+    private val paramCacheManager = mockk<PickerCacheManager>()
+    private val featureToggleManager = mockk<FeatureToggleManager>()
 
     private lateinit var viewModel: PickerViewModel
 
@@ -53,6 +55,7 @@ class PickerViewModelTest {
             mediaRepository,
             bitmapConverterRepository,
             paramCacheManager,
+            featureToggleManager,
             coroutineScopeRule.dispatchers
         )
     }
@@ -100,7 +103,7 @@ class PickerViewModelTest {
         } returns emptyList()
 
         // Then
-        viewModel.preSelectedMedias()
+        viewModel.preSelectedMedias(paramCacheManager.get())
 
         coVerify {
             bitmapConverterRepository.convert(any())!! wasNot Called
@@ -126,7 +129,7 @@ class PickerViewModelTest {
         coEvery { bitmapConverterRepository.convert(mockImageUrl) } returns mockConvertedPath
 
         // Then
-        viewModel.preSelectedMedias()
+        viewModel.preSelectedMedias(paramCacheManager.get())
 
         assertEquals(
             expectedValue,
