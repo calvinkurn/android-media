@@ -57,7 +57,7 @@ class ThumbnailVariantViewHolder(
         }
 
         variantCard.setOnClickListener {
-            listener.onThumbnailVariantSelected(element, VariantConstant.IGNORE_STATE)
+            listener.onThumbnailVariantSelected(element)
         }
     }
 
