@@ -208,8 +208,4 @@ class PlayErrorFragment @Inject constructor(
             analytic.clickExitArchived(mChannelId)
         }
     }
-
-    companion object {
-        private const val TAG = "PlayErrorFragment"
-    }
 }
