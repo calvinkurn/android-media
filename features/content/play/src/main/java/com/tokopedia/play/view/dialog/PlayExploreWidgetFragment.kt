@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
@@ -36,7 +38,6 @@ import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHo
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
@@ -164,8 +165,8 @@ class PlayExploreWidgetFragment @Inject constructor(
             is ResultState.Fail -> {
                 Toaster.build(
                     view = requireView(),
-                    text = chips.state.error.message.orEmpty(),
-                    actionText = getString(playR.string.title_try_again),
+                    text = chips.state.error.message.orEmpty(), //if empty use from figma
+                    actionText = getString(playR.string.play_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     clickListener = { viewModel.submitAction(RefreshWidget) }).show()
@@ -176,6 +177,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun renderWidgets(state: ResultState, widget: WidgetItemUiModel) {
         when (state) {
             ResultState.Success -> {
+                showEmpty(widget.item.items.isEmpty())
                 widgetAdapter.setItemsAndAnimateChanges(widget.item.items)
             }
             ResultState.Loading -> {
@@ -242,8 +244,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         router.route(requireContext(), item.appLink)
     }
 
-    override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {
-    }
+    override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {}
 
     override fun onMenuActionButtonClicked(
         view: View,
@@ -270,6 +271,18 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onCancel(dialog: DialogInterface) {
         viewModel.submitAction(DismissExploreWidget)
         super.onCancel(dialog)
+    }
+
+    private fun showEmpty(needToShow: Boolean) {
+        if (needToShow) {
+            binding.srExploreWidget.gone()
+            binding.viewExploreWidgetEmpty.root.visible()
+            binding.ivKnob.gone()
+        } else {
+            binding.srExploreWidget.visible()
+            binding.viewExploreWidgetEmpty.root.gone()
+            binding.ivKnob.visible()
+        }
     }
 
     companion object {

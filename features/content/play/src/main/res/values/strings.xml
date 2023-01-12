@@ -130,4 +130,6 @@
     <!--Explore Widget-->
     <string name="play_explore_widget_header_title">Video lainnya</string>
     <string name="play_explore_widget_name">Eksplor</string>
+    <string name="play_empty_title_explore_widget">Yaah, lagi gak ada video nih</string>
+    <string name="play_empty_desc_explore_widget">Yuk, cek tontonan lainnya. Cek Sekarang</string>
 </resources>
