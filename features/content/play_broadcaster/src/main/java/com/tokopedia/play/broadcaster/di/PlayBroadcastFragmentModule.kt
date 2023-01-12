@@ -14,7 +14,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomS
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
-import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayBroadcastSetupCoverChooseTemplateFragment
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayBroadcastSetupCoverUploadImageFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastPostVideoFragment
