@@ -88,21 +88,6 @@ class VouchersViewHolder(
         tfVoucherDesc.text = getFormattedVoucherDesc(root.context, voucher)
     }
 
-    private fun getFormattedVoucherDesc(context: Context, voucher: Voucher): CharSequence {
-        return if (voucher.discountUsingPercent) {
-            context.getString(
-                R.string.smvc_voucherlist_format_percent_desc,
-                voucher.typeFormatted,
-                voucher.discountAmtFormatted,
-                voucher.discountAmtMax.getCurrencyFormatted())
-        } else {
-            context.getString(
-                R.string.smvc_voucherlist_format_desc,
-                voucher.typeFormatted,
-                voucher.discountAmtMax.getCurrencyFormatted())
-        }
-    }
-
     private fun SmvcItemVoucherPeriodBinding.setupPeriod(voucher: Voucher) {
         val startDate = DateUtil.formatDate(YYYY_MM_DD_T_HH_MM_SS, DEFAULT_VIEW_FORMAT, voucher.startTime)
         val finishDate = DateUtil.formatDate(YYYY_MM_DD_T_HH_MM_SS, DEFAULT_VIEW_FORMAT, voucher.finishTime)
@@ -122,6 +107,30 @@ class VouchersViewHolder(
         tfUsedQuota.text = listOf(voucher.confirmedQuota, voucher.quota).joinToString("/")
         tfInCartCoupon.text = voucher.bookedQuota.toString()
         tfCouponTarget.text = getTargetVoucherText(root.context, voucher)
+    }
+
+    private fun getFormattedVoucherDesc(context: Context, voucher: Voucher): CharSequence {
+        return if (voucher.discountUsingPercent) {
+            context.getString(
+                R.string.smvc_voucherlist_format_percent_desc,
+                getPromoName(context, voucher.type),
+                voucher.discountAmtFormatted,
+                voucher.discountAmtMax.getCurrencyFormatted())
+        } else {
+            context.getString(
+                R.string.smvc_voucherlist_format_desc,
+                getPromoName(context, voucher.type),
+                voucher.discountAmtMax.getCurrencyFormatted())
+        }
+    }
+
+    private fun getPromoName(context: Context, promoType: Int): String {
+        return try {
+            val arrPromoTypeName = context.resources.getStringArray(R.array.promo_type_items)
+            arrPromoTypeName.getOrNull(promoType.dec()).orEmpty()
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     private fun getTargetVoucherText(context: Context, voucher: Voucher): String {
