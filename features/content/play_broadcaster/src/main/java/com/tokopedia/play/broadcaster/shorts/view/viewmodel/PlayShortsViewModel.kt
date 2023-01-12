@@ -388,7 +388,14 @@ class PlayShortsViewModel @Inject constructor(
 
             _config.update { finalConfig }
             setSelectedAccount(account)
+            resetForm()
         }
+    }
+
+    private fun resetForm() {
+        _titleForm.update { PlayShortsTitleFormUiState.Empty }
+        _productSectionList.update { emptyList() }
+        _coverForm.update { PlayShortsCoverFormUiState.Empty }
     }
 
     private fun emitEventSellerNotEligible() {
