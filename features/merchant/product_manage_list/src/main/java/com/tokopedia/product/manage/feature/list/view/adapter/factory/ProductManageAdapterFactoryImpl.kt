@@ -19,9 +19,9 @@ class ProductManageAdapterFactoryImpl(
 ) : BaseAdapterTypeFactory(), ProductManageAdapterFactory {
 
     override fun type(uiModel: ProductUiModel): Int {
-        return if (uiModel.isTobacco){
+        return if (uiModel.isTobacco) {
             TobaccoViewHolder.LAYOUT
-        }else{
+        } else {
             ProductViewHolder.LAYOUT
         }
     }
@@ -37,7 +37,7 @@ class ProductManageAdapterFactoryImpl(
                 listener,
                 campaignListener
             )
-            TobaccoViewHolder.LAYOUT-> TobaccoViewHolder(view)
+            TobaccoViewHolder.LAYOUT -> TobaccoViewHolder(view)
             EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             else -> super.createViewHolder(view, type)
