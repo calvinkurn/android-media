@@ -4739,32 +4739,36 @@ open class DynamicProductDetailFragment :
         tickerDataResponse: ShopInfo.TickerDataResponse,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
+        if (tickerDataResponse.action.isEmpty()) return
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-        ShopCredibilityTracking.clickShopTicker(
-            ShopCredibilityTracker.ClickShopTicker(
-                productInfo,
-                componentTrackDataModel,
-                tickerDataResponse,
-                viewModel.userId
-            )
-        )
 
-        if (tickerDataResponse.action == "applink") {
-            val applink = tickerDataResponse.actionLink
-            if (activity != null && RouteManager.isSupportApplink(activity, applink)) {
-                goToApplink(applink)
-            } else {
-                openWebViewUrl(applink)
-            }
-        } else {
-            val bottomSheetData = tickerDataResponse.actionBottomSheet
-            goToBottomSheetTicker(
-                title = bottomSheetData.title,
-                message = bottomSheetData.message,
-                reason = bottomSheetData.reason,
-                buttonText = bottomSheetData.buttonText,
-                buttonLink = bottomSheetData.buttonLink
+        SingleClick.doSomethingBeforeTime(interval = DEBOUNCE_CLICK) {
+            ShopCredibilityTracking.clickShopTicker(
+                ShopCredibilityTracker.ClickShopTicker(
+                    productInfo,
+                    componentTrackDataModel,
+                    tickerDataResponse,
+                    viewModel.userId
+                )
             )
+
+            if (tickerDataResponse.action == "applink") {
+                val applink = tickerDataResponse.actionLink
+                if (activity != null && RouteManager.isSupportApplink(activity, applink)) {
+                    goToApplink(applink)
+                } else {
+                    openWebViewUrl(applink)
+                }
+            } else {
+                val bottomSheetData = tickerDataResponse.actionBottomSheet
+                goToBottomSheetTicker(
+                    title = bottomSheetData.title,
+                    message = bottomSheetData.message,
+                    reason = bottomSheetData.reason,
+                    buttonText = bottomSheetData.buttonText,
+                    buttonLink = bottomSheetData.buttonLink
+                )
+            }
         }
     }
 
