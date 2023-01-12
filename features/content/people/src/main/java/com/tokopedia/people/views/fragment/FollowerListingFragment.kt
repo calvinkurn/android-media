@@ -86,22 +86,24 @@ class FollowerListingFragment @Inject constructor(
     }
 
     private fun initMainUi() {
+        viewModel.username = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).orEmpty()
+
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+        mAdapter.startDataLoading("")
 
         view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
             isSwipeRefresh = true
             mAdapter.cursor = ""
-            mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+            mAdapter.startDataLoading("")
         }
     }
 
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
         mAdapter.cursor = ""
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+        mAdapter.startDataLoading("")
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -120,12 +122,10 @@ class FollowerListingFragment @Inject constructor(
                                 view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
                                     false
                                 isSwipeRefresh = !isSwipeRefresh!!
-                                mAdapter.clear()
-                                mAdapter.items.addAll(it.data.profileFollowers.profileFollower)
-                                mAdapter.notifyDataSetChanged()
-                            } else {
-                                mAdapter.onSuccess(it.data)
+                                mAdapter.resetAdapter()
                             }
+
+                            mAdapter.onSuccess(it.data)
                         }
                         is ErrorMessage -> {
                             mAdapter.onError()
