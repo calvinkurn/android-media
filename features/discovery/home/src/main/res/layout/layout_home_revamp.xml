@@ -7,6 +7,7 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/Unify_Background"
         android:descendantFocusability="blocksDescendants">
 
         <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -14,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="-8dp"
-            android:background="@color/Unify_Background"
             android:descendantFocusability="beforeDescendants"
             android:tag="home_list" />
 
