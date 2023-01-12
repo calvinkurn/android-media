@@ -365,6 +365,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         recreateView()
+        closeExploreWidget() //move to view component
     }
 
     override fun onDestroyView() {
@@ -1630,6 +1631,7 @@ class PlayUserInteractionFragment @Inject constructor(
             cancelAllAnimations()
 
             triggerImmersive(false)
+            closeExploreWidget()
         }
 
         endLiveInfoViewOnStateChanged(event = status)
@@ -1873,6 +1875,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onExploreWidgetIconImpressed(viewComponent: ExploreWidgetViewComponent) {
         eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed)
+    }
+
+    private fun closeExploreWidget() {
+        PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader).dismiss()
     }
 
     companion object {

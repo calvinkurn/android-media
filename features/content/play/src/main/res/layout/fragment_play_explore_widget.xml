@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_explore"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:background="@color/Unify_Background"
+    android:paddingTop="@dimen/content_common_space_16"
     app:rcl_bottomRightRadius="@dimen/content_common_space_16"
     app:rcl_topLeftRadius="@dimen/content_common_space_16"
-    android:paddingTop="@dimen/content_common_space_16"
     tools:context=".view.dialog.PlayExploreWidgetFragment">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -16,10 +16,8 @@
         android:layout_width="4dp"
         android:layout_height="64dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="4dp"
         android:src="@drawable/bottomsheet_knob_icon"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/sr_explore_widget"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,14 +33,14 @@
         android:id="@+id/rv_chips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/widget_header"
         android:layout_marginStart="@dimen/content_common_space_16"
         android:layout_marginTop="@dimen/content_common_space_16"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/widget_header"
         tools:listitem="@layout/view_widget_chips" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -50,12 +48,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/content_common_space_16"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/rv_chips"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iv_knob"
         app:layout_constraintTop_toBottomOf="@+id/rv_chips"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_widgets"
@@ -63,4 +62,15 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/view_play_widget_card_medium_channel" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <include
+        android:id="@+id/view_explore_widget_empty"
+        layout="@layout/view_empty_explore_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/rv_chips"
+        app:layout_constraintTop_toBottomOf="@+id/rv_chips" />
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
