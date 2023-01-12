@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.extension.applyRoundedRectangle
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
@@ -23,6 +24,7 @@ import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.presentation.quota.adapter.QuotaSourceAdapter
 import com.tokopedia.mvc.presentation.quota.viewmodel.QuotaInfoViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -30,7 +32,7 @@ class QuotaInfoFragment: BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(voucherCreationQuota: VoucherCreationQuota): QuotaInfoFragment {
+        fun newInstance(voucherCreationQuota: VoucherCreationQuota?): QuotaInfoFragment {
             return QuotaInfoFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_QUOTA, voucherCreationQuota)
@@ -66,10 +68,19 @@ class QuotaInfoFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
-        binding?.header?.setupHeader()
-        binding?.setupExpandQuotaListButton(false)
+        setupInitialPage()
         setupObservables()
         setupPageData()
+    }
+
+    private fun setupInitialPage() {
+        binding?.apply {
+            header.setupHeader()
+            setupExpandQuotaListButton(false)
+            gePage.setActionClickListener {
+                viewModel.getVoucherQuota()
+            }
+        }
     }
 
     private fun setupObservables() {
@@ -85,15 +96,22 @@ class QuotaInfoFragment: BaseDaggerFragment() {
         viewModel.enableExpand.observe(viewLifecycleOwner) {
             binding?.groupExpandAction?.isVisible = it
         }
+        viewModel.error.observe(viewLifecycleOwner) {
+            binding?.displayError(it)
+        }
     }
 
     private fun setupPageData() {
-        voucherCreationQuota?.let {
-            viewModel.setQuotaInfo(it)
+        if (voucherCreationQuota != null) {
+            viewModel.setQuotaInfo(voucherCreationQuota ?: return)
+        } else {
+            viewModel.getVoucherQuota()
         }
     }
 
     private fun SmvcFragmentQuotaInfoBinding.setupPage(quotaInfo: VoucherCreationQuota) {
+        gePage.isVisible = false
+        binding?.scrollContent?.isVisible = true
         btnAction.text = quotaInfo.ctaText
         btnAction.setOnClickListener {
             val uri = Uri.parse(quotaInfo.ctaLink)
@@ -121,6 +139,12 @@ class QuotaInfoFragment: BaseDaggerFragment() {
             binding?.iconExpand?.setImage(iconRes)
             viewModel.toggleSourceListExpanded(isExpanded)
         }
+    }
+
+    private fun SmvcFragmentQuotaInfoBinding.displayError(it: Throwable) {
+        gePage.errorDescription.text = ErrorHandler.getErrorMessage(context, it)
+        gePage.isVisible = true
+        scrollContent.isVisible = false
     }
 
     private fun HeaderUnify.setupHeader() {

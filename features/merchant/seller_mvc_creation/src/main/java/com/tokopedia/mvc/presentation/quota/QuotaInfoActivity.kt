@@ -14,7 +14,7 @@ class QuotaInfoActivity: BaseSimpleActivity() {
     companion object {
         fun start(
             context: Context?,
-            voucherCreationQuota: VoucherCreationQuota
+            voucherCreationQuota: VoucherCreationQuota?
         ) {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_QUOTA, voucherCreationQuota)
@@ -29,7 +29,7 @@ class QuotaInfoActivity: BaseSimpleActivity() {
     override fun getNewFragment(): QuotaInfoFragment {
         val voucherCreationQuota = intent?.extras?.getParcelable(
             BundleConstant.BUNDLE_KEY_VOUCHER_QUOTA
-        ) as? VoucherCreationQuota ?: VoucherCreationQuota()
+        ) as? VoucherCreationQuota
         return QuotaInfoFragment.newInstance(voucherCreationQuota)
     }
 }

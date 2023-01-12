@@ -13,8 +13,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
 
@@ -94,8 +96,7 @@
                         android:id="@+id/groupExpandAction"
                         app:constraint_referenced_ids="iconExpand,tfMoreSource,viewExpand"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
+                        android:layout_height="wrap_content" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -107,7 +108,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 app:closeButtonVisibility="gone"
-                app:descriptionText="Agar bisa punya kuota lebih banyak, upgrade tipe keanggotaan tokomu atau cek Paket Promosi, yuk!"
                 app:layout_constraintTop_toBottomOf="@+id/cardVoucherInfo"
                 app:tickerShapeType="loose"
                 app:tickerType="announcement"
@@ -126,5 +126,13 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.core.widget.NestedScrollView>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/gePage"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
