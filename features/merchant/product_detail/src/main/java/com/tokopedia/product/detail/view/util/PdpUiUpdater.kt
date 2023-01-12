@@ -806,8 +806,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             productSingleVariant?.let {
                 it.mapOfSelectedVariant.clear()
-                it.mapOfSelectedVariant[variantKey] = variantId
                 it.firstLoad = false
+                // if (variantKey.isNotBlank() && variantKey != "0") {
+                it.mapOfSelectedVariant[variantKey] = variantId
+                // }
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.util.SparseIntArray
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -71,6 +70,7 @@ interface DynamicProductDetailListener {
         type: String,
         url: String,
         position: Int,
+        variantOptionId: String,
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
@@ -372,7 +372,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductArViewHolder
      */
-    fun showArCoachMark(view:ConstraintLayout?)
+    fun showArCoachMark(view: ConstraintLayout?)
     fun hideArCoachMark()
     fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
 

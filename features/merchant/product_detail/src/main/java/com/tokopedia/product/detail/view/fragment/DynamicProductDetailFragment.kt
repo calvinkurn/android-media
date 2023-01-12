@@ -138,6 +138,7 @@ import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductMa
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.extensions.ifNull
@@ -253,7 +254,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
-import com.tokopedia.referral.domain.GetReferralDataUseCase.Companion.data
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -2002,18 +2002,54 @@ open class DynamicProductDetailFragment :
         type: String,
         url: String,
         position: Int,
+        variantOptionId: String,
         componentTrackDataModel: ComponentTrackDataModel?
+    ) {
+        addSwipePictureTracker(
+            type = type,
+            url = url,
+            position = position,
+            trackData = componentTrackDataModel
+        )
+        selectThumbVariantByMedia(variantOptionId = variantOptionId)
+    }
+
+    private fun addSwipePictureTracker(
+        type: String,
+        url: String,
+        position: Int,
+        trackData: ComponentTrackDataModel?
     ) {
         if (alreadyHitSwipeTracker != DynamicProductDetailAlreadyHit) {
             DynamicProductDetailTracking.Click.eventProductImageOnSwipe(
                 viewModel.getDynamicProductInfoP1,
-                componentTrackDataModel ?: ComponentTrackDataModel(),
+                trackData ?: ComponentTrackDataModel(),
                 trackingQueue,
                 type,
                 url,
                 position
             )
             alreadyHitSwipeTracker = DynamicProductDetailAlreadySwipe
+        }
+    }
+
+    /**
+     * thumbnail variant only in variant level one
+     */
+    private fun selectThumbVariantByMedia(variantOptionId: String) {
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
+
+        if (!singleVariant.isChipType) {
+            // finding product variant by media variant option id
+            val selected = singleVariant.variantLevelOne?.variantOptions?.firstOrNull {
+                it.variantId == variantOptionId
+            } ?: return
+
+            // select the variant
+            onThumbnailVariantSelected(
+                variantId = selected.variantId,
+                categoryKey = selected.variantCategoryKey
+            )
         }
     }
 
@@ -2468,30 +2504,50 @@ open class DynamicProductDetailFragment :
         variantProcessedData: List<VariantCategory>?,
         doSomethingAfterVariantUpdated: (() -> Unit)? = null
     ) {
-        val selectedOptionIds =
-            if (pdpUiUpdater?.productSingleVariant != null) {
-                pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
-            } else {
-                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList()
-                    .orEmpty()
-            }
-
+        val singleVariant = pdpUiUpdater?.productSingleVariant
+        val newVariant = pdpUiUpdater?.productNewVariantDataModel
+        val selectedOptionIds = singleVariant?.mapOfSelectedVariant?.values?.toList()
+            ?: newVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
         val selectedChild = VariantCommonMapper.selectedProductData(
-            viewModel.variantData
-                ?: ProductVariant(),
-            selectedOptionIds
+            variantData = viewModel.variantData ?: ProductVariant(),
+            selectedOptionIds = selectedOptionIds
         )
+
+        pdpUiUpdater?.updateVariantData(variantProcessedData)
+        pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
+
+        if (singleVariant?.isChipType == false) { // thumbnail variant
+            updateProductInfoOnThumbVariantChanged(selectedChild)
+        } else { // mini-variant option & variant options
+            updateProductInfoOnVariantChanged(selectedChild)
+        }
+
+        addVariantSelectedTracker()
+
+        updateUi()
+        doSomethingAfterVariantUpdated?.invoke()
+    }
+
+    private fun updateProductInfoOnThumbVariantChanged(selectedChild: VariantChild?) {
+        val updatedDynamicProductInfo = VariantMapper.updateProductInfoByThumbVariant(
+            viewModel.getDynamicProductInfoP1,
+            selectedChild
+        )
+
+        productId = updatedDynamicProductInfo?.basic?.productID
+        viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
+        pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
+    }
+
+    private fun updateProductInfoOnVariantChanged(selectedChild: VariantChild?) {
         val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(
             viewModel.getDynamicProductInfoP1,
-            selectedChild,
-            viewModel.listOfParentMedia
+            selectedChild
         )
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
         productId = updatedDynamicProductInfo?.basic?.productID
         val boeData = viewModel.getBebasOngkirDataByProductId()
-
-        pdpUiUpdater?.updateVariantData(variantProcessedData)
         productId?.let { productId ->
             pdpUiUpdater?.updateFintechDataWithProductId(
                 productId,
@@ -2499,7 +2555,7 @@ open class DynamicProductDetailFragment :
             )
         }
         pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
-        pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
+
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
             viewModel.p2Data.value?.upcomingCampaigns,
@@ -2518,8 +2574,7 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateProductBundlingData(viewModel.p2Data.value, selectedChild?.productId)
 
         renderRestrictionBottomSheet(
-            viewModel.p2Data.value?.restrictionInfo
-                ?: RestrictionInfoResponse()
+            viewModel.p2Data.value?.restrictionInfo ?: RestrictionInfoResponse()
         )
 
         /*
@@ -2531,6 +2586,13 @@ open class DynamicProductDetailFragment :
             updateButtonState()
         }
 
+        pdpUiUpdater?.updateArData(
+            productId ?: "",
+            viewModel.p2Data.value?.arInfo ?: ProductArInfo()
+        )
+    }
+
+    private fun addVariantSelectedTracker() {
         if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
             shouldFireVariantTracker = false
             DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
@@ -2540,14 +2602,6 @@ open class DynamicProductDetailFragment :
                 getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel)
             )
         }
-
-        pdpUiUpdater?.updateArData(
-            productId ?: "",
-            viewModel.p2Data.value?.arInfo ?: ProductArInfo()
-        )
-
-        updateUi()
-        doSomethingAfterVariantUpdated?.invoke()
     }
 
     private fun updateButtonState() {
@@ -3306,10 +3360,10 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onThumbnailVariantSelected(variantOptions: VariantOptionWithAttribute) {
+    override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
         pdpUiUpdater?.updateThumbVariantSelected(
-            variantOptions.variantId,
-            variantOptions.variantCategoryKey
+            variantId = variantId,
+            variantKey = categoryKey
         )
         viewModel.onThumbnailVariantSelected(pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant.orEmpty())
     }

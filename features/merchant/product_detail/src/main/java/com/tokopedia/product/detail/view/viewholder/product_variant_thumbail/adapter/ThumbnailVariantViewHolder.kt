@@ -57,7 +57,10 @@ class ThumbnailVariantViewHolder(
         }
 
         variantCard.setOnClickListener {
-            listener.onThumbnailVariantSelected(element)
+            listener.onThumbnailVariantSelected(
+                variantId = element.variantId,
+                categoryKey = element.variantCategoryKey
+            )
         }
     }
 
