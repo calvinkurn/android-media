@@ -22,6 +22,10 @@ class ProductsBaseViewModel @Inject constructor(
     val catalogProductsLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
         _catalogProductsLiveData
 
+    private val _shimmerLiveData = MutableLiveData<Boolean>()
+    val shimmerLiveData: LiveData<Boolean> =
+        _shimmerLiveData
+
     private val listOfProducts = mutableListOf<BaseCatalogLibraryDataModel>()
 
     fun getCatalogListData(
@@ -30,6 +34,7 @@ class ProductsBaseViewModel @Inject constructor(
         rows: Int,
         page: Int = 1
     ) {
+        addProductShimmer()
         catalogProductsUseCase.cancelJobs()
         catalogProductsUseCase.getCatalogProductsData(
             ::onAvailableCatalogListData,
@@ -39,6 +44,10 @@ class ProductsBaseViewModel @Inject constructor(
             rows,
             page
         )
+    }
+
+    private fun addProductShimmer() {
+        _shimmerLiveData.postValue(true)
     }
 
     private fun onAvailableCatalogListData(

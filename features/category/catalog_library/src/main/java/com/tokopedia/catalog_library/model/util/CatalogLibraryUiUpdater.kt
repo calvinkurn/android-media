@@ -50,6 +50,10 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
         updateData(model.type(), model)
     }
 
+    fun removeModel(type: String) {
+        mapOfData.remove(type)
+    }
+
     private fun updateData(key: String, baseCatalogHomeDataModel: BaseCatalogLibraryDataModel) {
         mapOfData[key] = baseCatalogHomeDataModel
     }

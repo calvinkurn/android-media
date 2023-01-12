@@ -35,6 +35,7 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
     }
 
     abstract fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>)
+    abstract fun onShimmerAdded()
     abstract fun onErrorFetchingProducts(throwable: Throwable)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,6 +89,12 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
                 is Fail -> {
                     onErrorFetchingProducts(it.throwable)
                 }
+            }
+        }
+
+        productsBaseViewModel?.shimmerLiveData?.observe(viewLifecycleOwner) {
+            if (it) {
+                onShimmerAdded()
             }
         }
     }
