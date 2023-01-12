@@ -10,25 +10,19 @@ import com.tokopedia.fcmcommon.common.FcmConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
-object FcmTokenUtils {
-
-    private const val STATE_LOGGED_OUT = "LOGGED_OUT"
-    private const val STATE_LOGGED_IN = "LOGGED_IN"
-
-    private const val CUSTOMER_APP_PAKAGE = "com.tokopedia.tkpd"
-    private const val CUSTOMER_APP_NAME = "Tokopedia"
-    private const val SELLER_APP_PAKAGE = "com.tokopedia.sellerapp"
-    const val SELLER_APP_NAME = "seller"
-    private const val MITRA_APP_PAKAGE = "com.tokopedia.kelontongapp"
-    private const val MITRA_APP_NAME = "mitra"
-    private const val CACHE_CM_NOTIFICATIONS = "cache_fcmnotifications"
+class FcmTokenUtils @Inject constructor(
+    private val fcmCacheHandler: FcmCacheHandler
+) {
 
     val currentLocalTimeStamp: Long
         get() = System.currentTimeMillis()
 
     val sdkVersion: Int
         get() = Build.VERSION.SDK_INT
+
+    val SELLER_APP_NAME = "seller"
 
     private fun tokenUpdateRequired(newToken: String, cacheHandler: FcmCacheHandler): Boolean {
         val oldToken = cacheHandler.getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
@@ -53,8 +47,8 @@ object FcmTokenUtils {
             mapTokenWithAppVersionRequired(appVersionName, cacheHandler)
     }
 
-    fun getUserIdAndStatus(context: Context, userId: String): Pair<String, Int> {
-        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
+    fun getUserIdAndStatus(userId: String): Pair<String, Int> {
+        val cacheHandler = fcmCacheHandler
         val oldUserId = cacheHandler.getStringValue(FcmConstant.USERID_CACHE_KEY)
         return if (TextUtils.isEmpty(userId)) {
             if (TextUtils.isEmpty(oldUserId)) {
@@ -125,8 +119,8 @@ object FcmTokenUtils {
         )
     }
 
-    fun getUniqueAppId(context: Context): String {
-        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
+    fun getUniqueAppId(): String {
+        val cacheHandler = fcmCacheHandler
         var appId = cacheHandler.getStringValue(FcmConstant.UNIQUE_APP_ID_CACHE_KEY)
         if (TextUtils.isEmpty(appId)) {
             appId = UUID.randomUUID().toString()
@@ -135,33 +129,29 @@ object FcmTokenUtils {
         return appId ?: ""
     }
 
-    fun saveToken(context: Context, token: String) {
-        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
+    fun saveToken(token: String) {
+        val cacheHandler = fcmCacheHandler
         cacheHandler.saveStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY, token)
     }
 
-    fun getToken(context: Context): String? = FcmCacheHandler(
-        context,
-        CACHE_CM_NOTIFICATIONS
-    ).getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
+    fun getToken(): String? =
+        fcmCacheHandler.getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
 
-    fun saveUserId(context: Context, userId: String) {
-        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
+    fun saveUserId(userId: String) {
+        val cacheHandler = fcmCacheHandler
         cacheHandler.saveStringValue(FcmConstant.USERID_CACHE_KEY, userId)
     }
 
-    fun getUserId(context: Context): String? = FcmCacheHandler(
-        context,
-        CACHE_CM_NOTIFICATIONS
-    ).getStringValue(FcmConstant.USERID_CACHE_KEY)
+    fun getUserId(): String? =
+        fcmCacheHandler.getStringValue(FcmConstant.USERID_CACHE_KEY)
 
-    fun saveGAdsIdId(context: Context, gAdsId: String) {
-        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
+    fun saveGAdsIdId(gAdsId: String) {
+        val cacheHandler = fcmCacheHandler
         cacheHandler.saveStringValue(FcmConstant.GADSID_CACHE_KEY, gAdsId)
     }
 
-    fun saveAppVersion(context: Context, versionName: String) {
-        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
+    fun saveAppVersion(versionName: String) {
+        val cacheHandler = fcmCacheHandler
         cacheHandler.saveStringValue(FcmConstant.APP_VERSION_CACHE_KEY, versionName)
     }
 
@@ -197,13 +187,23 @@ object FcmTokenUtils {
         return token.length <= 36
     }
 
-    fun getWifiMacAddress(context: Context): String {
-        val cacheHandler = FcmCacheHandler(context, CACHE_CM_NOTIFICATIONS)
+    fun getWifiMacAddress(): String {
+        val cacheHandler = fcmCacheHandler
         var macAddress = cacheHandler.getStringValue(FcmConstant.KEY_WIFI_MAC_ADDRESS)
         if (macAddress.isNullOrBlank() || macAddress == FcmDeviceConfig.UNKNOWN) {
             macAddress = FcmDeviceConfig.getFcmDeviceConfig().getWifiMAC()
             cacheHandler.saveStringValue(FcmConstant.KEY_WIFI_MAC_ADDRESS, macAddress)
         }
         return macAddress
+    }
+
+    companion object {
+        private const val STATE_LOGGED_OUT = "LOGGED_OUT"
+        private const val STATE_LOGGED_IN = "LOGGED_IN"
+        private const val CUSTOMER_APP_PAKAGE = "com.tokopedia.tkpd"
+        private const val CUSTOMER_APP_NAME = "Tokopedia"
+        private const val SELLER_APP_PAKAGE = "com.tokopedia.sellerapp"
+        private const val MITRA_APP_PAKAGE = "com.tokopedia.kelontongapp"
+        private const val MITRA_APP_NAME = "mitra"
     }
 }

@@ -47,8 +47,11 @@ import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.fcmcommon.SendTokenToCMHandler;
+import com.tokopedia.fcmcommon.common.FcmCacheHandler;
 import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
+import com.tokopedia.fcmcommon.utils.FcmRemoteConfigUtils;
+import com.tokopedia.fcmcommon.utils.FcmTokenUtils;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -599,13 +602,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 ),
                 PreferenceManager.getDefaultSharedPreferences(context),
                 userSession,
-                new SendTokenToCMHandler(
-                        new SendTokenToCMUseCase(
-                            GraphqlInteractor.getInstance().getGraphqlRepository()
-                        ),
-                        getApplicationContext(),
-                        userSession
-                )
+                provideCMHandler()
+        );
+    }
+
+    private SendTokenToCMHandler provideCMHandler() {
+        return new SendTokenToCMHandler(
+                new SendTokenToCMUseCase(
+                GraphqlInteractor.getInstance().getGraphqlRepository()
+                ),
+                getApplicationContext(),
+                userSession,
+                new FcmRemoteConfigUtils(context),
+                new FcmTokenUtils(new FcmCacheHandler(context)),
+                new FcmCacheHandler(context)
         );
     }
 }

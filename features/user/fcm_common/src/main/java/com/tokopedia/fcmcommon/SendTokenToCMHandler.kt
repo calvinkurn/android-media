@@ -29,7 +29,10 @@ import kotlin.coroutines.CoroutineContext
 class SendTokenToCMHandler @Inject constructor(
     private var sendTokenToCMUseCase: SendTokenToCMUseCase,
     @ApplicationContext private val mContext: Context,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    fcmRemoteConfigUtils: FcmRemoteConfigUtils,
+    private val fcmTokenUtils: FcmTokenUtils,
+    private val fcmCacheHandler: FcmCacheHandler
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -37,11 +40,8 @@ class SendTokenToCMHandler @Inject constructor(
 
     private var token: String? = null
 
-    private val fcmRemoteConfigUtils by lazy {
-        FcmRemoteConfigUtils(mContext)
-    }
-    private val sellerAppCmAddTokenEnabled: Boolean
-        get() = fcmRemoteConfigUtils.getBooleanRemoteConfig(
+    private val sellerAppCmAddTokenEnabled: Boolean =
+        fcmRemoteConfigUtils.getBooleanRemoteConfig(
             FcmConstant.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
             false
         )
@@ -140,17 +140,17 @@ class SendTokenToCMHandler @Inject constructor(
                 return
             }
 
-            if (FcmTokenUtils.checkTokenValidity(token)) return
+            if (fcmTokenUtils.checkTokenValidity(token)) return
 
             val gAdId = googleAdId
-            val appVersionName = FcmTokenUtils.getCurrentAppVersionName(mContext)
-            val applicationName = FcmTokenUtils.getApplicationName(mContext)
-            if (applicationName == FcmTokenUtils.SELLER_APP_NAME && !sellerAppCmAddTokenEnabled) {
+            val appVersionName = fcmTokenUtils.getCurrentAppVersionName(mContext)
+            val applicationName = fcmTokenUtils.getApplicationName(mContext)
+            if (applicationName == fcmTokenUtils.SELLER_APP_NAME && !sellerAppCmAddTokenEnabled) {
                 return
             }
 
-            if (FcmTokenUtils.isTokenExpired(
-                    FcmCacheHandler(mContext, CACHE_CM_NOTIFICATIONS),
+            if (fcmTokenUtils.isTokenExpired(
+                    fcmCacheHandler,
                     token,
                     userId,
                     gAdId,
@@ -191,10 +191,10 @@ class SendTokenToCMHandler @Inject constructor(
 
     private fun onGqlSuccess(tokenResponse: TokenResponse, appVersionName: String, gAdId: String) {
         if (tokenResponse.cmAddToken.error.isNullOrEmpty()) {
-            token?.let { FcmTokenUtils.saveToken(mContext, it) }
-            FcmTokenUtils.saveUserId(mContext, userId)
-            FcmTokenUtils.saveGAdsIdId(mContext, gAdId)
-            FcmTokenUtils.saveAppVersion(mContext, appVersionName)
+            token?.let { fcmTokenUtils.saveToken(it) }
+            fcmTokenUtils.saveUserId(userId)
+            fcmTokenUtils.saveGAdsIdId(gAdId)
+            fcmTokenUtils.saveAppVersion(appVersionName)
         } else {
             ServerLogger.log(
                 Priority.P2,
@@ -216,16 +216,16 @@ class SendTokenToCMHandler @Inject constructor(
     ): HashMap<String, Any> {
         val requestParams = HashMap<String, Any>()
 
-        requestParams[MAC_ADDRESS] = FcmTokenUtils.getWifiMacAddress(mContext)
+        requestParams[MAC_ADDRESS] = fcmTokenUtils.getWifiMacAddress()
         requestParams[SOURCE] = SOURCE_ANDROID
         requestParams[FCM_TOKEN] = token
-        requestParams[APP_ID] = FcmTokenUtils.getUniqueAppId(mContext)
-        requestParams[SDK_VERSION] = FcmTokenUtils.sdkVersion.toString()
+        requestParams[APP_ID] = fcmTokenUtils.getUniqueAppId()
+        requestParams[SDK_VERSION] = fcmTokenUtils.sdkVersion.toString()
         requestParams[APP_VERSION] = appVersionName
-        val userIdAndStatus = FcmTokenUtils.getUserIdAndStatus(mContext, userId)
+        val userIdAndStatus = fcmTokenUtils.getUserIdAndStatus(userId)
         requestParams[USER_STATE] = userIdAndStatus.first
         requestParams[USER_ID] = userIdAndStatus.second
-        requestParams[REQUEST_TIMESTAMP] = FcmTokenUtils.currentLocalTimeStamp.toString() + ""
+        requestParams[REQUEST_TIMESTAMP] = fcmTokenUtils.currentLocalTimeStamp.toString() + ""
         requestParams[APP_NAME] = applicationName
 
         return requestParams

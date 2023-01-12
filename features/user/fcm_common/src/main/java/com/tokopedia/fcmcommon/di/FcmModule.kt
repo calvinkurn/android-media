@@ -8,9 +8,12 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl
 import com.tokopedia.fcmcommon.R
 import com.tokopedia.fcmcommon.SendTokenToCMHandler
+import com.tokopedia.fcmcommon.common.FcmCacheHandler
 import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
 import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
+import com.tokopedia.fcmcommon.utils.FcmRemoteConfigUtils
+import com.tokopedia.fcmcommon.utils.FcmTokenUtils
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -81,9 +84,43 @@ class FcmModule(@ApplicationContext private val context: Context) {
     fun provideSendTokenToCMHandler(
         sendTokenToCMUseCase: SendTokenToCMUseCase,
         @ApplicationContext context: Context,
-        userSession: UserSessionInterface
+        userSession: UserSessionInterface,
+        cmRemoteConfigUtils: FcmRemoteConfigUtils,
+        fcmTokenUtils: FcmTokenUtils,
+        fcmCacheHandler: FcmCacheHandler
     ): SendTokenToCMHandler {
-        return SendTokenToCMHandler(sendTokenToCMUseCase, context, userSession)
+        return SendTokenToCMHandler(
+            sendTokenToCMUseCase,
+            context,
+            userSession,
+            cmRemoteConfigUtils,
+            fcmTokenUtils,
+            fcmCacheHandler
+        )
+    }
+
+    @Provides
+    @FcmScope
+    fun provideFcmRemoteConfigUtils(
+        @ApplicationContext context: Context
+    ): FcmRemoteConfigUtils {
+        return FcmRemoteConfigUtils(context)
+    }
+
+    @Provides
+    @FcmScope
+    fun provideFcmCacheHandler(
+        @ApplicationContext context: Context
+    ): FcmCacheHandler {
+        return FcmCacheHandler(context)
+    }
+
+    @Provides
+    @FcmScope
+    fun provideFcmTokenUtils(
+        fcmCacheHandler: FcmCacheHandler
+    ): FcmTokenUtils {
+        return FcmTokenUtils(fcmCacheHandler)
     }
 
     @Provides

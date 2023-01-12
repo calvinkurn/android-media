@@ -4,9 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 
 class FcmCacheHandler(
-    context: Context,
-    cacheCMNotifications: String
-) : LocalCacheHandler(context, cacheCMNotifications) {
+    context: Context
+) : LocalCacheHandler(context, CACHE_CM_NOTIFICATIONS) {
 
     fun getStringValue(key: String): String? {
         return getString(key)
@@ -20,5 +19,9 @@ class FcmCacheHandler(
     fun removeString(key: String) {
         remove(key)
         applyEditor()
+    }
+
+    companion object {
+        private const val CACHE_CM_NOTIFICATIONS = "cache_fcmnotifications"
     }
 }
