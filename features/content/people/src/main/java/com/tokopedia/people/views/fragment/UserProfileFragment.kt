@@ -18,6 +18,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
@@ -1175,13 +1176,20 @@ class UserProfileFragment @Inject constructor(
         /** Not yet implemented */
     }
 
+    /**
+     * Temporary report feature
+     */
     private fun goToTopChatReport() {
-        val reportUrl = URLEncoder.encode("${TokopediaUrl.getInstance().MOBILEWEB}chat/report/0?isSeller=1", "UTF-8")
+        val reportUrl = URLEncoder.encode("${TokopediaUrl.getInstance().MOBILEWEB}chat/report/47012163?isSeller=1", "UTF-8")
         context?.let {
-            RouteManager.route(
-                it,
-                "${ApplinkConst.WEBVIEW}?url=$reportUrl"
-            )
+            val reportIntent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.TOPCHAT_REPORT).apply {
+                putExtra(KEY_URL, reportUrl)
+                putExtra(KEY_TITLEBAR, true)
+                putExtra(KEY_ALLOW_OVERRIDE, true)
+                putExtra(KEY_NEED_LOGIN, false)
+                putExtra(KEY_TITLE, "")
+            }
+            startActivity(reportIntent)
         }
     }
 
@@ -1223,6 +1231,11 @@ class UserProfileFragment @Inject constructor(
         private const val VALUE_IS_OPEN_FROM_USER_PROFILE = "is_open_from_user_profile"
 
         private const val TAG = "UserProfileFragment"
+
+        private const val KEY_URL = "url"
+        private const val KEY_TITLEBAR = "titlebar"
+        private const val KEY_ALLOW_OVERRIDE = "allow_override"
+        private const val KEY_NEED_LOGIN = "need_login"
 
         fun getFragment(
             fragmentManager: FragmentManager,
