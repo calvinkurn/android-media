@@ -4,6 +4,9 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -15,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
@@ -36,7 +40,9 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetChannelMediumAdapter
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.R as unifyR
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -80,6 +86,19 @@ class PlayExploreWidgetFragment @Inject constructor(
         ChipItemDecoration(binding.rvChips.context)
     }
 
+    private val clickableSpan by lazy(LazyThreadSafetyMode.NONE) {
+        object : ClickableSpan() {
+            override fun updateDrawState(tp: TextPaint) {
+                tp.color = MethodChecker.getColor(requireContext(), unifyR.color.Unify_GN500)
+                tp.isUnderlineText = false
+            }
+
+            override fun onClick(widget: View) {
+                viewModel.submitAction(EmptyPageWidget)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -105,7 +124,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupHeader()
-        setupList()
+        setupView()
         observeState()
     }
 
@@ -116,7 +135,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private fun setupList() {
+    private fun setupView() {
         binding.rvChips.adapter = chipsAdapter
         binding.rvChips.addItemDecoration(chipDecoration)
 
@@ -128,6 +147,15 @@ class PlayExploreWidgetFragment @Inject constructor(
             binding.srExploreWidget.isRefreshing = !binding.srExploreWidget.isRefreshing
             viewModel.submitAction(RefreshWidget)
         }
+
+        binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.text =
+            buildSpannedString {
+                append(
+                    getString(playR.string.play_empty_desc_explore_widget),
+                    clickableSpan,
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
     }
 
     private fun observeState() {

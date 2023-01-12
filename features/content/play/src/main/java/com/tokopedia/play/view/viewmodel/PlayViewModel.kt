@@ -1044,6 +1044,7 @@ class PlayViewModel @AssistedInject constructor(
                     updateWidgetParam(group = it.group, sourceId = it.sourceId, sourceType = it.sourceType)
                 }
             }
+            EmptyPageWidget -> handleEmptyExplore()
         }
     }
 
@@ -2851,6 +2852,10 @@ class PlayViewModel @AssistedInject constructor(
                 playPreference.setFollowPopUp(streamerId)
             }
         }
+    }
+
+    private fun handleEmptyExplore() {
+
     }
 
     private fun cancelJob(identifier: String) {
