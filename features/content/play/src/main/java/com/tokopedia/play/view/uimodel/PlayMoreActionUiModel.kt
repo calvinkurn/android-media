@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.StringRes
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.analytic.TrackingField
+import com.tokopedia.play.R
 import com.tokopedia.play.view.type.PlayMoreActionType
 
 /**
@@ -17,4 +18,16 @@ data class PlayMoreActionUiModel(
     val priority: Int,
     val onImpress: () -> Unit,
     @TrackingField val impressHolder: ImpressHolder = ImpressHolder(),
-)
+) {
+    companion object {
+        val Empty : PlayMoreActionUiModel
+        get () = PlayMoreActionUiModel(
+            type = PlayMoreActionType.PiP,
+            icon = null,
+            subtitleRes = R.string.play_product_empty_title,
+            onClick = {},
+            priority = -1,
+            onImpress = {},
+        )
+    }
+}

@@ -4,6 +4,9 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -16,10 +19,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.analytic.PlayAnalytic2
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
@@ -37,9 +43,10 @@ import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetChannelMediu
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.R as unifyR
 import kotlinx.coroutines.flow.collectLatest
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
@@ -71,18 +78,14 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private val widgetAdapter = PlayWidgetChannelMediumAdapter(cardChannelListener = this)
 
-    private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
-    }
-
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        object : EndlessRecyclerViewScrollListener(layoutManager) {
+        object : EndlessRecyclerViewScrollListener(binding.rvWidgets.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.submitAction(NextPageWidgets)
+            }
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
                 analytic?.scrollExplore()
-            }
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.submitAction(NextPageWidgets)
             }
         }
     }
@@ -90,6 +93,19 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val chipsAdapter = ChipsWidgetAdapter(this)
     private val chipDecoration by lazy(LazyThreadSafetyMode.NONE) {
         ChipItemDecoration(binding.rvChips.context)
+    }
+
+    private val clickableSpan by lazy(LazyThreadSafetyMode.NONE) {
+        object : ClickableSpan() {
+            override fun updateDrawState(tp: TextPaint) {
+                tp.color = MethodChecker.getColor(requireContext(), unifyR.color.Unify_GN500)
+                tp.isUnderlineText = false
+            }
+
+            override fun onClick(widget: View) {
+                viewModel.submitAction(EmptyPageWidget)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,7 +135,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupHeader()
-        setupList()
+        setupView()
         observeState()
     }
 
@@ -131,12 +147,12 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private fun setupList() {
+    private fun setupView() {
         binding.rvChips.adapter = chipsAdapter
         binding.rvChips.addItemDecoration(chipDecoration)
 
         binding.rvWidgets.adapter = widgetAdapter
-        binding.rvWidgets.layoutManager = layoutManager
+        binding.rvWidgets.layoutManager = GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
         binding.rvWidgets.addOnScrollListener(scrollListener)
 
         binding.srExploreWidget.setOnRefreshListener {
@@ -144,6 +160,16 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.submitAction(RefreshWidget)
             analytic?.swipeRefresh()
         }
+
+        binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.text =
+            buildSpannedString {
+                append(getString(playR.string.play_empty_desc_explore_widget))
+                append(
+                    "Cek Sekarang",
+                    clickableSpan,
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
     }
 
     private fun observeState() {
@@ -160,6 +186,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
                 if (cachedState.isChanged {
                         it.exploreWidget.data.widgets
+                        it.exploreWidget.data.state
                     })
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
@@ -186,8 +213,8 @@ class PlayExploreWidgetFragment @Inject constructor(
             is ResultState.Fail -> {
                 Toaster.build(
                     view = requireView(),
-                    text = chips.state.error.message.orEmpty(),
-                    actionText = getString(playR.string.title_try_again),
+                    text = chips.state.error.message.orEmpty(), //if empty use from figma
+                    actionText = getString(playR.string.play_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     clickListener = { viewModel.submitAction(RefreshWidget) }).show()
@@ -198,6 +225,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun renderWidgets(state: ResultState, widget: WidgetItemUiModel) {
         when (state) {
             ResultState.Success -> {
+                showEmpty(widget.item.items.isEmpty())
                 widgetAdapter.setItemsAndAnimateChanges(widget.item.items)
             }
             ResultState.Loading -> {
@@ -299,6 +327,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     override fun dismiss() {
+        if (!isVisible) return
         viewModel.submitAction(DismissExploreWidget)
         super.dismiss()
     }
@@ -306,6 +335,16 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onCancel(dialog: DialogInterface) {
         viewModel.submitAction(DismissExploreWidget)
         super.onCancel(dialog)
+    }
+
+    private fun showEmpty(needToShow: Boolean) {
+        if (needToShow) {
+            binding.srExploreWidget.gone()
+            binding.viewExploreWidgetEmpty.root.visible()
+        } else {
+            binding.srExploreWidget.visible()
+            binding.viewExploreWidgetEmpty.root.gone()
+        }
     }
 
     companion object {
