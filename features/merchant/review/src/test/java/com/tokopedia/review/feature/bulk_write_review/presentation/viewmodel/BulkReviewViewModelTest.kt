@@ -541,14 +541,13 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                         .none { it.selected }
                 )
 
-                // select bad rating category and apply to dismiss bad rating category bottom sheet
+                // select bad rating category
                 viewModel.onBadRatingCategorySelectionChanged(
                     position = Int.ZERO,
                     badRatingCategoryID = badRatingCategory.id,
                     reason = badRatingCategory.description,
                     selected = true
                 )
-                viewModel.onApplyBadRatingCategory()
 
                 // verify that first bad rating category is selected
                 assertTrue(
@@ -558,7 +557,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                         .selected
                 )
 
-                // unselect bad rating category and apply to dismiss bad rating category bottom sheet
+                // unselect bad rating category
                 viewModel.onBadRatingCategorySelectionChanged(
                     position = Int.ZERO,
                     badRatingCategoryID = badRatingCategory.id,
