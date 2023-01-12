@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.bulk_write_review.presentation.uistate
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
+import com.tokopedia.reviewcommon.uimodel.StringRes
 
 sealed interface BulkReviewItemUiState {
     val productCardUiState: BulkReviewProductInfoUiState
@@ -67,6 +68,26 @@ sealed interface BulkReviewItemUiState {
                 mediaPickerUiState.getVideoCount()
             } else {
                 Int.ZERO
+            }
+        }
+    }
+
+    fun getReviewItemTextAreaHint(): StringRes {
+        return textAreaUiState.let { textAreaUiState ->
+            if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                textAreaUiState.hint
+            } else {
+                StringRes(Int.ZERO)
+            }
+        }
+    }
+
+    fun getReviewItemTextAreaText(): String {
+        return textAreaUiState.let { textAreaUiState ->
+            if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                textAreaUiState.text
+            } else {
+                ""
             }
         }
     }

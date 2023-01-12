@@ -9,6 +9,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkR
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewRatingUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
+import com.tokopedia.reviewcommon.uimodel.StringRes
 
 data class BulkReviewItemUiModel(
     val position: Int,
@@ -93,6 +94,14 @@ data class BulkReviewItemUiModel(
 
     fun getReviewItemVideoAttachmentCount(): Int {
         return uiState.getReviewItemVideoAttachmentCount()
+    }
+
+    fun getReviewItemTextAreaHint(): StringRes {
+        return uiState.getReviewItemTextAreaHint()
+    }
+
+    fun getReviewItemTextAreaText(): String {
+        return uiState.getReviewItemTextAreaText()
     }
 
     sealed interface ChangePayload {

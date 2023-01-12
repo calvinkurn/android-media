@@ -185,6 +185,26 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onRemoveReviewItem will not remove any review if provided inbox id is invalid`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            doSuccessGetInitialData()
+            // verify that there's no removed review item before removal
+            assertTrue(
+                uiStates.last().let { uiState ->
+                    uiState is BulkReviewPageUiState.Showing && uiState.items.filterIsInstance<BulkReviewItemUiModel>().size == getFormUseCaseResultSuccess.reviewForm.size
+                }
+            )
+
+            // remove review item and verify that the review item is removed
+            viewModel.onRemoveReviewItem("")
+            assertTrue(
+                uiStates.last().let { uiState ->
+                    uiState is BulkReviewPageUiState.Showing && uiState.items.filterIsInstance<BulkReviewItemUiModel>().size == getFormUseCaseResultSuccess.reviewForm.size
+                }
+            )
+        }
+
+    @Test
     fun `onRatingChanged should execute BulkWriteReviewTracker#trackReviewItemRatingChanged once`() =
         runCollectingBulkReviewPageUiState {
             val reviewItem = getFirstReviewItem()
@@ -201,6 +221,26 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                     productId = reviewItem.product.productID,
                     userId = SAMPLE_USER_ID,
                     rating = 4,
+                    timestamp = any()
+                )
+            }
+        }
+
+    @Test
+    fun `onRatingChanged should not execute BulkWriteReviewTracker#trackReviewItemRatingChanged when provided inbox id is invalid`() =
+        runCollectingBulkReviewPageUiState {
+            doSuccessGetInitialData()
+
+            viewModel.onRatingChanged("", 4)
+
+            verify(inverse = true) {
+                bulkWriteReviewTracker.trackReviewItemRatingChanged(
+                    position = any(),
+                    orderId = any(),
+                    reputationId = any(),
+                    productId = any(),
+                    userId = any(),
+                    rating = any(),
                     timestamp = any()
                 )
             }
@@ -237,6 +277,28 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onRatingChanged should not change any review item rating when provided inbox id is invalid`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            // load data and verify that all review item initially have default rating which is 5
+            doSuccessGetInitialData()
+            assertTrue(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .all { it.getReviewItemRating() == 5 }
+            )
+
+            // change review item rating and verify that all review item rating still 5
+            viewModel.onRatingChanged("", 4)
+            assertTrue(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .all { it.getReviewItemRating() == 5 }
+            )
+        }
+
+    @Test
     fun `onRatingChanged should show bad rating category bottom sheet when change rating to bad rating from good rating`() =
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
@@ -250,6 +312,22 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                 // change rating to 2 and verify that bad rating category bottom sheet is showing
                 viewModel.onRatingChanged(reviewItem.inboxID, newRating)
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Showing)
+            }
+        }
+
+    @Test
+    fun `onRatingChanged should not show bad rating category bottom sheet when change rating to bad rating from good rating on invalid review item`() =
+        runCollectingBulkReviewPageUiState {
+            runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
+                val newRating = 2
+
+                // load data and verify that bad rating category bottom sheet is initially dismissed
+                doSuccessGetInitialData()
+                assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
+
+                // change rating to 2 and verify that bad rating category bottom sheet is still dismissed
+                viewModel.onRatingChanged("", newRating)
+                assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
             }
         }
 
@@ -784,6 +862,40 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onReviewItemTextAreaGainFocus should not change any review item text area focused state to true when provided inbox id`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            val reviewItem = getFirstReviewItem()
+
+            doSuccessGetInitialData()
+            // show the text area section on the review item
+            viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
+            // simulate type "Dummy" and click outside text area to lost focus of the text area
+            viewModel.onReviewItemTextAreaLostFocus(reviewItem.inboxID, "Dummy")
+            assertFalse(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .first { it.inboxID == reviewItem.inboxID }
+                    .uiState
+                    .textAreaUiState.let { textAreaUiState ->
+                        (textAreaUiState as BulkReviewTextAreaUiState.Showing).focused
+                    }
+            )
+
+            viewModel.onReviewItemTextAreaGainFocus("")
+            assertTrue(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .none {
+                        it.uiState.textAreaUiState.let { textAreaUiState ->
+                            textAreaUiState is BulkReviewTextAreaUiState.Showing && textAreaUiState.focused
+                        }
+                    }
+            )
+        }
+
+    @Test
     fun `onReviewItemTextAreaLostFocus should change review item text area focused state to false`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
@@ -1043,6 +1155,23 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onClickTestimonyMiniAction should not execute BulkWriteReviewTracker#trackReviewItemAddTestimonyMiniActionClick when provided invalid inbox id`() =
+        runCollectingBulkReviewPageUiState {
+            doSuccessGetInitialData()
+            viewModel.onClickTestimonyMiniAction("")
+
+            verify(inverse = true) {
+                bulkWriteReviewTracker.trackReviewItemAddTestimonyMiniActionClick(
+                    position = any(),
+                    orderId = any(),
+                    reputationId = any(),
+                    productId = any(),
+                    userId = any()
+                )
+            }
+        }
+
+    @Test
     fun `onClickTestimonyMiniAction should show review item text area widget`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
@@ -1100,6 +1229,30 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onExpandTextArea should not update any review item testimony when provided invalid inbox id`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            val reviewItem = getFirstReviewItem()
+            val testimony = "Mantap betul ini!"
+
+            doSuccessGetInitialData()
+            assertTrue(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .all { it.getReviewItemTextAreaText().isBlank() }
+            )
+            // click on the add testimony mini action to show the text area widget
+            viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
+            viewModel.onExpandTextArea("", testimony) // call onExpandTextArea with invalid inboxID
+            assertTrue(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .all { it.getReviewItemTextAreaText().isBlank() }
+            )
+        }
+
+    @Test
     fun `onExpandTextArea should make expanded text area bottom sheet showing`() =
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewExpandedTextAreaBottomSheetUiState { uiStates ->
@@ -1111,6 +1264,21 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
 
                 viewModel.onExpandTextArea(reviewItem.inboxID, "")
                 assertTrue(uiStates.last() is BulkReviewExpandedTextAreaBottomSheetUiState.Showing)
+            }
+        }
+
+    @Test
+    fun `onExpandTextArea should not make expanded text area bottom sheet showing when provided invalid inbox id`() =
+        runCollectingBulkReviewPageUiState {
+            runCollectingBulkReviewExpandedTextAreaBottomSheetUiState { uiStates ->
+                val reviewItem = getFirstReviewItem()
+
+                doSuccessGetInitialData()
+                viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
+                assertTrue(uiStates.last() is BulkReviewExpandedTextAreaBottomSheetUiState.Dismissed)
+
+                viewModel.onExpandTextArea("", "") // call onExpandTextArea with invalid inboxID
+                assertTrue(uiStates.last() is BulkReviewExpandedTextAreaBottomSheetUiState.Dismissed)
             }
         }
 
@@ -1130,6 +1298,62 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
             viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
             coVerify(exactly = 5) { uploaderUseCase(any()) }
+        }
+
+    @Test
+    fun `onReceiveMediaPickerResult should not trigger media upload when the same media already uploaded`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            val reviewItem = getFirstReviewItem()
+
+            mockSuccessUploadMedia()
+
+            doSuccessGetInitialData()
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Video(uri = "1.mp4", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Image(uri = "2.jpg", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Image(uri = "3.jpg", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Image(uri = "4.jpg", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Image(uri = "5.jpg", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            assertTrue(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .first { it.inboxID == reviewItem.inboxID }
+                    .uiState
+                    .mediaPickerUiState is CreateReviewMediaPickerUiState.Hidden
+            )
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
+            coVerify(exactly = 5) { uploaderUseCase(any()) }
+        }
+
+    @Test
+    fun `onReceiveMediaPickerResult should trigger media upload when the same media previously failed to upload`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            val reviewItem = getFirstReviewItem()
+
+            mockErrorUploadMedia()
+
+            doSuccessGetInitialData()
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Video(uri = "1.mp4", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Image(uri = "2.jpg", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Image(uri = "3.jpg", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Image(uri = "4.jpg", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            viewModel.onRemoveMedia(reviewItem.inboxID, CreateReviewMediaUiModel.Image(uri = "5.jpg", uploadBatchNumber = 1, state = CreateReviewMediaUiModel.State.UPLOADED))
+            assertTrue(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .first { it.inboxID == reviewItem.inboxID }
+                    .uiState
+                    .mediaPickerUiState is CreateReviewMediaPickerUiState.Hidden
+            )
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
+            coVerify(exactly = 10) { uploaderUseCase(any()) }
         }
 
     @Test
@@ -1261,6 +1485,51 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             )
             assertEquals(
                 4,
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .first { it.inboxID == reviewItem.inboxID }
+                    .uiState
+                    .mediaPickerUiState.let { mediaPickerUiState ->
+                        (mediaPickerUiState as CreateReviewMediaPickerUiState.SuccessUpload)
+                            .mediaItems
+                            .count { it is CreateReviewMediaUiModel.Video || it is CreateReviewMediaUiModel.Image }
+                    }
+            )
+        }
+
+    @Test
+    fun `onRemoveMedia should not remove any review item media item when provided invalid inbox id`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            val reviewItem = getFirstReviewItem()
+
+            mockSuccessUploadMedia()
+            doSuccessGetInitialData()
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
+            assertEquals(
+                5,
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .first { it.inboxID == reviewItem.inboxID }
+                    .uiState
+                    .mediaPickerUiState.let { mediaPickerUiState ->
+                        (mediaPickerUiState as CreateReviewMediaPickerUiState.SuccessUpload)
+                            .mediaItems
+                            .count { it is CreateReviewMediaUiModel.Video || it is CreateReviewMediaUiModel.Image }
+                    }
+            )
+            viewModel.onRemoveMedia(
+                "",
+                CreateReviewMediaUiModel.Video(
+                    uri = "1.mp4",
+                    uploadBatchNumber = 1,
+                    state = CreateReviewMediaUiModel.State.UPLOADED
+                )
+            )
+            assertEquals(
+                5,
                 (uiStates.last() as BulkReviewPageUiState.Showing)
                     .items
                     .filterIsInstance<BulkReviewItemUiModel>()
@@ -1856,6 +2125,31 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onRemoveReviewItemDialogImpressed should not trigger BulkWriteReviewTracker#trackRemoveReviewItemDialogImpression when provided inbox id`() =
+        runCollectingBulkReviewPageUiState {
+            runCollectingBulkReviewRemoveReviewItemDialogUiState {
+                val reviewItem = getFirstReviewItem()
+
+                doSuccessGetInitialData()
+                viewModel.onRatingChanged(reviewItem.inboxID, 4)
+                viewModel.onRemoveReviewItem(reviewItem.inboxID)
+                viewModel.onRemoveReviewItemDialogImpressed("", "Dummy title", "Dummy subtitle")
+
+                verify(inverse = true) {
+                    bulkWriteReviewTracker.trackRemoveReviewItemDialogImpression(
+                        position = any(),
+                        orderId = any(),
+                        reputationId = any(),
+                        productId = any(),
+                        userId = any(),
+                        title = any(),
+                        subtitle = any()
+                    )
+                }
+            }
+        }
+
+    @Test
     fun `onClickAddAttachmentMiniAction should trigger BulkWriteReviewTracker#trackReviewItemAddAttachmentMiniActionClick once`() =
         runCollectingBulkReviewPageUiState {
             val reviewItem = getFirstReviewItem()
@@ -1870,6 +2164,23 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                     reputationId = reviewItem.reputationID,
                     productId = reviewItem.product.productID,
                     userId = SAMPLE_USER_ID
+                )
+            }
+        }
+
+    @Test
+    fun `onClickAddAttachmentMiniAction should not trigger BulkWriteReviewTracker#trackReviewItemAddAttachmentMiniActionClick when provided inbox id`() =
+        runCollectingBulkReviewPageUiState {
+            doSuccessGetInitialData()
+            viewModel.onClickAddAttachmentMiniAction("")
+
+            verify(inverse = true) {
+                bulkWriteReviewTracker.trackReviewItemAddAttachmentMiniActionClick(
+                    position = any(),
+                    orderId = any(),
+                    reputationId = any(),
+                    productId = any(),
+                    userId = any()
                 )
             }
         }
