@@ -56,7 +56,7 @@ class EditorToolAdapter constructor(
                     EditorToolType.WATERMARK -> editorDetailUiModel.watermarkMode != null
                     EditorToolType.REMOVE_BACKGROUND -> editorDetailUiModel.removeBackgroundUrl != null
                     EditorToolType.CROP -> {
-                        if (isAutoCropped && index == 0)
+                        if (isAutoCropped && index == 0 && (editorDetailUiModel.originalRatio != editorDetailUiModel.cropRotateValue.getRatio()))
                             false
                         else
                             editorDetailUiModel.cropRotateValue.isCrop

@@ -249,6 +249,7 @@ class BaseTokoFoodOrderTrackingFragment :
      * initGroupBooking -> channelId -> observeUnreadChatCount
      */
     private fun initializeUnreadCounter(goFoodOrderNumber: String) {
+        if (!TokoChatConnection.isTokoChatActive()) return
         this.viewModel.goFoodOrderNumber = goFoodOrderNumber
         if (viewModel.channelId.isBlank()) {
             viewModel.initGroupBooking(viewModel.goFoodOrderNumber, this)
