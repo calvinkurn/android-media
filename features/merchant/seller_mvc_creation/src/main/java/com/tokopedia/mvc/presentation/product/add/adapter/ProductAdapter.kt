@@ -16,7 +16,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcItemProductBinding
 import com.tokopedia.mvc.domain.entity.Product
-import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.extension.grayscale
 import com.tokopedia.mvc.util.extension.resetGrayscale
 import com.tokopedia.unifyprinciples.Typography
