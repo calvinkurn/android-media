@@ -2778,7 +2778,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (isDownloadAppLink) {
                 view?.run {
                     post {
-                        val message = context.getString(R.string.sah_toaster_download_message)
+                        val message = it.getString(R.string.sah_toaster_download_message)
                         Toaster.build(this, message).show()
                     }
                 }
