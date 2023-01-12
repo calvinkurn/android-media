@@ -29,7 +29,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstru
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
