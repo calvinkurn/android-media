@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DASH_SELECTION_ITEM
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_TOGGLE_OFF
@@ -16,8 +15,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 const val POST_AUTO_TOPUP_QUERY = """
-    query topAdsPostAutoTopupV2(${'$'}shopId: String!,${'$'}action: String!,${'$'}selectionId: String!) {
-    topAdsPostAutoTopupV2(shop_id:${'$'}shopId, action: ${'$'}action, tkpd_product_id: ${'$'}selectionId){
+    query topAdsPostAutoTopupV2(${'$'}shopId: String!,${'$'}action: String!,${'$'}selectionId: String!, ${'$'}frequency: String) {
+    topAdsPostAutoTopupV2(shop_id:${'$'}shopId, action: ${'$'}action, tkpd_product_id: ${'$'}selectionId, frequency: ${'$'}frequency){
         data{
             status
             status_desc
@@ -41,11 +40,13 @@ class TopAdsSaveSelectionUseCase @Inject constructor(graphqlRepository: GraphqlR
         setGraphqlQuery(SaveSelection.GQL_QUERY)
     }
 
-    fun setParam(isActive: Boolean, selectedItem: AutoTopUpItem) {
+    fun setParam(isActive: Boolean, selectedItem: AutoTopUpItem, frequency: String) {
         val params = mutableMapOf(
-                ParamObject.SHOP_Id to userSessionInterface.shopId,
-                ParamObject.ACTION to (if (isActive) PARAM_TOGGLE_ON else PARAM_TOGGLE_OFF),
-                PARAM_DASH_SELECTION_ITEM to selectedItem.id.toString())
+            ParamObject.SHOP_Id to userSessionInterface.shopId,
+            ParamObject.ACTION to (if (isActive) PARAM_TOGGLE_ON else PARAM_TOGGLE_OFF),
+            PARAM_DASH_SELECTION_ITEM to selectedItem.id.toString(),
+            "frequency" to frequency
+        )
 
         setRequestParams(params)
     }

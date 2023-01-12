@@ -4,21 +4,34 @@ import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.debit.autotopup.data.model.TopUpCreditItemData
+import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsCreditListAdapter
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CreditItemViewHolder(itemView: View, private val onClicked: (position: Int) -> Unit) :
+class CreditItemViewHolder(
+    itemView: View,
+    private val nominalClickListener: TopAdsCreditListAdapter.NominalClickListener?
+) :
     RecyclerView.ViewHolder(itemView) {
     private val creditItemText: Typography = itemView.findViewById(R.id.creditItemText)
     private val creditItemBonus: Typography = itemView.findViewById(R.id.creditItemBonus)
+    private val nominalShimmer: LoaderUnify = itemView.findViewById(R.id.nominalShimmer)
     private val creditItem: View = itemView.findViewById(R.id.creditItem)
     fun bind(list: ArrayList<TopUpCreditItemData>, position: Int) {
-        creditItemText.text = list[position].productPrice
-        creditItemBonus.text = list[position].bonus
-        changeCreditItemState(list[position].clicked)
-        creditItem.setOnClickListener {
-            onClicked(position)
+        if (list[position].productPrice.isEmpty()){
+            nominalShimmer.show()
+        }else{
+            nominalShimmer.hide()
+            creditItemText.text = list[position].productPrice
+            creditItemBonus.text = list[position].bonus
+            changeCreditItemState(list[position].clicked)
+            creditItem.setOnClickListener {
+                nominalClickListener?.onNominalClicked(list, position)
+            }
         }
     }
 

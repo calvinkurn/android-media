@@ -19,6 +19,7 @@ import com.tokopedia.topads.debit.autotopup.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TopAdsAutoTopUpViewModel @Inject constructor(
@@ -26,6 +27,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
     private val topAdsTopUpCreditUseCase: TopAdsTopUpCreditUseCase,
     private val saveSelectionUseCase: TopAdsSaveSelectionUseCase,
+    private val  userSession: UserSessionInterface,
     val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
@@ -44,7 +46,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
             getAutoTopUpStatus.value = Fail(it)
         })
     }
-    fun getTopAdsCreditList() {
+    fun getManualTopAdsCreditList() {
         topAdsTopUpCreditUseCase.setParams()
         topAdsTopUpCreditUseCase.execute({ data ->
             if (data.shopInfoByID?.result!=null){
@@ -56,9 +58,9 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
             })
     }
 
-    fun saveSelection(isActive: Boolean, selectedItem: AutoTopUpItem) {
+    fun saveSelection(isActive: Boolean, selectedItem: AutoTopUpItem, frequency: String = "6") {
         statusSaveSelection.value = Loading
-        saveSelectionUseCase.setParam(isActive, selectedItem)
+        saveSelectionUseCase.setParam(isActive, selectedItem, frequency)
         saveSelectionUseCase.execute({ data ->
 
             when {
@@ -80,8 +82,8 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
     }
 
     @GqlQuery("CategoryList", TKPD_PRODUCT)
-    fun populateCreditList(shopId: String, onSuccess: ((CreditResponse) -> Unit)) {
-        val params = mapOf(ParamObject.SHOP_id to shopId,
+    fun populateCreditList(onSuccess: ((CreditResponse) -> Unit)) {
+        val params = mapOf(ParamObject.SHOP_id to userSession.shopId,
                 ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH)
         useCase.setTypeClass(TkpdProducts::class.java)
         useCase.setRequestParams(params)
@@ -92,6 +94,13 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
                 , {
             it.printStackTrace()
         })
+    }
+
+    fun getAutoTopUpCreditList(data: AutoTopUpStatus): MutableList<TopUpCreditItemData> {
+        val nominalList = mutableListOf<TopUpCreditItemData>()
+        nominalList.clear()
+        nominalList.addAll(createAutoTopUpCreditList(data.availableNominals, data.statusBonus))
+        return nominalList
     }
 
     fun getCreditItemData2(
@@ -142,6 +151,27 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
             nominalList.add(TopUpCreditItemData(it.productPrice, "Bonus Rp${Utils.convertToCurrencyString((Utils.convertMoneyToValue(it.productPrice)*percent/100).toLong())}"))
         }
         return nominalList
+    }
+
+    private fun createAutoTopUpCreditList(credit: MutableList<AutoTopUpItem>, percent: Double): MutableList<TopUpCreditItemData> {
+        val nominalList = mutableListOf<TopUpCreditItemData>()
+        nominalList.clear()
+        credit.forEach {
+            nominalList.add(TopUpCreditItemData(it.priceFmt, "Bonus Rp${Utils.convertToCurrencyString((Utils.convertMoneyToValue(it.priceFmt)*percent/100).toLong())}"))
+        }
+        return nominalList
+    }
+
+    fun getAutoTopUpMaxCreditLimit(
+        autoTopUpFrequencySelected: Int,
+        productPrice: String?
+    ): Long {
+        return if (productPrice!=null){
+            autoTopUpFrequencySelected * Utils.convertMoneyToValue(productPrice).toLong()
+        }else{
+            0L
+        }
+
     }
 
     companion object {

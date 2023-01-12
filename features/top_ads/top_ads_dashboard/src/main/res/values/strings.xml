@@ -485,5 +485,12 @@
     <string name="topads_credit_status_digunakan">Digunakan</string>
     <string name="topads_credit_status_menunggu">Menunggu</string>
     <string name="topads_credit_status_kedaluwarsa">Kedaluwarsa</string>
+
+    <string name="top_ads_auto_top_up_tips_bullet_one">Maks. pengeluaran harian dengan Tambah Kredit Otomatis: </string>
+    <string name="top_ads_auto_top_up_tips_bullet_two">Angka ini adalah estimasi maksimal, karena pengeluaran harianmu akan tergantung pada performa iklan.</string>
+    <string name="top_ads_auto_top_up_tnc_prefix">Otomatis tambah kredit dari Saldo Penghasilan, saat kredit kurang dari </string>
+    <string name="top_ads_auto_top_up_tnc_suffix">agar iklanmu terus aktif.</string>
+    <string name="top_ads_auto_top_up_save_btn">Aktifkan Tambah Kredit Otomatis</string>
+
 </resources>
 

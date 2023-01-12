@@ -1,15 +1,18 @@
 package com.tokopedia.topads.dashboard.data.utils
 
 import android.content.Context
-import android.content.res.Resources
-import android.os.Build
-import android.text.Html
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.BulletSpan
+import android.text.style.StyleSpan
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.core.text.HtmlCompat
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -17,6 +20,8 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
@@ -27,7 +32,6 @@ import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by Pika on 8/6/20.
@@ -190,14 +194,84 @@ object Utils {
     }
 
     fun convertMoneyToValue(price: String): Int {
-        return price.replace("Rp", "").replace(".", "").replace(",", "").trim().toInt()
+        return price.replace("Rp", "").replace(".", "").replace(",", "").trim().toIntOrZero()
     }
 
     fun calculatePercentage(number: String, percent: Double): Double {
         val price = number.removeCommaRawString()
         var result = 0.0
         if (price.isNotEmpty())
-            result = (price.toInt() * percent) / 100
+            result = (price.toIntOrZero() * percent) / 100
         return result
     }
+
+    fun getSpannableForTips(
+        context: Context,
+        autoTopUpMaxCreditLimit: Long
+    ): SpannableStringBuilder {
+        val spannableOne =
+            SpannableString(context.getString(R.string.top_ads_auto_top_up_tips_bullet_one))
+        val spannableTwo =
+            SpannableString(" Rp${convertToCurrencyString(autoTopUpMaxCreditLimit)}.\n")
+        val spannableThree =
+            SpannableString(context.getString(R.string.top_ads_auto_top_up_tips_bullet_two))
+
+        spannableOne.setSpan(
+            BulletSpan(12, ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_Black,
+            )),
+            Int.ZERO, spannableOne.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableTwo.setSpan(
+            StyleSpan(Typeface.BOLD),
+            Int.ZERO,
+            spannableTwo.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableThree.setSpan(
+            BulletSpan(12,
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black,
+                )),
+
+            0, spannableTwo.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        val spn = SpannableStringBuilder()
+        spn.append(spannableOne)
+        spn.append(spannableTwo)
+        spn.append(spannableThree)
+        return spn
+    }
+
+    fun getTncSpannable(context: Context, minCreditFmt: String): SpannableStringBuilder {
+        val prefix =
+            SpannableString(context.getString(R.string.top_ads_auto_top_up_tnc_prefix))
+        val minCredit =
+            SpannableString(" $minCreditFmt ")
+        val suffix = SpannableString(context.getString(R.string.top_ads_auto_top_up_tnc_suffix))
+        minCredit.setSpan(
+            StyleSpan(Typeface.BOLD),
+            Int.ZERO,
+            minCredit.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        val spn = SpannableStringBuilder()
+        spn.append(prefix)
+        spn.append(minCredit)
+        spn.append(suffix)
+        return spn
+    }
+
+
+}
+
+fun <E> MutableList<E>.createListOfSize(topUpCreditItemData: E, size: Int): MutableList<E> {
+    for (i in 1..size) {
+        this.add(topUpCreditItemData)
+    }
+    return this
 }

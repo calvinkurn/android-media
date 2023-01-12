@@ -41,4 +41,13 @@
         app:layout_constraintTop_toBottomOf="@+id/creditItemText"
         app:typographyType="display_2" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/nominalShimmer"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
