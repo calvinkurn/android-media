@@ -36,7 +36,7 @@ class PostBlockUserUseCase @Inject constructor(
     ): PostBlockUserResponse = withContext(dispatchers.io) {
         setRequestParams(
             mapOf(
-                PARAM_USER_ID to userId,
+                PARAM_USER_ID to userId.toLongOrNull(),
                 PARAM_STATUS to status,
             )
         )
@@ -51,8 +51,8 @@ class PostBlockUserUseCase @Inject constructor(
         const val QUERY_NAME = "PostBlockUserUseCaseQuery"
         const val QUERY = """
             mutation blockUser(
-                ${"$$PARAM_USER_ID"}: String!, 
-                ${"$$PARAM_STATUS"}: Boolean,
+                ${"$$PARAM_USER_ID"}: Int!, 
+                ${"$$PARAM_STATUS"}: Boolean!,
             ) {
                 feedXProfileBlockUser(req:{
                     blockUserID:${"$$PARAM_USER_ID"},
