@@ -9,7 +9,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataMode
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
-class EPharmacyAccordionProductItemViewHolder(val view: View) : AbstractViewHolder<EPharmacyAccordionProductDataModel>(view){
+class EPharmacyAccordionProductItemViewHolder(val view: View) : AbstractViewHolder<EPharmacyAccordionProductDataModel>(view) {
 
     private val productText = view.findViewById<Typography>(R.id.lbl_PAP_productName)
     private val productQuantity = view.findViewById<Typography>(R.id.lbl_PAP_productWeight)
@@ -24,8 +24,12 @@ class EPharmacyAccordionProductItemViewHolder(val view: View) : AbstractViewHold
     }
 
     private fun renderProductData(product: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?) {
-        productText.text = product?.name
-        productQuantity.text = "${product?.quantity} Barang (${product?.productTotalWeightFmt})"
+        productText.text = product?.name ?: ""
+        productQuantity.text = java.lang.String.format(
+            itemView.context.getString(R.string.epharmacy_quantity_weight_text),
+            product?.quantity ?: "",
+            product?.productTotalWeightFmt ?: ""
+        )
         productImageUnify.loadImage(product?.productImage)
     }
 }

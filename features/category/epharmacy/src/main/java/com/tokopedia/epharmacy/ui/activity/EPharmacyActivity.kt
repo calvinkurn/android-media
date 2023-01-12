@@ -74,7 +74,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
         } else {
             val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
             if (pathSegments.size > 0) {
-                pathSegments[0]?.split("-")?.lastOrNull()?.trim()?.toLongOrZero()
+                pathSegments.firstOrNull()?.split("-")?.lastOrNull()?.trim()?.toLongOrZero()
                     ?: DEFAULT_ZERO_VALUE
             } else {
                 DEFAULT_ZERO_VALUE
