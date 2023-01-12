@@ -258,7 +258,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var activityOrderHistory = ""
     private var searchQuery = ""
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
     private lateinit var trackingQueue: TrackingQueue
     private var _arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
@@ -342,21 +341,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         return remoteConfigInstance.abTestPlatform
     }
 
-    private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
-        if (!::firebaseRemoteConfig.isInitialized) {
-            context?.let {
-                firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-                return firebaseRemoteConfig
-            }
-            return null
-        } else {
-            return firebaseRemoteConfig
-        }
-    }
-
     private fun isAutoRefreshEnabled(): Boolean {
         return try {
-            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH) ?: false
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+            return firebaseRemoteConfig.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH)
         } catch (e: Exception) {
             false
         }
@@ -2345,9 +2333,5 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }
