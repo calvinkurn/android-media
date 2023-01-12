@@ -66,9 +66,17 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initRecyclerView()
-
-        groupId = arguments?.getInt(ApplinkConstInternalUserPlatform.GROUP_ID).orZero()
+        arguments?.let {
+            updateToolbarTitle(it.getString(KEY_HEADER_TITLE, ""))
+            groupId = arguments?.getInt(ApplinkConstInternalUserPlatform.GROUP_ID).orZero()
+        }
         viewModel.getConsentPurposeByGroup(groupId)
+    }
+
+    private fun updateToolbarTitle(title: String) {
+        if(activity is ConsentWithdrawalActivity && title.isNotEmpty()) {
+            (activity as ConsentWithdrawalActivity).updateTitle(title)
+        }
     }
 
     private fun initObserver() {
@@ -107,7 +115,6 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
     private fun onSuccessGetConsentPurposes(data: ConsentPurposeDataModel) {
         showShimmering(false)
         consentWithdrawalAdapter.clearAllItems()
-
         if (data.mandatory.isEmpty() && data.optional.isEmpty()) {
             showErrorPage {
                 viewModel.getConsentPurposeByGroup(groupId)
@@ -302,11 +309,10 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
     }
 
     companion object {
-        fun createInstance(groupId: Int): ConsentWithdrawalFragment {
+        const val KEY_HEADER_TITLE = "toolbarTitle"
+        fun createInstance(bundle: Bundle?): ConsentWithdrawalFragment {
             return ConsentWithdrawalFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ApplinkConstInternalUserPlatform.GROUP_ID, groupId)
-                }
+                arguments = bundle
             }
         }
     }
