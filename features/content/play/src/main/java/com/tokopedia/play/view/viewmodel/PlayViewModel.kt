@@ -2855,7 +2855,9 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleEmptyExplore() {
-
+        val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
+        val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)
+        handleClickChip(_exploreWidget.value.chips.items[finalPosition])
     }
 
     private fun cancelJob(identifier: String) {
