@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTypography
@@ -70,6 +72,11 @@ fun ReschedulePickupScreen() {
             textStyle = NestTheme.typography.body3,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
+        TextFieldUnifyCompose(
+            value = "test",
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            label = stringResource(id = R.string.label_day_reschedule_pick_up)
+        )
         NestButton(
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,4 +86,24 @@ fun ReschedulePickupScreen() {
 //
         }
     }
+}
+
+@Composable
+fun TextFieldUnifyCompose(
+    value: String,
+    onValueChanged: (TextFieldValue) -> Unit = {},
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = TextFieldValue(text = value),
+        onValueChange = onValueChanged,
+        modifier = modifier,
+        label = {
+            NestTypography(
+                text = label
+            )
+        }
+
+    )
 }
