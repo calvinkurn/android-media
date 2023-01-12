@@ -109,7 +109,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val infoObatKerasMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.INFO_OBAT_KERAS] as? ProductGeneralInfoDataModel
 
-    val productNewVariantDataModel: VariantDataModel?
+    val productOptionalVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
     val productSingleVariant: ProductSingleVariantDataModel?
@@ -197,7 +197,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.VARIANT_OPTIONS, loadInitialData) {
-                productNewVariantDataModel?.run {
+                productOptionalVariantDataModel?.run {
                     isRefreshing = false
                 }
             }
@@ -382,7 +382,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateVariantError() {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productNewVariantDataModel?.run {
+            productOptionalVariantDataModel?.run {
                 isVariantError = true
             }
         }
@@ -791,14 +791,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateVariantData(processedVariant: List<VariantCategory>?, firstLoad: Boolean = false) {
+    fun updateVariantData(processedVariant: List<VariantCategory>?) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productNewVariantDataModel?.listOfVariantCategory = processedVariant
+            productOptionalVariantDataModel?.listOfVariantCategory = processedVariant
         }
 
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             productSingleVariant?.variantLevelOne = processedVariant?.firstOrNull()
-            productSingleVariant?.firstLoad = firstLoad
         }
     }
 
@@ -806,17 +805,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             productSingleVariant?.let {
                 it.mapOfSelectedVariant.clear()
-                it.firstLoad = false
-                // if (variantKey.isNotBlank() && variantKey != "0") {
                 it.mapOfSelectedVariant[variantKey] = variantId
-                // }
             }
         }
     }
 
     fun updateVariantSelected(variantId: String, variantKey: String) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productNewVariantDataModel?.let {
+            productOptionalVariantDataModel?.let {
                 val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
                 copyMap[variantKey] = variantId
                 it.mapOfSelectedVariant = copyMap
@@ -828,7 +824,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
                 copyMap[variantKey] = variantId
                 it.mapOfSelectedVariant = copyMap
-                it.firstLoad = false
             }
         }
     }

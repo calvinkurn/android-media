@@ -446,6 +446,9 @@ open class DynamicProductDetailFragment :
 
     // This productId is only use for backend hit
     private var productId: String? = null
+
+    // product id after thumbnail variant selected, for vbs
+    private var productThumbnailVariantId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var affiliateString: String? = null
@@ -1436,8 +1439,9 @@ open class DynamicProductDetailFragment :
     private fun onTradeinClickedAfter(componentTrackDataModel: ComponentTrackDataModel? = null) {
         if (pdpUiUpdater?.productSingleVariant == null) {
             val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
-            val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
-                ?: false
+            val isPartialySelected =
+                pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()
+                    ?: false
 
             if (isVariant && isPartialySelected) {
                 showErrorVariantUnselected()
@@ -2039,7 +2043,7 @@ open class DynamicProductDetailFragment :
     private fun selectThumbVariantByMedia(variantOptionId: String) {
         val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
 
-        if (!singleVariant.isChipType) {
+        if (singleVariant.isThumbnailType) {
             // finding product variant by media variant option id
             val selected = singleVariant.variantLevelOne?.variantOptions?.firstOrNull {
                 it.variantId == variantOptionId
@@ -2210,7 +2214,7 @@ open class DynamicProductDetailFragment :
                     it,
                     componentTrackDataModel,
                     viewModel.userId,
-                    pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
+                    pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()?.not()
                         ?: false,
                     totalAvailableVariants
                 )
@@ -2505,7 +2509,7 @@ open class DynamicProductDetailFragment :
         doSomethingAfterVariantUpdated: (() -> Unit)? = null
     ) {
         val singleVariant = pdpUiUpdater?.productSingleVariant
-        val newVariant = pdpUiUpdater?.productNewVariantDataModel
+        val newVariant = pdpUiUpdater?.productOptionalVariantDataModel
         val selectedOptionIds = singleVariant?.mapOfSelectedVariant?.values?.toList()
             ?: newVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
         val selectedChild = VariantCommonMapper.selectedProductData(
@@ -2516,7 +2520,7 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateVariantData(variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
 
-        if (singleVariant?.isChipType == false) { // thumbnail variant
+        if (singleVariant?.isThumbnailType == true) { // thumbnail variant
             updateProductInfoOnThumbVariantChanged(selectedChild)
         } else { // mini-variant option & variant options
             updateProductInfoOnVariantChanged(selectedChild)
@@ -2529,14 +2533,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateProductInfoOnThumbVariantChanged(selectedChild: VariantChild?) {
-        val updatedDynamicProductInfo = VariantMapper.updateProductInfoByThumbVariant(
-            viewModel.getDynamicProductInfoP1,
-            selectedChild
-        )
-
-        productId = updatedDynamicProductInfo?.basic?.productID
-        viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
-        pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
+        productThumbnailVariantId = selectedChild?.productId
     }
 
     private fun updateProductInfoOnVariantChanged(selectedChild: VariantChild?) {
@@ -2593,13 +2590,13 @@ open class DynamicProductDetailFragment :
     }
 
     private fun addVariantSelectedTracker() {
-        if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
+        if (pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
             shouldFireVariantTracker = false
             DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
                 viewModel.getDynamicProductInfoP1,
-                pdpUiUpdater?.productNewVariantDataModel,
+                pdpUiUpdater?.productOptionalVariantDataModel,
                 viewModel.variantData,
-                getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel)
+                getComponentPositionBeforeUpdate(pdpUiUpdater?.productOptionalVariantDataModel)
             )
         }
     }
@@ -2659,7 +2656,7 @@ open class DynamicProductDetailFragment :
                 return@observe
             }
             val listOfVariantLevelOne = listOf(variantCategory)
-            pdpUiUpdater?.updateVariantData(listOfVariantLevelOne, firstLoad = true)
+            pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
             updateUi()
         }
     }
@@ -3120,7 +3117,7 @@ open class DynamicProductDetailFragment :
                 viewModel.userSessionInterface.isLoggedIn
             )
         }
-        renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
+        renderVariant(viewModel.variantData)
 
         pdpUiUpdater?.updateDataP1(productInfo, true)
         pdpUiUpdater?.updateInitialMedia(productInfo.data.media, productInfo.data.containerType)
@@ -3337,8 +3334,8 @@ open class DynamicProductDetailFragment :
         activity?.let {
             DynamicProductDetailTracking.Click.onVariantGuideLineClicked(
                 viewModel.getDynamicProductInfoP1,
-                pdpUiUpdater?.productNewVariantDataModel,
-                getComponentPosition(pdpUiUpdater?.productNewVariantDataModel)
+                pdpUiUpdater?.productOptionalVariantDataModel,
+                getComponentPosition(pdpUiUpdater?.productOptionalVariantDataModel)
             )
             startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
         }
@@ -3346,7 +3343,7 @@ open class DynamicProductDetailFragment :
 
     override fun getStockWording(): String {
         val variantStockWording = viewModel.getDynamicProductInfoP1?.data?.stock?.stockWording ?: ""
-        val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
+        val isPartialySelected = pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()
             ?: false
 
         return if (isPartialySelected) "" else variantStockWording
@@ -3374,11 +3371,11 @@ open class DynamicProductDetailFragment :
             variantOptions.variantId,
             variantOptions.variantCategoryKey
         )
-        val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
+        val isPartialySelected = pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()
             ?: false
         viewModel.onVariantClicked(
             viewModel.variantData,
-            pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant,
+            pdpUiUpdater?.productOptionalVariantDataModel?.mapOfSelectedVariant,
             isPartialySelected,
             variantOptions.level,
             variantOptions.variantId
@@ -3401,6 +3398,9 @@ open class DynamicProductDetailFragment :
                     val p2Data = viewModel.p2Data.value
                     var saveAfterClose = true
                     var cartTypeData = p2Data?.cartRedirection
+                    val isFromThumbnailVariant =
+                        pdpUiUpdater?.productSingleVariant?.isThumbnailType.orFalse()
+                    val pid = if (isFromThumbnailVariant) productThumbnailVariantId else productId
                     if (customCartRedirection != null) {
                         saveAfterClose = false
                         cartTypeData = customCartRedirection
@@ -3411,7 +3411,7 @@ open class DynamicProductDetailFragment :
                     AtcVariantHelper.pdpToAtcVariant(
                         context = ctx,
                         pageSource = VariantPageSource.PDP_PAGESOURCE,
-                        productId = p1.basic.productID,
+                        productId = pid.orEmpty(),
                         productInfoP1 = p1,
                         warehouseId = warehouseId ?: "",
                         pdpSession = p1.pdpSession,
@@ -3436,7 +3436,9 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun renderVariant(data: ProductVariant?, shouldRenderNewVariant: Boolean) {
+    private fun renderVariant(data: ProductVariant?) {
+        val shouldRenderNewVariant = pdpUiUpdater?.productSingleVariant != null
+
         if (data == null || !data.hasChildren) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
             pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
@@ -3450,7 +3452,7 @@ open class DynamicProductDetailFragment :
             if (data.errorCode > 0) {
                 pdpUiUpdater?.updateVariantError()
                 updateUi()
-            } else {
+            } else { // ignore auto-select variant when first load pdp in thumbnail variant
                 val selectedOptionIds = determineInitialOptionId(productId)
                 viewModel.processVariant(
                     data,
@@ -3462,8 +3464,12 @@ open class DynamicProductDetailFragment :
     }
 
     private fun determineInitialOptionId(productId: String?): MutableMap<String, String> {
+        if (pdpUiUpdater?.productSingleVariant?.isThumbnailType == true) {
+            return mutableMapOf()
+        }
+
         viewModel.variantData?.let {
-            pdpUiUpdater?.productNewVariantDataModel?.apply {
+            pdpUiUpdater?.productOptionalVariantDataModel?.apply {
                 mapOfSelectedVariant = AtcVariantMapper.mapVariantIdentifierToHashMap(it)
             }
             pdpUiUpdater?.productSingleVariant?.apply {
@@ -3474,7 +3480,7 @@ open class DynamicProductDetailFragment :
                 )
             }
         }
-        return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant
+        return pdpUiUpdater?.productOptionalVariantDataModel?.mapOfSelectedVariant
             ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
     }
 
@@ -4490,8 +4496,9 @@ open class DynamicProductDetailFragment :
         buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
-            val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
-                ?: false
+            val isPartialySelected =
+                pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()
+                    ?: false
 
             if (isVariant && pdpUiUpdater?.productSingleVariant != null) {
                 clickButtonWhenVariantTokonow(isVariant)
@@ -4525,7 +4532,7 @@ open class DynamicProductDetailFragment :
             }
 
             if (isVariant && isPartialySelected) {
-                if (pdpUiUpdater?.productNewVariantDataModel?.listOfVariantCategory == null) {
+                if (pdpUiUpdater?.productOptionalVariantDataModel?.listOfVariantCategory == null) {
                     view.showToasterError(
                         getString(R.string.variant_failed_load),
                         ctaText = getString(R.string.product_refresh),
@@ -4562,7 +4569,7 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1,
             buttonActionType
         )
-        scrollToPosition(getComponentPosition(pdpUiUpdater?.productNewVariantDataModel))
+        scrollToPosition(getComponentPosition(pdpUiUpdater?.productOptionalVariantDataModel))
         val variantErrorMessage =
             if (viewModel.variantData?.getVariantsIdentifier()?.isEmpty() == true) {
                 getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant)
@@ -5097,7 +5104,7 @@ open class DynamicProductDetailFragment :
                     .appendQueryParameter(PARAM_APPLINK_SHOP_ID, it.basic.shopID)
                     .appendQueryParameter(
                         PARAM_APPLINK_IS_VARIANT_SELECTED,
-                        pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
+                        pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()?.not()
                             .orFalse()
                             .toString()
                     )
@@ -5133,7 +5140,7 @@ open class DynamicProductDetailFragment :
                     .appendQueryParameter(ProductDetailConstant.PARAM_PRODUCT_ID, it)
                     .appendQueryParameter(
                         PARAM_APPLINK_IS_VARIANT_SELECTED,
-                        pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
+                        pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()?.not()
                             .orFalse().toString()
                     )
                     .appendQueryParameter(

@@ -33,10 +33,10 @@ class ThumbnailVariantViewHolder(
         ItemThumbnailVariantBinding.bind(view)
     }
 
-    fun bind(element: VariantOptionWithAttribute, firstLoad: Boolean) = with(binding) {
+    fun bind(element: VariantOptionWithAttribute) = with(binding) {
         setUI(element = element)
         setEvent(element = element)
-        setState(element = element, firstLoad = firstLoad)
+        setState(element = element)
     }
 
     private fun setUI(element: VariantOptionWithAttribute) = with(binding) {
@@ -64,10 +64,10 @@ class ThumbnailVariantViewHolder(
         }
     }
 
-    private fun setState(element: VariantOptionWithAttribute, firstLoad: Boolean) = with(binding) {
+    private fun setState(element: VariantOptionWithAttribute) {
         when (element.currentState) {
-            VariantConstant.STATE_SELECTED -> setSelectedState(firstLoad)
-            VariantConstant.STATE_SELECTED_EMPTY -> setSelectedStockEmptyState(firstLoad)
+            VariantConstant.STATE_SELECTED -> setSelectedState()
+            VariantConstant.STATE_SELECTED_EMPTY -> setSelectedStockEmptyState()
             VariantConstant.STATE_UNSELECTED -> setUnselectedState()
             else -> setDisableState()
         }
@@ -78,22 +78,14 @@ class ThumbnailVariantViewHolder(
         binding.variantCard.cardType = CardUnify2.TYPE_BORDER
     }
 
-    private fun setSelectedState(firstLoad: Boolean) = with(binding) {
+    private fun setSelectedState() = with(binding) {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        variantCard.cardType = if (firstLoad) {
-            CardUnify2.TYPE_BORDER
-        } else {
-            CardUnify2.TYPE_BORDER_ACTIVE
-        }
+        variantCard.cardType = CardUnify2.TYPE_BORDER_ACTIVE
     }
 
-    private fun setSelectedStockEmptyState(firstLoad: Boolean) {
-        if (firstLoad) {
-            setDisableState()
-        } else {
-            setSelectedState(firstLoad = false)
-            setThumbGrayscale()
-        }
+    private fun setSelectedStockEmptyState() {
+        setSelectedState()
+        setThumbGrayscale()
     }
 
     private fun setDisableState() {

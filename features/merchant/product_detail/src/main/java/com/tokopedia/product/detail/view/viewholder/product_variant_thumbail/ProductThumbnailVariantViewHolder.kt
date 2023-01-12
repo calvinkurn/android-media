@@ -59,7 +59,6 @@ class ProductThumbnailVariantViewHolder(
         element.variantLevelOne?.let {
             thumbVariantTitle.text = pdpListener.getVariantString()
             thumbVariantList.post {
-                containerAdapter.firstLoad = element.firstLoad
                 containerAdapter.submitList(it.variantOptions)
             }
 
@@ -77,7 +76,6 @@ class ProductThumbnailVariantViewHolder(
         with(binding) {
             element.variantLevelOne?.let {
                 thumbVariantList.post {
-                    containerAdapter.firstLoad = element.firstLoad
                     containerAdapter.submitList(it.variantOptions)
                 }
             }

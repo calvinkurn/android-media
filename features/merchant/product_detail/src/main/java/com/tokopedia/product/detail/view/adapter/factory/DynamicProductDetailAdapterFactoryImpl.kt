@@ -175,10 +175,10 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductSingleVariantDataModel): Int {
-        return if (data.isChipType) {
-            ProductSingleVariantViewHolder.LAYOUT
-        } else {
+        return if (data.isThumbnailType) {
             ProductThumbnailVariantViewHolder.LAYOUT
+        } else {
+            ProductSingleVariantViewHolder.LAYOUT
         }
     }
 
@@ -315,13 +315,16 @@ class DynamicProductDetailAdapterFactoryImpl(
                 val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
                 if (playWidgetView != null) {
                     ContentWidgetViewHolder(
-                        view, PlayWidgetViewHolder(
+                        view,
+                        PlayWidgetViewHolder(
                             itemView = playWidgetView,
                             coordinator = playWidgetCoordinator
                         ),
                         listener
                     )
-                } else super.createViewHolder(view, type)
+                } else {
+                    super.createViewHolder(view, type)
+                }
             }
             ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(
                 view,
@@ -342,5 +345,4 @@ class DynamicProductDetailAdapterFactoryImpl(
             else -> super.createViewHolder(view, type)
         }
     }
-
 }

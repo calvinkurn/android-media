@@ -14,10 +14,8 @@ class ProductThumbnailVariantAdapter(
     val listener: AtcVariantListener
 ) : ListAdapter<VariantOptionWithAttribute, ThumbnailVariantViewHolder>(DIFF_ITEM) {
 
-    var firstLoad = true
-
     override fun onBindViewHolder(holder: ThumbnailVariantViewHolder, position: Int) {
-        holder.bind(element = getItem(position), firstLoad = firstLoad)
+        holder.bind(element = getItem(position))
     }
 
     override fun onCreateViewHolder(

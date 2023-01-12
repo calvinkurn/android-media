@@ -16,8 +16,7 @@ data class ProductSingleVariantDataModel(
     var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
     var isVariantError: Boolean = false,
     var isRefreshing: Boolean = false,
-    var isChipType: Boolean = true,
-    var firstLoad: Boolean = true
+    var isThumbnailType: Boolean = false
 ) : DynamicPdpDataModel {
 
     override fun type(): String = type
