@@ -38,13 +38,20 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
 
     private var binding:MpAdCreationActivityBinding?=null
 
+    private var productId = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MpAdCreationActivityBinding.inflate(LayoutInflater.from(this))
         setContentView(binding?.root)
+        getProductIdFromIntent()
         initInjector()
         observeViewModel()
         adCreationViewModel.getShopInfo(userSession.shopId)
+    }
+
+    private fun getProductIdFromIntent(){
+        productId = intent.data?.getQueryParameter("product_id").orEmpty()
     }
 
     private fun initInjector(){
@@ -69,10 +76,20 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
 //        if(productType!=null && productType.isUsed){
 //
 //        }
-//        addFragment(ProductManageSellerFragment.newInstance(
+        if(productId.isEmpty()){
+            addFragment(
+                ProductManageSellerFragment.newInstance(
+                    arrayListOf(),"",""
+                ))
+        }
+        else{
+            addFragment(MpAdCreationOnboardingFragment.newInstance(productId))
+        }
+//        addFragment(
+//            ProductManageSellerFragment.newInstance(
 //            arrayListOf(),"",""
 //        ))
-        addFragment(MpAdGroupFragment.newInstance())
+//        addFragment(MpAdCreationOnboardingFragment.newInstance())
     }
 
     override fun onBackPressed() {

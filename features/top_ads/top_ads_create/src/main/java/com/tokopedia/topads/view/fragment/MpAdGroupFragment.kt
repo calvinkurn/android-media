@@ -39,13 +39,18 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     ReloadInfiniteViewHolder.ReloadInfiniteScrollListener{
 
     companion object{
-        fun newInstance() : MpAdGroupFragment{
-            return MpAdGroupFragment()
+        fun newInstance(productId:String = "") : MpAdGroupFragment{
+            return MpAdGroupFragment().apply {
+                arguments = Bundle().apply {
+                    putString(PRODUCT_ID_KEY,productId)
+                }
+            }
         }
 
         private const val IMPRESSION_VALUE = "impression"
         private const val CLICK_VALUE = "click"
         private const val CONVERSION_VALUE = "conversion"
+        private const val PRODUCT_ID_KEY = "product_id"
         private const val SEARCH_DELAY_TIME = 500L
     }
 
@@ -54,6 +59,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     @Inject set
 
     private var shopId = ""
+    private var productId = ""
 
     private val adGroupAdapter:AdGroupListAdapter by lazy {
         AdGroupListAdapter(getAdGroupTypeFactory())
@@ -73,6 +79,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shopId = userSession?.shopId.orEmpty()
+        productId = arguments?.getString(PRODUCT_ID_KEY).orEmpty()
     }
 
     override fun initInjector() {
