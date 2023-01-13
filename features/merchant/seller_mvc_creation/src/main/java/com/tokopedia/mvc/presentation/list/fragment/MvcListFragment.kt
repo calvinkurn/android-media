@@ -391,7 +391,10 @@ class MvcListFragment :
     private fun SmvcFragmentMvcListFooterBinding.setupVoucherQuota(
         voucherCreationQuota: VoucherCreationQuota
     ) {
-        tfQuotaCounter.text = voucherCreationQuota.quotaUsageFormatted
+        tfQuotaCounter.text = MethodChecker.fromHtml(
+            getString(R.string.smvc_voucherlist_quota_usage_format, voucherCreationQuota.remaining,
+                voucherCreationQuota.total)
+        )
         iconInfo.setOnClickListener {
             redirectToQuotaVoucherPage(voucherCreationQuota)
         }

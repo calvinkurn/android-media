@@ -94,6 +94,7 @@
     <string name="smvc_voucherlist_create_voucher_text">Buat Kupon</string>
     <string name="smvc_voucherlist_copy_to_clipboard_message">Kode kupon berhasil disalin</string>
     <string name="smvc_voucherlist_search_placeholder">Cari Nama Kupon</string>
+    <string name="smvc_voucherlist_quota_usage_format"><![CDATA[<b>%d</b> dari %d]]></string>
     <string name="smvc_general_error">Oops, ada gangguan yang perlu kami bereskan.</string>
 
     <!--Common Bottomsheet-->
