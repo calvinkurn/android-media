@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel.SeeAllCategoriesItemUiModel
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuItemBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSeeAllCategoriesBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SeeAllCategoriesItemViewHolder(
@@ -19,7 +19,7 @@ class SeeAllCategoriesItemViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_see_all_categories
     }
 
-    private var binding: ItemTokopedianowCategoryMenuItemBinding? by viewBinding()
+    private var binding: ItemTokopedianowSeeAllCategoriesBinding? by viewBinding()
 
     override fun bind(data: SeeAllCategoriesItemUiModel) {
         binding?.apply {
