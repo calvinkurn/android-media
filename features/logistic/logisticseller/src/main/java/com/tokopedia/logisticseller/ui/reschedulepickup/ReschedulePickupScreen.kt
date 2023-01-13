@@ -123,10 +123,11 @@ fun ReschedulePickupScreen(
                     stringResource(id = R.string.label_day_reschedule_pick_up)
                 )
             },
+            enabled = false,
             placeholder = {
                 NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
             },
-            trailingIcon = { TrailingIconTextField() },
+            trailingIcon = { TrailingIconTextField() }
         )
         TextFieldUnifyCompose(
             value = input.time,
@@ -134,6 +135,7 @@ fun ReschedulePickupScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .clickable { onTimeClicked(state.value.options.timeOptions) },
+            enabled = false,
             label = {
                 NestTypography(text = stringResource(id = R.string.label_time_reschedule_pick_up))
             },
@@ -151,6 +153,7 @@ fun ReschedulePickupScreen(
             label = {
                 NestTypography(text = stringResource(id = R.string.label_reason_reschedule_pickup))
             },
+            enabled = false,
             trailingIcon = { TrailingIconTextField() }
         )
         if (state.value.info.summary.isNotEmpty()) {
@@ -194,7 +197,6 @@ private fun constructRescheduleSubtitle(): AnnotatedString {
         ) {
             append(stringResource(id = R.string.label_app_link_subtitle_reschedule_pick_up_annotate))
         }
-
     }
 }
 
@@ -217,7 +219,8 @@ fun TextFieldUnifyCompose(
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    enabled: Boolean = true
 ) {
     OutlinedTextField(
         value = TextFieldValue(text = value),
@@ -226,8 +229,7 @@ fun TextFieldUnifyCompose(
         placeholder = placeholder,
         trailingIcon = trailingIcon,
         label = label,
-        // todo
-        enabled = false
+        enabled = enabled
     )
 }
 
@@ -256,8 +258,8 @@ fun TipsUnifyCompose(
     }
 }
 
-//@Preview
-//@Composable
-//fun ReschedulePickupScreenPreview() {
+// @Preview
+// @Composable
+// fun ReschedulePickupScreenPreview() {
 //    ReschedulePickupScreen()
-//}
+// }
