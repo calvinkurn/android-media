@@ -395,20 +395,15 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onReviewItemTextAreaGainFocus(inboxID: String) {
         reviewItemsTestimony.update {
-            it.toMutableList().apply {
-                find { reviewItemTestimony ->
-                    reviewItemTestimony.inboxID == inboxID
-                }?.let { previousReviewItemTestimony ->
-                    remove(previousReviewItemTestimony)
-                    add(
-                        previousReviewItemTestimony.copy(
-                            testimonyUiModel = previousReviewItemTestimony.testimonyUiModel.copy(
-                                focused = true
-                            )
+            it.copyAndReplace(matcher = { reviewItemTestimony ->
+                reviewItemTestimony.inboxID == inboxID
+            }, copier = { reviewItemTestimony ->
+                    reviewItemTestimony.copy(
+                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                            focused = true
                         )
                     )
-                }
-            }
+                })
         }
     }
 
@@ -475,20 +470,13 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onRemoveMedia(inboxID: String, media: CreateReviewMediaUiModel) {
         reviewItemsMediaUris.update {
-            it.toMutableList().apply {
-                find { reviewItemMediaUris ->
-                    reviewItemMediaUris.inboxID == inboxID
-                }?.let { previousReviewItemMediaUris ->
-                    remove(previousReviewItemMediaUris)
-                    add(
-                        previousReviewItemMediaUris.copy(
-                            uris = previousReviewItemMediaUris.uris.filter { uri ->
-                                uri != media.uri
-                            }
-                        )
+            it.copyAndReplace(matcher = { reviewItemMediaUris ->
+                reviewItemMediaUris.inboxID == inboxID
+            }, copier = { reviewItemMediaUris ->
+                    reviewItemMediaUris.copy(
+                        uris = reviewItemMediaUris.uris.filter { uri -> uri != media.uri }
                     )
-                }
-            }
+                })
         }
     }
 
@@ -1142,40 +1130,32 @@ class BulkReviewViewModel @Inject constructor(
     private suspend fun cancelReviewItemInvalidUploadJobs(
         reviewItemMediaUris: BulkReviewItemMediaUrisUiModel
     ) {
-        findReviewItemMediaUploadJobs(reviewItemMediaUris.inboxID)?.forEach { (uri, job) ->
+        findReviewItemMediaUploadJobs(reviewItemMediaUris.inboxID).forEach { (uri, job) ->
             if (uri !in reviewItemMediaUris.uris && job.isActive) job.cancelAndJoin()
         }
     }
 
     private fun resetReviewItemFailedMediaUploadResults(inboxID: String) {
         reviewItemsMediaUploadResults.update {
-            it.toMutableList().apply {
-                find { reviewItemMediaUploadResults ->
-                    reviewItemMediaUploadResults.inboxID == inboxID
-                }?.let { previousReviewItemMediaUploadResults ->
-                    remove(previousReviewItemMediaUploadResults)
-                    add(
-                        previousReviewItemMediaUploadResults.copy(
-                            mediaUploadResults = previousReviewItemMediaUploadResults
-                                .mediaUploadResults
-                                .filterValues { uploadResult ->
-                                    uploadResult is CreateReviewMediaUploadResult.Success
-                                }
-                        )
+            it.copyAndReplace(matcher = { reviewItemMediaUploadResults ->
+                reviewItemMediaUploadResults.inboxID == inboxID
+            }, copier = { reviewItemMediaUploadResults ->
+                    reviewItemMediaUploadResults.copy(
+                        mediaUploadResults = reviewItemMediaUploadResults
+                            .mediaUploadResults
+                            .filterValues { uploadResult ->
+                                uploadResult is CreateReviewMediaUploadResult.Success
+                            }
                     )
-                }
-            }
+                })
         }
         // update shouldResetFailedUploadStatus value to false
         reviewItemsMediaUris.update {
-            it.toMutableList().apply {
-                find { reviewItemMediaUris ->
-                    reviewItemMediaUris.inboxID == inboxID
-                }?.let { previousReviewItemMediaUris ->
-                    remove(previousReviewItemMediaUris)
-                    add(previousReviewItemMediaUris.copy(shouldResetFailedUploadStatus = false))
-                }
-            }
+            it.copyAndReplace(matcher = { reviewItemMediaUris ->
+                reviewItemMediaUris.inboxID == inboxID
+            }, copier = { reviewItemMediaUris ->
+                    reviewItemMediaUris.copy(shouldResetFailedUploadStatus = false)
+                })
         }
     }
 
@@ -1188,19 +1168,19 @@ class BulkReviewViewModel @Inject constructor(
             val hasUploadResult = findReviewItemMediaUploadResult(inboxID, uri) != null
             val needToStartNewJob = !hasActiveUploadJob && !hasUploadResult
             if (needToStartNewJob) {
-                findReviewItemMediaUploadJobs(inboxID)?.values?.joinAll()
+                findReviewItemMediaUploadJobs(inboxID).values.joinAll()
                 updateMediaUploadJobs(inboxID, uri, startNewUploadMediaJob(inboxID, uri))
-                findReviewItemMediaUploadJobs(inboxID)?.values?.joinAll()
+                findReviewItemMediaUploadJobs(inboxID).values.joinAll()
             }
         }
     }
 
     private fun findReviewItemMediaUploadJob(inboxID: String, uri: String): Job? {
-        return findReviewItemMediaUploadJobs(inboxID)?.get(uri)
+        return findReviewItemMediaUploadJobs(inboxID)[uri]
     }
 
-    private fun findReviewItemMediaUploadJobs(inboxID: String): MediaUploadJobMap? {
-        return reviewItemsMediaUploadJobs.value.find { it.inboxID == inboxID }?.jobs
+    private fun findReviewItemMediaUploadJobs(inboxID: String): MediaUploadJobMap {
+        return reviewItemsMediaUploadJobs.value.find { it.inboxID == inboxID }?.jobs.orEmpty()
     }
 
     private fun findReviewItemMediaUploadResult(inboxID: String, uri: String): CreateReviewMediaUploadResult? {
@@ -1619,20 +1599,13 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun updateReviewItemTestimony(inboxID: String, text: String) {
         reviewItemsTestimony.update {
-            it.toMutableList().apply {
-                find { reviewItemTestimony ->
-                    reviewItemTestimony.inboxID == inboxID
-                }?.let { previousReviewItemTestimony ->
-                    remove(previousReviewItemTestimony)
-                    add(
-                        previousReviewItemTestimony.copy(
-                            testimonyUiModel = previousReviewItemTestimony.testimonyUiModel.copy(
-                                text = text
-                            )
-                        )
+            it.copyAndReplace(matcher = { reviewItemTestimony ->
+                reviewItemTestimony.inboxID == inboxID
+            }, copier = { reviewItemTestimony ->
+                    reviewItemTestimony.copy(
+                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(text = text)
                     )
-                }
-            }
+                })
         }
     }
 
@@ -1698,14 +1671,11 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun updateReviewItemsMediaUrisForRetryUpload(inboxID: String) {
         reviewItemsMediaUris.update {
-            it.toMutableList().apply {
-                find { reviewItemMediaUris ->
-                    reviewItemMediaUris.inboxID == inboxID
-                }?.let { previousReviewItemMediaUris ->
-                    remove(previousReviewItemMediaUris)
-                    add(previousReviewItemMediaUris.copy(shouldResetFailedUploadStatus = true))
-                }
-            }
+            it.copyAndReplace(matcher = { reviewItemMediaUris ->
+                reviewItemMediaUris.inboxID == inboxID
+            }, copier = { reviewItemMediaUris ->
+                    reviewItemMediaUris.copy(shouldResetFailedUploadStatus = true)
+                })
         }
     }
 
@@ -1741,6 +1711,20 @@ class BulkReviewViewModel @Inject constructor(
             getReviewItem(badRatingCategoryBottomSheetUiState.inboxID)
         } else {
             null
+        }
+    }
+
+    private fun <T> List<T>.copyAndReplace(
+        matcher: (T) -> Boolean,
+        copier: (T) -> T
+    ): List<T> {
+        return toMutableList().apply {
+            find { item ->
+                matcher(item)
+            }?.let { matchingItem ->
+                remove(matchingItem)
+                add(copier(matchingItem))
+            }
         }
     }
 
