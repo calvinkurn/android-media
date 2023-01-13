@@ -133,7 +133,7 @@ class NotificationSettingsGtmEvents constructor(
         }
         createMapAndSendEvent(
             GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
-            GtmTrackerEvents.VALUE_ACTION_CLICK_CLOSE,
+            GtmTrackerEvents.VALUE_ACTION_CLICK_CTA,
             trackerIdView,
             context,
             pagePath
