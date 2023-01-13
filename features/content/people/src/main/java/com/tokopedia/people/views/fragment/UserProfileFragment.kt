@@ -443,20 +443,6 @@ class UserProfileFragment @Inject constructor(
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
-
-//                        showGlobalError(
-//                            when (event.throwable) {
-//                                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
-//                                is IllegalStateException -> PAGE_FULL
-//                                is RuntimeException -> {
-//                                    when (event.throwable.localizedMessage?.toIntOrNull()) {
-//                                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
-//                                        else -> SERVER_ERROR
-//                                    }
-//                                }
-//                                else -> SERVER_ERROR
-//                            },
-//                        )
                     }
                     is UserProfileUiEvent.SuccessBlockUser -> {
                         dismissBlockUserDialog()
