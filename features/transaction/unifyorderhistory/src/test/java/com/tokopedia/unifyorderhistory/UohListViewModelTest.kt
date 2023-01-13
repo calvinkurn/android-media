@@ -130,7 +130,7 @@ class UohListViewModelTest {
 
         listMsg.add("Test")
 
-        atcOccResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
+        atcOccResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "2147818593"), status = "OK")
         atcOccResponseFailed = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("error"))
         atcOccResponseFailedErrorNull = AddToCartDataModel(data = DataModel(success = 0, message = arrayListOf()), status = "", errorMessage = arrayListOf())
     }
