@@ -501,7 +501,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     @Override
-    private void disconnectTokoChat() {
+    public void disconnectTokoChat() {
         //Do nothing
     }
 
