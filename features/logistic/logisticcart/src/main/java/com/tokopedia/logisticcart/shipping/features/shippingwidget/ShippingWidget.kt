@@ -439,9 +439,10 @@ class ShippingWidget : ConstraintLayout {
     private fun getSingleShippingTitle(
         shipmentCartItemModel: ShipmentCartItemModel,
         selectedCourierItemData: CourierItemData,
-        isScheduleDeliveryWidget: Boolean = false
+        isScheduleDeliveryWidget: Boolean = false,
+        isSelectedScheduleDeliveryWidget: Boolean = false
     ): CharSequence? {
-        return if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+        return if (shipmentCartItemModel.voucherLogisticItemUiModel != null && isSelectedScheduleDeliveryWidget.not()) {
             // Change duration to promo title after promo is applied
             val htmlLinkHelper = HtmlLinkHelper(
                 context,
@@ -674,7 +675,12 @@ class ShippingWidget : ConstraintLayout {
         }
 
         binding?.shippingNowWidget?.bind(
-            titleNow2H = getSingleShippingTitle(shipmentCartItemModel, selectedCourierItemData, true),
+            titleNow2H = getSingleShippingTitle(
+                shipmentCartItemModel = shipmentCartItemModel,
+                selectedCourierItemData = selectedCourierItemData,
+                isScheduleDeliveryWidget = true,
+                isSelectedScheduleDeliveryWidget = selectedCourierItemData.scheduleDeliveryUiModel?.isSelected == true
+            ),
             descriptionNow2H = getSingleShippingLabelEta(selectedCourierItemData),
             labelNow2H = labelNow2H,
             scheduleDeliveryUiModel = selectedCourierItemData.scheduleDeliveryUiModel,
