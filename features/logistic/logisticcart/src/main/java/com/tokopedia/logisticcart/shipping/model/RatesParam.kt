@@ -45,7 +45,7 @@ data class RatesParam(
     var is_fulfillment: Boolean = false,
     var mvc: String = "",
     var bo_metadata: String = "",
-    private var cart_data: String = ""
+    var cart_data: String = ""
 ) {
 
     private constructor(builder: Builder) : this(

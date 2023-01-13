@@ -22,7 +22,7 @@ data class ScheduleDeliveryParam(
     @SerializedName("actual_weight")
     val actualWeight: String = "",
     @SerializedName("type")
-    val type: Int = TYPE_ANDROID,
+    val type: String = TYPE_ANDROID,
     @SerializedName("user_history")
     val userHistory: Int = -1,
     @SerializedName("unique_id")
@@ -41,6 +41,10 @@ data class ScheduleDeliveryParam(
     val scheduleDate: String? = null,
     @SerializedName("source")
     val source: String = SOURCE_CHECKOUT,
+    @SerializedName("order_value")
+    val orderValue: Long = 0,
+    @SerializedName("cart_data")
+    val cartData: String = "",
 ) {
 
     fun toMap() = mapOf(
@@ -48,7 +52,7 @@ data class ScheduleDeliveryParam(
     )
 
     companion object {
-        private const val TYPE_ANDROID = 1
+        private const val TYPE_ANDROID = "1"
         private const val SOURCE_CHECKOUT = "checkout"
     }
 }
