@@ -11,6 +11,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
@@ -232,6 +233,7 @@ import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
@@ -798,6 +800,7 @@ open class DynamicProductDetailFragment :
                     onTradeinClickedAfter()
                 }
             }
+
             scrollVariantToSelectedPosition()
         }
     }
@@ -981,9 +984,19 @@ open class DynamicProductDetailFragment :
     }
 
     private fun scrollVariantToSelectedPosition() {
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
+
+        if (singleVariant.isThumbnailType) {
+            scrollThumbnailVariant()
+        } else {
+            scrollSingleVariant()
+        }
+    }
+
+    private fun scrollSingleVariant() {
         val vh =
             getViewHolderByPosition(getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant)) as? ProductSingleVariantViewHolder
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             vh?.scrollToPosition(
                 pdpUiUpdater?.productSingleVariant?.variantLevelOne?.getPositionOfSelected()
                     ?: -1
@@ -2057,6 +2070,17 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    private fun scrollThumbnailVariant() {
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
+        val component = getComponentPositionBeforeUpdate(singleVariant)
+        val vh = getViewHolderByPosition(component) as? ProductThumbnailVariantViewHolder
+        Handler(Looper.getMainLooper()).postDelayed({
+            vh?.scrollToPosition(
+                position = singleVariant.variantLevelOne?.getPositionOfSelected() ?: -1
+            )
+        }, ProductDetailConstant.VARIANT_SCROLL_DELAY)
+    }
+
     override fun shouldShowWishlist(): Boolean {
         return !viewModel.isShopOwner()
     }
@@ -2602,6 +2626,9 @@ open class DynamicProductDetailFragment :
 
         // store the product id to this variable to open vbs later
         productIdThumbnailSelected = selectedChild?.productId
+
+        scrollThumbnailVariant()
+
         updateUi()
     }
 
@@ -3453,13 +3480,13 @@ open class DynamicProductDetailFragment :
     }
 
     private fun renderVariant(data: ProductVariant?) {
-        val shouldRenderNewVariant = pdpUiUpdater?.productSingleVariant != null
+        val shouldRenderSingleVariant = pdpUiUpdater?.productSingleVariant != null
 
         if (data == null || !data.hasChildren) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
             pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
         } else {
-            if (shouldRenderNewVariant) {
+            if (shouldRenderSingleVariant) {
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
             } else {
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
@@ -3473,7 +3500,7 @@ open class DynamicProductDetailFragment :
                 viewModel.processVariant(
                     data,
                     selectedOptionIds,
-                    shouldRenderNewVariant
+                    shouldRenderSingleVariant
                 )
             }
         }

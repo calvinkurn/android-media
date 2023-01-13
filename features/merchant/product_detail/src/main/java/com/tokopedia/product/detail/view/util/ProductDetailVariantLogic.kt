@@ -12,15 +12,15 @@ object ProductDetailVariantLogic {
 
     fun determineVariant(mapOfSelectedOptionIds: Map<String, String>,
                          productVariant: ProductVariant?): VariantCategory? {
-        val variantOptions = productVariant?.variants?.firstOrNull()?.options
+        val variantLevelOne = productVariant?.variants?.firstOrNull()
+        val variantOptions = variantLevelOne?.options
 
         if (productVariant == null || variantOptions == null) return null
-        val productId = productVariant.getChildByOptionId(mapOfSelectedOptionIds.values.toList())?.productId
-                ?: ""
 
+        val productId = productVariant.getChildByOptionId(mapOfSelectedOptionIds.values.toList())?.productId.orEmpty()
+        val children = productVariant.children.firstOrNull { it.productId == productId }
         val listOfVariantLevelOne = mutableListOf<VariantOptionWithAttribute>()
-        val getVariantOptionsLevelOneByProductId = productVariant.children.firstOrNull { it.productId == productId }?.optionIds?.firstOrNull()
-                ?: ""
+        val getVariantOptionsLevelOneByProductId = children?.optionIds?.firstOrNull().orEmpty()
         val haveCustomImage = variantOptions.all {
             it.picture?.url100?.isNotEmpty() == true
         }
@@ -54,19 +54,18 @@ object ProductDetailVariantLogic {
                     variantHex = i.hex.orEmpty(),
                     currentState = currentState,
                     hasCustomImages = haveCustomImage,
-                    flashSale = isFlashSale
+                    flashSale = isFlashSale,
+                    variantCategoryKey = variantLevelOne.pv.orEmpty()
             ))
         }
 
-        val variantLevelOne = productVariant.variants.firstOrNull()
-        val selectedVariantName = productVariant.children.firstOrNull { it.productId == productId }?.name?.split("-")?.last()
-                ?: ""
+        val selectedVariantName = children?.name?.split("-")?.last().orEmpty()
         val stringVariantIdentifier = productVariant.variants.mapNotNull { it.identifier }.joinToString()
 
         val variantTitle = if (areAllVariantHaveSelectedChild) selectedVariantName else stringVariantIdentifier //to determine pilih warna,ukuran or pilih hitam,xl
         return VariantCategory(
                 name = variantTitle,
-                identifier = variantLevelOne?.name.orEmpty(),
+                identifier = variantLevelOne.name.orEmpty(),
                 hasCustomImage = haveCustomImage,
                 variantOptions = listOfVariantLevelOne
         )

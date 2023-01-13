@@ -463,14 +463,13 @@ open class DynamicProductDetailViewModel @Inject constructor(
         return WarehouseInfo()
     }
 
-    fun processVariant(data: ProductVariant, mapOfSelectedVariant: MutableMap<String, String>?, shouldRenderNewVariant: Boolean) {
+    fun processVariant(data: ProductVariant, mapOfSelectedVariant: MutableMap<String, String>?, shouldRenderSingleVariant: Boolean) {
         launchCatchError(dispatcher.io, block = {
-            if (shouldRenderNewVariant) {
+            if (shouldRenderSingleVariant) {
                 _singleVariantData.postValue(
                     ProductDetailVariantLogic.determineVariant(
-                        mapOfSelectedVariant
-                            ?: mapOf(),
-                        data
+                        mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
+                        productVariant = data
                     )
                 )
             } else {
@@ -1244,10 +1243,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
      * Thumbnail variant selected is variant level one only
      */
     fun onThumbnailVariantSelected(
-        variantSelected: Map<String, String>
+        variantsSelected: Map<String, String>
     ) {
         val variantLevelOneUpdated = ProductDetailVariantLogic.determineVariant(
-            variantSelected,
+            variantsSelected,
             variantData
         )
 

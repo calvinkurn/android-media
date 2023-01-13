@@ -88,7 +88,7 @@ object VariantCommonMapper {
 
     fun selectedProductData(variantData: ProductVariant, selectedOptionIds:List<String>): VariantChild? {
         return variantData.children.firstOrNull {
-            it.optionIds == selectedOptionIds
+            it.optionIds.containsAll(selectedOptionIds)
         }
     }
 

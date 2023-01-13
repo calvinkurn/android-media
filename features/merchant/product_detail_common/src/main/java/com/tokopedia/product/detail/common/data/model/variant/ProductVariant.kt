@@ -54,14 +54,13 @@ data class ProductVariant(
         }
 
         fun getChildByOptionId(selectedIds: List<String>): VariantChild? {
-                var childResult: VariantChild? = null
-                for (it: VariantChild in children) {
-                        if (it.optionIds == selectedIds) {
-                                childResult = it
-                                break
-                        }
+            for (it: VariantChild in children) {
+                if (it.optionIds.containsAll(selectedIds)) {
+                    return it
                 }
-                return childResult
+            }
+
+            return null
         }
 
         fun autoSelectIfParent(selectedVariantId: String?): VariantChild? {
