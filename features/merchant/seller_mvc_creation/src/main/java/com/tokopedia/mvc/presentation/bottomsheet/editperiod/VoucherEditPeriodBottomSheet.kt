@@ -113,11 +113,11 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun initObservers() {
         viewModel.startDateCalendarLiveData.observe(viewLifecycleOwner) {
-            startCalendar = it as GregorianCalendar
+            startCalendar = it as? GregorianCalendar
             binding?.edtMvcStartDate?.setPlaceholder(it.time.formatTo())
         }
         viewModel.endDateCalendarLiveData.observe(viewLifecycleOwner) {
-            endCalendar = it as GregorianCalendar
+            endCalendar = it as? GregorianCalendar
             binding?.edtMvcEndDate?.setPlaceholder(it.time.formatTo())
         }
         viewModel.hourStartLiveData.observe(viewLifecycleOwner) {
@@ -214,11 +214,11 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun onClickListenerForEndDate() {
         context?.run {
-           startCalendar?.let { minDate ->
+            startCalendar?.let { minDate ->
                 DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
-                            if(endCalendar?.compareTo(startCalendar)?.isLessThanZero() == true) startCalendar else endCalendar,
+                            if (endCalendar?.compareTo(startCalendar)?.isLessThanZero() == true) startCalendar else endCalendar,
                             minDate,
                             maxDate,
                             endHour,
