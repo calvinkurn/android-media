@@ -232,6 +232,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
     val onVariantClickedData: LiveData<List<VariantCategory>?>
         get() = _onVariantClickedData
 
+    // slicing from _onVariantClickedData, because thumbnail variant feature using vbs for refresh pdp info
+    private val _onThumbnailVariantSelectedData = MutableLiveData<List<VariantCategory>?>()
+    val onThumbnailVariantSelectedData: LiveData<List<VariantCategory>?>
+        get() = _onThumbnailVariantSelectedData
+
     private val _toggleTeaserNotifyMe = MutableLiveData<Result<NotifyMeUiData>>()
     val toggleTeaserNotifyMe: LiveData<Result<NotifyMeUiData>>
         get() = _toggleTeaserNotifyMe
@@ -1231,7 +1236,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
         )
 
         if (variantLevelOneUpdated != null) {
-            _onVariantClickedData.postValue(listOf(variantLevelOneUpdated))
+            _onThumbnailVariantSelectedData.postValue(listOf(variantLevelOneUpdated))
         }
     }
 }

@@ -643,6 +643,7 @@ open class DynamicProductDetailFragment :
         observeInitialVariantData()
         observeSingleVariantData()
         observeonVariantClickedData()
+        observeOnThumbnailVariantSelected()
         observeATCTokonowData()
         observeATCTokonowResetCard()
         observeATCRecomTokonowNonLogin()
@@ -2462,6 +2463,12 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    private fun observeOnThumbnailVariantSelected() {
+        viewLifecycleOwner.observe(viewModel.onThumbnailVariantSelectedData) {
+            updateThumbnailVariantDataAndUi(it)
+        }
+    }
+
     private fun observeATCTokonowData() {
         viewLifecycleOwner.observe(viewModel.atcRecomTokonow) { data ->
             data.doSuccessOrFail({
@@ -2520,20 +2527,11 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateVariantData(variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
 
-        if (singleVariant?.isThumbnailType == true) { // thumbnail variant
-            updateProductInfoOnThumbVariantChanged(selectedChild)
-        } else { // mini-variant option & variant options
-            updateProductInfoOnVariantChanged(selectedChild)
-        }
-
+        updateProductInfoOnVariantChanged(selectedChild)
         addVariantSelectedTracker()
 
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
-    }
-
-    private fun updateProductInfoOnThumbVariantChanged(selectedChild: VariantChild?) {
-        productThumbnailVariantId = selectedChild?.productId
     }
 
     private fun updateProductInfoOnVariantChanged(selectedChild: VariantChild?) {
@@ -2587,6 +2585,23 @@ open class DynamicProductDetailFragment :
             productId ?: "",
             viewModel.p2Data.value?.arInfo ?: ProductArInfo()
         )
+    }
+
+    private fun updateThumbnailVariantDataAndUi(variantProcessedData: List<VariantCategory>?) {
+        val singleVariant = pdpUiUpdater?.productSingleVariant
+        val newVariant = pdpUiUpdater?.productOptionalVariantDataModel
+        val selectedOptionIds = singleVariant?.mapOfSelectedVariant?.values?.toList()
+            ?: newVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
+        val selectedChild = VariantCommonMapper.selectedProductData(
+            variantData = viewModel.variantData ?: ProductVariant(),
+            selectedOptionIds = selectedOptionIds
+        )
+
+        pdpUiUpdater?.updateVariantData(variantProcessedData)
+        pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
+        productThumbnailVariantId = selectedChild?.productId
+        addVariantSelectedTracker()
+        updateUi()
     }
 
     private fun addVariantSelectedTracker() {
