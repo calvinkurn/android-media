@@ -18,6 +18,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.databinding.AddLogoTipsBottomsheetBinding
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
@@ -142,16 +143,23 @@ class AddLogoToolUiComponent constructor(
     /**
      * generate new overlay image if product image size is change
      */
-    fun generateOverlayImage(bitmap: Bitmap, newSize: Pair<Int, Int>): Bitmap {
+    fun generateOverlayImage(bitmap: Bitmap, newSize: Pair<Int, Int>, isCircular: Boolean = false): Bitmap {
         originalImageWidth = newSize.first
         originalImageHeight = newSize.second
 
         val resultBitmap =
             Bitmap.createBitmap(newSize.first, newSize.second, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
+
+        val logoBitmap = if (isCircular) {
+            roundedBitmap(bitmap, isCircular = true)
+        } else {
+            roundedBitmap(bitmap, 8f.toPx())
+        }
+
         drawBitmap(
             canvas,
-            getDrawLogo(roundedBitmap(bitmap, isCircular = true))
+            getDrawLogo(logoBitmap)
         )
 
         return resultBitmap

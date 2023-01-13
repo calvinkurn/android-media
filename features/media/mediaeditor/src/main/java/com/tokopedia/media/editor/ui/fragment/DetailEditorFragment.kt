@@ -126,7 +126,7 @@ class DetailEditorFragment @Inject constructor(
     private fun saveOverlay() {
         viewBinding?.imgPreviewOverlay?.let {
             val logoBitmap = it.drawable.toBitmap()
-            viewModel.saveImageCache(it.drawable.toBitmap(), sourcePath = "image.png")?.let { fileResult ->
+            viewModel.saveImageCache(it.drawable.toBitmap(), sourcePath = PNG_KEY)?.let { fileResult ->
                 data.addLogoValue = EditorAddLogoUiModel(
                     Pair(logoBitmap.width, logoBitmap.height),
                     fileResult.path,
@@ -166,7 +166,7 @@ class DetailEditorFragment @Inject constructor(
                 )?.path
 
                 if (data.addLogoValue != EditorAddLogoUiModel()){
-                    // crop current overlay, need to be a new func
+                    // crop current overlay
                     val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
                     val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
 
@@ -300,6 +300,25 @@ class DetailEditorFragment @Inject constructor(
             getImagePairRatio()
         )
         isEdited = true
+
+        viewBinding?.imgUcropPreview?.let {
+            val cropViewRect = it.overlayView.cropViewRect
+            val realImageWidth = it.cropImageView.drawable.intrinsicWidth
+            val realImageHeight = it.cropImageView.drawable.intrinsicHeight
+
+            val rotateSize = if (viewModel.rotateNumber % 2 == 1) {
+                Pair(realImageHeight, realImageWidth)
+            } else {
+                Pair(realImageWidth, realImageHeight)
+            }
+
+            updateAddLogoOverlay(rotateSize) { resultUrl ->
+                setOverlaySize(
+                    Pair(cropViewRect.width() , cropViewRect.height())
+                )
+                viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
+            }
+        }
     }
 
     override fun onCropRatioClicked(ratio: ImageRatioType) {
@@ -1054,7 +1073,10 @@ class DetailEditorFragment @Inject constructor(
         return editHistory
     }
 
-    private fun updateAddLogoOverlay(newSize: Pair<Int, Int>, onFinish:() -> Unit) {
+    private fun updateAddLogoOverlay(
+        newSize: Pair<Int, Int>,
+        onFinish: (filePath: String) -> Unit
+    ) {
         loadImageWithEmptyTarget(requireContext(),
             data.addLogoValue.logoUrl,
             {},
@@ -1063,11 +1085,12 @@ class DetailEditorFragment @Inject constructor(
                     viewModel.saveImageCache(
                         addLogoComponent.generateOverlayImage(
                             logoBitmap,
-                            newSize
-                        ), sourcePath = "image.png"
+                            newSize,
+                            isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
+                        ), sourcePath = PNG_KEY
                     )?.let { fileResult ->
                         data.addLogoValue.overlayLogoUrl = fileResult.path
-                        onFinish()
+                        onFinish(fileResult.path)
                     }
                 }
             ))
@@ -1128,5 +1151,10 @@ class DetailEditorFragment @Inject constructor(
         private const val bottomSheetTag = "Add Logo BottomSheet"
 
         private const val ADD_LOGO_PICKER_REQUEST_CODE = 979
+
+        private const val HTTPS_KEY = "https:"
+
+        // key to generate PNG result for AddLogo overlay
+        private const val PNG_KEY = "image.png"
     }
 }
