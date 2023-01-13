@@ -8,11 +8,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
@@ -46,11 +43,11 @@ import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.R as unifyR
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 24/11/22
@@ -69,10 +66,6 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private val EXPLORE_WIDTH: Int by lazy {
         (getScreenWidth() * 0.75).roundToInt()
-    }
-
-    private val EXPLORE_HEIGHT: Int by lazy {
-        (getScreenHeight() * 0.95).roundToInt()
     }
 
     private lateinit var viewModel: PlayViewModel
@@ -235,10 +228,11 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
             is ResultState.Fail -> {
                 analytic?.impressToasterGlobalError()
+                val errMessage = if (state.error is MessageErrorException) getString(playR.string.play_explore_widget_noconn_errmessage) else getString(playR.string.play_explore_widget_default_errmessage)
                 Toaster.build(
                     view = requireView(),
-                    text = state.error.message.orEmpty(),
-                    actionText = getString(playR.string.title_try_again),
+                    text = errMessage,
+                    actionText = getString(playR.string.play_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     clickListener = {
@@ -257,7 +251,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         window.setGravity(Gravity.END)
         window.setLayout(
             EXPLORE_WIDTH,
-            EXPLORE_HEIGHT
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
