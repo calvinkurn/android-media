@@ -33,6 +33,7 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
@@ -260,10 +261,11 @@ class DetailEditorFragment @Inject constructor(
             cropView.targetAspectRatio = ratio.getRatio()
 
             val newRatio = Pair(ratio.getRatioX(), ratio.getRatioY())
-            if (data.cropRotateValue.cropRatio != newRatio) {
+            if (data.cropRotateValue.cropRatio != newRatio && data.cropRotateValue.cropRatio != EMPTY_RATIO) {
                 data.cropRotateValue.cropRatio = newRatio
                 isEdited = true
             }
+            data.cropRotateValue.cropRatio = newRatio
         }
     }
 
