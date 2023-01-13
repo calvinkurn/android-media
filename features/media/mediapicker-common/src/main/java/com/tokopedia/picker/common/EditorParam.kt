@@ -25,16 +25,20 @@ data class EditorParam(
         editorToolsList.add(0, EditorToolType.REMOVE_BACKGROUND)
         addLogoIndex = 1
     }
+
     fun withAddLogo() = editorToolsList.add(addLogoIndex, EditorToolType.ADD_LOGO)
     fun autoCrop1to1() = apply {
         setAutoCropRatio(ImageRatioType.RATIO_1_1)
     }
+
     fun autoCrop3to4() = apply {
         setAutoCropRatio(ImageRatioType.RATIO_3_4)
     }
+
     fun autoCrop2to1() = apply {
         setAutoCropRatio(ImageRatioType.RATIO_2_1)
     }
+
     fun resetRatioList() = ratioList.clear()
     fun ratioListAdd1to1() = ratioList.add(ImageRatioType.RATIO_1_1)
     fun ratioListAdd3to4() = ratioList.add(ImageRatioType.RATIO_3_4)

@@ -226,7 +226,7 @@ class EditorViewModelTest {
         }
 
         // When
-        every { addLogoRepository.flattenImage(any(), any(), any() ) } returns addLogoPath
+        every { addLogoRepository.flattenImage(any(), any(), any()) } returns addLogoPath
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
             (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
         }

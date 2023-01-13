@@ -19,7 +19,8 @@ class EditorUiModel(
     init {
         try {
             isVideo = isVideoFormat(originalUrl)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     fun getImageUrl(): String {

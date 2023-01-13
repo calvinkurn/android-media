@@ -29,7 +29,7 @@ enum class PageSource(val value: String) {
         private val map = values().associateBy(PageSource::value)
 
         fun fromString(value: String): PageSource {
-            return map[value]?: Unknown
+            return map[value] ?: Unknown
         }
     }
 }

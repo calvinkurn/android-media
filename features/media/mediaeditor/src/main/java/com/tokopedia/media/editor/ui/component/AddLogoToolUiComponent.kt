@@ -130,7 +130,7 @@ class AddLogoToolUiComponent constructor(
 
     fun getLogoState(): Int? {
         return if (selectedLogoUrl.isNotEmpty()) {
-            when (selectedLogoUrl){
+            when (selectedLogoUrl) {
                 uploadAvatarUrl -> LOGO_UPLOAD
                 shopAvatarUrl -> LOGO_SHOP
                 else -> null
@@ -143,7 +143,11 @@ class AddLogoToolUiComponent constructor(
     /**
      * generate new overlay image if product image size is change
      */
-    fun generateOverlayImage(bitmap: Bitmap, newSize: Pair<Int, Int>, isCircular: Boolean = false): Bitmap {
+    fun generateOverlayImage(
+        bitmap: Bitmap,
+        newSize: Pair<Int, Int>,
+        isCircular: Boolean = false
+    ): Bitmap {
         originalImageWidth = newSize.first
         originalImageHeight = newSize.second
 
@@ -193,7 +197,7 @@ class AddLogoToolUiComponent constructor(
             return
         }
 
-        if (uploadAvatarUrl.isNotEmpty() && finishedUrl == uploadAvatarUrl){
+        if (uploadAvatarUrl.isNotEmpty() && finishedUrl == uploadAvatarUrl) {
             uploadAvatar.performClick()
         } else if (uploadAvatarUrl.isEmpty() && finishedUrl == shopAvatarUrl) {
             shopAvatar.performClick()
@@ -275,7 +279,12 @@ class AddLogoToolUiComponent constructor(
     }
 
     private fun drawBitmap(canvas: Canvas, bitmap: Bitmap) {
-        canvas.drawBitmap(bitmap, LOGO_X_POS * originalImageWidth, LOGO_Y_POS * originalImageHeight, Paint())
+        canvas.drawBitmap(
+            bitmap,
+            LOGO_X_POS * originalImageWidth,
+            LOGO_Y_POS * originalImageHeight,
+            Paint()
+        )
     }
 
     private fun roundedBitmap(

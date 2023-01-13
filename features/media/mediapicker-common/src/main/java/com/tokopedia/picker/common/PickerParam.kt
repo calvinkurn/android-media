@@ -29,7 +29,7 @@ data class PickerParam(
     @SerializedName("includeMedias") private var includeMedias: List<String> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
     @SerializedName("previewActionText") private var previewActionText: String = "",
-    @SerializedName("editorParam")private var editorParam: EditorParam? = null
+    @SerializedName("editorParam") private var editorParam: EditorParam? = null
 ) : Parcelable {
 
     // getter
@@ -63,10 +63,12 @@ data class PickerParam(
     fun getEditorParam() = editorParam
     fun previewActionText(): String {
         return if (previewActionText.length > CUSTOM_ACTION_TEXT_LIMIT) {
-            previewActionText.substring(IntRange(
-                SUBSTRING_START_INDEX,
-                SUBSTRING_END_INDEX
-            )) + SUBSTRING_ELLIPSIZE_APPEND
+            previewActionText.substring(
+                IntRange(
+                    SUBSTRING_START_INDEX,
+                    SUBSTRING_END_INDEX
+                )
+            ) + SUBSTRING_ELLIPSIZE_APPEND
         } else {
             previewActionText
         }
@@ -89,6 +91,7 @@ data class PickerParam(
         withEditor = true
         editorParam = EditorParam().apply(param)
     }
+
     fun withoutEditor() = apply { withEditor = false }
     fun includeAnimationGif(value: Boolean) = apply { isIncludeAnimation = value }
     fun includeMedias(value: List<String>) = apply { includeMedias = value }

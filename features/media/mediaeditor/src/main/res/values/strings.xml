@@ -28,7 +28,7 @@
     <string name="editor_add_logo_toast_text">Yah, koneksi internetmu terputus saat gunakan fitur ini. Coba lagi, ya.</string>
     <string name="editor_add_logo_toast_cta">Oke</string>
     <string name="editor_add_logo_toast_final">Tidak ada koneksi internet</string>
-    
+
     <!-- Dialog confirmation text -->
     <string name="editor_detail_activity_dialog_title">Batal simpan edit media?</string>
     <string name="editor_detail_activity_dialog_desc">Hasil editan media kamu bakal hilang kalau nggak disimpan. Mau simpan hasil editanmu?</string>

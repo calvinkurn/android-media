@@ -58,7 +58,12 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         editorAdapter?.stopVideo(index)
     }
 
-    fun updateImage(index: Int, newImageUrl: String, overlayImageUrl: String = "", onImageUpdated: () -> Unit = {}) {
+    fun updateImage(
+        index: Int,
+        newImageUrl: String,
+        overlayImageUrl: String = "",
+        onImageUpdated: () -> Unit = {}
+    ) {
         val layout = findViewWithTag<RelativeLayout>(viewPagerTag(index))
         val view = layout.findViewById<ImageView>(R.id.img_main_preview)
         view?.loadImage(newImageUrl) {

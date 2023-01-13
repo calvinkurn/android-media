@@ -81,8 +81,7 @@ class DetailEditorFragment @Inject constructor(
     RotateToolUiComponent.Listener,
     CropToolUiComponent.Listener,
     EditorDetailPreviewWidget.Listener,
-    AddLogoToolUiComponent.Listener
-{
+    AddLogoToolUiComponent.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
@@ -126,13 +125,14 @@ class DetailEditorFragment @Inject constructor(
     private fun saveOverlay() {
         viewBinding?.imgPreviewOverlay?.let {
             val logoBitmap = it.drawable.toBitmap()
-            viewModel.saveImageCache(it.drawable.toBitmap(), sourcePath = PNG_KEY)?.let { fileResult ->
-                data.addLogoValue = EditorAddLogoUiModel(
-                    Pair(logoBitmap.width, logoBitmap.height),
-                    fileResult.path,
-                    addLogoComponent.getLogoUrl()
-                )
-            }
+            viewModel.saveImageCache(it.drawable.toBitmap(), sourcePath = PNG_KEY)
+                ?.let { fileResult ->
+                    data.addLogoValue = EditorAddLogoUiModel(
+                        Pair(logoBitmap.width, logoBitmap.height),
+                        fileResult.path,
+                        addLogoComponent.getLogoUrl()
+                    )
+                }
         }
     }
 
@@ -165,13 +165,13 @@ class DetailEditorFragment @Inject constructor(
                     sourcePath = data.originalUrl
                 )?.path
 
-                if (data.addLogoValue != EditorAddLogoUiModel()){
+                if (data.addLogoValue != EditorAddLogoUiModel()) {
                     // crop current overlay
                     val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
                     val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
 
                     if (!isWidthSame || !isHeightSame) {
-                        updateAddLogoOverlay(Pair(it.width, it.height)){
+                        updateAddLogoOverlay(Pair(it.width, it.height)) {
                             finishPage()
                         }
                     } else {
@@ -314,7 +314,7 @@ class DetailEditorFragment @Inject constructor(
 
             updateAddLogoOverlay(rotateSize) { resultUrl ->
                 setOverlaySize(
-                    Pair(cropViewRect.width() , cropViewRect.height())
+                    Pair(cropViewRect.width(), cropViewRect.height())
                 )
                 viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
             }
@@ -344,10 +344,12 @@ class DetailEditorFragment @Inject constructor(
                 readPreviousState()
                 initialImageMatrix = Matrix(it.cropImageView.imageMatrix)
 
-                setOverlaySize(Pair(
-                    it.overlayView.cropViewRect.width(),
-                    it.overlayView.cropViewRect.height()
-                ))
+                setOverlaySize(
+                    Pair(
+                        it.overlayView.cropViewRect.width(),
+                        it.overlayView.cropViewRect.height()
+                    )
+                )
             }
         }
     }
@@ -381,8 +383,8 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ADD_LOGO_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
+        if (requestCode == ADD_LOGO_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER) ?: PickerResult()
             addLogoComponent.initUploadAvatar(elements.originalPaths.first())
             viewModel.setLocalLogo(elements.originalPaths.first())
         }
@@ -930,7 +932,11 @@ class DetailEditorFragment @Inject constructor(
         return getImageView()?.drawable?.toBitmap()
     }
 
-    private fun setImageView(url: String, readPreviousValue: Boolean, onImageReady: () -> Unit = {}) {
+    private fun setImageView(
+        url: String,
+        readPreviousValue: Boolean,
+        onImageReady: () -> Unit = {}
+    ) {
         viewBinding?.imgUcropPreview?.hide()
         viewBinding?.imgViewPreview?.visible()
 
@@ -947,7 +953,12 @@ class DetailEditorFragment @Inject constructor(
                     if (readPreviousValue) {
                         readPreviousState()
                         viewBinding?.imgViewPreview?.let {
-                            setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, it.drawable.toBitmap()))
+                            setOverlaySize(
+                                getDisplayedImageSize(
+                                    viewBinding?.imgViewPreview,
+                                    it.drawable.toBitmap()
+                                )
+                            )
                         }
                     } else {
                         implementedBaseBitmap = bitmap
@@ -987,7 +998,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun getDisplayedImageSize(view: View?, bitmap: Bitmap): Pair<Float, Float>?{
+    private fun getDisplayedImageSize(view: View?, bitmap: Bitmap): Pair<Float, Float>? {
         if (view == null) return null
         val imageViewHeight = view.height
         val imageViewWidth = view.width

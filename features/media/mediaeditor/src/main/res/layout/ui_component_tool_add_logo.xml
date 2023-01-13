@@ -1,133 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/uc_tool_add_logo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
-    android:id="@+id/uc_tool_add_logo"
-    android:visibility="gone"
-    tools:visibility="visible"
+    android:gravity="center_horizontal"
     android:orientation="horizontal"
-    android:gravity="center_horizontal">
+    android:paddingLeft="24dp"
+    android:paddingTop="10dp"
+    android:paddingRight="24dp"
+    android:paddingBottom="10dp"
+    android:visibility="gone"
+    tools:visibility="visible">
 
     <LinearLayout
-        android:gravity="center"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.CardUnify2
             android:id="@+id/add_logo_upload_button"
-            android:padding="10dp"
-            app:card_type="border"
-            app:cardCornerRadius="8dp"
             android:layout_width="64dp"
-            android:layout_height="64dp">
+            android:layout_height="64dp"
+            android:padding="10dp"
+            app:cardCornerRadius="8dp"
+            app:card_type="border">
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_gravity="center"
-                app:icon_name="UPLOAD"
                 android:layout_width="24dp"
-                android:layout_height="24dp"/>
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:icon_name="UPLOAD" />
 
         </com.tokopedia.unifycomponents.CardUnify2>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/add_logo_upload_text"
-            android:layout_marginTop="6dp"
-            app:typographyType="small"
-            android:text= "@string/editor_add_logo_first_upload"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/editor_add_logo_first_upload"
+            app:typographyType="small" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/add_logo_upload_avatar_wrapper"
-        android:visibility="gone"
-        tools:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="13dp"
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <LinearLayout
-            android:gravity="center"
-            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <com.tokopedia.unifycomponents.CardUnify2
-                android:padding="10dp"
-                app:card_type="border"
-                app:cardCornerRadius="8dp"
                 android:layout_width="64dp"
-                android:layout_height="64dp">
+                android:layout_height="64dp"
+                android:padding="10dp"
+                app:cardCornerRadius="8dp"
+                app:card_type="border">
 
                 <ImageView
-                    android:contentDescription="@string/editor_add_logo_profile_desc"
                     android:id="@+id/add_logo_upload_avatar"
-                    android:layout_gravity="center"
                     android:layout_width="48dp"
-                    android:layout_height="48dp"/>
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/editor_add_logo_profile_desc" />
 
             </com.tokopedia.unifycomponents.CardUnify2>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:gravity="center_horizontal"
-                android:layout_marginTop="6dp"
-                app:typographyType="small"
-                android:text="@string/editor_add_logo_last_uploaded"
-                android:maxWidth="64dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center_horizontal"
+                android:maxWidth="64dp"
+                android:text="@string/editor_add_logo_last_uploaded"
+                app:typographyType="small" />
 
         </LinearLayout>
 
         <View
-            android:layout_marginStart="14dp"
-            android:background="@color/Unify_NN300"
             android:layout_width="0.5dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_marginStart="14dp"
+            android:background="@color/Unify_NN300" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:gravity="center"
-        android:layout_marginStart="13dp"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.CardUnify2
-            android:padding="10dp"
-            app:card_type="border"
-            app:cardCornerRadius="8dp"
             android:layout_width="64dp"
-            android:layout_height="64dp">
+            android:layout_height="64dp"
+            android:padding="10dp"
+            app:cardCornerRadius="8dp"
+            app:card_type="border">
 
             <ImageView
-                android:contentDescription="@string/editor_add_logo_upload_desc"
                 android:id="@+id/add_logo_shop_avatar"
-                android:layout_gravity="center"
                 android:layout_width="48dp"
-                android:layout_height="48dp"/>
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/editor_add_logo_upload_desc" />
 
         </com.tokopedia.unifycomponents.CardUnify2>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:gravity="center_horizontal"
-            android:layout_marginTop="6dp"
-            app:typographyType="small"
-            android:text="@string/editor_add_logo_profile"
-            android:maxWidth="64dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center_horizontal"
+            android:maxWidth="64dp"
+            android:text="@string/editor_add_logo_profile"
+            app:typographyType="small" />
 
     </LinearLayout>
 

@@ -148,7 +148,7 @@ class EditorFragment @Inject constructor(
         observeUpdateIndex()
     }
 
-    private fun imageCrop(bitmap: Bitmap, originalPath: String){
+    private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
         cropCenterImage(bitmap, cropRatio)?.apply {
@@ -331,7 +331,8 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            val isAddLogoEnable = RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
+            val isAddLogoEnable =
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
             if (!isAddLogoEnable || !viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
@@ -371,7 +372,8 @@ class EditorFragment @Inject constructor(
 
                 renderToolsIconActiveState(editorUiModel)
 
-                viewBinding?.viewPager?.updateImage(it,
+                viewBinding?.viewPager?.updateImage(
+                    it,
                     editorUiModel.getImageUrl(),
                     overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: ""
                 )
