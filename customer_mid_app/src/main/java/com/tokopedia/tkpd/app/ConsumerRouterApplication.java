@@ -609,7 +609,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    private void disconnectTokoChat() {
+    public void disconnectTokoChat() {
         TokoChatConnection.disconnect();
     }
 }
