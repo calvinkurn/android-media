@@ -19,7 +19,7 @@ data class CatalogLihatItemDataModel(
     override fun name() = name
 
     override fun equalsWith(newData: BaseCatalogLibraryDataModel): Boolean {
-        return false
+        return newData == this
     }
 
     override fun getChangePayload(newData: BaseCatalogLibraryDataModel): Bundle? {

@@ -12,7 +12,7 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
     GraphqlUseCase<CatalogListResponse>(graphqlRepository) {
 
     fun getCatalogProductsData(
-        onSuccess: (CatalogListResponse) -> Unit,
+        onSuccess: (CatalogListResponse, Int) -> Unit,
         onError: (Throwable) -> Unit,
         categoryIdentifier: String,
         sortType: Int,
@@ -32,7 +32,7 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
             this.setGraphqlQuery(GQL_CATALOG_LIST)
             this.execute(
                 { result ->
-                    onSuccess(result)
+                    onSuccess(result,page)
                 },
                 { error ->
                     onError(error)

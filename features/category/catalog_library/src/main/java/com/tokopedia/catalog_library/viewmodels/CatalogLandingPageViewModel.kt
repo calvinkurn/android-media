@@ -71,7 +71,7 @@ class CatalogLandingPageViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableCatalogTopFiveData(catalogListResponse: CatalogListResponse) {
+    private fun onAvailableCatalogTopFiveData(catalogListResponse: CatalogListResponse,page : Int = 1) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
@@ -81,7 +81,7 @@ class CatalogLandingPageViewModel @Inject constructor(
         }
     }
 
-    private fun onAvailableCatalogMostViralData(catalogListResponse: CatalogListResponse) {
+    private fun onAvailableCatalogMostViralData(catalogListResponse: CatalogListResponse, page : Int = 1) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
@@ -91,7 +91,7 @@ class CatalogLandingPageViewModel @Inject constructor(
         }
     }
 
-    private fun onAvailableCatalogListData(catalogListResponse: CatalogListResponse) {
+    private fun onAvailableCatalogListData(catalogListResponse: CatalogListResponse,page : Int = 1) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {

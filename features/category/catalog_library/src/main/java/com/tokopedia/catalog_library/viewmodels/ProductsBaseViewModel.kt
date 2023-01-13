@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
@@ -51,13 +52,13 @@ class ProductsBaseViewModel @Inject constructor(
     }
 
     private fun onAvailableCatalogListData(
-        catalogListResponse: CatalogListResponse
+        catalogListResponse: CatalogListResponse, page : Int = 1
     ) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isNullOrEmpty()) {
             onFailHomeData(IllegalStateException("No Catalog List Response Data"))
         } else {
             catalogListResponse.let {
-                _catalogProductsLiveData.postValue(Success(mapCatalogProductData(it)))
+                _catalogProductsLiveData.postValue(Success(mapCatalogProductData(it,page)))
             }
         }
     }
@@ -66,12 +67,20 @@ class ProductsBaseViewModel @Inject constructor(
         _catalogProductsLiveData.postValue(Fail(throwable))
     }
 
-    private fun mapCatalogProductData(data: CatalogListResponse): CatalogLibraryDataModel {
+    private fun mapCatalogProductData(data: CatalogListResponse, page : Int = 1): CatalogLibraryDataModel {
         return CatalogLibraryDataModel(getProductsVisitableList(data.catalogGetList.catalogsProduct))
     }
 
-    private fun getProductsVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
+    private fun getProductsVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>, page : Int = 1): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        if(page == 1){
+            val productHeaderModel = CatalogContainerDataModel(
+            CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
+            CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
+            "Katalog lainnya buat inspirasimu",null
+            )
+            visitableList.add(productHeaderModel)
+        }
         catalogsProduct.forEach { product ->
             visitableList.add(
                 CatalogProductDataModel(

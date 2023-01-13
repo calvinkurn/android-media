@@ -15,6 +15,7 @@ object CatalogLibraryConstant {
     const val CATALOG_CONTAINER_TYPE_MOST_VIRAL = "catalog_container_most_viral"
     const val CATALOG_CONTAINER_SPECIAL = "catalog_container_special"
     const val CATALOG_CONTAINER_RELEVANT = "catalog_container_relevant"
+    const val CATALOG_CONTAINER_PRODUCT_HEADER = "catalog_container_product_header"
 
     const val CATALOG_SHIMMER_TOP_FIVE = 1
     const val CATALOG_SHIMMER_VIRAL = 2

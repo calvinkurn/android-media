@@ -34,7 +34,6 @@ import javax.inject.Inject
 
 class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
-    private var shimmerLayout: ScrollView? = null
     private var catalogHomeRecyclerView: RecyclerView? = null
 
     companion object {
@@ -83,10 +82,8 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        shimmerLayout = view.findViewById(R.id.shimmer_layout)
         initHeaderTitle(view)
         getDataFromViewModel()
-        showShimmer()
         setupRecyclerView(view)
         setUpBase()
         setObservers()
@@ -123,6 +120,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
             adapter = catalogHomeAdapter
             setHasFixedSize(true)
         }
+        updateUi()
     }
 
     private fun setObservers() {
@@ -143,8 +141,6 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     }
 
     private fun updateUi() {
-        hideShimmer()
-        catalogHomeRecyclerView?.show()
         val newData = catalogLibraryUiUpdater.mapOfData.values.toList()
         submitList(newData)
     }
@@ -154,8 +150,6 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     }
 
     private fun onError(e: Throwable) {
-        shimmerLayout?.hide()
-        catalogHomeRecyclerView?.hide()
         if (e is UnknownHostException ||
             e is SocketTimeoutException
         ) {
@@ -167,21 +161,8 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         global_error_page.show()
         global_error_page.setOnClickListener {
             catalogHomeRecyclerView?.show()
-            shimmerLayout?.show()
             global_error_page.hide()
             getDataFromViewModel()
-        }
-    }
-
-    private fun showShimmer() {
-        if (catalogLibraryUiUpdater.mapOfData.isEmpty()) {
-            shimmerLayout?.show()
-        }
-    }
-
-    private fun hideShimmer() {
-        if (catalogLibraryUiUpdater.mapOfData.isNotEmpty()) {
-            shimmerLayout?.hide()
         }
     }
 
@@ -201,14 +182,10 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     }
 
     override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
         productsList.forEach { component ->
-            catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
             catalogLibraryUiUpdater.updateModel(component)
         }
-        updateUi()
-    }
-
-    override fun onShimmerAdded() {
         val shimmerDataModel = CatalogShimmerDataModel(
             CatalogLibraryConstant.CATALOG_PRODUCT,
             CatalogLibraryConstant.CATALOG_PRODUCT,
@@ -218,7 +195,18 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         updateUi()
     }
 
+    override fun onShimmerAdded() {
+//        val shimmerDataModel = CatalogShimmerDataModel(
+//            CatalogLibraryConstant.CATALOG_PRODUCT,
+//            CatalogLibraryConstant.CATALOG_PRODUCT,
+//            CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
+//        )
+//        catalogLibraryUiUpdater.updateModel(shimmerDataModel)
+//        updateUi()
+    }
+
     override fun onErrorFetchingProducts(throwable: Throwable) {
+        //TODO shimmer remove or show whole error logic
         onError(throwable)
     }
 }
