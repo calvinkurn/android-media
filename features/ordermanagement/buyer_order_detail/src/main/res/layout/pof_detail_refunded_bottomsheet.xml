@@ -65,7 +65,7 @@
         tools:text="Rp5.000.000" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPofRefundedDetail"
+        android:id="@+id/tvPofRefundedDetailFooter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
