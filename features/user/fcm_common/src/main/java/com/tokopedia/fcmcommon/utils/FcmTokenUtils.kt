@@ -1,7 +1,6 @@
 package com.tokopedia.fcmcommon.utils
 
 import android.content.Context
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.text.TextUtils
@@ -130,36 +129,31 @@ class FcmTokenUtils @Inject constructor(
     }
 
     fun saveToken(token: String) {
-        val cacheHandler = fcmCacheHandler
-        cacheHandler.saveStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY, token)
+        fcmCacheHandler.saveStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY, token)
     }
 
     fun getToken(): String? =
         fcmCacheHandler.getStringValue(FcmConstant.FCM_TOKEN_CACHE_KEY)
 
     fun saveUserId(userId: String) {
-        val cacheHandler = fcmCacheHandler
-        cacheHandler.saveStringValue(FcmConstant.USERID_CACHE_KEY, userId)
+        fcmCacheHandler.saveStringValue(FcmConstant.USERID_CACHE_KEY, userId)
     }
 
     fun getUserId(): String? =
         fcmCacheHandler.getStringValue(FcmConstant.USERID_CACHE_KEY)
 
     fun saveGAdsIdId(gAdsId: String) {
-        val cacheHandler = fcmCacheHandler
-        cacheHandler.saveStringValue(FcmConstant.GADSID_CACHE_KEY, gAdsId)
+        fcmCacheHandler.saveStringValue(FcmConstant.GADSID_CACHE_KEY, gAdsId)
     }
 
     fun saveAppVersion(versionName: String) {
-        val cacheHandler = fcmCacheHandler
-        cacheHandler.saveStringValue(FcmConstant.APP_VERSION_CACHE_KEY, versionName)
+        fcmCacheHandler.saveStringValue(FcmConstant.APP_VERSION_CACHE_KEY, versionName)
     }
 
     fun getCurrentAppVersionName(context: Context): String {
-        var pInfo: PackageInfo? = null
         try {
-            pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-            return pInfo!!.versionName
+            val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+            return pInfo.versionName
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
@@ -184,7 +178,7 @@ class FcmTokenUtils @Inject constructor(
     }
 
     fun checkTokenValidity(token: String): Boolean {
-        return token.length <= 36
+        return token.length <= TOKEN_LENGTH_36
     }
 
     fun getWifiMacAddress(): String {
@@ -198,6 +192,7 @@ class FcmTokenUtils @Inject constructor(
     }
 
     companion object {
+        private const val TOKEN_LENGTH_36 = 36
         private const val STATE_LOGGED_OUT = "LOGGED_OUT"
         private const val STATE_LOGGED_IN = "LOGGED_IN"
         private const val CUSTOMER_APP_PAKAGE = "com.tokopedia.tkpd"

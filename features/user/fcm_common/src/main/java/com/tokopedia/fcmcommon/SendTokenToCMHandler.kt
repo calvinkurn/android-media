@@ -50,59 +50,61 @@ class SendTokenToCMHandler @Inject constructor(
         get() {
             val localCacheHandler = LocalCacheHandler(mContext, TkpdCache.ADVERTISINGID)
             val adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID)
-            val isAdsIdEmpty = TextUtils.isEmpty(adsId.trim { it <= ' ' })
-            if (adsId != null && !isAdsIdEmpty) {
-                return adsId
-            } else {
-                val adInfo: AdvertisingIdClient.Info?
-                try {
-                    adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext)
-                } catch (e: IOException) {
-                    ServerLogger.log(
-                        Priority.P2,
-                        "CM_VALIDATION",
-                        mapOf(
-                            "type" to "exception",
-                            "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
-                            "data" to ""
+            adsId?.let {
+                val trimmedAdsId = adsId.trim { it <= ' ' }
+                if (trimmedAdsId.isNotBlank()) {
+                    return adsId
+                } else {
+                    val adInfo: AdvertisingIdClient.Info?
+                    try {
+                        adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext)
+                    } catch (e: IOException) {
+                        ServerLogger.log(
+                            Priority.P2,
+                            "CM_VALIDATION",
+                            mapOf(
+                                "type" to "exception",
+                                "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
+                                "data" to ""
+                            )
                         )
-                    )
-                    e.printStackTrace()
-                    return ""
-                } catch (e: GooglePlayServicesNotAvailableException) {
-                    ServerLogger.log(
-                        Priority.P2,
-                        "CM_VALIDATION",
-                        mapOf(
-                            "type" to "exception",
-                            "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
-                            "data" to ""
+                        e.printStackTrace()
+                        return ""
+                    } catch (e: GooglePlayServicesNotAvailableException) {
+                        ServerLogger.log(
+                            Priority.P2,
+                            "CM_VALIDATION",
+                            mapOf(
+                                "type" to "exception",
+                                "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
+                                "data" to ""
+                            )
                         )
-                    )
-                    e.printStackTrace()
-                    return ""
-                } catch (e: GooglePlayServicesRepairableException) {
-                    ServerLogger.log(
-                        Priority.P2,
-                        "CM_VALIDATION",
-                        mapOf(
-                            "type" to "exception",
-                            "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
-                            "data" to ""
+                        e.printStackTrace()
+                        return ""
+                    } catch (e: GooglePlayServicesRepairableException) {
+                        ServerLogger.log(
+                            Priority.P2,
+                            "CM_VALIDATION",
+                            mapOf(
+                                "type" to "exception",
+                                "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
+                                "data" to ""
+                            )
                         )
-                    )
-                    e.printStackTrace()
-                    return ""
-                }
-
-                if (adInfo != null) {
-                    val adID = adInfo.id
-
-                    if (!TextUtils.isEmpty(adID)) {
-                        localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID)
-                        localCacheHandler.applyEditor()
+                        e.printStackTrace()
+                        return ""
                     }
-                    return adID
+
+                    if (adInfo != null) {
+                        val adID = adInfo.id
+
+                        if (!TextUtils.isEmpty(adID)) {
+                            localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID)
+                            localCacheHandler.applyEditor()
+                        }
+                        return adID
+                    }
                 }
             }
             return ""

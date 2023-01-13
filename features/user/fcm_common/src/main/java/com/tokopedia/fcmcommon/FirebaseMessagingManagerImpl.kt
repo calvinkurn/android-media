@@ -22,7 +22,6 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         storeNewToken(newToken)
 
         if (isNewToken(newToken)) {
-            updateTokenOnServer(newToken)
             if (userSession.isLoggedIn) {
                 updateTokenOnServer(newToken)
             } else {
