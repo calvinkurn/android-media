@@ -4,6 +4,7 @@ import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
 
 class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibraryDataModel>) {
 
@@ -12,21 +13,21 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
             CatalogShimmerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
-                1
+                CATALOG_SHIMMER_TOP_FIVE
             )
         )
         updateModel(
             CatalogShimmerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
-                2
+                CATALOG_SHIMMER_VIRAL
             )
         )
         updateModel(
             CatalogShimmerDataModel(
                 CatalogLibraryConstant.CATALOG_PRODUCT,
                 CatalogLibraryConstant.CATALOG_PRODUCT,
-                3
+                CATALOG_SHIMMER_PRODUCTS
             )
         )
     }

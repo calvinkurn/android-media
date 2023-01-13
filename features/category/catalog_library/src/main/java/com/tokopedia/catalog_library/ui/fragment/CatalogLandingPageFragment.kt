@@ -232,14 +232,10 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
     }
 
     override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
         productsList.forEach { component ->
-            catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
             catalogLibraryUiUpdater.updateModel(component)
         }
-        updateUi()
-    }
-
-    override fun onShimmerAdded() {
         val shimmerDataModel = CatalogShimmerDataModel(
             CatalogLibraryConstant.CATALOG_PRODUCT,
             CatalogLibraryConstant.CATALOG_PRODUCT,
@@ -247,6 +243,9 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         )
         catalogLibraryUiUpdater.updateModel(shimmerDataModel)
         updateUi()
+    }
+
+    override fun onShimmerAdded() {
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {

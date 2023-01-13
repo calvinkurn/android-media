@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -196,17 +195,10 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     }
 
     override fun onShimmerAdded() {
-//        val shimmerDataModel = CatalogShimmerDataModel(
-//            CatalogLibraryConstant.CATALOG_PRODUCT,
-//            CatalogLibraryConstant.CATALOG_PRODUCT,
-//            CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
-//        )
-//        catalogLibraryUiUpdater.updateModel(shimmerDataModel)
-//        updateUi()
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
-        //TODO shimmer remove or show whole error logic
+        // TODO shimmer remove or show whole error logic
         onError(throwable)
     }
 }
