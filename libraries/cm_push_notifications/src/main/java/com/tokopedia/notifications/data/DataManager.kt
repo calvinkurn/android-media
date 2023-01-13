@@ -4,6 +4,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.notifications.analytics.NotificationAnalytics
 import com.tokopedia.notifications.domain.AttributionUseCase
 import com.tokopedia.notifications.model.AddToCart
@@ -75,7 +76,7 @@ class DataManager @Inject constructor(
         fun atcParams(productId: String, shopId: Int?, productName: String, price: String, userId: String): RequestParams {
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = productId
-            addToCartRequestParams.shopId = shopId?.toString() ?: "0"
+            addToCartRequestParams.shopId = shopId?.toString().toZeroStringIfNull()
             addToCartRequestParams.quantity = 1
             addToCartRequestParams.notes = ""
             addToCartRequestParams.productName = productName

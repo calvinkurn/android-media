@@ -16,6 +16,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
@@ -50,12 +51,12 @@ object AtcCommonMapper {
         return when (actionButtonCart) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 AddToCartOcsRequestParams().apply {
-                    productId = selectedChild?.productId ?: "0"
+                    productId = selectedChild?.productId.toZeroStringIfNull()
                     shopId = shopIdInt.toString()
                     quantity = selectedChild?.getFinalMinOrder() ?: 0
                     notes = ""
                     customerId = userId
-                    warehouseId = selectedWarehouse?.id ?: "0"
+                    warehouseId = selectedWarehouse?.id.toZeroStringIfNull()
                     trackerAttribution = trackerAttributionPdp
                     trackerListName = trackerListNamePdp
                     isTradeIn = false
@@ -93,13 +94,13 @@ object AtcCommonMapper {
                     selectedChild?.getFinalMinOrder() ?: 0
 
                 AddToCartRequestParams().apply {
-                    productId = selectedChild?.productId ?: "0"
+                    productId = selectedChild?.productId.toZeroStringIfNull()
                     shopId = shopIdInt.toString()
                     quantity = quantityData
                     notes = ""
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
-                    warehouseId = selectedWarehouse?.id ?: "0"
+                    warehouseId = selectedWarehouse?.id.toZeroStringIfNull()
                     atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                     productName = selectedChild?.name ?: ""
                     category = categoryName

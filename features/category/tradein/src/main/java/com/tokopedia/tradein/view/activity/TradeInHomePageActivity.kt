@@ -26,6 +26,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.tradein.R
@@ -283,7 +284,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         viewModel.data?.let { data->
             val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                 productId = data.productId
-                shopId = data.shopID ?: "0"
+                shopId = data.shopID.toZeroStringIfNull()
                 quantity = data.minOrder
                 notes = ""
                 customerId = viewModel.userId
