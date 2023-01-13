@@ -1,6 +1,7 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,11 +19,17 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
 
-class CatalogLihatViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogLihatDataModel>(view){
+class CatalogLihatViewHolder(
+    val view: View,
+    private val catalogLibraryListener: CatalogLibraryListener,
+    private val customeRecycledViewPool: RecycledViewPool
+): AbstractViewHolder<CatalogLihatDataModel>(view){
 
     private val accordionView =
         view.findViewById<AccordionUnify>(R.id.lihat_category_accordion_view)
     private var childView: View? = null
+//    private var childView: View? = View.inflate(view.context, LAYOUT_ACCORDION, null)
+
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         CatalogHomepageAdapterFactoryImpl(
@@ -52,12 +59,21 @@ class CatalogLihatViewHolder(val view: View, private val catalogLibraryListener:
             }
         }
         childView = View.inflate(view.context, LAYOUT_ACCORDION, null)
-        childView?.findViewById<RecyclerView>(R.id.lihat_grid_view)?.apply {
-            adapter = listAdapter
-            layoutManager = GridLayoutManager(view.context, COLUMN_COUNT)
+        if(childView != null)
+        {
+            childView?.findViewById<RecyclerView>(R.id.lihat_grid_view)?.apply {
+                setRecycledViewPool(customeRecycledViewPool)
+                adapter = listAdapter
+                layoutManager = GridLayoutManager(view.context, COLUMN_COUNT)
+            }
+            listAdapter.submitList(getChildVisitableList(element.catalogLibraryDataList?.childCategoryList))
         }
-        listAdapter.submitList(getChildVisitableList(element.catalogLibraryDataList?.childCategoryList))
+
         getAccordionData(element.catalogLibraryDataList)
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
     }
 
     private fun getChildVisitableList(childCategoryList: ArrayList<CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList>?): MutableList<BaseCatalogLibraryDataModel>? {

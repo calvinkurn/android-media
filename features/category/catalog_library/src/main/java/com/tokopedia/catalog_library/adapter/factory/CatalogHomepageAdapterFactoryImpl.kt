@@ -1,6 +1,7 @@
 package com.tokopedia.catalog_library.adapter.factory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
@@ -10,6 +11,9 @@ import com.tokopedia.catalog_library.viewholder.*
 class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: CatalogLibraryListener) :
     BaseAdapterTypeFactory(),
     CatalogHomepageAdapterFactory {
+
+    private val recycledViewPool = RecycledViewPool()
+
     override fun type(data: CatalogSpecialDataModel): Int {
         return CatalogSpecialItemViewHolder.LAYOUT
     }
@@ -64,7 +68,7 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 view,
                 catalogLibraryListener
             )
-            CatalogLihatViewHolder.LAYOUT -> CatalogLihatViewHolder(view, catalogLibraryListener)
+            CatalogLihatViewHolder.LAYOUT -> CatalogLihatViewHolder(view, catalogLibraryListener, recycledViewPool)
             CatalogLihatItemViewHolder.LAYOUT -> CatalogLihatItemViewHolder(
                 view,
                 catalogLibraryListener
