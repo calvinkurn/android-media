@@ -1198,7 +1198,7 @@ class UserProfileFragment @Inject constructor(
      * Temporary report feature
      */
     private fun goToTopChatReport() {
-        val reportUrl = URLEncoder.encode("${TokopediaUrl.getInstance().MOBILEWEB}chat/report/47012163?isSeller=1", "UTF-8")
+        val reportUrl = URLEncoder.encode("${TokopediaUrl.getInstance().WEB}chat/report/47012163?isSeller=1", "UTF-8")
         context?.let {
             val reportIntent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.TOPCHAT_REPORT).apply {
                 putExtra(KEY_URL, reportUrl)
