@@ -1,6 +1,7 @@
-package com.tokopedia.logisticseller.ui.reschedulepickup.uimodel
+package com.tokopedia.logisticseller.ui.reschedulepickup
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,21 +15,38 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTicker
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logisticseller.R
+import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
+import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
+import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 
 @Composable
-fun ReschedulePickupScreen() {
+fun ReschedulePickupScreen(
+    state: State<ReschedulePickupState>,
+    input: ReschedulePickupInput,
+    onDayClicked: (List<RescheduleDayOptionModel>) -> Unit,
+    onTimeClicked: (List<RescheduleTimeOptionModel>) -> Unit,
+    onReasonClicked: (List<RescheduleReasonOptionModel>) -> Unit,
+    onSubtitleClicked: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,25 +63,30 @@ fun ReschedulePickupScreen() {
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row {
+                    Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "icon kurir")
                     Column {
                         NestTypography(
                             text = stringResource(id = R.string.label_title_courier_reschedule_pick_up),
                             textStyle = NestTheme.typography.body3
                         )
                         NestTypography(
-                            text = "todo",
+                            text = state.value.info.courier,
                             textStyle = NestTheme.typography.heading6
                         )
                     }
                 }
                 Row {
+                    Icon(
+                        imageVector = Icons.Filled.ShoppingCart,
+                        contentDescription = "icon invoice"
+                    )
                     Column {
                         NestTypography(
                             text = stringResource(id = R.string.label_title_invoice_reschedule_pick_up),
                             textStyle = NestTheme.typography.body3
                         )
                         NestTypography(
-                            text = "todo",
+                            text = state.value.info.invoice,
                             textStyle = NestTheme.typography.heading6
                         )
                     }
@@ -74,23 +97,26 @@ fun ReschedulePickupScreen() {
         NestTypography(
             text = stringResource(id = R.string.label_title_reschedule_pick_up),
             textStyle = NestTheme.typography.heading5,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
         )
         NestTypography(
-            text = "todo",
+            text = constructRescheduleSubtitle(),
             textStyle = NestTheme.typography.body3,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .clickable { onSubtitleClicked(state.value.info.applink) }
         )
         TipsUnifyCompose(
-            title = "title",
-            description = "description",
+            title = stringResource(id = R.string.title_tips_reschedule_pick_up),
+            description = state.value.info.guide,
             modifier = Modifier.padding(16.dp)
         )
         TextFieldUnifyCompose(
-            value = "",
+            value = input.day,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .clickable { onDayClicked(state.value.options.dayOptions) },
             label = {
                 NestTypography(
                     text =
@@ -100,13 +126,14 @@ fun ReschedulePickupScreen() {
             placeholder = {
                 NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
             },
-            trailingIcon = { TrailingIconTextField() }
+            trailingIcon = { TrailingIconTextField() },
         )
         TextFieldUnifyCompose(
-            value = "",
+            value = input.time,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .clickable { onTimeClicked(state.value.options.timeOptions) },
             label = {
                 NestTypography(text = stringResource(id = R.string.label_time_reschedule_pick_up))
             },
@@ -116,20 +143,23 @@ fun ReschedulePickupScreen() {
             trailingIcon = { TrailingIconTextField() }
         )
         TextFieldUnifyCompose(
-            value = "",
+            value = input.reason,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .clickable { onReasonClicked(state.value.options.reasonOptions) },
             label = {
                 NestTypography(text = stringResource(id = R.string.label_reason_reschedule_pickup))
             },
             trailingIcon = { TrailingIconTextField() }
         )
-        NestTicker(
-            text = "ticker",
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-        )
+        if (state.value.info.summary.isNotEmpty()) {
+            NestTicker(
+                text = state.value.info.summary,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+            )
+        }
         TextFieldUnifyCompose(
             value = "",
             modifier = Modifier
@@ -147,6 +177,24 @@ fun ReschedulePickupScreen() {
         ) {
 //
         }
+    }
+}
+
+@Composable
+private fun constructRescheduleSubtitle(): AnnotatedString {
+    return buildAnnotatedString {
+        withStyle(style = SpanStyle(color = NestTheme.colors.NN._600)) {
+            append(stringResource(id = R.string.label_subtitle_reschedule_pick_up_annotate))
+        }
+        withStyle(
+            style = SpanStyle(
+                fontWeight = FontWeight.Bold,
+                color = NestTheme.colors.GN._500
+            )
+        ) {
+            append(stringResource(id = R.string.label_app_link_subtitle_reschedule_pick_up_annotate))
+        }
+
     }
 }
 
@@ -177,8 +225,9 @@ fun TextFieldUnifyCompose(
         modifier = modifier,
         placeholder = placeholder,
         trailingIcon = trailingIcon,
-        label = label
-
+        label = label,
+        // todo
+        enabled = false
     )
 }
 
@@ -207,8 +256,8 @@ fun TipsUnifyCompose(
     }
 }
 
-@Preview
-@Composable
-fun ReschedulePickupScreenPreview() {
-    ReschedulePickupScreen()
-}
+//@Preview
+//@Composable
+//fun ReschedulePickupScreenPreview() {
+//    ReschedulePickupScreen()
+//}

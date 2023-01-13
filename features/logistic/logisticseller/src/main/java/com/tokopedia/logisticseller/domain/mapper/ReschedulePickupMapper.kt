@@ -10,6 +10,9 @@ import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.data.model.SaveRescheduleModel
 import com.tokopedia.logisticseller.data.param.SaveReschedulePickupParam
 import com.tokopedia.logisticseller.data.response.SaveReschedulePickupResponse
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInfo
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupOptions
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 
 object ReschedulePickupMapper {
     private const val ORDER_ID_SEPARATOR = "~"
@@ -32,6 +35,27 @@ object ReschedulePickupMapper {
             errorMessage = orderData.firstOrNull()?.errorMessage ?: "",
             ticker = data.orderDetailTicker,
             appLink = data.appLink
+        )
+    }
+
+    fun mapToState(data: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup): ReschedulePickupState {
+        val orderData = data.data.first().orderData
+        val shipperName = data.data.first().shipperName
+        return ReschedulePickupState(
+            options = mapOrderDataToOptionState(orderData.firstOrNull() ?: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData()),
+            info = ReschedulePickupInfo(
+                courier = "${orderData.firstOrNull()?.shipperProductName ?: ""} - $shipperName",
+                invoice = orderData.firstOrNull()?.invoice ?: "",
+                guide = data.orderDetailTicker,
+                applink = data.appLink
+            ),
+        )
+    }
+
+    private fun mapOrderDataToOptionState(orderData: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData) : ReschedulePickupOptions {
+        return ReschedulePickupOptions(
+            dayOptions = mapDayOptionToModel(orderData.chooseDay),
+            reasonOptions = mapReasonOptionToModel(orderData.chooseReason)
         )
     }
 

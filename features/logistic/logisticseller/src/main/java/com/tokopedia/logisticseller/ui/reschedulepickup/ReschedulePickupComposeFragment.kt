@@ -18,13 +18,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -43,12 +43,8 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleRe
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleTimeBottomSheet
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.ReschedulePickupLoadingDialog
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.ReschedulePickupResultDialog
-import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupScreen
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -64,8 +60,8 @@ class ReschedulePickupComposeFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: ReschedulePickupViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ReschedulePickupViewModel::class.java)
+    private val viewModel: ReschedulePickupComposeViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ReschedulePickupComposeViewModel::class.java)
     }
 
     private var binding by autoClearedNullable<FragmentReschedulePickupBinding>()
@@ -100,7 +96,15 @@ class ReschedulePickupComposeFragment :
         return ComposeView(requireContext()).apply {
             setContent {
                 NestTheme() {
-                    ReschedulePickupScreen()
+                    ReschedulePickupScreen(
+                        viewModel.uiState.collectAsState(),
+                        viewModel.input,
+                        onDayClicked = { openDaySelectionBottomSheet(it) },
+                        onTimeClicked = { openTimeSelectionBottomSheet(it) },
+                        onReasonClicked = { openReasonSelectionBottomSheet(it) },
+                        onSubtitleClicked = {
+                            RouteManager.route(context, ApplinkConst.WEBVIEW.plus("?url=$it"))
+                        })
                 }
             }
         }
@@ -108,53 +112,53 @@ class ReschedulePickupComposeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObserver()
+//        initObserver()
         getInitialData()
     }
 
-    private fun initObserver() {
-        viewModel.reschedulePickupDetail.observe(viewLifecycleOwner, {
-            binding?.loaderReschedulePickup?.visibility = View.GONE
-            when (it) {
-                is Success -> {
-                    if (it.data.errorMessage.isNotEmpty()) {
-                        showErrorToaster(it.data.errorMessage, this::getInitialData)
-                    }
-                    bindDataWithView(it.data)
-                }
-                is Fail -> {
-                    NetworkErrorHelper.showEmptyState(
-                        activity,
-                        binding?.rootView,
-                        this::getInitialData
-                    )
-                }
-            }
-        })
-
-        viewModel.saveRescheduleDetail.observe(viewLifecycleOwner, {
-            loadingDialog?.dismiss()
-            when (it) {
-                is Success -> {
-                    val message = if (it.data.success) {
-                        getString(
-                            R.string.template_success_reschedule_pickup,
-                            it.data.etaPickup
-                        )
-                    } else {
-                        it.data.message
-                    }
-                    showResultDialog(message, it.data.success)
-                }
-                is Fail -> {
-                    showErrorToaster(
-                        ErrorHandler.getErrorMessage(context, it.throwable),
-                        this::saveRescheduleDetail
-                    )
-                }
-            }
-        })
-    }
+//    private fun initObserver() {
+//        viewModel.reschedulePickupDetail.observe(viewLifecycleOwner, {
+//            binding?.loaderReschedulePickup?.visibility = View.GONE
+//            when (it) {
+//                is Success -> {
+//                    if (it.data.errorMessage.isNotEmpty()) {
+//                        showErrorToaster(it.data.errorMessage, this::getInitialData)
+//                    }
+//                    bindDataWithView(it.data)
+//                }
+//                is Fail -> {
+//                    NetworkErrorHelper.showEmptyState(
+//                        activity,
+//                        binding?.rootView,
+//                        this::getInitialData
+//                    )
+//                }
+//            }
+//        })
+//
+//        viewModel.saveRescheduleDetail.observe(viewLifecycleOwner, {
+//            loadingDialog?.dismiss()
+//            when (it) {
+//                is Success -> {
+//                    val message = if (it.data.success) {
+//                        getString(
+//                            R.string.template_success_reschedule_pickup,
+//                            it.data.etaPickup
+//                        )
+//                    } else {
+//                        it.data.message
+//                    }
+//                    showResultDialog(message, it.data.success)
+//                }
+//                is Fail -> {
+//                    showErrorToaster(
+//                        ErrorHandler.getErrorMessage(context, it.throwable),
+//                        this::saveRescheduleDetail
+//                    )
+//                }
+//            }
+//        })
+//    }
 
     private fun getInitialData() {
         showInitialLoading()
@@ -393,54 +397,15 @@ class ReschedulePickupComposeFragment :
     }
 
     override fun onDayChosen(dayChosen: RescheduleDayOptionModel) {
-        binding?.run {
-            day = dayChosen
-            etDay.editText.setText(dayChosen.day)
-            etTime.editText.isEnabled = true
-            if (etTime.editText.text.toString().isNotEmpty()) {
-                etTime.editText.setText("")
-                layoutRescheduleDetail.visibility = View.GONE
-                time = null
-            }
-            etTime.editText.run {
-                inputType = InputType.TYPE_NULL
-                setOnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        openTimeSelectionBottomSheet(dayChosen.timeOptions)
-                    }
-                }
-                setOnClickListener {
-                    openTimeSelectionBottomSheet(dayChosen.timeOptions)
-                }
-            }
-            validateInput()
-        }
+        viewModel.setDay(dayChosen)
     }
 
     override fun onReasonChosen(reasonChosen: RescheduleReasonOptionModel) {
-        binding?.etReason?.editText?.setText(reasonChosen.reason)
-        if (reasonChosen.reason == OTHER_REASON_RESCHEDULE) {
-            binding?.etReasonDetail?.run {
-                visibility = View.VISIBLE
-                editText.addTextChangedListener(setWrapperWatcherOtherReason(textInputLayout))
-                requestFocus()
-            }
-        } else {
-            binding?.etReasonDetail?.run {
-                visibility = View.GONE
-                editText.addTextChangedListener(null)
-            }
-        }
-        validateInput()
+        viewModel.setReason(reasonChosen)
     }
 
     override fun onTimeChosen(timeChosen: RescheduleTimeOptionModel) {
-        binding?.let {
-            time = timeChosen
-            it.etTime.editText.setText(timeChosen.formattedTime)
-            setRescheduleDetailSummary(timeChosen.etaPickup)
-            validateInput()
-        }
+        viewModel.setTime(timeChosen)
     }
 
     companion object {
