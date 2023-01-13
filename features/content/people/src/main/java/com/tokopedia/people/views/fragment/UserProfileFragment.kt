@@ -1,12 +1,15 @@
 package com.tokopedia.people.views.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -16,6 +19,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
@@ -24,6 +28,7 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.types.BundleData.KEY_IS_OPEN_FROM
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -50,6 +55,7 @@ import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
 import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_LIVE
@@ -60,6 +66,7 @@ import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_U
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
+import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
@@ -77,10 +84,12 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
+import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
@@ -90,7 +99,7 @@ class UserProfileFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
-    private val impressionCoordinator: ShopRecomImpressCoordinator,
+    private val impressionCoordinator: ShopRecomImpressCoordinator
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -113,10 +122,16 @@ class UserProfileFragment @Inject constructor(
     private val mainBinding: UpLayoutUserProfileHeaderBinding
         get() = _binding!!.mainLayout
 
+    private var mBlockDialog: DialogUnify? = null
+
+    private val dp8 by lazy(LazyThreadSafetyMode.NONE) {
+        8.dpToPx(mainBinding.root.resources.displayMetrics)
+    }
+
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
-            requireArguments().getString(EXTRA_USERNAME).orEmpty(),
+            requireArguments().getString(EXTRA_USERNAME).orEmpty()
         )
     }
 
@@ -126,10 +141,11 @@ class UserProfileFragment @Inject constructor(
             requireActivity(),
             lifecycle,
             mainBinding.profileTabs.tabLayout,
-            mainBinding.profileTabs.viewPager,
+            mainBinding.profileTabs.viewPager
         ) {
-            if (it == FRAGMENT_KEY_FEEDS) userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
-            else if (it == FRAGMENT_KEY_VIDEO) userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            if (it == FRAGMENT_KEY_FEEDS) {
+                userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            } else if (it == FRAGMENT_KEY_VIDEO) userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
         }
     }
 
@@ -139,7 +155,7 @@ class UserProfileFragment @Inject constructor(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = UpFragmentUserProfileBinding.inflate(inflater, container, false)
         return binding.root
@@ -161,7 +177,7 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
-            },
+            }
         )
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -169,16 +185,15 @@ class UserProfileFragment @Inject constructor(
         }
 
         refreshLandingPageData(true)
-        binding.viewFlipper.displayedChild = PAGE_LOADING
         mainBinding.userPostContainer.displayedChild = PAGE_LOADING
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 shouldRefreshRecyclerView = verticalOffset == 0
-            },
+            }
         )
         mainBinding.cardUserReminder.clContainer.setBackgroundResource(
-            R.drawable.bg_card_profile_reminder,
+            R.drawable.bg_card_profile_reminder
         )
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
@@ -188,8 +203,22 @@ class UserProfileFragment @Inject constructor(
                 it,
                 this,
                 this,
-                permissionListener = this,
+                permissionListener = this
             )
+        }
+
+        mainBinding.btnKebabOption.setDrawable(
+            getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.MENU_KEBAB_HORIZONTAL
+            )
+        )
+
+        mainBinding.btnKebabOption.setOnClickListener {
+            UserProfileOptionBottomSheet.getOrCreate(
+                childFragmentManager,
+                requireContext().classLoader
+            ).show(childFragmentManager)
         }
 
         initFabUserProfile()
@@ -214,6 +243,9 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
 
+        dismissBlockUserDialog()
+        mBlockDialog = null
+
         _binding = null
     }
 
@@ -234,29 +266,54 @@ class UserProfileFragment @Inject constructor(
 
                         override fun impressTncOnboarding() {
                             userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
-                                viewModel.profileUserID,
+                                viewModel.profileUserID
                             )
                         }
 
                         override fun impressCompleteOnboarding() {
                             userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
-                                viewModel.profileUserID,
+                                viewModel.profileUserID
                             )
                         }
 
                         override fun clickNextOnTncOnboarding() {
                             userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
-                                viewModel.profileUserID,
+                                viewModel.profileUserID
                             )
                         }
 
                         override fun clickNextOnCompleteOnboarding() {
                             userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
-                                viewModel.profileUserID,
+                                viewModel.profileUserID
                             )
                         }
-                    },
+                    }
                 )
+            }
+            is UserProfileOptionBottomSheet -> {
+                childFragment.setListener(object : UserProfileOptionBottomSheet.Listener {
+                    override fun onBlockingUser(
+                        bottomSheet: UserProfileOptionBottomSheet,
+                        shouldBlock: Boolean
+                    ) {
+                        bottomSheet.dismiss()
+
+                        if (shouldBlock) {
+                            getBlockUserDialog().show()
+                        } else {
+                            viewModel.submitAction(UserProfileAction.UnblockUser)
+                        }
+                    }
+
+                    override fun onReportUser(bottomSheet: UserProfileOptionBottomSheet) {
+                        goToTopChatReport()
+                    }
+                })
+                childFragment.setDataSource(object : UserProfileOptionBottomSheet.DataSource {
+                    override fun isBlocking(): Boolean {
+                        return viewModel.isBlocking
+                    }
+                })
             }
         }
     }
@@ -286,8 +343,10 @@ class UserProfileFragment @Inject constructor(
                 if (!userSession.isLoggedIn) {
                     startActivityForResult(
                         RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN_TO_FOLLOW,
+                        REQUEST_CODE_LOGIN_TO_FOLLOW
                     )
+                } else if (viewModel.isBlocking) {
+                    viewModel.submitAction(UserProfileAction.UnblockUser)
                 } else {
                     doFollowUnfollow()
                 }
@@ -317,7 +376,7 @@ class UserProfileFragment @Inject constructor(
                 super.onPageSelected(position)
                 viewPagerSelectedPage = position
             }
-        },)
+        })
     }
 
     private fun initObserver() {
@@ -328,12 +387,17 @@ class UserProfileFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderContent(it.prevValue, it.value)
+
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderButtonAction(it.prevValue, it.value)
+                renderButtonOption(it.prevValue, it.value)
                 renderCreateContentButton(it.prevValue, it.value)
                 renderProfileReminder(it.prevValue, it.value)
                 renderShopRecom(it.prevValue, it.value)
                 renderProfileTab(it.prevValue?.profileTab, it.value.profileTab)
+
+                renderGlobalError(it.prevValue, it.value)
             }
         }
     }
@@ -379,20 +443,29 @@ class UserProfileFragment @Inject constructor(
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
-
-                        showGlobalError(
-                            when (event.throwable) {
-                                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
-                                is IllegalStateException -> PAGE_FULL
-                                is RuntimeException -> {
-                                    when (event.throwable.localizedMessage?.toIntOrNull()) {
-                                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
-                                        else -> SERVER_ERROR
-                                    }
-                                }
-                                else -> SERVER_ERROR
-                            },
+                    }
+                    is UserProfileUiEvent.SuccessBlockUser -> {
+                        dismissBlockUserDialog()
+                        val message = getString(
+                            if (event.isBlocking) {
+                                R.string.up_block_user_success_toaster
+                            } else {
+                                R.string.up_unblock_user_success_toaster
+                            }
                         )
+                        view?.showToast(message)
+                        refreshLandingPageData(true)
+                    }
+                    is UserProfileUiEvent.ErrorBlockUser -> {
+                        dismissBlockUserDialog()
+                        val message = getString(
+                            if (event.isBlocking) {
+                                R.string.up_block_user_error_toaster
+                            } else {
+                                R.string.up_unblock_user_error_toaster
+                            }
+                        )
+                        view?.showErrorToast(message)
                     }
                 }
             }
@@ -422,9 +495,22 @@ class UserProfileFragment @Inject constructor(
     }
 
     /** Render UI */
+    private fun renderContent(
+        prev: UserProfileUiState?,
+        curr: UserProfileUiState
+    ) {
+        if (prev == curr) return
+
+        binding.viewFlipper.displayedChild = when {
+            curr.profileInfo.isBlockedBy || curr.error != null -> PAGE_ERROR
+            curr.isLoading -> PAGE_LOADING
+            else -> PAGE_CONTENT
+        }
+    }
+
     private fun renderProfileInfo(
         prev: ProfileUiModel?,
-        curr: ProfileUiModel,
+        curr: ProfileUiModel
     ) {
         if (prev == curr || curr == ProfileUiModel.Empty) return
 
@@ -432,7 +518,7 @@ class UserProfileFragment @Inject constructor(
 
         userProfileTracker.openUserProfile(
             viewModel.profileUserID,
-            live = curr.liveInfo.isLive,
+            live = curr.liveInfo.isLive
         )
 
         if (binding.swipeRefreshLayout.isRefreshing) {
@@ -474,17 +560,24 @@ class UserProfileFragment @Inject constructor(
 
     private fun renderButtonAction(
         prev: UserProfileUiState?,
-        value: UserProfileUiState,
+        value: UserProfileUiState
     ) {
         if (prev?.followInfo == value.followInfo &&
-            prev.profileType == value.profileType
+            prev.profileType == value.profileType &&
+            prev.profileInfo.isBlocking == value.profileInfo.isBlocking
         ) {
             return
         }
 
         when (value.profileType) {
-            ProfileType.NotLoggedIn, ProfileType.OtherUser -> {
-                if (userSession.isLoggedIn && value.followInfo.status) {
+            ProfileType.NotLoggedIn -> {
+                buttonActionUIUnFollow()
+                mainBinding.btnAction.show()
+            }
+            ProfileType.OtherUser -> {
+                if (value.profileInfo.isBlocking) {
+                    buttonActionUIUnblock()
+                } else if (value.followInfo.status) {
                     buttonActionUIFollow()
                 } else {
                     buttonActionUIUnFollow()
@@ -495,13 +588,31 @@ class UserProfileFragment @Inject constructor(
                 buttonActionUIEditProfile()
                 mainBinding.btnAction.show()
             }
-            ProfileType.Unknown -> mainBinding.btnAction.hide()
+            ProfileType.Unknown -> {
+                mainBinding.btnAction.hide()
+            }
         }
+
+        (mainBinding.btnAction.layoutParams as MarginLayoutParams)
+            .updateMarginsRelative(
+                end = if (value.profileType == ProfileType.OtherUser) dp8 else 0
+            )
+    }
+
+    private fun renderButtonOption(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev?.profileType == value.profileType) return
+
+        mainBinding.btnKebabOption.showWithCondition(
+            shouldShow = value.profileType == ProfileType.OtherUser
+        )
     }
 
     private fun renderCreateContentButton(
         prev: UserProfileUiState?,
-        value: UserProfileUiState,
+        value: UserProfileUiState
     ) {
         if (prev?.followInfo == value.followInfo &&
             prev.profileType == value.profileType &&
@@ -520,13 +631,15 @@ class UserProfileFragment @Inject constructor(
                     mainBinding.fabUserProfile.show()
                     fabCreated = true
                 }
-            } else mainBinding.fabUserProfile.hide()
+            } else {
+                mainBinding.fabUserProfile.hide()
+            }
         } catch (e: Exception) { }
     }
 
     private fun renderProfileReminder(
         prev: UserProfileUiState?,
-        value: UserProfileUiState,
+        value: UserProfileUiState
     ) {
         if (prev?.followInfo == value.followInfo &&
             prev.profileType == value.profileType
@@ -548,7 +661,7 @@ class UserProfileFragment @Inject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private fun renderShopRecom(
         prev: UserProfileUiState?,
-        value: UserProfileUiState,
+        value: UserProfileUiState
     ) {
         if (prev?.shopRecom == value.shopRecom) return
 
@@ -556,8 +669,11 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.shopRecommendation.setData(shopRecom)
 
-        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
-        else mainBinding.shopRecommendation.showContentShopRecom()
+        if (value.shopRecom.items.isEmpty()) {
+            mainBinding.shopRecommendation.showEmptyShopRecom()
+        } else {
+            mainBinding.shopRecommendation.showContentShopRecom()
+        }
     }
 
     private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
@@ -583,7 +699,7 @@ class UserProfileFragment @Inject constructor(
 //                } else goToCreateLiveStream()
 
                 goToCreateLiveStream()
-            },
+            }
         )
     }
 
@@ -600,8 +716,39 @@ class UserProfileFragment @Inject constructor(
                 } else {
                     goToCreatePostPage()
                 }
-            },
+            }
         )
+    }
+
+    private fun renderGlobalError(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev == value) return
+
+        if (value.profileInfo.isBlockedBy) {
+            binding.globalError.setType(PAGE_NOT_FOUND)
+            binding.globalError.setActionClickListener {
+                activity?.onBackPressed()
+            }
+        } else if (value.error != null) {
+            val type = when (value.error) {
+                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
+                is IllegalStateException -> PAGE_FULL
+                is RuntimeException -> {
+                    when (value.error.localizedMessage?.toIntOrNull()) {
+                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
+                        else -> SERVER_ERROR
+                    }
+                }
+                else -> SERVER_ERROR
+            }
+            binding.globalError.setType(type)
+            binding.globalError.setActionClickListener {
+                binding.viewFlipper.displayedChild = PAGE_LOADING
+                refreshLandingPageData(true)
+            }
+        }
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -624,6 +771,12 @@ class UserProfileFragment @Inject constructor(
         text = getString(R.string.up_btn_profile)
         buttonVariant = UnifyButton.Variant.GHOST
         buttonType = UnifyButton.Type.ALTERNATE
+    }
+
+    private fun buttonActionUIUnblock() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_unblock_action)
+        buttonVariant = UnifyButton.Variant.FILLED
+        buttonType = UnifyButton.Type.MAIN
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {
@@ -663,9 +816,9 @@ class UserProfileFragment @Inject constructor(
             imgShare.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
                 ),
-                android.graphics.PorterDuff.Mode.MULTIPLY,
+                android.graphics.PorterDuff.Mode.MULTIPLY
             )
 
             imgShare.setOnClickListener {
@@ -687,9 +840,9 @@ class UserProfileFragment @Inject constructor(
             setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
                 ),
-                android.graphics.PorterDuff.Mode.MULTIPLY,
+                android.graphics.PorterDuff.Mode.MULTIPLY
             )
 
             setOnClickListener {
@@ -714,19 +867,6 @@ class UserProfileFragment @Inject constructor(
         viewModel.submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
     }
 
-    private fun showGlobalError(type: Int) {
-        with(binding) {
-            viewFlipper.displayedChild = PAGE_ERROR
-            globalError.setType(type)
-            globalError.show()
-
-            globalError.setActionClickListener {
-                binding.viewFlipper.displayedChild = PAGE_LOADING
-                refreshLandingPageData(true)
-            }
-        }
-    }
-
     private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)
 
     private fun getUsernameWithAdd() = getString(R.string.up_username_template, viewModel.profileUsername)
@@ -744,9 +884,9 @@ class UserProfileFragment @Inject constructor(
             activity?.let {
                 FollowerFollowingListingActivity.getCallingIntent(
                     it,
-                    getFollowersBundle(isFollowers),
+                    getFollowersBundle(isFollowers)
                 )
-            },
+            }
         )
     }
 
@@ -778,7 +918,7 @@ class UserProfileFragment @Inject constructor(
                     VALUE_ONBOARDING_TYPE_COMPLETE
                 } else {
                     VALUE_ONBOARDING_TYPE_TNC
-                },
+                }
             )
         }
         childFragmentManager.beginTransaction()
@@ -811,6 +951,48 @@ class UserProfileFragment @Inject constructor(
         mainBinding.emptyPost.textErrorEmptyDesc.hide()
     }
 
+    @SuppressLint("PII Data Exposure")
+    private fun getBlockUserDialog(): DialogUnify {
+        if (mBlockDialog == null) {
+            mBlockDialog = DialogUnify(
+                context = requireContext(),
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                imageType = DialogUnify.NO_IMAGE
+            ).apply {
+                setOverlayClose(false)
+
+                setTitle(
+                    getString(R.string.up_block_user_dialog_title, viewModel.displayName)
+                )
+                setDescription(
+                    getString(R.string.up_block_user_dialog_desc)
+                )
+
+                setPrimaryCTAText(getString(R.string.up_block_user_dialog_confirm))
+                setPrimaryCTAClickListener {
+                    dialogPrimaryCTA.isLoading = true
+                    dialogPrimaryCTA.isEnabled = false
+
+                    viewModel.submitAction(UserProfileAction.BlockUser)
+                }
+                setSecondaryCTAText(getString(R.string.up_block_user_dialog_cancel))
+                setSecondaryCTAClickListener { dismiss() }
+
+                setOnDismissListener {
+                    dialogPrimaryCTA.isLoading = false
+                    dialogPrimaryCTA.isEnabled = true
+                }
+            }
+        }
+        return mBlockDialog!!
+    }
+
+    private fun dismissBlockUserDialog() {
+        if (mBlockDialog == null) return
+        val dialog = getBlockUserDialog()
+        if (dialog.isShowing) dialog.dismiss()
+    }
+
     override fun onShopRecomCloseClicked(itemID: Long) {
         viewModel.submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
     }
@@ -818,7 +1000,7 @@ class UserProfileFragment @Inject constructor(
     override fun onShopRecomFollowClicked(itemID: Long) {
         userProfileTracker.clickFollowProfileRecommendation(
             viewModel.profileUserID,
-            itemID.toString(),
+            itemID.toString()
         )
         viewModel.submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
@@ -827,13 +1009,13 @@ class UserProfileFragment @Inject constructor(
         itemID: Long,
         appLink: String,
         imageUrl: String,
-        postPosition: Int,
+        postPosition: Int
     ) {
         userProfileTracker.clickProfileRecommendation(
             viewModel.profileUserID,
             itemID.toString(),
             imageUrl,
-            postPosition,
+            postPosition
         )
         RouteManager.route(requireContext(), appLink)
     }
@@ -843,7 +1025,7 @@ class UserProfileFragment @Inject constructor(
             userProfileTracker.impressionProfileRecommendation(
                 viewModel.profileUserID,
                 shopImpress,
-                postPosition,
+                postPosition
             )
         }
     }
@@ -874,12 +1056,12 @@ class UserProfileFragment @Inject constructor(
                     PAGE_NAME_PROFILE,
                     it,
                     viewModel.profileUserID,
-                    FEATURE_SHARE,
+                    FEATURE_SHARE
                 )
             }
             setMetaData(
                 tnTitle = viewModel.displayName,
-                tnImage = viewModel.profileCover,
+                tnImage = viewModel.profileCover
             )
             setOgImageUrl(viewModel.profileCover)
         }
@@ -911,7 +1093,7 @@ class UserProfileFragment @Inject constructor(
                 if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                     ogImageUrl = shareModel.ogImgUrl
                 }
-            },
+            }
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
@@ -926,7 +1108,7 @@ class UserProfileFragment @Inject constructor(
                                 linkerShareData,
                                 activity,
                                 view,
-                                shareString,
+                                shareString
                             )
                             // send gtm trackers if you want to
 
@@ -947,8 +1129,8 @@ class UserProfileFragment @Inject constructor(
                     override fun onError(linkerError: LinkerError?) {
                         // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
                     }
-                },
-            ),
+                }
+            )
         )
     }
 
@@ -966,7 +1148,7 @@ class UserProfileFragment @Inject constructor(
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         screenShotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
@@ -996,6 +1178,23 @@ class UserProfileFragment @Inject constructor(
 
     override fun onChildRefresh() {
         /** Not yet implemented */
+    }
+
+    /**
+     * Temporary report feature
+     */
+    private fun goToTopChatReport() {
+        val reportUrl = URLEncoder.encode("${TokopediaUrl.getInstance().WEB}chat/report/47012163?isSeller=1", "UTF-8")
+        context?.let {
+            val reportIntent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.TOPCHAT_REPORT).apply {
+                putExtra(KEY_URL, reportUrl)
+                putExtra(KEY_TITLEBAR, true)
+                putExtra(KEY_ALLOW_OVERRIDE, true)
+                putExtra(KEY_NEED_LOGIN, false)
+                putExtra(KEY_TITLE, "")
+            }
+            startActivity(reportIntent)
+        }
     }
 
     companion object {
@@ -1037,15 +1236,20 @@ class UserProfileFragment @Inject constructor(
 
         private const val TAG = "UserProfileFragment"
 
+        private const val KEY_URL = "url"
+        private const val KEY_TITLEBAR = "titlebar"
+        private const val KEY_ALLOW_OVERRIDE = "allow_override"
+        private const val KEY_NEED_LOGIN = "need_login"
+
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle,
+            bundle: Bundle
         ): UserProfileFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                UserProfileFragment::class.java.name,
+                UserProfileFragment::class.java.name
             ).apply {
                 arguments = bundle
             } as UserProfileFragment
