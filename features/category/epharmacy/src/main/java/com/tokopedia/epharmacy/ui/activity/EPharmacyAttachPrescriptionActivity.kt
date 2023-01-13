@@ -9,7 +9,8 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
-import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationAnalytics
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -20,8 +21,14 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MINI_CONSULTATION_PAGE, true)) {
+            this.finish()
+        }
         super.onCreate(savedInstanceState)
         setPageTitle()
     }
