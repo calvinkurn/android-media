@@ -3,7 +3,6 @@ package com.tokopedia.catalog_library.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
@@ -17,8 +16,7 @@ import javax.inject.Inject
 
 class CatalogLandingPageViewModel @Inject constructor(
     private val catalogTopFiveUseCase: CatalogProductsUseCase,
-    private val catalogMostViralUseCase: CatalogProductsUseCase,
-    private val catalogProductListUseCase: CatalogProductsUseCase
+    private val catalogMostViralUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 
     private val _catalogLandingPageLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
@@ -56,21 +54,6 @@ class CatalogLandingPageViewModel @Inject constructor(
         )
     }
 
-    fun getCatalogListData(
-        categoryIdentifier: String,
-        sortType: Int,
-        rows: Int
-    ) {
-        catalogProductListUseCase.cancelJobs()
-        catalogProductListUseCase.getCatalogProductsData(
-            ::onAvailableCatalogListData,
-            ::onFailLandingPageData,
-            categoryIdentifier,
-            sortType,
-            rows
-        )
-    }
-
     private fun onAvailableCatalogTopFiveData(catalogListResponse: CatalogListResponse,page : Int = 1) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
@@ -87,16 +70,6 @@ class CatalogLandingPageViewModel @Inject constructor(
         } else {
             catalogListResponse.let {
                 _catalogLandingPageLiveData.postValue(Success(mapCatalogMostViralData(it)))
-            }
-        }
-    }
-
-    private fun onAvailableCatalogListData(catalogListResponse: CatalogListResponse,page : Int = 1) {
-        if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
-            onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
-        } else {
-            catalogListResponse.let {
-                _catalogLandingPageLiveData.postValue(Success(mapCatalogProductData(it)))
             }
         }
     }
@@ -150,36 +123,6 @@ class CatalogLandingPageViewModel @Inject constructor(
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         catalogsProduct.forEach {
             visitableList.add(CatalogMostViralDataModel(CATALOG_MOST_VIRAL, CATALOG_MOST_VIRAL, it))
-        }
-        return visitableList
-    }
-
-    private fun mapCatalogProductData(data: CatalogListResponse): CatalogLibraryDataModel {
-        val catalogProductDataModel =
-            CatalogContainerDataModel(
-                CatalogLibraryConstant.CATALOG_PRODUCT,
-                CatalogLibraryConstant.CATALOG_PRODUCT,
-                "Katalog lainnya buat inspirasimu",
-                getProductsVisitableList(data.catalogGetList.catalogsProduct),
-                RecyclerView.VERTICAL
-            )
-
-        listOfComponents.add(catalogProductDataModel)
-
-        return CatalogLibraryDataModel(listOfComponents)
-    }
-
-    private fun getProductsVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
-        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
-        catalogsProduct.forEachIndexed { index, product ->
-            product.rank = (index + 1)
-            visitableList.add(
-                CatalogProductDataModel(
-                    CatalogLibraryConstant.CATALOG_PRODUCT,
-                    CatalogLibraryConstant.CATALOG_PRODUCT,
-                    product
-                )
-            )
         }
         return visitableList
     }
