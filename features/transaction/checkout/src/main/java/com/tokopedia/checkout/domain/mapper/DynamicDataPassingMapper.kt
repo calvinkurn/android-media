@@ -3,7 +3,6 @@ package com.tokopedia.checkout.domain.mapper
 import com.google.gson.Gson
 import com.tokopedia.checkout.data.model.response.dynamicdata.UpdateDynamicDataPassingUiModel
 import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingParamRequest
-import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingValueParamRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -50,18 +49,18 @@ object DynamicDataPassingMapper {
         return cartString
     }
 
-    fun getValue(
+    fun getAddOn(
         addOnResult: AddOnResult,
         isOcs: Boolean
-    ): String {
-        val listAddOnData = arrayListOf<DynamicDataPassingValueParamRequest.AddOnDataParam>()
+    ): DynamicDataPassingParamRequest.AddOn {
+        val listAddOnData = arrayListOf<DynamicDataPassingParamRequest.AddOn.AddOnDataParam>()
         if (addOnResult.addOnData.isNotEmpty()) {
             addOnResult.addOnData.forEach { data ->
-                val addOnData = DynamicDataPassingValueParamRequest.AddOnDataParam(
+                val addOnData = DynamicDataPassingParamRequest.AddOn.AddOnDataParam(
                     addOnId = data.addOnId.toLongOrZero(),
                     addOnQty = data.addOnQty,
-                    addOnMetadata = DynamicDataPassingValueParamRequest.AddOnDataParam.AddOnMetadataParam(
-                        addOnNote = DynamicDataPassingValueParamRequest.AddOnDataParam.AddOnMetadataParam.AddOnNoteParam(
+                    addOnMetadata = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam(
+                        addOnNote = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam.AddOnNoteParam(
                             from = data.addOnMetadata.addOnNote.from,
                             isCustomNote = data.addOnMetadata.addOnNote.isCustomNote,
                             notes = data.addOnMetadata.addOnNote.notes,
@@ -73,11 +72,10 @@ object DynamicDataPassingMapper {
             }
         }
 
-        val param = DynamicDataPassingValueParamRequest(
+        return DynamicDataPassingParamRequest.AddOn(
             source = if (isOcs) SOURCE_OCS else SOURCE_NORMAL,
             addOnData = listAddOnData
         )
-        return gson.toJson(param) ?: ""
     }
 
     const val ORDER_LEVEL = "order_level"
@@ -91,4 +89,8 @@ object DynamicDataPassingMapper {
     const val KEY_ADD_ON_NOTES = "notes"
     private const val SOURCE_OCS = "OCS"
     private const val SOURCE_NORMAL = "normal"
+    const val KEY_LEVEL = "level"
+    const val KEY_PARENT_UNIQUE_ID = "parent_unique_id"
+    const val KEY_UNIQUE_ID = "unique_id"
+    const val KEY_ATTRIBUTE = "attribute"
 }

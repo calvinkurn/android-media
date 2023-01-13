@@ -13,6 +13,10 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_N
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ADD_ON_DETAILS;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.IS_DONATION;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.KEY_ATTRIBUTE;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.KEY_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.KEY_PARENT_UNIQUE_ID;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.KEY_UNIQUE_ID;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PAYMENT_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
@@ -193,6 +197,9 @@ import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
 import com.tokopedia.utils.time.TimeHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -2050,7 +2057,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             dynamicDataParam.setLevel(PAYMENT_LEVEL);
             dynamicDataParam.setUniqueId("");
             dynamicDataParam.setAttribute(IS_DONATION);
-            dynamicDataParam.setValue(String.valueOf(checked));
+            dynamicDataParam.setDonation(checked);
             updateCheckboxDynamicData(dynamicDataParam, checked);
         }
     }
@@ -3770,16 +3777,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 dynamicDataParam.setLevel(ORDER_LEVEL);
                 dynamicDataParam.setUniqueId(cartString);
                 dynamicDataParam.setAttribute(ADD_ON_DETAILS);
-                dynamicDataParam.setValue(DynamicDataPassingMapper.INSTANCE.getValue(addOnResult, isOneClickShipment()));
+                dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOn(addOnResult, isOneClickShipment()));
                 updateCheckboxDynamicData(dynamicDataParam, true);
 
             } else if (identifier == 0) {
+                // product level
                 DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
                 dynamicDataParam.setLevel(PRODUCT_LEVEL);
                 dynamicDataParam.setParentUniqueId(cartString);
                 dynamicDataParam.setUniqueId(String.valueOf(cartId));
                 dynamicDataParam.setAttribute(ADD_ON_DETAILS);
-                dynamicDataParam.setValue(DynamicDataPassingMapper.INSTANCE.getValue(addOnResult, isOneClickShipment()));
+                dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOn(addOnResult, isOneClickShipment()));
                 updateCheckboxDynamicData(dynamicDataParam, true);
             }
     }
