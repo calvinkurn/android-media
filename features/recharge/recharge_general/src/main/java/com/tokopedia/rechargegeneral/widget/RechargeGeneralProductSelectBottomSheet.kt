@@ -1,10 +1,10 @@
 package com.tokopedia.rechargegeneral.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,34 +12,43 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.rechargegeneral.R
+import com.tokopedia.rechargegeneral.databinding.ViewRechargeGeneralProductSelectDropdownBottomSheetItemBinding
+import com.tokopedia.rechargegeneral.databinding.ViewRechargeGeneralWidgetProductSelectDropdownBottomSheetBinding
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.view_recharge_general_widget_product_select_dropdown_bottom_sheet.view.*
-import kotlinx.android.synthetic.main.view_recharge_general_product_select_dropdown_bottom_sheet_item.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by resakemal on 11/11/19.
  */
-class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(@NotNull context: Context,
-                                                                        attrs: AttributeSet? = null,
-                                                                        defStyleAttr: Int = 0,
-                                                                        var listener: OnClickListener? = null)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    var listener: OnClickListener? = null
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
+
+    private var binding: ViewRechargeGeneralWidgetProductSelectDropdownBottomSheetBinding
 
     var dropdownData: List<RechargeGeneralProductSelectData> = listOf()
-    set(value) {
-        field = value
-        with (rv_product_select_dropdown.adapter as DigitalProductSelectDropdownAdapter) {
-            items = value
-            notifyDataSetChanged()
+        @SuppressLint("NotifyDataSetChanged")
+        set(value) {
+            field = value
+            with(binding.rvProductSelectDropdown.adapter as DigitalProductSelectDropdownAdapter) {
+                items = value
+                notifyDataSetChanged()
+            }
         }
-    }
 
     init {
-        View.inflate(context, getLayout(), this)
-
-        rv_product_select_dropdown.adapter = DigitalProductSelectDropdownAdapter(dropdownData)
+        binding = ViewRechargeGeneralWidgetProductSelectDropdownBottomSheetBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            false
+        )
+        binding.rvProductSelectDropdown.adapter = DigitalProductSelectDropdownAdapter(dropdownData)
+        addView(binding.root)
     }
 
     open fun getLayout(): Int {
@@ -50,10 +59,12 @@ class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(@NotNull
         this.listener = listener
     }
 
-    inner class DigitalProductSelectDropdownAdapter(var items: List<RechargeGeneralProductSelectData>): RecyclerView.Adapter<DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>() {
+    inner class DigitalProductSelectDropdownAdapter(var items: List<RechargeGeneralProductSelectData>) : RecyclerView.Adapter<DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigitalProductSelectDropdownViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.view_recharge_general_product_select_dropdown_bottom_sheet_item, parent, false)
-            return DigitalProductSelectDropdownViewHolder(view)
+            return DigitalProductSelectDropdownViewHolder(
+                ViewRechargeGeneralProductSelectDropdownBottomSheetItemBinding.bind(view)
+            )
         }
 
         override fun getItemCount(): Int {
@@ -64,18 +75,20 @@ class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(@NotNull
             holder.bind(items[position])
         }
 
-        inner class DigitalProductSelectDropdownViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        inner class DigitalProductSelectDropdownViewHolder(
+            private val binding: ViewRechargeGeneralProductSelectDropdownBottomSheetItemBinding
+        ) : RecyclerView.ViewHolder(binding.root) {
             fun bind(element: RechargeGeneralProductSelectData) {
-                with(itemView) {
-                    product_select_item_title.text = element.title
+                with(this@DigitalProductSelectDropdownViewHolder.binding) {
+                    productSelectItemTitle.text = element.title
 
-                    toggleVisibility(product_select_item_price, element.price)
-                    toggleVisibility(product_select_item_label, element.label)
-                    toggleVisibility(product_select_item_desc, MethodChecker.fromHtml(element.description))
-                    toggleVisibility(product_select_item_original_price, element.slashedPrice)
-                    product_select_item_original_price.paintFlags = product_select_item_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    toggleVisibility(productSelectItemPrice, element.price)
+                    toggleVisibility(productSelectItemLabel, element.label)
+                    toggleVisibility(productSelectItemDesc, MethodChecker.fromHtml(element.description))
+                    toggleVisibility(productSelectItemOriginalPrice, element.slashedPrice)
+                    productSelectItemOriginalPrice.paintFlags = productSelectItemOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
-                    product_select_item.setOnClickListener {
+                    productSelectItem.setOnClickListener {
                         listener?.onItemClicked(element)
                     }
                 }
@@ -90,7 +103,6 @@ class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(@NotNull
                 }
             }
         }
-
     }
 
     interface OnClickListener {

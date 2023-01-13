@@ -2271,11 +2271,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
         val atcParam = AddToCartRequestParams(
-            productId = recommendationItem.productId,
+            productId = recommendationItem.productId.toString(),
             productName = recommendationItem.name,
             price = recommendationItem.priceInt.toString(),
             quantity = recommendationItem.quantity,
-            shopId = recommendationItem.shopId,
+            shopId = recommendationItem.shopId.toString(),
             category = recommendationItem.categoryBreadcrumbs,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION
         )
@@ -2363,14 +2363,14 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 val objParam = jsonArray.get(x).asJsonObject
                 _listParamAtcMulti.add(
                     AddToCartMultiParam(
-                        productId = objParam.get(PRODUCT_ID).asLong,
+                        productId = objParam.get(PRODUCT_ID).asString,
                         productName = objParam.get(PRODUCT_NAME).asString,
-                        productPrice = objParam.get(PRODUCT_PRICE).asLong,
+                        productPrice = objParam.get(PRODUCT_PRICE).asDouble,
                         qty = objParam.get(QUANTITY).asInt,
                         notes = objParam.get(NOTES).asString,
-                        shopId = objParam.get(SHOP_ID).asInt,
-                        custId = objParam.get(CUSTOMER_ID).asInt,
-                        warehouseId = objParam.get(WAREHOUSE_ID).asInt
+                        shopId = objParam.get(SHOP_ID).asString,
+                        custId = objParam.get(CUSTOMER_ID).asString,
+                        warehouseId = objParam.get(WAREHOUSE_ID).asString
                     )
                 )
             }

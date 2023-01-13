@@ -29,7 +29,6 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -196,7 +195,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
 
-    private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
+    private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
     private var channelToken = ""
@@ -453,7 +452,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getRepurchaseProducts(): List<TokoNowProductCardUiModel> {
-        val item = homeLayoutItemList.firstOrNull { it.layout is TokoNowRepurchaseUiModel }
+        val item = homeLayoutItemList.firstOrNull { it?.layout is TokoNowRepurchaseUiModel }
         val repurchase = item?.layout as? TokoNowRepurchaseUiModel
         return repurchase?.productList.orEmpty()
     }
@@ -504,8 +503,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }, onError = {
-            removeWidget(item.id)
-        })
+                removeWidget(item.id)
+            })
     }
 
     fun updatePlayWidget(channelId: String, totalView: String) {
@@ -589,7 +588,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun getLayoutComponentData(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             val layoutItems = mutableListOf<HomeLayoutItemUiModel>()
-            layoutItems.addAll(homeLayoutItemList)
+            layoutItems.addAll(homeLayoutItemList.filterNotNull())
 
             layoutItems.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
@@ -619,8 +618,8 @@ class TokoNowHomeViewModel @Inject constructor(
             val data = referralEvaluateJoinUseCase.execute(referralData)
             _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel()))
         }, onError = {
-            _referralEvaluate.postValue(Fail(it))
-        })
+                _referralEvaluate.postValue(Fail(it))
+            })
     }
 
     /**
@@ -812,6 +811,7 @@ class TokoNowHomeViewModel @Inject constructor(
             updateToolbarNotification()
             _miniCartAdd.postValue(Success(it))
         }, {
+            updateAddToCartQuantity(productId, quantity, type)
             _miniCartAdd.postValue(Fail(it))
         })
     }
@@ -849,7 +849,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }) {
-
         }
     }
 
@@ -905,7 +904,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }) {
-
         }
     }
 
@@ -978,6 +976,7 @@ class TokoNowHomeViewModel @Inject constructor(
             updateToolbarNotification()
             _miniCartUpdate.value = Success(it)
         }, {
+            updateAddToCartQuantity(productId, quantity, type)
             _miniCartUpdate.postValue(Fail(it))
         })
     }
@@ -986,14 +985,15 @@ class TokoNowHomeViewModel @Inject constructor(
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
+        val productId = miniCartItem.productId
         deleteCartUseCase.execute({
-            val productId = miniCartItem.productId
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
             trackProductRemoveCart(productId, type, miniCartItem.cartId)
             updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
             updateToolbarNotification()
             _miniCartRemove.postValue(Success(data))
         }, {
+            updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
             _miniCartRemove.postValue(Fail(it))
         })
     }
@@ -1048,7 +1048,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackRepurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
-        val homeItem = homeLayoutItemList.firstOrNull { it.layout is TokoNowRepurchaseUiModel }
+        val homeItem = homeLayoutItemList.filterNotNull()
+            .firstOrNull { it.layout is TokoNowRepurchaseUiModel }
         val repurchase = homeItem?.layout as? TokoNowRepurchaseUiModel
         val productList = repurchase?.productList.orEmpty()
         val product = productList.firstOrNull { it.productId == productId }
@@ -1086,7 +1087,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
-        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
+        homeLayoutItemList.filterNotNull().firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
             val repurchase = layout as HomeLeftCarouselAtcUiModel
             val productList = repurchase.productList
             val product = productList.firstOrNull { it is HomeLeftCarouselAtcProductCardUiModel && it.productCardModel.productId == productId }
@@ -1127,7 +1128,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return if (-headerYCoordinate > DEFAULT_HEADER_Y_COORDINATE) {
             headerYCoordinate = DEFAULT_HEADER_Y_COORDINATE
             headerYCoordinate
-        }  else  {
+        } else {
             -headerYCoordinate
         }
     }
@@ -1150,7 +1151,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun getHomeVisitableList(): List<Visitable<*>> {
-        return homeLayoutItemList.mapNotNull { it.layout }
+        return homeLayoutItemList.filterNotNull().mapNotNull { it.layout }
     }
 
     private fun getQuestUiModel(): HomeQuestSequenceWidgetUiModel? {

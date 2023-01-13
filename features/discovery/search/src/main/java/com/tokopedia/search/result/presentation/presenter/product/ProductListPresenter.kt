@@ -25,8 +25,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -35,11 +33,9 @@ import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
@@ -57,10 +53,8 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
@@ -149,6 +143,7 @@ class ProductListPresenter @Inject constructor(
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
     private val visitableFactory: VisitableFactory,
+    private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -160,7 +155,8 @@ class ProductListPresenter @Inject constructor(
     TickerPresenter by tickerPresenter,
     SafeSearchPresenter by safeSearchPresenter,
     WishlistPresenter by wishlistPresenterDelegate,
-    BottomSheetFilterPresenter by bottomSheetFilterPresenter {
+    BottomSheetFilterPresenter by bottomSheetFilterPresenter,
+    InspirationCarouselPresenter by inspirationCarouselPresenter {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -1305,8 +1301,8 @@ class ProductListPresenter @Inject constructor(
 
     private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = productID.toLongOrZero(),
-            shopId = shopID.toIntOrZero(),
+            productId = productID,
+            shopId = shopID,
             quantity = minOrder,
             productName = productName,
             price = price,
@@ -1374,60 +1370,6 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region Inspiration Carousel
-    override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
-        if (isViewNotAttached) return
-
-        if(product.isOrganicAds) sendTrackingImpressInspirationCarouselAds(product)
-
-        when(product.layout) {
-            LAYOUT_INSPIRATION_CAROUSEL_GRID ->
-                view.trackEventImpressionInspirationCarouselGridItem(product)
-            LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
-                view.trackEventImpressionInspirationCarouselChipsItem(product)
-            else -> view.trackEventImpressionInspirationCarouselListItem(product)
-        }
-    }
-
-    private fun sendTrackingImpressInspirationCarouselAds(product: InspirationCarouselDataView.Option.Product) {
-        topAdsUrlHitter.hitImpressionUrl(
-            view.className,
-            product.topAdsViewUrl,
-            product.id,
-            product.name,
-            product.imgUrl,
-            SearchConstant.TopAdsComponent.ORGANIC_ADS
-        )
-    }
-
-    override fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product) {
-        if (isViewNotAttached) return
-
-        view.redirectionStartActivity(product.applink, product.url)
-
-        when(product.layout) {
-            LAYOUT_INSPIRATION_CAROUSEL_GRID ->
-                view.trackEventClickInspirationCarouselGridItem(product)
-            LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
-                view.trackEventClickInspirationCarouselChipsItem(product)
-            else -> view.trackEventClickInspirationCarouselListItem(product)
-        }
-
-        if(product.isOrganicAds) sendTrackingClickInspirationCarouselAds(product)
-    }
-
-    private fun sendTrackingClickInspirationCarouselAds(product: InspirationCarouselDataView.Option.Product) {
-        topAdsUrlHitter.hitClickUrl(
-            view.className,
-            product.topAdsClickUrl,
-            product.id,
-            product.name,
-            product.imgUrl,
-            SearchConstant.TopAdsComponent.ORGANIC_ADS
-        )
-    }
-    //endregion
-
     override fun onViewResumed() {
         chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
     }
@@ -1443,126 +1385,6 @@ class ProductListPresenter @Inject constructor(
 
         view.reloadData()
     }
-
-    //region Inspiration Carousel Chips
-    override fun onInspirationCarouselChipsClick(
-        adapterPosition: Int,
-        inspirationCarouselViewModel: InspirationCarouselDataView,
-        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        searchParameter: Map<String, Any>,
-    ) {
-        if (isViewNotAttached) return
-
-        changeActiveInspirationCarouselChips(inspirationCarouselViewModel, clickedInspirationCarouselOption)
-
-        view.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
-        view.refreshItemAtIndex(adapterPosition)
-
-        if (clickedInspirationCarouselOption.hasProducts()) return
-
-        getInspirationCarouselChipProducts(
-                adapterPosition,
-                clickedInspirationCarouselOption,
-                searchParameter,
-                inspirationCarouselViewModel.title,
-        )
-    }
-
-    private fun changeActiveInspirationCarouselChips(
-        inspirationCarouselViewModel: InspirationCarouselDataView,
-        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-    ) {
-        inspirationCarouselViewModel.options.forEach {
-            it.isChipsActive = false
-        }
-
-        clickedInspirationCarouselOption.isChipsActive = true
-    }
-
-    private fun getInspirationCarouselChipProducts(
-        adapterPosition: Int,
-        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        searchParameter: Map<String, Any>,
-        inspirationCarouselTitle: String,
-    ) {
-        getInspirationCarouselChipsUseCase.get().unsubscribe()
-
-        val requestParams = requestParamsGenerator.createGetInspirationCarouselChipProductsRequestParams(
-            clickedInspirationCarouselOption,
-            searchParameter,
-            chooseAddressDelegate.getChooseAddressParams(),
-        )
-
-        getInspirationCarouselChipsUseCase.get().execute(
-            requestParams,
-            createGetInspirationCarouselChipProductsSubscriber(
-                adapterPosition,
-                clickedInspirationCarouselOption,
-                inspirationCarouselTitle,
-            )
-        )
-    }
-
-    private fun createGetInspirationCarouselChipProductsSubscriber(
-        adapterPosition: Int,
-        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        inspirationCarouselTitle: String,
-    ): Subscriber<InspirationCarouselChipsProductModel> {
-        return object : Subscriber<InspirationCarouselChipsProductModel>() {
-            override fun onCompleted() { }
-
-            override fun onError(e: Throwable) {}
-
-            override fun onNext(inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel) {
-                getInspirationCarouselChipsSuccess(
-                        adapterPosition,
-                        inspirationCarouselChipsProductModel,
-                        clickedInspirationCarouselOption,
-                        inspirationCarouselTitle
-                )
-            }
-        }
-    }
-
-    private fun getInspirationCarouselChipsSuccess(
-        adapterPosition: Int,
-        inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel,
-        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        inspirationCarouselTitle: String,
-    ) {
-        if (isViewNotAttached) return
-
-        val mapper = InspirationCarouselProductDataViewMapper()
-        val productList = mapper.convertToInspirationCarouselProductDataView(
-            inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product,
-            clickedInspirationCarouselOption.optionPosition,
-            clickedInspirationCarouselOption.inspirationCarouselType,
-            clickedInspirationCarouselOption.layout,
-            this::productLabelGroupToLabelGroupDataView,
-            clickedInspirationCarouselOption.title,
-            inspirationCarouselTitle,
-            dimension90,
-            externalReference,
-        )
-
-        clickedInspirationCarouselOption.product = productList
-
-        view.refreshItemAtIndex(adapterPosition)
-    }
-
-    private fun productLabelGroupToLabelGroupDataView(
-            productLabelGroupList: List<ProductLabelGroup>,
-    ): List<LabelGroupDataView> {
-        return productLabelGroupList.map {
-            LabelGroupDataView(
-                    it.position,
-                    it.type,
-                    it.title,
-                    it.url,
-            )
-        }
-    }
-    //endregion
 
     override fun detachView() {
         super.detachView()

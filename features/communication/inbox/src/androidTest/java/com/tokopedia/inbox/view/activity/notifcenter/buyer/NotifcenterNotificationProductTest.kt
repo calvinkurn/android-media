@@ -10,7 +10,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -21,7 +22,7 @@ import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailRespo
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 @UiTest
