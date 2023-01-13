@@ -212,7 +212,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 Toaster.build(
                     view = requireView(),
                     text = errMessage,
-                    actionText = getString(playR.string.title_try_again),
+                    actionText = getString(playR.string.play_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     clickListener = { viewModel.submitAction(RefreshWidget) }).show()
