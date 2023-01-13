@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
@@ -215,9 +216,10 @@ class PlayExploreWidgetFragment @Inject constructor(
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
             is ResultState.Fail -> {
+                val errMessage = if (state.error is MessageErrorException) getString(playR.string.play_explore_widget_noconn_errmessage) else getString(playR.string.play_explore_widget_default_errmessage)
                 Toaster.build(
                     view = requireView(),
-                    text = state.error.message.orEmpty(),
+                    text = errMessage,
                     actionText = getString(playR.string.title_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
