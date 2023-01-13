@@ -54,8 +54,7 @@ object ProductDetailVariantLogic {
                     variantHex = i.hex.orEmpty(),
                     currentState = currentState,
                     hasCustomImages = haveCustomImage,
-                    flashSale = isFlashSale,
-                    variantCategoryKey = variantLevelOne.pv.orEmpty()
+                    flashSale = isFlashSale
             ))
         }
 
