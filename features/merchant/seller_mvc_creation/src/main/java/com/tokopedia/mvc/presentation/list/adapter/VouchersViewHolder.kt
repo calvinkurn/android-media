@@ -126,7 +126,7 @@ class VouchersViewHolder(
 
     private fun getPromoName(context: Context, promoType: Int): String {
         return try {
-            val arrPromoTypeName = context.resources.getStringArray(R.array.promo_type_items)
+            val arrPromoTypeName = context.resources.getStringArray(R.array.voucher_list_promo_type_items)
             arrPromoTypeName.getOrNull(promoType.dec()).orEmpty()
         } catch (e: Exception) {
             ""

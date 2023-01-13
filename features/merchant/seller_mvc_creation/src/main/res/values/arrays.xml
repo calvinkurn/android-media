@@ -35,4 +35,11 @@
         <item>Follower Baru</item>
         <item>Pembeli Baru</item>
     </string-array>
+
+    <string-array name="voucher_list_promo_type_items">
+        <item>Gratis Ongkir</item>
+        <item>Diskon</item>
+        <item>Cashback</item>
+    </string-array>
+
 </resources>
