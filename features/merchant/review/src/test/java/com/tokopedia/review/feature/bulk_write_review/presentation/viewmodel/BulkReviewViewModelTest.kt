@@ -442,6 +442,19 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                         (ratingUiState as BulkReviewRatingUiState.Showing).animate
                     }
             )
+
+            // call onRatingSet again and verify that rating animate value is still false
+            viewModel.onRatingSet(reviewItem.inboxID)
+            assertFalse(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .first { it.inboxID == reviewItem.inboxID }
+                    .uiState
+                    .ratingUiState.let { ratingUiState ->
+                        (ratingUiState as BulkReviewRatingUiState.Showing).animate
+                    }
+            )
         }
 
     @Test

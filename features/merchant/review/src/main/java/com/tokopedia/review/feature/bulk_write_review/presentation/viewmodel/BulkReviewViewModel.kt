@@ -213,8 +213,8 @@ class BulkReviewViewModel @Inject constructor(
     )
     private val poemUpdateSignal = flow {
         while (true) {
-            delay(UPDATE_POEM_INTERVAL)
             emit(Unit)
+            delay(UPDATE_POEM_INTERVAL)
         }
     }
     private val reviewItemsMediaPickerPoem = combine(
@@ -409,20 +409,19 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onReviewItemTextAreaLostFocus(inboxID: String, text: String) {
         reviewItemsTestimony.update {
-            it.filterNot { reviewItemTestimony ->
-                reviewItemTestimony.inboxID == inboxID
-            }.toMutableList().apply {
-                add(
-                    BulkReviewItemTestimonyUiModel(
-                        inboxID = inboxID,
-                        testimonyUiModel = ReviewTestimonyUiModel(
-                            text = text,
-                            showTextArea = text.isNotBlank(),
-                            focused = false
-                        )
+            it.filterAndPut(
+                matcher = { reviewItemTestimony ->
+                    reviewItemTestimony.inboxID != inboxID
+                },
+                newItem = BulkReviewItemTestimonyUiModel(
+                    inboxID = inboxID,
+                    testimonyUiModel = ReviewTestimonyUiModel(
+                        text = text,
+                        showTextArea = text.isNotBlank(),
+                        focused = false
                     )
                 )
-            }
+            )
         }
     }
 
@@ -1557,20 +1556,19 @@ class BulkReviewViewModel @Inject constructor(
         if (uiState is BulkReviewExpandedTextAreaBottomSheetUiState.Showing) {
             if (uiState.allowEmpty || text.isNotBlank()) {
                 reviewItemsTestimony.update {
-                    it.filter { reviewItemTestimony ->
-                        reviewItemTestimony.inboxID != uiState.inboxID
-                    }.toMutableList().apply {
-                        add(
-                            BulkReviewItemTestimonyUiModel(
-                                inboxID = uiState.inboxID,
-                                testimonyUiModel = ReviewTestimonyUiModel(
-                                    text = text,
-                                    showTextArea = text.isNotBlank(),
-                                    focused = false
-                                )
+                    it.filterAndPut(
+                        matcher = { reviewItemTestimony ->
+                            reviewItemTestimony.inboxID != uiState.inboxID
+                        },
+                        newItem = BulkReviewItemTestimonyUiModel(
+                            inboxID = uiState.inboxID,
+                            testimonyUiModel = ReviewTestimonyUiModel(
+                                text = text,
+                                showTextArea = text.isNotBlank(),
+                                focused = false
                             )
                         )
-                    }
+                    )
                 }
             } else {
                 enqueueToasterErrorEmptyBadRatingCategoryOtherReason()
@@ -1580,20 +1578,19 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun showReviewItemTextArea(inboxID: String) {
         reviewItemsTestimony.update {
-            it.filter { reviewItemTestimony ->
-                reviewItemTestimony.inboxID != inboxID
-            }.toMutableList().apply {
-                add(
-                    BulkReviewItemTestimonyUiModel(
-                        inboxID = inboxID,
-                        testimonyUiModel = ReviewTestimonyUiModel(
-                            text = String.EMPTY,
-                            showTextArea = true,
-                            focused = true
-                        )
+            it.filterAndPut(
+                matcher = { reviewItemTestimony ->
+                    reviewItemTestimony.inboxID != inboxID
+                },
+                newItem = BulkReviewItemTestimonyUiModel(
+                    inboxID = inboxID,
+                    testimonyUiModel = ReviewTestimonyUiModel(
+                        text = String.EMPTY,
+                        showTextArea = true,
+                        focused = true
                     )
                 )
-            }
+            )
         }
     }
 
@@ -1629,17 +1626,16 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun updateMediaUris(inboxID: String, originalPaths: List<String>) {
         reviewItemsMediaUris.update {
-            it.filter { reviewItemMediaUris ->
-                reviewItemMediaUris.inboxID != inboxID
-            }.toMutableList().apply {
-                add(
-                    BulkReviewItemMediaUrisUiModel(
-                        inboxID = inboxID,
-                        uris = originalPaths,
-                        shouldResetFailedUploadStatus = true
-                    )
+            it.filterAndPut(
+                matcher = { reviewItemMediaUris ->
+                    reviewItemMediaUris.inboxID != inboxID
+                },
+                newItem = BulkReviewItemMediaUrisUiModel(
+                    inboxID = inboxID,
+                    uris = originalPaths,
+                    shouldResetFailedUploadStatus = true
                 )
-            }
+            )
         }
     }
 
@@ -1726,6 +1722,13 @@ class BulkReviewViewModel @Inject constructor(
                 add(copier(matchingItem))
             }
         }
+    }
+
+    private fun <T> List<T>.filterAndPut(
+        matcher: (T) -> Boolean,
+        newItem: T
+    ): List<T> {
+        return filter { item -> matcher(item) }.toMutableList().apply { add(newItem) }
     }
 
     private fun sendReviewItemImpressionEventTracker(reviewItem: BulkReviewItemUiModel) {
