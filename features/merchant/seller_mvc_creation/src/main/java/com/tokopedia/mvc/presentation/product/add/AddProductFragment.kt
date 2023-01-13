@@ -11,6 +11,7 @@ import android.widget.CompoundButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -24,10 +25,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
-import com.tokopedia.campaign.utils.extension.slideDown
-import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
-import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -71,7 +69,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     companion object {
         const val PAGE_SIZE = 20
         private const val ONE_FILTER_SELECTED = 1
-        private const val SCROLL_ANIMATION_DURATION = 150
 
         @JvmStatic
         fun newInstance(
@@ -211,12 +208,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             applyPaddingToLastItem()
             attachDividerItemDecoration()
-            attachOnScrollListener(
-                onScrollDown = {
-                    binding?.sortFilter?.slideDown(duration = SCROLL_ANIMATION_DURATION)
-                }, onScrollUp = {
-                    binding?.sortFilter?.slideUp(duration = SCROLL_ANIMATION_DURATION)
-                }
+            addOnScrollListener(
+                RecyclerViewScrollListener(
+                    onScrollDown = { binding?.sortFilter?.visible() },
+                    onScrollUp = { binding?.sortFilter?.gone() }
+                )
             )
             adapter = productAdapter
 
@@ -660,5 +656,25 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
         activity?.setResult(Activity.RESULT_OK, returnIntent)
         activity?.finish()
+    }
+
+    private class RecyclerViewScrollListener(
+        private val onScrollDown: () -> Unit = {},
+        private val onScrollUp: () -> Unit = {}
+    ) : RecyclerView.OnScrollListener() {
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+
+            if (dy.isScrollUp()) {
+                onScrollUp()
+            } else {
+                onScrollDown()
+            }
+        }
+
+        private fun Int.isScrollUp() : Boolean {
+            return this < 0
+        }
     }
 }

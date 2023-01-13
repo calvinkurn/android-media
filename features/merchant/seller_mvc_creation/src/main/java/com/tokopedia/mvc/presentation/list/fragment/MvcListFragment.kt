@@ -103,7 +103,7 @@ class MvcListFragment :
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
     private var displayVoucherBottomSheet: DisplayVoucherBottomSheet? = null
     private var voucherPeriodBottomSheet: VoucherPeriodBottomSheet? = null
-
+    private var otherPeriodBottomSheet: OtherPeriodBottomSheet? = null
     private var eduCenterBottomSheet: EduCenterBottomSheet? = null
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
 
@@ -270,6 +270,7 @@ class MvcListFragment :
                 voucher.imagePortrait
             )
             bottomSheet.setOnDownloadSuccess {
+                otherPeriodBottomSheet?.dismiss()
                 binding?.footer?.root?.showToaster(
                     getString(
                         R.string.smvc_placeholder_download_voucher_image_success,
@@ -332,9 +333,9 @@ class MvcListFragment :
             binding?.footer?.setupVoucherQuota(it)
         }
         viewModel.voucherChilds.observe(viewLifecycleOwner) {
-            val bottomSheet = OtherPeriodBottomSheet.newInstance(it)
-            bottomSheet.setListener(this)
-            bottomSheet.show(this, it.size)
+            otherPeriodBottomSheet = OtherPeriodBottomSheet.newInstance(it)
+            otherPeriodBottomSheet?.setListener(this)
+            otherPeriodBottomSheet?.show(this, it.size)
         }
         viewModel.pageState.observe(viewLifecycleOwner) {
             when (it) {
