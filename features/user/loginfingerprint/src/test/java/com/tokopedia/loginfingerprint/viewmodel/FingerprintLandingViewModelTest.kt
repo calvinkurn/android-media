@@ -6,7 +6,7 @@ import com.tokopedia.loginfingerprint.data.model.SignatureData
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
-import com.tokopedia.loginfingerprint.utils.crypto.RsaSignatureUtils
+import com.tokopedia.loginfingerprint.utils.crypto.KeyPairManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -38,7 +38,8 @@ class FingerprintLandingViewModelTest {
     private var verifyFingerprintObserver = mockk<Observer<Result<VerifyFingerprint>>>(relaxed = true)
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
-    private val rsaSignatureUtils = mockk<Lazy<RsaSignatureUtils?>>(relaxed = true)
+    private val keyPairManager= mockk<Lazy<KeyPairManager?>>(relaxed = true)
+
     val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
     private val throwable = mockk<Throwable>(relaxed = true)
@@ -49,13 +50,13 @@ class FingerprintLandingViewModelTest {
         viewModel = FingerprintLandingViewModel(
             CoroutineTestDispatchersProvider,
             userSession,
-            rsaSignatureUtils,
+            keyPairManager,
             verifyFingerprintUseCase,
             fingerprintPreferenceManager
         )
 
         viewModel.verifyFingerprint.observeForever(verifyFingerprintObserver)
-        coEvery { rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any()) } returns signatureModel
+        coEvery { keyPairManager.get()?.generateFingerprintSignature(any(), any()) } returns signatureModel
     }
 
     @Test
@@ -70,7 +71,7 @@ class FingerprintLandingViewModelTest {
 
         /* Then */
         coVerify {
-            rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any())
+            keyPairManager.get()?.generateFingerprintSignature(any(), any())
             verifyFingerprintObserver.onChanged(Success(response.data))
         }
     }
