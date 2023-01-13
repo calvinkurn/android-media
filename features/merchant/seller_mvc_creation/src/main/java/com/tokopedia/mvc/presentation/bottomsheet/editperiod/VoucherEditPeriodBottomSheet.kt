@@ -89,7 +89,9 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .build()
             .inject(this)
     }
@@ -218,7 +220,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                 DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
-                            if (endCalendar?.compareTo(startCalendar)?.isLessThanZero() == true) startCalendar else endCalendar,
+                            decideCalendarPeriodEndDate(),
                             minDate,
                             maxDate,
                             endHour,
@@ -229,6 +231,17 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+    }
+
+    private fun decideCalendarPeriodEndDate(): GregorianCalendar? {
+        startCalendar?.let { start ->
+            return if (endCalendar?.compareTo(start)?.isLessThanZero() == true) {
+                startCalendar
+            } else {
+                endCalendar
+            }
+        }
+        return null
     }
 
     private var getSelectedDateStarting: (Calendar) -> Unit = {
@@ -249,7 +262,12 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun newInstance(voucher: Voucher, onSuccessListener: (Voucher?) -> Unit = {}, onFailListener: (String) -> Unit = {}, tickerVisibility: Boolean = false): VoucherEditPeriodBottomSheet {
+        fun newInstance(
+            voucher: Voucher,
+            onSuccessListener: (Voucher?) -> Unit = {},
+            onFailListener: (String) -> Unit = {},
+            tickerVisibility: Boolean = false
+        ): VoucherEditPeriodBottomSheet {
             return VoucherEditPeriodBottomSheet().apply {
                 this.voucher = voucher
                 this.onSuccessListener = onSuccessListener
