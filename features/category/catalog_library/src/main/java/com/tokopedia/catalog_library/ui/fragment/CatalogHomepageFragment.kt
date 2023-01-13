@@ -22,6 +22,7 @@ import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogHomepageViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,12 +67,20 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         shimmerLayout = view.findViewById(R.id.shimmer_layout)
-//        initHeaderTitle(view)
+        initHeaderTitle(view)
         getDataFromViewModel()
         showShimmer()
         setupRecyclerView(view)
         setUpBase()
         setObservers()
+    }
+
+    private fun initHeaderTitle(view: View) {
+        view.findViewById<HeaderUnify>(R.id.catalog_home_header).apply {
+            setNavigationOnClickListener {
+                activity?.finish()
+            }
+        }
     }
 
     private fun getDataFromViewModel() {
