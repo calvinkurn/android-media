@@ -1,6 +1,7 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup.uimodel
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -190,7 +191,7 @@ fun TipsUnifyCompose(
     Card(
         modifier = modifier.fillMaxWidth(),
         border = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._200),
-        backgroundColor = NestTheme.colors.NN._50
+        backgroundColor = if (isSystemInDarkTheme()) NestTheme.colors.NN._200 else NestTheme.colors.NN._50
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             title?.run {
