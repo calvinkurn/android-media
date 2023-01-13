@@ -17,6 +17,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestButton(
     modifier: Modifier = Modifier,
     text: String,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     val backgroundColor = ButtonDefaults.buttonColors(backgroundColor = NestTheme.colors.GN._500)
@@ -25,7 +26,8 @@ fun NestButton(
         modifier = modifier.fillMaxWidth(),
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
-        colors = backgroundColor
+        colors = backgroundColor,
+        enabled = enabled
     ) {
         NestTypography(
             text,
