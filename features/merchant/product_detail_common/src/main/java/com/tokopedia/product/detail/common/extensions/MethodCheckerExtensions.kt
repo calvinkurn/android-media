@@ -19,3 +19,4 @@ fun String.parseAsHtmlLink(context: Context, replaceNewLine: Boolean = true) = H
 ).spannedString
 
 fun Context.getColorChecker(id: Int) = MethodChecker.getColor(this, id)
+fun Context.getDrawableChecker(id: Int) = MethodChecker.getDrawable(this, id)

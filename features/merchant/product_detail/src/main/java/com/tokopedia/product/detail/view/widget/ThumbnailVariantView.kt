@@ -6,6 +6,8 @@ import android.graphics.ColorMatrixColorFilter
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
@@ -24,6 +26,10 @@ class ThumbnailVariantView(
 ) : FrameLayout(context, attrs) {
 
     val binding: ThumbnailVariantViewBinding
+
+    private val enableColor by lazyThreadSafetyNone { context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN0) }
+
+    private val disableColor by lazyThreadSafetyNone { context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN50) }
 
     init {
         inflate(context, R.layout.thumbnail_variant_view, this).apply {
@@ -61,24 +67,28 @@ class ThumbnailVariantView(
         binding.variantPromoIcon.isVisible = show
     }
 
-    fun setSelectedState() = with(binding) {
+    fun setSelectedState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        variantCard.cardType = CardUnify2.TYPE_BORDER_ACTIVE
+        binding.variantCard.cardType = CardUnify2.TYPE_BORDER_ACTIVE
+        binding.variantCard.setCardUnifyBackgroundColor(enableColor)
     }
 
     fun setSelectedStockEmptyState() {
         setSelectedState()
         setThumbGrayscale()
+        binding.variantCard.setCardUnifyBackgroundColor(enableColor)
     }
 
     fun setUnselectedState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
         binding.variantCard.cardType = CardUnify2.TYPE_BORDER
+        binding.variantCard.setCardUnifyBackgroundColor(enableColor)
     }
 
     fun setDisableState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
         binding.variantCard.cardType = CardUnify2.TYPE_BORDER_DISABLED
+        binding.variantCard.setCardUnifyBackgroundColor(disableColor)
         setThumbGrayscale()
     }
 
