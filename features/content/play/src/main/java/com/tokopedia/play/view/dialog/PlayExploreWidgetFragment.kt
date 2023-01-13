@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Spanned
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -170,6 +171,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                     Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                 )
             }
+        binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun observeState() {
