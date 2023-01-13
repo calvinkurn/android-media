@@ -17,7 +17,6 @@ class CatalogLihatItemViewHolder(
     CatalogLibraryListener
 ) : AbstractViewHolder<CatalogLihatItemDataModel>(view) {
 
-
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {
         view.findViewById(R.id.lihat_item_icon)
     }
@@ -30,27 +29,20 @@ class CatalogLihatItemViewHolder(
         view.findViewById(R.id.lihat_expanded_item_layout)
     }
 
-
-
     companion object {
         val LAYOUT = R.layout.item_lihat_grid
     }
 
     override fun bind(element: CatalogLihatItemDataModel?) {
-        element?.catalogLibraryChildDataListItem?.categoryIconUrl?.let {
+        val childDataItem = element?.catalogLibraryChildDataListItem
+        childDataItem?.categoryIconUrl?.let {
             lihatItemIcon?.loadImage(it)
-
         }
-        lihatItemTitle?.text = element?.catalogLibraryChildDataListItem?.categoryName ?: ""
+        lihatItemTitle?.text = childDataItem?.categoryName ?: ""
         lihatExpandedItemLayout?.setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(
-                element?.catalogLibraryChildDataListItem?.categoryName ?: ""
+                childDataItem?.categoryName ?: ""
             )
         }
-    }
-
-    override fun onViewRecycled() {
-        lihatItemIcon?.clearImage()
-        super.onViewRecycled()
     }
 }
