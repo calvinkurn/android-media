@@ -36,7 +36,11 @@ object TokoChatConnection {
 
         injectTokoChatConfigComponent(context)
 
-        // If from login, fetch the AB test first
+        /**
+         * If from login, fetch the AB test first
+         * We need it in here because the callback from fetch won't be called in login page
+         * Login page will immediately finish the page after login
+         */
         if (isFromLoginFlow) {
             fetchABTest(context)
         } else {
