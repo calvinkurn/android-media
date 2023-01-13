@@ -6,26 +6,51 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import kotlin.LazyThreadSafetyMode.NONE
 
-class CatalogLihatItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogLihatItemDataModel>(view) {
+class CatalogLihatItemViewHolder(
+    val view: View, private val catalogLibraryListener:
+    CatalogLibraryListener
+) : AbstractViewHolder<CatalogLihatItemDataModel>(view) {
+
+
+    private val lihatItemIcon: ImageUnify? by lazy(NONE) {
+        view.findViewById(R.id.lihat_item_icon)
+    }
+
+    private val lihatItemTitle: Typography? by lazy(NONE) {
+        view.findViewById(R.id.lihat_item_title)
+    }
+
+    private val lihatExpandedItemLayout: LinearLayout? by lazy(NONE) {
+        view.findViewById(R.id.lihat_expanded_item_layout)
+    }
+
+
 
     companion object {
         val LAYOUT = R.layout.item_lihat_grid
     }
 
     override fun bind(element: CatalogLihatItemDataModel?) {
-        element?.catalogLibraryChildDataListItem?.categoryIconUrl?.let { iconUrl ->
-            view.findViewById<ImageUnify>(R.id.lihat_item_icon)
-                ?.loadImageWithoutPlaceholder(iconUrl)
+        element?.catalogLibraryChildDataListItem?.categoryIconUrl?.let {
+            lihatItemIcon?.loadImage(it)
 
         }
-        view.findViewById<Typography>(R.id.lihat_item_title)?.text =
-            element?.catalogLibraryChildDataListItem?.categoryName
-        view.findViewById<LinearLayout>(R.id.lihat_expanded_item_layout).setOnClickListener {
-            catalogLibraryListener.onCategoryItemClicked(element?.catalogLibraryChildDataListItem?.categoryName)
+        lihatItemTitle?.text = element?.catalogLibraryChildDataListItem?.categoryName ?: ""
+        lihatExpandedItemLayout?.setOnClickListener {
+            catalogLibraryListener.onCategoryItemClicked(
+                element?.catalogLibraryChildDataListItem?.categoryName ?: ""
+            )
         }
+    }
+
+    override fun onViewRecycled() {
+        lihatItemIcon?.clearImage()
+        super.onViewRecycled()
     }
 }

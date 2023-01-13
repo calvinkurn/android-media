@@ -1,5 +1,6 @@
 package com.tokopedia.catalog_library.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -29,6 +30,7 @@ class CatalogLihatViewHolder(
         view.findViewById<AccordionUnify>(R.id.lihat_category_accordion_view)
     private var childView: View? = null
 //    private var childView: View? = View.inflate(view.context, LAYOUT_ACCORDION, null)
+//    private var childView: View? =  LayoutInflater.from(view.context).inflate(LAYOUT_ACCORDION,null )
 
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -52,17 +54,18 @@ class CatalogLihatViewHolder(
         accordionView.run {
             accordionData.clear()
             removeAllViews()
-            onItemClick = { _, isExpanded ->
-                if (isExpanded) {
-                    listAdapter.submitList(getChildVisitableList(element.catalogLibraryDataList?.childCategoryList))
-                }
-            }
+//            onItemClick = { _, isExpanded ->
+//                if (isExpanded) {
+//                    listAdapter.submitList(getChildVisitableList(element.catalogLibraryDataList?.childCategoryList))
+//                }
+//            }
         }
         childView = View.inflate(view.context, LAYOUT_ACCORDION, null)
         if(childView != null)
         {
             childView?.findViewById<RecyclerView>(R.id.lihat_grid_view)?.apply {
                 setRecycledViewPool(customeRecycledViewPool)
+                setHasFixedSize(true)
                 adapter = listAdapter
                 layoutManager = GridLayoutManager(view.context, COLUMN_COUNT)
             }
