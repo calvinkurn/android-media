@@ -398,7 +398,7 @@ class ContentDetailFragment :
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         if (data.isPostRefresh) {
-            val firstPost = (activity as? ContentDetailActivity)?.getContentDetailMainPostData()
+            val firstPost = (activity as? ContentDetailActivity)?.contentDetailFirstPostData
             val newList: MutableList<FeedXCard> = mutableListOf()
             newList.addAll(data.postList)
             if (firstPost != null) {

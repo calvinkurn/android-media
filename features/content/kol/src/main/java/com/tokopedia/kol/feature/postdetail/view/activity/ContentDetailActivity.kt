@@ -77,8 +77,6 @@ class ContentDetailActivity : BaseSimpleActivity() {
         this.contentDetailFirstPostData = card
     }
 
-    fun getContentDetailMainPostData() = contentDetailFirstPostData
-
     fun setActionToRefresh(needRefresh: Boolean) {
         this.actionToRefresh = needRefresh
     }
