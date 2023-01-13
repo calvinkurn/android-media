@@ -17,6 +17,7 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
+import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -42,13 +43,15 @@ public class ContactUsActivity extends BaseSimpleActivity implements
     String url;
     Bundle bundleCreateTicket;
     private BackButtonListener listener;
+    private final LoggingOnNewRelic newRelicLogging= new LoggingOnNewRelic();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
         String dataAppLink = getIntent().getData().toString();
-        sendToNewRelicLog(dataAppLink);
+        newRelicLogging.sendToNewRelicLog(dataAppLink);
     }
 
     @Override
@@ -183,11 +186,5 @@ public class ContactUsActivity extends BaseSimpleActivity implements
         void onBackPressed();
 
         boolean canGoBack();
-    }
-
-    void sendToNewRelicLog(String url) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("urlPath", url);
-        ServerLogger.log(Priority.P2, "CONTACT_US_FAQ_ACTIVITY", map);
     }
 }
