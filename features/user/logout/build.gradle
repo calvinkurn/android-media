@@ -18,7 +18,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.core_legacy)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
-    implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

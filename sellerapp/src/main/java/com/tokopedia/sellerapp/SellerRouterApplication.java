@@ -495,4 +495,14 @@ public abstract class SellerRouterApplication extends MainApplication implements
         }
     }
 
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+        //Do nothing
+    }
+
+    @Override
+    private void disconnectTokoChat() {
+        //Do nothing
+    }
+
 }

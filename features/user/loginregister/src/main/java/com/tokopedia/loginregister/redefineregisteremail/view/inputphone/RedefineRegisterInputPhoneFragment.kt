@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -431,7 +431,15 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
-            TokoChatConnection.init(it)
+            initTokoChatConnection()
+        }
+    }
+
+    private fun initTokoChatConnection() {
+        activity?.let {
+            if (it.application is AbstractionRouter) {
+                (it.application as AbstractionRouter).connectTokoChat(false)
+            }
         }
     }
 

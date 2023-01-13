@@ -28,7 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -1355,7 +1355,15 @@ class RegisterInitialFragment :
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
-            TokoChatConnection.init(it)
+            initTokoChatConnection()
+        }
+    }
+
+    private fun initTokoChatConnection() {
+        activity?.let {
+            if (it.application is AbstractionRouter) {
+                (it.application as AbstractionRouter).connectTokoChat(false)
+            }
         }
     }
 

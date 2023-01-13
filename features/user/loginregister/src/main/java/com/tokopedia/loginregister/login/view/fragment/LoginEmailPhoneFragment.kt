@@ -30,7 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -1156,11 +1156,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
             clearTopAdsHeader()
-            TokoChatConnection.init(it, true)
+            initTokoChatConnection()
         }
 
         refreshRolloutVariant()
         saveFirstInstallTime()
+    }
+
+    private fun initTokoChatConnection() {
+        activity?.let {
+            if (it.application is AbstractionRouter) {
+                (it.application as AbstractionRouter).connectTokoChat(true)
+            }
+        }
     }
 
     override fun setLoginSuccessSellerApp() {

@@ -190,7 +190,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMDependencies();
         initDataStoreMigration();
         initSeamlessLoginWorker();
-        initTokoChatConnection();
+        connectTokoChat(false);
         return true;
     }
 
@@ -299,11 +299,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void forceLogout() {
         TrackApp.getInstance().getMoEngage().logoutEvent();
         userSession.logoutSession();
-        removeTokoChat();
-    }
-
-    private void removeTokoChat() {
-        TokoChatConnection.disconnect();
+        disconnectTokoChat();
     }
 
     @Override
@@ -607,7 +603,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         );
     }
 
-    private void initTokoChatConnection() {
-        TokoChatConnection.init(getApplicationContext(), false);
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+        TokoChatConnection.init(getApplicationContext(), isFromLoginFlow);
+    }
+
+    @Override
+    private void disconnectTokoChat() {
+        TokoChatConnection.disconnect();
     }
 }
