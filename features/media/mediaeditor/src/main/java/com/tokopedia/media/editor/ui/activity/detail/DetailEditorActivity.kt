@@ -89,8 +89,8 @@ class DetailEditorActivity : BaseEditorActivity() {
         )
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         pickerParam.disposeSubPicker()
     }
 

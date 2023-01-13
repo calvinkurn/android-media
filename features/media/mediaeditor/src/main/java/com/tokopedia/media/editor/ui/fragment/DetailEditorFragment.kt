@@ -1114,9 +1114,11 @@ class DetailEditorFragment @Inject constructor(
 
     private fun showAddLogoPicker() {
         val intent = MediaPicker.intent(requireContext()) {
+            withoutEditor()
             pageType(PageType.GALLERY)
             modeType(ModeType.IMAGE_ONLY)
-            minImageResolution(500)
+            minImageResolution(ADD_LOGO_IMAGE_RES_MIN)
+            maxImageResolution(ADD_LOGO_IMAGE_RES_MAX)
             pageSource(pickerParam.get().pageSource())
             subPageSource(PageSource.AddLogo)
             singleSelectionMode()
@@ -1167,5 +1169,8 @@ class DetailEditorFragment @Inject constructor(
 
         // key to generate PNG result for AddLogo overlay
         private const val PNG_KEY = "image.png"
+
+        private const val ADD_LOGO_IMAGE_RES_MIN = 500
+        private const val ADD_LOGO_IMAGE_RES_MAX = 1000
     }
 }
