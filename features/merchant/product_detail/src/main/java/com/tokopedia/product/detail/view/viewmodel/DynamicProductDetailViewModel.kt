@@ -42,6 +42,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -51,6 +52,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -1222,6 +1225,19 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }, onError = {
                 _verticalRecommendation.value = Fail(it)
             })
+    }
+
+    fun getVariantSelectedChild(
+        singleVariant: ProductSingleVariantDataModel?,
+        optionalVariant: VariantDataModel?
+    ): VariantChild? {
+        val selectedOptionIds = singleVariant?.mapOfSelectedVariant?.values?.toList()
+            ?: optionalVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
+        val variantDataNonNull = variantData ?: ProductVariant()
+        return VariantCommonMapper.selectedProductData(
+            variantData = variantDataNonNull,
+            selectedOptionIds = selectedOptionIds
+        )
     }
 
     /**

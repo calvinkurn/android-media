@@ -285,7 +285,6 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -448,7 +447,7 @@ open class DynamicProductDetailFragment :
     private var productId: String? = null
 
     // product id after thumbnail variant selected, for vbs
-    private var productThumbnailVariantId: String? = null
+    private var productIdThumbnailSelected: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var affiliateString: String? = null
@@ -2511,17 +2510,18 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    /**
+     * update product UI on single(especially chip), optionals variant(variant on pdp), vbs changed
+     */
     private fun updateVariantDataAndUi(
         variantProcessedData: List<VariantCategory>?,
         doSomethingAfterVariantUpdated: (() -> Unit)? = null
     ) {
         val singleVariant = pdpUiUpdater?.productSingleVariant
-        val newVariant = pdpUiUpdater?.productOptionalVariantDataModel
-        val selectedOptionIds = singleVariant?.mapOfSelectedVariant?.values?.toList()
-            ?: newVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
-        val selectedChild = VariantCommonMapper.selectedProductData(
-            variantData = viewModel.variantData ?: ProductVariant(),
-            selectedOptionIds = selectedOptionIds
+        val optionalVariant = pdpUiUpdater?.productOptionalVariantDataModel
+        val selectedChild = viewModel.getVariantSelectedChild(
+            singleVariant = singleVariant,
+            optionalVariant = optionalVariant
         )
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
@@ -2587,20 +2587,21 @@ open class DynamicProductDetailFragment :
         )
     }
 
+    /**
+     * update product UI on thumbnail variant changed
+     */
     private fun updateThumbnailVariantDataAndUi(variantProcessedData: List<VariantCategory>?) {
         val singleVariant = pdpUiUpdater?.productSingleVariant
-        val newVariant = pdpUiUpdater?.productOptionalVariantDataModel
-        val selectedOptionIds = singleVariant?.mapOfSelectedVariant?.values?.toList()
-            ?: newVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
-        val selectedChild = VariantCommonMapper.selectedProductData(
-            variantData = viewModel.variantData ?: ProductVariant(),
-            selectedOptionIds = selectedOptionIds
+        val selectedChild = viewModel.getVariantSelectedChild(
+            singleVariant = singleVariant,
+            optionalVariant = null // because thumb variant is not optional variant but single variant
         )
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
-        productThumbnailVariantId = selectedChild?.productId
-        addVariantSelectedTracker()
+
+        // store the product id to this variable to open vbs later
+        productIdThumbnailSelected = selectedChild?.productId
         updateUi()
     }
 
@@ -3415,7 +3416,7 @@ open class DynamicProductDetailFragment :
                     var cartTypeData = p2Data?.cartRedirection
                     val isFromThumbnailVariant =
                         pdpUiUpdater?.productSingleVariant?.isThumbnailType.orFalse()
-                    val pid = if (isFromThumbnailVariant) productThumbnailVariantId else productId
+                    val pid = if (isFromThumbnailVariant) productIdThumbnailSelected else productId
                     if (customCartRedirection != null) {
                         saveAfterClose = false
                         cartTypeData = customCartRedirection
@@ -4939,6 +4940,7 @@ open class DynamicProductDetailFragment :
     private fun updateProductId() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             productId = productInfo.basic.productID
+            productIdThumbnailSelected = productId // reset when p1 refresh
         }
     }
 
