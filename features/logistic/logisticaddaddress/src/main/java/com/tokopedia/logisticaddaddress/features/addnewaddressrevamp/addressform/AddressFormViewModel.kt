@@ -14,6 +14,7 @@ import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,6 +22,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AddressFormViewModel @Inject constructor(private val repo: KeroRepository) : ViewModel() {
+
+    companion object {
+        const val MIN_CHAR_PHONE_NUMBER = 9
+        private const val MIN_CHAR_ADDRESS_LABEL = 3
+        private const val MIN_CHAR_RECEIVER_NAME = 2
+    }
 
     private val _districtDetail = MutableLiveData<Result<KeroDistrictRecommendation>>()
     val districtDetail: LiveData<Result<KeroDistrictRecommendation>>
@@ -55,9 +62,30 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
 
     var saveDataModel: SaveAddressDataModel? = null
     var isPositiveFlow: Boolean = true
-    var validated: Boolean = true
     var isEdit: Boolean = false
     var addressId: String = ""
+    val validateFields: ArrayList<FieldType>
+        get() = if (isPositiveFlow) {
+            validatePositiveFlow
+        } else {
+            validateNegativeFlow
+        }
+
+    private val validatePositiveFlow = arrayListOf(
+        FieldType.PHONE_NUMBER,
+        FieldType.RECEIVER_NAME,
+        FieldType.COURIER_NOTE,
+        FieldType.ADDRESS,
+        FieldType.LABEL
+    )
+
+    private val validateNegativeFlow = arrayListOf(
+        FieldType.COURIER_NOTE,
+        FieldType.ADDRESS,
+        FieldType.LABEL,
+        FieldType.PHONE_NUMBER,
+        FieldType.RECEIVER_NAME
+    )
 
     val isHaveLatLong: Boolean
         get() = saveDataModel?.let { it.latitude.isNotEmpty() || it.longitude.isNotEmpty() }
@@ -221,5 +249,80 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
             this.addressName = addressName
             this.isAnaPositive = isAnaPositive
         }
+    }
+
+    fun validatePhoneNumber(
+        phoneNumber: String?,
+        onError: () -> Unit,
+        onEmptyPhoneNumber: () -> Unit,
+        onBelowMinCharacter: () -> Unit,
+        onInvalidPhoneNumber: () -> Unit
+    ) {
+        phoneNumber?.run {
+            if (phoneNumber.length < MIN_CHAR_PHONE_NUMBER) {
+                if (phoneNumber.trim().isEmpty()) {
+                    onEmptyPhoneNumber?.invoke()
+                }
+                onBelowMinCharacter.invoke()
+                onError.invoke()
+            } else if (!isPhoneNumberValid(phoneNumber)) {
+                onInvalidPhoneNumber.invoke()
+                onError.invoke()
+            }
+        } ?: onError.invoke()
+    }
+
+    fun validateReceiverName(
+        receiverName: String?,
+        onError: () -> Unit,
+        onEmptyReceiverName: () -> Unit,
+        onBelowMinCharacter: () -> Unit,
+    ) {
+        receiverName?.run {
+            if (receiverName.length < MIN_CHAR_RECEIVER_NAME) {
+                if (receiverName.trim().isEmpty()) {
+                    onEmptyReceiverName.invoke()
+                }
+                onBelowMinCharacter.invoke()
+                onError.invoke()
+            }
+        } ?: onError.invoke()
+    }
+
+    fun validateAddress(
+        address: String?,
+        onError: () -> Unit,
+        onEmptyAddress: () -> Unit,
+        onBelowMinCharacter: () -> Unit,
+        isErrorTextField: Boolean
+    ) {
+        address?.run {
+            if (address.length < MIN_CHAR_ADDRESS_LABEL) {
+                if (address.trim().isEmpty()) {
+                    onEmptyAddress.invoke()
+                }
+                onBelowMinCharacter.invoke()
+                onError.invoke()
+            } else if (isErrorTextField) {
+                onError.invoke()
+            }
+        } ?: onError.invoke()
+    }
+
+    fun validateLabel(
+        label: String?,
+        onError: () -> Unit,
+        onEmptyLabel: () -> Unit,
+        onBelowMinCharacter: () -> Unit
+    ) {
+        label?.run {
+            if (label.length < MIN_CHAR_ADDRESS_LABEL) {
+                if (label.trim().isEmpty()) {
+                    onEmptyLabel.invoke()
+                }
+                onBelowMinCharacter.invoke()
+                onError.invoke()
+            }
+        } ?: onError.invoke()
     }
 }

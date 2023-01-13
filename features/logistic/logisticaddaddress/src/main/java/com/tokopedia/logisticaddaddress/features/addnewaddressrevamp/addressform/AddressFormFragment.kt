@@ -56,6 +56,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlam
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -742,66 +743,58 @@ class AddressFormFragment :
     }
 
     private fun validateForm(): Boolean {
-        viewModel.validated = true
-        val field = mutableListOf<String>()
-        if (viewModel.isPositiveFlow) {
-            if (!validatePhoneNumber()) {
-                field.add(getString(R.string.field_nomor_hp))
-                viewModel.validated = false
-            }
-            if (!validateReceiverName()) {
-                field.add(getString(R.string.field_nama_penerima))
-                viewModel.validated = false
-            }
-            if (!validateCourierNote()) {
-                field.add(getString(R.string.field_catatan_kurir))
-                viewModel.validated = false
-            }
-            if (!validateAlamat()) {
-                field.add(getString(R.string.field_alamat))
-                viewModel.validated = false
-            }
-            if (!validateLabel()) {
-                field.add(getString(R.string.field_label_alamat))
-                viewModel.validated = false
-            }
-        } else {
-            if (!validateCourierNote()) {
-                field.add(getString(R.string.field_catatan_kurir))
-                viewModel.validated = false
-            }
-            if (!validateAlamat()) {
-                field.add(getString(R.string.field_alamat))
-                viewModel.validated = false
-            }
-            if (!validateLabel()) {
-                field.add(getString(R.string.field_label_alamat))
-                viewModel.validated = false
-            }
-            if (!validatePhoneNumber()) {
-                field.add(getString(R.string.field_nomor_hp))
-                viewModel.validated = false
-            }
-            if (!validateReceiverName()) {
-                field.add(getString(R.string.field_nama_penerima))
-                viewModel.validated = false
+        var validated = true
+        val field = arrayListOf<String>()
+
+        viewModel.validateFields.forEach {
+            when(it) {
+                FieldType.PHONE_NUMBER -> {
+                    validatePhoneNumber {
+                        field.add(getString(R.string.field_nomor_hp))
+                        validated = false
+                    }
+                }
+                FieldType.RECEIVER_NAME -> {
+                    validateReceiverName {
+                        field.add(getString(R.string.field_nama_penerima))
+                        validated = false
+                    }
+                }
+                FieldType.COURIER_NOTE -> {
+                    validateCourierNote {
+                        field.add(getString(R.string.field_catatan_kurir))
+                        validated = false
+                    }
+                }
+                FieldType.ADDRESS -> {
+                    validateAddress {
+                        field.add(getString(R.string.field_alamat))
+                        validated = false
+                    }
+                }
+                FieldType.LABEL -> {
+                    validateLabel {
+                        field.add(getString(R.string.field_label_alamat))
+                        validated = false
+                    }
+                }
             }
         }
 
-        if (!viewModel.isEdit) {
-            if (!viewModel.validated && viewModel.isPositiveFlow) {
-                AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(
-                    userSession.userId,
-                    field.joinToString(",")
-                )
-            } else if (!viewModel.validated && !viewModel.isPositiveFlow) {
-                AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(
-                    userSession.userId,
-                    field.joinToString(",")
-                )
-            }
-        } else {
-            if (!viewModel.validated) {
+        if (!validated) {
+            if (!viewModel.isEdit) {
+                if (viewModel.isPositiveFlow) {
+                    AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(
+                        userSession.userId,
+                        field.joinToString(",")
+                    )
+                } else {
+                    AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(
+                        userSession.userId,
+                        field.joinToString(",")
+                    )
+                }
+            } else {
                 EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
                 EditAddressRevampAnalytics.onClickSimpanError(
                     userSession.userId,
@@ -809,104 +802,107 @@ class AddressFormFragment :
                 )
             }
         }
-        return viewModel.validated
+
+        return validated
     }
 
-    private fun validateReceiverName(): Boolean {
-        binding?.formAccount?.etNamaPenerima?.let { field ->
-            val receiverName = field.textFieldInput.text.toString()
-            return if (receiverName.length < MIN_CHAR_RECEIVER_NAME) {
-                if (receiverName.isEmpty() || receiverName == " ") {
-                    setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
+    private fun validatePhoneNumber(onError: () -> Unit) {
+        viewModel.validatePhoneNumber(
+            phoneNumber = binding?.formAccount?.etNomorHp?.textFieldInput?.text.toString(),
+            onError = onError,
+            onEmptyPhoneNumber = {
+                binding?.formAccount?.etNomorHp?.apply {
+                    setWrapperError(textFieldWrapper, getString(R.string.tv_error_field))
                 }
-                showToaster(
-                    message = getString(R.string.error_nama_penerima),
-                    toasterType = Toaster.TYPE_ERROR
-                )
-                false
-            } else {
-                true
-            }
-        }
-        return false
-    }
-
-    private fun validatePhoneNumber(): Boolean {
-        binding?.formAccount?.etNomorHp?.let { field ->
-            val phoneNumber = field.textFieldInput.text.toString()
-            return if (phoneNumber.length < MIN_CHAR_PHONE_NUMBER) {
-                if (phoneNumber.isEmpty() || phoneNumber == " ") {
-                    setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
-                }
+            },
+            onBelowMinCharacter = {
                 showToaster(
                     message = getString(R.string.error_min_char_phone_number),
                     toasterType = Toaster.TYPE_ERROR
                 )
-                false
-            } else if (!viewModel.isPhoneNumberValid(phoneNumber)) {
+            },
+            onInvalidPhoneNumber = {
                 showToaster(
                     message = getString(R.string.error_invalid_format_phone_number),
                     toasterType = Toaster.TYPE_ERROR
                 )
-                false
-            } else {
-                true
             }
-        }
-        return false
+        )
     }
 
-    private fun validateCourierNote(): Boolean {
-        binding?.run {
-            return if (viewModel.isPositiveFlow) {
-                formAddress.etCourierNote.textFieldWrapper.error == null
-            } else {
-                formAddressNegative.etCourierNote.textFieldWrapper.error == null
-            }
-        }
-        return false
-    }
-
-    private fun validateAlamat(): Boolean {
-        binding?.run {
-            val field =
-                if (viewModel.isPositiveFlow) formAddress.etAlamatNew else formAddressNegative.etAlamat
-            val alamat = field.textFieldInput.text.toString()
-            return if (alamat.length < MIN_CHAR_ADDRESS_LABEL) {
-                if (alamat.isEmpty() || alamat == " ") {
-                    setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
+    private fun validateReceiverName(onError: () -> Unit) {
+        viewModel.validateReceiverName(
+            receiverName = binding?.formAccount?.etNamaPenerima?.textFieldInput?.text.toString(),
+            onError = onError,
+            onEmptyReceiverName = {
+                binding?.formAccount?.etNamaPenerima?.apply {
+                    setWrapperError(textFieldWrapper, getString(R.string.tv_error_field))
                 }
+            },
+            onBelowMinCharacter = {
+                showToaster(
+                    message = getString(R.string.error_nama_penerima),
+                    toasterType = Toaster.TYPE_ERROR
+                )
+            }
+        )
+    }
+
+    private fun validateCourierNote(onError: () -> Unit) {
+        binding?.run {
+            if (viewModel.isPositiveFlow) {
+                if (formAddress.etCourierNote.textFieldWrapper.error != null) {
+                    onError.invoke()
+                }
+            } else {
+                if (formAddressNegative.etCourierNote.textFieldWrapper.error != null) {
+                    onError.invoke()
+                }
+            }
+        }
+    }
+
+    private fun validateAddress(onError: () -> Unit) {
+        val field =
+            if (viewModel.isPositiveFlow) binding?.formAddress?.etAlamatNew else binding?.formAddressNegative?.etAlamat
+
+        viewModel.validateAddress(
+            address = field?.textFieldInput?.text.toString(),
+            onError = onError,
+            onEmptyAddress = {
+                field?.apply {
+                    setWrapperError(textFieldWrapper, getString(R.string.tv_error_field))
+                }
+            },
+            onBelowMinCharacter = {
                 showToaster(
                     message = getString(R.string.error_alamat),
                     toasterType = Toaster.TYPE_ERROR
                 )
-                false
-            } else {
-                field.textFieldWrapper.error == null
-            }
-        }
-        return false
+            },
+            isErrorTextField = field?.textFieldWrapper?.error != null
+        )
     }
 
-    private fun validateLabel(): Boolean {
-        binding?.run {
-            val field =
-                if (viewModel.isPositiveFlow) formAddress.etLabel else formAddressNegative.etLabel
-            val label = field.textFieldInput.text.toString()
-            return if (label.length < MIN_CHAR_ADDRESS_LABEL) {
-                if (label.isEmpty() || label == " ") {
-                    setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
+    private fun validateLabel(onError: () -> Unit) {
+        val field =
+            if (viewModel.isPositiveFlow) binding?.formAddress?.etLabel else binding?.formAddressNegative?.etLabel
+
+        viewModel.validateLabel(
+            label = field?.textFieldInput?.text.toString(),
+            onError = onError,
+            onEmptyLabel = {
+                field?.apply {
+                    setWrapperError(textFieldWrapper, getString(R.string.tv_error_field))
                 }
+            },
+            onBelowMinCharacter = {
                 showToaster(
                     message = getString(R.string.error_label_address),
                     toasterType = Toaster.TYPE_ERROR
                 )
-                false
-            } else {
-                true
             }
-        }
-        return false
+        )
     }
 
     private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
@@ -956,7 +952,7 @@ class AddressFormFragment :
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty() && s.length < MIN_CHAR_PHONE_NUMBER) {
+                if (s.isNotEmpty() && s.length < AddressFormViewModel.MIN_CHAR_PHONE_NUMBER) {
                     setWrapperError(wrapper, textWatcher)
                 } else if (s.isEmpty() && viewModel.isEdit) {
                     setWrapperError(wrapper, getString(R.string.tv_error_field))
@@ -1500,10 +1496,7 @@ class AddressFormFragment :
         private const val TOPPERS = "Toppers-"
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
-        private const val MIN_CHAR_PHONE_NUMBER = 9
         private const val MAX_CHAR_PHONE_NUMBER = 15
-        private const val MIN_CHAR_ADDRESS_LABEL = 3
-        private const val MIN_CHAR_RECEIVER_NAME = 2
         private const val MAX_CHAR_ALAMAT = 200
         private const val MAX_CHAR_NOTES = 45
 

@@ -6,6 +6,7 @@ import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.*
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -441,5 +442,429 @@ class AddressFormViewModelTest {
             Assert.assertEquals(saveAddressDataModel?.addressName, addressName)
             Assert.assertEquals(saveAddressDataModel?.isAnaPositive, isAnaPositive)
         }
+    }
+
+    @Test
+    fun `verify validate phone number error when phone number null`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validatePhoneNumber(
+            phoneNumber = null,
+            onError = {
+                isError = true
+            },
+            onEmptyPhoneNumber = {},
+            onBelowMinCharacter = {},
+            onInvalidPhoneNumber = {},
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+    }
+
+    @Test
+    fun `verify validate phone number error when phone number empty`() {
+        // Inject
+        var isError = false
+        var isEmpty = false
+
+        // When
+        addressFormViewModel.validatePhoneNumber(
+            phoneNumber = "",
+            onError = {
+                isError = true
+            },
+            onEmptyPhoneNumber = {
+                isEmpty = true
+            },
+            onBelowMinCharacter = {},
+            onInvalidPhoneNumber = {},
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isEmpty)
+    }
+
+    @Test
+    fun `verify validate phone number error when phone number below min character`() {
+        // Inject
+        var isError = false
+        var isBelowMinCharacter = false
+
+        // When
+        addressFormViewModel.validatePhoneNumber(
+            phoneNumber = "08100",
+            onError = {
+                isError = true
+            },
+            onEmptyPhoneNumber = {},
+            onBelowMinCharacter = {
+                isBelowMinCharacter = true
+            },
+            onInvalidPhoneNumber = {},
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isBelowMinCharacter)
+    }
+
+    @Test
+    fun `verify validate phone number error when phone number invalid`() {
+        // Inject
+        var isError = false
+        var isInvalid = false
+
+        // When
+        addressFormViewModel.validatePhoneNumber(
+            phoneNumber = "08100ABC0182",
+            onError = {
+                isError = true
+            },
+            onEmptyPhoneNumber = {},
+            onBelowMinCharacter = {},
+            onInvalidPhoneNumber = {
+                isInvalid = true
+            },
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isInvalid)
+    }
+
+    @Test
+    fun `verify validate phone number is valid`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validatePhoneNumber(
+            phoneNumber = "081000000843",
+            onError = {
+                isError = true
+            },
+            onEmptyPhoneNumber = {},
+            onBelowMinCharacter = {},
+            onInvalidPhoneNumber = {},
+        )
+
+        // Then
+        Assert.assertFalse(isError)
+    }
+
+    @Test
+    fun `verify validate receiver name error when phone number null`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validateReceiverName(
+            receiverName = null,
+            onError = {
+                isError = true
+            },
+            onEmptyReceiverName = {},
+            onBelowMinCharacter = {},
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+    }
+
+    @Test
+    fun `verify validate receiver name error when phone number empty`() {
+        // Inject
+        var isError = false
+        var isEmpty = false
+
+        // When
+        addressFormViewModel.validateReceiverName(
+            receiverName = "",
+            onError = {
+                isError = true
+            },
+            onEmptyReceiverName = {
+                isEmpty = true
+            },
+            onBelowMinCharacter = {},
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isEmpty)
+    }
+
+    @Test
+    fun `verify validate receiver name error when phone number below min character`() {
+        // Inject
+        var isError = false
+        var isBelowMinCharacter = false
+
+        // When
+        addressFormViewModel.validateReceiverName(
+            receiverName = "a",
+            onError = {
+                isError = true
+            },
+            onEmptyReceiverName = {},
+            onBelowMinCharacter = {
+                isBelowMinCharacter = true
+            }
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isBelowMinCharacter)
+    }
+
+    @Test
+    fun `verify validate receiver name is valid`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validateReceiverName(
+            receiverName = "Bambang",
+            onError = {
+                isError = true
+            },
+            onEmptyReceiverName = {},
+            onBelowMinCharacter = {},
+        )
+
+        // Then
+        Assert.assertFalse(isError)
+    }
+
+    @Test
+    fun `verify validate address error when phone number null`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validateAddress(
+            address = null,
+            onError = {
+                isError = true
+            },
+            onEmptyAddress = {},
+            onBelowMinCharacter = {},
+            isErrorTextField = false
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+    }
+
+    @Test
+    fun `verify validate address name error when phone number empty`() {
+        // Inject
+        var isError = false
+        var isEmpty = false
+
+        // When
+        addressFormViewModel.validateAddress(
+            address = "",
+            onError = {
+                isError = true
+            },
+            onEmptyAddress = {
+                isEmpty = true
+            },
+            onBelowMinCharacter = {},
+            isErrorTextField = false
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isEmpty)
+    }
+
+    @Test
+    fun `verify validate address error when phone number below min character`() {
+        // Inject
+        var isError = false
+        var isBelowMinCharacter = false
+
+        // When
+        addressFormViewModel.validateAddress(
+            address = "ab",
+            onError = {
+                isError = true
+            },
+            onEmptyAddress = {},
+            onBelowMinCharacter = {
+                isBelowMinCharacter = true
+            },
+            isErrorTextField = false
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isBelowMinCharacter)
+    }
+
+    @Test
+    fun `verify validate address error when is error text field`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validateAddress(
+            address = "abcd",
+            onError = {
+                isError = true
+            },
+            onEmptyAddress = {},
+            onBelowMinCharacter = {},
+            isErrorTextField = true
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+    }
+
+    @Test
+    fun `verify validate address is valid`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validateAddress(
+            address = "Jl. Patimura 27 AB",
+            onError = {
+                isError = true
+            },
+            onEmptyAddress = {},
+            onBelowMinCharacter = {},
+            isErrorTextField = false
+        )
+
+        // Then
+        Assert.assertFalse(isError)
+    }
+
+    @Test
+    fun `verify validate label error when phone number null`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validateLabel(
+            label = null,
+            onError = {
+                isError = true
+            },
+            onEmptyLabel = {},
+            onBelowMinCharacter = {},
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+    }
+
+    @Test
+    fun `verify validate label error when phone number empty`() {
+        // Inject
+        var isError = false
+        var isEmpty = false
+
+        // When
+        addressFormViewModel.validateLabel(
+            label = "",
+            onError = {
+                isError = true
+            },
+            onEmptyLabel = {
+                isEmpty = true
+            },
+            onBelowMinCharacter = {},
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isEmpty)
+    }
+
+    @Test
+    fun `verify validate label error when phone number below min character`() {
+        // Inject
+        var isError = false
+        var isBelowMinCharacter = false
+
+        // When
+        addressFormViewModel.validateLabel(
+            label = "ab",
+            onError = {
+                isError = true
+            },
+            onEmptyLabel = {},
+            onBelowMinCharacter = {
+                isBelowMinCharacter = true
+            }
+        )
+
+        // Then
+        Assert.assertTrue(isError)
+        Assert.assertTrue(isBelowMinCharacter)
+    }
+
+    @Test
+    fun `verify validate label is valid`() {
+        // Inject
+        var isError = false
+
+        // When
+        addressFormViewModel.validateLabel(
+            label = "Rumah warna merah",
+            onError = {
+                isError = true
+            },
+            onEmptyLabel = {},
+            onBelowMinCharacter = {},
+        )
+
+        // Then
+        Assert.assertFalse(isError)
+    }
+
+    @Test
+    fun `verify validate fields when positive flow is correctly`() {
+        // Inject
+        val validatePositiveFlow = arrayListOf(
+            FieldType.PHONE_NUMBER,
+            FieldType.RECEIVER_NAME,
+            FieldType.COURIER_NOTE,
+            FieldType.ADDRESS,
+            FieldType.LABEL
+        )
+
+        // When
+        addressFormViewModel.isPositiveFlow = true
+
+        // Then
+        Assert.assertEquals(addressFormViewModel.validateFields, validatePositiveFlow)
+    }
+
+    @Test
+    fun `verify validate fields when negative flow is correctly`() {
+        // Inject
+        val validateNegativeFlow = arrayListOf(
+            FieldType.COURIER_NOTE,
+            FieldType.ADDRESS,
+            FieldType.LABEL,
+            FieldType.PHONE_NUMBER,
+            FieldType.RECEIVER_NAME
+        )
+
+        // When
+        addressFormViewModel.isPositiveFlow = false
+
+        // Then
+        Assert.assertEquals(addressFormViewModel.validateFields, validateNegativeFlow)
     }
 }
