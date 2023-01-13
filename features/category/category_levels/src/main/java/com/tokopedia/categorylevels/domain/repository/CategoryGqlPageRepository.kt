@@ -9,6 +9,8 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.URLEncoder
 
 class CategoryGqlPageRepository(private val departmentName: String,
@@ -43,8 +45,9 @@ class CategoryGqlPageRepository(private val departmentName: String,
     override suspend fun getDiscoveryPageData(pageIdentifier: String, extraParams: Map<String,Any>?): DiscoveryResponse {
         val data = getGQLData(GQL_CATEGORY_GET_DETAIL_MODULAR, CategoryGetDetailModularData::class.java, createRequestParameterCategory(pageIdentifier)).categoryGetDetailModular
         return data.basicInfo.let { basicInfo ->
-            DiscoveryResponse(
-                    components = getCategoryComponents(pageIdentifier,data),
+            withContext(Dispatchers.Default) {
+                DiscoveryResponse(
+                    components = getCategoryComponents(pageIdentifier, data),
                     pageInfo = PageInfo(
                             identifier = pageIdentifier, name = basicInfo.name, type = "", path = basicInfo.url, id = basicInfo.id
                             ?: 0, showChooseAddress = true,
@@ -68,7 +71,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                         KEY_TREE to (basicInfo.tree.toString())
                     )
                 )
-            )
+            )}
         }
     }
 

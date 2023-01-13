@@ -721,8 +721,6 @@ class AddEditProductDetailFragment :
         // tracking
         if (viewModel.isEditing) {
             ProductEditMainTracking.trackRemovePhoto(shopId)
-        } else {
-            ProductAddMainTracking.trackRemovePhoto(shopId)
         }
     }
 
@@ -815,8 +813,6 @@ class AddEditProductDetailFragment :
 
                     if (viewModel.isEditing) {
                         ProductEditMainTracking.trackBack(shopId)
-                    } else {
-                        ProductAddMainTracking.trackBack(shopId)
                     }
                 }
             }
@@ -1487,8 +1483,6 @@ class AddEditProductDetailFragment :
             // tracking
             if (isEditing) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
-            } else {
-                ProductAddMainTracking.trackAddPhoto(shopId)
             }
 
             val intent = ImagePickerAddEditNavigation.getIntent(
@@ -1589,8 +1583,6 @@ class AddEditProductDetailFragment :
                 if (!isPreOrderFirstTime) {
                     if (viewModel.isEditing) {
                         ProductEditMainTracking.clickPreorderButton(shopId)
-                    } else {
-                        ProductAddMainTracking.clickPreorderButton(shopId)
                     }
                 }
 
@@ -1712,8 +1704,6 @@ class AddEditProductDetailFragment :
             if (isChecked) {
                 if (viewModel.isEditing) {
                     ProductEditMainTracking.clickWholesale(shopId)
-                } else {
-                    ProductAddMainTracking.clickWholesale(shopId)
                 }
 
                 if (viewModel.hasVariants) {
