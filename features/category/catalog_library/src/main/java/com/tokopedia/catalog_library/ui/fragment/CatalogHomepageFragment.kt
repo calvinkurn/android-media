@@ -52,6 +52,23 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
             ViewModelProvider(this, it).get(CatalogHomepageViewModel::class.java)
         }
     }
+    private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
+        CatalogHomepageAdapterFactoryImpl(
+            this
+        )
+    }
+
+    private val catalogHomeAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
+            AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
+        CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
+    }
+
+    private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
+        CatalogLibraryUiUpdater(mutableMapOf()).also {
+            it.setUpForHomePage()
+        }
+
     override var baseRecyclerView: RecyclerView?
         get() = catalogHomeRecyclerView
         set(value) {}
@@ -97,22 +114,6 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build().inject(this)
     }
-    private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
-        CatalogHomepageAdapterFactoryImpl(
-            this
-        )
-    }
-
-    private val catalogHomeAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
-            AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
-        CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
-    }
-
-    private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
-        CatalogLibraryUiUpdater(mutableMapOf()).also {
-            it.setUpForHomePage()
-        }
 
     private fun setupRecyclerView(view: View) {
         catalogHomeRecyclerView = view.findViewById(R.id.catalog_home_rv)

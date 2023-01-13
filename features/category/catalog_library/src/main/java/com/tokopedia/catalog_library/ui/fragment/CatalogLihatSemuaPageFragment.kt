@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +37,8 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
 
     private var catalogLihatPageRecyclerView: RecyclerView? = null
     private var shimmerLayout: ScrollView? = null
+    private var sortAsc: Typography? = null
+    private var sortDesc: Typography? = null
 
     companion object {
         const val CATALOG_LIHAT_PAGE_FRAGMENT_TAG = "CATALOG_LIHAT_PAGE_FRAGMENT_TAG"
@@ -92,16 +95,37 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         shimmerLayout = view.findViewById(R.id.shimmer_layout)
+        sortAsc = view.findViewById(R.id.sort_order_0)
+        sortDesc = view.findViewById(R.id.sort_order_1)
+        sortDesc?.setBackgroundColor(
+            ContextCompat.getColor(
+                view.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        )
+
         initHeaderTitle(view)
         activity?.let {
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
             showShimmer()
         }
-        view.findViewById<Typography>(R.id.sort_order_0).setOnClickListener {
-            changeSortOrderAsc()
+        sortAsc?.setOnClickListener {
+            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
+            sortDesc?.setBackgroundColor(
+                ContextCompat.getColor(
+                    view.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                )
+            )
         }
-        view.findViewById<Typography>(R.id.sort_order_1).setOnClickListener {
-            changeSortOrderDesc()
+        sortDesc?.setOnClickListener {
+            lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER, DEVICE)
+            sortAsc?.setBackgroundColor(
+                ContextCompat.getColor(
+                    view.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                )
+            )
         }
         setupRecyclerView(view)
         setObservers()
@@ -170,14 +194,6 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             global_error_page.hide()
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
         }
-    }
-
-    fun changeSortOrderAsc() {
-        lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
-    }
-
-    fun changeSortOrderDesc() {
-        lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER, DEVICE)
     }
 
     override fun onCategoryItemClicked(categoryName: String?) {
