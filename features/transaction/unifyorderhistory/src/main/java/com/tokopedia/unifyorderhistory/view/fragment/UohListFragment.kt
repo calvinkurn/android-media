@@ -1870,7 +1870,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
                         if (dotMenu.appURL.contains(APPLINK_BASE)) {
                             var helpLinkUrl = ""
-                            currIndexNeedUpdate = index
+                            currIndexNeedUpdate = orderIndex
                             orderIdNeedUpdated = orderData.orderUUID
                             orderData.metadata.dotMenus.forEach {
                                 if (it.label.equals(LABEL_HELP_LINK)) {
