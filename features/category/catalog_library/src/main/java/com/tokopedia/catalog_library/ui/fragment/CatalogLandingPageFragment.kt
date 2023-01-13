@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
@@ -20,10 +18,8 @@ import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_TOP_FIVE
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
@@ -39,10 +35,11 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener {
+class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     private var globalError: GlobalError? = null
     private var categoryName = ""
+    private var catalogLandingRecyclerView: RecyclerView? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -65,8 +62,6 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
         CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
     }
 
-    private var catalogLandingRecyclerView: RecyclerView? = null
-
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
             it.setUpForLandingPage()
@@ -84,6 +79,21 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
         }
     }
 
+    override var baseRecyclerView: RecyclerView?
+        get() = catalogLandingRecyclerView
+        set(value) {}
+
+    override fun getScreenName(): String {
+        // TODO send Screen Name if any GTM
+        return ""
+    }
+
+    override fun initInjector() {
+        DaggerCatalogLibraryComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -96,19 +106,11 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
         super.onViewCreated(view, savedInstanceState)
         extractArguments()
         initViews(view)
+        setCategory(categoryName)
+        setUpBase()
         initData()
     }
 
-    override fun getScreenName(): String {
-        // TODO send Screen Name if any GTM
-        return ""
-    }
-
-    override fun initInjector() {
-        DaggerCatalogLibraryComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build().inject(this)
-    }
     private fun extractArguments() {
         categoryName = arguments?.getString(ARG_CATEGORY_NAME, "") ?: ""
     }
@@ -128,7 +130,7 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
     private fun setupRecyclerView(view: View) {
         catalogLandingRecyclerView = view.findViewById(R.id.catalog_landing_rv)
         catalogLandingRecyclerView?.apply {
-            layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = getLinearLayoutManager()
             adapter = catalogLandingPageAdapter
             setHasFixedSize(true)
         }
@@ -202,7 +204,6 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
             SORT_TYPE_VIRAL,
             TOTAL_ROWS_VIRAL
         )
-        landingPageViewModel.getCatalogListData(categoryName, SORT_TYPE_CATALOG, TOTAL_ROWS_CATALOG)
     }
 
     private fun addShimmer() {
@@ -228,5 +229,27 @@ class CatalogLandingPageFragment : BaseDaggerFragment(), CatalogLibraryListener 
     override fun onProductCardClicked(applink: String?) {
         super.onProductCardClicked(applink)
         RouteManager.route(context, applink)
+    }
+
+    override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {
+        productsList.forEach { component ->
+            catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
+            catalogLibraryUiUpdater.updateModel(component)
+        }
+        updateUi()
+    }
+
+    override fun onShimmerAdded() {
+        val shimmerDataModel = CatalogShimmerDataModel(
+            CatalogLibraryConstant.CATALOG_PRODUCT,
+            CatalogLibraryConstant.CATALOG_PRODUCT,
+            CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
+        )
+        catalogLibraryUiUpdater.updateModel(shimmerDataModel)
+        updateUi()
+    }
+
+    override fun onErrorFetchingProducts(throwable: Throwable) {
+        onError(throwable)
     }
 }

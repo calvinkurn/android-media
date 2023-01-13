@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
 import com.tokopedia.catalog_library.viewmodels.ProductsBaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,9 +19,9 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
 
     private var linearLayoutManager: LinearLayoutManager? = null
     abstract var baseRecyclerView: RecyclerView?
-
     private var categoryIdentifier = ""
-    private var sortType = 0
+
+    private var sortType = SORT_TYPE_CATALOG
     private val rows = TOTAL_ROWS_CATALOG
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -41,6 +42,10 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initLayoutManager()
+    }
+
+    fun setCategory(categoryName: String) {
+        categoryIdentifier = categoryName
     }
 
     fun setUpBase() {
