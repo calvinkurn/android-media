@@ -1,52 +1,33 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputType
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.TextWatcher
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
-import com.tokopedia.logisticseller.data.model.RescheduleDetailModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
-import com.tokopedia.logisticseller.databinding.FragmentReschedulePickupBinding
 import com.tokopedia.logisticseller.di.DaggerReschedulePickupComponent
 import com.tokopedia.logisticseller.di.ReschedulePickupComponent
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleDayBottomSheet
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleReasonBottomSheet
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleTimeBottomSheet
-import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.ReschedulePickupLoadingDialog
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.ReschedulePickupResultDialog
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReschedulePickupComposeFragment :
@@ -64,13 +45,8 @@ class ReschedulePickupComposeFragment :
         ViewModelProvider(this, viewModelFactory).get(ReschedulePickupComposeViewModel::class.java)
     }
 
-    private var binding by autoClearedNullable<FragmentReschedulePickupBinding>()
     private var toaster: Snackbar? = null
-    private var loadingDialog: ReschedulePickupLoadingDialog? = null
     private var orderId: String = ""
-    private var day: RescheduleDayOptionModel? = null
-    private var time: RescheduleTimeOptionModel? = null
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -92,10 +68,9 @@ class ReschedulePickupComposeFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        binding = FragmentReschedulePickupBinding.inflate(inflater, container, false)
         return ComposeView(requireContext()).apply {
             setContent {
-                NestTheme() {
+                NestTheme {
                     ReschedulePickupScreen(
                         viewModel.uiState.collectAsState(),
                         viewModel.input,
@@ -104,7 +79,10 @@ class ReschedulePickupComposeFragment :
                         onReasonClicked = { openReasonSelectionBottomSheet(it) },
                         onSubtitleClicked = {
                             RouteManager.route(context, ApplinkConst.WEBVIEW.plus("?url=$it"))
-                        })
+                        },
+                        onOtherReasonChanged = { viewModel.setCustomReason(it) },
+                        onSaveReschedule = { viewModel.saveReschedule(orderId) }
+                    )
                 }
             }
         }
@@ -112,129 +90,11 @@ class ReschedulePickupComposeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        initObserver()
         getInitialData()
     }
 
-//    private fun initObserver() {
-//        viewModel.reschedulePickupDetail.observe(viewLifecycleOwner, {
-//            binding?.loaderReschedulePickup?.visibility = View.GONE
-//            when (it) {
-//                is Success -> {
-//                    if (it.data.errorMessage.isNotEmpty()) {
-//                        showErrorToaster(it.data.errorMessage, this::getInitialData)
-//                    }
-//                    bindDataWithView(it.data)
-//                }
-//                is Fail -> {
-//                    NetworkErrorHelper.showEmptyState(
-//                        activity,
-//                        binding?.rootView,
-//                        this::getInitialData
-//                    )
-//                }
-//            }
-//        })
-//
-//        viewModel.saveRescheduleDetail.observe(viewLifecycleOwner, {
-//            loadingDialog?.dismiss()
-//            when (it) {
-//                is Success -> {
-//                    val message = if (it.data.success) {
-//                        getString(
-//                            R.string.template_success_reschedule_pickup,
-//                            it.data.etaPickup
-//                        )
-//                    } else {
-//                        it.data.message
-//                    }
-//                    showResultDialog(message, it.data.success)
-//                }
-//                is Fail -> {
-//                    showErrorToaster(
-//                        ErrorHandler.getErrorMessage(context, it.throwable),
-//                        this::saveRescheduleDetail
-//                    )
-//                }
-//            }
-//        })
-//    }
-
     private fun getInitialData() {
-        showInitialLoading()
         viewModel.getReschedulePickupDetail(orderId)
-    }
-
-    private fun showInitialLoading() {
-        binding?.let {
-            it.loaderReschedulePickup.visibility = View.VISIBLE
-            it.etDay.editText.isEnabled = false
-            it.etTime.editText.isEnabled = false
-            it.etReason.editText.isEnabled = false
-        }
-    }
-
-    private fun bindDataWithView(data: RescheduleDetailModel) {
-        binding?.let {
-            it.invoiceOrderDetail.text = data.invoice
-            it.courierOrderDetail.text = data.courierName
-            val rescheduleGuide =
-                context?.let { ctx -> HtmlLinkHelper(ctx, data.ticker).spannedString }
-            rescheduleGuide?.let { guide -> it.tipsReschedulePickup.description = guide }
-
-            showSubtitle(requireContext(), it.subtitleReschedulePickup, data.appLink)
-
-            it.etDay.editText.run {
-                isEnabled = true
-                inputType = InputType.TYPE_NULL
-                setOnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        openDaySelectionBottomSheet(data.options.dayOptions)
-                    }
-                }
-                setOnClickListener {
-                    openDaySelectionBottomSheet(data.options.dayOptions)
-                }
-            }
-
-            it.etTime.editText.isEnabled = false
-
-            it.etReason.editText.run {
-                isEnabled = true
-                inputType = InputType.TYPE_NULL
-                setOnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        openReasonSelectionBottomSheet(data.options.reasonOptionModel)
-                    }
-                }
-                setOnClickListener {
-                    openReasonSelectionBottomSheet(data.options.reasonOptionModel)
-                }
-            }
-
-            it.btnReschedulePickup.setOnClickListener {
-                saveRescheduleDetail()
-            }
-        }
-    }
-
-    private fun saveRescheduleDetail() {
-        loadingDialog = ReschedulePickupLoadingDialog(requireContext()).apply {
-            init()
-        }
-        loadingDialog?.show()
-        val chosenReason = binding?.etReason?.editText?.text.toString()
-        val otherReason = binding?.etReasonDetail?.editText?.text.toString()
-        val reason = if (chosenReason == OTHER_REASON_RESCHEDULE) {
-            otherReason
-        } else {
-            chosenReason
-        }
-        val dayChosen = day?.day
-        val timeChosen = time
-        if (dayChosen != null && timeChosen != null) {
-            viewModel.saveReschedule(orderId, dayChosen, timeChosen, reason)
-        }
     }
 
     private fun openDaySelectionBottomSheet(daysOption: List<RescheduleDayOptionModel>) {
@@ -256,40 +116,6 @@ class ReschedulePickupComposeFragment :
             setOptions(reasonOption)
             setListener(this@ReschedulePickupComposeFragment)
         }.show(parentFragmentManager)
-    }
-
-    private fun showSubtitle(context: Context, textView: TextView?, appLink: String) {
-        val onSubtitleClicked: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                RouteManager.route(context, ApplinkConst.WEBVIEW.plus("?url=$appLink"))
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
-                )
-            }
-        }
-        val boldSpan = StyleSpan(Typeface.BOLD)
-
-        val subtitle = getString(R.string.label_subtitle_reschedule_pick_up)
-        val clickableText = "di sini"
-        val firstIndex = subtitle.indexOf(clickableText)
-        val lastIndex = firstIndex.plus(clickableText.length)
-
-        val subtitleText = SpannableString(subtitle).apply {
-            setSpan(onSubtitleClicked, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(boldSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-
-        textView?.run {
-            movementMethod = LinkMovementMethod.getInstance()
-            isClickable = true
-            setText(subtitleText, TextView.BufferType.SPANNABLE)
-        }
     }
 
     private fun showResultDialog(
@@ -323,61 +149,6 @@ class ReschedulePickupComposeFragment :
         }
     }
 
-    private fun setWrapperWatcherOtherReason(wrapper: TextInputLayout): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length < OTHER_REASON_MIN_CHAR) {
-                    setWrapperError(
-                        wrapper,
-                        getString(R.string.error_message_reason_below_min_char)
-                    )
-                } else if (s.length >= OTHER_REASON_MAX_CHAR) {
-                    setWrapperError(
-                        wrapper,
-                        getString(R.string.error_message_reason_over_max_char)
-                    )
-                } else {
-                    setWrapperError(wrapper, null)
-                }
-                validateInput()
-            }
-
-            override fun afterTextChanged(text: Editable) {
-            }
-        }
-    }
-
-    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
-        if (s.isNullOrBlank()) {
-            wrapper.error = s
-            wrapper.isErrorEnabled = false
-        } else {
-            wrapper.isErrorEnabled = true
-            wrapper.error = s
-        }
-    }
-
-    private fun setRescheduleDetailSummary(etaPickup: String) {
-        binding?.layoutRescheduleDetail?.visibility = View.VISIBLE
-        binding?.layoutRescheduleDetail?.setHtmlDescription(etaPickup)
-    }
-
-    private fun validateInput() {
-        val chosenReason = binding?.etReason?.editText?.text.toString()
-        val otherReason = binding?.etReasonDetail?.editText?.text.toString()
-        val isReasonValid = if (chosenReason == OTHER_REASON_RESCHEDULE) {
-            otherReason.length in OTHER_REASON_MIN_CHAR..OTHER_REASON_MAX_CHAR
-        } else {
-            chosenReason.isNotEmpty()
-        }
-
-        binding?.btnReschedulePickup?.isEnabled =
-            (day != null) && (time != null) && (chosenReason.isNotEmpty()) && (isReasonValid)
-    }
-
     private fun showErrorToaster(
         message: String,
         onClick: () -> Unit
@@ -409,9 +180,6 @@ class ReschedulePickupComposeFragment :
     }
 
     companion object {
-        private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
-        private const val OTHER_REASON_MIN_CHAR = 15
-        private const val OTHER_REASON_MAX_CHAR = 160
         fun newInstance(bundle: Bundle): ReschedulePickupComposeFragment {
             return ReschedulePickupComposeFragment().apply {
                 arguments = Bundle().apply {

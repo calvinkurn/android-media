@@ -7,7 +7,11 @@ import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 data class ReschedulePickupState(
     val info: ReschedulePickupInfo = ReschedulePickupInfo(),
     val options: ReschedulePickupOptions = ReschedulePickupOptions(),
-    val error: String = ""
+    val error: String = "",
+    val valid: Boolean = false,
+    val isCustomReason: Boolean = false,
+    val reason: String = "",
+    val customReasonError: String? = null
 )
 
 data class ReschedulePickupInput(

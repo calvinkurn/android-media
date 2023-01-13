@@ -3,6 +3,7 @@ package com.tokopedia.logisticseller.ui.reschedulepickup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,17 +15,18 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.principles.NestButton
@@ -45,7 +47,9 @@ fun ReschedulePickupScreen(
     onDayClicked: (List<RescheduleDayOptionModel>) -> Unit,
     onTimeClicked: (List<RescheduleTimeOptionModel>) -> Unit,
     onReasonClicked: (List<RescheduleReasonOptionModel>) -> Unit,
-    onSubtitleClicked: (String) -> Unit
+    onSubtitleClicked: (String) -> Unit,
+    onOtherReasonChanged: (String) -> Unit,
+    onSaveReschedule: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -145,7 +149,7 @@ fun ReschedulePickupScreen(
             trailingIcon = { TrailingIconTextField() }
         )
         TextFieldUnifyCompose(
-            value = input.reason,
+            value = state.value.reason,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -163,22 +167,27 @@ fun ReschedulePickupScreen(
                     .padding(horizontal = 16.dp)
             )
         }
-        TextFieldUnifyCompose(
-            value = "",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            label = {
-                NestTypography(text = stringResource(id = R.string.label_detail_reason_reschedule_pickup))
-            }
-        )
+        if (state.value.isCustomReason) {
+            TextFieldUnifyCompose(
+                value = input.reason,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                label = {
+                    NestTypography(text = stringResource(id = R.string.label_detail_reason_reschedule_pickup))
+                },
+                onValueChanged = { onOtherReasonChanged(it) },
+                isError = state.value.customReasonError != null
+            )
+        }
         NestButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            text = stringResource(id = R.string.title_button_reschedule_pickup)
+            text = stringResource(id = R.string.title_button_reschedule_pickup),
+            enabled = state.value.valid
         ) {
-//
+            onSaveReschedule()
         }
     }
 }
@@ -215,21 +224,26 @@ fun TrailingIconTextField() {
 @Composable
 fun TextFieldUnifyCompose(
     value: String,
-    onValueChanged: (TextFieldValue) -> Unit = {},
+    onValueChanged: (String) -> Unit = {},
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    isError: Boolean = false
+//    supportingText: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
-        value = TextFieldValue(text = value),
+        value = value,
         onValueChange = onValueChanged,
+        textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
         modifier = modifier,
         placeholder = placeholder,
         trailingIcon = trailingIcon,
         label = label,
-        enabled = enabled
+        enabled = enabled,
+        isError = isError
+//        supportingText = supportingText
     )
 }
 
@@ -244,22 +258,25 @@ fun TipsUnifyCompose(
         border = BorderStroke(width = 1.dp, color = NestTheme.colors.NN._200),
         backgroundColor = if (isSystemInDarkTheme()) NestTheme.colors.NN._200 else NestTheme.colors.NN._50
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            title?.run {
-                NestTypography(
-                    text = this,
-                    textStyle = NestTheme.typography.paragraph3.copy(fontWeight = FontWeight.Bold)
+        Box {
+            Icon(
+                imageVector = Icons.Filled.AccountBox,
+                contentDescription = "tips logo",
+                modifier = Modifier.align(
+                    Alignment.TopEnd
                 )
-            }
-            description?.run {
-                NestTypography(text = this, textStyle = NestTheme.typography.small)
+            )
+            Column(modifier = Modifier.padding(16.dp)) {
+                title?.run {
+                    NestTypography(
+                        text = this,
+                        textStyle = NestTheme.typography.paragraph3.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+                description?.run {
+                    NestTypography(text = this, textStyle = NestTheme.typography.small)
+                }
             }
         }
     }
 }
-
-// @Preview
-// @Composable
-// fun ReschedulePickupScreenPreview() {
-//    ReschedulePickupScreen()
-// }

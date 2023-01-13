@@ -31,7 +31,6 @@ class ReschedulePickupComposeViewModel @Inject constructor(
     var input by mutableStateOf(ReschedulePickupInput())
         private set
 
-
     fun getReschedulePickupDetail(orderId: String) {
         launchCatchError(
             block = {
@@ -59,23 +58,66 @@ class ReschedulePickupComposeViewModel @Inject constructor(
             options = state.options.copy(timeOptions = day.timeOptions),
             info = state.info.copy(summary = "")
         )
+        validateInput()
     }
 
     fun setTime(time: RescheduleTimeOptionModel) {
         input = input.copy(time = time.time)
         val state = _uiState.value
         _uiState.value = state.copy(info = state.info.copy(summary = time.etaPickup))
+        validateInput()
     }
 
-    fun setReason(reasonOptionModel: RescheduleReasonOptionModel) {
-        input = input.copy(reason = reasonOptionModel.reason)
+    fun setReason(reason: RescheduleReasonOptionModel) {
+        val state = _uiState.value
+        _uiState.value = state.copy(
+            reason = reason.reason,
+            isCustomReason = reason.reason == OTHER_REASON_RESCHEDULE
+        )
+        if (reason.reason != OTHER_REASON_RESCHEDULE) {
+            input = input.copy(reason = reason.reason)
+        } else {
+            input = input.copy(reason = "")
+        }
+        validateInput()
+    }
+
+    fun setCustomReason(reason: String) {
+        input = input.copy(reason = reason)
+        validateCustomReason(reason)
+        validateInput()
+    }
+
+    private fun validateInput() {
+        val isValid =
+            input.day.isNotEmpty() && input.time.isNotEmpty() && validateReason(input.reason)
+        val state = _uiState.value
+        _uiState.value = state.copy(valid = isValid)
+    }
+
+    private fun validateReason(reason: String): Boolean {
+        return if (reason == OTHER_REASON_RESCHEDULE) {
+            reason.length in OTHER_REASON_MIN_CHAR..OTHER_REASON_MAX_CHAR
+        } else {
+            reason.isNotEmpty()
+        }
+    }
+
+    private fun validateCustomReason(reason: String) {
+        val state = _uiState.value
+        val error =
+            if (reason.length < OTHER_REASON_MIN_CHAR) {
+                "Min. 15 karakter"
+            } else if (reason.length >= OTHER_REASON_MAX_CHAR) {
+                "Sudah mencapai maks. char"
+            } else {
+                null
+            }
+        _uiState.value = state.copy(customReasonError = error)
     }
 
     fun saveReschedule(
-        orderId: String,
-        date: String,
-        time: RescheduleTimeOptionModel,
-        reason: String
+        orderId: String
     ) {
 //        launchCatchError(
 //            block = {
@@ -86,5 +128,11 @@ class ReschedulePickupComposeViewModel @Inject constructor(
 //                _saveRescheduleDetail.value = Fail(it)
 //            }
 //        )
+    }
+
+    companion object {
+        private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
+        private const val OTHER_REASON_MIN_CHAR = 15
+        private const val OTHER_REASON_MAX_CHAR = 160
     }
 }
