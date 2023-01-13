@@ -1,7 +1,7 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog_library.R
@@ -17,7 +17,8 @@ class CatalogMostViralItemViewHolder(val view: View, private val catalogLibraryL
     private val mostViralImage = view.findViewById<ImageUnify>(R.id.catalog_product_viral_image)
     private val mostViralTitle = view.findViewById<Typography>(R.id.catalog_product_viral_title)
     private val mostViralIcon = view.findViewById<IconUnify>(R.id.catalog_most_viral_icon)
-    private val mostViralLayout = view.findViewById<LinearLayout>(R.id.catalog_most_viral_item_layout)
+    private val mostViralLayout =
+        view.findViewById<ConstraintLayout>(R.id.catalog_most_viral_item_layout)
 
     companion object {
         val LAYOUT = R.layout.item_catalog_most_viral
