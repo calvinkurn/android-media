@@ -2,7 +2,6 @@ package com.tokopedia.mvc.presentation.creation.step3
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherSettingBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeButtonSectionBinding
@@ -408,6 +404,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackNominalInput(currentVoucherConfiguration: VoucherConfiguration) {
         cashbackInputSectionBinding?.run {
             tfCashbackNominal.apply {
+                visible()
                 tpgCashbackMaxDeductionLabel.gone()
                 tfCahsbackMaxDeduction.gone()
                 appendText("")
@@ -425,12 +422,14 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
+            tfCashbackPercentage.invisible()
         }
     }
 
     private fun setCashbackPercentageInput(currentVoucherConfiguration: VoucherConfiguration) {
         cashbackInputSectionBinding?.run {
-            tfCashbackNominal.apply {
+            tfCashbackPercentage.apply {
+                visible()
                 tpgCashbackMaxDeductionLabel.visible()
                 tfCahsbackMaxDeduction.visible()
                 appendText(getString(R.string.smvc_percent_symbol))
@@ -448,6 +447,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
+            tfCashbackNominal.invisible()
         }
     }
 
@@ -520,8 +520,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         cashbackPercentageInputErrorMsg: String
     ) {
         cashbackInputSectionBinding?.run {
-            tfCashbackNominal.isInputError = isCashbackPercentageInputError
-            tfCashbackNominal.setMessage(cashbackPercentageInputErrorMsg)
+            tfCashbackPercentage.isInputError = isCashbackPercentageInputError
+            tfCashbackPercentage.setMessage(cashbackPercentageInputErrorMsg)
         }
     }
 
