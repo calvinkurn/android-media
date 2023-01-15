@@ -2,6 +2,7 @@ package com.tokopedia.mvc.presentation.creation.step3
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherSettingBinding
@@ -122,7 +124,21 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun handleUiState(state: VoucherCreationStepThreeUiState) {
-
+        when(state.voucherConfiguration.promoType) {
+            PromoType.FREE_SHIPPING -> {
+                //free shipping input
+                renderFreeShippingNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
+                renderFreeShippingMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
+                renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)}
+            PromoType.CASHBACK -> {
+                //cashback input
+                renderCashbackNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
+                renderCashbackPercentageInputValidation(state.isPercentageError, state.percentageErrorMsg)
+                renderCashbackMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
+                renderCashbackMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
+                renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)}
+            PromoType.DISCOUNT -> {}
+        }
     }
 
     private fun handleAction(action: VoucherCreationStepThreeAction) {
@@ -311,6 +327,36 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun renderFreeShippingNominalInputValidation(
+        isFreeShippingNominalError: Boolean,
+        freeShippingNominalErrorMsg: String
+    ) {
+        freeShippingInputSectionBinding?.run {
+            tfFreeShippingNominal.isInputError = isFreeShippingNominalError
+            tfFreeShippingNominal.setMessage(freeShippingNominalErrorMsg)
+        }
+    }
+
+    private fun renderFreeShippingMinimumBuyInputValidation(
+        isFreeShippingMinimumBuyError: Boolean,
+        freeShippingMinimumBuyErrorMsg: String
+    ) {
+        freeShippingInputSectionBinding?.run {
+            tfFreeShippingMinimumBuy.isInputError = isFreeShippingMinimumBuyError
+            tfFreeShippingMinimumBuy.setMessage(freeShippingMinimumBuyErrorMsg)
+        }
+    }
+
+    private fun renderFreeShippingQuotaInputValidation(
+        isFreeShippingQuotaError: Boolean,
+        freeShippingQuotaErrorMsg: String
+    ) {
+        freeShippingInputSectionBinding?.run {
+            tfFreeShippingQuota.isInputError = isFreeShippingQuotaError
+            tfFreeShippingQuota.setMessage(freeShippingQuotaErrorMsg)
+        }
+    }
+
     //Cashback input region
     private fun setCashbackSelected() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
@@ -397,7 +443,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputPercentageChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputPercentageChanged(it.toIntOrZero())
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -456,6 +502,56 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
+        }
+    }
+
+    private fun renderCashbackNominalInputValidation(
+        isCashbackNominalInputError: Boolean,
+        cashbackNominalInputErrorMsg: String
+    ) {
+        cashbackInputSectionBinding?.run {
+            tfCashbackNominal.isInputError = isCashbackNominalInputError
+            tfCashbackNominal.setMessage(cashbackNominalInputErrorMsg)
+        }
+    }
+
+    private fun renderCashbackPercentageInputValidation(
+        isCashbackPercentageInputError: Boolean,
+        cashbackPercentageInputErrorMsg: String
+    ) {
+        cashbackInputSectionBinding?.run {
+            tfCashbackNominal.isInputError = isCashbackPercentageInputError
+            tfCashbackNominal.setMessage(cashbackPercentageInputErrorMsg)
+        }
+    }
+
+    private fun renderCashbackMaxDeductionInputValidation(
+        isCashbackMaxDeductionInputError: Boolean,
+        cashbackMaxDeductionInputErrorMsg: String
+    ) {
+        cashbackInputSectionBinding?.run {
+            tfCahsbackMaxDeduction.isInputError = isCashbackMaxDeductionInputError
+            tfCahsbackMaxDeduction.setMessage(cashbackMaxDeductionInputErrorMsg)
+        }
+    }
+
+    private fun renderCashbackMinimumBuyInputValidation(
+        isCashbackMinimunBuyInputError: Boolean,
+        cashbackMinimumBuyInputErrorMsg: String
+    ) {
+        cashbackInputSectionBinding?.run {
+            tfCashbackMinimumBuy.isInputError = isCashbackMinimunBuyInputError
+            tfCashbackMinimumBuy.setMessage(cashbackMinimumBuyInputErrorMsg)
+        }
+    }
+
+    private fun renderCashbackQuotaInputValidation(
+        isCashbackQuotaInputError: Boolean,
+        cashbackQuotaInputErrorMsg: String
+    ) {
+        cashbackInputSectionBinding?.run {
+            tfCashbackQuota.isInputError = isCashbackQuotaInputError
+            tfCashbackQuota.setMessage(cashbackQuotaInputErrorMsg)
         }
     }
 
@@ -545,7 +641,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputPercentageChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputPercentageChanged(it.toIntOrZero())
                         )
                     }
                     .launchIn(lifecycleScope)

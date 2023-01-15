@@ -26,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_free_shipping_nominal_label"
+        app:unify_text_field_input_type="number"
         app:unify_text_field_label_static="true"
         app:unify_text_field_placeholder="Min. Rp5.000"
         app:unify_text_field_prepend_text="Rp" />
@@ -49,11 +50,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        app:unify_text_field_message="@string/smvc_minimum_buy_desc_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_free_shipping_minimum_buy_label"
+        app:unify_text_field_input_type="number"
         app:unify_text_field_label_static="true"
+        app:unify_text_field_message="@string/smvc_minimum_buy_desc_label"
         app:unify_text_field_placeholder="Contoh Rp20.000"
         app:unify_text_field_prepend_text="Rp" />
 
@@ -79,6 +81,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_free_shipping_quota_label"
+        app:unify_text_field_input_type="number"
         app:unify_text_field_label_static="true"
         app:unify_text_field_placeholder="Contoh 100" />
 

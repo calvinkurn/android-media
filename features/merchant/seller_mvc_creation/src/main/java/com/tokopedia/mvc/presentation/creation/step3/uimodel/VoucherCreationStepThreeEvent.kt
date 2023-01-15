@@ -12,7 +12,7 @@ sealed class VoucherCreationStepThreeEvent{
     data class ChoosePromoType(val promoType: PromoType) : VoucherCreationStepThreeEvent()
     data class ChooseBenefitType(val benefitType: BenefitType) : VoucherCreationStepThreeEvent()
     data class OnInputNominalChanged(val nominal: Long) : VoucherCreationStepThreeEvent()
-    data class OnInputPercentageChanged(val nominal: Long) : VoucherCreationStepThreeEvent()
+    data class OnInputPercentageChanged(val percentage: Int) : VoucherCreationStepThreeEvent()
     data class OnInputMaxDeductionChanged(val maxDeduction: Long) : VoucherCreationStepThreeEvent()
     data class OnInputMinimumBuyChanged(val minimumBuy: Long) : VoucherCreationStepThreeEvent()
     data class OnInputQuotaChanged(val quota: Long) : VoucherCreationStepThreeEvent()

@@ -1,11 +1,14 @@
 package com.tokopedia.mvc.presentation.creation.step3
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
@@ -34,17 +37,17 @@ class VoucherSettingViewModel @Inject constructor(
             is VoucherCreationStepThreeEvent.InitVoucherConfiguration -> {
                 initVoucherConfiguration(event.voucherConfiguration)
             }
-            is VoucherCreationStepThreeEvent.ChooseBenefitType -> {}
-            is VoucherCreationStepThreeEvent.ChoosePromoType -> {}
+            is VoucherCreationStepThreeEvent.ChoosePromoType -> handlePromoTypeSelection(event.promoType)
+            is VoucherCreationStepThreeEvent.ChooseBenefitType -> handleBenefitTypeSelection(event.benefitType)
+            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(event.nominal)
+            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(event.percentage)
+            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(event.maxDeduction)
+            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(event.minimumBuy)
+            is VoucherCreationStepThreeEvent.OnInputQuotaChanged -> handleQuotaInputChanges(event.quota)
             is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> {}
             is VoucherCreationStepThreeEvent.HandleCoachMark -> {}
-            is VoucherCreationStepThreeEvent.NavigateToNextStep -> {}
-            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> {}
-            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> {}
-            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> {}
-            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> {}
-            is VoucherCreationStepThreeEvent.OnInputQuotaChanged -> {}
             is VoucherCreationStepThreeEvent.TapBackButton -> handleBackToPreviousStep()
+            is VoucherCreationStepThreeEvent.NavigateToNextStep -> {}
         }
     }
 
@@ -64,6 +67,88 @@ class VoucherSettingViewModel @Inject constructor(
 
     private fun handleBackToPreviousStep() {
         _uiAction.tryEmit(VoucherCreationStepThreeAction.BackToPreviousStep(currentState.voucherConfiguration))
+    }
+
+    private fun handlePromoTypeSelection(promoType: PromoType) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    promoType = promoType
+                )
+            )
+        }
+    }
+
+    private fun handleBenefitTypeSelection(benefitType: BenefitType) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    benefitType = benefitType
+                )
+            )
+        }
+    }
+
+    private fun handleNominalInputChanges(nominal: Long) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    benefitIdr = nominal
+                )
+            )
+        }
+        handleVoucherInputValidation()
+    }
+
+    private fun handlePercentageInputChanges(percentage: Int) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    benefitPercent = percentage
+                )
+            )
+        }
+        handleVoucherInputValidation()
+    }
+
+    private fun handleMaxDeductionInputChanges(maxDeduction: Long) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    benefitMax = maxDeduction
+                )
+            )
+        }
+        handleVoucherInputValidation()
+    }
+
+    private fun handleMinimumBuyInputChanges(minimumBuy: Long) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    minPurchase = minimumBuy
+                )
+            )
+        }
+        handleVoucherInputValidation()
+    }
+
+    private fun handleQuotaInputChanges(quota: Long) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    quota = quota
+                )
+            )
+        }
+        handleVoucherInputValidation()
     }
 
     private fun handleVoucherInputValidation() {
