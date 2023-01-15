@@ -52,7 +52,9 @@ class VoucherInformationViewModel @Inject constructor(
             is VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected -> setRecurringPeriod(
                 event.selectedRecurringPeriod
             )
-            is VoucherCreationStepTwoEvent.NavigateToNextStep -> {}
+            is VoucherCreationStepTwoEvent.NavigateToNextStep -> {
+                handleNavigateToNextStep()
+            }
             is VoucherCreationStepTwoEvent.HandleCoachMark -> {
                 handleCoachmark()
             }
@@ -218,6 +220,10 @@ class VoucherInformationViewModel @Inject constructor(
         if (!isCoachMarkShown()) {
             _uiAction.tryEmit(VoucherCreationStepTwoAction.ShowCoachmark)
         }
+    }
+
+    private fun handleNavigateToNextStep() {
+        _uiAction.tryEmit(VoucherCreationStepTwoAction.ContinueToNextStep(currentState.voucherConfiguration))
     }
 
     private fun isCoachMarkShown(): Boolean {

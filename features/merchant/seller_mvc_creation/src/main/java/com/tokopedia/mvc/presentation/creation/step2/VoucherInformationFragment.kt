@@ -40,6 +40,7 @@ import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
+import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
@@ -231,7 +232,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun handleAction(action: VoucherCreationStepTwoAction) {
         when (action) {
             is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
-            is VoucherCreationStepTwoAction.ContinueToNextStep -> TODO()
+            is VoucherCreationStepTwoAction.ContinueToNextStep -> continueToNextStep(action.voucherConfiguration)
             is VoucherCreationStepTwoAction.ShowError -> TODO()
             is VoucherCreationStepTwoAction.ShowCoachmark -> showCoachmark()
         }
@@ -407,9 +408,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 .debounce { DEBOUNCE }
                 .distinctUntilChanged()
                 .onEach {
-                    val formattedText = it.uppercase(Locale.getDefault()).trim()
                     viewModel.processEvent(
-                        VoucherCreationStepTwoEvent.OnVoucherNameChanged(formattedText)
+                        VoucherCreationStepTwoEvent.OnVoucherNameChanged(it)
                     )
                 }
                 .launchIn(lifecycleScope)
@@ -812,6 +812,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {
+        context?.let { ctx -> VoucherSettingActivity.start(ctx, voucherConfiguration) }
     }
 
     private fun showCreateVoucherConfirmationDialog(voucherConfiguration: VoucherConfiguration) {
