@@ -22,5 +22,9 @@ data class AutoTopUpStatus(
 
         @SerializedName("available_nominal")
         @Expose
-        val availableNominals: MutableList<AutoTopUpItem> = mutableListOf()
+        val availableNominals: MutableList<AutoTopUpItem> = mutableListOf(),
+
+        @SerializedName("frequency")
+        @Expose
+        val frequency :Int = 6,
 )

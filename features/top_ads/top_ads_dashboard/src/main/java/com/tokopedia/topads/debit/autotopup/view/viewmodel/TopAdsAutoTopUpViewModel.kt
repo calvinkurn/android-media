@@ -15,6 +15,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveSelectionUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsTopUpCreditUseCase
+import com.tokopedia.topads.debit.autotopup.data.extensions.selectedPrice
 import com.tokopedia.topads.debit.autotopup.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -96,10 +97,20 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         })
     }
 
-    fun getAutoTopUpCreditList(data: AutoTopUpStatus): MutableList<TopUpCreditItemData> {
+    fun getAutoTopUpCreditList(
+        data: AutoTopUpStatus,
+        isAutoTopUpActive: Boolean
+    ): MutableList<TopUpCreditItemData> {
         val nominalList = mutableListOf<TopUpCreditItemData>()
         nominalList.clear()
-        nominalList.addAll(createAutoTopUpCreditList(data.availableNominals, data.statusBonus))
+        nominalList.addAll(
+            createAutoTopUpCreditList(
+                data.availableNominals,
+                data.statusBonus,
+                data.id,
+                isAutoTopUpActive
+            )
+        )
         return nominalList
     }
 
@@ -144,20 +155,42 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         return nominalList
     }
 
-    private fun createCreditList(credit: List<DataCredit>?, percent: Float): MutableList<TopUpCreditItemData> {
+    private fun createCreditList(
+        credit: List<DataCredit>?,
+        percent: Float
+    ): MutableList<TopUpCreditItemData> {
         val nominalList = mutableListOf<TopUpCreditItemData>()
         nominalList.clear()
         credit?.forEach {
-            nominalList.add(TopUpCreditItemData(it.productPrice, "Bonus Rp${Utils.convertToCurrencyString((Utils.convertMoneyToValue(it.productPrice)*percent/100).toLong())}"))
+            nominalList.add(
+                TopUpCreditItemData(
+                    it.productPrice,
+                    "Bonus Rp${Utils.convertToCurrencyString((Utils.convertMoneyToValue(it.productPrice) * percent / 100).toLong())}"
+                )
+            )
         }
         return nominalList
     }
 
-    private fun createAutoTopUpCreditList(credit: MutableList<AutoTopUpItem>, percent: Double): MutableList<TopUpCreditItemData> {
+    private fun createAutoTopUpCreditList(
+        credit: MutableList<AutoTopUpItem>,
+        percent: Double,
+        id: Int,
+        isAutoTopUpActive: Boolean
+    ): MutableList<TopUpCreditItemData> {
         val nominalList = mutableListOf<TopUpCreditItemData>()
         nominalList.clear()
         credit.forEach {
-            nominalList.add(TopUpCreditItemData(it.priceFmt, "Bonus Rp${Utils.convertToCurrencyString((Utils.convertMoneyToValue(it.priceFmt)*percent/100).toLong())}"))
+            val clicked = if (isAutoTopUpActive) {
+                it.id == id
+            } else false
+            nominalList.add(
+                TopUpCreditItemData(
+                    it.priceFmt,
+                    "Bonus Rp${Utils.convertToCurrencyString((Utils.convertMoneyToValue(it.priceFmt) * percent / 100).toLong())}",
+                    clicked
+                )
+            )
         }
         return nominalList
     }
@@ -172,6 +205,30 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
             0L
         }
 
+    }
+
+    fun getAutoTopUpCreditHistoryData(data: AutoTopUpStatus): Triple<String, Double, Pair<String, Int>> {
+        val autoTopUpItem = data.selectedPrice
+        val nominalPrice = autoTopUpItem.priceFmt
+        val bonus = data.statusBonus
+        val maxCredit = autoTopUpItem.minCreditFmt
+        val frequency = data.frequency
+        return Triple(nominalPrice, bonus, Pair(maxCredit, frequency))
+    }
+
+    fun getAutoTopUpCreditListFromSelected(
+        productPrice: String?,
+        autoTopUpNominalList: MutableList<TopUpCreditItemData>
+    ): Pair<MutableList<TopUpCreditItemData>, Int> {
+        var selectedIndex = -1
+        autoTopUpNominalList.forEachIndexed {index, item->
+            item.clicked = false
+            if (item.productPrice == productPrice){
+                item.clicked = true
+                selectedIndex = index
+            }
+        }
+        return Pair(autoTopUpNominalList, selectedIndex)
     }
 
     companion object {

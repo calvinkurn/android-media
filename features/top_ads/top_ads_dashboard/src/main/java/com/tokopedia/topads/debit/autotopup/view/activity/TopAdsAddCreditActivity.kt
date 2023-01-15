@@ -64,7 +64,7 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 //        getInitialData()
 //        setObserver()
         sheet?.show(supportFragmentManager)
-//        sheet?.isFullpage = true
+        sheet?.isFullpage = true
         sheet?.customPeekHeight = 600
         sheet?.setTitle(resources.getString(R.string.title_top_ads_add_credit))
 
