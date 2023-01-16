@@ -424,22 +424,23 @@ class AddBankFragment : BaseDaggerFragment() {
             openBankListForSelection()
         } else
             try {
+                val accountHolderCustomName =
+                    textAreaBankAccountHolderName.editText.text.toString()
                 if (checkAccountNameState is AccountNameFinalValidationSuccess) {
                     bankSettingAnalytics.eventOnAutoNameSimpanClick()
+                    if (builder.isManual()) builder.setAccountName(accountHolderCustomName, true)
                     openConfirmationPopUp()
                 } else if (checkAccountNameState is EditableAccountName) {
                     bankSettingAnalytics.eventOnManualNameSimpanClick()
-                    val accountHolderName =
-                        textAreaBankAccountHolderName.editText.text.toString()
-                    checkAccountNameLength(accountHolderName) {
+                    checkAccountNameLength(accountHolderCustomName) {
                         if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
-                            builder.setAccountName(accountHolderName, true)
+                            builder.setAccountName(accountHolderCustomName, true)
                             openConfirmationPopUp()
                         } else {
                             addAccountViewModel.validateEditedAccountInfo(
                                 bank.bankID,
                                 textAreaBankAccountNumber.editText.text.toString(),
-                                accountHolderName
+                                accountHolderCustomName
                             )
                         }
                     }
