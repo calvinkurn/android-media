@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.uistate
 
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
 
@@ -65,7 +66,10 @@ sealed interface BulkReviewItemUiState {
     fun getReviewItemImageAttachmentIds(): List<String> {
         return mediaPickerUiState.let { mediaPickerUiState ->
             if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
-                mediaPickerUiState.mediaItems.map { it.uploadId }
+                mediaPickerUiState
+                    .mediaItems
+                    .filterIsInstance<CreateReviewMediaUiModel.Image>()
+                    .map { it.uploadId }
             } else {
                 emptyList()
             }
