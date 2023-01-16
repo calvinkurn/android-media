@@ -319,7 +319,8 @@ class MvcListFragment :
         binding?.sortFilter?.indicatorCounter = viewModel.getFilterCount()
     }
 
-    override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
+    override fun onOtherPeriodMoreMenuClicked(dialog : OtherPeriodBottomSheet, voucher: Voucher) {
+        dialog.dismiss()
         showMoreMenuBottomSheet(voucher)
     }
 
