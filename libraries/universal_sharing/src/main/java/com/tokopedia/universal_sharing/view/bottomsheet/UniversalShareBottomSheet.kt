@@ -1050,7 +1050,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         setIfAffiliate(shareModel)
         if (getImageFromMedia) {
             when (sourceId) {
-                ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
+                ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP -> {
                     executePdpContextualImage(shareModel)
                 }
                 ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION -> {
@@ -1059,7 +1059,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
-                    imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
+                    imageGeneratorDataArray?.let { executeImageGeneratorUseCase(it, shareModel) }
                 }
             }
         } else {
@@ -1077,7 +1077,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         lifecycleScope.launchCatchError(block = {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+            executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError =  {
             executeSharingFlow(shareModel)
         })
@@ -1091,7 +1091,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         lifecycleScope.launchCatchError(block = {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+            executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError = {
             executeSharingFlow(shareModel)
         })
@@ -1226,15 +1226,21 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorDataArray?.add(ImageGeneratorRequestData(key, value))
     }
 
-    private fun executeImageGeneratorUseCase(sourceId: String, args: ArrayList<ImageGeneratorRequestData>,
+    private fun executeImageGeneratorUseCase(args: ArrayList<ImageGeneratorRequestData>,
                                              shareModel: ShareModel) {
         loaderUnify?.visibility = View.VISIBLE
         gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
-                val mediaImageUrl = imageGeneratorUseCase.apply {
+                val response = imageGeneratorUseCase.apply {
                     params = ImageGeneratorUseCase.createParam(sourceId, args)
                 }.executeOnBackground()
+                val mediaImageUrl = response.imageUrl
+
+                /* for A/B Testing on PDP Page */
+                if (sourceId == ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP) {
+                    setAbTestContextual(shareModel, response.sourceId)
+                }
                 SharingUtil.saveImageFromURLToStorage(context, mediaImageUrl) {
                     imageSaved(it)
                     executeMediaImageSharingFlow(shareModel, mediaImageUrl)
@@ -1246,6 +1252,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         })
     }
 
+    /***
+     * @param sourceId is from result of [ImageGeneratorUseCase]
+     */
+    private fun setAbTestContextual(shareModel: ShareModel, sourceId: String) {
+        if (getImageFromMedia) {
+            shareModel.campaign = shareModel.campaign?.replace(KEY_CONTEXTUAL_IMAGE, sourceId)
+        }
+    }
+
     fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
         getImageFromMedia = getImageFromMediaFlag
         savedImagePath = "{media_image}"
@@ -1255,6 +1270,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorParam = param
     }
 
+    /* set page source id */
     fun setMediaPageSourceId(pageSourceId: String) {
         sourceId = pageSourceId
     }
