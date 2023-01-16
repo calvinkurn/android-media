@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +26,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.SocketTimeoutException
@@ -37,8 +36,8 @@ import javax.inject.Inject
 class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
     private var catalogLihatPageRecyclerView: RecyclerView? = null
-    private var sortAsc: Typography? = null
-    private var sortDesc: Typography? = null
+    private var sortAsc: ChipsUnify? = null
+    private var sortDesc: ChipsUnify? = null
     private var globalError: GlobalError? = null
 
     companion object {
@@ -93,37 +92,6 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews(view)
-
-        sortAsc = view.findViewById(R.id.sort_order_0)
-        sortDesc = view.findViewById(R.id.sort_order_1)
-        sortDesc?.setBackgroundColor(
-            ContextCompat.getColor(
-                view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            )
-        )
-//        activity?.let {
-//            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
-//            showShimmer()
-//        }
-        sortAsc?.setOnClickListener {
-            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
-            sortDesc?.setBackgroundColor(
-                ContextCompat.getColor(
-                    view.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-                )
-            )
-        }
-        sortDesc?.setOnClickListener {
-            lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
-            sortAsc?.setBackgroundColor(
-                ContextCompat.getColor(
-                    view.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-                )
-            )
-        }
         setObservers()
         initData()
     }
@@ -142,6 +110,18 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
 
     private fun initViews(view: View) {
         globalError = view.findViewById(R.id.global_error_page)
+        sortAsc = view.findViewById(R.id.chip_sort_asc)
+        sortDesc = view.findViewById(R.id.chip_sort_desc)
+        sortAsc?.setOnClickListener {
+            sortAsc?.chipType = ChipsUnify.TYPE_SELECTED
+            sortDesc?.chipType = ChipsUnify.TYPE_NORMAL
+            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+        }
+        sortDesc?.setOnClickListener {
+            sortAsc?.chipType = ChipsUnify.TYPE_NORMAL
+            sortDesc?.chipType = ChipsUnify.TYPE_SELECTED
+            lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
+        }
         initHeaderTitle(view)
         setupRecyclerView(view)
         addShimmer()
