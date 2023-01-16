@@ -39,6 +39,7 @@ import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCate
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.shop.common.constant.AccessId
@@ -75,6 +76,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val productId = MutableLiveData<String>()
     private var draftId = ""
     var productDomain: Product = Product()
+
+    // download image status map - filename - isDownloadComplete
+    val downloadImageStatusMap: HashMap<String, Boolean> = HashMap()
 
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id -> !id.isNullOrBlank() && !isDuplicate }
@@ -677,5 +681,27 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return urlOrPath.contains(PREFIX_CACHE)
     }
 
-
+//    fun updatedDownloadImageStatusMap(filename: String, isDownloadComplete: Boolean) {
+//        downloadImageStatusMap[filename] = isDownloadComplete
+//    }
+//
+//    fun isDownloadImageComplete(downloadImageStatusMap: HashMap<String, Boolean>): Boolean {
+//        return downloadImageStatusMap.none { !it.value }
+//    }
+//
+//    fun getNewProductImagePaths(imageDir: String, productImageData: List<PictureInputModel>): List<String> {
+//        val newImagePaths = mutableListOf<String>()
+//        productImageData.forEach {
+//            newImagePaths.add(imageDir + it.fileName)
+//        }
+//        return newImagePaths.toList()
+//    }
+//
+//    fun updateVariantImagePaths(imageDir: String, variantInputModel: VariantInputModel) {
+//        variantInputModel.products.forEach {
+//            it.pictures.forEach { picture ->
+//                picture.filePath
+//            }
+//        }
+//    }
 }

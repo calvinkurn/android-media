@@ -4,14 +4,17 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Environment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
@@ -21,9 +24,14 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
 
 /**
  * Created by faisalramd on 2020-04-05.
@@ -55,6 +63,18 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
         val saveInstanceCacheManager = SaveInstanceCacheManager(this, cacheId)
         productInputModel = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+
+        if (productInputModel.isDuplicate) {
+            // re download product images + update new file path
+            val productImageData = productInputModel.detailInputModel.pictureList
+            productInputModel.detailInputModel.pictureList = reDownloadProductImages(productImageData)
+            // re download product variant images + update new file path
+            val productVariantData = productInputModel.variantInputModel.products
+            productInputModel.variantInputModel.products = reDownloadProductVariantImages(productVariantData)
+            // re download product variant size chart + update new file path
+            val variantSizeChart = productInputModel.variantInputModel.sizecharts
+            reDownloadVariantSizeChart(variantSizeChart)
+        }
 
         // (1)
         saveProductToDraftAsync()
@@ -174,5 +194,56 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         withContext(Dispatchers.IO) {
             sellerAppReviewHelper.saveAddProductFrag()
         }
+    }
+
+    private fun downloadFile(url: String, path: String) {
+        launchCatchError(block = {
+            URL(url).openStream().use { input ->
+                FileOutputStream(File(path), false).use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }, onError = { throwable ->
+            AddEditProductErrorHandler.logMessage(path)
+            AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
+            // TODO notify user about the error
+        })
+    }
+
+    private fun reDownloadProductImages(productImageData: List<PictureInputModel>): List<PictureInputModel> {
+        val mutableData = productImageData.toMutableList()
+        val downloadsDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+        mutableData.forEach { data ->
+            var path = downloadsDir + data.fileName
+            downloadFile(url = data.urlOriginal, path = path)
+            data.filePath = path
+        }
+        return mutableData.toList()
+    }
+
+    private fun reDownloadProductVariantImages(productVariantData: List<ProductVariantInputModel>): List<ProductVariantInputModel> {
+        val mutableData = productVariantData.toMutableList()
+        val downloadsDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+        mutableData.forEach { data ->
+            data.pictures.forEach { picture ->
+                var path = downloadsDir + picture.fileName
+                downloadFile(url = picture.urlOriginal, path = path)
+                picture.filePath = path
+            }
+        }
+        return mutableData.toList()
+    }
+
+    private fun reDownloadVariantSizeChart(variantSizeChart: PictureVariantInputModel) {
+        val downloadsDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+        var path = downloadsDir + variantSizeChart.fileName
+        downloadFile(
+            url = variantSizeChart.urlOriginal,
+            path = path
+        )
+        variantSizeChart.filePath = path
     }
 }

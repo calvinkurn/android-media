@@ -1,17 +1,22 @@
 package com.tokopedia.product.addedit.preview.presentation.fragment
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresPermission
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +43,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
@@ -122,6 +128,8 @@ import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantStockStatus
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -146,6 +154,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import java.io.File
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -227,6 +237,9 @@ class AddEditProductPreviewFragment :
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -1060,8 +1073,32 @@ class AddEditProductPreviewFragment :
                         }
                     } else {
                         viewModel.productInputModel.value?.let { productInputModel ->
-                            startProductAddService(productInputModel)
-                            activity?.setResult(RESULT_OK)
+
+
+
+
+
+                            if (viewModel.isDuplicate) {
+
+                                // 1. check download / write external storage permission
+                                // 2. re-download product images for url duplication
+                                checkDownloadPermission()
+//                                // 3.make sure all the files are downloaded before starting the service
+//                                if (viewModel.isDownloadImageComplete(viewModel.downloadImageStatusMap)) {
+//                                    // TODO : 4. update paths
+//                                    startProductAddService(productInputModel)
+//                                    activity?.setResult(RESULT_OK)
+//                                } else {
+//                                    // TODO : toast error message
+//                                }
+                            }
+
+
+
+                            else {
+                                startProductAddService(productInputModel)
+                                activity?.setResult(RESULT_OK)
+                            }
                         }
                     }
                     showLoading()
@@ -1497,7 +1534,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun updateImageList() {
-        // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
+        // filter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
         val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
         val pictureList = viewModel.productInputModel.value?.detailInputModel?.pictureList?.filter {
             val model = it
@@ -1515,7 +1552,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun updateProductImageList() {
-        // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
+        // filter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
         val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
         val pictureList = viewModel.productInputModel.value?.detailInputModel?.pictureList?.filter { pictureInput ->
             imageUrlOrPathList.contains(pictureInput.urlOriginal) || imageUrlOrPathList.contains(pictureInput.urlThumbnail)
@@ -1545,9 +1582,14 @@ class AddEditProductPreviewFragment :
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {
-        // increment wholesale min order by one because of > symbol
+
         productInputModel.run {
+            // increment wholesale min order by one because of > symbol
             this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+//            // in case of product duplication update the image paths to create new urls
+//            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//            this.detailInputModel.imageUrlOrPathList = viewModel.getNewProductImagePaths(downloadsDir, this.detailInputModel.pictureList)
+//            viewModel.updateVariantImagePaths(this.variantInputModel)
         }
 
         context?.let {
@@ -1925,4 +1967,114 @@ class AddEditProductPreviewFragment :
         val route = String.format(getString(R.string.format_web_page), ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(activity ?: return, route)
     }
+
+//    private fun duplicateProductImageUrl(productImageData: List<PictureInputModel>) {
+//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//        productImageData.forEach { data ->
+//            // check if file is already downloaded into downloads directory
+//            val imageFile = File(downloadsDir + data.fileName)
+//            if (!imageFile.isFile) {
+//                // download if the file is not exist
+//                if (ActivityCompat.checkSelfPermission(
+//                        requireActivity(),
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                    ) == PackageManager.PERMISSION_GRANTED
+//                ) { downloadFile(uri = data.urlOriginal, filename = data.fileName) }
+//            }
+//        }
+//    }
+
+//    private fun duplicateProductVariantImageUrl(productVariantData: List<ProductVariantInputModel>) {
+//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//        productVariantData.forEach { data ->
+//            data.pictures.forEach { picture ->
+//                // check if file is already downloaded into downloads directory
+//                val imageFile = File(downloadsDir + picture.fileName)
+//                if (!imageFile.isFile) {
+//                    // download if the file is not exist
+//                    if (ActivityCompat.checkSelfPermission(
+//                            requireActivity(),
+//                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                        ) == PackageManager.PERMISSION_GRANTED
+//                    ) { downloadFile(uri = picture.urlOriginal, filename = picture.fileName) }
+//                }
+//            }
+//        }
+//    }
+
+//    private fun duplicateVariantSizeChart(variantSizeChart: PictureVariantInputModel) {
+//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//        // check if file is already downloaded into downloads directory
+//        val imageFile = File(downloadsDir + variantSizeChart.fileName)
+//        if (!imageFile.isFile) {
+//            // download if the file is not exist
+//            if (ActivityCompat.checkSelfPermission(
+//                    requireActivity(),
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                ) == PackageManager.PERMISSION_GRANTED
+//            ) { downloadFile(uri = variantSizeChart.urlOriginal, filename = variantSizeChart.fileName) }
+//        }
+//    }
+
+    private fun checkDownloadPermission() {
+        val listener = object : PermissionCheckerHelper.PermissionCheckListener {
+            override fun onPermissionDenied(permissionText: String) {
+                permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
+            }
+            override fun onNeverAskAgain(permissionText: String) {
+                permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
+            }
+            override fun onPermissionGranted() {
+//                // re download main product images
+//                val productData = viewModel.productInputModel.value ?: ProductInputModel()
+//                val productImageData = productData.detailInputModel.pictureList
+//                duplicateProductImageUrl(productImageData)
+//                // re download product variant images
+//                val productVariantData = productData.variantInputModel.products
+//                duplicateProductVariantImageUrl(productVariantData)
+//                // re download product variant size chart
+//                val variantSizeChart = productData.variantInputModel.sizecharts
+//                duplicateVariantSizeChart(variantSizeChart)
+
+                viewModel.productInputModel.value?.let { productInputModel ->
+                    startProductAddService(productInputModel)
+                    activity?.setResult(RESULT_OK)
+                }
+            }
+        }
+        permissionCheckerHelper.checkPermission(
+            fragment = this,
+            permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+            listener = listener
+        )
+    }
+
+//    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//    private fun downloadFile(uri: String, filename: String) {
+//        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
+//            override fun onDownloadComplete() {
+//                // track image download status
+//                viewModel.updatedDownloadImageStatusMap(filename, true)
+//            }
+//        }
+//
+//        try {
+//            val helper = DownloadHelper(
+//                context = requireActivity(),
+//                uri = uri,
+//                filename = filename,
+//                listener = downloadCompleteListener
+//            )
+//            helper.downloadFile { true }
+//        } catch (se: SecurityException) {
+//            AddEditProductErrorHandler.logMessage(filename)
+//            AddEditProductErrorHandler.logExceptionToCrashlytics(se)
+//        } catch (iae: IllegalArgumentException) {
+//            AddEditProductErrorHandler.logMessage(filename)
+//            AddEditProductErrorHandler.logExceptionToCrashlytics(iae)
+//        } catch (ex: Exception) {
+//            AddEditProductErrorHandler.logMessage(filename)
+//            AddEditProductErrorHandler.logExceptionToCrashlytics(ex)
+//        }
+//    }
 }
