@@ -22,6 +22,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
@@ -1370,9 +1371,13 @@ open class DynamicProductDetailViewModel @Inject constructor(
 
         // in case, when swipe media but media is not variant
         if (newVariantId.isEmpty()) {
-            return mutableMapOf()
+            // remove variant level 1, and keep variant level2 if available
+            val variantLevelOne = variantDataNonNull.variants.getOrNull(Int.ZERO)
+            variants[variantLevelOne?.pv.orEmpty()] = ""
+            return variants
         }
 
+        // don't move this order, because level 1 always on top and level 2 always below lvl1
         variants[newVariantCategoryKey] = newVariantId
 
         if (variantLevelTwo != null && variantsSelected.size < MAX_VARIANT_LEVEL) {

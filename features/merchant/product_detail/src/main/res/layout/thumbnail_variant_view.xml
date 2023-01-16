@@ -3,32 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pdp_thumbnail_container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="64dp"
+    android:layout_height="88dp">
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/variant_card"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="1.2dp"
-        app:card_type="border"
-        app:card_enable_check_icon="false"
-        app:cardCornerRadius="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="6dp">
+        android:layout_marginBottom="6dp"
+        android:clipToOutline="true"
+        android:padding="1.2dp"
+        app:cardCornerRadius="8dp"
+        app:card_enable_check_icon="false"
+        app:card_type="border">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/variant_thumbnail"
-                android:layout_width="62dp"
-                android:layout_height="63dp"
-                android:scaleType="centerCrop"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginBottom="6dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/variant_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,18 +39,19 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/variant_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="3dp"
+                android:layout_marginHorizontal="5dp"
                 android:layout_marginBottom="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:textAlignment="center"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="small"
-                tools:text="Kelinci Hijau" />
+                tools:text="Pohon pinang" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>
@@ -58,8 +60,8 @@
         android:id="@+id/variant_promo_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_promo"
         android:layout_gravity="top|end"
         android:layout_marginEnd="2dp"
-        tools:visibility="visible"/>
+        app:srcCompat="@drawable/ic_promo"
+        tools:visibility="visible" />
 </FrameLayout>
