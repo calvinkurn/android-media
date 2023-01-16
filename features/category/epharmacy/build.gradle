@@ -61,6 +61,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.firebase.crashlytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

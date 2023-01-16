@@ -9,7 +9,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-@GqlQuery("GQL_POST_PRESCRIPTION_IDS_QUERY",GQL_POST_PRESCRIPTION_IDS_QUERY)
+@GqlQuery("GqlPostPrescriptionIdsQuery",GQL_POST_PRESCRIPTION_IDS_QUERY)
 class PostPrescriptionIdUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<EPharmacyUploadPrescriptionIdsResponse>(graphqlRepository) {
 
@@ -20,7 +20,7 @@ class PostPrescriptionIdUseCase @Inject constructor(graphqlRepository: GraphqlRe
         try {
             this.setTypeClass(EPharmacyUploadPrescriptionIdsResponse::class.java)
             this.setRequestParams(getRequestParamsOrder(orderId,prescriptionIds))
-            this.setGraphqlQuery(GQL_POST_PRESCRIPTION_IDS_QUERY)
+            this.setGraphqlQuery(GqlPostPrescriptionIdsQuery())
             this.execute(
                 { result ->
                     onSuccess(result)
