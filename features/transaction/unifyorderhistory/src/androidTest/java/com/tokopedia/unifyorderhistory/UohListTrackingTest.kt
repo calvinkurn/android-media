@@ -51,10 +51,22 @@ class UohListTrackingTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context,
-                    R.raw.response_mock_uoh_orders_succeed_manual), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(KEY_ATC, InstrumentationMockHelper.getRawString(context,
-                    R.raw.add_to_cart_multi_success_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                KEY_UOH_ORDERS,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.response_mock_uoh_orders_succeed_manual
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_ATC,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.add_to_cart_multi_success_response
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
 
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -79,7 +91,9 @@ class UohListTrackingTest {
             loading()
             hideKeyboard()
             clickPrimaryButton()
+            loading()
             clickThreeDotsMenu()
+            loading()
             clickBeliLagi()
             loading()
             clickOrderCard()

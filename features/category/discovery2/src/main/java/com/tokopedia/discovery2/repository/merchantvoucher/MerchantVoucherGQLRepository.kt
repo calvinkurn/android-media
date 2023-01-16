@@ -8,6 +8,8 @@ import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MerchantVoucherGQLRepository @Inject constructor() : BaseRepository(), MerchantVoucherRepository {
@@ -30,7 +32,14 @@ class MerchantVoucherGQLRepository @Inject constructor() : BaseRepository(), Mer
             ComponentNames.MerchantVoucherList.componentName -> ComponentNames.MerchantVoucherListItem.componentName
             else -> ComponentNames.MerchantVoucherCarouselItem.componentName
         }
-        val list = DiscoveryDataMapper().mapDataItemToMerchantVoucherComponent(componentData, subComponentName, componentProperties, creativeName)
-        return Pair(list,nextPage)
+        val list = withContext(Dispatchers.Default) {
+            DiscoveryDataMapper().mapDataItemToMerchantVoucherComponent(
+                componentData,
+                subComponentName,
+                componentProperties,
+                creativeName
+            )
+        }
+        return Pair(list, nextPage)
     }
 }
