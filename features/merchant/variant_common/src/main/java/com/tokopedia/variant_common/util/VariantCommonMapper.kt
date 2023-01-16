@@ -41,9 +41,9 @@ object VariantCommonMapper {
         var updatedSelectedOptionsId: List<String>
         val isSelectedLevelOne = level < 1
 
-        //Parse selectedOptionsId Map to List<Int>
+        // Parse selectedOptionsId Map to List<Int>
         val selectedOptionIds: List<String> = mapOfSelectedVariant?.map {
-            //[Merah,S]
+            // [Merah,S]
             it.value
         } ?: listOf()
 
@@ -53,13 +53,13 @@ object VariantCommonMapper {
             it.toLong() == 0L
         }
 
-        //Check wether selected product is buyable , if not get another  siblings that buyable
+        // Check wether selected product is buyable , if not get another  siblings that buyable
         val selectedProductData = getSelectedProductData(updatedSelectedOptionsId, variantData)
 
-        //If selectedProductIds is not buyable choose another buyable child
+        // If selectedProductIds is not buyable choose another buyable child
         if (selectedProductData != null && !selectedProductData.isBuyable) {
             updatedSelectedOptionsId = getOtherSiblingProduct(variantData, selectedOptionIds)?.optionIds
-                    ?: listOf()
+                ?: listOf()
             updateSelectedOptionsIds(variantData, updatedSelectedOptionsId, mapOfSelectedVariant)
         }
         val isSelectedProductBuyable = selectedProductData?.isBuyable ?: false
@@ -68,8 +68,12 @@ object VariantCommonMapper {
         selectedOptionId = updatedSelectedOptionsId
 
         for ((level, variant: Variant) in variantData.variants.withIndex()) {
-            listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variants.size,
-                    isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne, isSelectedProductFlashSale))
+            listOfVariant.add(
+                convertVariantViewModel(
+                    variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variants.size,
+                    isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne, isSelectedProductFlashSale
+                )
+            )
         }
 
         return listOfVariant
@@ -86,9 +90,9 @@ object VariantCommonMapper {
         return pairOfValue
     }
 
-    fun selectedProductData(variantData: ProductVariant, selectedOptionIds:List<String>): VariantChild? {
+    fun selectedProductData(variantData: ProductVariant, selectedOptionIds: List<String>): VariantChild? {
         return variantData.children.firstOrNull {
-            it.optionIds.containsAll(selectedOptionIds)
+            it.optionIds == selectedOptionIds
         }
     }
 
@@ -98,13 +102,18 @@ object VariantCommonMapper {
         }
     }
 
-    private fun convertVariantViewModel(variant: Variant, variantData: ProductVariant, level: Int, selectedOptionIds: List<String>, isLeaf: Boolean,
-                                        isSelectedProductBuyable: Boolean,
-                                        partialySelected: Boolean,
-                                        selectedLevelOne: Boolean,
-                                        isSelectedProductFlashSale: Boolean): VariantCategory {
-
-        //If all options has images, show images, if not show colour type / chip type
+    private fun convertVariantViewModel(
+        variant: Variant,
+        variantData: ProductVariant,
+        level: Int,
+        selectedOptionIds: List<String>,
+        isLeaf: Boolean,
+        isSelectedProductBuyable: Boolean,
+        partialySelected: Boolean,
+        selectedLevelOne: Boolean,
+        isSelectedProductFlashSale: Boolean
+    ): VariantCategory {
+        // If all options has images, show images, if not show colour type / chip type
         val hasCustomImage = variant.options.all {
             it.picture?.url100?.isNotEmpty() == true
         }
@@ -141,14 +150,14 @@ object VariantCommonMapper {
                     }
                 }
             } else {
-                //This Function is to determine unselect or empty variant
+                // This Function is to determine unselect or empty variant
                 for (child: VariantChild in variantData.children) {
-                    //child.optionIds[1] means variant lvl2
-                    //child.optionIds[0] means variant lvl1
-                    //Check one by one wether childId is match with another Id
+                    // child.optionIds[1] means variant lvl2
+                    // child.optionIds[0] means variant lvl1
+                    // Check one by one wether childId is match with another Id
                     if (child.isBuyable && child.optionIds[level] == option.id) {
                         if (partialSelectedListByLevel.isEmpty()) {
-                            //It means level 1
+                            // It means level 1
                             currentState = VariantConstant.STATE_UNSELECTED
                             if (level == 0 && child.isFlashSale) {
                                 isFlashSale = true
@@ -157,7 +166,7 @@ object VariantCommonMapper {
                             val childOptionId = child.optionIds.getOrNull(level)
                             childOptionId?.let {
                                 if (child.optionIds.subList(0, level) == partialSelectedListByLevel) {
-                                    //Check if the combination is match with child
+                                    // Check if the combination is match with child
                                     currentState = VariantConstant.STATE_UNSELECTED
                                     isFlashSale = child.isFlashSale
                                 } else if (selectedOptionIds.isEmpty()) {
@@ -167,10 +176,10 @@ object VariantCommonMapper {
                                 // This code is works if user only select 1 level and its leaf
                                 if (partialySelected) {
                                     if (selectedLevelOne) return@let
-                                    if (isLeaf)
+                                    if (isLeaf) {
                                         currentState = VariantConstant.STATE_UNSELECTED
+                                    }
                                 }
-
                             }
                         }
                     }
@@ -179,28 +188,28 @@ object VariantCommonMapper {
             }
 
             return@map VariantOptionWithAttribute(
-                    variantName = option.value.orEmpty(),
-                    variantId = option.id.orEmpty(),
-                    image100 = option.picture?.url100.orEmpty(),
-                    imageOriginal = option.picture?.original.orEmpty(),
-                    variantHex = option.hex.orEmpty(),
-                    currentState = currentState,
-                    stock = stock,
-                    hasCustomImages = hasCustomImage,
-                    level = level,
-                    variantOptionIdentifier = variant.identifier.orEmpty(),
-                    variantCategoryKey = variant.pv.toString(),
-                    flashSale = isFlashSale
+                variantName = option.value.orEmpty(),
+                variantId = option.id.orEmpty(),
+                image100 = option.picture?.url100.orEmpty(),
+                imageOriginal = option.picture?.original.orEmpty(),
+                variantHex = option.hex.orEmpty(),
+                currentState = currentState,
+                stock = stock,
+                hasCustomImages = hasCustomImage,
+                level = level,
+                variantOptionIdentifier = variant.identifier.orEmpty(),
+                variantCategoryKey = variant.pv.toString(),
+                flashSale = isFlashSale
             )
         }
 
         return VariantCategory(
-                name = variant.name.orEmpty(),
-                identifier = variant.identifier.orEmpty(),
-                variantGuideline = if (variant.isSizeIdentifier && variantData.sizeChart.isNotEmpty()) variantData.sizeChart else "",
-                isLeaf = isLeaf,
-                hasCustomImage = hasCustomImage,
-                variantOptions = optionList
+            name = variant.name.orEmpty(),
+            identifier = variant.identifier.orEmpty(),
+            variantGuideline = if (variant.isSizeIdentifier && variantData.sizeChart.isNotEmpty()) variantData.sizeChart else "",
+            isLeaf = isLeaf,
+            hasCustomImage = hasCustomImage,
+            variantOptions = optionList
         )
     }
 
@@ -252,6 +261,4 @@ object VariantCommonMapper {
         }
         return true
     }
-
-
 }
