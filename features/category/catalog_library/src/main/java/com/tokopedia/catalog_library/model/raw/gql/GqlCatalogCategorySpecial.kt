@@ -10,6 +10,8 @@ const val GQL_CATALOG_SPECIAL: String = """query catalogCategorySpecial(${'$'}us
           id
           name
           iconUrl
+          categoryUrl
+          categoryIdentifier
         }
     }
 }

@@ -46,6 +46,10 @@ data class CatalogLibraryResponse(
                 @SerializedName("CategoryIconURL")
                 @Expose
                 val categoryIconUrl: String? = "",
+
+                @SerializedName("CategoryIdentifier")
+                @Expose
+                val categoryIdentifier: String? = ""
             )
         }
     }

@@ -35,7 +35,13 @@ data class CatalogSpecialResponse(
             val name: String? = "",
             @SerializedName("iconUrl")
             @Expose
-            val iconUrl: String? = ""
+            val iconUrl: String? = "",
+            @SerializedName("categoryUrl")
+            @Expose
+            val categoryUrl: String? = "",
+            @SerializedName("categoryIdentifier")
+            @Expose
+            val categoryIdentifier: String? = ""
         )
     }
 }

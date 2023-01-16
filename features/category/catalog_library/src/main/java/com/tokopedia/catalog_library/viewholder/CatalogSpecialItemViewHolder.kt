@@ -10,7 +10,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CatalogSpecialItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogSpecialDataModel>(view) {
+class CatalogSpecialItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener) : AbstractViewHolder<CatalogSpecialDataModel>(view) {
 
     private val specialImage = view.findViewById<ImageUnify>(R.id.special_icon)
     private val specialTitle = view.findViewById<Typography>(R.id.special_title)
@@ -27,11 +27,11 @@ class CatalogSpecialItemViewHolder(val view: View, private val catalogLibraryLis
         specialTitle?.let {
             it.text = element?.specialDataListItem?.name
             it.setOnClickListener {
-                catalogLibraryListener.onCategoryItemClicked(element?.specialDataListItem?.name)
+                catalogLibraryListener.onCategoryItemClicked(element?.specialDataListItem?.categoryIdentifier)
             }
         }
         specialLayout.setOnClickListener {
-            catalogLibraryListener.onCategoryItemClicked(element?.specialDataListItem?.name)
+            catalogLibraryListener.onCategoryItemClicked(element?.specialDataListItem?.categoryIdentifier)
         }
     }
 }

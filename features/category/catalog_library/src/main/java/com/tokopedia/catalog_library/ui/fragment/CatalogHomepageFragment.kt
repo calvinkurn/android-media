@@ -175,9 +175,12 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         RouteManager.route(context, applink)
     }
 
-    override fun onCategoryItemClicked(categoryName: String?) {
-        super.onCategoryItemClicked(categoryName)
-        RouteManager.route(context, "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryName")
+    override fun onCategoryItemClicked(categoryIdentifier: String?) {
+        super.onCategoryItemClicked(categoryIdentifier)
+        RouteManager.route(
+            context,
+            "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryIdentifier"
+        )
     }
 
     override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {

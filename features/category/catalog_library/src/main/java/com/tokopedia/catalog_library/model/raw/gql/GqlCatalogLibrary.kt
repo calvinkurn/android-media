@@ -14,6 +14,7 @@ const val GQL_CATALOG_LIBRARY: String = """query categoryListCatalogLibraryPage(
             CategoryName
             CategoryURL
             CategoryIconURL
+            CategoryIdentifier
        }
     }
   }

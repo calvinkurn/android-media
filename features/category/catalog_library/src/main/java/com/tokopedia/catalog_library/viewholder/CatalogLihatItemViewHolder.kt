@@ -6,15 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
-import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
 class CatalogLihatItemViewHolder(
-    val view: View, private val catalogLibraryListener:
-    CatalogLibraryListener
+    val view: View,
+    private val catalogLibraryListener:
+        CatalogLibraryListener
 ) : AbstractViewHolder<CatalogLihatItemDataModel>(view) {
 
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {
@@ -41,7 +41,7 @@ class CatalogLihatItemViewHolder(
         lihatItemTitle?.text = childDataItem?.categoryName ?: ""
         lihatExpandedItemLayout?.setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(
-                childDataItem?.categoryName ?: ""
+                childDataItem?.categoryIdentifier ?: ""
             )
         }
     }

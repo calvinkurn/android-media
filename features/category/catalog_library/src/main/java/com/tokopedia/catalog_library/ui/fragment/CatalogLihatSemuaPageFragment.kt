@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
@@ -19,6 +20,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -196,16 +198,12 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         }
     }
 
-    override fun onCategoryItemClicked(categoryName: String?) {
-        super.onCategoryItemClicked(categoryName)
-        requireActivity().supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(CatalogLandingPageFragment::class.java.simpleName)
-            .replace(
-                R.id.parent_view,
-                CatalogLandingPageFragment.newInstance(categoryName),
-                CatalogLandingPageFragment.CATALOG_LANDING_PAGE_FRAGMENT_TAG
-            ).commit()
+    override fun onCategoryItemClicked(categoryIdentifier: String?) {
+        super.onCategoryItemClicked(categoryIdentifier)
+        RouteManager.route(
+            context,
+            "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryIdentifier"
+        )
     }
 
     private fun showShimmer() {
