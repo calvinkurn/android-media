@@ -70,6 +70,9 @@
         android:layout_margin="16dp"
         android:visibility="gone"
         tools:visibility="gone"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/ic_empty_state_no_product.png"
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStateType="section"
         app:unifyEmptyStateTitle="@string/smvc_empty_state_search_result_title"
         app:unifyEmptyStateDescription="@string/smvc_empty_state_search_result_description"
         app:layout_constraintTop_toBottomOf="@+id/sortFilter" />

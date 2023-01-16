@@ -5,23 +5,51 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/emptyState"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgNoShowcase"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_voucher_product" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgEmptyStateTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:visibility="gone"
+        android:layout_marginEnd="16dp"
+        android:letterSpacing="0.1"
+        android:text="@string/smvc_no_showcase"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unifyEmptyStateDescription="@string/smvc_no_showcase_description"
-        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/ic_empty_state_no_showcase.png"
-        app:unifyEmptyStateOrientation="horizontal"
-        app:unifyEmptyStateTitle="@string/smvc_no_showcase"
-        app:unifyEmptyStateType="section"
-        tools:visibility="visible" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imgNoShowcase"
+        app:layout_constraintTop_toTopOf="@+id/imgNoShowcase"
+        app:typographyType="paragraph_1"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgEmptyStateDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/smvc_no_showcase_description"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imgNoShowcase"
+        app:layout_constraintTop_toBottomOf="@id/tpgEmptyStateTitle"
+        app:typographyType="paragraph_3" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -34,22 +62,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="3"
-        tools:listitem="@layout/item_single_selection_item" />
+        tools:listitem="@layout/item_single_selection_item"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnApply"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:enabled="false"
         android:text="@string/bottom_sheet_apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/recyclerView"
         app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-        app:unifyButtonSize="medium" />
+        app:unifyButtonSize="medium"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="imgNoShowcase,tpgEmptyStateTitle,tpgEmptyStateDescription"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
