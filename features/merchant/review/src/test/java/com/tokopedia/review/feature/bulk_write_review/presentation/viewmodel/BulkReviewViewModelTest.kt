@@ -1467,6 +1467,30 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onRetryUploadClicked should trigger show toaster when failed upload`() =
+        runCollectingBulkReviewPageUiState {
+            runCollectingBulkReviewPageToasterQueue { toasterQueue ->
+                val reviewItem = getFirstReviewItem()
+                val expectedToaster = CreateReviewToasterUiModel(
+                    message = ResourceProvider.getMessageFailedUploadMedia(SAMPLE_ERROR_CODE),
+                    actionText = StringRes(Int.ZERO),
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_ERROR,
+                    payload = Unit
+                )
+
+                mockErrorUploadMedia()
+                doSuccessGetInitialData()
+
+                viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+                viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
+                assertTrue(toasterQueue.isEmpty())
+                viewModel.onRetryUploadClicked(reviewItem.inboxID)
+                assertEquals(expectedToaster, toasterQueue.last())
+            }
+        }
+
+    @Test
     fun `onRemoveMedia should remove review item media item`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
