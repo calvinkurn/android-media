@@ -27,6 +27,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkRe
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewProductInfoUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewRatingUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewStickyButtonMapper
+import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewSubmissionParamsMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewTextAreaUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewVisitableMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemBadRatingCategoryUiModel
@@ -109,7 +110,7 @@ abstract class BulkReviewViewModelTestFixture {
     protected val getFormUseCaseResultSuccess =
         createSuccessResponse<BulkReviewGetFormResponse.Data>(
             SAMPLE_GET_FORM_RESULT_SUCCESS
-        ).getSuccessData<BulkReviewGetFormResponse.Data>().productrevGetBulkForm
+        ).getSuccessData<BulkReviewGetFormResponse.Data>().productrevBulkSubmitProductReview
 
     protected val getBadRatingCategoryUseCaseResultSuccessNonEmpty =
         createSuccessResponse<BadRatingCategoriesResponse>(
@@ -135,6 +136,7 @@ abstract class BulkReviewViewModelTestFixture {
             bulkReviewStickyButtonMapper = BulkReviewStickyButtonMapper(),
             bulkReviewPageUiStateMapper = BulkReviewPageUiStateMapper(userSession),
             bulkReviewBadRatingCategoryMapper = BulkReviewBadRatingCategoryMapper(),
+            bulkReviewSubmissionParamsMapper = BulkReviewSubmissionParamsMapper(),
             gson = gson,
             userSession = userSession,
             bulkWriteReviewTracker = bulkWriteReviewTracker
@@ -160,7 +162,7 @@ abstract class BulkReviewViewModelTestFixture {
     }
 
     protected fun mockSuccessGetFormResult(
-        getFormResult: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm = getFormUseCaseResultSuccess
+        getFormResult: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview = getFormUseCaseResultSuccess
     ) {
         coEvery {
             getFormUseCase(Unit)
@@ -520,7 +522,7 @@ abstract class BulkReviewViewModelTestFixture {
         }
     }
 
-    protected fun getFirstReviewItem(): BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm {
+    protected fun getFirstReviewItem(): BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm {
         return getFormUseCaseResultSuccess.reviewForm.first()
     }
 

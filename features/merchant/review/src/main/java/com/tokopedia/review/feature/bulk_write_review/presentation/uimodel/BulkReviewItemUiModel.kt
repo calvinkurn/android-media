@@ -16,6 +16,7 @@ data class BulkReviewItemUiModel(
     val inboxID: String,
     val reputationID: String,
     val orderID: String,
+    val shopID: String,
     val impressHolder: ImpressHolder,
     val uiState: BulkReviewItemUiState
 ) : Visitable<BulkReviewAdapterTypeFactory>, BulkReviewVisitable<BulkReviewAdapterTypeFactory> {
@@ -92,6 +93,10 @@ data class BulkReviewItemUiModel(
         return uiState.getReviewItemImageAttachmentCount()
     }
 
+    fun getReviewItemImageAttachmentIds(): List<String> {
+        return uiState.getReviewItemImageAttachmentIds()
+    }
+
     fun getReviewItemVideoAttachmentCount(): Int {
         return uiState.getReviewItemVideoAttachmentCount()
     }
@@ -102,6 +107,10 @@ data class BulkReviewItemUiModel(
 
     fun getReviewItemTextAreaText(): String {
         return uiState.getReviewItemTextAreaText()
+    }
+
+    fun getReviewItemSelectedBadRatingCategoryIds(): List<String> {
+        return uiState.getReviewItemSelectedBadRatingCategoryIds()
     }
 
     sealed interface ChangePayload {

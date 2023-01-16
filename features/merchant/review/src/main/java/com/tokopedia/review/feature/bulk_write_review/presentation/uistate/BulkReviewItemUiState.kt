@@ -62,6 +62,16 @@ sealed interface BulkReviewItemUiState {
         }
     }
 
+    fun getReviewItemImageAttachmentIds(): List<String> {
+        return mediaPickerUiState.let { mediaPickerUiState ->
+            if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
+                mediaPickerUiState.mediaItems.map { it.uploadId }
+            } else {
+                emptyList()
+            }
+        }
+    }
+
     fun getReviewItemVideoAttachmentCount(): Int {
         return mediaPickerUiState.let { mediaPickerUiState ->
             if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
@@ -88,6 +98,19 @@ sealed interface BulkReviewItemUiState {
                 textAreaUiState.text
             } else {
                 ""
+            }
+        }
+    }
+
+    fun getReviewItemSelectedBadRatingCategoryIds(): List<String> {
+        return badRatingCategoriesUiState.let { badRatingCategoriesUiState ->
+            if (badRatingCategoriesUiState is BulkReviewBadRatingCategoryUiState.Showing) {
+                badRatingCategoriesUiState
+                    .badRatingCategory
+                    .filter { badRatingCategory -> badRatingCategory.selected }
+                    .map { badRatingCategory -> badRatingCategory.id }
+            } else {
+                emptyList()
             }
         }
     }

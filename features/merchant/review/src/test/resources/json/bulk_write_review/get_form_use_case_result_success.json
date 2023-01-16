@@ -1,12 +1,13 @@
 {
   "data": {
-    "productrevGetBulkForm": {
+    "productrevBulkSubmitProductReview": {
       "themeCopy": "Hampir 3 bulan sama kamu, barang ini akan segera hilang dari daftar Menunggu Diulas.",
       "list": [
         {
           "inboxID": "1111111100",
           "reputationID": "2222222200",
           "orderID": "5555555500",
+          "shopID": "6666666600",
           "product": {
             "productID": "3333333300",
             "productName": "Nike Air Force 1 Low White",
@@ -24,6 +25,7 @@
           "inboxID": "1111111101",
           "reputationID": "2222222201",
           "orderID": "5555555501",
+          "shopID": "6666666601",
           "product": {
             "productID": "3333333301",
             "productName": "Nike Air Force 2 Low White",
@@ -41,6 +43,7 @@
           "inboxID": "1111111102",
           "reputationID": "2222222202",
           "orderID": "5555555502",
+          "shopID": "6666666602",
           "product": {
             "productID": "3333333302",
             "productName": "Nike Air Force 3 Low White",
@@ -58,6 +61,7 @@
           "inboxID": "1111111103",
           "reputationID": "2222222203",
           "orderID": "5555555503",
+          "shopID": "6666666603",
           "product": {
             "productID": "3333333303",
             "productName": "Nike Air Force 4 Low White",
@@ -75,6 +79,7 @@
           "inboxID": "1111111104",
           "reputationID": "2222222204",
           "orderID": "5555555504",
+          "shopID": "6666666604",
           "product": {
             "productID": "3333333304",
             "productName": "Nike Air Force 5 Low White",
@@ -92,6 +97,7 @@
           "inboxID": "1111111105",
           "reputationID": "2222222205",
           "orderID": "5555555505",
+          "shopID": "6666666605",
           "product": {
             "productID": "3333333305",
             "productName": "Nike Air Force 6 Low White",
@@ -109,6 +115,7 @@
           "inboxID": "1111111106",
           "reputationID": "2222222206",
           "orderID": "5555555506",
+          "shopID": "6666666606",
           "product": {
             "productID": "3333333306",
             "productName": "Nike Air Force 7 Low White",
@@ -126,6 +133,7 @@
           "inboxID": "1111111107",
           "reputationID": "2222222207",
           "orderID": "5555555507",
+          "shopID": "6666666607",
           "product": {
             "productID": "3333333307",
             "productName": "Nike Air Force 8 Low White",
@@ -143,6 +151,7 @@
           "inboxID": "1111111108",
           "reputationID": "2222222208",
           "orderID": "5555555508",
+          "shopID": "6666666608",
           "product": {
             "productID": "3333333308",
             "productName": "Nike Air Force 9 Low White",
@@ -160,6 +169,7 @@
           "inboxID": "1111111109",
           "reputationID": "2222222209",
           "orderID": "5555555509",
+          "shopID": "6666666609",
           "product": {
             "productID": "3333333309",
             "productName": "Nike Air Force 10 Low White",

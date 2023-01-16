@@ -22,7 +22,7 @@ class BulkReviewProductInfoUiStateMapper @Inject constructor() {
     }
 
     private fun mapProductInfoUiState(
-        reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm
+        reviewForm: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm
     ): Pair<String, BulkReviewProductInfoUiState> {
         return Pair(
             reviewForm.inboxID,

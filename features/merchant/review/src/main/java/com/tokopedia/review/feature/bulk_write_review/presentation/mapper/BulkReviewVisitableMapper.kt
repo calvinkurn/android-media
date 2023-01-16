@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class BulkReviewVisitableMapper @Inject constructor() {
     fun map(
-        productRevGetBulkForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm,
+        productRevBulkSubmitProductReview: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview,
         removedReviewItem: Set<String>,
         impressedReviewItems: Set<String>,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
@@ -28,9 +28,9 @@ class BulkReviewVisitableMapper @Inject constructor() {
         bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>
     ): List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>> {
         return arrayListOf<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>().apply {
-            includeAnnouncementWidget(productRevGetBulkForm.themeCopy)
+            includeAnnouncementWidget(productRevBulkSubmitProductReview.themeCopy)
             includeReviewItems(
-                productRevGetBulkForm.reviewForm,
+                productRevBulkSubmitProductReview.reviewForm,
                 removedReviewItem,
                 impressedReviewItems,
                 bulkReviewProductInfoUiState,
@@ -50,7 +50,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
     }
 
     private fun ArrayList<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>.includeReviewItems(
-        reviewForms: List<BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm>,
+        reviewForms: List<BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm>,
         removedReviewItem: Set<String>,
         impressedReviewItems: Set<String>,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
@@ -83,7 +83,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
 
     private fun mapReviewFormToBulkReviewVisitable(
         index: Int,
-        reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
+        reviewForm: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm,
         hasFocusedReviewItem: Boolean,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>,
@@ -96,6 +96,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
         val inboxID = reviewForm.inboxID
         val reputationID = reviewForm.reputationID
         val orderID = reviewForm.orderID
+        val shopID = reviewForm.shopID
         val productCardUiState = bulkReviewProductInfoUiState[inboxID]
         val ratingUiState = bulkReviewRatingUiState[inboxID]
         val badRatingCategoriesUiState = bulkReviewBadRatingCategoryUiState[inboxID]
@@ -108,6 +109,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
                 inboxID = inboxID,
                 reputationID = reputationID,
                 orderID = orderID,
+                shopID = shopID,
                 impressHolder = if (reviewItemImpressed) {
                     ImpressHolder().apply { invoke() }
                 } else {

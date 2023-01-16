@@ -34,7 +34,7 @@ class BulkReviewRatingUiStateMapper @Inject constructor() {
     }
 
     private fun mapRatingUiState(
-        reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
+        reviewForm: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm,
         reviewItemRating: BulkReviewItemRatingUiModel?
     ): Pair<String, BulkReviewRatingUiState> {
         return Pair(

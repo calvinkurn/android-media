@@ -9,11 +9,11 @@ data class BulkReviewGetFormResponse(
     val data: Data = Data()
 ) {
     data class Data(
-        @SerializedName("productrevGetBulkForm")
+        @SerializedName("productrevBulkSubmitProductReview")
         @Expose
-        val productrevGetBulkForm: ProductRevGetBulkForm = ProductRevGetBulkForm()
+        val productrevBulkSubmitProductReview: ProductRevBulkSubmitProductReview = ProductRevBulkSubmitProductReview()
     ) {
-        data class ProductRevGetBulkForm(
+        data class ProductRevBulkSubmitProductReview(
             @SerializedName("themeCopy")
             @Expose
             val themeCopy: String = "",
@@ -31,6 +31,9 @@ data class BulkReviewGetFormResponse(
                 @SerializedName("orderID")
                 @Expose
                 val orderID: String = "",
+                @SerializedName("shopID")
+                @Expose
+                val shopID: String = "",
                 @SerializedName("product")
                 @Expose
                 val product: Product = Product(),

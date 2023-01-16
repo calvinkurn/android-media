@@ -33,6 +33,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkRe
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewProductInfoUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewRatingUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewStickyButtonMapper
+import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewSubmissionParamsMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewTextAreaUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewVisitableMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemBadRatingCategoryUiModel
@@ -114,6 +115,7 @@ class BulkReviewViewModel @Inject constructor(
     private val bulkReviewStickyButtonMapper: BulkReviewStickyButtonMapper,
     private val bulkReviewPageUiStateMapper: BulkReviewPageUiStateMapper,
     private val bulkReviewBadRatingCategoryMapper: BulkReviewBadRatingCategoryMapper,
+    private val bulkReviewSubmissionParamsMapper: BulkReviewSubmissionParamsMapper,
     @BulkReviewGson private val gson: Gson,
     private val userSession: UserSessionInterface,
     private val bulkWriteReviewTracker: BulkWriteReviewTracker
@@ -877,7 +879,7 @@ class BulkReviewViewModel @Inject constructor(
     ): List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>> {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> bulkReviewVisitableMapper.map(
-                productRevGetBulkForm = getFormRequestState.result,
+                productRevBulkSubmitProductReview = getFormRequestState.result,
                 removedReviewItem = removedReviewItem,
                 impressedReviewItems = impressedReviewItems,
                 bulkReviewProductInfoUiState = bulkReviewProductInfoUiState,
@@ -972,11 +974,15 @@ class BulkReviewViewModel @Inject constructor(
                     mapSubmitReviewParams(
                         bulkReviewVisitableList = bulkReviewVisitableList.value,
                         anonymous = anonymous.value
-                    )?.let { params ->
-                        submitUseCase(params).collectLatest { requestState ->
-                            submitBulkReviewRequestState.value = requestState
+                    ).let { params ->
+                        if (params.isNotEmpty()) {
+                            submitUseCase(params).collectLatest { requestState ->
+                                submitBulkReviewRequestState.value = requestState
+                            }
+                        } else {
+                            enqueueToasterFailedSubmitReviews()
                         }
-                    } ?: enqueueToasterFailedSubmitReviews()
+                    }
                     this@BulkReviewViewModel.shouldSubmitReview.value = false
                 }
             }
@@ -1047,73 +1053,12 @@ class BulkReviewViewModel @Inject constructor(
     private fun mapSubmitReviewParams(
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         anonymous: Boolean
-    ): List<BulkReviewSubmitRequestParam>? {
+    ): List<BulkReviewSubmitRequestParam> {
         return bulkReviewVisitableList
             .filterIsInstance<BulkReviewItemUiModel>()
             .mapNotNull { bulkReviewItemUiModel ->
-                val productInfoUiState = bulkReviewItemUiModel.uiState.productCardUiState
-                val ratingUiState = bulkReviewItemUiModel.uiState.ratingUiState
-                val badRatingCategoryUiState = bulkReviewItemUiModel.uiState.badRatingCategoriesUiState
-                val textAreaUiState = bulkReviewItemUiModel.uiState.textAreaUiState
-                val mediaPickerUiState = bulkReviewItemUiModel.uiState.mediaPickerUiState
-                if (
-                    productInfoUiState is BulkReviewProductInfoUiState.Showing &&
-                    ratingUiState is BulkReviewRatingUiState.Showing
-                ) {
-                    BulkReviewSubmitRequestParam(
-                        inboxID = bulkReviewItemUiModel.inboxID,
-                        reputationID = bulkReviewItemUiModel.reputationID,
-                        productID = productInfoUiState.productID,
-                        shopID = "",
-                        rating = ratingUiState.rating,
-                        reviewText = if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
-                            textAreaUiState.text
-                        } else {
-                            ""
-                        },
-                        isAnonymous = anonymous,
-                        attachmentIDs = if (mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
-                            mediaPickerUiState
-                                .mediaItems
-                                .filterIsInstance<CreateReviewMediaUiModel.Image>()
-                                .map { mediaItem ->
-                                    mediaItem.uploadId
-                                }
-                        } else {
-                            emptyList()
-                        },
-                        utmSource = "",
-                        badRatingCategoryIDs = if (badRatingCategoryUiState is BulkReviewBadRatingCategoryUiState.Showing) {
-                            badRatingCategoryUiState
-                                .badRatingCategory
-                                .filter { badRatingCategory ->
-                                    badRatingCategory.selected
-                                }
-                                .map { badRatingCategory ->
-                                    badRatingCategory.id
-                                }
-                        } else {
-                            emptyList()
-                        },
-                        videoAttachments = if (mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
-                            mediaPickerUiState
-                                .mediaItems
-                                .filterIsInstance<CreateReviewMediaUiModel.Video>()
-                                .map { mediaItem ->
-                                    BulkReviewSubmitRequestParam.VideoAttachment(
-                                        uploadID = mediaItem.uploadId,
-                                        url = mediaItem.remoteUrl
-                                    )
-                                }
-                        } else {
-                            emptyList()
-                        },
-                        orderID = ""
-                    )
-                } else {
-                    null
-                }
-            }.takeIf { it.isNotEmpty() }
+                bulkReviewSubmissionParamsMapper.map(bulkReviewItemUiModel, anonymous)
+            }
     }
 
     private suspend fun tryUploadMedia(reviewItemMediaUris: BulkReviewItemMediaUrisUiModel) {
