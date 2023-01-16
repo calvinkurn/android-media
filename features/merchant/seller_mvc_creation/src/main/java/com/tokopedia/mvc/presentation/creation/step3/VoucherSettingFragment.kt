@@ -1,10 +1,10 @@
 package com.tokopedia.mvc.presentation.creation.step3
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -58,7 +58,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         private const val DEBOUNCE = 300L
     }
 
-    //binding
+    // binding
     private var binding by autoClearedNullable<SmvcFragmentCreationVoucherSettingBinding>()
     private var promoTypeSectionBinding by autoClearedNullable<SmvcVoucherCreationStepThreePromoTypeSectionBinding>()
     private var freeShippingInputSectionBinding by autoClearedNullable<SmvcVoucherCreationStepThreeFreeShippingInputSectionBinding>()
@@ -91,7 +91,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = SmvcFragmentCreationVoucherSettingBinding.inflate(inflater, container, false)
@@ -123,21 +124,23 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun handleUiState(state: VoucherCreationStepThreeUiState) {
-        when(state.voucherConfiguration.promoType) {
+        when (state.voucherConfiguration.promoType) {
             PromoType.FREE_SHIPPING -> {
-                //free shipping input
+                // free shipping input
                 renderFreeShippingNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
                 renderFreeShippingMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
-                renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)}
+                renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
             PromoType.CASHBACK -> {
-                //cashback input
+                // cashback input
                 renderCashbackNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
                 renderCashbackPercentageInputValidation(state.isPercentageError, state.percentageErrorMsg)
                 renderCashbackMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
                 renderCashbackMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
-                renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)}
+                renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
             PromoType.DISCOUNT -> {
-                //discount input
+                // discount input
                 renderDiscountNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
                 renderDiscountPercentageInputValidation(state.isPercentageError, state.percentageErrorMsg)
                 renderDiscountMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
@@ -147,6 +150,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
         renderAvailableTargetBuyer(state.availableTargetBuyer, state.voucherConfiguration)
         renderSpendingEstimation(state.spendingEstimation)
+        renderButtonValidation(state.voucherConfiguration, state.isInputValid())
     }
 
     private fun handleAction(action: VoucherCreationStepThreeAction) {
@@ -204,7 +208,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    //Promo type input region
+    // Promo type input region
     private fun setupPromoTypeSection() {
         binding?.run {
             if (viewPromoType.parent != null) {
@@ -264,7 +268,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         viewModel.processEvent(VoucherCreationStepThreeEvent.ChoosePromoType(promoType))
     }
 
-    //Free shipping input region
+    // Free shipping input region
     private fun setFreeShippingSelected() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         promoTypeSectionBinding?.run {
@@ -371,7 +375,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    //Cashback input region
+    // Cashback input region
     private fun setCashbackSelected() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         promoTypeSectionBinding?.run {
@@ -573,7 +577,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    //Discount input region
+    // Discount input region
     private fun setDiscountSelected() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         promoTypeSectionBinding?.run {
@@ -775,7 +779,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    //Target buyer region
+    // Target buyer region
     private fun setupTargetBuyerSection() {
         binding?.run {
             if (viewBuyerTarget.parent != null) {
@@ -823,7 +827,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    //Spending estimation section
+    // Spending estimation section
     private fun setupSpendingEstimationSection() {
         binding?.run {
             labelSpendingEstimation.apply {
@@ -842,7 +846,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    //Button region
+    // Button region
     private fun setupButtonSection() {
         binding?.run {
             if (viewButton.parent != null) {
@@ -861,6 +865,24 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             activity?.finish()
         } else {
             // TODO: navigate back to summary page
+        }
+    }
+
+    private fun renderButtonValidation(
+        voucherConfiguration: VoucherConfiguration,
+        isEnabled: Boolean
+    ) {
+        buttonSectionBinding?.run {
+            btnContinue.apply {
+                this.isEnabled = isEnabled
+                setOnClickListener {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.NavigateToNextStep(
+                            voucherConfiguration
+                        )
+                    )
+                }
+            }
         }
     }
 }
