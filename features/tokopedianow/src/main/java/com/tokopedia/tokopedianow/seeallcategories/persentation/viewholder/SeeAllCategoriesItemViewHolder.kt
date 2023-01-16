@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.seeallcategories.persentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel.SeeAllCategoriesItemUiModel
@@ -26,12 +27,16 @@ class SeeAllCategoriesItemViewHolder(
             tpCategoryTitle.text = data.name
             ivCategoryImage.loadImage(data.imageUrl)
             root.setOnClickListener {
-                listener?.onCategoryClicked(data)
+                listener?.onCategoryClicked(data, layoutPosition)
+            }
+            root.addOnImpressionListener(data) {
+                listener?.onCategoryImpressed(data, layoutPosition)
             }
         }
     }
 
     interface SeeAllCategoriesListener {
-        fun onCategoryClicked(data: SeeAllCategoriesItemUiModel)
+        fun onCategoryClicked(data: SeeAllCategoriesItemUiModel, position: Int)
+        fun onCategoryImpressed(data: SeeAllCategoriesItemUiModel, position: Int)
     }
 }

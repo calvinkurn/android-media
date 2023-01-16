@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.seeallcategories.persentation.decoration.SeeAl
 import com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel.SeeAllCategoriesItemUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryMenuBinding
+import com.tokopedia.tokopedianow.seeallcategories.analytic.SeeAllCategoriesAnalytics
 import com.tokopedia.tokopedianow.seeallcategories.persentation.viewholder.SeeAllCategoriesItemViewHolder
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
@@ -53,8 +54,14 @@ class TokoNowSeeAllCategoriesFragment: Fragment(), SeeAllCategoriesItemViewHolde
     @Inject
     lateinit var viewModelTokoNow: TokoNowSeeAllCategoriesViewModel
 
+    @Inject
+    lateinit var analytics: SeeAllCategoriesAnalytics
+
     private var binding by autoClearedNullable<FragmentTokopedianowCategoryMenuBinding>()
     private var adapter by autoClearedNullable<SeeAllCategoriesAdapter>()
+
+    private val warehouseId: String
+        get() = arguments?.getString(TokoNowCategoryListActivity.PARAM_WAREHOUSE_ID).orEmpty()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTokopedianowCategoryMenuBinding.inflate(inflater, container, false)
@@ -74,8 +81,24 @@ class TokoNowSeeAllCategoriesFragment: Fragment(), SeeAllCategoriesItemViewHolde
         super.onAttach(context)
     }
 
-    override fun onCategoryClicked(data: SeeAllCategoriesItemUiModel) {
+    override fun onCategoryClicked(data: SeeAllCategoriesItemUiModel, position: Int) {
         RouteManager.route(context, data.appLink)
+
+        analytics.onCategoryClicked(
+            categoryId = data.id,
+            categoryName = data.name,
+            warehouseId = warehouseId,
+            position = position
+        )
+    }
+
+    override fun onCategoryImpressed(data: SeeAllCategoriesItemUiModel, position: Int) {
+        analytics.onCategoryImpressed(
+            categoryId = data.id,
+            categoryName = data.name,
+            warehouseId = warehouseId,
+            position = position
+        )
     }
 
     private fun FragmentTokopedianowCategoryMenuBinding.setupHeader() {
@@ -212,7 +235,6 @@ class TokoNowSeeAllCategoriesFragment: Fragment(), SeeAllCategoriesItemViewHolde
     }
 
     private fun getCategoryList() {
-        val warehouseId = arguments?.getString(TokoNowCategoryListActivity.PARAM_WAREHOUSE_ID).orEmpty()
         viewModelTokoNow.getCategoryList(warehouseId)
     }
 

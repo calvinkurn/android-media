@@ -54,6 +54,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_82 = "dimension82"
         const val KEY_DIMENSION_84 = "dimension84"
         const val KEY_DIMENSION_49 = "dimension49"
+        const val KEY_DIMENSION_56 = "dimension56"
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_90 = "dimension90"
