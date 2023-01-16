@@ -28,11 +28,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.PaymentLoggingClient
@@ -56,20 +56,14 @@ import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
-import com.tokopedia.payment.utils.Constant
-import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
-import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
-import com.tokopedia.payment.utils.PaymentPageTimeOutLogging
+import com.tokopedia.payment.utils.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.user.session.Constants.GCM_ID
-import com.tokopedia.user.session.Constants.GCM_STORAGE
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.WebViewHelper
-import kotlinx.android.synthetic.main.activity_top_pay_payment_module.activity_topay_container
-import kotlinx.android.synthetic.main.activity_top_pay_payment_module.loaderCreditCardUnify
+import kotlinx.android.synthetic.main.activity_top_pay_payment_module.*
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -120,13 +114,13 @@ class TopPayActivity :
     // Flag to prevent calling BACK_DIALOG_URL before web view loaded
     private var hasFinishedFirstLoad: Boolean = false
 
-    private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
-
     private var isPaymentPageLoadingTimeout: Boolean = false
 
     private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
 
     private var reloadUrl = ""
+
+    private var paymentTimestampLogger: PaymentTimestampLogger? = null
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -152,10 +146,19 @@ class TopPayActivity :
         intent.extras?.let {
             setupBundlePass(it)
         }
+        initTimestampLogger()
         initView()
         initVar()
         setViewListener()
         setActionVar()
+    }
+
+    private fun initTimestampLogger() {
+        val checkoutTimestamp =
+            intent.getLongExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, 0L)
+        if (checkoutTimestamp > 0) {
+            paymentTimestampLogger = PaymentTimestampLogger(remoteConfig)
+        }
     }
 
     private fun initInjector() {
@@ -251,6 +254,7 @@ class TopPayActivity :
         } else {
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
+        paymentTimestampLogger?.paymentStartLoadTimestamp = System.currentTimeMillis()
     }
 
     private fun isInsufficientBookingStockUrl(url: String): Boolean {
@@ -720,6 +724,8 @@ class TopPayActivity :
             hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
+            paymentTimestampLogger?.paymentFinishLoadTimestamp = System.currentTimeMillis()
+            paymentTimestampLogger?.sendLog()
         }
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
@@ -877,18 +883,8 @@ class TopPayActivity :
     private fun generateWebviewHeaders(path: String, strParam: String): MutableMap<String, String> {
         val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession)
         header[HEADER_TKPD_USER_AGENT] = DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-        header[HEADER_TKPD_SESSION_ID] = getRegistrationIdWithTemp()
+        header[HEADER_TKPD_SESSION_ID] = userSession.deviceId
         return header
-    }
-
-    private fun getRegistrationIdWithTemp(): String {
-        var id = localCacheHandler.getString(GCM_ID, "")
-        if (id.isEmpty()) {
-            id = UUID.randomUUID().toString()
-            localCacheHandler.putString(GCM_ID, id)
-            localCacheHandler.applyEditor()
-        }
-        return id
     }
 
     fun getEnableFingerprintPayment(): Boolean {

@@ -17,7 +17,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +26,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -59,7 +59,6 @@ import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -213,7 +212,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID) ?: ""
         productId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_PRODUCT_ID) ?: ""
         setHasOptionsMenu(true)
-        initInjector()
         // handle negative case #1 non-login
         if (!userSession.isLoggedIn) {
             goToLoginPage()
@@ -221,7 +219,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     }
 
-    private fun initInjector() {
+    override fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
                 .builder()
@@ -229,6 +227,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                 .build()
                 .inject(this)
         }
+    }
+
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TASK
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -346,10 +348,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         cartDataUpdateJob?.cancel()
         uiEventUpdateJob?.cancel()
         updateQuantityJob?.cancel()
-    }
-
-    override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
     private fun setToolbarBackIconUnify() {
@@ -621,7 +619,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun observeLiveData() {
-        viewModel.getMerchantDataResult.observe(viewLifecycleOwner, { result ->
+        viewModel.getMerchantDataResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     val merchantData = result.data.tokofoodGetMerchantData
@@ -641,7 +639,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                         val name = merchantProfile.name
                         val address = merchantProfile.address
                         val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
+                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(
+                            today,
+                            merchantProfile.opsHourDetail
+                        )
                         setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
                         // render product list
                         val isShopClosed = merchantProfile.opsHourFmt.isWarning
@@ -680,9 +681,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                     )
                 }
             }
-        })
+        }
 
-        viewModel.chooseAddress.observe(viewLifecycleOwner, {
+        viewModel.chooseAddress.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     setupChooseAddress(it.data)
@@ -697,7 +698,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     )
                 }
             }
-        })
+        }
 
         viewModel.mvcLiveData.observe(viewLifecycleOwner) {
             renderMvc(it)

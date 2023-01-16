@@ -121,10 +121,10 @@ class StatisticViewModel @Inject constructor(
 
     fun getWidgetLayout(pageSource: String) {
         launchCatchError(context = dispatcher.io, block = {
-            val result: Success<List<BaseWidgetUiModel<*>>> = Success(withContext(dispatcher.io) {
+            val result = Success(withContext(dispatcher.io) {
                 getLayoutUseCase.get().params =
                     GetLayoutUseCase.getRequestParams(shopId, pageSource)
-                return@withContext getLayoutUseCase.get().executeOnBackground()
+                return@withContext getLayoutUseCase.get().executeOnBackground().widgetList
             })
             _widgetLayout.postValue(result)
         }, onError = {

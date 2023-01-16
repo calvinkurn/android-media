@@ -13,8 +13,13 @@ import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 class ConsentWithdrawalActivity : BaseSimpleActivity(), HasComponent<PrivacyCenterComponent> {
 
     override fun getNewFragment(): Fragment? {
-        return intent.data?.getQueryParameter(ApplinkConstInternalUserPlatform.GROUP_ID)?.let {
-            ConsentWithdrawalFragment.createInstance(it.toIntOrZero())
+        return intent.data?.let {
+            ConsentWithdrawalFragment.createInstance(
+                Bundle().apply {
+                    putInt(ApplinkConstInternalUserPlatform.GROUP_ID, it.getQueryParameter(ApplinkConstInternalUserPlatform.GROUP_ID).toIntOrZero())
+                    putString(ConsentWithdrawalFragment.KEY_HEADER_TITLE, intent.getStringExtra(ConsentWithdrawalFragment.KEY_HEADER_TITLE).orEmpty())
+                }
+            )
         }
     }
 

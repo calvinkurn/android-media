@@ -26,3 +26,5 @@ fun contains(pair: Pair<String, String>): Matcher<List<Validator>> {
 }
 
 fun containsEventAction(value: String) = contains("eventAction" to value)
+
+fun containsEvent(value: String) = contains("event" to value)
