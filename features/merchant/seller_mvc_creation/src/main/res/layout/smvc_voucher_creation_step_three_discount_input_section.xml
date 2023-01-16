@@ -37,7 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_discount_deduction_type_label"
         app:unify_text_field_label_static="true"
-        app:unify_text_field_placeholder="Min. 2% Maks. 100%" />
+        app:unify_text_field_placeholder="Contoh Rp10.000" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/tf_discount_percentage"

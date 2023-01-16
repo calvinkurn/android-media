@@ -34,9 +34,11 @@ import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
+@FlowPreview
 class VoucherSettingFragment : BaseDaggerFragment() {
 
     companion object {
@@ -192,6 +194,32 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             setupTargetBuyerSection()
             setupSpendingEstimationSection()
             setupButtonSection()
+            presetValue()
+        }
+    }
+
+    private fun presetValue() {
+        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
+        if (pageMode == PageMode.EDIT) {
+            freeShippingInputSectionBinding?.run {
+                tfFreeShippingNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
+                tfFreeShippingMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
+                tfFreeShippingQuota.editText.setText(currentVoucherConfiguration.quota.toString())
+            }
+            cashbackInputSectionBinding?.run {
+                tfCashbackNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
+                tfCashbackPercentage.editText.setText(currentVoucherConfiguration.benefitPercent.toString())
+                tfCahsbackMaxDeduction.editText.setText(currentVoucherConfiguration.benefitMax.toString())
+                tfCashbackMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
+                tfCashbackQuota.editText.setText(currentVoucherConfiguration.quota.toString())
+            }
+            discountInputSectionBinding?.run {
+                tfDiscountNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
+                tfDiscountPercentage.editText.setText(currentVoucherConfiguration.benefitPercent.toString())
+                tfDiscountMaxDeduction.editText.setText(currentVoucherConfiguration.benefitMax.toString())
+                tfDiscountMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
+                tfDiscountQuota.editText.setText(currentVoucherConfiguration.quota.toString())
+            }
         }
     }
 
@@ -270,7 +298,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     // Free shipping input region
     private fun setFreeShippingSelected() {
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         promoTypeSectionBinding?.run {
             chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
             chipCashback.chipType = ChipsUnify.TYPE_NORMAL
@@ -281,9 +308,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             viewCashbackInput.gone()
             viewDiscountInput.gone()
         }
-        setFreeShippingNominalInput(currentVoucherConfiguration)
-        setFreeShippingMinimumBuyInput(currentVoucherConfiguration)
-        setFreeShippingQuotaInput(currentVoucherConfiguration)
+        setFreeShippingNominalInput()
+        setFreeShippingMinimumBuyInput()
+        setFreeShippingQuotaInput()
         viewModel.processEvent(
             VoucherCreationStepThreeEvent.ChooseBenefitType(
                 BenefitType.NOMINAL
@@ -291,10 +318,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun setFreeShippingNominalInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setFreeShippingNominalInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingNominal.apply {
-                editText.setText(currentVoucherConfiguration.benefitIdr.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -309,10 +335,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setFreeShippingMinimumBuyInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setFreeShippingMinimumBuyInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingMinimumBuy.apply {
-                editText.setText(currentVoucherConfiguration.minPurchase.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -327,10 +352,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setFreeShippingQuotaInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setFreeShippingQuotaInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingQuota.apply {
-                editText.setText(currentVoucherConfiguration.quota.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -389,30 +413,30 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             viewDiscountInput.gone()
         }
         setCashbackSwitchPriceInput(currentVoucherConfiguration)
-        setCashbackMaxDeductionInput(currentVoucherConfiguration)
-        setCashbackMinimumBuyInput(currentVoucherConfiguration)
-        setCashbackQuotaInput(currentVoucherConfiguration)
+        setCashbackMaxDeductionInput()
+        setCashbackMinimumBuyInput()
+        setCashbackQuotaInput()
     }
 
     private fun setCashbackSwitchPriceInput(currentVoucherConfiguration: VoucherConfiguration) {
         cashbackInputSectionBinding?.run {
             val isChecked = currentVoucherConfiguration.benefitType == BenefitType.PERCENTAGE
             if (isChecked) {
-                setCashbackPercentageInput(currentVoucherConfiguration)
+                setCashbackPercentageInput()
             } else {
-                setCashbackNominalInput(currentVoucherConfiguration)
+                setCashbackNominalInput()
             }
             switchPriceCashback.isChecked = isChecked
-            switchPriceCashback.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    setCashbackPercentageInput(currentVoucherConfiguration)
+            switchPriceCashback.setOnCheckedChangeListener { _, isOn ->
+                if (isOn) {
+                    setCashbackPercentageInput()
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.ChooseBenefitType(
                             BenefitType.PERCENTAGE
                         )
                     )
                 } else {
-                    setCashbackNominalInput(currentVoucherConfiguration)
+                    setCashbackNominalInput()
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.ChooseBenefitType(
                             BenefitType.NOMINAL
@@ -423,7 +447,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setCashbackNominalInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setCashbackNominalInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackNominal.apply {
                 visible()
@@ -432,7 +456,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 appendText("")
                 prependText(getString(R.string.smvc_rupiah_label))
                 labelText.text = getString(R.string.smvc_nominal_cashback_label)
-                editText.setText(currentVoucherConfiguration.benefitIdr.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -448,7 +471,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setCashbackPercentageInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setCashbackPercentageInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackPercentage.apply {
                 visible()
@@ -457,7 +480,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 appendText(getString(R.string.smvc_percent_symbol))
                 prependText("")
                 labelText.text = getString(R.string.smvc_percentage_label)
-                editText.setText(currentVoucherConfiguration.benefitPercent.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -473,10 +495,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setCashbackMaxDeductionInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setCashbackMaxDeductionInput() {
         cashbackInputSectionBinding?.run {
             tfCahsbackMaxDeduction.apply {
-                editText.setText(currentVoucherConfiguration.benefitMax.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -491,10 +512,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setCashbackMinimumBuyInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setCashbackMinimumBuyInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackMinimumBuy.apply {
-                editText.setText(currentVoucherConfiguration.minPurchase.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -509,10 +529,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setCashbackQuotaInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setCashbackQuotaInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackQuota.apply {
-                editText.setText(currentVoucherConfiguration.quota.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -591,30 +610,30 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             viewDiscountInput.visible()
         }
         setDiscountSwitchPriceInput(currentVoucherConfiguration)
-        setDiscountMaxDeductionInput(currentVoucherConfiguration)
-        setDiscountMinimumBuyInput(currentVoucherConfiguration)
-        setDiscountQuotaInput(currentVoucherConfiguration)
+        setDiscountMaxDeductionInput()
+        setDiscountMinimumBuyInput()
+        setDiscountQuotaInput()
     }
 
     private fun setDiscountSwitchPriceInput(currentVoucherConfiguration: VoucherConfiguration) {
         discountInputSectionBinding?.run {
             val isChecked = currentVoucherConfiguration.benefitType == BenefitType.PERCENTAGE
             if (isChecked) {
-                setDiscountPercentageInput(currentVoucherConfiguration)
+                setDiscountPercentageInput()
             } else {
-                setDiscountNominalInput(currentVoucherConfiguration)
+                setDiscountNominalInput()
             }
             switchPriceDiscount.isChecked = isChecked
-            switchPriceDiscount.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    setDiscountPercentageInput(currentVoucherConfiguration)
+            switchPriceDiscount.setOnCheckedChangeListener { _, isOn ->
+                if (isOn) {
+                    setDiscountPercentageInput()
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.ChooseBenefitType(
                             BenefitType.PERCENTAGE
                         )
                     )
                 } else {
-                    setDiscountNominalInput(currentVoucherConfiguration)
+                    setDiscountNominalInput()
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.ChooseBenefitType(
                             BenefitType.NOMINAL
@@ -625,7 +644,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setDiscountNominalInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setDiscountNominalInput() {
         discountInputSectionBinding?.run {
             tfDiscountNominal.apply {
                 visible()
@@ -634,7 +653,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 appendText("")
                 prependText(getString(R.string.smvc_rupiah_label))
                 labelText.text = getString(R.string.smvc_nominal_discount_label)
-                editText.setText(currentVoucherConfiguration.benefitIdr.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -650,7 +668,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setDiscountPercentageInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setDiscountPercentageInput() {
         discountInputSectionBinding?.run {
             tfDiscountPercentage.apply {
                 visible()
@@ -659,7 +677,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 appendText(getString(R.string.smvc_percent_symbol))
                 prependText("")
                 labelText.text = getString(R.string.smvc_percentage_label)
-                editText.setText(currentVoucherConfiguration.benefitPercent.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -675,10 +692,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setDiscountMaxDeductionInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setDiscountMaxDeductionInput() {
         discountInputSectionBinding?.run {
             tfDiscountMaxDeduction.apply {
-                editText.setText(currentVoucherConfiguration.benefitMax.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -693,10 +709,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setDiscountMinimumBuyInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setDiscountMinimumBuyInput() {
         discountInputSectionBinding?.run {
             tfDiscountMinimumBuy.apply {
-                editText.setText(currentVoucherConfiguration.minPurchase.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
@@ -711,10 +726,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setDiscountQuotaInput(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun setDiscountQuotaInput() {
         discountInputSectionBinding?.run {
             tfDiscountQuota.apply {
-                editText.setText(currentVoucherConfiguration.quota.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
