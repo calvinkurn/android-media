@@ -21,7 +21,7 @@ import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_L
 import com.tokopedia.unifyprinciples.Typography
 
 class CatalogLihatViewHolder(
-    val view: View,
+    private val view: View,
     private val catalogLibraryListener: CatalogLibraryListener,
     private val sharedRecycledViewPool: RecycledViewPool
 ) : AbstractViewHolder<CatalogLihatDataModel>(view) {
@@ -30,15 +30,15 @@ class CatalogLihatViewHolder(
         itemView.findViewById(R.id.lihat_category_accordion_view)
     }
 
-    companion object {
-        val LAYOUT = R.layout.item_catalog_lihat_category
-        const val COLUMN_COUNT = 4
-    }
-
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         CatalogHomepageAdapterFactoryImpl(
             catalogLibraryListener
         )
+    }
+
+    companion object {
+        val LAYOUT = R.layout.item_catalog_lihat_category
+        const val COLUMN_COUNT = 4
     }
 
     override fun bind(element: CatalogLihatDataModel) {
