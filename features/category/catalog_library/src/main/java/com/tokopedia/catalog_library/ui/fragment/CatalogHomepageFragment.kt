@@ -26,7 +26,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -34,6 +33,7 @@ import javax.inject.Inject
 class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     private var catalogHomeRecyclerView: RecyclerView? = null
+    private var globalError: GlobalError? = null
 
     companion object {
         const val CATALOG_HOME_PAGE_FRAGMENT_TAG = "CATALOG_HOME_PAGE_FRAGMENT_TAG"
@@ -81,11 +81,16 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initHeaderTitle(view)
         getDataFromViewModel()
-        setupRecyclerView(view)
+        initViews(view)
         setUpBase()
         setObservers()
+    }
+
+    private fun initViews(view: View) {
+        globalError = view.findViewById(R.id.global_error_page)
+        initHeaderTitle(view)
+        setupRecyclerView(view)
     }
 
     private fun initHeaderTitle(view: View) {
@@ -114,7 +119,6 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     private fun setupRecyclerView(view: View) {
         catalogHomeRecyclerView = view.findViewById(R.id.catalog_home_rv)
         catalogHomeRecyclerView?.apply {
-            // TODO :: Check if this layout manager isn't affecting on other Fragment instances
             layoutManager = getLinearLayoutManager()
             adapter = catalogHomeAdapter
             setHasFixedSize(true)
@@ -152,15 +156,15 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         if (e is UnknownHostException ||
             e is SocketTimeoutException
         ) {
-            global_error_page.setType(GlobalError.NO_CONNECTION)
+            globalError?.setType(GlobalError.NO_CONNECTION)
         } else {
-            global_error_page.setType(GlobalError.SERVER_ERROR)
+            globalError?.setType(GlobalError.SERVER_ERROR)
         }
-
-        global_error_page.show()
-        global_error_page.setOnClickListener {
+        catalogHomeRecyclerView?.hide()
+        globalError?.show()
+        globalError?.errorAction?.setOnClickListener {
             catalogHomeRecyclerView?.show()
-            global_error_page.hide()
+            globalError?.hide()
             getDataFromViewModel()
         }
     }

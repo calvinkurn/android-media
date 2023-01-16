@@ -30,7 +30,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -41,6 +40,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     private var shimmerLayout: ScrollView? = null
     private var sortAsc: Typography? = null
     private var sortDesc: Typography? = null
+    private var globalError: GlobalError? = null
 
     companion object {
         const val CATALOG_LIHAT_PAGE_FRAGMENT_TAG = "CATALOG_LIHAT_PAGE_FRAGMENT_TAG"
@@ -96,6 +96,8 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews(view)
+
         shimmerLayout = view.findViewById(R.id.shimmer_layout)
         sortAsc = view.findViewById(R.id.sort_order_0)
         sortDesc = view.findViewById(R.id.sort_order_1)
@@ -105,8 +107,6 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
         )
-
-        initHeaderTitle(view)
         activity?.let {
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
             showShimmer()
@@ -129,7 +129,6 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
                 )
             )
         }
-        setupRecyclerView(view)
         setObservers()
     }
 
@@ -139,6 +138,12 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
                 activity?.finish()
             }
         }
+    }
+
+    private fun initViews(view: View) {
+        globalError = view.findViewById(R.id.global_error_page)
+        initHeaderTitle(view)
+        setupRecyclerView(view)
     }
 
     private fun setupRecyclerView(view: View) {
@@ -184,16 +189,16 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         if (e is UnknownHostException ||
             e is SocketTimeoutException
         ) {
-            global_error_page.setType(GlobalError.NO_CONNECTION)
+            globalError?.setType(GlobalError.NO_CONNECTION)
         } else {
-            global_error_page.setType(GlobalError.SERVER_ERROR)
+            globalError?.setType(GlobalError.SERVER_ERROR)
         }
 
-        global_error_page.show()
-        global_error_page.setOnClickListener {
+        globalError?.show()
+        globalError?.errorAction?.setOnClickListener {
             catalogLihatPageRecyclerView?.show()
             shimmerLayout?.show()
-            global_error_page.hide()
+            globalError?.hide()
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
         }
     }

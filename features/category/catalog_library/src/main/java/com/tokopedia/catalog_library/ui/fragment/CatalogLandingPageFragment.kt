@@ -187,7 +187,7 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         }
 
         globalError?.show()
-        globalError?.setOnClickListener {
+        globalError?.errorAction?.setOnClickListener {
             catalogLandingRecyclerView?.show()
             global_error_page.hide()
             addShimmer()
