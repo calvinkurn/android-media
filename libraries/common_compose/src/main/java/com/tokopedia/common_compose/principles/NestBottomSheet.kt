@@ -19,7 +19,7 @@ import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
-fun BottomSheetCompose(
+fun NestBottomSheet(
     title: String,
     onClosePressed: () -> Unit,
     modifier: Modifier = Modifier,
@@ -47,7 +47,7 @@ fun BottomSheetCompose(
     }
 }
 
-fun BottomSheetRoundedCorner(): RoundedCornerShape {
+fun NestBottomSheetShape(): RoundedCornerShape {
     return RoundedCornerShape(
         topStart = 20.dp,
         topEnd = 20.dp,

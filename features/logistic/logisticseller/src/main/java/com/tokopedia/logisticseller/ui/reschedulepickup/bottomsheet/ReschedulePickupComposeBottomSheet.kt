@@ -25,7 +25,7 @@ fun RescheduleBottomSheetLayout(
     onTimeChosen: (RescheduleTimeOptionModel) -> Unit,
     onReasonChosen: (RescheduleReasonOptionModel) -> Unit
 ) {
-    BottomSheetCompose(getBottomSheetTitle(currentScreen), onCloseBottomSheet) {
+    NestBottomSheet(getBottomSheetTitle(currentScreen), onCloseBottomSheet) {
         when (currentScreen) {
             RescheduleBottomSheetState.DAY -> RescheduleBottomSheetContent(
                 items = options.dayOptions,

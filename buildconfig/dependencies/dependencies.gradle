@@ -438,6 +438,7 @@ ext {
             composeMaterial     : "androidx.compose.material:material:$composeVersion",
             composeUiTooling    : "androidx.compose.ui:ui-tooling:$composeVersion",
             composePreview      : "androidx.compose.ui:ui-tooling-preview:$composeVersion",
+            composeIconsExtended: "androidx.compose.material:material-icons-extended:$composeVersion",
             composeFoundation   : "androidx.compose.foundation:foundation:$composeVersion",
             composeRuntime      : "androidx.compose.runtime:runtime:$composeVersion",
             composeActivity     : "androidx.activity:activity-compose:$composeActivity",
