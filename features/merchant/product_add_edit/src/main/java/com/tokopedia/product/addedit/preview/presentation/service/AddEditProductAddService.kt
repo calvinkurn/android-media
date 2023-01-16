@@ -31,7 +31,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.net.URL
+import java.net.URLConnection
 
 /**
  * Created by faisalramd on 2020-04-05.
@@ -207,15 +209,40 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         }
     }
 
-    private fun downloadFile(url: String, path: String) {
+//    private fun downloadFile(url: String, path: String) {
+//        launchCatchError(block = {
+//            URL(url).openStream().use { input ->
+//                FileOutputStream(File(path), false).use { output ->
+//                    input.copyTo(output)
+//                }
+//            }
+//        }, onError = { throwable ->
+//                AddEditProductErrorHandler.logMessage(path)
+//                AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
+//                // TODO notify user about the error
+//            })
+//    }
+
+    private fun downloadFile(url: String, outputFileName: String) {
         launchCatchError(block = {
-            URL(url).openStream().use { input ->
-                FileOutputStream(File(path), false).use { output ->
-                    input.copyTo(output)
-                }
+            val downloadsDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+            val file = File(downloadsDir, outputFileName)
+            val downloadUrl = URL(url)
+            val ucon: URLConnection = downloadUrl.openConnection()
+            ucon.connect()
+            val inputStream: InputStream = ucon.getInputStream()
+            val fos = FileOutputStream(file)
+            val data = ByteArray(1024)
+            var current = 0
+            while (inputStream.read(data).also { current = it } != -1) {
+                fos.write(data, 0, current)
             }
+            inputStream.close()
+            fos.flush()
+            fos.close()
         }, onError = { throwable ->
-                AddEditProductErrorHandler.logMessage(path)
+                AddEditProductErrorHandler.logMessage(outputFileName)
                 AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
                 // TODO notify user about the error
             })
@@ -227,7 +254,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         mutableData.forEach { data ->
             var path = downloadsDir + "/" + data.fileName
-            downloadFile(url = data.urlOriginal, path = path)
+            downloadFile(url = data.urlOriginal, outputFileName = data.fileName)
             data.filePath = path
         }
         return mutableData.toList()
@@ -240,7 +267,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         mutableData.forEach { data ->
             data.pictures.forEach { picture ->
                 var path = downloadsDir + "/" + picture.fileName
-                downloadFile(url = picture.urlOriginal, path = path)
+                downloadFile(url = picture.urlOriginal, outputFileName = picture.fileName)
                 picture.filePath = path
             }
         }
@@ -253,7 +280,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         var path = downloadsDir + "/" + variantSizeChart.fileName
         downloadFile(
             url = variantSizeChart.urlOriginal,
-            path = path
+            outputFileName = variantSizeChart.fileName
         )
         variantSizeChart.filePath = path
     }
