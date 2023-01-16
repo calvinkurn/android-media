@@ -3459,7 +3459,7 @@ open class DynamicProductDetailFragment :
                         pageSource = VariantPageSource.PDP_PAGESOURCE,
                         productId = pid.orEmpty(),
                         productInfoP1 = p1,
-                        warehouseId = warehouseId ?: "",
+                        warehouseId = warehouseId.orEmpty(),
                         pdpSession = p1.pdpSession,
                         isTokoNow = p1.basic.isTokoNow,
                         isShopOwner = viewModel.isShopOwner(),
