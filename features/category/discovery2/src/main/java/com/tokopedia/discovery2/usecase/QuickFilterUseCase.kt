@@ -15,8 +15,11 @@ class QuickFilterUseCase @Inject constructor() {
             this.selectedFilters = selectedFilter
             if (component.name == ComponentNames.ProductCardSprintSaleCarousel.componentName ||
                 component.name == ComponentNames.ProductCardCarousel.componentName ||
-                component.name == ComponentNames.MerchantVoucherCarousel.componentName)
+                component.name == ComponentNames.MerchantVoucherCarousel.componentName ||
+                component.name == ComponentNames.ShopCardView.componentName
+            ) {
                 shouldRefreshComponent = true
+            }
             return true
         }
         return false
