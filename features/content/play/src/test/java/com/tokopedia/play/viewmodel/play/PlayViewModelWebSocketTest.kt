@@ -23,7 +23,7 @@ import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.websocket.response.*
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -392,7 +392,7 @@ class PlayViewModelWebSocketTest {
 //                is PlayProductTagsUiModel.Complete -> {
 //                    val mockMerchantVoucher = (mockData.productTags as PlayProductTagsUiModel.Complete).voucherList
 //                    merchantVoucher.voucherList.forEachIndexed { index, playVoucherUiModel ->
-//                        (playVoucherUiModel as MerchantVoucherUiModel).isEqualToIgnoringFields(mockMerchantVoucher[index], MerchantVoucherUiModel::impressHolder)
+//                        (playVoucherUiModel as Merchant).isEqualToIgnoringFields(mockMerchantVoucher[index], Merchant::impressHolder)
 //                    }
 //                }
 //                else -> {
@@ -406,7 +406,7 @@ class PlayViewModelWebSocketTest {
     fun `when get user winner status from socket, then it should show leaderboard data`() {
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
             id = "1",
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
+            status = GameUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
         )
 
         coEvery { repo.postGiveawayTap(any(), any()) } returns true
@@ -441,7 +441,7 @@ class PlayViewModelWebSocketTest {
     fun `when get user winner status from socket, and the current user is win, then it should emit winner popup`() {
         val giveaway = uiModelBuilder.buildGiveaway(
             id = "1",
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
+            status = GameUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
         )
         coEvery { repo.getCurrentInteractive(any()) } returns giveaway
 
@@ -474,7 +474,7 @@ class PlayViewModelWebSocketTest {
                     PlayUserWinnerStatusSocketResponse.imageUrl,
                     PlayUserWinnerStatusSocketResponse.winnerTitle,
                     PlayUserWinnerStatusSocketResponse.winnerText,
-                    InteractiveUiModel.Unknown,
+                    GameUiModel.Unknown,
                 )
             )
         }
@@ -484,7 +484,7 @@ class PlayViewModelWebSocketTest {
     fun `when get user winner status from socket, and the current user is lose, then it should emit loser popup`() {
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
             id = "1",
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
+            status = GameUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
         )
 
         coEvery { repo.postGiveawayTap(any(), any()) } returns true
@@ -524,7 +524,7 @@ class PlayViewModelWebSocketTest {
     fun `when the user winner status coming when interactive is not done yet, then it does nothing`() {
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
             id = "1",
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
+            status = GameUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
         )
 
         coEvery { repo.postGiveawayTap(any(), any()) } returns true
@@ -558,7 +558,7 @@ class PlayViewModelWebSocketTest {
     fun `when get user winner status from socket, and the current user is not join the session, then it does nothing`() {
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
             id = "1",
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
+            status = GameUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
         )
 
         coEvery { repo.postGiveawayTap(any(), any()) } returns true
@@ -593,7 +593,7 @@ class PlayViewModelWebSocketTest {
     fun `when interactive has ended and still not getting any user winner status from websocket, then it should show leaderboard anyway`() {
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
             id = "1",
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
+            status = GameUiModel.Giveaway.Status.Ongoing(10000L.millisFromNow())
         )
 
         coEvery { repo.postGiveawayTap(any(), any()) } returns true
@@ -675,7 +675,7 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
+            status = GameUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
         coEvery { repo.getCurrentInteractive(any()) } returns model
@@ -738,7 +738,7 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
+            status = GameUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
         coEvery { repo.getCurrentInteractive(any()) } returns model
@@ -806,7 +806,7 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
+            status = GameUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
         coEvery { repo.getCurrentInteractive(any()) } returns model
@@ -850,7 +850,7 @@ class PlayViewModelWebSocketTest {
     fun `when quiz is ongoing, user join the game when click option error occurs, show error toaster and dont change state`() {
         val model = uiModelBuilder.buildQuiz(
             id = "1",
-            status = InteractiveUiModel.Quiz.Status.Ongoing(5000L.millisFromNow()),
+            status = GameUiModel.Quiz.Status.Ongoing(5000L.millisFromNow()),
             listOfChoices =
             listOf(
                 modelBuilder.buildQuizChoices(
@@ -929,7 +929,7 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
+            status = GameUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
         coEvery { repo.getCurrentInteractive(any()) } returns model
@@ -973,7 +973,7 @@ class PlayViewModelWebSocketTest {
 
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
             id = "1",
-            status = InteractiveUiModel.Giveaway.Status.Upcoming(endTime = durationTap, startTime = 100L.millisFromNow())
+            status = GameUiModel.Giveaway.Status.Upcoming(endTime = durationTap, startTime = 100L.millisFromNow())
         )
 
         val robot = createPlayViewModelRobot(
@@ -994,13 +994,13 @@ class PlayViewModelWebSocketTest {
                 viewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
             }
 
-            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Giveaway>()
-            it.viewModel.interactiveData.assertInstanceOf<InteractiveUiModel.Giveaway>()
-            state.interactive.interactive.assertType<InteractiveUiModel.Giveaway> { ga ->
-                ga.status.assertEqualTo(InteractiveUiModel.Giveaway.Status.Ongoing(endTime = durationTap))
+            state.interactive.game.assertInstanceOf<GameUiModel.Giveaway>()
+            it.viewModel.gameData.assertInstanceOf<GameUiModel.Giveaway>()
+            state.interactive.game.assertType<GameUiModel.Giveaway> { ga ->
+                ga.status.assertEqualTo(GameUiModel.Giveaway.Status.Ongoing(endTime = durationTap))
             }
-            it.viewModel.interactiveData.assertType<InteractiveUiModel.Giveaway> { ga ->
-                ga.status.assertEqualTo(InteractiveUiModel.Giveaway.Status.Ongoing(endTime = durationTap))
+            it.viewModel.gameData.assertType<GameUiModel.Giveaway> { ga ->
+                ga.status.assertEqualTo(GameUiModel.Giveaway.Status.Ongoing(endTime = durationTap))
             }
         }
     }

@@ -39,6 +39,7 @@ import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
@@ -189,13 +190,13 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         )
         renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
         renderAvailableRecurringPeriod(state.validationDate)
-        renderButtonValidation(state.isInputValid(), state.validationDate)
+        renderButtonValidation(state.isInputValid(), state.validationDate, state.voucherConfiguration)
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
         when (action) {
             is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
-            is VoucherCreationStepTwoAction.ContinueToNextStep -> TODO()
+            is VoucherCreationStepTwoAction.ContinueToNextStep -> continueToNextStep(action.voucherConfiguration)
             is VoucherCreationStepTwoAction.ShowError -> TODO()
             is VoucherCreationStepTwoAction.ShowCoachmark -> showCoachmark()
         }
@@ -265,7 +266,16 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             VoucherTypeActivity.start(requireContext(), voucherConfiguration)
             activity?.finish()
         } else {
-            // TODO: navigate back to summary page
+            activity?.finish()
+        }
+    }
+
+    private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {
+        if (pageMode == PageMode.CREATE) {
+            // TODO
+        } else {
+            SummaryActivity.start(requireContext(), voucherConfiguration)
+            activity?.finish()
         }
     }
 
@@ -745,22 +755,23 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun renderButtonValidation(
         isEnabled: Boolean,
-        validationDate: List<VoucherValidationResult.ValidationDate>
+        validationDate: List<VoucherValidationResult.ValidationDate>,
+        voucherConfiguration: VoucherConfiguration
     ) {
         buttonSectionBinding?.run {
             btnContinue.apply {
                 val unAvailableDate = validationDate.filter { !it.available }
                 this.isEnabled = isEnabled
                 if (unAvailableDate.isNotEmpty()) {
-                    showCreateVoucherConfirmationDialog()
+                    showCreateVoucherConfirmationDialog(voucherConfiguration)
                 } else {
-                    setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep) }
+                    setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep(voucherConfiguration)) }
                 }
             }
         }
     }
 
-    private fun showCreateVoucherConfirmationDialog() {
+    private fun showCreateVoucherConfirmationDialog(voucherConfiguration: VoucherConfiguration) {
         val dialog = context?.let { ctx ->
             DialogUnify(
                 ctx,
@@ -774,7 +785,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             setPrimaryCTAText(getString(R.string.smvc_create_voucher_confirmation_primary_cta_label))
             setSecondaryCTAText(getString(R.string.smvc_create_voucher_confirmation_secondary_cta_label))
             setPrimaryCTAClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep)
+                viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep(voucherConfiguration))
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }

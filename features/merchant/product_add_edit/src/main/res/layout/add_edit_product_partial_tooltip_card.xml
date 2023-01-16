@@ -18,9 +18,9 @@
             android:id="@+id/iv_tips_bulb"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:srcCompat="@drawable/product_add_edit_ic_tips_bulb" />
 
         <com.tokopedia.unifyprinciples.Typography

@@ -111,5 +111,7 @@ const val GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH = "cart/get_occ_cart_page_goci
 const val GET_OCC_CART_PAGE_GOCICIL_LIMITED_WALLET_AMOUNT_RESPONSE_PATH = "cart/get_occ_cart_page_gocicil_limited_wallet_amount_response.json"
 const val GET_OCC_CART_PAGE_GOCICIL_PAYMENT_FEE_RESPONSE_PATH = "cart/get_occ_cart_page_gocicil_payment_fee_response.json"
 
+const val GET_OCC_CART_PAGE_EPHARMACY_PRODUCT_RESPONSE_PATH = "cart/get_occ_cart_page_epharmacy_product_response.json"
+
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
 const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"

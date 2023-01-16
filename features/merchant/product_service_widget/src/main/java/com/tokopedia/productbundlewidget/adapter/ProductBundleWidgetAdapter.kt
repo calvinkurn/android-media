@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productbundlewidget.adapter.constant.ProductBundleConstant.BUNDLE_WIDGET_DEFAULT_WIDTH
+import com.tokopedia.productbundlewidget.adapter.constant.ProductBundleConstant.SINGLE_SIZE_WIDGET
 import com.tokopedia.productbundlewidget.adapter.viewholder.ProductBundleMultipleViewHolder
 import com.tokopedia.productbundlewidget.adapter.viewholder.ProductBundleSingleViewHolder
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
@@ -14,13 +16,6 @@ import com.tokopedia.productbundlewidget.model.BundleTypes
 import com.tokopedia.productbundlewidget.model.BundleUiModel
 
 class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    companion object {
-        const val PRODUCT_BUNDLE_SINGLE = "single_bundling"
-        const val SINGLE_SIZE_WIDGET = 1
-        const val BUNDLE_WIDGET_DEFAULT_WIDTH = 300f
-    }
-
     private var bundleListItem: List<BundleUiModel> = listOf()
     private var listener: ProductBundleAdapterListener? = null
 

@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.tokopointhome.catalog
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,8 +34,8 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             return
         }
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
-        if (content.layoutCatalogAttr.countdownInfo != null && content.layoutCatalogAttr.countdownInfo?.isShown!!
-                && content.layoutCatalogAttr.countdownInfo?.countdownUnix != null && content.layoutCatalogAttr.countdownInfo?.countdownUnix!! > 0) {
+        if (content.layoutCatalogAttr.countdownInfo.isShown
+                 && content.layoutCatalogAttr.countdownInfo.countdownUnix > 0) {
             if (countDownView.timer != null) {
                 countDownView.timer!!.cancel()
             }
@@ -63,7 +62,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
                     setTimer(timerValue, timerStr, timerType)
             }
             countDownView?.onFinish = {
-                if (content.layoutCatalogAttr.countdownInfo?.countdownUnix!! > 0) {
+                if (content.layoutCatalogAttr.countdownInfo.countdownUnix > 0) {
                     if (timerStr != null && timerType != null && timerValue != null)
                         setTimer(timerValue, timerStr, timerType)
                 } else {
@@ -78,8 +77,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             timerMessage.hide()
         }
 
-        if ((content.layoutCatalogAttr.countdownInfo == null || content.layoutCatalogAttr.countdownInfo != null && content.layoutCatalogAttr.countdownInfo?.isShown != null
-                && !content.layoutCatalogAttr.countdownInfo?.isShown!!) && content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
+        if (!content.layoutCatalogAttr.countdownInfo.isShown && content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
             CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all_column, R.id.text_title_column, ConstraintSet.BASELINE)
         }
 
@@ -87,7 +85,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_column)
             btnSeeAll.visibility = View.VISIBLE
             btnSeeAll.text = content.cta.text
-            btnSeeAll.setOnClickListener { v: View? ->
+            btnSeeAll.setOnClickListener {
                 handledClick(content.cta.appLink, content.cta.url,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_CATALOG, content.sectionTitle)
             }

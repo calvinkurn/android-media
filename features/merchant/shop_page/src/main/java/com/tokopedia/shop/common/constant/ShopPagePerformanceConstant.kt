@@ -9,7 +9,7 @@ object ShopPagePerformanceConstant {
     const val SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE = "mp_shop_home_image_slider_square"
     const val SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE = "mp_shop_home_image_multiple_column"
 
-    object PltConstant{
+    object PltConstant {
         const val SHOP_TRACE = "mp_shop"
         const val SHOP_TRACE_PREPARE = "mp_shop_prepare"
         const val SHOP_TRACE_MIDDLE = "mp_shop_network"

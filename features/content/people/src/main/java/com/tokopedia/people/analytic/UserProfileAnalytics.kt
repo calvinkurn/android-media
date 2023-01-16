@@ -68,7 +68,6 @@ class UserProfileAnalytics {
         const val EVENT_CLICK_HOME_PAGE = "clickHomepage"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
-
     }
 
     object ScreenName {
@@ -126,7 +125,6 @@ class UserProfileAnalytics {
             "click - lanjut on onboarding bottomsheet without username"
         const val CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE = "click - ubah profile"
         const val CLICK_USER = "click - user"
-
     }
 
     object Category {

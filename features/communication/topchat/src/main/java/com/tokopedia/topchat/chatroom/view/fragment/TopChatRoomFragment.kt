@@ -75,10 +75,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -188,6 +185,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.trackSuccessDoB
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.topchat.common.util.Utils.isFromBubble
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
@@ -210,18 +208,35 @@ import kotlin.math.abs
  * @author : Steven 29/11/18
  */
 
-open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
-    SendButtonListener, ImagePickerListener, ChatTemplateListener,
-    HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
+open class TopChatRoomFragment :
+    BaseChatFragment(),
+    TopChatContract.View,
+    TypingListener,
+    SendButtonListener,
+    ImagePickerListener,
+    ChatTemplateListener,
+    HeaderMenuListener,
+    DualAnnouncementListener,
+    TopChatVoucherListener,
     InvoiceThumbnailListener,
-    TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-    StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
-    SearchListener, BroadcastSpamHandlerViewHolder.Listener,
-    RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
-    TopchatProductAttachmentListener, UploadImageBroadcastListener,
-    SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
-    FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
-    ReminderTickerViewHolder.Listener, ProductBundlingListener,
+    TransactionOrderProgressLayout.Listener,
+    ChatMenuStickerView.StickerMenuListener,
+    StickerViewHolder.Listener,
+    DeferredViewHolderAttachment,
+    CommonViewHolderListener,
+    SearchListener,
+    BroadcastSpamHandlerViewHolder.Listener,
+    RoomSettingFraudAlertViewHolder.Listener,
+    ReviewViewHolder.Listener,
+    TopchatProductAttachmentListener,
+    UploadImageBroadcastListener,
+    SrwQuestionViewHolder.Listener,
+    ReplyBoxTextListener,
+    SrwBubbleViewHolder.Listener,
+    FlexBoxChatLayout.Listener,
+    ReplyBubbleAreaMessage.Listener,
+    ReminderTickerViewHolder.Listener,
+    ProductBundlingListener,
     ChatTextAreaTabLayoutListener {
 
     @Inject
@@ -259,7 +274,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var delaySendSrw: QuestionUiModel? = null
     private var interlocutorShopType: String = ""
 
-    //This used only for set extra in finish activity
+    // This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
 
     private var seenAttachedProduct = HashSet<String>()
@@ -288,6 +303,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
      * Ticker Reminder flag, only 1 ticker can exist in 1 session
      */
     private var isTickerNotShownYet = true
+
+    /*
+      * Bubble Chat Flag
+     */
+    private var isFromBubble = false
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -324,10 +344,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
+        initBubbleChatFlag()
     }
 
     private fun initSmoothScroller() {
         smoothScroller = CenterSmoothScroller(context)
+    }
+
+    private fun initBubbleChatFlag() {
+        isFromBubble = activity?.isFromBubble() == true
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        }
     }
 
     override fun onCreateView(
@@ -389,20 +417,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun updateSrwPreviewState() {
         if (shouldShowSrw()) {
             handleSrw(onNewDesign = {
-                //Show SRW if only there's no reply specific message
+                // Show SRW if only there's no reply specific message
                 topchatViewState?.shouldShowSrw = (replyCompose?.isVisible != true)
             }, onOldDesign = {
-                rvSrw?.renderSrwState()
-                topchatViewState?.shouldShowSrw = false
-            })
+                    rvSrw?.renderSrwState()
+                    topchatViewState?.shouldShowSrw = false
+                })
             topchatViewState?.hideTemplateChat()
         } else if (topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isLoadingState() != true) {
             handleSrw(onNewDesign = {
                 topchatViewState?.shouldShowSrw = false
             }, onOldDesign = {
-                rvSrw?.hideSrw()
-                topchatViewState?.shouldShowSrw = false
-            })
+                    rvSrw?.hideSrw()
+                    topchatViewState?.shouldShowSrw = false
+                })
             showTemplateChatIfReady()
         }
     }
@@ -412,7 +440,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.hideTemplateChat()
         } else {
             topchatViewState?.showTemplateChatIfReady(
-                adapter.isLastMessageBroadcast(), adapter.isLastMsgSrwBubble(),
+                adapter.isLastMessageBroadcast(),
+                adapter.isLastMsgSrwBubble(),
                 !isSeller()
             )
         }
@@ -424,8 +453,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun hasNoSrw(): Boolean {
         return if (isSrwNewDesign()) {
-            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isAllowToShow() == false
-                    && topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isSuccessState() == true
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isAllowToShow() == false &&
+                topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isSuccessState() == true
         } else {
             rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
         }
@@ -495,12 +524,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun shouldShowSrw(): Boolean {
         return if (isSrwNewDesign()) {
             !isSeller() && hasProductPreviewShown() &&
-                    topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isAllowToShow() == true &&
-                    viewModel.isAttachmentPreviewReady()
+                topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isAllowToShow() == true &&
+                viewModel.isAttachmentPreviewReady()
         } else {
             !isSeller() && hasProductPreviewShown() &&
-                    rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
-                    (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
+                rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
+                (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
         }
     }
 
@@ -550,6 +579,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         hideLoading()
         setupAnalytic()
         setupBeforeReplyTime()
+        resetWebSocketIfNecessary(savedInstanceState)
         loadInitialData()
         initLoadMoreListener()
         disableSendButton()
@@ -558,6 +588,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupObservers()
         setupLifecycleObserver()
         initChatTextAreaLayout()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        this.isFromBubble = activity?.isFromBubble() == true
+        markAsReadFromBubble()
+    }
+
+    private fun markAsReadFromBubble() {
+        if (isFromBubble) {
+            viewModel.isFromBubble = isFromBubble
+            val currentUnreadMsg = viewModel.unreadMsg.value.orZero()
+            if (currentUnreadMsg > Int.ZERO) {
+                viewModel.isOnStop = false
+                viewModel.markAsRead()
+                val replyId = (viewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
+                TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+            }
+        }
     }
 
     private fun setupLifecycleObserver() {
@@ -622,7 +671,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         rvScrollListener?.finishTopLoadingState()
     }
 
-
     private fun onSuccessGetBottomChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         rvScrollListener?.finishBottomLoadingState()
         adapter.removeLatestHeaderDateIfSame(chatRoom.listChat)
@@ -674,8 +722,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             view, this, this, this,
             this, this, this,
             this, this,
-            (activity as BaseChatToolbarActivity).getToolbar(), analytics
+            (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
+            it.isFromBubble = activity?.isFromBubble() == true
             topchatViewState = it
         }
     }
@@ -686,7 +735,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return TopchatLinearLayoutManager(
-            activity, LinearLayoutManager.VERTICAL, true
+            activity,
+            LinearLayoutManager.VERTICAL,
+            true
         ).also {
             rvLayoutManager = it
         }
@@ -713,8 +764,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             id = product.productId
         }
         val intent = RouteManager.getIntent(
-            context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
-            id, product.shopId
+            context,
+            ApplinkConstInternalMarketplace.RESERVED_STOCK,
+            id,
+            product.shopId
         )
         intent.putExtra(EXTRA_SOURCE, EXTRA_SOURCE_STOCK)
         viewModel.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
@@ -722,7 +775,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun trackClickUpdateStock(product: ProductAttachmentUiModel) {
-        analytics.trackClickUpdateStock(product)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickChangeStockFromBubble(product.productId)
+        } else {
+            analytics.trackClickUpdateStock(product)
+        }
     }
 
     override fun isOCCActive(): Boolean {
@@ -784,7 +841,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onSuccessGetExistingChatFirstTime(
-        chatRoom: ChatroomViewModel, chat: ChatReplies
+        chatRoom: ChatroomViewModel,
+        chat: ChatReplies
     ) {
         setupFirstTimeOnly(chatRoom, chat)
         setupFirstPage(chatRoom, chat)
@@ -815,7 +873,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         checkCanAttachVoucher()
         orderProgress?.renderIfExist()
         topchatViewState?.onSuccessLoadFirstTime(
-            chatRoom, onToolbarClicked(), this
+            chatRoom,
+            onToolbarClicked(),
+            this
         )
         topchatViewState?.onSetCustomMessage(customMessage)
         viewModel.getTemplate(chatRoom.isSeller())
@@ -834,8 +894,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun reloadSrw() {
         if (!isSeller() && messageId.isNotBlank() &&
-            topchatViewState?.hasProductPreviewShown() == true
-            && viewModel.isAttachmentPreviewReady()
+            topchatViewState?.hasProductPreviewShown() == true &&
+            viewModel.isAttachmentPreviewReady()
         ) {
             val productIdCommaSeparated2 = viewModel.getProductIdPreview()
                 .joinToString(separator = ",")
@@ -861,11 +921,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 topchatViewState?.chatTextAreaTabLayout?.visibility == View.VISIBLE
             ) {
                 replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                    rv, adapter, topchatViewState?.chatTextAreaTabLayout?.tabReplyBox, context
+                    rv,
+                    adapter,
+                    topchatViewState?.chatTextAreaTabLayout?.tabReplyBox,
+                    context
                 )
             } else {
                 replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                    rv, adapter, composeMsgArea, context
+                    rv,
+                    adapter,
+                    composeMsgArea,
+                    context
                 )
             }
         }
@@ -905,7 +971,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun addBroadCastSpamHandler(isFollow: Boolean) {
         if (topchatViewState?.blockStatus?.isPromoBlocked == true ||
             isFollow || viewModel.isInTheMiddleOfThePage()
-        ) return
+        ) {
+            return
+        }
         val broadCastHandlerPosition = adapter.addBroadcastSpamHandler()
         if (broadCastHandlerPosition != RecyclerView.NO_POSITION) {
             val firstVisible = rvLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: return
@@ -927,7 +995,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (opponentRole.lowercase(Locale.getDefault()) == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
             goToProfile(opponentId)
         } else if (opponentRole.lowercase(Locale.getDefault())
-                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP)
+            .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP)
         ) {
             onGoToShop()
         }
@@ -976,7 +1044,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
         analytics.trackClickImageAnnouncement(
-            uiModel.broadcastBlastId.toString(),
+            uiModel.broadcastBlastId,
             uiModel.attachmentId
         )
         super.onImageAnnouncementClicked(uiModel)
@@ -984,7 +1052,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onRetrySendImage(element: ImageUploadUiModel) {
         context?.let {
-            val bs = TopchatBottomSheetBuilder.getErrorUploadImageBs(it,
+            val bs = TopchatBottomSheetBuilder.getErrorUploadImageBs(
+                it,
                 onRetryClicked = {
                     resendImage(element)
                 },
@@ -998,7 +1067,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun resendImage(element: ImageUploadUiModel) {
-        //change the retry value
+        // change the retry value
         element.isRetry = false
         adapter.updatePreviewState(element.localId)
         viewModel.startUploadImages(element)
@@ -1024,6 +1093,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
+
+        if (isFromBubble && !viewModel.isOnStop) {
+            val replyId = chatBubble?.replyId.orEmpty()
+            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+        }
 
         renderTickerReminder(chatBubble)
     }
@@ -1056,7 +1130,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 )
             )
         }
-
     }
 
     private fun onAttachProductClicked() {
@@ -1247,10 +1320,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 addSrwBubbleToChat()
             }
         }, onOldDesign = {
-            if (rvSrw?.isShowing() == true) {
-                addSrwBubbleToChat()
-            }
-        })
+                if (rvSrw?.isShowing() == true) {
+                    addSrwBubbleToChat()
+                }
+            })
         replyBubbleOnBoarding.dismiss()
         viewModel.sendMsg(message, intention, referredMsg)
     }
@@ -1299,10 +1372,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 addSrwBubbleToChat()
             }
         }, onOldDesign = {
-            if (rvSrw?.isShowing() == true) {
-                addSrwBubbleToChat()
-            }
-        })
+                if (rvSrw?.isShowing() == true) {
+                    addSrwBubbleToChat()
+                }
+            })
         onSendingMessage().invoke()
         sendAttachmentPreviews(sticker.intention)
         viewModel.sendSticker(sticker, referredMsg)
@@ -1424,7 +1497,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (resultCode == RESULT_OK && data != null) {
             val productId = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID)
             var stockCount = data.getIntExtra(
-                ProductManageCommonConstant.EXTRA_UPDATED_STOCK, 0
+                ProductManageCommonConstant.EXTRA_UPDATED_STOCK,
+                0
             )
             var status = data.getStringExtra(
                 ProductManageCommonConstant.EXTRA_UPDATED_STATUS
@@ -1432,7 +1506,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             var productName = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
             val updateProductResult = viewModel.onGoingStockUpdate[productId] ?: return
             val variantResult = getVariantResultUpdateStock(
-                data, updateProductResult.product.productId
+                data,
+                updateProductResult.product.productId
             )
             variantResult?.let {
                 stockCount = variantResult.stockCount
@@ -1442,6 +1517,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             showToasterMsgFromUpdateStock(updateProductResult, productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
             viewModel.onGoingStockUpdate.remove(productId)
+
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickSaveStockFromBubble(productId ?: "")
+            }
         } else {
             val errorMsg = data?.extras?.getString(EXTRA_UPDATE_MESSAGE) ?: return
             showToasterError(errorMsg)
@@ -1450,7 +1529,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     @Suppress("UNCHECKED_CAST")
     private fun getVariantResultUpdateStock(
-        data: Intent, productId: String?
+        data: Intent,
+        productId: String?
     ): UpdateCampaignVariantResult? {
         val resultMap = data.getSerializableExtra(
             ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP
@@ -1461,7 +1541,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun showToasterMsgFromUpdateStock(
         updateProductResult: UpdateProductStockResult,
-        productName: String?, currentStatus: String
+        productName: String?,
+        currentStatus: String
     ) {
         val previousStatus = if (updateProductResult.product.hasEmptyStock()) {
             ProductStatus.INACTIVE.name
@@ -1473,54 +1554,67 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         when {
             // update active product stock
             previousStatus == ProductStatus.ACTIVE.name &&
-                    currentStatus == ProductStatus.ACTIVE.name -> {
+                currentStatus == ProductStatus.ACTIVE.name -> {
                 msg = context?.getString(R.string.title_success_update_stock, name) ?: ""
             }
             // deactivate
             previousStatus == ProductStatus.ACTIVE.name &&
-                    currentStatus == ProductStatus.INACTIVE.name -> {
+                currentStatus == ProductStatus.INACTIVE.name -> {
                 msg = context?.getString(
-                    R.string.title_success_deactivate_product_status, name
+                    R.string.title_success_deactivate_product_status,
+                    name
                 ) ?: ""
             }
             // activate
             previousStatus == ProductStatus.INACTIVE.name &&
-                    currentStatus == ProductStatus.ACTIVE.name -> {
+                currentStatus == ProductStatus.ACTIVE.name -> {
                 msg = context?.getString(
-                    R.string.title_success_activate_product_status, name
+                    R.string.title_success_activate_product_status,
+                    name
                 ) ?: ""
             }
         }
         view?.let {
             if (msg.isNotEmpty()) {
                 Toaster.build(
-                    it, msg, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
+                    it,
+                    msg,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
                 ).show()
             }
         }
     }
 
     private fun onReturnFromReview(data: Intent?, resultCode: Int) {
-        val reviewRequestResult = if (!reviewRequest.empty())
-            reviewRequest.pop() else null
+        val reviewRequestResult = if (!reviewRequest.empty()) {
+            reviewRequest.pop()
+        } else {
+            null
+        }
         reviewRequestResult ?: return
         if (resultCode == RESULT_OK && data != null) {
             val reviewClickAt = data.getIntExtra(
-                ReputationCommonConstants.ARGS_RATING, -1
+                ReputationCommonConstants.ARGS_RATING,
+                -1
             )
             val state = data.getIntExtra(
-                ReputationCommonConstants.ARGS_REVIEW_STATE, -1
+                ReputationCommonConstants.ARGS_REVIEW_STATE,
+                -1
             )
             adapter.updateReviewState(
-                reviewRequestResult.review, reviewRequestResult.lastKnownPosition,
-                reviewClickAt, state
+                reviewRequestResult.review,
+                reviewRequestResult.lastKnownPosition,
+                reviewClickAt,
+                state
             )
             if (state == ReputationCommonConstants.REVIEWED) {
                 showSnackBarSuccessReview()
             }
         } else {
             adapter.resetReviewState(
-                reviewRequestResult.review, reviewRequestResult.lastKnownPosition
+                reviewRequestResult.review,
+                reviewRequestResult.lastKnownPosition
             )
         }
     }
@@ -1633,9 +1727,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.chatTextAreaTabLayout?.srwLayout?.resetSrw()
             topchatViewState?.chatTextAreaTabLayout?.resetTab()
         }, onOldDesign = {
-            rvSrw?.hideSrw()
-            rvSrw?.resetSrw()
-        })
+                rvSrw?.hideSrw()
+                rvSrw?.resetSrw()
+            })
     }
 
     private fun getImagePickerResult(data: Intent): List<String> {
@@ -1684,7 +1778,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             doOCC(element)
         } else {
             val addToCartParam = AddToCartParam.mapUiModelToParam(
-                element, AddToCartParam.SOURCE_ACTION_BUY
+                element,
+                AddToCartParam.SOURCE_ACTION_BUY
             )
             viewModel.addProductToCart(addToCartParam)
         }
@@ -1692,7 +1787,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun onSuccessClickBuyFromProductAttachment(element: AddToCartParam) {
         trackSuccessDoBuyAndAtc(
-            element, element.dataModel,
+            element,
+            element.dataModel,
             topchatViewState?.chatRoomViewModel?.shopName ?: "",
             element.getBuyEventAction(),
             getUserSession().userId
@@ -1706,7 +1802,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             showAtcVariantHelper(element.productId, element.shopId.toString())
         } else {
             val addToCartParam = AddToCartParam.mapUiModelToParam(
-                element, AddToCartParam.SOURCE_ACTION_ATC
+                element,
+                AddToCartParam.SOURCE_ACTION_ATC
             )
             viewModel.addProductToCart(addToCartParam)
         }
@@ -1759,8 +1856,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onGoToShop() {
         val intent = RouteManager.getIntent(
-            activity, ApplinkConst.SHOP.replace(
-                "{shop_id}", shopId
+            activity,
+            ApplinkConst.SHOP.replace(
+                "{shop_id}",
+                shopId
                     .toString()
             )
         )
@@ -1866,6 +1965,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
     }
 
+    override fun onClickHeaderMenu() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuBubble(session.shopId)
+        }
+    }
+
+    override fun onClickHeaderMenuItem(menuItemTitle: String) {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuItemBubble(menuItemTitle)
+        }
+    }
+
     private fun getChatReportUrl(): String {
         var url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
         if (isSeller()) {
@@ -1875,7 +1986,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onDualAnnouncementClicked(
-        redirectUrl: String, attachmentId: String, blastId: String
+        redirectUrl: String,
+        attachmentId: String,
+        blastId: String
     ) {
         analytics.trackClickImageAnnouncement(blastId, attachmentId)
         if (redirectUrl.isNotEmpty()) {
@@ -1884,7 +1997,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
-        TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickVoucherFromBubble(session.shopId, data.voucher.voucherId)
+        } else {
+            TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        }
         if (data.isLockToProduct()) {
             goToMvcPage(data.applink)
         } else {
@@ -1899,13 +2016,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun goToMvcPage(applink: String) {
-        //If seller in MA, show toaster
+        // If seller in MA, show toaster
         if (!GlobalConfig.isSellerApp() && isSeller()) {
             view?.let {
                 val text = getStringResource(R.string.topchat_mvc_not_available)
                 Toaster.build(it, text).show()
             }
-            //If applink is empty or wrong applink in sellerapp, return
+            // If applink is empty or wrong applink in sellerapp, return
         } else if (applink.isEmpty() || GlobalConfig.isSellerApp() &&
             !applink.contains(PREFIX_SELLER_APPLINK, ignoreCase = true)
         ) {
@@ -1921,8 +2038,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun goToMerchantVoucherDetail(data: TopChatVoucherUiModel) {
         activity?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(
-                it, data.voucher.voucherId,
-                data.voucher, shopId.toString()
+                it,
+                data.voucher.voucherId,
+                data.voucher,
+                shopId.toString()
             )
             startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
         }
@@ -1933,7 +2052,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
-            finishActivity()
+            if (isFromBubble) {
+                return false
+            } else {
+                finishActivity()
+            }
         }
         return true
     }
@@ -1967,6 +2090,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroy() {
         super.onDestroy()
         unregisterUploadImageReceiver()
+        sendBubbleDismissTracker()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentUiModel) {
@@ -2036,24 +2160,40 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachProduct(menu: AttachmentMenu) {
-        analytics.eventAttachProduct()
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentProductFromBubble(session.shopId)
+        } else {
+            analytics.eventAttachProduct()
+            analytics.trackChatMenuClicked(menu.label)
+        }
         onAttachProductClicked()
     }
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
-        analytics.eventPickImage()
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentImageFromBubble(session.shopId)
+        } else {
+            analytics.eventPickImage()
+            analytics.trackChatMenuClicked(menu.label)
+        }
         pickImageToUpload()
     }
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
-        analytics.trackChatMenuClicked(voucherMenu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentVoucherFromBubble(session.shopId)
+        } else {
+            analytics.trackChatMenuClicked(voucherMenu.label)
+        }
         pickVoucherToUpload()
     }
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentInvoiceFromBubble(session.shopId)
+        } else {
+            analytics.trackChatMenuClicked(menu.label)
+        }
         pickInvoiceToUpload()
     }
 
@@ -2103,40 +2243,45 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun addToWishlistV2(productId: String, success: () -> Unit) {
-        viewModel.addToWishListV2(productId, session.userId, object : WishlistV2ActionListener {
-            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                view?.let { v ->
-                    Toaster.build(
-                        v,
-                        ErrorHandler.getErrorMessage(context, throwable),
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR
-                    ).show()
-                }
-            }
-
-            override fun onSuccessAddWishlist(
-                result: AddToWishlistV2Response.Data.WishlistAddV2,
-                productId: String
-            ) {
-                context?.let { context ->
+        viewModel.addToWishListV2(
+            productId,
+            session.userId,
+            object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                     view?.let { v ->
-                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
-                            result,
-                            context,
-                            v
-                        )
+                        Toaster.build(
+                            v,
+                            ErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
-            }
 
-            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-            override fun onSuccessRemoveWishlist(
-                result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                productId: String
-            ) {
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    context?.let { context ->
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                                result,
+                                context,
+                                v
+                            )
+                            success()
+                        }
+                    }
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                }
             }
-        })
+        )
     }
 
     private fun goToWishList() {
@@ -2186,7 +2331,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         }
                     }
                 }
-            })
+            }
+        )
     }
 
     override fun trackClickProductThumbnail(product: ProductAttachmentUiModel) {
@@ -2194,6 +2340,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onStickerOpened() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickStickerBubble()
+        }
         topchatViewState?.onStickerOpened()
     }
 
@@ -2420,7 +2569,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             .toString()
         val intent = RouteManager.getIntent(context, uriString)
         val reviewRequestResult = ReviewRequestResult(
-            review, lastKnownPosition
+            review,
+            lastKnownPosition
         )
         reviewRequest.push(reviewRequestResult)
         startActivityForResult(intent, REQUEST_REVIEW)
@@ -2480,6 +2630,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private fun sendBubbleDismissTracker() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventDismissBubbleChat(session.shopId, opponentId, messageId)
+        }
+    }
+
     override fun onClickSrwQuestion(question: QuestionUiModel) {
         if (viewModel.isInTheMiddleOfThePage()) {
             resetItemList()
@@ -2491,7 +2647,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickSrwBubbleQuestion(
-        products: List<SendablePreview>, question: QuestionUiModel
+        products: List<SendablePreview>,
+        question: QuestionUiModel
     ) {
         sendSrwQuestionBubble(products, question)
     }
@@ -2502,9 +2659,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         analytics.eventClickSrw(shopId, session.userId, trackProductIds, question)
     }
 
-
     override fun trackClickSrwBubbleQuestion(
-        products: List<SendablePreview>, question: QuestionUiModel
+        products: List<SendablePreview>,
+        question: QuestionUiModel
     ) {
         val productIds = products.filterIsInstance<TopchatProductAttachmentPreviewUiModel>()
             .map { it.productId }
@@ -2615,26 +2772,29 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initKeyboardListener(view: View) {
-        TopChatKeyboardHandler(view, object :
-            TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
-            override fun onKeyboardShow() {
-                if (chatRoomFlexModeListener?.isFlexMode() == true) {
-                    chatBoxPadding?.show()
-                    showSeparatedChatTemplateIfFlex()
+        TopChatKeyboardHandler(
+            view,
+            object :
+                TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
+                override fun onKeyboardShow() {
+                    if (chatRoomFlexModeListener?.isFlexMode() == true) {
+                        chatBoxPadding?.show()
+                        showSeparatedChatTemplateIfFlex()
+                    }
+                }
+
+                override fun onKeyboardHide() {
+                    hideSeparatedChatTemplate()
                 }
             }
-
-            override fun onKeyboardHide() {
-                hideSeparatedChatTemplate()
-            }
-        })
+        )
     }
 
     private fun viewStateShouldShowTemplate(): Boolean {
         val isLastMsgFromBroadcastAndIamBuyer = adapter.isLastMessageBroadcast() && !isSeller()
         return !isLastMsgFromBroadcastAndIamBuyer &&
-                !shouldShowSrw() &&
-                !adapter.isLastMsgSrwBubble()
+            !shouldShowSrw() &&
+            !adapter.isLastMsgSrwBubble()
     }
 
     private fun showSeparatedChatTemplateIfFlex() {
@@ -2667,6 +2827,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val isNecessary = getBooleanArgument(Constant.CHAT_REMOVE_ATTACHMENT, savedInstance)
         if (isNecessary) {
             topchatViewState?.clearAttachmentPreview()
+        }
+    }
+
+    private fun resetWebSocketIfNecessary(savedInstance: Bundle?) {
+        val isNecessary = getBooleanArgument(Constant.CHAT_RESET_WEBSOCKET, savedInstance)
+        if (isNecessary) {
+            viewModel.resetWebSocket()
         }
     }
 
@@ -2738,7 +2905,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     onSuccessLoadChatRoomSetting(widget)
                 }
                 is Fail -> {
-                    //Do nothing
+                    // Do nothing
                 }
             }
         }
@@ -2747,7 +2914,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             when (it) {
                 is Success -> renderOrderProgress(it.data.chatOrderProgress)
                 is Fail -> {
-                    //Do nothing
+                    // Do nothing
                 }
             }
         }
@@ -2764,7 +2931,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Success -> {
                     topchatViewState?.chatRoomViewModel?.let { chatData ->
                         TopChatAnalyticsKt.eventClickOCCButton(
-                            it.data, chatData, getUserSession().userId
+                            it.data,
+                            chatData,
+                            getUserSession().userId
                         )
                     }
                     goToOCC()
@@ -2788,7 +2957,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             when (it) {
                 is Success -> renderBackground(it.data)
                 is Fail -> {
-                    //Do nothing
+                    // Do nothing
                 }
             }
         }
@@ -2813,7 +2982,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     )
                 }
                 is Fail -> {
-                    //Do nothing
+                    // Do nothing
                 }
             }
         }
@@ -2822,8 +2991,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             handleSrw(onNewDesign = {
                 topchatViewState?.chatTextAreaTabLayout?.srwLayout?.updateStatus(it)
             }, onOldDesign = {
-                rvSrw?.updateStatus(it)
-            })
+                    rvSrw?.updateStatus(it)
+                })
             updateSrwPreviewState()
         }
 
@@ -2834,11 +3003,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Success -> {
                     if (isInit) {
                         onSuccessGetExistingChatFirstTime(
-                            result.data.chatroomViewModel, result.data.chatReplies
+                            result.data.chatroomViewModel,
+                            result.data.chatReplies
                         )
+
+                        if (isFromBubble) {
+                            val replyId = (
+                                result.data.chatroomViewModel
+                                    .listChat.getOrNull(Int.ZERO) as? BaseChatUiModel
+                                )?.replyId.orEmpty()
+                            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+                        }
                     } else {
                         onSuccessResetChatToFirstPage(
-                            result.data.chatroomViewModel, result.data.chatReplies
+                            result.data.chatroomViewModel,
+                            result.data.chatReplies
                         )
                     }
                 }
@@ -2862,7 +3041,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
 
         viewModel.bottomChat.observe(viewLifecycleOwner) {
-
             when (it) {
                 is Success -> onSuccessGetBottomChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetBottomChat(it.throwable)
@@ -2954,7 +3132,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (!previousReadyState && afterReadyState) {
             reloadSrw()
         } else if (!afterReadyState) {
-            //when fail to get attachment, update srw preview state to hide loading & srw
+            // when fail to get attachment, update srw preview state to hide loading & srw
             updateSrwPreviewState()
         }
     }
@@ -2974,7 +3152,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected open fun uploadImage(image: ImageUploadServiceModel) {
         context?.applicationContext?.let {
             UploadImageChatService.enqueueWork(
-                it, image, viewModel.roomMetaData.msgId
+                it,
+                image,
+                viewModel.roomMetaData.msgId
             )
         }
     }
@@ -2984,7 +3164,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             BlockActionType.BlockChat -> {
                 when (item.response) {
                     is Success -> onSuccessToggleBlockChat(
-                        true, R.string.title_success_block_chat
+                        true,
+                        R.string.title_success_block_chat
                     )
                     is Fail -> onErrorToggleBlockChat((item.response as Fail).throwable)
                 }
@@ -2992,7 +3173,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             BlockActionType.UnblockChat -> {
                 when (item.response) {
                     is Success -> onSuccessToggleBlockChat(
-                        false, R.string.title_success_unblock_chat
+                        false,
+                        R.string.title_success_unblock_chat
                     )
                     is Fail -> onErrorToggleBlockChat((item.response as Fail).throwable)
                 }
@@ -3036,11 +3218,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chooseAddressBottomSheet.show(childFragmentManager, "")
     }
 
-    protected fun getChangeAddressListener(
-    ): ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+    protected fun getChangeAddressListener(): ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
         return object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
             override fun onLocalizingAddressServerDown() {
-
             }
 
             override fun onAddressDataChanged() {
@@ -3059,7 +3239,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
 
             override fun onLocalizingAddressLoginSuccessBottomSheet() {
-
             }
 
             override fun onDismissChooseAddressBottomSheet() {
@@ -3070,20 +3249,37 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun showMsgMenu(
-        msg: BaseChatUiModel, text: CharSequence, menus: List<Int>
+        msg: BaseChatUiModel,
+        text: CharSequence,
+        menus: List<Int>
     ) {
         replyBubbleOnBoarding.dismiss()
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
-            context, msg, menus
+            context,
+            msg,
+            menus
         ) { itemMenu, msg ->
             TopChatAnalyticsKt.eventClickMsgMenu(itemMenu.title)
             when (itemMenu.id) {
-                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
-                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
+                MENU_ID_REPLY -> replyBubble(msg, text)
+                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text, msg.replyId)
                 MENU_ID_DELETE_BUBBLE -> confirmDeleteBubble(msg)
             }
         }
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickLongHoldMessageFromBubble(msg.replyId)
+        } else {
+            TopChatAnalyticsKt.eventTapAndHoldBubbleChat(msg.replyId)
+        }
+    }
+
+    private fun replyBubble(msg: BaseChatUiModel, text: CharSequence) {
+        replyCompose?.composeReplyData(msg, text, true)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickReplySelectedMessageFromBubble(msg.replyId)
+        }
     }
 
     private fun confirmDeleteBubble(msg: BaseChatUiModel) {
@@ -3097,11 +3293,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     dismiss()
                 }
                 setPrimaryCTAClickListener {
-                    TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    if (isFromBubble) {
+                        TopChatAnalyticsKt.clickConfirmDeleteSelectedMessageFromBubble(msg.replyId)
+                    } else {
+                        TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    }
                     deleteBubble(msg)
                     dismiss()
                 }
             }.show()
+
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickDeleteSelectedMessageFromBubble(msg.replyId)
+            }
         }
     }
 
@@ -3118,12 +3322,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return shopId
     }
 
-    private fun copyToClipboard(text: CharSequence) {
+    private fun copyToClipboard(text: CharSequence, replyId: String) {
         val clipboard = context?.getSystemService(
             CLIPBOARD_SERVICE
         ) as? ClipboardManager
         val clip = ClipData.newPlainText(CLIPBOARD_CHAT, text)
         clipboard?.setPrimaryClip(clip)
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickCopySelectedMessageFromBubble(replyId)
+        }
     }
 
     override fun getUserName(senderId: String): String {
@@ -3132,7 +3340,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun goToBubble(parentReply: ParentReply) {
         val bubblePosition = adapter.getBubblePosition(
-            parentReply.localId, parentReply.replyTime
+            parentReply.localId,
+            parentReply.replyTime
         )
         if (bubblePosition != RecyclerView.NO_POSITION) {
             smoothScroller?.targetPosition = bubblePosition
@@ -3263,13 +3472,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         element.productBundling.bundleType
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId ?: "")) {
             if (element.isBroadcast()) {
-                element.productBundling.bundleId?.let {
+                element.productBundling.bundleItem?.let {
                     TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
-                        it,
-                        element.productBundling.bundleStatus.toString(),
-                        element.productBundling.bundleId.toString(),
-                        getBroadcastSenderShopId(element),
-                        session.userId
+                        blastId = element.blastId,
+                        statusBundle = element.productBundling.bundleStatus.toString(),
+                        bundleId = element.productBundling.bundleId.toString(),
+                        bundleType = element.getBundleTypeMapped(),
+                        bundleItems = it,
+                        shopId = getBroadcastSenderShopId(element),
+                        userId = session.userId
                     )
                 }
             } else {
@@ -3319,7 +3530,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return if (element.isSender) {
             session.shopName
         } else {
-            ""
+            opponentName
         }
     }
 
@@ -3340,8 +3551,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 getSrwFrameLayoutListener()
             )
         }, onOldDesign = {
-            rvSrw?.initialize(this, getSrwFrameLayoutListener())
-        })
+                rvSrw?.initialize(this, getSrwFrameLayoutListener())
+            })
     }
 
     private fun isFromAnotherChat(savedInstanceState: Bundle?): Boolean {
@@ -3363,14 +3574,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onClickSRWTab() {
         val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
         TopChatAnalyticsKt.eventClickSRWTabChatTextAreaLayout(
-            productIds, getUserSession().userId, shopId
+            productIds,
+            getUserSession().userId,
+            shopId
         )
     }
 
     override fun onClickReplyTab() {
         val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
         TopChatAnalyticsKt.eventClickReplyTabChatTextAreaLayout(
-            productIds, getUserSession().userId, shopId
+            productIds,
+            getUserSession().userId,
+            shopId
         )
     }
 

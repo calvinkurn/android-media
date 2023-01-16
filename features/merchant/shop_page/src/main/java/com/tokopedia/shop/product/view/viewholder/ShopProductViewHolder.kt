@@ -2,9 +2,7 @@ package com.tokopedia.shop.product.view.viewholder
 
 import android.view.View
 import android.widget.TextView
-
 import androidx.annotation.LayoutRes
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
@@ -24,17 +22,18 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopProductViewHolder(
-        itemView: View,
-        private val shopProductClickedListener: ShopProductClickedListener?,
-        private val shopProductImpressionListener: ShopProductImpressionListener?,
-        private val isFixWidth: Boolean,
-        private val deviceWidth: Int,
-        @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef private val shopTrackType: Int,
-        private val layoutType: Int,
-        private val isShowTripleDot: Boolean
+    itemView: View,
+    private val shopProductClickedListener: ShopProductClickedListener?,
+    private val shopProductImpressionListener: ShopProductImpressionListener?,
+    private val isFixWidth: Boolean,
+    private val deviceWidth: Int,
+    @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
+    private val shopTrackType: Int,
+    private val layoutType: Int,
+    private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val totalReview: TextView? = null
-    private val viewBinding : ItemShopNewproductSmallGridBinding? by viewBinding()
+    private val viewBinding: ItemShopNewproductSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
 
     init {
@@ -60,17 +59,20 @@ class ShopProductViewHolder(
         productCard?.setProductModel(productCardModel)
 
         if (shopProductImpressionListener?.getSelectedEtalaseName().orEmpty().isNotEmpty()) {
-            productCard?.setImageProductViewHintListener(shopProductUiModel, object : ViewHintListener {
-                override fun onViewHint() {
-                    shopProductImpressionListener?.onProductImpression(shopProductUiModel, shopTrackType, adapterPosition)
-                    if (productCardModel.isButtonAtcShown()) {
-                        shopProductImpressionListener?.onImpressionProductAtc(
-                            shopProductUiModel,
-                            adapterPosition
-                        )
+            productCard?.setImageProductViewHintListener(
+                shopProductUiModel,
+                object : ViewHintListener {
+                    override fun onViewHint() {
+                        shopProductImpressionListener?.onProductImpression(shopProductUiModel, shopTrackType, adapterPosition)
+                        if (productCardModel.isButtonAtcShown()) {
+                            shopProductImpressionListener?.onImpressionProductAtc(
+                                shopProductUiModel,
+                                adapterPosition
+                            )
+                        }
                     }
                 }
-            })
+            )
         }
 
         if (isFixWidth && deviceWidth > 0 && layoutType == ShopProductViewHolder.GRID_LAYOUT) {

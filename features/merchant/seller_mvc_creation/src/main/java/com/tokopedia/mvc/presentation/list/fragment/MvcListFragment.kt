@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -33,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
+import com.tokopedia.mvc.common.util.SharedPreferencesUtil
 import com.tokopedia.mvc.common.util.UrlConstant.URL_MAIN_ARTICLE
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
@@ -70,6 +70,8 @@ import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.presentation.quota.QuotaInfoActivity
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -137,6 +139,12 @@ class MvcListFragment :
         setupObserveDeleteUiEffect()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadInitialDataList()
+        displayUploadResult()
+    }
+
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
         showMoreMenuBottomSheet(voucher)
     }
@@ -166,8 +174,7 @@ class MvcListFragment :
                 showEditPeriodBottomSheet(voucher)
             }
             is MoreMenuUiModel.Edit -> {
-                // TODO change this , using for testing
-                showVoucherPeriodBottomSheet()
+                redirectToEditPage(voucher)
             }
             is MoreMenuUiModel.Clipboard -> {
             }
@@ -186,6 +193,7 @@ class MvcListFragment :
                 deleteVoucher(voucher)
             }
             is MoreMenuUiModel.Copy -> {
+                redirectToDuplicatePage(voucher.id)
             }
             is MoreMenuUiModel.TermsAndConditions -> {
             }
@@ -227,15 +235,12 @@ class MvcListFragment :
         }
     }
 
-    private var onSuccessUpdateVoucherPeriod: () -> Unit = {
+    private var onSuccessUpdateVoucherPeriod: (Voucher?) -> Unit = { voucher ->
         loadInitialDataList()
-        view?.run {
-            Toaster.build(
-                this,
-                context?.getString(R.string.edit_period_success_edit_period).toBlankOrString(),
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                context?.getString(R.string.edit_period_button_text).toBlankOrString()
+        context?.resources?.let {
+            binding?.footer?.root?.showToaster(
+                it.getString(R.string.edit_period_success_edit_period, voucher?.name.toBlankOrString()).toBlankOrString(),
+                it.getString(R.string.edit_period_button_text).toBlankOrString()
             )
         }
     }
@@ -389,9 +394,12 @@ class MvcListFragment :
     private fun SmvcFragmentMvcListFooterBinding.setupVoucherQuota(
         voucherCreationQuota: VoucherCreationQuota
     ) {
-        tfQuotaCounter.text = voucherCreationQuota.quotaUsageFormatted
+        tfQuotaCounter.text = MethodChecker.fromHtml(
+            getString(R.string.smvc_voucherlist_quota_usage_format, voucherCreationQuota.remaining,
+                voucherCreationQuota.total)
+        )
         iconInfo.setOnClickListener {
-            redirectToQuotaVoucherPage()
+            redirectToQuotaVoucherPage(voucherCreationQuota)
         }
         btnAddCoupon.setOnClickListener {
             if (voucherCreationQuota.quotaErrorMessage.isEmpty()) {
@@ -453,8 +461,9 @@ class MvcListFragment :
                 // TODO: Implement loading
             }
         )
-        loadInitialDataList()
-        attachPaging(this, config, ::getDataList)
+        attachPaging(this, config) { page, _ ->
+            viewModel.getVoucherList(page, PAGE_SIZE)
+        }
     }
 
     private fun SortFilter.setupFilter() {
@@ -479,14 +488,11 @@ class MvcListFragment :
 
     private fun loadInitialDataList() {
         val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
+        resetPaging()
         adapter?.clearDataList()
         binding?.loaderPage?.show()
         viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
         viewModel.getVoucherQuota()
-    }
-
-    private fun getDataList(page: Int, pageSize: Int) {
-        viewModel.getVoucherList(page, pageSize)
     }
 
     private fun displayNoDataSearch() {
@@ -702,7 +708,27 @@ class MvcListFragment :
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun redirectToQuotaVoucherPage() {
-        // TODO: create redirection here
+    private fun displayUploadResult() {
+        context?.let {
+            val message = SharedPreferencesUtil.getUploadResult(it)
+            if (message.isNotEmpty()) {
+                SharedPreferencesUtil.clearUploadResult(it)
+                binding?.footer?.root.showToaster(message, getString(R.string.smvc_ok))
+            }
+        }
+    }
+
+    private fun redirectToQuotaVoucherPage(voucherCreationQuota: VoucherCreationQuota) {
+        QuotaInfoActivity.start(context, voucherCreationQuota)
+    }
+
+    private fun redirectToEditPage(voucher: Voucher) {
+        val intent = SummaryActivity.buildEditModeIntent(requireContext(), voucher.id)
+        startActivity(intent)
+    }
+
+    private fun redirectToDuplicatePage(voucherId: Long) {
+        val intent = SummaryActivity.buildDuplicateModeIntent(context, voucherId)
+        startActivity(intent)
     }
 }

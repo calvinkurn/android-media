@@ -52,13 +52,14 @@ class MvcListViewModel @Inject constructor(
     val error: LiveData<Throwable> get() = _error
 
     val pageState = Transformations.map(voucherList) {
-        MvcListPageStateHelper.getPageState(it, filter)
+        MvcListPageStateHelper.getPageState(it, filter, page)
     }
 
     private val _deleteUIEffect = MutableSharedFlow<DeleteVoucherUiEffect>(replay = 1)
     val deleteUIEffect = _deleteUIEffect.asSharedFlow()
 
     var filter = FilterModel()
+    var page: Int = 0
 
     fun setFilterKeyword(keyword: String) {
         filter = filter.copy(
@@ -73,6 +74,7 @@ class MvcListViewModel @Inject constructor(
     }
 
     fun getVoucherList(page: Int, pageSize: Int) {
+        this.page = page
         launchCatchError(
             dispatchers.io,
             block = {

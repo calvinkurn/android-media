@@ -9,18 +9,27 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst.SellerApp.TOPADS_HEADLINE_CREATE
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.util.SharedPreferencesUtil
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryPreviewBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummarySubmissionBinding
@@ -29,14 +38,22 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.SelectedProduct
+import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
+import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.date.DateUtil.DEFAULT_LOCALE
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_TIME_FORMAT
@@ -57,13 +74,17 @@ class SummaryFragment :
         fun newInstance(
             pageMode: PageMode,
             voucherId: Long,
-            voucherConfiguration: VoucherConfiguration?
+            voucherConfiguration: VoucherConfiguration?,
+            selectedProducts: List<SelectedProduct>,
+            enableDuplicateVoucher: Boolean
         ): SummaryFragment {
             return SummaryFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                     putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
                     putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
+                    putBoolean(BundleConstant.BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER, enableDuplicateVoucher)
                 }
             }
         }
@@ -72,7 +93,14 @@ class SummaryFragment :
     private var binding by autoClearedNullable<SmvcFragmentSummaryBinding>()
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val configuration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
+    private val selectedProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
     private val voucherId by lazy { arguments?.getLong(BundleConstant.BUNDLE_VOUCHER_ID) }
+    private val enableDuplicateVoucher by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER).orFalse() }
+    private val loadingDialog by lazy {
+        context?.let {
+            LoaderDialog(it)
+        }
+    }
     private val redirectionHelper = SummaryPageRedirectionHelper(this)
 
     @Inject
@@ -110,11 +138,15 @@ class SummaryFragment :
     }
 
     override fun onAddProductResult() {
-        println("ok")
+        activity?.finish()
     }
 
     override fun onViewProductResult() {
-        println("ok view")
+        activity?.finish()
+    }
+
+    override fun onVoucherTypePageResult() {
+        //TODO("Not yet implemented")
     }
 
     private fun setupPageMode() {
@@ -122,23 +154,22 @@ class SummaryFragment :
             viewModel.setupEditMode(voucherId ?: return)
         } else {
             viewModel.setConfiguration(configuration ?: return)
+            viewModel.updateProductList(selectedProducts)
+        }
+        if (enableDuplicateVoucher) {
+            viewModel.setAsDuplicateCoupon()
         }
     }
 
     private fun setupObservables() {
         viewModel.configuration.observe(viewLifecycleOwner) {
             binding?.apply {
+                layoutPreview.updateLayoutPreview(it)
                 layoutType.updateLayoutType(it)
                 layoutSetting.updatePageData(it)
                 layoutProducts.updateProductData(it)
                 layoutInfo.updatePageInfo(it)
             }
-            viewModel.previewImage(
-                isCreateMode = false,
-                voucherConfiguration = it,
-                parentProductIds = it.productIds,
-                imageRatio = ImageRatio.SQUARE
-            )
         }
         viewModel.maxExpense.observe(viewLifecycleOwner) {
             binding?.layoutSubmission?.labelSpendingEstimation
@@ -146,6 +177,45 @@ class SummaryFragment :
         }
         viewModel.couponImage.observe(viewLifecycleOwner) {
             binding?.layoutPreview?.ivPreview?.loadImage(it)
+        }
+        viewModel.error.observe(viewLifecycleOwner) {
+            view?.showToasterError(it)
+        }
+        viewModel.products.observe(viewLifecycleOwner) {
+            binding?.layoutProducts?.tpgProductList?.text = getString(
+                R.string.smvc_summary_page_product_format,
+                it.size
+            )
+        }
+        viewModel.uploadCouponSuccess.observe(viewLifecycleOwner) {
+            if (it.voucherId.isZero()) {
+                showSuccessUploadBottomSheet(it)
+            } else {
+                activity?.run {
+                    val message = getString(R.string.smvc_summary_page_success_upload_message, it.voucherName)
+                    SharedPreferencesUtil.setUploadResult(this, message)
+                    finish()
+                }
+            }
+        }
+        viewModel.errorUpload.observe(viewLifecycleOwner) {
+            showErrorUploadDialog(ErrorHandler.getErrorMessage(context, it))
+        }
+        viewModel.isInputValid.observe(viewLifecycleOwner) {
+            binding?.layoutSubmission?.btnSubmit?.isEnabled = it
+        }
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                loadingDialog?.show()
+            } else {
+                loadingDialog?.dismiss()
+            }
+        }
+        viewModel.enableCouponTypeChange.observe(viewLifecycleOwner) {
+            binding?.layoutType?.apply {
+                tpgEditAction.isEnabled = it
+                tickerTypeEditingDisabled.isVisible = !it
+            }
         }
     }
 
@@ -216,6 +286,15 @@ class SummaryFragment :
         tfTnc.setOnClickListener {
             routeToUrl(TNC_LINK)
         }
+        btnSubmit.setOnClickListener {
+            viewModel.saveCoupon()
+        }
+        labelSpendingEstimation.iconInfo?.setOnClickListener {
+            ExpenseEstimationBottomSheet.newInstance().show(childFragmentManager)
+        }
+        cbTnc.setOnClickListener {
+            viewModel.validateTnc(cbTnc.isChecked)
+        }
     }
 
     private fun SmvcVoucherDetailVoucherSettingSectionBinding.updatePageData(
@@ -245,14 +324,19 @@ class SummaryFragment :
     }
 
     private fun SmvcVoucherDetailVoucherInfoSectionBinding.updatePageInfo(
-        information: VoucherConfiguration
+        configuration: VoucherConfiguration
     ) {
-        with(information) {
+        with(configuration) {
             tpgVoucherName.text = voucherName
             tpgVoucherCode.text = voucherCode
             tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
                                     else getString(R.string.smvc_voucher_private_label)
             llVoucherCode.isVisible = !isVoucherPublic
+            llVoucherMultiperiod.isVisible = isPeriod
+            tpgVoucherMultiperiod.text = getString(R.string.smvc_summary_page_multiperiod_format, totalPeriod)
+            tpgVoucherMultiperiodAction.setOnClickListener {
+                onMultiPeriodClicked(this)
+            }
             try {
                 val formatter = SimpleDateFormat(DEFAULT_VIEW_TIME_FORMAT, DEFAULT_LOCALE)
                 tpgVoucherStartPeriod.text = formatter.format(startPeriod)
@@ -280,15 +364,30 @@ class SummaryFragment :
         }
     }
 
-    private fun showErrorUploadDialog() {
+    private fun SmvcFragmentSummaryPreviewBinding.updateLayoutPreview(configuration: VoucherConfiguration) {
+        cardPreview.setOnClickListener {
+            DisplayVoucherBottomSheet
+                .newInstance(configuration)
+                .show(childFragmentManager, "")
+        }
+        viewModel.previewImage(
+            isCreateMode = false,
+            voucherConfiguration = configuration,
+            parentProductIds = configuration.productIds,
+            imageRatio = ImageRatio.SQUARE
+        )
+    }
+
+    private fun showErrorUploadDialog(message: String) {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
             setImageUrl(UPLOAD_ERROR_IMAGE_URL)
             setTitle(context.getString(R.string.smvc_summary_page_error_dialog_title))
-            setDescription(context.getString(R.string.smvc_summary_page_error_dialog_desc))
+            setDescription(context.getString(R.string.smvc_summary_page_error_dialog_desc, message))
             setPrimaryCTAText(context.getString(R.string.smvc_summary_page_error_dialog_positive_action))
             setSecondaryCTAText(context.getString(R.string.smvc_summary_page_error_dialog_negative_action))
             setPrimaryCTAClickListener {
                 dismiss()
+                viewModel.saveCoupon()
             }
             setSecondaryCTAClickListener {
                 dismiss()
@@ -306,12 +405,23 @@ class SummaryFragment :
             .show(childFragmentManager)
     }
 
+    private fun onMultiPeriodClicked(configuration: VoucherConfiguration) {
+        val voucherPeriodBottomSheet = VoucherPeriodBottomSheet.newInstance(
+            title = context?.resources?.getString(R.string.voucher_bs_period_title_1).toBlankOrString(),
+            dateList = viewModel.getOtherPeriod(configuration)
+        )
+        voucherPeriodBottomSheet.show(childFragmentManager, "")
+    }
+
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        // TODO: redirect to step 1
+        redirectionHelper.redirectToVoucherTypePage(this, configuration)
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        // TODO: redirect to step 2
+        context?.let {
+            val intent = VoucherInformationActivity.buildEditModeIntent(it, configuration)
+            startActivity(intent)
+        }
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
@@ -319,29 +429,28 @@ class SummaryFragment :
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
-        //TODO: Replace with real warehouseId
         redirectionHelper.redirectToAddProductPage(
-            activity = activity ?: return,
+            this,
             configuration = configuration,
-            selectedWarehouseId = 0
+            selectedProducts = viewModel.products.value.orEmpty(),
+            selectedWarehouseId = configuration.warehouseId
         )
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
-        //TODO: Replace with real warehouseId
         redirectionHelper.redirectToViewProductPage(
-            activity = activity ?: return,
+            this,
             configuration = configuration,
-            selectedProducts = listOf(),
-            selectedWarehouseId = 0
+            selectedProducts = viewModel.products.value.orEmpty(),
+            selectedWarehouseId = configuration.warehouseId
         )
     }
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {
-        // TODO implement broadcast redirection
+        context?.let { SharingUtil.shareToBroadCastChat(it, voucherConfiguration.voucherId) }
     }
 
     private fun onSuccessBottomsheetAdsClick(voucherConfiguration: VoucherConfiguration) {
-        // TODO implement ads redirection
+        RouteManager.route(context, TOPADS_HEADLINE_CREATE)
     }
 }

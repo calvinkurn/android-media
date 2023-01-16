@@ -29,6 +29,7 @@ import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.utils.isVideoFormat
@@ -143,10 +144,8 @@ class EditorFragment @Inject constructor(
     }
 
     private fun imageCrop(bitmap: Bitmap, originalPath: String){
-        val cropRatio = viewModel.editorParam.value?.autoCropRatio()?.let {
-            it.getRatioY().toFloat() / it.getRatioX()
-        } ?: 1f
-
+        val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
+        val imageRatio = bitmap.width.toFloat() / bitmap.height
         cropCenterImage(bitmap, cropRatio)?.apply {
             viewModel.saveToCache(
                 first,
@@ -156,6 +155,7 @@ class EditorFragment @Inject constructor(
                     originalUrl = originalPath,
                     editorToolType = EditorToolType.CROP,
                     resultUrl = this.absolutePath,
+                    originalRatio = imageRatio
                 )
 
                 newEditorDetailUiModel.cropRotateValue = second

@@ -85,21 +85,21 @@ class CreateReviewFragment : BaseDaggerFragment(),
         const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
 
         private const val LOTTIE_ANIM_1 =
-            "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_1.json"
+            "https://images.tokopedia.net/android/reputation/lottie_anim_pedi_1.json"
         private const val LOTTIE_ANIM_2 =
-            "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_2.json"
+            "https://images.tokopedia.net/android/reputation/lottie_anim_pedi_2.json"
         private const val LOTTIE_ANIM_3 =
-            "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_3.json"
+            "https://images.tokopedia.net/android/reputation/lottie_anim_pedi_3.json"
         private const val LOTTIE_ANIM_4 =
-            "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_4.json"
+            "https://images.tokopedia.net/android/reputation/lottie_anim_pedi_4.json"
         private const val LOTTIE_ANIM_5 =
-            "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
+            "https://images.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
-        private const val IMAGE_PEDIE_1 = "https://ecs7.tokopedia.net/android/pedie/1star.png"
-        private const val IMAGE_PEDIE_2 = "https://ecs7.tokopedia.net/android/pedie/2star.png"
-        private const val IMAGE_PEDIE_3 = "https://ecs7.tokopedia.net/android/pedie/3star.png"
-        private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
-        private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
+        private const val IMAGE_PEDIE_1 = "https://images.tokopedia.net/android/pedie/1star.png"
+        private const val IMAGE_PEDIE_2 = "https://images.tokopedia.net/android/pedie/2star.png"
+        private const val IMAGE_PEDIE_3 = "https://images.tokopedia.net/android/pedie/3star.png"
+        private const val IMAGE_PEDIE_4 = "https://images.tokopedia.net/android/pedie/4star.png"
+        private const val IMAGE_PEDIE_5 = "https://images.tokopedia.net/android/pedie/5star.png"
 
         const val RATING_1 = 1
         const val RATING_2 = 2
@@ -297,18 +297,18 @@ class CreateReviewFragment : BaseDaggerFragment(),
         })
 
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {
+            override fun onAnimationRepeat(animation: Animator) {
 
             }
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 playAnimation()
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
             }
 
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
             }
         })
 

@@ -4,7 +4,7 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader
 import com.google.android.youtube.player.YouTubeThumbnailView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.youtubeutils.common.YoutubeInitializer
@@ -14,12 +14,12 @@ import kotlinx.android.synthetic.main.item_post_youtube.view.*
 /**
  * @author by milhamj on 14/12/18.
  */
-class YoutubeViewHolder(private val listener: YoutubePostListener) : BasePostViewHolder<YoutubeViewModel>() {
+class YoutubeViewHolder(private val listener: YoutubePostListener) : BasePostViewHolder<YoutubeModel>() {
     override var layoutRes = R.layout.item_post_youtube
 
     private var youTubeThumbnailLoader: YouTubeThumbnailLoader? = null
 
-    override fun bind(element: YoutubeViewModel) {
+    override fun bind(element: YoutubeModel) {
         try {
             itemView.youtubeThumbnail.initialize(
                     YoutubePlayerConstant.GOOGLE_API_KEY,
@@ -52,7 +52,7 @@ class YoutubeViewHolder(private val listener: YoutubePostListener) : BasePostVie
         youTubeThumbnailLoader?.release()
     }
 
-    private fun onThumbnailClicked(element: YoutubeViewModel) {
+    private fun onThumbnailClicked(element: YoutubeModel) {
         listener.onYoutubeThumbnailClick(element.positionInFeed, pagerPosition, element.youtubeId)
     }
 

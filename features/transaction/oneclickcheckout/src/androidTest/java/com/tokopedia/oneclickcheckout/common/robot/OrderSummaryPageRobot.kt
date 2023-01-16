@@ -2,7 +2,9 @@ package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -26,6 +28,7 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -619,7 +622,16 @@ class OrderSummaryPageRobot {
                 val productInfoGroup = view.findViewById<ViewGroup>(R.id.flexbox_order_product_info)
                 if (productInfo != null) {
                     for (i in productInfo.indices) {
-                        assertEquals(productInfo[i], (productInfoGroup.getChildAt(i) as Typography).text.toString())
+                        when (productInfoGroup.getChildAt(i)) {
+                            is Typography -> assertEquals(
+                                productInfo[i],
+                                (productInfoGroup.getChildAt(i) as Typography).text.toString()
+                            )
+                            is LinearLayout -> assertEquals(
+                                productInfo[i],
+                                ((productInfoGroup.getChildAt(i) as LinearLayout).findViewById(com.tokopedia.purchase_platform.common.R.id.pp_label_product_info_add_on) as Typography).text.toString()
+                            )
+                        }
                     }
                     assertEquals(productInfo.size, productInfoGroup.childCount)
                 } else {
@@ -1161,14 +1173,55 @@ class OrderSummaryPageRobot {
             onView(withId(com.tokopedia.dialog.R.id.dialog_title)).check(matches(withText(title)))
         }
         if (description.isNotEmpty()) {
-            onView(withId(com.tokopedia.dialog.R.id.dialog_description)).check(matches(withText(description)))
+            onView(withId(com.tokopedia.dialog.R.id.dialog_description)).check(
+                matches(
+                    withText(
+                        description
+                    )
+                )
+            )
         }
         if (primaryButton.isNotEmpty()) {
-            onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).check(matches(isDisplayed())).check(matches(withText(primaryButton)))
+            onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).check(matches(isDisplayed()))
+                .check(matches(withText(primaryButton)))
         }
         if (!secondaryButton.isNullOrEmpty()) {
-            onView(withId(com.tokopedia.dialog.R.id.dialog_btn_secondary)).check(matches(isDisplayed())).check(matches(withText(secondaryButton)))
+            onView(withId(com.tokopedia.dialog.R.id.dialog_btn_secondary)).check(matches(isDisplayed()))
+                .check(matches(withText(secondaryButton)))
         }
+    }
+
+    fun assertUploadPrescription(prescriptionText: String, descriptionText: String? = "") {
+        onView(withId(R.id.rv_order_summary_page)).perform(
+            actionOnHolderItem(
+                object :
+                    BaseMatcher<RecyclerView.ViewHolder?>() {
+                    override fun describeTo(description: Description?) {
+                        //no op
+                    }
+
+                    override fun matches(item: Any?): Boolean {
+                        return item is UploadPrescriptionViewHolder
+                    }
+                },
+                object : ViewAction {
+                    override fun getConstraints(): Matcher<View>? = null
+
+                    override fun getDescription(): String = "assert upload prescription"
+
+                    override fun perform(uiController: UiController?, view: View) {
+                        assertEquals(
+                            prescriptionText,
+                            view.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.upload_prescription_text).text.toString()
+                        )
+                        assertEquals(
+                            descriptionText,
+                            view.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.upload_description_text).text.toString()
+                        )
+                    }
+                }
+            )
+        )
     }
 }
 

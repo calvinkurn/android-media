@@ -44,7 +44,7 @@ class VoucherInformationViewModel @Inject constructor(
             is VoucherCreationStepTwoEvent.OnVoucherStartDateChanged -> setStartDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.OnVoucherEndDateChanged -> setEndDateTime(event.calendar)
             is VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected -> setRecurringPeriod(event.selectedRecurringPeriod)
-            is VoucherCreationStepTwoEvent.NavigateToNextStep -> {}
+            is VoucherCreationStepTwoEvent.NavigateToNextStep -> handleNavigateToNextStep(event.voucherConfiguration)
             is VoucherCreationStepTwoEvent.HandleCoachMark -> { handleCoachmark() }
         }
     }
@@ -65,6 +65,10 @@ class VoucherInformationViewModel @Inject constructor(
 
     private fun handleBackToPreviousStep() {
         _uiAction.tryEmit(VoucherCreationStepTwoAction.BackToPreviousStep(currentState.voucherConfiguration))
+    }
+
+    private fun handleNavigateToNextStep(voucherConfiguration: VoucherConfiguration) {
+        _uiAction.tryEmit(VoucherCreationStepTwoAction.ContinueToNextStep(voucherConfiguration))
     }
 
     private fun handleVoucherTargetSelection(isPublic: Boolean) {

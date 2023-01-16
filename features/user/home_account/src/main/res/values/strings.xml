@@ -239,6 +239,8 @@
     <string name="explicit_profile_back_dialog_title">Kamu belum menyimpan perubahan</string>
     <string name="explicit_profile_back_dialog_desc">Perubahan pengaturan preferensi belum kamu simpan. ingin menyimpan dulu?</string>
     <string name="explicit_profile_back_dialog_exit">Tetap keluar</string>
+    <string name="explicit_profile_max_selection_answer_no_limit">Bisa pilih lebih dari 1 jawaban</string>
+    <string name="explicit_profile_max_selection_answer_limit">Hanya pilih %s jawaban</string>
 
     <!--opt in/out for network-->
     <string name="title_privacy_account">Privasi Akun</string>

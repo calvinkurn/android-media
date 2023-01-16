@@ -9,12 +9,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.category.navbottomsheet.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import kotlinx.android.synthetic.main.item_cat_level_one.view.*
 import kotlinx.android.synthetic.main.item_shimmer_cat_level_one.view.*
+import com.tokopedia.unifyprinciples.R as RUnify
 
 
 class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<CategoriesItem?>,
@@ -51,7 +51,7 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
 
     private fun initShimmerViewHolder(shimmerViewHolder: ShimmerViewHolder, position: Int) {
         if (position == 0) {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, RUnify.color.Unify_N0))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, RUnify.color.Unify_Background))
         } else {
             shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, RUnify.color.Unify_N50))
         }
@@ -68,7 +68,7 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
         }
         if (item?.isSelected == true) {
             holder.categoryImage.loadImage(item.iconImageUrl ?:"", R.drawable.square_shimmer)
-            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, RUnify.color.Unify_N0))
+            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, RUnify.color.Unify_Background))
             holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, RUnify.color.Unify_N700))
         } else {
             holder.categoryImage.loadImage(item?.iconImageUrlGray ?:"", R.drawable.square_shimmer)

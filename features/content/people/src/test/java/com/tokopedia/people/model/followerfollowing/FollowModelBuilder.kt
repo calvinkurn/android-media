@@ -25,7 +25,7 @@ class FollowModelBuilder {
                 ),
                 messages = emptyList(),
                 errorCode = "",
-            )
+            ),
         )
     }
 }

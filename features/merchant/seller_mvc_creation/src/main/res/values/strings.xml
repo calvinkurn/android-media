@@ -94,6 +94,7 @@
     <string name="smvc_voucherlist_create_voucher_text">Buat Kupon</string>
     <string name="smvc_voucherlist_copy_to_clipboard_message">Kode kupon berhasil disalin</string>
     <string name="smvc_voucherlist_search_placeholder">Cari Nama Kupon</string>
+    <string name="smvc_voucherlist_quota_usage_format"><![CDATA[<b>%d</b> dari %d]]></string>
     <string name="smvc_general_error">Oops, ada gangguan yang perlu kami bereskan.</string>
 
     <!--Common Bottomsheet-->
@@ -213,6 +214,7 @@
     <string name="smvc_voucherlist_empty_data_title_text">Belum ada kupon %s, nih!</string>
     <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
     <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
+    <string name="smvc_voucher_type_editing_disabled">Jenis kupon tidak bisa diubah.</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>
@@ -237,7 +239,7 @@
     <string name="edit_period_button_text">Oke</string>
     <string name="edit_period_calender_title">Tanggal Mulai</string>
     <string name="edit_period_time_picker_title">Pilih Waktu</string>
-    <string name="edit_period_success_edit_period">Periode kupon [Nama Kupon] dan semua jadwal berikutnya berhasil diubah.</string>
+    <string name="edit_period_success_edit_period">Periode kupon %1$s dan semua jadwal berikutnya berhasil diubah.</string>
     <string name="edit_period_calendar_show_tag">TimePicker Show</string>
 
     <!-- Voucher Display -->
@@ -280,10 +282,11 @@
     <string name="smvc_summary_page_max_expense_title">Estimasi Maks. Pengeluaran</string>
     <string name="smvc_summary_page_max_expense_desc">Dipotong dari transaksi selesai</string>
     <string name="smvc_summary_page_error_dialog_title">Yaah, Kuponmu gagal dibuat</string>
-    <string name="smvc_summary_page_error_dialog_desc">Kupon gagal dibuat karena [Alasan gagal]. Tunggu beberapa saat atau coba lagi buat kuponmu, ya.</string>
+    <string name="smvc_summary_page_error_dialog_desc">Kupon gagal dibuat karena %s. Tunggu beberapa saat atau coba lagi buat kuponmu, ya.</string>
     <string name="smvc_summary_page_error_dialog_negative_action">Ke Daftar Kupon</string>
     <string name="smvc_summary_page_error_dialog_positive_action">Coba Lagi</string>
     <string name="smvc_summary_page_multiperiod_format">%d Bulan</string>
+    <string name="smvc_summary_page_success_upload_message">Kupon %s berhasil diubah</string>
 
     <!--Voucher Creation Step One-->
     <string name="smvc_kupon_toko_label">Kupon Toko</string>
@@ -409,5 +412,13 @@
     <string name="smvc_intro_voucher_carousel_diskon_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_diskon_2.png</string>
     <string name="smvc_intro_voucher_carousel_cashback_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_1.png</string>
     <string name="smvc_intro_voucher_carousel_cashback_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_2.png</string>
+
+    <!--Summary Page-->
+    <string name="smvc_quota_info_page_title">Kuota Kupon Toko Saya</string>
+    <string name="smvc_quota_info_bottomsheet_title">Sisa kuota per bulan</string>
+    <string name="smvc_quota_info_bottomsheet_action_text">Tutup</string>
+    <string name="smvc_quota_info_quota_remaining_format">Sisa Kuota %s</string>
+    <string name="smvc_quota_info_quota_button_format">Cek %d Sumber Lainnya</string>
+    <string name="smvc_quota_info_quota_total_format">/ %d</string>
 
 </resources>

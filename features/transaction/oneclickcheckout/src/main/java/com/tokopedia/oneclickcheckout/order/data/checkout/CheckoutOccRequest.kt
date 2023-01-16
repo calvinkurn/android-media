@@ -117,5 +117,6 @@ data class OrderMetadata(
 ) {
     companion object {
         const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
+        const val PRESCRIPTION_IDS_METADATA = "prescription_ids"
     }
 }

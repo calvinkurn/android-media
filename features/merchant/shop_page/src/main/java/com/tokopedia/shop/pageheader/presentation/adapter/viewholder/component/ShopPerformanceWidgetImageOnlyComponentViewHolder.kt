@@ -14,9 +14,9 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPerformanceWidgetImageOnlyComponentViewHolder(
-        itemView: View,
-        private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
-        private val listener: Listener
+    itemView: View,
+    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val listener: Listener
 ) : AbstractViewHolder<ShopHeaderImageOnlyComponentUiModel>(itemView) {
 
     companion object {
@@ -24,10 +24,10 @@ class ShopPerformanceWidgetImageOnlyComponentViewHolder(
         private const val MAX_IMAGE_WIDTH = 100
     }
 
-    interface Listener{
+    interface Listener {
         fun onImpressionShopPerformanceWidgetImageOnlyItem(
-                componentModel: ShopHeaderImageOnlyComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopHeaderImageOnlyComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
     }
     private val viewBinding: LayoutShopPerformanceWidgetImageOnlyComponentBinding? by viewBinding()
@@ -35,15 +35,14 @@ class ShopPerformanceWidgetImageOnlyComponentViewHolder(
 
     override fun bind(model: ShopHeaderImageOnlyComponentUiModel) {
         val imageUrl = model.image
-        imageView?.loadImage(imageUrl){
+        imageView?.loadImage(imageUrl) {
             overrideSize(Resize(MAX_IMAGE_WIDTH.toPx(), imageView.layoutParams.height))
         }
-        itemView.addOnImpressionListener(model){
+        itemView.addOnImpressionListener(model) {
             listener.onImpressionShopPerformanceWidgetImageOnlyItem(
-                    model,
-                    shopHeaderWidgetUiModel
+                model,
+                shopHeaderWidgetUiModel
             )
         }
     }
-
 }

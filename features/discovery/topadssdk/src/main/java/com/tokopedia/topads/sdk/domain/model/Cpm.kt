@@ -17,6 +17,7 @@ private const val KEY_LAYOUT = "layout"
 private const val KEY_POSITION = "position"
 private const val KEY_WIDGET_TITLE = "widget_title"
 private const val KEY_WIDGET_IMAGE_URL = "widget_image_url"
+private const val FLASH_SALE_CAMPAIGN_DETAIL = "flash_sale_campaign_detail"
 
 @Parcelize
 data class Cpm(
@@ -57,5 +58,8 @@ data class Cpm(
     var widgetTitle: String = "",
 
     @SerializedName(KEY_WIDGET_IMAGE_URL)
-    var widgetImageUrl: String = ""
+    var widgetImageUrl: String = "",
+
+    @SerializedName(FLASH_SALE_CAMPAIGN_DETAIL)
+    var flashSaleCampaignDetail: FlashSaleCampaignDetail = FlashSaleCampaignDetail()
 ) : Parcelable

@@ -39,10 +39,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tfQuotaTitle"
-        app:typographyType="display_2"
-        app:typographyWeight="bold" />
+        app:typographyType="display_2" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconInfo"

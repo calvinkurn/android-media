@@ -10,10 +10,12 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
+import com.tokopedia.search.result.product.wishlist.Wishlistable
 
 data class BroadMatchDataView(
     val keyword: String = "",
     val subtitle: String = "",
+    val iconSubtitle: String = "",
     val url: String = "",
     val applink: String = "",
     val isAppendTitleInTokopedia: Boolean = false,
@@ -28,6 +30,7 @@ data class BroadMatchDataView(
 ) : ImpressHolder(),
     Visitable<ProductListTypeFactory>,
     VerticalSeparable,
+    Wishlistable,
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         keyword = actualKeyword,
@@ -46,6 +49,15 @@ data class BroadMatchDataView(
 
     override fun addBottomSeparator(): VerticalSeparable =
         this.copy(verticalSeparator = VerticalSeparator.Bottom)
+
+    override val isWishlisted: Boolean
+        get() = broadMatchItemDataViewList.any { it.isWishlisted }
+
+    override fun setWishlist(productID: String, isWishlisted: Boolean) {
+        broadMatchItemDataViewList.forEach {
+            it.setWishlist(productID, isWishlisted)
+        }
+    }
 
     companion object {
 
@@ -101,6 +113,7 @@ data class BroadMatchDataView(
         ) = BroadMatchDataView(
             keyword = option.title,
             subtitle = option.subtitle,
+            iconSubtitle = option.iconSubtitle,
             applink = option.applink,
             carouselOptionType = CarouselOptionType.of(type, option),
             broadMatchItemDataViewList = option.product.mapIndexed { index, product ->

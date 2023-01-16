@@ -74,8 +74,8 @@ class GetShopPageHomeLayoutUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                SHOP_PAGE_GET_LAYOUT_SUCCESS_RESPONSE_JSON_FILE_PATH.getJsonFromFile(),
-                JsonObject::class.java
+            SHOP_PAGE_GET_LAYOUT_SUCCESS_RESPONSE_JSON_FILE_PATH.getJsonFromFile(),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
         val objectType = ShopLayoutWidget.Response::class.java
@@ -88,8 +88,8 @@ class GetShopPageHomeLayoutUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                SHOP_PAGE_GET_LAYOUT_ERROR_RESPONSE_JSON_FILE_PATH.getJsonFromFile(),
-                JsonObject::class.java
+            SHOP_PAGE_GET_LAYOUT_ERROR_RESPONSE_JSON_FILE_PATH.getJsonFromFile(),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
         val objectType = GraphqlError::class.java
@@ -98,9 +98,7 @@ class GetShopPageHomeLayoutUseCaseTest {
         return GraphqlResponse(result, errors, false)
     }
 
-
     private fun String.getJsonFromFile(): String {
         return UnitTestFileUtils.getJsonFromAsset(this)
     }
-
 }

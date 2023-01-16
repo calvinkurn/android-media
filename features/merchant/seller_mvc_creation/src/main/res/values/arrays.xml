@@ -16,7 +16,7 @@
     <string-array name="source_items">
         <item>Dibuat Seller</item>
         <item>Paket Promosi</item>
-        <item>Budget Tokopedia</item>
+        <item>Dari Tokopedia</item>
     </string-array>
 
     <string-array name="promo_type_items">
@@ -33,6 +33,12 @@
     <string-array name="target_buyer_items">
         <item>Semua Pembeli</item>
         <item>Follower Baru</item>
-        <item>Pembeli Baru</item>
     </string-array>
+
+    <string-array name="voucher_list_promo_type_items">
+        <item>Gratis Ongkir</item>
+        <item>Diskon</item>
+        <item>Cashback</item>
+    </string-array>
+
 </resources>

@@ -229,7 +229,7 @@ class ProductListFragment : BaseDaggerFragment() {
                         effect.deletedProductCount
                     ), ctaText = getString(R.string.smvc_ok))
             ProductListEffect.ProductDeleted -> binding?.cardUnify2.showToaster(message = getString(R.string.smvc_product_deleted), ctaText = getString(R.string.smvc_ok))
-            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls)
+            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls, effect.pageMode)
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
             is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
@@ -454,9 +454,14 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun navigateToVoucherPreviewPage(
         voucherConfiguration: VoucherConfiguration,
         selectedProducts: List<SelectedProduct>,
-        selectedParentProductImageUrls: List<String>
+        selectedParentProductImageUrls: List<String>,
+        pageMode: PageMode
     ) {
-        SummaryActivity.start(context, voucherConfiguration)
+        SummaryActivity.start(context, voucherConfiguration, selectedProducts)
+        val returnIntent = Intent()
+        returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
+        activity?.setResult(Activity.RESULT_OK, returnIntent)
+        activity?.finish()
     }
 
     private fun backToPreviousPage() {
