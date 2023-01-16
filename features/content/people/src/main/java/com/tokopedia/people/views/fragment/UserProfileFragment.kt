@@ -461,6 +461,9 @@ class UserProfileFragment @Inject constructor(
                     }
                     is UserProfileUiEvent.SuccessBlockUser -> {
                         dismissBlockUserDialog()
+                        mainBinding.profileTabs.tabLayout.showWithCondition(
+                            !event.isBlocking && pagerAdapter.getTabs().size > 1
+                        )
                         val message = getString(
                             if (event.isBlocking) {
                                 R.string.up_block_user_success_toaster
@@ -481,6 +484,10 @@ class UserProfileFragment @Inject constructor(
                             }
                         )
                         view?.showErrorToast(message)
+                    }
+                    is UserProfileUiEvent.BlockingUserState -> {
+                        emptyPostVisitor()
+                        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                     }
                 }
             }
