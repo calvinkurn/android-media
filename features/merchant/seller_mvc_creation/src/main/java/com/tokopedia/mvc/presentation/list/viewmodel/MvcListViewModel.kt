@@ -113,7 +113,7 @@ class MvcListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getVoucherListChildUseCase.execute(voucherId)
-                _voucherChilds.postValue(result)
+                _voucherChilds.postValue(result.filter { it.status != VoucherStatus.DELETED })
             },
             onError = {
                 _error.postValue(it)

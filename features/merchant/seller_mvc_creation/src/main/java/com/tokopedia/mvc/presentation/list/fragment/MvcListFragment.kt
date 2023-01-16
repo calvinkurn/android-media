@@ -70,7 +70,6 @@ import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
-import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -315,7 +314,8 @@ class MvcListFragment :
         binding?.sortFilter?.indicatorCounter = viewModel.getFilterCount()
     }
 
-    override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
+    override fun onOtherPeriodMoreMenuClicked(dialog : OtherPeriodBottomSheet, voucher: Voucher) {
+        dialog.dismiss()
         showMoreMenuBottomSheet(voucher)
     }
 
