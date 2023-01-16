@@ -2,6 +2,7 @@ package com.tokopedia.contactus.createticket.fragment;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
+import static com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic.ACTION_CREATE_TICKET;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -274,7 +275,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                     bundle.putString(ContactUsActivity.PARAM_ORDER_ID,
                             url.getQueryParameter(ORDER_ID) == null ? "" : url.getQueryParameter
                                     (ORDER_ID));
-                    newRelicLogging.sendToNewRelicLog(url.toString(), "create_ticket", solutionId, tag);
+                    newRelicLogging.sendToNewRelicLog(url.toString(), ACTION_CREATE_TICKET, solutionId, tag);
                     listener.onGoToCreateTicket(bundle);
                     return true;
                 } else if (url.getQueryParameter("action") != null &&

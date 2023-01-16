@@ -1,5 +1,7 @@
 package com.tokopedia.contactus.createticket.presenter;
 
+import static com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic.ACTION_SEND_CREATED_TICKET;
+
 import android.util.Patterns;
 import android.view.View;
 
@@ -106,7 +108,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
             pass.setName(viewListener.getName().getText().toString());
             pass.setEmail(viewListener.getEmail().getText().toString());
         }
-        newRelicLogging.sendToNewRelicLog("send_created_ticket", solutionID, tags);
+        newRelicLogging.sendToNewRelicLog(ACTION_SEND_CREATED_TICKET, solutionID, tags);
         return pass;
     }
 

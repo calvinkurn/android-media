@@ -8,6 +8,8 @@ import java.util.HashMap;
 public class LoggingOnNewRelic {
     private static final String NEW_RELIC_LOG_TAG = "CONTACT_US_FAQ_PAGE";
     private static final String NEW_RELIC_CREATE_LOG_TAG = "CONTACT_US_CREATE_TICKET";
+    public static final String ACTION_SEND_CREATED_TICKET = "send_created_ticket";
+    public static final String ACTION_CREATE_TICKET = "create_ticket";
 
     public void sendToNewRelicLog(String url) {
         HashMap<String, String> map = new HashMap<>();

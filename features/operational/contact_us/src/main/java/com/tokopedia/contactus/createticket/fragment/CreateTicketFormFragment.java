@@ -75,7 +75,6 @@ public class CreateTicketFormFragment extends TkpdBaseV4Fragment
     CreateTicketProgressDialog progressDialog;
     private FinishContactUsListener finishContactUsListener;
     private Bundle savedState;
-    private final LoggingOnNewRelic newRelicLogging= new LoggingOnNewRelic();
 
     private CreateTicketFormFragmentPresenter presenter;
 

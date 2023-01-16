@@ -19,10 +19,7 @@ import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.Contac
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
 import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.logger.ServerLogger;
-import com.tokopedia.logger.utils.Priority;
 
-import java.util.HashMap;
 
 /**
  * Created by nisie on 8/12/16.
