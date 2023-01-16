@@ -1349,21 +1349,32 @@ open class DynamicProductDetailViewModel @Inject constructor(
         variantsSelected: Map<String, String>
     ) {
         val variantDataNonNull = variantData ?: ProductVariant()
-        val variantLevelTwo = variantDataNonNull.variants.getOrNull(VARIANT_LEVEL_TWO_INDEX)
-        val variants = variantsSelected.toMutableMap()
-
-        if (variantLevelTwo != null && variantsSelected.size == VARIANT_ONE_SELECTION_MAP_SIZE) {
-            val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
-            variants[variantLevelTwo.pv.orEmpty()] = variantLevelTwoId.orEmpty()
-        }
-
         val variantLevelOneUpdated = ProductDetailVariantLogic.determineVariant(
-            variants,
+            variantsSelected,
             variantDataNonNull
         )
 
         if (variantLevelOneUpdated != null) {
             _onThumbnailVariantSelectedData.postValue(listOf(variantLevelOneUpdated))
         }
+    }
+
+    fun selectVariantTwoOnThumbnailVariant(
+        variantsSelected: Map<String, String>,
+        newVariantId: String,
+        newVariantCategoryKey: String
+    ): MutableMap<String, String> {
+        val variants = variantsSelected.toMutableMap()
+        val variantDataNonNull = variantData ?: ProductVariant()
+        val variantLevelTwo = variantDataNonNull.variants.getOrNull(VARIANT_LEVEL_TWO_INDEX)
+
+        if (variantLevelTwo != null && variantsSelected.size == VARIANT_ONE_SELECTION_MAP_SIZE) {
+            val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
+            variants[variantLevelTwo.pv.orEmpty()] = variantLevelTwoId.orEmpty()
+        }
+
+        variants[newVariantCategoryKey] = newVariantId
+
+        return variants
     }
 }

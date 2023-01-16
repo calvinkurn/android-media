@@ -3401,8 +3401,14 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
-        pdpUiUpdater?.updateVariantSelected(variantId, categoryKey)
-        viewModel.onThumbnailVariantSelected(pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant.orEmpty())
+        val selectedVariant = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant.orEmpty()
+        val variants = viewModel.selectVariantTwoOnThumbnailVariant(
+            variantsSelected = selectedVariant,
+            newVariantId = variantId,
+            newVariantCategoryKey = categoryKey
+        )
+        pdpUiUpdater?.updateVariantSelected(variants)
+        viewModel.onThumbnailVariantSelected(variants)
     }
 
     private fun selectVariantInPdp(variantOptions: VariantOptionWithAttribute, state: Int) {
