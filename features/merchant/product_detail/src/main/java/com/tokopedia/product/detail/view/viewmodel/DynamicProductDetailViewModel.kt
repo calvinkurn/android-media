@@ -168,7 +168,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
         private const val CODE_200 = 200
         private const val CODE_300 = 300
         private const val VARIANT_LEVEL_TWO_INDEX = 1
-        private const val VARIANT_ONE_SELECTION_MAP_SIZE = 1
+        private const val MAX_VARIANT_LEVEL = 2
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -1368,12 +1368,18 @@ open class DynamicProductDetailViewModel @Inject constructor(
         val variantDataNonNull = variantData ?: ProductVariant()
         val variantLevelTwo = variantDataNonNull.variants.getOrNull(VARIANT_LEVEL_TWO_INDEX)
 
-        if (variantLevelTwo != null && variantsSelected.size == VARIANT_ONE_SELECTION_MAP_SIZE) {
-            val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
-            variants[variantLevelTwo.pv.orEmpty()] = variantLevelTwoId.orEmpty()
+        // in case, when swipe media but media is not variant
+        if (newVariantId.isEmpty()) {
+            return mutableMapOf()
         }
 
         variants[newVariantCategoryKey] = newVariantId
+
+        if (variantLevelTwo != null && variantsSelected.size < MAX_VARIANT_LEVEL) {
+            // in case, thumb variant selected but variant two never select from vbs
+            val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
+            variants[variantLevelTwo.pv.orEmpty()] = variantLevelTwoId.orEmpty()
+        }
 
         return variants
     }

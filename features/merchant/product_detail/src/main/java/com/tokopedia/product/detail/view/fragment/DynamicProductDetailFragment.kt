@@ -2060,12 +2060,12 @@ open class DynamicProductDetailFragment :
             // finding product variant by media variant option id
             val selected = singleVariant.variantLevelOne?.variantOptions?.firstOrNull {
                 it.variantId == variantOptionId
-            } ?: return
+            }
 
             // select the variant
             onThumbnailVariantSelected(
-                variantId = selected.variantId,
-                categoryKey = selected.variantCategoryKey
+                variantId = selected?.variantId.orEmpty(),
+                categoryKey = selected?.variantCategoryKey.orEmpty()
             )
         }
     }
