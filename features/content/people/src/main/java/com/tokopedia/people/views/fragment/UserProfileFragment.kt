@@ -298,6 +298,14 @@ class UserProfileFragment @Inject constructor(
                     ) {
                         bottomSheet.dismiss()
 
+                        if (!userSession.isLoggedIn) {
+                            startActivityForResult(
+                                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_TO_FOLLOW
+                            )
+                            return
+                        }
+
                         if (shouldBlock) {
                             getBlockUserDialog().show()
                         } else {
@@ -306,6 +314,13 @@ class UserProfileFragment @Inject constructor(
                     }
 
                     override fun onReportUser(bottomSheet: UserProfileOptionBottomSheet) {
+                        if (!userSession.isLoggedIn) {
+                            startActivityForResult(
+                                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_TO_FOLLOW
+                            )
+                            return
+                        }
                         goToTopChatReport()
                     }
                 })
@@ -606,7 +621,7 @@ class UserProfileFragment @Inject constructor(
         if (prev?.profileType == value.profileType) return
 
         mainBinding.btnKebabOption.showWithCondition(
-            shouldShow = value.profileType == ProfileType.OtherUser
+            shouldShow = value.profileType == ProfileType.OtherUser || !userSession.isLoggedIn
         )
     }
 
