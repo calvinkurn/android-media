@@ -5,7 +5,7 @@ import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerCo
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderExtensionTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
-import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState

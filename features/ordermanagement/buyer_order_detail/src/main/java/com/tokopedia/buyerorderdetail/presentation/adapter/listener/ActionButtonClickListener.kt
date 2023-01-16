@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorderdetail.presentation.adapter
+package com.tokopedia.buyerorderdetail.presentation.adapter.listener
 
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 

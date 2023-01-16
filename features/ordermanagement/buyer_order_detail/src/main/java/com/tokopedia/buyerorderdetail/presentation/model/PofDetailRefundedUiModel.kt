@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
+
 data class PofDetailRefundedUiModel(
     val summaryInfoLabel: String,
     val summaryInfoValue: String,
