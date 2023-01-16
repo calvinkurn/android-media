@@ -298,6 +298,12 @@ class UserProfileFragment @Inject constructor(
                     ) {
                         bottomSheet.dismiss()
 
+                        if (!userSession.isLoggedIn) {
+                            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+                            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+                            return
+                        }
+
                         if (shouldBlock) {
                             getBlockUserDialog().show()
                         } else {
@@ -306,6 +312,13 @@ class UserProfileFragment @Inject constructor(
                     }
 
                     override fun onReportUser(bottomSheet: UserProfileOptionBottomSheet) {
+                        bottomSheet.dismiss()
+
+                        if (!userSession.isLoggedIn) {
+                            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+                            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+                            return
+                        }
                         goToTopChatReport()
                     }
                 })
@@ -595,7 +608,10 @@ class UserProfileFragment @Inject constructor(
 
         (mainBinding.btnAction.layoutParams as MarginLayoutParams)
             .updateMarginsRelative(
-                end = if (value.profileType == ProfileType.OtherUser) dp8 else 0
+                end = if (value.profileType == ProfileType.OtherUser ||
+                    value.profileType == ProfileType.NotLoggedIn) {
+                    dp8
+                } else 0
             )
     }
 
@@ -606,7 +622,8 @@ class UserProfileFragment @Inject constructor(
         if (prev?.profileType == value.profileType) return
 
         mainBinding.btnKebabOption.showWithCondition(
-            shouldShow = value.profileType == ProfileType.OtherUser
+            shouldShow = value.profileType == ProfileType.OtherUser ||
+                value.profileType == ProfileType.NotLoggedIn
         )
     }
 
@@ -1045,6 +1062,7 @@ class UserProfileFragment @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
+            REQUEST_CODE_LOGIN -> refreshLandingPageData(isRefreshPost = true)
         }
     }
 
@@ -1240,6 +1258,8 @@ class UserProfileFragment @Inject constructor(
         private const val KEY_TITLEBAR = "titlebar"
         private const val KEY_ALLOW_OVERRIDE = "allow_override"
         private const val KEY_NEED_LOGIN = "need_login"
+
+        private const val REQUEST_CODE_LOGIN = 551
 
         fun getFragment(
             fragmentManager: FragmentManager,
