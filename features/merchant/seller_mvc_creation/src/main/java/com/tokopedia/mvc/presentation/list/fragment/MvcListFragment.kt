@@ -193,6 +193,7 @@ class MvcListFragment :
                 deleteVoucher(voucher)
             }
             is MoreMenuUiModel.Copy -> {
+                redirectToDuplicatePage(voucher.id)
             }
             is MoreMenuUiModel.TermsAndConditions -> {
             }
@@ -722,6 +723,11 @@ class MvcListFragment :
 
     private fun redirectToEditPage(voucher: Voucher) {
         val intent = SummaryActivity.buildEditModeIntent(requireContext(), voucher.id)
+        startActivity(intent)
+    }
+
+    private fun redirectToDuplicatePage(voucherId: Long) {
+        val intent = SummaryActivity.buildDuplicateModeIntent(context, voucherId)
         startActivity(intent)
     }
 }
