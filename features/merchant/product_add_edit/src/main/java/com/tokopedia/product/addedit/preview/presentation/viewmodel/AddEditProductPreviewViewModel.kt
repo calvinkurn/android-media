@@ -312,6 +312,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    fun saveImageListToDetailInput(imageList : MutableList<String>){
+        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageList
+    }
+
     fun updateProductPhotos(
         imageUrlOrPathList: List<String>,
         pictureList: List<PictureInputModel>

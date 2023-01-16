@@ -4,15 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity
-import com.tokopedia.profilecompletion.di.ActivityComponentFactory
-import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.common.helper.checkMessageText
-import com.tokopedia.profilecompletion.common.helper.checkTextOnEditText
-import com.tokopedia.profilecompletion.common.helper.clickSubmitButton
-import com.tokopedia.profilecompletion.common.helper.typingTextOn
-import com.tokopedia.profilecompletion.common.helper.checkResultCode
+import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity
+import com.tokopedia.profilecompletion.common.helper.*
+import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
+import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
@@ -20,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @UiTest
-class BioUsernameInstrumentTest {
+open class BioUsernameInstrumentTest {
 
     val testComponentFactory = TestComponentActivityFactory()
 
@@ -109,7 +105,7 @@ class BioUsernameInstrumentTest {
         }
     }
 
-    private fun runTest(isUsernamePage: Boolean, test: () -> Unit) {
+    open fun runTest(isUsernamePage: Boolean, test: () -> Unit) {
         val intent = if (isUsernamePage) Intent().apply {
             putExtra(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM, ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME) }
         else Intent().apply {

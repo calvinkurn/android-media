@@ -407,9 +407,7 @@ class AddEditProductPreviewFragment :
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
         viewModel.setIsDataChanged(true)
-        if (isAdding()) {
-            ProductAddStepperTracking.trackRemoveProductImage(shopId)
-        } else {
+        if (!isAdding()) {
             ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
     }
@@ -555,9 +553,6 @@ class AddEditProductPreviewFragment :
             }
         }
         addProductPhotoTipsLayout?.setOnClickListener {
-            if (!isEditing()) {
-                ProductAddStepperTracking.trackHelpProductQuality(shopId)
-            }
             showPhotoTips()
         }
     }
@@ -1046,6 +1041,7 @@ class AddEditProductPreviewFragment :
     private fun observeImageUrlOrPathList() {
         viewModel.imageUrlOrPathList.observe(viewLifecycleOwner, {
             productPhotoAdapter?.setProductPhotoPaths(it)
+            viewModel.saveImageListToDetailInput(it)
         })
     }
 
