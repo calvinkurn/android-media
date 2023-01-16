@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,6 +37,7 @@ import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -68,6 +70,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
         LatestReadingTopAdsDashboardRvAdapter { context?.openWebView(it) }
     }
+
+    private var isAutoTopUpActive:Boolean = false
+    private var isAutoTopUpSelected:Boolean = false
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
@@ -169,6 +174,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         binding.tambahKreditLayout.addCredit.setOnClickListener {
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
             intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+            intent.putExtra(TopAdsAddCreditActivity.IS_AUTO_TOP_UP_ACTIVE, isAutoTopUpActive)
+            intent.putExtra(TopAdsAddCreditActivity.IS_AUTO_TOP_UP_SELECTED, isAutoTopUpSelected)
             startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
         }
         binding.layoutRingkasan.ivSummaryDropDown.setOnClickListener {
@@ -326,6 +333,15 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+
+        topAdsDashboardViewModel.getAutoTopUpDefaultSate.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                isAutoTopUpActive = it.data.isAutoTopUp
+                setButtonRefreshCreditState(it.data.isAutoTopUp)
+                isAutoTopUpSelected = it.data.isAutoTopUpSelected
+            }
+        }
     }
 
     private fun setRecommendationProdukBerpostensi(item: RecommendationStatistics.Statistics.Data.ProductRecommendationStats) {
@@ -435,15 +451,41 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardViewModel.fetchShopDeposit()
         adTypeChanged(selectedAdType)
         topAdsDashboardViewModel.fetchRecommendationStatistics()
+        topAdsDashboardViewModel.getSelectedTopUpType()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_CREDIT) {
             topAdsDashboardViewModel.fetchShopDeposit()
+            if (resultCode == Activity.RESULT_OK) {
+                setButtonRefreshCreditState(true)
+                Toaster.build(
+                    binding.root, getString(R.string.topads_dash_auto_topup_activated_toast),
+                    Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)
+                ).show()
+            }
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
             if (data?.getBooleanExtra("no_redirect", false) != true)
                 goToCreditHistory(true)
+        }
+    }
+
+    private fun setButtonRefreshCreditState(isActive: Boolean) {
+        isAutoTopUpActive = isActive
+        if (isActive) {
+            context?.let {
+                binding.tambahKreditLayout.btnRefreshCredits.setColorFilter(
+                    ContextCompat.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                )
+            }
+        } else {
+            binding.tambahKreditLayout.btnRefreshCredits.clearColorFilter()
         }
     }
 

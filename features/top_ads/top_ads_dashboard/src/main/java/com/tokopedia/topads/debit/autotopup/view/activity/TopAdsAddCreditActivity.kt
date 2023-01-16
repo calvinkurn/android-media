@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -14,11 +15,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsPaymentCreditActivity
-import com.tokopedia.topads.debit.autotopup.data.model.TopUpCreditItemData
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseCreditBottomSheet
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -36,10 +35,10 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    override fun getNewFragment() = null
-    private var creditResponse: CreditResponse? = null
-    private var manualNominalList: MutableList<TopUpCreditItemData> = mutableListOf()
-    private var autoTopUpNominalList: MutableList<TopUpCreditItemData> = mutableListOf()
+
+    override fun getNewFragment(): Fragment?  = null
+    override fun getScreenName(): String? = null
+
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -49,10 +48,12 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     private var userSession: UserSessionInterface? = null
 
-    override fun getScreenName(): String? = null
     private val sheet: TopAdsChooseCreditBottomSheet? by lazy {
         TopAdsChooseCreditBottomSheet.newInstance().also {
             if (showFullScreenBottomSheet()) it.isFullpage = true
+            if (isAutoTopUpActive()) it.isAutoTopUpActive = true
+            if (isAutoTopUpSelected()) it.isAutoTopUpSelected = true
+            it.customPeekHeight = 600
         }
     }
 
@@ -60,17 +61,12 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         super.onCreate(savedInstanceState)
         initInjector()
         setContentView(R.layout.topads_base_layout)
-//        populateData()
-//        getInitialData()
-//        setObserver()
         sheet?.show(supportFragmentManager)
-        sheet?.isFullpage = true
-        sheet?.customPeekHeight = 600
         sheet?.setTitle(resources.getString(R.string.title_top_ads_add_credit))
 
-        sheet?.onSaved = { productUrl ->
+        sheet?.onSaved = { productUrl, isAutoAdsSaved ->
             if (productUrl.isNotEmpty()) chooseCredit(productUrl)
-            else {
+            else if (isAutoAdsSaved) {
                 root?.let {
                     Toaster.build(
                         it, getString(R.string.topads_dash_auto_topup_activated_toast),
@@ -82,42 +78,11 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
             }
         }
 
+        sheet?.setOnDismissListener {
+            finish()
+        }
+
     }
-
-//    private fun setObserver() {
-//        viewModel.topAdsTopUpCreditData.observe(this){
-//            when (it) {
-//                is Success -> onSuccessGetCreditListData(it.data)
-//            }
-//        }
-//        viewModel.getAutoTopUpStatus.observe(this) {
-//            when (it) {
-//                is Success -> onSuccessGetAutoCreditListData(it.data)
-//            }
-//        }
-//    }
-
-//    private fun onSuccessGetAutoCreditListData(data: AutoTopUpStatus) {
-//        autoTopUpNominalList.addAll(viewModel.getAutoTopUpCreditList(data))
-//    }
-
-//    private fun onSuccessGetCreditListData(data: TopAdsShopTierShopGradeData.ShopInfoByID.Result) {
-//        manualNominalList.addAll(viewModel.getCreditItemData2(creditResponse?.credit, data))
-//        sheet?.show(supportFragmentManager, manualNominalList)
-//        sheet?.setTitle(resources.getString(R.string.title_top_ads_add_credit))
-//        sheet?.onSaved = { pos ->
-//            if (creditResponse?.credit?.isNotEmpty() == true)
-//                chooseCredit(pos)
-//        }
-//        sheet?.setOnDismissListener {
-//            finish()
-//        }
-//    }
-
-//    private fun getInitialData() {
-//        viewModel.populateCreditList(::onSuccessCreditInfo)
-//        viewModel.getAutoTopUpStatusFull()
-//    }
 
     override fun onBackPressed() {
         if (intent.extras?.getBoolean(
@@ -145,27 +110,6 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
             (application as BaseMainApplication).baseAppComponent
         ).build()
 
-//    private fun populateData() {
-//        userSession = UserSession(this)
-//        viewModel.populateCreditList(::onSuccessCreditInfo)
-//    }
-
-//    private fun onSuccessCreditInfo(data: CreditResponse) {
-//        viewModel.getManualTopAdsCreditList()
-//        creditResponse = data
-//
-////        sheet?.show(supportFragmentManager, creditResponse, true, 0)
-////        sheet?.show(supportFragmentManager, creditResponse)
-////        sheet?.setTitle(resources.getString(R.string.title_top_ads_add_credit))
-////        sheet?.onSaved = { pos ->
-////            if (creditResponse?.credit?.isNotEmpty() == true)
-////                chooseCredit(pos)
-////        }
-////        sheet?.setOnDismissListener {
-////            finish()
-////        }
-//    }
-
     private fun chooseCredit(productUrl: String) {
         setResult(Activity.RESULT_OK)
         val intent = Intent(this, TopAdsPaymentCreditActivity::class.java).apply {
@@ -188,7 +132,16 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         return intent?.extras?.getBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, false) ?: false
     }
 
+    private fun isAutoTopUpActive(): Boolean {
+        return intent?.extras?.getBoolean(IS_AUTO_TOP_UP_ACTIVE, false) ?: false
+    }
+    private fun isAutoTopUpSelected(): Boolean {
+        return intent?.extras?.getBoolean(IS_AUTO_TOP_UP_ACTIVE, false) ?: false
+    }
+
     companion object {
+        const val IS_AUTO_TOP_UP_ACTIVE = "isAutoTopUpActive"
+        const val IS_AUTO_TOP_UP_SELECTED = "isAutoTopUpSelected"
         const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
     }
 }

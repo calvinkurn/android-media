@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.dashboard.R
@@ -70,9 +69,10 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     private var autoTopUpAvailableNominalList: MutableList<AutoTopUpItem> = mutableListOf()
     private var autoTopUpMaxCreditLimit: Long = 0L
     private var autoTopUpFrequencySelected: Int = 6
-    private var isAutoTopUpActive: Boolean = true
+    var isAutoTopUpActive: Boolean = false
+    var isAutoTopUpSelected: Boolean = false
     private var isCreditHistoryReceived: Boolean = false
-    var onSaved: ((productUrl: String) -> Unit)? = null
+    var onSaved: ((productUrl: String, isAutoAdsSaved: Boolean) -> Unit)? = null
 
     @JvmField
     @Inject
@@ -147,6 +147,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getInitialData()
+        checkRadioDefaultTopUpType()
         setAutoRadioButtonLabel()
         manageAutoTopUpActiveState()
         setObserver()
@@ -154,6 +155,11 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         setDefaultState()
         setUpClickListener()
         setUpCheckChangeListener()
+    }
+
+    private fun checkRadioDefaultTopUpType() {
+        if (isAutoTopUpSelected) autoRadioButton?.isChecked =
+            true else manualRadioButton?.isChecked = true
     }
 
     private fun setAutoRadioButtonLabel() {
@@ -185,7 +191,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             if (it.tag == "editAutoTopUp") {
                 enableEditAutoTopUpState()
             } else if (manualRadioButton?.isChecked == true) {
-                openManualAdsPage()
+                openManualAdsCreditWebView()
             } else {
                 saveAutoTopUp()
             }
@@ -197,7 +203,6 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
         applyButton?.setOnClickListener {
             saveAutoTopUp()
-            dismiss()
         }
     }
 
@@ -304,12 +309,13 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun openManualAdsPage() {
+    private fun openManualAdsCreditWebView() {
         dismiss()
         if (selectedNominalIndex != INVALID_NOMINAL_INDEX) {
             creditResponse?.credit?.getOrNull(selectedNominalIndex)?.productUrl?.let { productUrl ->
                 onSaved?.invoke(
-                    productUrl
+                    productUrl,
+                    false
                 )
             }
         }
@@ -453,7 +459,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             when (it) {
                 is ResponseSaving -> {
                     saveButton?.isLoading = false
-                    onSaved?.invoke("")
+                    onSaved?.invoke("", true)
                     handleResponseSaving(it)
                     dismiss()
 
