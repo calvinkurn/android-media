@@ -36,14 +36,14 @@ class BulkReviewSubmitUseCase @Inject constructor(
         params: List<BulkReviewSubmitRequestParam>
     ) = flow {
         emit(BulkReviewSubmitRequestState.Requesting())
-        emit(BulkReviewSubmitRequestState.Complete.Success(params, sendRequest(params)))
+        emit(BulkReviewSubmitRequestState.Complete.Success(params, sendRequest(params).productRevBulkSubmitProductReview))
     }.catch {
         emit(BulkReviewSubmitRequestState.Complete.Error(it))
     }
 
     private suspend fun sendRequest(
         params: List<BulkReviewSubmitRequestParam>
-    ): BulkReviewSubmitResponse.Data.ProductRevBulkSubmitProductReview {
+    ): BulkReviewSubmitResponse.Data {
         return repository.request(graphqlQuery(), createRequestParam(params))
     }
 
