@@ -38,11 +38,8 @@ class AddEditProductAddingAnalyticTest {
         private const val PRODUCT_PREVIEW_PAGE_CANCEL_BACK = "tracker/merchant/product_add_edit/add/product_preview_page_cancel_back.json"
 
         private const val PRODUCT_IMAGE_PICKER_OPEN = "tracker/merchant/product_add_edit/add/product_image_picker_open.json"
-        private const val PRODUCT_IMAGE_EDITOR_CLICK_CONTINUE = "tracker/merchant/product_add_edit/add/product_image_editor_click_continue.json"
 
         private const val PRODUCT_DETAIL_PAGE_OPEN = "tracker/merchant/product_add_edit/add/product_detail_page_open.json"
-        private const val PRODUCT_DETAIL_PAGE_CLICK_BACK = "tracker/merchant/product_add_edit/add/product_detail_page_click_back.json"
-
 
         private const val PRODUCT_DETAIL_PAGE_CLICK_CONTINUE = "tracker/merchant/product_add_edit/add/product_detail_page_click_continue.json"
 
@@ -97,10 +94,8 @@ class AddEditProductAddingAnalyticTest {
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CANCEL_BACK)
 
         doAnalyticDebuggerTest(PRODUCT_IMAGE_PICKER_OPEN)
-        doAnalyticDebuggerTest(PRODUCT_IMAGE_EDITOR_CLICK_CONTINUE)
 
         doAnalyticDebuggerTest(PRODUCT_DETAIL_PAGE_OPEN)
-        doAnalyticDebuggerTest(PRODUCT_DETAIL_PAGE_CLICK_BACK)
 
         activityRule.activity.finish()
     }

@@ -7,12 +7,9 @@ import android.graphics.drawable.GradientDrawable
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextPaint
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -51,12 +48,11 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.presentation.utils.FeedXCardSubtitlesAnimationHandler
-import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.NestedScrollableHost
-import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.util.bold
 import com.tokopedia.feedcomponent.util.buildSpannedString
+import com.tokopedia.feedcomponent.util.caption.FeedCaption
 import com.tokopedia.feedcomponent.util.util.hideViewWithAnimation
 import com.tokopedia.feedcomponent.util.util.hideViewWithoutAnimation
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
@@ -94,6 +90,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -932,137 +929,75 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun bindCaption(caption: FeedXCard) {
-        val tagConverter = TagConverter()
-        var spannableString: SpannableString
-        val authorType =
-            if (caption.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
-        val followCta =
-            FollowCta(
+        captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
+            val authorType = if (caption.author.type == 1) {
+                FollowCta.AUTHOR_USER
+            } else FollowCta.AUTHOR_SHOP
+            val followCta = FollowCta(
                 authorID = caption.author.id,
                 authorType = authorType,
                 isFollow = caption.followers.isFollowed
             )
-        val cs: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                listener?.onAvatarClick(
-                    positionInFeed,
-                    caption.author.appLink,
-                    if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
-                    "",
-                    followCta,
-                    caption.typename,
-                    caption.followers.isFollowed,
-                    caption.author.id,
-                    caption.media.firstOrNull()?.type ?: "",
-                    true
-                )
-            }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(
+            val authorCaption = FeedCaption.Author(
+                name = caption.author.name,
+                colorRes = MethodChecker.getColor(
                     context,
                     unifyPrinciplesR.color.Unify_N600
-                )
-            }
-        }
-        captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
-            if (caption.text.length > MAX_CHAR ||
-                hasSecondLine(caption.text)
-            ) {
-                val captionEnd =
-                    if (findSubstringSecondLine(caption.text) < CAPTION_END)
-                        findSubstringSecondLine(caption.text)
-                    else
-                        DynamicPostViewHolder.CAPTION_END
-
-                val captionTxt: String = buildString {
-                    append(
-                        ("<b>" + caption.author.name + "</b>" + " - ")
-                            .plus(caption.text.substring(0, captionEnd))
-                            .replace("\n", "<br/>")
-                            .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
-                            .plus("... ")
-                            .plus(
-                                "<font color='${
-                                    ColorUtil.getColorFromResToString(
-                                        context,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_N400
-                                    )
-                                }'>" + "<b>"
-                            )
-                            .plus(context.getString(R.string.feed_component_read_more_button))
-                            .plus("</b></font>")
+                ),
+                typeface = getTypeface(
+                    context,
+                    FeedCaption.ROBOTO_BOLD
+                ),
+                clickListener = {
+                    listener?.onAvatarClick(
+                        positionInFeed,
+                        caption.author.appLink,
+                        if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
+                        "",
+                        followCta,
+                        caption.typename,
+                        caption.followers.isFollowed,
+                        caption.author.id,
+                        caption.media.firstOrNull()?.type ?: "",
+                        true
                     )
                 }
-                spannableString = tagConverter.convertToLinkifyHashtag(
-                    SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag
-                ) { hashtag -> onHashtagClicked(hashtag, caption) }
-
-                captionText.setOnClickListener {
-                    if (captionText.text.contains(context.getString(R.string.feed_component_read_more_button))) {
-                        listener?.onReadMoreClicked(
-                            caption,
-                            positionInFeed
-                        )
-                        val txt: String = buildString {
-                            append("<b>" + caption.author.name + "</b>" + " - ").appendLine(
-                                caption.text.replace("(\r\n|\n)".toRegex(), "<br />")
-                            )
-                        }
-                        spannableString = tagConverter.convertToLinkifyHashtag(
-                            SpannableString(MethodChecker.fromHtml(txt)),
-                            colorLinkHashtag
-                        ) { hashtag -> onHashtagClicked(hashtag, caption) }
-                        spannableString.safeSetSpan(
-                            cs,
-                            0,
-                            MethodChecker.fromHtml(caption.author.name).length - 1,
-                            Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                        )
-                        captionText.text = spannableString
-                        captionText.movementMethod = LinkMovementMethod.getInstance()
-                    }
-                }
-
-            } else {
-
-                val captionTxt: String = buildString {
-                    append(
-                        ("<b>" + caption.author.name + "</b>" + " - ").plus(
-                            caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")
-                        )
-                    )
-                }
-                spannableString = tagConverter
-                    .convertToLinkifyHashtag(
-                        SpannableString(
-                            MethodChecker.fromHtml(
-                                captionTxt
-                            )
-                        ),
-                        colorLinkHashtag
-                    ) { hashtag -> onHashtagClicked(hashtag, caption) }
-            }
-            spannableString.safeSetSpan(
-                cs,
-                0,
-                MethodChecker.fromHtml(caption.author.name).length - 1,
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
-            captionText.text = spannableString
+            val tagCaption = FeedCaption.Tag(
+                colorRes = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                ),
+                clickListener = {
+                    onHashtagClicked(it, caption)
+                }
+            )
+
+            val captionBody = FeedCaption.Builder(caption.text)
+                .withAuthor(authorCaption)
+                .withTag(tagCaption)
+                .build()
+
+            val readMoreCaption = FeedCaption.ReadMore(
+                maxTrimChar = MAX_CHAR,
+                label = context.getString(R.string.feed_component_read_more_button),
+                colorRes = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                ),
+                clickListener = {
+                    captionText.setText(captionBody, TextView.BufferType.SPANNABLE)
+                }
+            )
+            val trimmedCaption = FeedCaption.Builder(caption.text)
+                .withAuthor(authorCaption)
+                .withTag(tagCaption)
+                .trimCaption(readMoreCaption)
+                .build()
+
+            captionText.setText(trimmedCaption, TextView.BufferType.SPANNABLE)
             captionText.movementMethod = LinkMovementMethod.getInstance()
-        }
-    }
-
-    private val colorLinkHashtag: Int
-        get() = MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400)
-
-    fun SpannableString.safeSetSpan(what: Any, start: Int, end: Int, flags: Int) {
-        try {
-            setSpan(what, start, end, flags)
-        } catch (throwable: Throwable) {
         }
     }
 
@@ -1070,19 +1005,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         listener?.onHashtagClickedFeed(hashtag, feed)
         val encodeHashtag = URLEncoder.encode(hashtag, "UTF-8")
         RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
-    }
-
-    private fun hasSecondLine(caption: String): Boolean {
-        val firstIndex = caption.indexOf("\n", 0)
-        return caption.indexOf("\n", firstIndex + 1) != -1
-    }
-
-    private fun findSubstringSecondLine(caption: String): Int {
-        val firstIndex = caption.indexOf("\n", 0)
-        return if (hasSecondLine(caption)) caption.indexOf(
-            "\n",
-            firstIndex + 1
-        ) else caption.length
     }
 
     private fun bindComment(

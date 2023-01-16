@@ -26,13 +26,15 @@ data class RequestData(
     @SerializedName("VariantDetail")
     val variantDetail: Boolean = false,
     @SerializedName("CheckCampaign")
-    val CheckCampaign: Boolean = false,
+    val checkCampaign: Boolean = false,
     @SerializedName("BundleGroup")
-    val BundleGroup: Boolean = false,
+    val bundleGroup: Boolean = false,
     @SerializedName("Preorder")
-    val Preorder: Boolean = false,
+    val preorder: Boolean = false,
     @SerializedName("BundleStats")
-    val BundleStats: Boolean = false
+    val bundleStats: Boolean = false,
+    @SerializedName("IncludeNonBundleVariant")
+    val includeNonBundleVariant: Boolean = true
 )
 
 data class ProductInfo(

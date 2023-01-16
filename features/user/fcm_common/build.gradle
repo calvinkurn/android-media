@@ -37,11 +37,18 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.firebase.messaging
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation (rootProject.ext.playServicesDependencies.ads){
+        exclude group: 'com.android.support'
+    }
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

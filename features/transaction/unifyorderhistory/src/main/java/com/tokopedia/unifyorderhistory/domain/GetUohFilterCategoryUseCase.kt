@@ -1,29 +1,29 @@
 package com.tokopedia.unifyorderhistory.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.unifyorderhistory.data.model.UohFilterCategory
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class GetUohFilterCategoryUseCase  @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
+@GqlQuery("GetUOHFilterCategoryQuery", GetUohFilterCategoryUseCase.query)
+class GetUohFilterCategoryUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) :
+    CoroutineUseCase<Unit, UohFilterCategory>(dispatchers.io) {
 
-    suspend fun executeSuspend(): Result<UohFilterCategory.Data> {
-        return try {
-            val request = GraphqlRequest(QUERY, UohFilterCategory.Data::class.java)
-            val response = gqlRepository.response(listOf(request)).getSuccessData<UohFilterCategory.Data>()
-            Success(response)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+    override fun graphqlQuery(): String = query
+
+    override suspend fun execute(params: Unit): UohFilterCategory {
+        return repository.request(GetUOHFilterCategoryQuery(), params)
     }
 
     companion object {
-        val QUERY = """
+        const val query = """
             query GetUOHFilterCategory {
                 uohFilterCategory {
                     filtersV2 {
@@ -39,6 +39,6 @@ class GetUohFilterCategoryUseCase  @Inject constructor(@ApplicationContext priva
                     }
                 }
             }
-            """.trimIndent()
+        """
     }
 }
