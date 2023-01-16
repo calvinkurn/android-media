@@ -7,7 +7,8 @@ import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 data class CatalogMostViralDataModel(
     val name: String = "",
     val type: String = "",
-    val catalogMostViralData: CatalogListResponse.CatalogGetList.CatalogsProduct
+    val catalogMostViralData: CatalogListResponse.CatalogGetList.CatalogsProduct,
+    val categoryName: String = ""
 ) : BaseCatalogLibraryDataModel {
     override fun type() = type
 

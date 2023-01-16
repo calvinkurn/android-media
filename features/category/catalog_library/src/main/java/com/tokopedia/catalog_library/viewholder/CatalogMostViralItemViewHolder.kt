@@ -16,6 +16,8 @@ class CatalogMostViralItemViewHolder(val view: View, private val catalogLibraryL
 
     private val mostViralImage = view.findViewById<ImageUnify>(R.id.catalog_product_viral_image)
     private val mostViralTitle = view.findViewById<Typography>(R.id.catalog_product_viral_title)
+    private val mostViralSubtitle =
+        view.findViewById<Typography>(R.id.catalog_product_viral_category)
     private val mostViralIcon = view.findViewById<IconUnify>(R.id.catalog_most_viral_icon)
     private val mostViralLayout =
         view.findViewById<ConstraintLayout>(R.id.catalog_most_viral_item_layout)
@@ -37,5 +39,7 @@ class CatalogMostViralItemViewHolder(val view: View, private val catalogLibraryL
         mostViralLayout.setOnClickListener {
             catalogLibraryListener.onProductCardClicked(element?.catalogMostViralData?.applink)
         }
+        mostViralSubtitle.text =
+            "${element?.categoryName} ${getString(R.string.most_viral_subtitle_common)}"
     }
 }

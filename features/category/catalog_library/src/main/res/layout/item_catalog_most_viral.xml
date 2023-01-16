@@ -21,7 +21,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lagi Viral, nih!"
+        android:text="@string/most_viral_lagi_viral_nih"
         android:layout_gravity="center_vertical"
         app:typographyType="heading_5"
         android:layout_marginStart="8dp"
@@ -46,6 +46,7 @@
             android:id="@+id/catalog_product_viral_image"
             android:layout_width="54dp"
             android:layout_height="54dp"
+            app:layout_constraintBottom_toBottomOf="@id/catalog_product_viral_category"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,10 +64,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/catalog_product_viral_category"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             tools:text="Category"
             app:typographyType="body_3"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/catalog_product_viral_title"
             app:layout_constraintStart_toStartOf="@id/catalog_product_viral_title"
             app:layout_constraintBottom_toBottomOf="@id/catalog_product_viral_image" />

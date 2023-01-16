@@ -117,17 +117,30 @@ class CatalogLandingPageViewModel @Inject constructor(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                 "",
-                getMostViralVisitableList(data.catalogGetList.catalogsProduct)
+                getMostViralVisitableList(
+                    data.catalogGetList.catalogsProduct,
+                    data.catalogGetList.categoryName
+                )
             )
         listOfComponents.add(catalogMostViralDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getMostViralVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
+    private fun getMostViralVisitableList(
+        catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
+        categoryName: String
+    ): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         catalogsProduct.forEach {
-            visitableList.add(CatalogMostViralDataModel(CATALOG_MOST_VIRAL, CATALOG_MOST_VIRAL, it))
+            visitableList.add(
+                CatalogMostViralDataModel(
+                    CATALOG_MOST_VIRAL,
+                    CATALOG_MOST_VIRAL,
+                    it,
+                    categoryName
+                )
+            )
         }
         return visitableList
     }
