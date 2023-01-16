@@ -266,7 +266,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
-        webView.addJavascriptInterface(new PrintWebPageInterface(), "Android Print");
+        webView.addJavascriptInterface(new PrintWebPageInterface(getActivity()), "Android Print");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
