@@ -148,6 +148,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
 
     private var getMiniCartJob: Job? = null
+    private var productListAsyncAwait: Unit? = null
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
@@ -178,7 +179,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun getLayoutData() {
         launchCatchError(block = {
-            getProductListAsync().await()
+            productListAsyncAwait = getProductListAsync().await()
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
@@ -260,14 +261,16 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
         launchCatchError(block = {
-            setMiniCartAndProductQuantity(miniCart)
+            productListAsyncAwait?.let {
+                setMiniCartAndProductQuantity(miniCart)
 
-            val layout = RepurchaseLayoutUiModel(
-                layoutList = layoutList,
-                state = TokoNowLayoutState.UPDATE
-            )
+                val layout = RepurchaseLayoutUiModel(
+                    layoutList = layoutList,
+                    state = TokoNowLayoutState.UPDATE
+                )
 
-            _atcQuantity.postValue(Success(layout))
+                _atcQuantity.postValue(Success(layout))
+            }
         }) {}
     }
 
