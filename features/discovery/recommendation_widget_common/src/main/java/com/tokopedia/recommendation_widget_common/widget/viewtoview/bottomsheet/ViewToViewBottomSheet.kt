@@ -1,0 +1,254 @@
+package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.databinding.BottomSheetViewToViewBinding
+import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.usecase.coroutines.Result
+import java.net.SocketTimeoutException
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+
+class ViewToViewBottomSheet @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory
+) : BottomSheetUnify(), ViewToViewListener {
+
+    private lateinit var viewModel: ViewToViewViewModel
+    private var binding: BottomSheetViewToViewBinding? = null
+    private var recommendationAdapter: ViewToViewAdapter? = null
+
+    private val queryParams: String
+        get() = arguments?.getString(KEY_RECOMMENDATION_PARAMS, "") ?: ""
+
+    private val headerTitle: String
+        get() = arguments?.getString(KEY_RECOMMENDATION_NAME) ?: ""
+
+    private val departmentId: String
+        get() = arguments?.getString(KEY_RECOMMENDATION_DEPARTMENT_ID) ?: ""
+
+    private val hasAtcButton: Boolean = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, viewModelFactory).get()
+        initView()
+        val context = context ?: return
+        val districtId = ChooseAddressUtils.getLocalizingAddressData(context).district_id
+        viewModel.getViewToViewProductRecommendation(
+            queryParams,
+            hasAtcButton,
+            districtId,
+        )
+    }
+
+    private fun initView() {
+        initBottomSheetSettings()
+        setTitle(headerTitle)
+
+        binding = BottomSheetViewToViewBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            null,
+            false
+        )
+        setChild(binding?.root)
+    }
+
+    private fun getScreenHeightBelowStatusBar(): Int {
+        val statusBarHeight = WindowInsetsCompat.CONSUMED.getInsets(
+            WindowInsetsCompat.Type.systemBars()
+        ).top
+        return (getScreenHeight() - statusBarHeight).toDp()
+    }
+
+    private fun initBottomSheetSettings() {
+        showCloseIcon = true
+        isDragable = true
+        isHideable = true
+        customPeekHeight = getScreenHeightBelowStatusBar()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
+        initListeners()
+        observeLiveData()
+    }
+
+    private fun initListeners() {
+        binding?.geViewToView?.setActionClickListener {
+            bottomSheetClose.visible()
+            bottomSheetHeader.visible()
+            binding?.let {
+                it.geViewToView.hide()
+                it.rvViewToViewRecommendation.visible()
+            }
+            context?.let {
+                val districtId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
+                viewModel.retryViewToViewProductRecommendation(
+                    queryParams,
+                    hasAtcButton,
+                    districtId,
+                )
+            }
+        }
+    }
+
+    private fun observeLiveData() {
+        viewModel.viewToViewRecommendationLiveData.observe(viewLifecycleOwner) {
+            renderRecommendationResult(it)
+        }
+        viewModel.viewToViewATCStatusLiveData.observe(viewLifecycleOwner) {
+            showATCToaster(it)
+        }
+    }
+
+    private fun renderRecommendationResult(result: Result<List<ViewToViewDataModel>>) {
+        result.doSuccessOrFail(
+            success = { recommendationAdapter?.submitList(it.data) },
+            fail = { showGlobalError(it) }
+        )
+    }
+
+    private fun showGlobalError(exception: Throwable?) {
+        val binding = binding ?: return
+        binding.rvViewToViewRecommendation.hide()
+        bottomSheetClose.hide()
+        bottomSheetHeader.hide()
+        binding.geViewToView.apply {
+            setType(getGlobalErrorType(exception))
+            errorAction.text = context.resources.getString(R.string.view_to_view_action_retry)
+            visible()
+        }
+    }
+
+    private fun getGlobalErrorType(exception: Throwable?): Int {
+        return when (exception) {
+            is TimeoutException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.PAGE_NOT_FOUND
+        }
+    }
+
+    private fun showATCToaster(atcStatus: ViewToViewATCStatus) {
+        val view = view?.rootView ?: return
+        val isSuccess = atcStatus is ViewToViewATCStatus.Success
+        val actionText = if (isSuccess)
+            view.context.resources.getString(R.string.view_to_view_toaster_atc_see_cart)
+        else ""
+        Toaster.build(
+            view,
+            atcStatus.message,
+            Snackbar.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL,
+            actionText,
+        ) {
+            if (isSuccess) RouteManager.route(context, ApplinkConst.CART)
+        }.show()
+    }
+
+    private fun initRecyclerView() {
+        val binding = binding ?: return
+        recommendationAdapter = ViewToViewAdapter(this)
+        binding.rvViewToViewRecommendation.apply {
+            adapter = recommendationAdapter
+            layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
+
+    override fun onProductImpressed(product: ViewToViewDataModel.Product, position: Int) {
+        ViewToViewBottomSheetTracker.eventProductImpress(
+            product.recommendationItem,
+            headerTitle,
+            viewModel.getUserId(),
+            position,
+        )
+    }
+
+    override fun onProductClicked(product: ViewToViewDataModel.Product, position: Int) {
+        ViewToViewBottomSheetTracker.eventProductClick(
+            product.recommendationItem,
+            headerTitle,
+            viewModel.getUserId(),
+            position,
+        )
+
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, product.id)
+    }
+
+    override fun onAddToCartClicked(product: ViewToViewDataModel.Product, position: Int) {
+        if(viewModel.isUserSessionActive) {
+            ViewToViewBottomSheetTracker.eventAddToCart(
+                product.recommendationItem,
+                headerTitle,
+                viewModel.getUserId(),
+                position,
+            )
+            viewModel.addToCart(product)
+        } else {
+            activity?.let {
+                startActivityForResult(
+                    RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN
+                )
+            }
+        }
+    }
+
+    companion object {
+        const val TAG = "ViewToViewBottomSheet"
+        private const val KEY_RECOMMENDATION_NAME = "RECOMMENDATION_NAME"
+        private const val KEY_RECOMMENDATION_PARAMS = "RECOMMENDATION_PARAMS"
+        private const val KEY_RECOMMENDATION_DEPARTMENT_ID = "RECOMMENDATION_DEPARTMENT_ID"
+
+        const val REQUEST_CODE_LOGIN = 561
+
+        private fun createBundle(
+            data: ViewToViewItemData,
+        ): Bundle {
+            return Bundle().apply {
+                putString(KEY_RECOMMENDATION_NAME, data.name)
+                putString(KEY_RECOMMENDATION_PARAMS, data.url)
+                putString(KEY_RECOMMENDATION_DEPARTMENT_ID, data.departmentId)
+            }
+        }
+
+        fun show(
+            classLoader: ClassLoader,
+            fragmentFactory: FragmentFactory,
+            fragmentManager: FragmentManager,
+            data: ViewToViewItemData,
+        ): ViewToViewBottomSheet {
+            val fragment = fragmentFactory.instantiate(
+                classLoader,
+                ViewToViewBottomSheet::class.java.name,
+            ) as ViewToViewBottomSheet
+            fragment.arguments = createBundle(data)
+            fragment.show(fragmentManager, TAG)
+            return fragment
+        }
+    }
+}

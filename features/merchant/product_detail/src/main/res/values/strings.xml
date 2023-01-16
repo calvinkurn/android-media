@@ -36,6 +36,7 @@
     <string name="courier_title">Kurir</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
+    <string name="title_other_toppers">Toppers lain juga lihat ini, lho!</string>
     <string name="new_installment_template">Cicilan mulai dari %s</string>
     <string name="pdp_label_cart_count_max">99+</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>

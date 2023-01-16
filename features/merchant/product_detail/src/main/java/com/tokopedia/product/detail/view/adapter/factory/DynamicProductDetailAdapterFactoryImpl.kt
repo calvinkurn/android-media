@@ -42,6 +42,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
@@ -79,6 +80,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
+import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 
 class DynamicProductDetailAdapterFactoryImpl(
@@ -231,6 +233,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ProductShopAdditionalViewHolder.LAYOUT
     }
 
+    override fun type(data: ViewToViewWidgetDataModel): Int {
+        return ViewToViewWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view,listener)
@@ -297,6 +303,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener = listener
             )
             ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
+            ViewToViewWidgetViewHolder.LAYOUT -> ViewToViewWidgetViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

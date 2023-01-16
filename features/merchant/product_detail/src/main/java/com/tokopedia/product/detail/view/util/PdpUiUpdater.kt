@@ -53,6 +53,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
@@ -64,11 +65,14 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
+import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import kotlin.math.roundToLong
 
@@ -662,6 +666,22 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
                         filterData = mapToAnnotateChip(data)
                     }
+                }
+            }
+        }
+    }
+
+    fun updateViewToViewData(
+        data: RecommendationWidget?,
+        state: Int = RecommendationCarouselData.STATE_READY,
+    ) {
+        val pageName = data?.pageName ?: return
+        updateData(pageName) {
+            if (pageName == VIEW_TO_VIEW) {
+                (mapOfData[pageName] as? ViewToViewWidgetDataModel)?.run {
+                    recomWidgetData = data
+                    cardModel = data?.recommendationItemList?.toViewToViewItemModels()
+                    this.state = state
                 }
             }
         }

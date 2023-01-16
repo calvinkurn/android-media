@@ -34,11 +34,11 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Locale
-import java.util.ArrayList
+import java.util.*
 
 
 object DynamicProductDetailTracking {
@@ -2353,5 +2353,83 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
         }
 
+    }
+
+    object ViewToView {
+        fun eventImpressViewToView(
+            position: Int,
+            widget: RecommendationWidget,
+            pageName: String,
+            pageTitle: String,
+            productInfo: DynamicProductInfoP1?,
+        ) {
+            Tracker.Builder()
+                .setEvent(ProductTrackingConstant.Action.VIEW_ITEM)
+                .setEventAction("impression on banner v2v widget")
+                .setEventCategory(ProductTrackingConstant.Category.PDP)
+                .setEventLabel(pageTitle)
+                .setCustomProperty("trackerId", "40439")
+                .setBusinessUnit("home & browse")
+                .setCurrentSite("tokopediamarketplace")
+                .setCustomProperty("productId", productInfo?.basic?.productID ?: "")
+                .setCustomProperty(
+                    "promotions",
+                    widget.recommendationItemList.mapIndexed { index, item ->
+                        item.asPromotion(index, pageTitle)
+                    }
+                )
+                .setUserId("userId")
+                .build()
+                .send()
+        }
+
+        private fun RecommendationItem.asPromotion(
+            position: Int,
+            headerName: String,
+        ) : Map<String, Any> {
+            return mapOf(
+                "creative_name" to "null",
+                "creative_slot" to "null",
+                "item_id" to asItemId(),
+                "item_name" to asItemName(position, headerName),
+            )
+        }
+
+        private fun RecommendationItem.asItemId(): String {
+            val channelId = "null"
+            val bannerId = "null"
+            val targettingType = "null"
+            val targgetingValue = "null"
+            return "${channelId}_${bannerId}_${targettingType}_${targgetingValue}_${departmentId}_${type}"
+        }
+
+        private fun RecommendationItem.asItemName(
+            position: Int,
+            headerName: String,
+        ): String {
+            return "/product - p$position - v2v widget - rekomendasi untuk anda - banner - $headerName"
+        }
+
+        fun eventClickViewToView(
+            position: Int,
+            product: RecommendationItem,
+            pageName: String,
+            pageTitle: String,
+            productInfo: DynamicProductInfoP1?,
+        ) {
+            Tracker.Builder()
+                .setEvent("select_content")
+                .setEventAction("click on banner v2v widget")
+                .setEventCategory(ProductTrackingConstant.Category.PDP)
+                .setEventLabel(pageTitle)
+                .setCustomProperty("trackerId", "40441")
+                .setBusinessUnit("home & browse")
+                .setCurrentSite("tokopediamarketplace")
+                .setCustomProperty("productId", productInfo?.basic?.productID ?: "")
+                .setCustomProperty("promotions", listOf(product.asPromotion(position, pageTitle)))
+                .setUserId("userId")
+                .build()
+                .send()
+        }
     }
 }

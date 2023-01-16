@@ -243,6 +243,7 @@ object ProductTrackingConstant {
         const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
         const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
         const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"
+        const val VIEW_ITEM = "view_item"
     }
 
 

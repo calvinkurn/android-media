@@ -63,6 +63,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
@@ -73,6 +74,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
@@ -136,9 +138,14 @@ object DynamicProductDetailMapper {
                         SHOPADS_CAROUSEL -> {
                             listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
                         }
+                        VIEW_TO_VIEW ->
+                            listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name= component.componentName, position = index))
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
+                }
+                ProductDetailConstant.VIEW_TO_VIEW -> {
+                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name= component.componentName, position = index))
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
                     listOfComponent.add(
