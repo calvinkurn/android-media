@@ -1089,7 +1089,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         lifecycleScope.launchCatchError(block = {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+            executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError =  {
             executeSharingFlow(shareModel)
         })
