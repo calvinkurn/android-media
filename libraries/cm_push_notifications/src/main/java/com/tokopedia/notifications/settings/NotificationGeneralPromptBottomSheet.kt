@@ -28,7 +28,7 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         get() = activity?.javaClass?.simpleName ?: ""
 
     private var lastTimeClicked: Long = 0
-    private val defaultInterval = 4000
+    private val defaultInterval = 10000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
