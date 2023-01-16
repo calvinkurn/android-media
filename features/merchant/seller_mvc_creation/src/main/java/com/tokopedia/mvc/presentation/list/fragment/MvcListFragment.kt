@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -235,15 +234,12 @@ class MvcListFragment :
         }
     }
 
-    private var onSuccessUpdateVoucherPeriod: () -> Unit = {
+    private var onSuccessUpdateVoucherPeriod: (Voucher?) -> Unit = { voucher ->
         loadInitialDataList()
-        view?.run {
-            Toaster.build(
-                this,
-                context?.getString(R.string.edit_period_success_edit_period).toBlankOrString(),
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                context?.getString(R.string.edit_period_button_text).toBlankOrString()
+        context?.resources?.let {
+            binding?.footer?.root?.showToaster(
+                it.getString(R.string.edit_period_success_edit_period, voucher?.name.toBlankOrString()).toBlankOrString(),
+                it.getString(R.string.edit_period_button_text).toBlankOrString()
             )
         }
     }

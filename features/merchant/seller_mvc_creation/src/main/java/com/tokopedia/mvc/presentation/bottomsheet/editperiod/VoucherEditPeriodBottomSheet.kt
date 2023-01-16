@@ -8,6 +8,7 @@ import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -52,7 +53,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
     private var endHour: Int = 0
     private var endMinute: Int = 0
     private var tickerVisibility: Boolean = false
-    private var onSuccessListener: () -> Unit = {}
+    private var onSuccessListener: (Voucher?) -> Unit = {}
     private var onFailListener: (String) -> Unit = {}
 
     init {
@@ -88,7 +89,9 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .build()
             .inject(this)
     }
@@ -112,9 +115,11 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun initObservers() {
         viewModel.startDateCalendarLiveData.observe(viewLifecycleOwner) {
+            startCalendar = it as? GregorianCalendar
             binding?.edtMvcStartDate?.setPlaceholder(it.time.formatTo())
         }
         viewModel.endDateCalendarLiveData.observe(viewLifecycleOwner) {
+            endCalendar = it as? GregorianCalendar
             binding?.edtMvcEndDate?.setPlaceholder(it.time.formatTo())
         }
         viewModel.hourStartLiveData.observe(viewLifecycleOwner) {
@@ -142,7 +147,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         viewModel.updateVoucherPeriodStateLiveData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    onSuccessListener()
+                    onSuccessListener(voucher)
                 }
                 is Fail -> {
                     onFailListener(result.throwable.message.toBlankOrString())
@@ -189,7 +194,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun onClickListenerForStartDate() {
         context?.run {
-            DateTimeUtils.getMinDate(startCalendar)?.let { minDate ->
+            startCalendar?.let { minDate ->
                 DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
@@ -211,11 +216,11 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun onClickListenerForEndDate() {
         context?.run {
-            DateTimeUtils.getMinDate(endCalendar)?.let { minDate ->
-                DateTimeUtils.getMaxDate(endCalendar)?.let { maxDate ->
+            startCalendar?.let { minDate ->
+                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
-                            endCalendar,
+                            decideCalendarPeriodEndDate(),
                             minDate,
                             maxDate,
                             endHour,
@@ -226,6 +231,17 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+    }
+
+    private fun decideCalendarPeriodEndDate(): GregorianCalendar? {
+        startCalendar?.let { start ->
+            return if (endCalendar?.compareTo(start)?.isLessThanZero() == true) {
+                startCalendar
+            } else {
+                endCalendar
+            }
+        }
+        return null
     }
 
     private var getSelectedDateStarting: (Calendar) -> Unit = {
@@ -246,7 +262,12 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun newInstance(voucher: Voucher, onSuccessListener: () -> Unit = {}, onFailListener: (String) -> Unit = {}, tickerVisibility: Boolean = false): VoucherEditPeriodBottomSheet {
+        fun newInstance(
+            voucher: Voucher,
+            onSuccessListener: (Voucher?) -> Unit = {},
+            onFailListener: (String) -> Unit = {},
+            tickerVisibility: Boolean = false
+        ): VoucherEditPeriodBottomSheet {
             return VoucherEditPeriodBottomSheet().apply {
                 this.voucher = voucher
                 this.onSuccessListener = onSuccessListener
