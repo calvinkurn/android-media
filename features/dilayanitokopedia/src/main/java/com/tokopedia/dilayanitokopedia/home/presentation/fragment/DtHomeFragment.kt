@@ -611,6 +611,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 serviceType = chooseAddressData.tokonow.serviceType,
                 lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
+
+
         }
         checkIfChooseAddressWidgetDataUpdated()
     }

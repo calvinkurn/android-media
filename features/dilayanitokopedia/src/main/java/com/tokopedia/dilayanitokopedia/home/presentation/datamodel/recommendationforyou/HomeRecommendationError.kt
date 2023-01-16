@@ -5,7 +5,7 @@ import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendat
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeRecommendationVisitable
 import com.tokopedia.smart_recycler_helper.SmartVisitable
 
-class HomeRecommendationError() : HomeRecommendationVisitable {
+class HomeRecommendationError : HomeRecommendationVisitable {
     override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
         return dataModel == this
     }

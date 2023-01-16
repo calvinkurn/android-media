@@ -17,8 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationFeedViewHolder(
     itemView: View,
-    private val listener: DtHomeCategoryListener,
-    private val cardInteraction: Boolean = false
+    private val listener: DtHomeCategoryListener
 ) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView) {
     private val context: Context = itemView.context
     private var binding: DtHomeRecommendationViewholderBinding? by viewBinding()
@@ -40,9 +39,7 @@ class HomeRecommendationFeedViewHolder(
         /**
          * sticky Effect
          * specify height for viewpager, so it can't scroll up anymore and create sticky Effect
-         *
          */
-
         layoutParams?.height = listener.windowHeight -
             listener.homeMainAnchorTabHeight
         container?.layoutParams = layoutParams

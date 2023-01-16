@@ -7,4 +7,7 @@
 
     <string name="dt_search_bar_hint">Cari di Dilayani Tokopedia</string>
 
+    <string name="home_recommendation_empty_title">Tidak ada hasil</string>
+    <string name="home_recommendation_empty_description">Produk tidak ada untuk kategori ini</string>
+
 </resources>

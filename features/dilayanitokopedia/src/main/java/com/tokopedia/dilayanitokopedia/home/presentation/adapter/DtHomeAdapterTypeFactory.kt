@@ -95,7 +95,7 @@ class DtHomeAdapterTypeFactory(
             HomeLoadingMoreViewHolder.LAYOUT -> HomeLoadingMoreViewHolder(view)
 
             HomeRecommendationFeedViewHolder.LAYOUT -> {
-                HomeRecommendationFeedViewHolder(view, homeRecommendationFeedListener, cardInteraction = true)
+                HomeRecommendationFeedViewHolder(view, homeRecommendationFeedListener)
             }
 
             BannerComponentViewHolder.LAYOUT -> {

@@ -42,15 +42,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.filter)
     implementation projectOrAar(rootProject.ext.features.productCard)
-    implementation projectOrAar(rootProject.ext.features.searchbar)
-    implementation projectOrAar(rootProject.ext.features.minicart)
-    implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
-    implementation projectOrAar(rootProject.ext.features.usercomponents)
-    implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
-//    implementation projectOrAar(rootProject.ext.features.playWidget)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -60,13 +55,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
+    implementation projectOrAar(rootProject.ext.libraries.diffUtilRecycler)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -76,11 +72,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.unifyDependencies.empty_state
-    implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.list
-    implementation rootProject.ext.unifyDependencies.dateFilter
-
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
@@ -89,22 +81,16 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
 
     implementation rootProject.ext.miscDependencies.dagger
-
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-        implementation rootProject.ext.networkDependencies.glide
-    implementation projectOrAar(rootProject.ext.libraries.diffUtilRecycler)
-    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation rootProject.ext.networkDependencies.glide
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
-
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//
     //-------------------------------------------------------------------//
-
 
 
     //-------------------------------------------------------------------//
@@ -114,7 +100,7 @@ project.ext {
     artifactId = 'dilayanitokopedia'
     groupId = 'com.tokopedia.dilayanitokopedia'
     versionName = "0.0.1"
-    artifactName ="dilayanitokopedia-release"
+    artifactName = "dilayanitokopedia-release"
 }
 
 apply from: '../../publish_local.gradle'

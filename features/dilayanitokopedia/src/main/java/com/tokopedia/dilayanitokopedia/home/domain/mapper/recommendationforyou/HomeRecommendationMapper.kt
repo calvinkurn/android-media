@@ -32,7 +32,6 @@ object HomeRecommendationMapper {
             )
         )
 
-        val bannerStack = Stack<BannerRecommendationDataModel>()
         // reverse stack because to get the first in
         Collections.reverse(productStack)
 
