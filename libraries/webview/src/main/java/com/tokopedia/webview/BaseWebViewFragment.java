@@ -267,7 +267,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
         }
 
-        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PRINT_JS_INTERFACE, false);
+        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PRINT_JS_INTERFACE, true);
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
