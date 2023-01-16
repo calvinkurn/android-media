@@ -96,7 +96,6 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
     }
 
     private fun onTurnOnNotificationClick(ignored: View) {
-        dismiss()
         val currentTime = SystemClock.elapsedRealtime()
         if (currentTime - lastTimeClicked <= defaultInterval) {
             return
@@ -135,6 +134,7 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         if (isPostNotificationPermissions(requestCode, permissions)) {
             sendEventPostNotificationPermissionResult(grantResults)
         }
+        dismiss()
     }
 
     private fun isPostNotificationPermissions(
