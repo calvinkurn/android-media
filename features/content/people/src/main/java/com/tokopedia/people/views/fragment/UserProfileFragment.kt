@@ -299,8 +299,10 @@ class UserProfileFragment @Inject constructor(
                         bottomSheet.dismiss()
 
                         if (!userSession.isLoggedIn) {
-                            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+                            startActivityForResult(
+                                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN
+                            )
                             return
                         }
 
@@ -315,8 +317,10 @@ class UserProfileFragment @Inject constructor(
                         bottomSheet.dismiss()
 
                         if (!userSession.isLoggedIn) {
-                            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+                            startActivityForResult(
+                                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN
+                            )
                             return
                         }
                         goToTopChatReport()
@@ -459,6 +463,9 @@ class UserProfileFragment @Inject constructor(
                     }
                     is UserProfileUiEvent.SuccessBlockUser -> {
                         dismissBlockUserDialog()
+                        mainBinding.profileTabs.tabLayout.showWithCondition(
+                            !event.isBlocking && pagerAdapter.getTabs().size > 1
+                        )
                         val message = getString(
                             if (event.isBlocking) {
                                 R.string.up_block_user_success_toaster
@@ -479,6 +486,10 @@ class UserProfileFragment @Inject constructor(
                             }
                         )
                         view?.showErrorToast(message)
+                    }
+                    is UserProfileUiEvent.BlockingUserState -> {
+                        emptyPostVisitor()
+                        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                     }
                 }
             }

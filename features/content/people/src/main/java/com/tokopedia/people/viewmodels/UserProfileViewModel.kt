@@ -166,16 +166,6 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleLoadFeedPosts(cursor: String, isRefresh: Boolean) {
-        if (_profileInfo.value.isBlocking) {
-            _feedPostsContent.value = UserFeedPostsUiModel()
-            viewModelScope.launch {
-                _uiEvent.emit(UserProfileUiEvent.ErrorFeedPosts(
-                    MessageErrorException("User ini diblokir")
-                ))
-            }
-            return
-        }
-
         viewModelScope.launchCatchError(
             block = {
                 val currentSize = _feedPostsContent.value.posts.size
@@ -207,16 +197,6 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleLoadPlayVideo(cursor: String) {
-        if (_profileInfo.value.isBlocking) {
-            _videoPostContent.value = UserPostModel()
-            viewModelScope.launch {
-                _uiEvent.emit(UserProfileUiEvent.ErrorVideoPosts(
-                    MessageErrorException("User ini diblokir")
-                ))
-            }
-            return
-        }
-
         viewModelScope.launchCatchError(
             block = {
                 val data = repo.getPlayVideo(profileUserID, cursor)
@@ -463,6 +443,16 @@ class UserProfileViewModel @AssistedInject constructor(
         if (profileType == ProfileType.Self) {
             _profileWhitelist.update { repo.getWhitelist() }
             if (isRefresh) loadShopRecom()
+        }
+
+        if (_profileInfo.value.isBlocking) {
+            _feedPostsContent.value = UserFeedPostsUiModel()
+            viewModelScope.launch {
+                _uiEvent.emit(UserProfileUiEvent.BlockingUserState(
+                    MessageErrorException("User ini diblokir")
+                ))
+            }
+            return
         }
 
         if (isRefresh) loadProfileTab()

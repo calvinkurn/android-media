@@ -17,4 +17,5 @@ sealed interface UserProfileUiEvent {
 
     data class SuccessBlockUser(val isBlocking: Boolean) : UserProfileUiEvent
     data class ErrorBlockUser(val isBlocking: Boolean) : UserProfileUiEvent
+    data class BlockingUserState(val throwable: Throwable): UserProfileUiEvent
 }
