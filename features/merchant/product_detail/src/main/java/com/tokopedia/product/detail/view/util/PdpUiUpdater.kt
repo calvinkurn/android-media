@@ -801,15 +801,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateThumbVariantSelected(variantId: String, variantKey: String) {
-        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-            productSingleVariant?.let {
-                it.mapOfSelectedVariant.clear()
-                it.mapOfSelectedVariant[variantKey] = variantId
-            }
-        }
-    }
-
     fun updateVariantSelected(variantId: String, variantKey: String) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
             productOptionalVariantDataModel?.let {
