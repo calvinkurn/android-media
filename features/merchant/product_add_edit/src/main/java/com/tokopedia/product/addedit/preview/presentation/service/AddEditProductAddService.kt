@@ -242,8 +242,8 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 //            })
 //    }
 
-    private fun downloadProductImages(productInputModel: ProductInputModel) {
-        val productImageData = productInputModel.detailInputModel.pictureList
+    private fun downloadProductImages(productData: ProductInputModel) {
+        val productImageData = productData.detailInputModel.pictureList
         if (productImageData.isNullOrEmpty()) return
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         val mutableData = productImageData.toMutableList()
@@ -257,7 +257,6 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                     var path = downloadsDir + "/" + this.fileName
                     this.filePath = path
                 }
-
                 if (mutableData.lastIndex == index) {
                     productInputModel.detailInputModel.pictureList = mutableData.toList()
 
@@ -296,7 +295,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             var loopIndex = productImageData.indexOf(data)
 
             // check if file is already downloaded into downloads directory
-            val imageFile = File(downloadsDir + data.fileName)
+            val imageFile = File(downloadsDir + "/" + data.fileName)
 
             // all the images already exist in downloads dir
             if (loopIndex == productImageData.lastIndex && imageFile.isFile) {
@@ -335,15 +334,23 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         }
     }
 
-    private fun downloadProductVariantImages(productInputModel: ProductInputModel) {
-        val productVariantData = productInputModel.variantInputModel.products
-        if (productVariantData.isNullOrEmpty()) downloadVariantSizeChart(productInputModel)
+    private fun downloadProductVariantImages(productData: ProductInputModel) {
+        val productVariantData = productData.variantInputModel.products
+        if (productVariantData.isNullOrEmpty()) downloadVariantSizeChart(productData)
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         val mutableData = productVariantData.toMutableList()
-        var index = 0
+
+        var variantIndex = 0
+        var imageIndex = 0
 
         downloadVariantSizeChart(productInputModel)
 
+//        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
+//            override fun onDownloadComplete() {
+//
+//            }
+//        }
+//
 //        // Find the start index
 //        for (data in productVariantData) {
 //
@@ -364,19 +371,21 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 //        }
     }
 
-    private fun downloadVariantSizeChart(productInputModel: ProductInputModel) {
+    private fun downloadVariantSizeChart(productData: ProductInputModel) {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-        val variantSizeChart = productInputModel.variantInputModel.sizecharts
+        val variantSizeChart = productData.variantInputModel.sizecharts
+        val filePath = downloadsDir + "/" + variantSizeChart.fileName
 
         val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
             override fun onDownloadComplete() {
+                productInputModel.variantInputModel.sizecharts.filePath = filePath
                 saveProductToDraftAsync()
             }
         }
 
         if (variantSizeChart.urlOriginal.isNotBlank()) {
             // check if file is already downloaded into downloads directory
-            val imageFile = File(downloadsDir + variantSizeChart.fileName)
+            val imageFile = File(filePath)
             if (!imageFile.isFile) {
                 try {
                     val helper = DownloadHelper(
