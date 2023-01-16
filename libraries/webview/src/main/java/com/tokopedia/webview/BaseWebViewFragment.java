@@ -29,6 +29,9 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -57,6 +60,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -262,6 +266,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
+        webView.addJavascriptInterface(new PrintWebPageInterface(), "Android Print");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -347,6 +352,43 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
 
+        }
+    }
+
+    private final class PrintWebPageInterface {
+
+        private WeakReference<Activity> mContextRef;
+
+        public PrintWebPageInterface(Activity context) {
+            this.mContextRef = new WeakReference<Activity>(context);
+        }
+
+        @JavascriptInterface
+        public void printCurrentScreen() {
+            if (mContextRef.get() == null) {
+                return;
+            }
+            try {
+                String jobName = "Current Page";
+                PrintManager printManager = ContextCompat.getSystemService(mContextRef.get(), PrintManager.class);
+                PrintDocumentAdapter adapter;
+                PrintAttributes.Builder printAttrBuilder = new PrintAttributes.Builder();
+                PrintAttributes printAttr = printAttrBuilder.setMediaSize(
+                        PrintAttributes.MediaSize.ISO_A4
+                ).build();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    adapter = webView.createPrintDocumentAdapter(jobName);
+                } else {
+                    adapter = webView.createPrintDocumentAdapter();
+                }
+
+                if (printManager != null) {
+                    printManager.print(jobName, adapter, printAttr);
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 
