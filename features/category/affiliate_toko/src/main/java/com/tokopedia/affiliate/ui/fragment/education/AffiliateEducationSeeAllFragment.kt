@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
@@ -32,6 +34,7 @@ import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
@@ -39,6 +42,9 @@ class AffiliateEducationSeeAllFragment :
     BaseViewModelFragment<AffiliateEducationSeeAllViewModel>(),
     AffiliateEducationSeeAllCardClickInterface,
     AffiliateEduCategoryChipClick {
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private var educationVM: AffiliateEducationSeeAllViewModel? = null
     private var pageType: String? = null
@@ -135,6 +141,7 @@ class AffiliateEducationSeeAllFragment :
                         }
                     )
                 }
+                sendEducationSeeAllImpressions(categoryChipAdapter.list)
             }
         }
         educationVM?.getTotalCount()?.observe(viewLifecycleOwner) {
@@ -146,6 +153,41 @@ class AffiliateEducationSeeAllFragment :
         }
         educationVM?.hasMoreData()?.observe(viewLifecycleOwner) {
             hasMoreData = it
+        }
+    }
+
+    private fun sendEducationSeeAllImpressions(list: MutableList<Visitable<Any>>) {
+        when (pageType) {
+            PAGE_EDUCATION_EVENT -> {
+                list.forEach {
+                    sendEducationImpressions(
+                        (it as? AffiliateEduCategoryChipModel)?.chipType?.title,
+                        (it as? AffiliateEduCategoryChipModel)?.chipType?.id.toString(),
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_CATEGORY,
+                        AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT
+                    )
+                }
+            }
+            PAGE_EDUCATION_ARTICLE -> {
+                list.forEach {
+                    sendEducationImpressions(
+                        (it as? AffiliateEduCategoryChipModel)?.chipType?.title,
+                        (it as? AffiliateEduCategoryChipModel)?.chipType?.id.toString(),
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CATEGORY,
+                        AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE
+                    )
+                }
+            }
+            PAGE_EDUCATION_TUTORIAL -> {
+                list.forEach {
+                    sendEducationImpressions(
+                        (it as? AffiliateEduCategoryChipModel)?.chipType?.title,
+                        (it as? AffiliateEduCategoryChipModel)?.chipType?.id.toString(),
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_TUTORIAL_CATEGORY,
+                        AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL
+                    )
+                }
+            }
         }
     }
 
@@ -231,5 +273,68 @@ class AffiliateEducationSeeAllFragment :
         }
         seeAllAdapter.resetList()
         educationVM?.resetList(pageType, type?.id.toString())
+
+        when (pageType) {
+            PAGE_EDUCATION_EVENT -> {
+                sendEducationClickEvent(
+                    type?.title,
+                    type?.id.toString(),
+                    AffiliateAnalytics.ActionKeys.CLICK_EVENT_CATEGORY,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT
+                )
+            }
+            PAGE_EDUCATION_ARTICLE -> {
+                sendEducationClickEvent(
+                    type?.title,
+                    type?.id.toString(),
+                    AffiliateAnalytics.ActionKeys.CLICK_ARTICLE_CATEGORY,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE
+                )
+            }
+            PAGE_EDUCATION_TUTORIAL -> {
+                sendEducationClickEvent(
+                    type?.title,
+                    type?.id.toString(),
+                    AffiliateAnalytics.ActionKeys.CLICK_TUTORIAL_CATEGORY,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL
+                )
+            }
+        }
+    }
+
+    private fun sendEducationClickEvent(
+        creativeName: String?,
+        eventId: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            actionKeys,
+            categoryKeys,
+            eventId,
+            position = 0,
+            eventId,
+            userSessionInterface.userId,
+            creativeName
+        )
+    }
+
+    private fun sendEducationImpressions(
+        creativeName: String?,
+        id: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM,
+            actionKeys,
+            categoryKeys,
+            id,
+            position = 0,
+            id,
+            userSessionInterface.userId,
+            creativeName
+        )
     }
 }
