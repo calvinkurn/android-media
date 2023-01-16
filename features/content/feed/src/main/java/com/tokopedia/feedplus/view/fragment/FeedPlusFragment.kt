@@ -773,6 +773,42 @@ class FeedPlusFragment :
                     }
                 }
             )
+
+            shopIdsFollowStatusToUpdateData.observe(
+                lifecycleOwner,
+                Observer {
+                    when (it) {
+                        is Success -> {
+                            adapter.getlist().mapIndexed { index, item ->
+                                val shopId = when (item) {
+                                    is DynamicPostModel -> {
+                                        item.header.followCta.authorID
+                                    }
+                                    is DynamicPostUiModel -> {
+                                        item.feedXCard.shopId
+                                    }
+                                    else -> ""
+                                }
+                                if (shopId != "") {
+                                    it.data[shopId]?.let { followStatus ->
+                                        when (item) {
+                                            is DynamicPostModel -> {
+                                                item.header.followCta.isFollow = followStatus
+                                            }
+                                            is DynamicPostUiModel -> {
+                                                item.feedXCard.followers.isFollowed = followStatus
+                                            }
+                                            else -> ""
+                                        }
+                                    }
+                                    adapter.notifyItemChanged(index)
+                                }
+                            }
+                        }
+                        is Fail -> {}
+                    }
+                }
+            )
         }
     }
 
