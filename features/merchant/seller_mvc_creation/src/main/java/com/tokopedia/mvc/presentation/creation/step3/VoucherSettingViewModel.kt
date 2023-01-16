@@ -119,6 +119,7 @@ class VoucherSettingViewModel @Inject constructor(
             )
         }
         handleVoucherInputValidation()
+        setSpendingEstimation()
     }
 
     private fun handlePercentageInputChanges(percentage: Int) {
@@ -131,6 +132,7 @@ class VoucherSettingViewModel @Inject constructor(
             )
         }
         handleVoucherInputValidation()
+        setSpendingEstimation()
     }
 
     private fun handleMaxDeductionInputChanges(maxDeduction: Long) {
@@ -143,6 +145,7 @@ class VoucherSettingViewModel @Inject constructor(
             )
         }
         handleVoucherInputValidation()
+        setSpendingEstimation()
     }
 
     private fun handleMinimumBuyInputChanges(minimumBuy: Long) {
@@ -167,6 +170,7 @@ class VoucherSettingViewModel @Inject constructor(
             )
         }
         handleVoucherInputValidation()
+        setSpendingEstimation()
     }
 
     private fun handleVoucherInputValidation() {
@@ -232,6 +236,31 @@ class VoucherSettingViewModel @Inject constructor(
             VoucherTarget.PUBLIC
         } else {
             VoucherTarget.PRIVATE
+        }
+    }
+
+    private fun setSpendingEstimation() {
+        val currentConfiguration = currentState.voucherConfiguration
+        val spendingEstimation = when (currentConfiguration.promoType) {
+            PromoType.FREE_SHIPPING -> {
+                currentConfiguration.benefitIdr * currentConfiguration.quota
+            }
+            else -> {
+                getSpendingEstimationBasedOnBenefitType(currentConfiguration)
+            }
+        }
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                spendingEstimation = spendingEstimation
+            )
+        }
+    }
+
+    private fun getSpendingEstimationBasedOnBenefitType(currentConfiguration: VoucherConfiguration): Long {
+        return when (currentConfiguration.benefitType) {
+            BenefitType.NOMINAL -> currentConfiguration.benefitIdr * currentConfiguration.quota
+            else -> currentConfiguration.benefitMax * currentConfiguration.quota
         }
     }
 }

@@ -146,6 +146,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             }
         }
         renderAvailableTargetBuyer(state.availableTargetBuyer, state.voucherConfiguration)
+        renderSpendingEstimation(state.spendingEstimation)
     }
 
     private fun handleAction(action: VoucherCreationStepThreeAction) {
@@ -828,11 +829,16 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             labelSpendingEstimation.apply {
                 titleText = getString(R.string.smvc_spending_estimation_title_1)
                 descriptionText = getString(R.string.smvc_spending_estimation_description_1)
-                spendingEstimationText = "-"
                 iconInfo?.setOnClickListener {
                     ExpenseEstimationBottomSheet.newInstance().show(childFragmentManager)
                 }
             }
+        }
+    }
+
+    private fun renderSpendingEstimation(spendingEstimation: Long) {
+        binding?.run {
+            labelSpendingEstimation.spendingEstimationText = spendingEstimation.getCurrencyFormatted()
         }
     }
 
