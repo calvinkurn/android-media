@@ -11,6 +11,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -47,6 +48,7 @@ import kotlinx.android.synthetic.main.fragment_add_bank.*
 import kotlinx.android.synthetic.main.fragment_add_bank.add_account_button
 import kotlinx.android.synthetic.main.fragment_add_bank.progress_bar
 import javax.inject.Inject
+import kotlin.math.min
 
 
 class AddBankFragment : BaseDaggerFragment() {
@@ -322,7 +324,7 @@ class AddBankFragment : BaseDaggerFragment() {
         textAreaBankAccountHolderName.visible()
         textAreaBankAccountHolderName.editText.isEnabled = true
         if (data.accountName.isNotEmpty())
-            textAreaBankAccountHolderName.editText.setText(data.accountName)
+            textAreaBankAccountHolderName.editText.setTextWithMaximumOf20(data.accountName)
 
         showManualAccountNameError(data.message)
     }
@@ -334,10 +336,14 @@ class AddBankFragment : BaseDaggerFragment() {
         } else {
             groupAccountNameAuto.gone()
             textAreaBankAccountHolderName.visible()
-            textAreaBankAccountHolderName.editText.setText(data.accountName)
+            textAreaBankAccountHolderName.editText.setTextWithMaximumOf20(data.accountName)
             textAreaBankAccountHolderName.editText.isEnabled = false
             showManualAccountNameError(data.message)
         }
+    }
+
+    private fun TextView.setTextWithMaximumOf20(str: String) {
+        text = str.substring(min(MAX_AUTO_FILL_ACCOUNT_HOLDER_NAME, str.length))
     }
 
     private fun checkAccountNumber() {
@@ -558,9 +564,10 @@ class AddBankFragment : BaseDaggerFragment() {
         const val ARG_OUT_ACCOUNT_NAME_IS_MANUAL = "ARG_OUT_ACCOUNT_NAME_IS_MANUAL"
         private const val REQUEST_OTP = 103
 
-        const val BANK_ACC_START_IDX = 3
-        const val BANK_ACC_LAST_IDX = 50
-        const val TEXT_PERIKSA_MARGIN_OFFSET_DP = 5
+        private const val BANK_ACC_START_IDX = 3
+        private const val BANK_ACC_LAST_IDX = 50
+        private const val TEXT_PERIKSA_MARGIN_OFFSET_DP = 5
+        private const val MAX_AUTO_FILL_ACCOUNT_HOLDER_NAME = 20
     }
 
     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
