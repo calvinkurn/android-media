@@ -113,6 +113,9 @@
     <string name="please_fill_name">Harap isi Nama anda</string>
     <string name="deleted_shop_info">Tokomu hilang?</string>
     <string name="deleted_shop_info_clickable">Pelajari Selengkapnya</string>
+    <string name="phone_shop_tnc_policy">Dengan klik tombol di bawah, kamu menyetujui %s serta %s Pendaftaran Toko.</string>
+    <string name="phone_shop_tnc_title">Syarat &amp; Ketentuan</string>
+    <string name="phone_shop_policy_title">Kebijakan Privasi</string>
 
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_login_phone">Cancel login phone</string>

@@ -3,6 +3,7 @@ package com.tokopedia.universal_sharing.constants
 class ImageGeneratorConstants {
     object ImageGeneratorSourceId{
         const val PDP = "gFZoml"
+        const val AB_TEST_PDP = "wmVUzt"
         const val FS_TOKO = "tJHYeb"
         const val RILISAN_SPESIAL = "aaGBeS"
         const val MVC_PRODUCT = "ZmygOT"
@@ -16,6 +17,11 @@ class ImageGeneratorConstants {
         const val BEBAS_ONGKIR_TYPE = "bebas_ongkir_type"
         const val PLATFORM = "platform"
         const val PRODUCT_RATING = "product_rating"
+        const val PRODUCT_ID = "product_id"
+        const val NEW_PRODUCT_PRICE = "new_product_price"
+        const val HAS_CAMPAIGN = "has_campaign"
+        const val CAMPAIGN_DISCOUNT = "campaign_discount"
+        const val CAMPAIGN_NAME_PDP = "campaign_name"
         const val SHOP_LOGO = "shop-logo"
         const val SHOP_NAME = "shop-name"
         const val BADGE = "badge"
