@@ -9,11 +9,11 @@ data class BulkReviewSubmitResponse(
     val data: Data = Data()
 ) {
     data class Data(
-        @SerializedName("productrevSubmitBulkReview")
+        @SerializedName("productrevBulkSubmitProductReview")
         @Expose
-        val productrevSubmitBulkReview: ProductrevSubmitBulkReview = ProductrevSubmitBulkReview()
+        val productRevBulkSubmitProductReview: ProductRevBulkSubmitProductReview = ProductRevBulkSubmitProductReview()
     ) {
-        data class ProductrevSubmitBulkReview(
+        data class ProductRevBulkSubmitProductReview(
             @SerializedName("success")
             @Expose
             val success: Boolean = false,

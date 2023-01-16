@@ -35,7 +35,7 @@ class BulkReviewMiniActionsUiStateMapper @Inject constructor() {
     }
 
     private fun mapMiniActionsUiState(
-        reviewForm: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm,
+        reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
         bulkReviewTextAreaUiState: Map<String, BulkReviewTextAreaUiState>,
         bulkReviewMediaPickerUiState: Map<String, CreateReviewMediaPickerUiState>
     ): Pair<String, BulkReviewMiniActionsUiState> {

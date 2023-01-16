@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class BulkReviewVisitableMapper @Inject constructor() {
     fun map(
-        productRevBulkSubmitProductReview: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview,
+        productRevGetBulkForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm,
         removedReviewItem: Set<String>,
         impressedReviewItems: Set<String>,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
@@ -28,9 +28,9 @@ class BulkReviewVisitableMapper @Inject constructor() {
         bulkReviewMiniActionsUiState: Map<String, BulkReviewMiniActionsUiState>
     ): List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>> {
         return arrayListOf<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>().apply {
-            includeAnnouncementWidget(productRevBulkSubmitProductReview.themeCopy)
+            includeAnnouncementWidget(productRevGetBulkForm.themeCopy)
             includeReviewItems(
-                productRevBulkSubmitProductReview.reviewForm,
+                productRevGetBulkForm.reviewForm,
                 removedReviewItem,
                 impressedReviewItems,
                 bulkReviewProductInfoUiState,
@@ -50,7 +50,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
     }
 
     private fun ArrayList<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>.includeReviewItems(
-        reviewForms: List<BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm>,
+        reviewForms: List<BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm>,
         removedReviewItem: Set<String>,
         impressedReviewItems: Set<String>,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
@@ -83,7 +83,7 @@ class BulkReviewVisitableMapper @Inject constructor() {
 
     private fun mapReviewFormToBulkReviewVisitable(
         index: Int,
-        reviewForm: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm,
+        reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
         hasFocusedReviewItem: Boolean,
         bulkReviewProductInfoUiState: Map<String, BulkReviewProductInfoUiState>,
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>,

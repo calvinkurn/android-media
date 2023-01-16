@@ -16,7 +16,7 @@ class BulkReviewGetFormUseCase @Inject constructor(
 ) : FlowUseCase<Unit, BulkReviewGetFormRequestState>(dispatchers.io) {
 
     companion object {
-        private const val ERROR_MESSAGE_REVIEW_ITEMS_IS_EMPTY = "productrevBulkSubmitProductReview.list is empty"
+        private const val ERROR_MESSAGE_REVIEW_ITEMS_IS_EMPTY = "productrevGetBulkForm.list is empty"
     }
 
     override fun graphqlQuery(): String {
@@ -51,15 +51,15 @@ class BulkReviewGetFormUseCase @Inject constructor(
         params: Unit
     ) = flow {
         emit(BulkReviewGetFormRequestState.Requesting())
-        sendRequest(params).productrevBulkSubmitProductReview.let { productrevBulkSubmitProductReview ->
-            if (productrevBulkSubmitProductReview.reviewForm.isEmpty()) {
+        sendRequest(params).productRevGetBulkForm.let { productrevGetBulkForm ->
+            if (productrevGetBulkForm.reviewForm.isEmpty()) {
                 emit(
                     BulkReviewGetFormRequestState.Complete.Error(
                         IllegalStateException(ERROR_MESSAGE_REVIEW_ITEMS_IS_EMPTY)
                     )
                 )
             } else {
-                emit(BulkReviewGetFormRequestState.Complete.Success(productrevBulkSubmitProductReview))
+                emit(BulkReviewGetFormRequestState.Complete.Success(productrevGetBulkForm))
             }
         }
     }.catch {

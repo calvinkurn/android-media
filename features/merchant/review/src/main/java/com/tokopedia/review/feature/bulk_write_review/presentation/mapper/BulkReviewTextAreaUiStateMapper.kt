@@ -40,7 +40,7 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
     }
 
     private fun mapTextAreaUiState(
-        reviewForm: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm,
+        reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
         reviewItemTestimony: BulkReviewItemTestimonyUiModel?,
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>

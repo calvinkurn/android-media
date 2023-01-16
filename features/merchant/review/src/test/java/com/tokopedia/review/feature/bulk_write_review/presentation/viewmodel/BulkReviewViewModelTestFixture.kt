@@ -110,7 +110,7 @@ abstract class BulkReviewViewModelTestFixture {
     protected val getFormUseCaseResultSuccess =
         createSuccessResponse<BulkReviewGetFormResponse.Data>(
             SAMPLE_GET_FORM_RESULT_SUCCESS
-        ).getSuccessData<BulkReviewGetFormResponse.Data>().productrevBulkSubmitProductReview
+        ).getSuccessData<BulkReviewGetFormResponse.Data>().productRevGetBulkForm
 
     protected val getBadRatingCategoryUseCaseResultSuccessNonEmpty =
         createSuccessResponse<BadRatingCategoriesResponse>(
@@ -162,7 +162,7 @@ abstract class BulkReviewViewModelTestFixture {
     }
 
     protected fun mockSuccessGetFormResult(
-        getFormResult: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview = getFormUseCaseResultSuccess
+        getFormResult: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm = getFormUseCaseResultSuccess
     ) {
         coEvery {
             getFormUseCase(Unit)
@@ -237,7 +237,7 @@ abstract class BulkReviewViewModelTestFixture {
                 emit(
                     BulkReviewSubmitRequestState.Complete.Success(
                         args[0] as List<BulkReviewSubmitRequestParam>,
-                        BulkReviewSubmitResponse.Data.ProductrevSubmitBulkReview(
+                        BulkReviewSubmitResponse.Data.ProductRevBulkSubmitProductReview(
                             success = true,
                             failedInboxIDs = emptyList()
                         )
@@ -259,7 +259,7 @@ abstract class BulkReviewViewModelTestFixture {
                 emit(
                     BulkReviewSubmitRequestState.Complete.Success(
                         args[0] as List<BulkReviewSubmitRequestParam>,
-                        BulkReviewSubmitResponse.Data.ProductrevSubmitBulkReview(
+                        BulkReviewSubmitResponse.Data.ProductRevBulkSubmitProductReview(
                             success = false,
                             failedInboxIDs = getFormUseCaseResultSuccess.reviewForm.mapIndexedNotNull { index, reviewForm ->
                                 if (index % 2 == 0) reviewForm.inboxID else null
@@ -522,7 +522,7 @@ abstract class BulkReviewViewModelTestFixture {
         }
     }
 
-    protected fun getFirstReviewItem(): BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm {
+    protected fun getFirstReviewItem(): BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm {
         return getFormUseCaseResultSuccess.reviewForm.first()
     }
 

@@ -29,7 +29,7 @@ class BulkReviewBadRatingCategoryUiStateMapper @Inject constructor() {
     }
 
     private fun mapBulkReviewBadRatingCategoryUiState(
-        reviewForm: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview.ReviewForm,
+        reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
         reviewItemBadRatingCategory: BulkReviewItemBadRatingCategoryUiModel?
     ): Pair<String, BulkReviewBadRatingCategoryUiState> {
         val badRatingCategory = reviewItemBadRatingCategory?.badRatingCategory

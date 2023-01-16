@@ -43,7 +43,7 @@ class BulkReviewSubmitUseCase @Inject constructor(
 
     private suspend fun sendRequest(
         params: List<BulkReviewSubmitRequestParam>
-    ): BulkReviewSubmitResponse.Data.ProductrevSubmitBulkReview {
+    ): BulkReviewSubmitResponse.Data.ProductRevBulkSubmitProductReview {
         return repository.request(graphqlQuery(), createRequestParam(params))
     }
 

@@ -9,7 +9,7 @@ sealed interface BulkReviewGetFormRequestState {
 
     sealed interface Complete : BulkReviewGetFormRequestState {
         data class Success(
-            val result: BulkReviewGetFormResponse.Data.ProductRevBulkSubmitProductReview
+            val result: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm
         ) : Complete {
             override val type: String = Success::class.java.simpleName
         }

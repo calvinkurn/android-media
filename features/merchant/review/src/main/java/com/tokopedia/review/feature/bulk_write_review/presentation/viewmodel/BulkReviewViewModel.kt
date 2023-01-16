@@ -879,7 +879,7 @@ class BulkReviewViewModel @Inject constructor(
     ): List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>> {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> bulkReviewVisitableMapper.map(
-                productRevBulkSubmitProductReview = getFormRequestState.result,
+                productRevGetBulkForm = getFormRequestState.result,
                 removedReviewItem = removedReviewItem,
                 impressedReviewItems = impressedReviewItems,
                 bulkReviewProductInfoUiState = bulkReviewProductInfoUiState,
