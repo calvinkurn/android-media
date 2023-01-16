@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.MePageRollenceController.isUsingMePageRollenceVariant
 import com.tokopedia.homenav.MePageRollenceController.isUsingMePageRollenceVariant1
 import com.tokopedia.homenav.MePageRollenceController.isUsingMePageRollenceVariant2
-import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
@@ -226,6 +226,7 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
 
     fun setInitialState() {
+        MePageRollenceController.fetchMePageRollenceValue()
         val initialList = mutableListOf<Visitable<*>>()
         if (userSession.get().isLoggedIn) {
             initialList.add(AccountHeaderDataModel(state = NAV_PROFILE_STATE_LOADING))
@@ -1088,22 +1089,13 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun findBuStartIndexPosition(): Int? {
-        if (isUsingMePageRollenceVariant()) {
-            val findBU = _mainNavListVisitable.firstOrNull {
-                it is HomeNavExpandableDataModel && it.id == IDENTIFIER_TITLE_ALL_CATEGORIES
-            }
-            findBU.let {
-                return _mainNavListVisitable.indexOf(it)
-            }
-        } else {
-            val findBUTitle = _mainNavListVisitable.firstOrNull {
-                it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_ALL_CATEGORIES
-            }
-            findBUTitle?.let {
-                return _mainNavListVisitable.indexOf(it) + 1
-            }
-            return null
+        val findBUTitle = _mainNavListVisitable.firstOrNull {
+            it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_ALL_CATEGORIES
         }
+        findBUTitle?.let {
+            return _mainNavListVisitable.indexOf(it) + 1
+        }
+        return null
     }
 
     private fun findExistingEndBuIndexPosition(): Int? {
