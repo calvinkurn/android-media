@@ -50,7 +50,7 @@ class TokoNowCategoryMenuViewHolder(
             when(data.state) {
                 TokoNowLayoutState.SHOW -> showSuccessState(data)
                 TokoNowLayoutState.LOADING -> showLoadingState()
-                TokoNowLayoutState.HIDE -> showErrorState(data)
+                TokoNowLayoutState.HIDE -> showErrorState()
                 else -> { /* nothing to do */ }
             }
         }
@@ -135,11 +135,10 @@ class TokoNowCategoryMenuViewHolder(
         adapter.submitList(data.categoryListUiModel.orEmpty())
     }
 
-    private fun ItemTokopedianowCategoryMenuBinding.showErrorState(
-        data: TokoNowCategoryMenuUiModel
-    ) {
+    private fun ItemTokopedianowCategoryMenuBinding.showErrorState() {
         binding.apply {
             llCategory.apply {
+                show()
                 progressState = false
                 title?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_title)
                 description?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_description)
@@ -151,12 +150,7 @@ class TokoNowCategoryMenuViewHolder(
 
             categoryShimmering.categoryShimmeringLayout.hide()
             rvCategory.hide()
-            header.show()
-            header.setModel(
-                model = TokoNowDynamicHeaderUiModel(
-                    title = data.title
-                )
-            )
+            header.hide()
         }
     }
 
