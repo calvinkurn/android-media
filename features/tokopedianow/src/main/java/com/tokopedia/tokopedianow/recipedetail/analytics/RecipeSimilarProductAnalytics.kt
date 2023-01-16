@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.recipedetail.analytics
 
 import android.os.Bundle
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ATC
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_NAME_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_VIEW
@@ -136,7 +136,7 @@ class RecipeSimilarProductAnalytics(
             createAtcProductItemDataLayer(
                 id = product.id,
                 name = product.name,
-                price = product.priceFmt,
+                price = product.getPrice(),
                 categoryName = product.categoryName,
                 categoryId = product.categoryId,
                 quantity = product.minOrder.toString(),
@@ -152,7 +152,7 @@ class RecipeSimilarProductAnalytics(
         }
 
         sendEnhanceEcommerceEvent(
-            eventName = EVENT_ATC,
+            eventName = EVENT_NAME_ADD_TO_CART,
             dataLayer = dataLayer
         )
     }
