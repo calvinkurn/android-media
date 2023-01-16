@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -854,6 +855,7 @@ class FeedPlusFragment :
     override fun onLoad(totalCount: Int) {
         val isNotEmpty = adapter.getlist().isNotEmpty()
         if (isNotEmpty && adapter.getlist()[0] !is EmptyModel) feedViewModel.getFeedNextPage()
+        feedViewModel.updateCurrentFollowState(adapter.getlist())
     }
 
     override fun onCreateView(
@@ -1157,6 +1159,8 @@ class FeedPlusFragment :
         if (isUserEventTrackerDoneOnResume) {
             isUserEventTrackerDoneOnResume = false
         }
+        Log.d("FEED_PLUS", "Masuk on Resume")
+        feedViewModel.updateFollowStatus()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         registerNewFeedReceiver()
