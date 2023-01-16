@@ -9,17 +9,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,19 +43,88 @@ import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleBottomSheetLayout
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ReschedulePickupScreen(
     state: State<ReschedulePickupState>,
     input: ReschedulePickupInput,
-    onDayClicked: (List<RescheduleDayOptionModel>) -> Unit,
-    onTimeClicked: (List<RescheduleTimeOptionModel>) -> Unit,
-    onReasonClicked: (List<RescheduleReasonOptionModel>) -> Unit,
+    onDayChosen: (RescheduleDayOptionModel) -> Unit,
+    onTimeChosen: (RescheduleTimeOptionModel) -> Unit,
+    onReasonChosen: (RescheduleReasonOptionModel) -> Unit,
     onSubtitleClicked: (String) -> Unit,
     onOtherReasonChanged: (String) -> Unit,
-    onSaveReschedule: () -> Unit
+    onSaveReschedule: () -> Unit,
+    onBottomSheetClosed: () -> Unit,
+    onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden
+    )
+
+    // to set the current sheet to null when the bottom sheet closes
+    if (!sheetState.isVisible) {
+        onBottomSheetClosed()
+    }
+
+    val closeSheet: () -> Unit = {
+        scope.launch {
+            sheetState.hide()
+            onBottomSheetClosed()
+        }
+    }
+
+    val openSheet: (RescheduleBottomSheetState) -> Unit = {
+        scope.launch {
+            onOpenBottomSheet(it)
+            sheetState.show()
+        }
+    }
+
+    ModalBottomSheetLayout(
+        sheetShape = RoundedCornerShape(
+            topStart = 20.dp,
+            topEnd = 20.dp,
+            bottomEnd = 0.dp,
+            bottomStart = 0.dp
+        ),
+        sheetState = sheetState,
+        sheetContent = {
+            RescheduleBottomSheetLayout(
+                state.value.bottomSheet,
+                closeSheet,
+                state.value.options,
+                onDayChosen,
+                onTimeChosen,
+                onReasonChosen
+            )
+        }
+    ) {
+        ReschedulePickupScreenLayout(
+            state = state,
+            input = input,
+            onSubtitleClicked = onSubtitleClicked,
+            onOtherReasonChanged = onOtherReasonChanged,
+            onSaveReschedule = onSaveReschedule,
+            onOpenBottomSheet = openSheet
+        )
+    }
+}
+
+@Composable
+fun ReschedulePickupScreenLayout(
+    state: State<ReschedulePickupState>,
+    input: ReschedulePickupInput,
+    onSubtitleClicked: (String) -> Unit,
+    onOtherReasonChanged: (String) -> Unit,
+    onSaveReschedule: () -> Unit,
+    onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -67,7 +142,10 @@ fun ReschedulePickupScreen(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row {
-                    Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "icon kurir")
+                    Icon(
+                        imageVector = Icons.Filled.ShoppingCart,
+                        contentDescription = "icon kurir"
+                    )
                     Column {
                         NestTypography(
                             text = stringResource(id = R.string.label_title_courier_reschedule_pick_up),
@@ -120,7 +198,7 @@ fun ReschedulePickupScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .clickable { onDayClicked(state.value.options.dayOptions) },
+                .clickable { onOpenBottomSheet(RescheduleBottomSheetState.DAY) },
             label = {
                 NestTypography(
                     text =
@@ -138,7 +216,13 @@ fun ReschedulePickupScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .clickable { onTimeClicked(state.value.options.timeOptions) },
+                .clickable {
+                    if (input.day.isNotEmpty()) {
+                        onOpenBottomSheet(
+                            RescheduleBottomSheetState.TIME
+                        )
+                    }
+                },
             enabled = false,
             label = {
                 NestTypography(text = stringResource(id = R.string.label_time_reschedule_pick_up))
@@ -153,7 +237,7 @@ fun ReschedulePickupScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .clickable { onReasonClicked(state.value.options.reasonOptions) },
+                .clickable { onOpenBottomSheet(RescheduleBottomSheetState.REASON) },
             label = {
                 NestTypography(text = stringResource(id = R.string.label_reason_reschedule_pickup))
             },

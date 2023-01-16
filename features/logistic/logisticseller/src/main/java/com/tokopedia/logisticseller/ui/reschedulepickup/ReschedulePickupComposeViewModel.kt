@@ -12,6 +12,7 @@ import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.domain.mapper.ReschedulePickupMapper
 import com.tokopedia.logisticseller.domain.usecase.GetReschedulePickupUseCase
 import com.tokopedia.logisticseller.domain.usecase.SaveReschedulePickupUseCase
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -128,6 +129,22 @@ class ReschedulePickupComposeViewModel @Inject constructor(
 //                _saveRescheduleDetail.value = Fail(it)
 //            }
 //        )
+    }
+
+    fun closeBottomSheetState() {
+        val state = _uiState.value
+        if (state.bottomSheet != RescheduleBottomSheetState.NONE) {
+            _uiState.value = state.copy(bottomSheet = RescheduleBottomSheetState.NONE)
+        }
+    }
+
+    fun openBottomSheetState(it: RescheduleBottomSheetState) {
+        val state = _uiState.value
+        if (input.day.isEmpty() && it == RescheduleBottomSheetState.TIME) {
+            closeBottomSheetState()
+        } else {
+            _uiState.value = state.copy(bottomSheet = it)
+        }
     }
 
     companion object {

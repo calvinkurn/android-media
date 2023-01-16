@@ -22,19 +22,13 @@ import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.di.DaggerReschedulePickupComponent
 import com.tokopedia.logisticseller.di.ReschedulePickupComponent
-import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleDayBottomSheet
-import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleReasonBottomSheet
-import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleTimeBottomSheet
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.ReschedulePickupResultDialog
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ReschedulePickupComposeFragment :
-    BaseDaggerFragment(),
-    RescheduleTimeBottomSheet.ChooseTimeListener,
-    RescheduleDayBottomSheet.ChooseDayListener,
-    RescheduleReasonBottomSheet.ChooseReasonListener {
+    BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -74,14 +68,16 @@ class ReschedulePickupComposeFragment :
                     ReschedulePickupScreen(
                         viewModel.uiState.collectAsState(),
                         viewModel.input,
-                        onDayClicked = { openDaySelectionBottomSheet(it) },
-                        onTimeClicked = { openTimeSelectionBottomSheet(it) },
-                        onReasonClicked = { openReasonSelectionBottomSheet(it) },
+                        onDayChosen = { onDayChosen(it) },
+                        onTimeChosen = { onTimeChosen(it) },
+                        onReasonChosen = { onReasonChosen(it) },
                         onSubtitleClicked = {
                             RouteManager.route(context, ApplinkConst.WEBVIEW.plus("?url=$it"))
                         },
                         onOtherReasonChanged = { viewModel.setCustomReason(it) },
-                        onSaveReschedule = { viewModel.saveReschedule(orderId) }
+                        onSaveReschedule = { viewModel.saveReschedule(orderId) },
+                        onBottomSheetClosed = { viewModel.closeBottomSheetState() },
+                        onOpenBottomSheet = { viewModel.openBottomSheetState(it) }
                     )
                 }
             }
@@ -95,27 +91,6 @@ class ReschedulePickupComposeFragment :
 
     private fun getInitialData() {
         viewModel.getReschedulePickupDetail(orderId)
-    }
-
-    private fun openDaySelectionBottomSheet(daysOption: List<RescheduleDayOptionModel>) {
-        RescheduleDayBottomSheet().apply {
-            setDayOptions(daysOption)
-            setListener(this@ReschedulePickupComposeFragment)
-        }.show(parentFragmentManager)
-    }
-
-    private fun openTimeSelectionBottomSheet(timeOption: List<RescheduleTimeOptionModel>) {
-        RescheduleTimeBottomSheet().apply {
-            setTimeOptions(timeOption)
-            setListener(this@ReschedulePickupComposeFragment)
-        }.show(parentFragmentManager)
-    }
-
-    private fun openReasonSelectionBottomSheet(reasonOption: List<RescheduleReasonOptionModel>) {
-        RescheduleReasonBottomSheet().apply {
-            setOptions(reasonOption)
-            setListener(this@ReschedulePickupComposeFragment)
-        }.show(parentFragmentManager)
     }
 
     private fun showResultDialog(
@@ -167,15 +142,15 @@ class ReschedulePickupComposeFragment :
         }
     }
 
-    override fun onDayChosen(dayChosen: RescheduleDayOptionModel) {
+    private fun onDayChosen(dayChosen: RescheduleDayOptionModel) {
         viewModel.setDay(dayChosen)
     }
 
-    override fun onReasonChosen(reasonChosen: RescheduleReasonOptionModel) {
+    private fun onReasonChosen(reasonChosen: RescheduleReasonOptionModel) {
         viewModel.setReason(reasonChosen)
     }
 
-    override fun onTimeChosen(timeChosen: RescheduleTimeOptionModel) {
+    private fun onTimeChosen(timeChosen: RescheduleTimeOptionModel) {
         viewModel.setTime(timeChosen)
     }
 

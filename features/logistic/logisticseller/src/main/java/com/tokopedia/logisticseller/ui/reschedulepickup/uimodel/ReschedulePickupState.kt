@@ -11,8 +11,13 @@ data class ReschedulePickupState(
     val valid: Boolean = false,
     val isCustomReason: Boolean = false,
     val reason: String = "",
-    val customReasonError: String? = null
+    val customReasonError: String? = null,
+    val bottomSheet: RescheduleBottomSheetState = RescheduleBottomSheetState.NONE
 )
+
+enum class RescheduleBottomSheetState {
+    DAY, TIME, REASON, NONE
+}
 
 data class ReschedulePickupInput(
     val day: String = "",
