@@ -7,8 +7,8 @@ import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
-import com.tokopedia.catalog_library.usecase.CatalogLibraryUseCase
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.usecase.CatalogLibraryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,13 +22,12 @@ class CatalogLihatSemuaPageViewModel @Inject constructor(private val catalogLibr
 
     private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
 
-    fun getLihatSemuaPageData(sortOrder: String, device: String) {
+    fun getLihatSemuaPageData(sortOrder: String) {
         catalogLibraryUseCase.cancelJobs()
         catalogLibraryUseCase.getLibraryData(
             ::onAvailableLihatData,
             ::onFailLihatData,
-            sortOrder,
-            device
+            sortOrder
         )
     }
 

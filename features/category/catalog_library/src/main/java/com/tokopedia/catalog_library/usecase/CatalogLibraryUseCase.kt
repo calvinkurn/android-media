@@ -14,12 +14,11 @@ class CatalogLibraryUseCase @Inject constructor(graphqlRepository: GraphqlReposi
     fun getLibraryData(
         onSuccess: (CatalogLibraryResponse) -> Unit,
         onError: (Throwable) -> Unit,
-        sortOrder: String?,
-        device: String?
+        sortOrder: String?
     ) {
         try {
             this.setTypeClass(CatalogLibraryResponse::class.java)
-            this.setRequestParams(getRequestParams(sortOrder, device))
+            this.setRequestParams(getRequestParams(sortOrder))
             this.setGraphqlQuery(GQL_CATALOG_LIBRARY)
             this.execute(
                 { result ->
@@ -33,15 +32,13 @@ class CatalogLibraryUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         }
     }
 
-    private fun getRequestParams(sortOrder: String?, device: String?): MutableMap<String, Any?> {
+    private fun getRequestParams(sortOrder: String?): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[PARAM_SORT_ORDER] = sortOrder
-        requestMap[PARAM_DEVICE] = device
         return requestMap
     }
 
     companion object {
         const val PARAM_SORT_ORDER = "sortOrder"
-        const val PARAM_DEVICE = "device"
     }
 }

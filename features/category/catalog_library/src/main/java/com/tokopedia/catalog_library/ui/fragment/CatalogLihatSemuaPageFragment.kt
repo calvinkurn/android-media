@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -20,6 +19,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
@@ -37,17 +37,13 @@ import javax.inject.Inject
 class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
     private var catalogLihatPageRecyclerView: RecyclerView? = null
-    private var shimmerLayout: ScrollView? = null
     private var sortAsc: Typography? = null
     private var sortDesc: Typography? = null
     private var globalError: GlobalError? = null
 
     companion object {
-        const val CATALOG_LIHAT_PAGE_FRAGMENT_TAG = "CATALOG_LIHAT_PAGE_FRAGMENT_TAG"
         const val DEFAULT_ASC_SORT_ORDER = "0"
         const val DESC_SORT_ORDER = "1"
-        const val DEVICE = ""
-        const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
         fun newInstance(): CatalogLihatSemuaPageFragment {
             return CatalogLihatSemuaPageFragment()
         }
@@ -98,7 +94,6 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         super.onViewCreated(view, savedInstanceState)
         initViews(view)
 
-        shimmerLayout = view.findViewById(R.id.shimmer_layout)
         sortAsc = view.findViewById(R.id.sort_order_0)
         sortDesc = view.findViewById(R.id.sort_order_1)
         sortDesc?.setBackgroundColor(
@@ -107,12 +102,12 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
         )
-        activity?.let {
-            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
-            showShimmer()
-        }
+//        activity?.let {
+//            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
+//            showShimmer()
+//        }
         sortAsc?.setOnClickListener {
-            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
+            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
             sortDesc?.setBackgroundColor(
                 ContextCompat.getColor(
                     view.context,
@@ -121,7 +116,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             )
         }
         sortDesc?.setOnClickListener {
-            lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER, DEVICE)
+            lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
             sortAsc?.setBackgroundColor(
                 ContextCompat.getColor(
                     view.context,
@@ -130,6 +125,11 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             )
         }
         setObservers()
+        initData()
+    }
+
+    private fun initData() {
+        lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
     }
 
     private fun initHeaderTitle(view: View) {
@@ -144,6 +144,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         globalError = view.findViewById(R.id.global_error_page)
         initHeaderTitle(view)
         setupRecyclerView(view)
+        addShimmer()
     }
 
     private fun setupRecyclerView(view: View) {
@@ -159,6 +160,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         lihatViewModel?.catalogLihatLiveDataResponse?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_LIHAT_SEMUA)
                     it.data.listOfComponents.forEach { component ->
                         catalogLibraryUiUpdater.updateModel(component)
                     }
@@ -173,7 +175,6 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     }
 
     private fun updateUi() {
-        hideShimmer()
         catalogLihatPageRecyclerView?.show()
         val newData = catalogLibraryUiUpdater.mapOfData.values.toList()
         submitList(newData)
@@ -184,7 +185,6 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     }
 
     private fun onError(e: Throwable) {
-        shimmerLayout?.hide()
         catalogLihatPageRecyclerView?.hide()
         if (e is UnknownHostException ||
             e is SocketTimeoutException
@@ -197,9 +197,8 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         globalError?.show()
         globalError?.errorAction?.setOnClickListener {
             catalogLihatPageRecyclerView?.show()
-            shimmerLayout?.show()
             globalError?.hide()
-            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER, DEVICE)
+            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
         }
     }
 
@@ -211,15 +210,16 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         )
     }
 
-    private fun showShimmer() {
-        if (catalogLibraryUiUpdater.mapOfData.isEmpty()) {
-            shimmerLayout?.show()
-        }
-    }
-
-    private fun hideShimmer() {
-        if (catalogLibraryUiUpdater.mapOfData.isNotEmpty()) {
-            shimmerLayout?.hide()
+    private fun addShimmer() {
+        catalogLibraryUiUpdater.apply {
+            updateModel(
+                CatalogShimmerDataModel(
+                    CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
+                    CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
+                    CatalogLibraryConstant.CATALOG_SHIMMER_LIHAT_SEMUA
+                )
+            )
+            updateUi()
         }
     }
 }

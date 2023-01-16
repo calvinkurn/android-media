@@ -20,6 +20,7 @@ object CatalogLibraryConstant {
     const val CATALOG_SHIMMER_TOP_FIVE = 1
     const val CATALOG_SHIMMER_VIRAL = 2
     const val CATALOG_SHIMMER_PRODUCTS = 3
+    const val CATALOG_SHIMMER_LIHAT_SEMUA = 4
 
     const val SORT_TYPE_CATALOG = 0
     const val SORT_TYPE_VIRAL = 5
