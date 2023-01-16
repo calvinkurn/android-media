@@ -133,7 +133,14 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 renderCashbackMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
                 renderCashbackMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
                 renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)}
-            PromoType.DISCOUNT -> {}
+            PromoType.DISCOUNT -> {
+                //discount input
+                renderDiscountNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
+                renderDiscountPercentageInputValidation(state.isPercentageError, state.percentageErrorMsg)
+                renderDiscountMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
+                renderDiscountMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
+                renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
         }
     }
 
@@ -267,6 +274,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         setFreeShippingNominalInput(currentVoucherConfiguration)
         setFreeShippingMinimumBuyInput(currentVoucherConfiguration)
         setFreeShippingQuotaInput(currentVoucherConfiguration)
+        viewModel.processEvent(
+            VoucherCreationStepThreeEvent.ChooseBenefitType(
+                BenefitType.NOMINAL
+            )
+        )
     }
 
     private fun setFreeShippingNominalInput(currentVoucherConfiguration: VoucherConfiguration) {
@@ -606,6 +618,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountNominalInput(currentVoucherConfiguration: VoucherConfiguration) {
         discountInputSectionBinding?.run {
             tfDiscountNominal.apply {
+                visible()
                 tpgDiscountMaxDeductionLabel.gone()
                 tfDiscountMaxDeduction.gone()
                 appendText("")
@@ -623,12 +636,14 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
+            tfDiscountPercentage.invisible()
         }
     }
 
     private fun setDiscountPercentageInput(currentVoucherConfiguration: VoucherConfiguration) {
         discountInputSectionBinding?.run {
-            tfDiscountNominal.apply {
+            tfDiscountPercentage.apply {
+                visible()
                 tpgDiscountMaxDeductionLabel.visible()
                 tfDiscountMaxDeduction.visible()
                 appendText(getString(R.string.smvc_percent_symbol))
@@ -646,6 +661,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
+            tfDiscountNominal.invisible()
         }
     }
 
@@ -700,6 +716,56 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
+        }
+    }
+
+    private fun renderDiscountNominalInputValidation(
+        isDiscountNominalInputError: Boolean,
+        discountNominalInputErrorMsg: String
+    ) {
+        discountInputSectionBinding?.run {
+            tfDiscountNominal.isInputError = isDiscountNominalInputError
+            tfDiscountNominal.setMessage(discountNominalInputErrorMsg)
+        }
+    }
+
+    private fun renderDiscountPercentageInputValidation(
+        isDiscountPercentageInputError: Boolean,
+        discountPercentageInputErrorMsg: String
+    ) {
+        discountInputSectionBinding?.run {
+            tfDiscountPercentage.isInputError = isDiscountPercentageInputError
+            tfDiscountPercentage.setMessage(discountPercentageInputErrorMsg)
+        }
+    }
+
+    private fun renderDiscountMaxDeductionInputValidation(
+        isDiscountMaxDeductionInputError: Boolean,
+        discountMaxDeductionInputErrorMsg: String
+    ) {
+        discountInputSectionBinding?.run {
+            tfDiscountMaxDeduction.isInputError = isDiscountMaxDeductionInputError
+            tfDiscountMaxDeduction.setMessage(discountMaxDeductionInputErrorMsg)
+        }
+    }
+
+    private fun renderDiscountMinimumBuyInputValidation(
+        isDiscountMinimunBuyInputError: Boolean,
+        discountMinimumBuyInputErrorMsg: String
+    ) {
+        discountInputSectionBinding?.run {
+            tfDiscountMinimumBuy.isInputError = isDiscountMinimunBuyInputError
+            tfDiscountMinimumBuy.setMessage(discountMinimumBuyInputErrorMsg)
+        }
+    }
+
+    private fun renderDiscountQuotaInputValidation(
+        isDiscountQuotaInputError: Boolean,
+        discountQuotaInputErrorMsg: String
+    ) {
+        discountInputSectionBinding?.run {
+            tfDiscountQuota.isInputError = isDiscountQuotaInputError
+            tfDiscountQuota.setMessage(discountQuotaInputErrorMsg)
         }
     }
 

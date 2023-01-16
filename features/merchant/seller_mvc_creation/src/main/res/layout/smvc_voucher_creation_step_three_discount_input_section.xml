@@ -39,6 +39,19 @@
         app:unify_text_field_label_static="true"
         app:unify_text_field_placeholder="Min. 2% Maks. 100%" />
 
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/tf_discount_percentage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_discount_deduction_type_label"
+        app:unify_text_field_label_static="true"
+        app:unify_text_field_placeholder="Min. 2% Maks. 100%" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_discount_max_deduction_label"
         android:layout_width="wrap_content"
