@@ -502,9 +502,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             }
 
             tfRepeat.run {
+                isVisible = voucherConfiguration.isPeriod
                 disableText(editText)
                 editText.setOnClickListener { onClickListenerForRecurringPeriod() }
             }
+            iconChevronDown.isVisible = voucherConfiguration.isPeriod
         }
     }
 

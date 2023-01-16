@@ -22,10 +22,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeFreeShippingInp
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreePromoTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.domain.entity.enums.PromoType
-import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.entity.enums.*
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
@@ -128,21 +125,84 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun handleUiState(state: VoucherCreationStepThreeUiState) {
         when (state.voucherConfiguration.promoType) {
             PromoType.FREE_SHIPPING -> {
-                // free shipping input
+                renderFreeShippingValidation(state)
+            }
+            PromoType.CASHBACK -> {
+                renderCashbackValidation(state)
+            }
+            PromoType.DISCOUNT -> {
+                renderDiscountValidation(state)
+            }
+        }
+        renderAvailableTargetBuyer(state.availableTargetBuyer, state.voucherConfiguration)
+        renderSpendingEstimation(state.spendingEstimation)
+        renderButtonValidation(state.voucherConfiguration, state.isInputValid())
+    }
+
+    private fun renderFreeShippingValidation(state: VoucherCreationStepThreeUiState) {
+        when(state.fieldValidated) {
+            VoucherCreationStepThreeFieldValidation.NOMINAL -> {
+                renderFreeShippingNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.MINIMUM_BUY -> {
+                renderFreeShippingMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.QUOTA -> {
+                renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.ALL -> {
                 renderFreeShippingNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
                 renderFreeShippingMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
                 renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
-            PromoType.CASHBACK -> {
-                // cashback input
+        }
+    }
+
+    private fun renderCashbackValidation(state: VoucherCreationStepThreeUiState) {
+        when(state.fieldValidated) {
+            VoucherCreationStepThreeFieldValidation.NOMINAL -> {
+                renderCashbackNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.PERCENTAGE -> {
+                renderCashbackPercentageInputValidation(state.isPercentageError, state.percentageErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.MAX_DEDUCTION -> {
+                renderCashbackMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.MINIMUM_BUY -> {
+                renderCashbackMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.QUOTA -> {
+                renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.ALL -> {
                 renderCashbackNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
                 renderCashbackPercentageInputValidation(state.isPercentageError, state.percentageErrorMsg)
                 renderCashbackMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
                 renderCashbackMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
                 renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
-            PromoType.DISCOUNT -> {
-                // discount input
+        }
+    }
+
+    private fun renderDiscountValidation(state: VoucherCreationStepThreeUiState) {
+        when(state.fieldValidated) {
+            VoucherCreationStepThreeFieldValidation.NOMINAL -> {
+                renderDiscountNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.PERCENTAGE -> {
+                renderDiscountPercentageInputValidation(state.isPercentageError, state.percentageErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.MAX_DEDUCTION -> {
+                renderDiscountMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.MINIMUM_BUY -> {
+                renderDiscountMinimumBuyInputValidation(state.isMinimumBuyError, state.minimumBuyErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.QUOTA -> {
+                renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            VoucherCreationStepThreeFieldValidation.ALL -> {
                 renderDiscountNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
                 renderDiscountPercentageInputValidation(state.isPercentageError, state.percentageErrorMsg)
                 renderDiscountMaxDeductionInputValidation(state.isMaxDeductionError, state.maxDeductionErrorMsg)
@@ -150,9 +210,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
         }
-        renderAvailableTargetBuyer(state.availableTargetBuyer, state.voucherConfiguration)
-        renderSpendingEstimation(state.spendingEstimation)
-        renderButtonValidation(state.voucherConfiguration, state.isInputValid())
     }
 
     private fun handleAction(action: VoucherCreationStepThreeAction) {
@@ -577,11 +634,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun renderCashbackMinimumBuyInputValidation(
-        isCashbackMinimunBuyInputError: Boolean,
+        isCashbackMinimumBuyInputError: Boolean,
         cashbackMinimumBuyInputErrorMsg: String
     ) {
         cashbackInputSectionBinding?.run {
-            tfCashbackMinimumBuy.isInputError = isCashbackMinimunBuyInputError
+            tfCashbackMinimumBuy.isInputError = isCashbackMinimumBuyInputError
             tfCashbackMinimumBuy.setMessage(cashbackMinimumBuyInputErrorMsg)
         }
     }

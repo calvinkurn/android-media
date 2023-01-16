@@ -1,10 +1,7 @@
 package com.tokopedia.mvc.presentation.creation.step3.uimodel
 
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.domain.entity.enums.PromoType
-import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.entity.enums.*
 
 data class VoucherCreationStepThreeUiState(
     val isLoading: Boolean = true,
@@ -22,7 +19,8 @@ data class VoucherCreationStepThreeUiState(
     val isMinimumBuyError: Boolean = false,
     val minimumBuyErrorMsg: String = "",
     val isQuotaError: Boolean = false,
-    val quotaErrorMsg: String = ""
+    val quotaErrorMsg: String = "",
+    val fieldValidated: VoucherCreationStepThreeFieldValidation = VoucherCreationStepThreeFieldValidation.NONE,
 ) {
     fun isInputValid(): Boolean {
         return if (voucherConfiguration.promoType == PromoType.FREE_SHIPPING) {

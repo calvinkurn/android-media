@@ -101,6 +101,12 @@ class VoucherTypeViewModel @Inject constructor(
     }
 
     private fun navigateToNextStep() {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepOne = true)
+            )
+        }
         _uiAction.tryEmit(
             VoucherCreationStepOneAction.NavigateToNextStep(
                 currentState.pageMode,

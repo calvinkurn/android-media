@@ -1,16 +1,12 @@
 package com.tokopedia.mvc.presentation.creation.step3
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.domain.entity.enums.PromoType
-import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
-import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.domain.entity.enums.*
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.VoucherBuyerFinder
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
@@ -115,7 +111,8 @@ class VoucherSettingViewModel @Inject constructor(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitIdr = nominal
-                )
+                ),
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.NOMINAL)
             )
         }
         handleVoucherInputValidation()
@@ -128,7 +125,8 @@ class VoucherSettingViewModel @Inject constructor(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitPercent = percentage
-                )
+                ),
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.PERCENTAGE)
             )
         }
         handleVoucherInputValidation()
@@ -141,7 +139,8 @@ class VoucherSettingViewModel @Inject constructor(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitMax = maxDeduction
-                )
+                ),
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MAX_DEDUCTION)
             )
         }
         handleVoucherInputValidation()
@@ -154,7 +153,8 @@ class VoucherSettingViewModel @Inject constructor(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
                     minPurchase = minimumBuy
-                )
+                ),
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MINIMUM_BUY)
             )
         }
         handleVoucherInputValidation()
@@ -166,7 +166,8 @@ class VoucherSettingViewModel @Inject constructor(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
                     quota = quota
-                )
+                ),
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.QUOTA)
             )
         }
         handleVoucherInputValidation()
@@ -261,6 +262,14 @@ class VoucherSettingViewModel @Inject constructor(
         return when (currentConfiguration.benefitType) {
             BenefitType.NOMINAL -> currentConfiguration.benefitIdr * currentConfiguration.quota
             else -> currentConfiguration.benefitMax * currentConfiguration.quota
+        }
+    }
+
+    private fun getFieldValidated(field: VoucherCreationStepThreeFieldValidation): VoucherCreationStepThreeFieldValidation {
+        return if (currentState.pageMode == PageMode.CREATE) {
+            field
+        } else {
+            VoucherCreationStepThreeFieldValidation.ALL
         }
     }
 }

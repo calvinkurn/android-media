@@ -294,6 +294,9 @@
     <string name="smvc_creation_step_one_out_of_three_sub_title_label">Langkah 1 dari 3</string>
     <string name="smvc_creation_step_one_out_of_four_sub_title_label">Langkah 1 dari 4</string>
     <string name="smvc_ineligible_voucher_creation_error_text">ineligible</string>
+    <string name="smvc_change_voucher_type_confirmation_label">Ganti Jenis Kupon?</string>
+    <string name="smvc_change_voucher_type_confirmation_primary_cta_label">Ya, Ganti</string>
+    <string name="smvc_change_voucher_type_confirmation_description">Mengganti jenis kupon akan mengubah informasi yang harus kamu isi.</string>
     <string name="smvc_voucher_creation_step_one_coachmark_title">Pilih jenis kupon sesuai kebutuhan</string>
     <string name="smvc_voucher_creation_step_one_coachmark_description">Pilih Kupon Toko untuk pasang promo ke semua produk atau pilih Kupon Produk untuk produk-produk pilihanmu saja.</string>
 

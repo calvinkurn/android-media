@@ -14,6 +14,7 @@ import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherTypeBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -26,7 +27,6 @@ import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class VoucherTypeFragment : BaseDaggerFragment() {
@@ -96,11 +96,11 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                 voucherConfiguration
             )
         )
-        setVoucherType(voucherConfiguration.isVoucherProduct)
         setupView()
         observeUiState()
         observeUiAction()
         viewModel.processEvent(VoucherCreationStepOneEvent.HandleCoachmark)
+        presetValue()
     }
 
     private fun observeUiState() {
@@ -136,6 +136,15 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                 showError(action.error)
             }
         }
+    }
+
+    private fun presetValue() {
+        viewModel.processEvent(
+            VoucherCreationStepOneEvent.ChooseVoucherType(
+                pageMode ?: PageMode.CREATE,
+                voucherConfiguration.isVoucherProduct
+            )
+        )
     }
 
     private fun setupView() {
@@ -190,8 +199,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
     }
 
     private fun setVoucherType(isVoucherProduct: Boolean) {
-        if (pageMode == PageMode.EDIT && isVoucherProduct != voucherConfiguration.isVoucherProduct) {
-            showChangeVoucherTypeConfirmationDialog()
+        if (voucherConfiguration.isFinishFilledStepOne) {
+            showChangeVoucherTypeConfirmationDialog(isVoucherProduct)
         } else {
             viewModel.processEvent(
                 VoucherCreationStepOneEvent.ChooseVoucherType(
@@ -216,8 +225,30 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showChangeVoucherTypeConfirmationDialog() {
-        TODO("Implement dialog")
+    private fun showChangeVoucherTypeConfirmationDialog(isVoucherProduct: Boolean) {
+        val dialog = context?.let { ctx ->
+            DialogUnify(
+                ctx,
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE
+            )
+        }
+        dialog?.apply {
+            setTitle(getString(R.string.smvc_change_voucher_type_confirmation_label))
+            setDescription(getString(R.string.smvc_change_voucher_type_confirmation_description))
+            setPrimaryCTAText(getString(R.string.smvc_change_voucher_type_confirmation_primary_cta_label))
+            setSecondaryCTAText(getString(R.string.smvc_cancel))
+            setPrimaryCTAClickListener {
+                viewModel.processEvent(
+                    VoucherCreationStepOneEvent.ChooseVoucherType(
+                        pageMode ?: PageMode.CREATE,
+                        isVoucherProduct
+                    )
+                )
+                dismiss()
+            }
+            setSecondaryCTAClickListener { dismiss() }
+        }?.show()
     }
 
     private fun showError(error: Throwable) {
