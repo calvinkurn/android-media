@@ -80,6 +80,7 @@ import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -119,7 +120,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String REGISTER_APPLINK = "tokopedia://registration";
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
-    private static final String KEY_ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
 
@@ -267,7 +267,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
         }
 
-        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(KEY_ENABLE_WEBVIEW_PRINT_JS_INTERFACE, false);
+        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PRINT_JS_INTERFACE, false);
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
