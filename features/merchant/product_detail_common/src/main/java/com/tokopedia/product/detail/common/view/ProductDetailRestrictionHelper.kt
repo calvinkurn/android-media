@@ -49,6 +49,13 @@ object ProductDetailRestrictionHelper {
                         shopFollowersView = reView
                 )
             }
+            reData.restrictionLocationType() -> {
+                renderCommonRestrictionView(
+                    reData = reData,
+                    isShopOwner = isShopOwner,
+                    shopFollowersView = reView
+                )
+            }
             else -> {
                 reView?.setupVisibility = false
             }
