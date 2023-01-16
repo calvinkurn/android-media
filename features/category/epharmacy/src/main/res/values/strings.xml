@@ -35,4 +35,6 @@
     <string name="epharmacy_upload_resep_atau_chat_dokter">Upload Resep atau Chat Dokter</string>
     <string name="epharmacy_local_prescription_not_uploaded_error">Kamu punya pesanan obat keras yang butuh resep dokter. Segera lengkapi, ya!</string>
     <string name="epharmacy_local_prescription_rejected_error">Yaah, dokter tidak memberikan resep digital.</string>
+    <string name="epharmacy_show_more">Tampilkan lebih banyak</string>
+    <string name="epharmacy_show_less">Tampilkan lebih sedikit</string>
 </resources>

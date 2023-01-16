@@ -47,6 +47,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val productAccordionView = view.findViewById<LinearLayout>(R.id.btn_PAP_minimize)
     private val productAccordionRV = view.findViewById<RecyclerView>(R.id.accordion_expandable_rv)
     private val productAccordionChevron = view.findViewById<IconUnify>(R.id.iv_expand_other_product)
+    private val productChevronTitle = view.findViewById<Typography>(R.id.tv_expand_other_product)
     private val chatDokterUploadLayout = view.findViewById<LinearLayout>(R.id.btn_PAP_chatDokter)
     private val containerUploadPrescription = view.findViewById<ConstraintLayout>(R.id.container_upload_prescription)
     private val chatDokterUploadText = view.findViewById<Typography>(R.id.upload_prescription_text)
@@ -177,9 +178,11 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             }
 
             if (dataModel?.productsIsExpanded == true) {
+                productChevronTitle.text = view.context.getString(R.string.epharmacy_show_less)
                 productAccordionRV.show()
                 productAccordionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
             } else {
+                productChevronTitle.text = view.context.getString(R.string.epharmacy_show_more)
                 productAccordionChevron.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null)
                 productAccordionRV.hide()
             }
