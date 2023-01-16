@@ -598,7 +598,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 )
             }
         }
-        setupTime()
     }
 
     private fun renderVoucherEndPeriodSelection(
@@ -613,7 +612,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
             }
         }
-        setupTime()
     }
 
     private fun renderVoucherRecurringPeriodSelection(voucherConfiguration: VoucherConfiguration) {
