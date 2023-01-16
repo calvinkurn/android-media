@@ -113,7 +113,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
     private suspend fun generateCouponImageUrl(param: GenerateCouponImageParam): String {
         val imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
         imageGeneratorUseCase.params = mapper.mapToPreviewUrlImageParam(param)
-        return imageGeneratorUseCase.executeOnBackground()
+        return imageGeneratorUseCase.executeOnBackground().imageUrl
     }
 
     private suspend fun getTopProductPictures(
