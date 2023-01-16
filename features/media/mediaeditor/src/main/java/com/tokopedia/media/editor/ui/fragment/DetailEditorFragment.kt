@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
+import androidx.core.view.postDelayed
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -302,22 +303,7 @@ class DetailEditorFragment @Inject constructor(
         isEdited = true
 
         viewBinding?.imgUcropPreview?.let {
-            val cropViewRect = it.overlayView.cropViewRect
-            val realImageWidth = it.cropImageView.drawable.intrinsicWidth
-            val realImageHeight = it.cropImageView.drawable.intrinsicHeight
-
-            val rotateSize = if (viewModel.rotateNumber % 2 == 1) {
-                Pair(realImageHeight, realImageWidth)
-            } else {
-                Pair(realImageWidth, realImageHeight)
-            }
-
-            updateAddLogoOverlay(rotateSize) { resultUrl ->
-                setOverlaySize(
-                    Pair(cropViewRect.width(), cropViewRect.height())
-                )
-                viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
-            }
+            rotateAddLogoOverlay(it)
         }
     }
 
@@ -343,14 +329,17 @@ class DetailEditorFragment @Inject constructor(
             it.post {
                 readPreviousState()
                 initialImageMatrix = Matrix(it.cropImageView.imageMatrix)
+            }
 
+            // waiting for crop & rotate state implementation process for AddLogo overlay size
+            it.postDelayed({
                 setOverlaySize(
                     Pair(
                         it.overlayView.cropViewRect.width(),
                         it.overlayView.cropViewRect.height()
                     )
                 )
-            }
+            },DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE)
         }
     }
 
@@ -1147,6 +1136,38 @@ class DetailEditorFragment @Inject constructor(
             Toast.LENGTH_LONG
         ).show()
         activity?.finish()
+    }
+
+    private fun rotateAddLogoOverlay(previewWidget: EditorDetailPreviewWidget) {
+        val cropViewRect = previewWidget.overlayView.cropViewRect
+
+        // get image width between edited (if any crop / rotate state) or original
+        val realImageWidth = if (data.cropRotateValue.imageWidth != 0) {
+            data.cropRotateValue.imageWidth
+        } else {
+            previewWidget.cropImageView.drawable.intrinsicWidth
+        }
+
+        // get image height between edited (if any crop / rotate state) or original
+        val realImageHeight = if (data.cropRotateValue.imageHeight != 0) {
+            data.cropRotateValue.imageHeight
+        } else {
+            previewWidget.cropImageView.drawable.intrinsicHeight
+        }
+
+        // set size to provide new ratio if image is rotated
+        val rotateSize = if (viewModel.rotateNumber % 2 == 1) {
+            Pair(realImageHeight, realImageWidth)
+        } else {
+            Pair(realImageWidth, realImageHeight)
+        }
+
+        updateAddLogoOverlay(rotateSize) { resultUrl ->
+            setOverlaySize(
+                Pair(cropViewRect.width(), cropViewRect.height())
+            )
+            viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
+        }
     }
 
     override fun getScreenName() = SCREEN_NAME
