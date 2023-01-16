@@ -10,8 +10,10 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  */
 object ProductDetailVariantLogic {
 
-    fun determineVariant(mapOfSelectedOptionIds: Map<String, String>,
-                         productVariant: ProductVariant?): VariantCategory? {
+    fun determineVariant(
+        mapOfSelectedOptionIds: Map<String, String>,
+        productVariant: ProductVariant?
+    ): VariantCategory? {
         val variantLevelOne = productVariant?.variants?.firstOrNull()
         val variantOptions = variantLevelOne?.options
 
@@ -46,7 +48,8 @@ object ProductDetailVariantLogic {
 
             val isFlashSale = productVariant.isSelectedChildHasFlashSale(i.id ?: "")
 
-            listOfVariantLevelOne.add(VariantOptionWithAttribute(
+            listOfVariantLevelOne.add(
+                VariantOptionWithAttribute(
                     variantName = i.value.orEmpty(),
                     variantId = i.id.orEmpty(),
                     image100 = i.picture?.url100.orEmpty(),
@@ -54,19 +57,21 @@ object ProductDetailVariantLogic {
                     variantHex = i.hex.orEmpty(),
                     currentState = currentState,
                     hasCustomImages = haveCustomImage,
-                    flashSale = isFlashSale
-            ))
+                    flashSale = isFlashSale,
+                    variantCategoryKey = variantLevelOne.pv.orEmpty()
+                )
+            )
         }
 
         val selectedVariantName = children?.name?.split("-")?.last().orEmpty()
         val stringVariantIdentifier = productVariant.variants.mapNotNull { it.identifier }.joinToString()
 
-        val variantTitle = if (areAllVariantHaveSelectedChild) selectedVariantName else stringVariantIdentifier //to determine pilih warna,ukuran or pilih hitam,xl
+        val variantTitle = if (areAllVariantHaveSelectedChild) selectedVariantName else stringVariantIdentifier // to determine pilih warna,ukuran or pilih hitam,xl
         return VariantCategory(
-                name = variantTitle,
-                identifier = variantLevelOne.name.orEmpty(),
-                hasCustomImage = haveCustomImage,
-                variantOptions = listOfVariantLevelOne
+            name = variantTitle,
+            identifier = variantLevelOne.name.orEmpty(),
+            hasCustomImage = haveCustomImage,
+            variantOptions = listOfVariantLevelOne
         )
     }
 }
